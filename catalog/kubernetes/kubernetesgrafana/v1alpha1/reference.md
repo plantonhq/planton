@@ -32,27 +32,33 @@ Postgres/MySQL) which is also the REQUIREMENT for running more than
 one replica — SQLite cannot be shared, so `replicas > 1` without a
 database splits sessions and dashboards across pods.
 
-PROVISIONING AS CODE: `datasources` and `dashboards` below render
-Grafana's provisioning files — the declarative path that survives pod
-restarts without persistence. The dashboard SIDECAR (on by default)
-additionally discovers any ConfigMap labeled `grafana_dashboard: "1"`
-cluster-wide — the contract by which other components and teams ship
-dashboards to this Grafana without touching its spec.
+PROVISIONING AS CODE: `datasources` below renders Grafana's datasource
+provisioning file, and `community_dashboards` imports dashboards by
+grafana.com ID — the declarative path that survives pod restarts
+without persistence. The dashboard SIDECAR (on by default) discovers
+any ConfigMap labeled `grafana_dashboard: "1"` cluster-wide — the
+contract by which other components and teams ship dashboards to this
+Grafana without touching its spec.
+
+SIGN-IN: `auth.google` and `auth.generic_oauth` put Grafana behind a
+company's identity provider. The client secret is a managed-secret
+reference the modules write into their own `<name>-sso` Secret; once
+either is declared the manifest owns sign-in and Grafana's
+Administration > Authentication screen can no longer change it.
 
 EXPOSURE: the service stays ClusterIP; expose via first-class kinds
 (KubernetesIngress, Gateway API kinds) over the exported service
 handle. Set `server.root_url` to the public URL when composing
-exposure — OAuth redirects and rendered links depend on it.
+exposure — sign-in redirects and rendered links depend on it.
 
 The typed fields below cover the chart's meaningful configuration
 surface; `helm_values` remains as the escape hatch for chart values
 beyond them (merged last, Helm `-f` semantics, identical on both
-engines) — LDAP/OAuth providers, the image renderer, alerting
-provisioning, extra sidecars — a safety valve, never the primary
-interface. Never put secret material in `helm_values`: the chart
-refuses to render secrets into its config ConfigMap, and the typed
-fields wire every credential through Secrets and environment
-expansion instead.
+engines) — LDAP, the image renderer, alerting provisioning, extra
+sidecars — a safety valve, never the primary interface. Never put
+secret material in `helm_values`: the chart refuses to render secrets
+into its config ConfigMap, and the typed fields wire every credential
+through Secrets and environment variables instead.
 
 ## Example
 
@@ -63,7 +69,9 @@ expansion instead.
 # basic-auth Mimir with the $__env password fold, and a Loki with typed
 # jsonData), the dashboard sidecar, pinned community dashboards, plugins
 # (including a Grafana-13 moved-out-of-core datasource plugin), server
-# root_url + anonymous viewing, SMTP with a credentials Secret, the
+# root_url + anonymous viewing, Google and generic OAuth sign-in (the
+# module-owned `<name>-sso` Secret, the admin-screen lock and the
+# credentials checksum), SMTP with a credentials Secret, the
 # ServiceMonitor toggle, a private-mirror image with a pull secret,
 # scheduling, and an escape-hatch entry — so the offline tofu plan and
 # pulumi preview proofs cover the full typed surface. Placeholder values;
@@ -138,6 +146,25 @@ spec:
   auth:
     anonymousEnabled: true
     anonymousOrgRole: Viewer
+    google:
+      clientId: 123456789-hack.apps.googleusercontent.com
+      clientSecret:
+        value: placeholder-google-client-secret
+      allowedDomains:
+        - example.com
+      hostedDomain: example.com
+      roleAttributePath: "email == 'lead@example.com' && 'Admin' || 'Viewer'"
+    genericOauth:
+      name: Okta
+      clientId: 0oa1hack
+      clientSecret:
+        value: placeholder-okta-client-secret
+      authUrl: https://id.example.com/oauth2/v1/authorize
+      tokenUrl: https://id.example.com/oauth2/v1/token
+      apiUrl: https://id.example.com/oauth2/v1/userinfo
+      groupsAttributePath: groups
+      allowedGroups:
+        - platform
   smtp:
     host: smtp.example.com:587
     fromAddress: grafana@example.com
@@ -215,6 +242,34 @@ spec:
 | `spec.auth.anonymousEnabled` | `bool` |  |  |  |
 | `spec.auth.anonymousOrgRole` | `string` |  | `Viewer` |  |
 | `spec.auth.disableLoginForm` | `bool` |  |  |  |
+| `spec.auth.google` | `KubernetesGrafanaGoogleSignIn` |  |  |  |
+| `spec.auth.google.clientId` | `string` | yes |  |  |
+| `spec.auth.google.clientSecret` | `string \| valueFrom` (sensitive) | yes |  |  |
+| `spec.auth.google.allowedDomains` | `[]string` |  |  |  |
+| `spec.auth.google.hostedDomain` | `string` |  |  |  |
+| `spec.auth.google.allowSignUp` | `bool` |  | `true` |  |
+| `spec.auth.google.autoLogin` | `bool` |  |  |  |
+| `spec.auth.google.roleAttributePath` | `string` |  |  |  |
+| `spec.auth.google.roleAttributeStrict` | `bool` |  |  |  |
+| `spec.auth.genericOauth` | `KubernetesGrafanaGenericOAuthSignIn` |  |  |  |
+| `spec.auth.genericOauth.name` | `string` |  | `OAuth` |  |
+| `spec.auth.genericOauth.clientId` | `string` | yes |  |  |
+| `spec.auth.genericOauth.clientSecret` | `string \| valueFrom` (sensitive) | yes |  |  |
+| `spec.auth.genericOauth.authUrl` | `string` | yes |  |  |
+| `spec.auth.genericOauth.tokenUrl` | `string` | yes |  |  |
+| `spec.auth.genericOauth.apiUrl` | `string` | yes |  |  |
+| `spec.auth.genericOauth.scopes` | `[]string` |  |  |  |
+| `spec.auth.genericOauth.emailAttributePath` | `string` |  |  |  |
+| `spec.auth.genericOauth.loginAttributePath` | `string` |  |  |  |
+| `spec.auth.genericOauth.nameAttributePath` | `string` |  |  |  |
+| `spec.auth.genericOauth.roleAttributePath` | `string` |  |  |  |
+| `spec.auth.genericOauth.roleAttributeStrict` | `bool` |  |  |  |
+| `spec.auth.genericOauth.groupsAttributePath` | `string` |  |  |  |
+| `spec.auth.genericOauth.allowedGroups` | `[]string` |  |  |  |
+| `spec.auth.genericOauth.allowedDomains` | `[]string` |  |  |  |
+| `spec.auth.genericOauth.allowSignUp` | `bool` |  | `true` |  |
+| `spec.auth.genericOauth.autoLogin` | `bool` |  |  |  |
+| `spec.auth.genericOauth.usePkce` | `bool` |  | `true` |  |
 | `spec.smtp` | `KubernetesGrafanaSmtp` |  |  |  |
 | `spec.smtp.host` | `string` | yes |  |  |
 | `spec.smtp.fromAddress` | `string` |  |  |  |
@@ -648,7 +703,8 @@ in front of this Grafana. Empty = Grafana's localhost default.
 
 `KubernetesGrafanaAuth`
 
-Anonymous and login-form behavior.
+Who can sign in: anonymous access, the login form, and sign-in
+through Google or any OAuth 2.0 / OpenID Connect provider.
 
 ### spec.auth.anonymousEnabled
 
@@ -671,6 +727,250 @@ hand anonymous users more than Viewer on a reachable endpoint.
 
 Hide the login form (for pure-SSO or pure-anonymous deployments —
 make sure another auth path exists, or the UI locks everyone out).
+With sign-in declared, keeping the form is the break-glass path: the
+admin account still signs in if the identity provider is down.
+
+### spec.auth.google
+
+`KubernetesGrafanaGoogleSignIn`
+
+Sign in with Google. The client is a Web application OAuth client
+whose authorized redirect URI is `<server.root_url>/login/google`.
+
+KNOW THIS: who a Google client admits is decided at Google by its
+project's consent-screen audience. An Internal audience admits only
+the Workspace that owns the project; an External one admits any
+Google account (in Testing, only the listed test users). Grafana's
+own gate is `allowed_domains`, checked against the signed-in email.
+Declaring either sign-in locks every OAuth provider on Grafana's
+Administration > Authentication screen, so the manifest stays the only
+source of truth for who can sign in (Grafana always leaves LDAP
+editable there).
+
+- rule: Google sign-in with allow_sign_up on and no allowed_domains lets any Google account on the internet create a Viewer. List your email domains in allowed_domains (e.g. ["example.com"]), or set allow_sign_up: false so only users that already exist in Grafana can sign in
+
+### spec.auth.google.clientId
+
+`string` · required
+
+The OAuth client's id (`<number>-<hash>.apps.googleusercontent.com`).
+A public identifier, never a secret; a `$var/` reference keeps it
+with the rest of the client's records.
+
+- rule: {"required":true}
+
+### spec.auth.google.clientSecret
+
+`string | valueFrom` · required · sensitive
+
+The OAuth client's secret. Reference-only: the platform refuses a
+literal and resolves the `$secret/` reference at deploy. The modules
+write it into the `<name>-sso` Secret and hand it to Grafana as an
+environment variable. Grafana reads it only at start, so the pods
+carry a checksum of the Secret and a rotated value rolls them on the
+next apply.
+
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+
+### spec.auth.google.allowedDomains
+
+`[]string`
+
+Email domains allowed to sign in (e.g. "example.com"). Grafana
+refuses any account whose email is outside them. Required while
+`allow_sign_up` is on, because a Google client otherwise lets any
+Google account create a Viewer.
+
+### spec.auth.google.hostedDomain
+
+`string`
+
+The Google Workspace domain Google's account chooser is limited to
+(sent as the `hd` parameter). A hint to Google, not a gate — the gate
+is `allowed_domains` and the client's consent-screen audience.
+
+### spec.auth.google.allowSignUp
+
+`bool` · optional (explicit presence)
+
+Create a Grafana user on first sign-in. Off = only users that
+already exist in Grafana can sign in. Empty = true.
+
+- default: `true`
+
+### spec.auth.google.autoLogin
+
+`bool`
+
+Skip Grafana's login page and go straight to Google. Leave off while
+the login form is the break-glass path people need to find.
+
+### spec.auth.google.roleAttributePath
+
+`string`
+
+JMESPath over the signed-in person's claims that yields their
+Grafana role ("Admin", "Editor", "Viewer"), e.g.
+`email == 'lead@example.com' && 'Admin' || 'Viewer'`. Empty = every
+new user gets Grafana's default role (Viewer) and admins assign roles
+in Grafana. Declared = re-evaluated at every sign-in, so a role changed
+here takes effect on the next sign-in. KNOW THIS: Grafana ships Google
+with role sync off (`skip_org_role_sync = true`), which silently ignores
+a role path; the modules switch sync on whenever a path is declared.
+
+### spec.auth.google.roleAttributeStrict
+
+`bool`
+
+Refuse sign-in when `role_attribute_path` yields no valid role,
+instead of falling back to the default role.
+
+### spec.auth.genericOauth
+
+`KubernetesGrafanaGenericOAuthSignIn`
+
+Sign in with any OAuth 2.0 / OpenID Connect provider (Okta,
+Microsoft Entra ID, Keycloak, Auth0, GitLab, ...). The client's
+redirect URI is `<server.root_url>/login/generic_oauth`.
+
+- rule: allowed_groups needs groups_attribute_path, the JMESPath to the groups list in the provider's claims (often "groups"); without it Grafana sees no groups and refuses everyone
+
+### spec.auth.genericOauth.name
+
+`string` · optional (explicit presence)
+
+The label on the sign-in button ("Sign in with <name>"). Empty =
+"OAuth".
+
+- default: `OAuth`
+
+### spec.auth.genericOauth.clientId
+
+`string` · required
+
+The OAuth client's id at the provider. A public identifier.
+
+- rule: {"required":true}
+
+### spec.auth.genericOauth.clientSecret
+
+`string | valueFrom` · required · sensitive
+
+The OAuth client's secret. Reference-only, exactly as Google's
+`client_secret`: resolved at deploy, written into the `<name>-sso`
+Secret, rolled into the pods on the next apply after a rotation.
+
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+
+### spec.auth.genericOauth.authUrl
+
+`string` · required
+
+The provider's authorization endpoint (e.g.
+"https://id.example.com/oauth2/v1/authorize"). Grafana does not read
+OpenID discovery documents, so the three endpoints are declared.
+
+- rule: {"required":true}
+
+### spec.auth.genericOauth.tokenUrl
+
+`string` · required
+
+The provider's token endpoint.
+
+- rule: {"required":true}
+
+### spec.auth.genericOauth.apiUrl
+
+`string` · required
+
+The provider's userinfo endpoint.
+
+- rule: {"required":true}
+
+### spec.auth.genericOauth.scopes
+
+`[]string`
+
+OAuth scopes to request. Empty = "openid", "email", "profile".
+
+### spec.auth.genericOauth.emailAttributePath
+
+`string`
+
+JMESPath to the email in the provider's claims. Empty = Grafana's
+default lookup (the `email` claim).
+
+### spec.auth.genericOauth.loginAttributePath
+
+`string`
+
+JMESPath to the login name. Empty = Grafana's default lookup.
+
+### spec.auth.genericOauth.nameAttributePath
+
+`string`
+
+JMESPath to the display name. Empty = Grafana's default lookup.
+
+### spec.auth.genericOauth.roleAttributePath
+
+`string`
+
+JMESPath over the claims that yields the Grafana role, e.g.
+`contains(groups[*], 'platform') && 'Admin' || 'Viewer'`. Empty =
+the default role (Viewer).
+
+### spec.auth.genericOauth.roleAttributeStrict
+
+`bool`
+
+Refuse sign-in when `role_attribute_path` yields no valid role.
+
+### spec.auth.genericOauth.groupsAttributePath
+
+`string`
+
+JMESPath to the list of groups in the claims (e.g. "groups"). Needed
+by `allowed_groups`.
+
+### spec.auth.genericOauth.allowedGroups
+
+`[]string`
+
+Groups allowed to sign in; a person in none of them is refused.
+Requires `groups_attribute_path`.
+
+### spec.auth.genericOauth.allowedDomains
+
+`[]string`
+
+Email domains allowed to sign in.
+
+### spec.auth.genericOauth.allowSignUp
+
+`bool` · optional (explicit presence)
+
+Create a Grafana user on first sign-in. Empty = true.
+
+- default: `true`
+
+### spec.auth.genericOauth.autoLogin
+
+`bool`
+
+Skip Grafana's login page and go straight to the provider.
+
+### spec.auth.genericOauth.usePkce
+
+`bool` · optional (explicit presence)
+
+Use PKCE on the authorization request. Empty = true; turn it off
+only for a provider that rejects it.
+
+- default: `true`
 
 ### spec.smtp
 
@@ -820,13 +1120,15 @@ Priority class name for the Grafana pods.
 Escape hatch: additional chart values as a YAML document, merged
 LAST over everything the typed fields render (Helm `-f` semantics,
 identical on both engines). For the chart surface beyond the typed
-fields (LDAP/OAuth in grafana.ini, the image renderer, alerting
+fields (LDAP in grafana.ini, the image renderer, alerting
 provisioning, notifiers, extra mounts/sidecars, ...) — never the
-substitute for them. Do not put secrets here; credential material
+substitute for them. Sign-in has typed fields (`auth.google`,
+`auth.generic_oauth`). Do not put secrets here; credential material
 belongs in the typed secret references.
 
 ## Validation Rules
 
+- `spec.auth.sign_in_requires_root_url`: Google or OAuth sign-in needs server.root_url, the public address people open Grafana at: the provider sends people back to <root_url>/login/google (or /login/generic_oauth), and without it Grafana hands the provider http://localhost:3000, which no browser can reach. Set server.root_url to the URL the exposure layer serves (e.g. https://grafana.example.com)
 - `spec.replicas.require_database`: replicas above 1 require the database block — Grafana's embedded SQLite state cannot be shared between pods, so a scaled deployment without an external database splits dashboards and sessions across replicas
 - `spec.storage.single_writer`: storage (a ReadWriteOnce volume) cannot back more than one replica — for HA use database for state and leave storage unset
 

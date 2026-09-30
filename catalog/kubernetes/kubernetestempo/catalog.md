@@ -24,7 +24,7 @@ The modules pin the chart's fullname to `metadata.name` so the exported Service 
 ### Kubernetes Cluster
 
 - **A StorageClass** for the data volume (unless `ephemeral`) — most managed clusters provide a default; reference a **Kubernetes StorageClass** for explicit (SSD) placement. Block compaction rewards SSD-backed classes.
-- **An object-storage bucket** when a backend is declared — the bucket must exist; Tempo does not create it. An in-cluster **SeaweedFS** S3 endpoint works with `forcePathStyle: true`.
+- **An object-storage bucket** when a backend is declared — the bucket must exist; Tempo does not create it. An in-cluster **SeaweedFS** S3 endpoint works with `forcePathStyle: true`, and a **Cloudflare R2 bucket** picked from your catalog works through the `r2` arm with nothing S3-shaped to fill in.
 - **kube-prometheus-stack** — only if you enable `serviceMonitorEnabled` (the monitoring.coreos.com CRDs) or point the metrics generator at its Prometheus (which must set `prometheus.enableRemoteWriteReceiver: true`).
 
 ## Deploy
@@ -74,7 +74,7 @@ spec:
 
 These are the most important decisions when configuring a Tempo installation. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Replicas above 1 require an object-storage backend** — the spec enforces it: replicas cannot share local trace storage. With S3, GCS, or Azure declared, replicas share the backend and scale ingest and query; without one, a single replica is the honest ceiling.
+**Replicas above 1 require an object-storage backend** — the spec enforces it: replicas cannot share local trace storage. With S3, R2, GCS, or Azure declared, replicas share the backend and scale ingest and query; without one, a single replica is the honest ceiling.
 
 **Persistent by default, ephemeral by choice** — the chart's own emptyDir default loses every trace on pod restart, so this component provisions a PVC unless you opt out. `ephemeral: true` excludes a custom `diskSize` and a `storageClass` (the platform-stamped 10Gi default is tolerated) — there is no volume for them to configure.
 

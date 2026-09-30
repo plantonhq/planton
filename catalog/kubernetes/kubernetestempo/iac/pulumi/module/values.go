@@ -110,6 +110,13 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	extraVolumeMounts := []interface{}{}
 
 	switch {
+	case locals.R2 != nil:
+		// The r2 arm: R2 speaks S3, so the trace backend is "s3" and the
+		// values are composed from R2's vocabulary (r2.go). The key pair
+		// rides env expansion from the module-owned Secret.
+		trace["backend"] = "s3"
+		trace["s3"] = locals.R2.S3Values
+		credentialEnv = append(credentialEnv, r2CredentialEnv(locals.R2CredentialsSecretName)...)
 	case spec.GetStorage().GetS3() != nil:
 		s3 := spec.GetStorage().GetS3()
 		trace["backend"] = "s3"
@@ -226,6 +233,15 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	}
 
 	values["tempo"] = tempo
+
+	// Tempo reads its object-store credentials only at start: the
+	// fingerprint of the module-owned Secret changes the pod template when
+	// the key rotates, so the next apply rolls Tempo onto it.
+	if locals.R2 != nil {
+		values["podAnnotations"] = map[string]interface{}{
+			vars.CredentialsChecksumAnnotation: credentialsChecksum(locals.R2.SecretData),
+		}
+	}
 
 	// ---- tempo-query sidecar -------------------------------------------
 	if spec.GetTempoQueryEnabled() {

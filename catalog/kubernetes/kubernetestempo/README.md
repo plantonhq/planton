@@ -29,7 +29,8 @@ production-capable with an object-storage backend. The separate
 
 `local` (a PersistentVolume, single replica) or an object store — `s3`
 (including S3-compatible endpoints like an in-cluster `KubernetesSeaweedFs`),
-`gcs`, or `azure`. More than one replica requires object storage.
+`r2` (a Cloudflare R2 bucket by reference, with the key pair in the module's
+own `<name>-r2-credentials` Secret), `gcs`, or `azure`. More than one replica requires object storage.
 Credentials are references to existing Secrets that ride env expansion —
 never the rendered config; empty credentials use ambient cloud identity.
 The chart's own default is an emptyDir (traces vanish on restart), so this

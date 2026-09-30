@@ -1,0 +1,45 @@
+# THE sign-in proof: Google sign-in declared through the typed fields, then
+# signed into end to end. The verifier (switched on by this scenario's name)
+# deploys a stand-in for Google's token endpoint that answers only to this
+# client id and secret, and signs in as an address the role mapping makes
+# Admin, one it leaves Viewer, and one outside allowed_domains that must be
+# refused. It also proves the secret reaches neither the ConfigMap nor the
+# Deployment and that Grafana's admin screen cannot edit any provider.
+#
+# The client secret is a literal here because the lane runs the modules
+# directly; a real manifest carries a `$secret/` reference the platform
+# resolves (the field is sensitive and refuses plaintext on every write
+# path). root_url is the verifier's port-forward address, so Grafana's
+# redirect_uri comes back to the verifier.
+#
+# helm_values points ONLY Google's token and userinfo endpoints at the
+# stand-in; the authorization endpoint stays Google's own, which the
+# verifier asserts on the redirect. Endpoints are not secrets. It also
+# turns on debug logging for Google sign-in, so a failed proof carries
+# Grafana's own account of the claims and the role it resolved.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGrafana
+metadata:
+  name: e2e-grafana-sso
+spec:
+  namespace:
+    value: e2e-grafana-sso
+  create_namespace: true
+  server:
+    root_url: http://127.0.0.1:13000
+  auth:
+    google:
+      client_id: e2e-grafana-client.apps.googleusercontent.com
+      client_secret:
+        value: e2e-stand-in-client-secret
+      allowed_domains:
+        - example.org
+      hosted_domain: example.org
+      role_attribute_path: "email == 'lead@example.org' && 'Admin' || 'Viewer'"
+  helm_values: |
+    grafana.ini:
+      log:
+        filters: oauth.google:debug
+      auth.google:
+        token_url: http://google-stand-in.e2e-grafana-sso.svc.cluster.local:8080/token
+        api_url: http://google-stand-in.e2e-grafana-sso.svc.cluster.local:8080/userinfo

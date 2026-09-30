@@ -36,25 +36,52 @@ locals {
 
   # ---- storage backend ---------------------------------------------------
   backend_type = (
-    try(var.spec.storage.s3, null) != null ? "s3" :
+    try(var.spec.storage.s3, null) != null || try(var.spec.storage.r2, null) != null ? "s3" :
     try(var.spec.storage.gcs, null) != null ? "gcs" :
     try(var.spec.storage.azure, null) != null ? "azure" : "local"
   )
-  s3_creds_declared  = local.backend_type == "s3" && try(var.spec.storage.s3.credentials, null) != null
+  s3_creds_declared = local.backend_type == "s3" && try(var.spec.storage.s3.credentials, null) != null
+
+  # ---- the r2 arm (twin of the Pulumi module's r2.go) ---------------------
+  # R2 speaks S3, so the trace backend is "s3" and the S3 values are
+  # composed from R2's vocabulary. The host table is pkg/cloudflare/r2's
+  # (the Go source of truth): a jurisdictional bucket is served only through
+  # <account>.<jurisdiction>.r2.cloudflarestorage.com; Tempo's S3 client
+  # takes the host without a scheme and speaks TLS by default. The key pair
+  # goes into the module-owned `<name>-r2-credentials` Secret (main.tf).
+  r2              = try(var.spec.storage.r2, null)
+  r2_jurisdiction = local.r2 == null ? "default" : coalesce(try(coalesce(local.r2.jurisdiction), ""), "default")
+  r2_endpoint = local.r2 == null ? null : (
+    local.r2_jurisdiction == "default"
+    ? "${local.r2.account_id}.r2.cloudflarestorage.com"
+    : "${local.r2.account_id}.${local.r2_jurisdiction}.r2.cloudflarestorage.com"
+  )
+  r2_secret_name = "${local.release_name}-r2-credentials"
+  r2_secret_data = local.r2 == null ? {} : {
+    "access-key-id"     = local.r2.credentials.access_key_id
+    "secret-access-key" = local.r2.credentials.secret_access_key
+  }
   gcs_key_declared   = local.backend_type == "gcs" && try(var.spec.storage.gcs.service_account_key_secret, null) != null
   azure_key_declared = local.backend_type == "azure" && try(var.spec.storage.azure.account_key_secret, null) != null
 
   gcs_key_mount_path = "/var/secrets/gcs"
   gcs_key_volume     = "gcs-service-account"
 
-  trace_s3 = local.backend_type != "s3" ? null : { for k, v in {
-    bucket         = var.spec.storage.s3.bucket
-    endpoint       = var.spec.storage.s3.endpoint
-    region         = try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null
-    forcepathstyle = try(var.spec.storage.s3.force_path_style, false) ? true : null
-    insecure       = try(var.spec.storage.s3.insecure, false) ? true : null
-    access_key     = local.s3_creds_declared ? "$${TEMPO_S3_ACCESS_KEY_ID}" : null
-    secret_key     = local.s3_creds_declared ? "$${TEMPO_S3_SECRET_ACCESS_KEY}" : null
+  trace_s3 = local.r2 != null ? {
+    bucket         = local.r2.bucket
+    endpoint       = local.r2_endpoint
+    region         = "auto"
+    forcepathstyle = true
+    access_key     = "$${TEMPO_S3_ACCESS_KEY_ID}"
+    secret_key     = "$${TEMPO_S3_SECRET_ACCESS_KEY}"
+    } : local.backend_type != "s3" ? null : { for k, v in {
+      bucket         = var.spec.storage.s3.bucket
+      endpoint       = var.spec.storage.s3.endpoint
+      region         = try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null
+      forcepathstyle = try(var.spec.storage.s3.force_path_style, false) ? true : null
+      insecure       = try(var.spec.storage.s3.insecure, false) ? true : null
+      access_key     = local.s3_creds_declared ? "$${TEMPO_S3_ACCESS_KEY_ID}" : null
+      secret_key     = local.s3_creds_declared ? "$${TEMPO_S3_SECRET_ACCESS_KEY}" : null
   } : k => v if v != null }
 
   trace_azure = local.backend_type != "azure" ? null : { for k, v in {
@@ -75,6 +102,16 @@ locals {
 
   # ---- credential env + volumes ------------------------------------------
   credential_env = concat(
+    local.r2 != null ? [
+      {
+        name      = "TEMPO_S3_ACCESS_KEY_ID"
+        valueFrom = { secretKeyRef = { name = local.r2_secret_name, key = "access-key-id" } }
+      },
+      {
+        name      = "TEMPO_S3_SECRET_ACCESS_KEY"
+        valueFrom = { secretKeyRef = { name = local.r2_secret_name, key = "secret-access-key" } }
+      },
+    ] : [],
     local.s3_creds_declared ? [
       {
         name = "TEMPO_S3_ACCESS_KEY_ID"
@@ -134,7 +171,7 @@ locals {
   )
 
   # ---- metrics generator -------------------------------------------------
-  mg_enabled = try(var.spec.metrics_generator.enabled, false)
+  mg_enabled              = try(var.spec.metrics_generator.enabled, false)
   mg_remote_write_url_raw = local.mg_enabled ? try(var.spec.metrics_generator.remote_write_url, "") : ""
   # Append Prometheus' standard remote-write path when the URL carries none
   # (a bare Service endpoint like the stack's prometheus_endpoint output).
@@ -160,12 +197,12 @@ locals {
 
   # ---- the tempo block ---------------------------------------------------
   tempo_block = { for k, v in {
-    retention          = coalesce(var.spec.retention, "24h")
-    reportingEnabled   = try(var.spec.usage_reporting, false) ? null : false
+    retention           = coalesce(var.spec.retention, "24h")
+    reportingEnabled    = try(var.spec.usage_reporting, false) ? null : false
     multitenancyEnabled = var.spec.multi_tenancy_enabled ? true : null
-    receivers          = local.receivers
-    storage            = { trace = local.trace_block }
-    resources          = local.tempo_resources
+    receivers           = local.receivers
+    storage             = { trace = local.trace_block }
+    resources           = local.tempo_resources
     metricsGenerator = local.mg_enabled ? {
       enabled        = true
       remoteWriteUrl = local.mg_remote_write_url
@@ -195,13 +232,17 @@ locals {
   # ---- typed chart values (twin of buildHelmValues) ----------------------
   helm_values = { for k, v in {
     fullnameOverride = local.release_name
-    replicas         = coalesce(var.spec.replicas, 1)
-    persistence      = local.persistence_block
-    tempo            = local.tempo_block
-    tempoQuery       = local.tempo_query_block
-    serviceMonitor   = var.spec.service_monitor_enabled ? { enabled = true } : null
-    global           = var.spec.image_registry != "" ? { imageRegistry = var.spec.image_registry } : null
-    nodeSelector     = length(try(var.spec.scheduling.node_selector, {})) > 0 ? var.spec.scheduling.node_selector : null
+    # Tempo reads its object-store credentials only at start: the Secret's
+    # fingerprint changes the pod template when the key rotates.
+    # sha256(jsonencode(map)) is the Pulumi twin's credentialsChecksum.
+    podAnnotations = local.r2 != null ? { "checksum/credentials" = sha256(jsonencode(local.r2_secret_data)) } : null
+    replicas       = coalesce(var.spec.replicas, 1)
+    persistence    = local.persistence_block
+    tempo          = local.tempo_block
+    tempoQuery     = local.tempo_query_block
+    serviceMonitor = var.spec.service_monitor_enabled ? { enabled = true } : null
+    global         = var.spec.image_registry != "" ? { imageRegistry = var.spec.image_registry } : null
+    nodeSelector   = length(try(var.spec.scheduling.node_selector, {})) > 0 ? var.spec.scheduling.node_selector : null
     tolerations = length(try(var.spec.scheduling.tolerations, [])) > 0 ? [
       for t in var.spec.scheduling.tolerations : {
         for tk, tv in {

@@ -39,6 +39,24 @@ func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string)
 
 // testS3 returns an S3-compatible storage backend shaped like an
 // in-cluster SeaweedFS composition.
+// testR2 returns an R2 backend wired the way a composition wires it: the
+// account and bucket by reference to a CloudflareR2Bucket, the key pair
+// from dashboard-minted secrets.
+func testR2() *KubernetesTempoStorage {
+	return &KubernetesTempoStorage{
+		Backend: &KubernetesTempoStorage_R2{
+			R2: &KubernetesTempoR2Storage{
+				AccountId: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "traces-bucket", "status.outputs.account_id"),
+				Bucket:    valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "traces-bucket", "status.outputs.bucket_name"),
+				Credentials: &KubernetesTempoR2Credentials{
+					AccessKeyId:     literal("$secret/traces-writer-access-key-id"),
+					SecretAccessKey: literal("$secret/traces-writer-secret-access-key"),
+				},
+			},
+		},
+	}
+}
+
 func testS3() *KubernetesTempoStorage {
 	return &KubernetesTempoStorage{
 		Backend: &KubernetesTempoStorage_S3{
@@ -82,6 +100,17 @@ var _ = ginkgo.Describe("KubernetesTempo Validation Tests", func() {
 			input.Spec.Storage = &KubernetesTempoStorage{
 				Backend: &KubernetesTempoStorage_Local{Local: &KubernetesTempoLocalStorage{}},
 			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 by reference should be valid", func() {
+			input.Spec.Storage = testR2()
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("multiple replicas on r2 should be valid (r2 counts as object storage)", func() {
+			input.Spec.Replicas = int32Ptr(3)
+			input.Spec.Storage = testR2()
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -203,6 +232,27 @@ var _ = ginkgo.Describe("KubernetesTempo Validation Tests", func() {
 
 		ginkgo.It("zero replicas should fail", func() {
 			input.Spec.Replicas = int32Ptr(0)
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 without credentials should fail", func() {
+			storage := testR2()
+			storage.GetR2().Credentials = nil
+			input.Spec.Storage = storage
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 with a malformed account id should fail", func() {
+			storage := testR2()
+			storage.GetR2().AccountId = literal("not-an-account")
+			input.Spec.Storage = storage
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 with an unknown jurisdiction should fail", func() {
+			storage := testR2()
+			storage.GetR2().Jurisdiction = literal("apac")
+			input.Spec.Storage = storage
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 

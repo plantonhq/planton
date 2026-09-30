@@ -26,8 +26,10 @@ for the vast majority of tracing volumes. The separate
 
 STORAGE: `local` (the default) keeps trace blocks on a
 PersistentVolume — honest for a single replica. More than one
-replica REQUIRES an object-storage backend (s3/gcs/azure); the
-s3-compatible arm composes with an in-cluster KubernetesSeaweedFs.
+replica REQUIRES an object-storage backend (s3/r2/gcs/azure); the
+s3-compatible arm composes with an in-cluster KubernetesSeaweedFs, and
+the r2 arm stores in a Cloudflare R2 bucket by reference to the
+catalog's CloudflareR2Bucket, with nothing S3-shaped declared.
 KNOW THIS: the chart's own default runs on an emptyDir — every trace
 vanishes on pod restart — so this component provisions a
 PersistentVolumeClaim by default instead (`ephemeral` restores the
@@ -157,6 +159,13 @@ spec:
 | `spec.storage.azure.accountKeySecret` | `KubernetesTempoSecretKeyRef` |  |  |  |
 | `spec.storage.azure.accountKeySecret.name` | `string` | yes |  |  |
 | `spec.storage.azure.accountKeySecret.key` | `string` | yes |  |  |
+| `spec.storage.r2` | `KubernetesTempoR2Storage` |  |  |  |
+| `spec.storage.r2.accountId` | `string \| valueFrom` | yes |  | CloudflareR2Bucket (`status.outputs.account_id`) |
+| `spec.storage.r2.jurisdiction` | `string \| valueFrom` |  |  | CloudflareR2Bucket (`status.outputs.jurisdiction`) |
+| `spec.storage.r2.bucket` | `string \| valueFrom` | yes |  | CloudflareR2Bucket (`status.outputs.bucket_name`) |
+| `spec.storage.r2.credentials` | `KubernetesTempoR2Credentials` | yes |  |  |
+| `spec.storage.r2.credentials.accessKeyId` | `string \| valueFrom` | yes |  | CloudflareAccountApiToken (`status.outputs.r2_access_key_id`) |
+| `spec.storage.r2.credentials.secretAccessKey` | `string \| valueFrom` (sensitive) | yes |  | CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`) |
 | `spec.diskSize` | `string` |  | `10Gi` |  |
 | `spec.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.ephemeral` | `bool` |  |  |  |
@@ -434,6 +443,90 @@ Key within the Secret.
 
 - rule: {"required":true}
 
+### spec.storage.r2
+
+`KubernetesTempoR2Storage`
+
+Cloudflare R2, in R2's own vocabulary: the owning account, the
+bucket's jurisdiction, the bucket and the token's key pair, each by
+reference onto the catalog's CloudflareR2Bucket and
+CloudflareAccountApiToken. The modules compose everything S3-shaped
+R2 needs (the jurisdiction's endpoint host, region `auto`,
+path-style addressing). No egress fees, and the traces outlive the
+cluster that wrote them.
+
+### spec.storage.r2.accountId
+
+`string | valueFrom` · required
+
+The Cloudflare account that owns the bucket (32 hex characters). By
+reference to the bucket resource's `account_id` output, so the arm
+follows the bucket; a literal names an account outside the catalog.
+
+- references: CloudflareR2Bucket (`status.outputs.account_id`)
+- rule: account_id is the 32-hex-character Cloudflare account id
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.account_id}} -- a bare string does not parse
+
+### spec.storage.r2.jurisdiction
+
+`string | valueFrom`
+
+The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+`fedramp`, or `us`. It selects the S3 host the modules compose, so it
+must match the bucket exactly; by reference to the bucket resource's
+`jurisdiction` output it cannot drift.
+
+- references: CloudflareR2Bucket (`status.outputs.jurisdiction`)
+- rule: jurisdiction must be one of "default", "eu", "fedramp", "us" (or empty for default)
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.jurisdiction}} -- a bare string does not parse
+
+### spec.storage.r2.bucket
+
+`string | valueFrom` · required
+
+The bucket for trace blocks (must exist; Tempo does not create it).
+By reference to the bucket resource's `bucket_name` output.
+
+- references: CloudflareR2Bucket (`status.outputs.bucket_name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.bucket_name}} -- a bare string does not parse
+
+### spec.storage.r2.credentials
+
+`KubernetesTempoR2Credentials` · required
+
+The S3 key pair R2's S3 API authenticates, written into the modules'
+own `<name>-r2-credentials` Secret; never plaintext in the rendered
+configuration.
+
+- rule: {"required":true}
+
+### spec.storage.r2.credentials.accessKeyId
+
+`string | valueFrom` · required
+
+The S3 access key id: the API token's id. By reference to a
+CloudflareAccountApiToken's `r2_access_key_id` output, or a `$secret/`
+reference for a token minted in the dashboard.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_access_key_id`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_access_key_id}} -- a bare string does not parse
+
+### spec.storage.r2.credentials.secretAccessKey
+
+`string | valueFrom` · required · sensitive
+
+The S3 secret access key: the SHA-256 of the API token's value.
+Reference-only. Tempo reads it only at start, so the pods carry a
+checksum of the credentials Secret and a rotated key rolls them on
+the next apply.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_secret_access_key}} -- a bare string does not parse
+
 ### spec.diskSize
 
 `string` · optional (explicit presence)
@@ -699,7 +792,7 @@ secret-reference fields.
 
 ## Validation Rules
 
-- `spec.replicas.require_object_storage`: more than one replica requires an object-storage backend (s3, gcs or azure) — replicas cannot share local trace storage
+- `spec.replicas.require_object_storage`: more than one replica requires an object-storage backend (s3, r2, gcs or azure) — replicas cannot share local trace storage
 - `spec.ephemeral.excludes_storage`: ephemeral: true runs on emptyDir — a non-default disk_size or a storage_class must not be set with it
 
 ## Outputs
@@ -723,6 +816,11 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
+| `spec.storage.r2.accountId` | CloudflareR2Bucket | `status.outputs.account_id` |
+| `spec.storage.r2.jurisdiction` | CloudflareR2Bucket | `status.outputs.jurisdiction` |
+| `spec.storage.r2.bucket` | CloudflareR2Bucket | `status.outputs.bucket_name` |
+| `spec.storage.r2.credentials.accessKeyId` | CloudflareAccountApiToken | `status.outputs.r2_access_key_id` |
+| `spec.storage.r2.credentials.secretAccessKey` | CloudflareAccountApiToken | `status.outputs.r2_secret_access_key` |
 | `spec.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.metricsGenerator.remoteWriteUrl` | KubernetesKubePrometheusStack | `status.outputs.prometheus_endpoint` |
 

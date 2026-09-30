@@ -33,9 +33,11 @@ import "shared/options/options.proto";
  * STORAGE DOCTRINE (mirrors the chart's own validation): `filesystem`
  * keeps chunks on a PersistentVolume — honest ONLY for a single
  * monolithic replica; more than one replica, or any simple_scalable
- * tier, REQUIRES an object-storage backend (s3/gcs/azure). The
+ * tier, REQUIRES an object-storage backend (s3/r2/gcs/azure). The
  * s3-compatible arm (endpoint + path-style) composes with an in-cluster
- * KubernetesSeaweedFs. The chart's bundled MinIO subchart is deprecated
+ * KubernetesSeaweedFs; the r2 arm stores in a Cloudflare R2 bucket by
+ * reference to the catalog's CloudflareR2Bucket, with nothing S3-shaped
+ * declared. The chart's bundled MinIO subchart is deprecated
  * by the chart itself and is never enabled by this component.
  *
  * SCHEMA: Loki requires a `schema_config` naming the index schema and
@@ -254,14 +256,14 @@ message KubernetesLokiSpec {
 
   option (buf.validate.message).cel = {
     id: "spec.mode.simple_scalable.requires_object_storage"
-    message: "simple_scalable mode requires an object-storage backend (s3, gcs or azure) — the write/read/backend tiers rendezvous in the object store, so filesystem storage cannot serve them (this mirrors the chart's own validation)"
-    expression: "!has(this.simple_scalable) || (has(this.storage) && !has(this.storage.filesystem) && (has(this.storage.s3) || has(this.storage.gcs) || has(this.storage.azure)))"
+    message: "simple_scalable mode requires an object-storage backend (s3, r2, gcs or azure) — the write/read/backend tiers rendezvous in the object store, so filesystem storage cannot serve them (this mirrors the chart's own validation)"
+    expression: "!has(this.simple_scalable) || (has(this.storage) && !has(this.storage.filesystem) && (has(this.storage.s3) || has(this.storage.r2) || has(this.storage.gcs) || has(this.storage.azure)))"
   };
 
   option (buf.validate.message).cel = {
     id: "spec.mode.monolithic.replicas.require_object_storage"
-    message: "more than one monolithic replica requires an object-storage backend (s3, gcs or azure) — replicas cannot share a filesystem volume (this mirrors the chart's own validation)"
-    expression: "!has(this.monolithic) || this.monolithic.replicas <= 1 || (has(this.storage) && (has(this.storage.s3) || has(this.storage.gcs) || has(this.storage.azure)))"
+    message: "more than one monolithic replica requires an object-storage backend (s3, r2, gcs or azure) — replicas cannot share a filesystem volume (this mirrors the chart's own validation)"
+    expression: "!has(this.monolithic) || this.monolithic.replicas <= 1 || (has(this.storage) && (has(this.storage.s3) || has(this.storage.r2) || has(this.storage.gcs) || has(this.storage.azure)))"
   };
 }
 
@@ -396,6 +398,17 @@ message KubernetesLokiStorage {
      * Azure Blob Storage.
      */
     KubernetesLokiAzureStorage azure = 4;
+
+    /**
+     * Cloudflare R2, in R2's own vocabulary: the owning account, the
+     * bucket's jurisdiction, the bucket and the token's key pair, each by
+     * reference onto the catalog's CloudflareR2Bucket and
+     * CloudflareAccountApiToken. The modules compose everything S3-shaped
+     * R2 needs (the jurisdiction's endpoint host, region `auto`,
+     * path-style addressing). No egress fees, and the logs outlive the
+     * cluster that wrote them.
+     */
+    KubernetesLokiR2Storage r2 = 5;
   }
 }
 
@@ -455,6 +468,108 @@ message KubernetesLokiS3Storage {
    * land in the rendered Loki config.
    */
   KubernetesLokiObjectStoreCredentials credentials = 7;
+}
+
+/**
+ * Cloudflare R2 backend, composed from the catalog's Cloudflare kinds.
+ *
+ * R2 speaks S3, so Loki reaches it through its S3 client — but nothing
+ * S3-shaped is declared here. The modules compose the endpoint from the
+ * account and the bucket's jurisdiction
+ * (`https://<account>.r2.cloudflarestorage.com`, or
+ * `https://<account>.<jurisdiction>.r2.cloudflarestorage.com` for an eu,
+ * fedramp or us bucket — a jurisdictional bucket is served ONLY through
+ * its own host), pin the region to `auto` (the only region R2 accepts),
+ * use path-style addressing, and hand Loki the key pair from their own
+ * `<name>-r2-credentials` Secret. There is no keyless posture for R2 from
+ * any cluster, so a credential is always declared. Chunks, index and
+ * ruler state share the one bucket.
+ *
+ * KNOW THIS: the bucket's lifecycle expiry must be LATER than
+ * `retention_period`, or objects vanish under Loki's index. R2 honours a
+ * bucket's location hint only at creation, so pick it where the cluster
+ * runs.
+ */
+message KubernetesLokiR2Storage {
+  /**
+   * The Cloudflare account that owns the bucket (32 hex characters). By
+   * reference to the bucket resource's `account_id` output, so the arm
+   * follows the bucket; a literal names an account outside the catalog.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef account_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.account_id",
+    (buf.validate.field).cel = {
+      id: "spec.storage.r2.account_id_format"
+      message: "account_id is the 32-hex-character Cloudflare account id"
+      expression: "!has(this.value) || this.value.matches('^[0-9a-fA-F]{32}$')"
+    }
+  ];
+
+  /**
+   * The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+   * `fedramp`, or `us`. It selects the S3 host the modules compose, so it
+   * must match the bucket exactly; by reference to the bucket resource's
+   * `jurisdiction` output it cannot drift.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef jurisdiction = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.jurisdiction",
+    (buf.validate.field).cel = {
+      id: "spec.storage.r2.jurisdiction_valid"
+      message: "jurisdiction must be one of \"default\", \"eu\", \"fedramp\", \"us\" (or empty for default)"
+      expression: "!has(this.value) || this.value == '' || this.value in ['default', 'eu', 'fedramp', 'us']"
+    }
+  ];
+
+  /**
+   * The bucket for chunks, index and ruler state (must exist; Loki does
+   * not create it). By reference to the bucket resource's `bucket_name`
+   * output.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  /**
+   * The S3 key pair R2's S3 API authenticates, written into the modules'
+   * own `<name>-r2-credentials` Secret; never plaintext in the rendered
+   * configuration.
+   */
+  KubernetesLokiR2Credentials credentials = 4 [(buf.validate.field).required = true];
+}
+
+/**
+ * The key pair of an R2 API token scoped to the bucket (Object Read and
+ * Write is enough).
+ */
+message KubernetesLokiR2Credentials {
+  /**
+   * The S3 access key id: the API token's id. By reference to a
+   * CloudflareAccountApiToken's `r2_access_key_id` output, or a `$secret/`
+   * reference for a token minted in the dashboard.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef access_key_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_access_key_id"
+  ];
+
+  /**
+   * The S3 secret access key: the SHA-256 of the API token's value.
+   * Reference-only. Loki reads it only at start, so the pods carry a
+   * checksum of the credentials Secret and a rotated key rolls them on
+   * the next apply.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_secret_access_key"
+  ];
 }
 
 /**

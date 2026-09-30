@@ -644,6 +644,9 @@ Fields on other kinds that can point at this resource:
 | CloudflarePagesProject | `spec.deploymentConfigs.production.r2Buckets[].bucketName` | `status.outputs.bucket_name` |
 | CloudflareWorker | `spec.r2Bundle.bucket` | `status.outputs.bucket_name` |
 | CloudflareWorker | `spec.r2Buckets[].bucketName` | `status.outputs.bucket_name` |
+| KubernetesLoki | `spec.storage.r2.accountId` | `status.outputs.account_id` |
+| KubernetesLoki | `spec.storage.r2.jurisdiction` | `status.outputs.jurisdiction` |
+| KubernetesLoki | `spec.storage.r2.bucket` | `status.outputs.bucket_name` |
 | KubernetesMongodb | `spec.backup.storages[].r2.bucket` | `status.outputs.bucket_name` |
 | KubernetesMongodb | `spec.backup.storages[].r2.accountId` | `status.outputs.account_id` |
 | KubernetesMongodb | `spec.backup.storages[].r2.jurisdiction` | `status.outputs.jurisdiction` |
@@ -658,6 +661,9 @@ Fields on other kinds that can point at this resource:
 | KubernetesPostgres | `spec.bootstrap.recovery.objectStore.r2.jurisdiction` | `status.outputs.jurisdiction` |
 | KubernetesPostgres | `spec.backup.objectStore.r2.accountId` | `status.outputs.account_id` |
 | KubernetesPostgres | `spec.backup.objectStore.r2.jurisdiction` | `status.outputs.jurisdiction` |
+| KubernetesTempo | `spec.storage.r2.accountId` | `status.outputs.account_id` |
+| KubernetesTempo | `spec.storage.r2.jurisdiction` | `status.outputs.jurisdiction` |
+| KubernetesTempo | `spec.storage.r2.bucket` | `status.outputs.bucket_name` |
 
 ## See Also
 

@@ -33,27 +33,33 @@ import "shared/options/options.proto";
  * one replica — SQLite cannot be shared, so `replicas > 1` without a
  * database splits sessions and dashboards across pods.
  *
- * PROVISIONING AS CODE: `datasources` and `dashboards` below render
- * Grafana's provisioning files — the declarative path that survives pod
- * restarts without persistence. The dashboard SIDECAR (on by default)
- * additionally discovers any ConfigMap labeled `grafana_dashboard: "1"`
- * cluster-wide — the contract by which other components and teams ship
- * dashboards to this Grafana without touching its spec.
+ * PROVISIONING AS CODE: `datasources` below renders Grafana's datasource
+ * provisioning file, and `community_dashboards` imports dashboards by
+ * grafana.com ID — the declarative path that survives pod restarts
+ * without persistence. The dashboard SIDECAR (on by default) discovers
+ * any ConfigMap labeled `grafana_dashboard: "1"` cluster-wide — the
+ * contract by which other components and teams ship dashboards to this
+ * Grafana without touching its spec.
+ *
+ * SIGN-IN: `auth.google` and `auth.generic_oauth` put Grafana behind a
+ * company's identity provider. The client secret is a managed-secret
+ * reference the modules write into their own `<name>-sso` Secret; once
+ * either is declared the manifest owns sign-in and Grafana's
+ * Administration > Authentication screen can no longer change it.
  *
  * EXPOSURE: the service stays ClusterIP; expose via first-class kinds
  * (KubernetesIngress, Gateway API kinds) over the exported service
  * handle. Set `server.root_url` to the public URL when composing
- * exposure — OAuth redirects and rendered links depend on it.
+ * exposure — sign-in redirects and rendered links depend on it.
  *
  * The typed fields below cover the chart's meaningful configuration
  * surface; `helm_values` remains as the escape hatch for chart values
  * beyond them (merged last, Helm `-f` semantics, identical on both
- * engines) — LDAP/OAuth providers, the image renderer, alerting
- * provisioning, extra sidecars — a safety valve, never the primary
- * interface. Never put secret material in `helm_values`: the chart
- * refuses to render secrets into its config ConfigMap, and the typed
- * fields wire every credential through Secrets and environment
- * expansion instead.
+ * engines) — LDAP, the image renderer, alerting provisioning, extra
+ * sidecars — a safety valve, never the primary interface. Never put
+ * secret material in `helm_values`: the chart refuses to render secrets
+ * into its config ConfigMap, and the typed fields wire every credential
+ * through Secrets and environment variables instead.
  */
 message KubernetesGrafanaSpec {
   /**
@@ -161,7 +167,8 @@ message KubernetesGrafanaSpec {
   KubernetesGrafanaServer server = 13;
 
   /**
-   * Anonymous and login-form behavior.
+   * Who can sign in: anonymous access, the login form, and sign-in
+   * through Google or any OAuth 2.0 / OpenID Connect provider.
    */
   KubernetesGrafanaAuth auth = 14;
 
@@ -193,12 +200,19 @@ message KubernetesGrafanaSpec {
    * Escape hatch: additional chart values as a YAML document, merged
    * LAST over everything the typed fields render (Helm `-f` semantics,
    * identical on both engines). For the chart surface beyond the typed
-   * fields (LDAP/OAuth in grafana.ini, the image renderer, alerting
+   * fields (LDAP in grafana.ini, the image renderer, alerting
    * provisioning, notifiers, extra mounts/sidecars, ...) — never the
-   * substitute for them. Do not put secrets here; credential material
+   * substitute for them. Sign-in has typed fields (`auth.google`,
+   * `auth.generic_oauth`). Do not put secrets here; credential material
    * belongs in the typed secret references.
    */
   string helm_values = 19;
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.sign_in_requires_root_url"
+    message: "Google or OAuth sign-in needs server.root_url, the public address people open Grafana at: the provider sends people back to <root_url>/login/google (or /login/generic_oauth), and without it Grafana hands the provider http://localhost:3000, which no browser can reach. Set server.root_url to the URL the exposure layer serves (e.g. https://grafana.example.com)"
+    expression: "!has(this.auth) || (!has(this.auth.google) && !has(this.auth.generic_oauth)) || (has(this.server) && this.server.root_url != '')"
+  };
 
   option (buf.validate.message).cel = {
     id: "spec.replicas.require_database"
@@ -468,8 +482,227 @@ message KubernetesGrafanaAuth {
   /**
    * Hide the login form (for pure-SSO or pure-anonymous deployments —
    * make sure another auth path exists, or the UI locks everyone out).
+   * With sign-in declared, keeping the form is the break-glass path: the
+   * admin account still signs in if the identity provider is down.
    */
   bool disable_login_form = 3;
+
+  /**
+   * Sign in with Google. The client is a Web application OAuth client
+   * whose authorized redirect URI is `<server.root_url>/login/google`.
+   *
+   * KNOW THIS: who a Google client admits is decided at Google by its
+   * project's consent-screen audience. An Internal audience admits only
+   * the Workspace that owns the project; an External one admits any
+   * Google account (in Testing, only the listed test users). Grafana's
+   * own gate is `allowed_domains`, checked against the signed-in email.
+   * Declaring either sign-in locks every OAuth provider on Grafana's
+   * Administration > Authentication screen, so the manifest stays the only
+   * source of truth for who can sign in (Grafana always leaves LDAP
+   * editable there).
+   */
+  KubernetesGrafanaGoogleSignIn google = 4;
+
+  /**
+   * Sign in with any OAuth 2.0 / OpenID Connect provider (Okta,
+   * Microsoft Entra ID, Keycloak, Auth0, GitLab, ...). The client's
+   * redirect URI is `<server.root_url>/login/generic_oauth`.
+   */
+  KubernetesGrafanaGenericOAuthSignIn generic_oauth = 5;
+}
+
+/**
+ * Google sign-in. Every field maps to Grafana's `[auth.google]` section;
+ * the client secret never renders into it.
+ */
+message KubernetesGrafanaGoogleSignIn {
+  /**
+   * The OAuth client's id (`<number>-<hash>.apps.googleusercontent.com`).
+   * A public identifier, never a secret; a `$var/` reference keeps it
+   * with the rest of the client's records.
+   */
+  string client_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The OAuth client's secret. Reference-only: the platform refuses a
+   * literal and resolves the `$secret/` reference at deploy. The modules
+   * write it into the `<name>-sso` Secret and hand it to Grafana as an
+   * environment variable. Grafana reads it only at start, so the pods
+   * carry a checksum of the Secret and a rotated value rolls them on the
+   * next apply.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef client_secret = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  /**
+   * Email domains allowed to sign in (e.g. "example.com"). Grafana
+   * refuses any account whose email is outside them. Required while
+   * `allow_sign_up` is on, because a Google client otherwise lets any
+   * Google account create a Viewer.
+   */
+  repeated string allowed_domains = 3;
+
+  /**
+   * The Google Workspace domain Google's account chooser is limited to
+   * (sent as the `hd` parameter). A hint to Google, not a gate — the gate
+   * is `allowed_domains` and the client's consent-screen audience.
+   */
+  string hosted_domain = 4;
+
+  /**
+   * Create a Grafana user on first sign-in. Off = only users that
+   * already exist in Grafana can sign in. Empty = true.
+   */
+  optional bool allow_sign_up = 5 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Skip Grafana's login page and go straight to Google. Leave off while
+   * the login form is the break-glass path people need to find.
+   */
+  bool auto_login = 6;
+
+  /**
+   * JMESPath over the signed-in person's claims that yields their
+   * Grafana role ("Admin", "Editor", "Viewer"), e.g.
+   * `email == 'lead@example.com' && 'Admin' || 'Viewer'`. Empty = every
+   * new user gets Grafana's default role (Viewer) and admins assign roles
+   * in Grafana. Declared = re-evaluated at every sign-in, so a role changed
+   * here takes effect on the next sign-in. KNOW THIS: Grafana ships Google
+   * with role sync off (`skip_org_role_sync = true`), which silently ignores
+   * a role path; the modules switch sync on whenever a path is declared.
+   */
+  string role_attribute_path = 7;
+
+  /**
+   * Refuse sign-in when `role_attribute_path` yields no valid role,
+   * instead of falling back to the default role.
+   */
+  bool role_attribute_strict = 8;
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.google.sign_up_requires_allowed_domains"
+    message: "Google sign-in with allow_sign_up on and no allowed_domains lets any Google account on the internet create a Viewer. List your email domains in allowed_domains (e.g. [\"example.com\"]), or set allow_sign_up: false so only users that already exist in Grafana can sign in"
+    expression: "(has(this.allow_sign_up) && !this.allow_sign_up) || size(this.allowed_domains) > 0"
+  };
+}
+
+/**
+ * Sign-in through any OAuth 2.0 / OpenID Connect provider. Every field
+ * maps to Grafana's `[auth.generic_oauth]` section; the client secret
+ * never renders into it.
+ */
+message KubernetesGrafanaGenericOAuthSignIn {
+  /**
+   * The label on the sign-in button ("Sign in with <name>"). Empty =
+   * "OAuth".
+   */
+  optional string name = 1 [(dev.planton.shared.options.default) = "OAuth"];
+
+  /**
+   * The OAuth client's id at the provider. A public identifier.
+   */
+  string client_id = 2 [(buf.validate.field).required = true];
+
+  /**
+   * The OAuth client's secret. Reference-only, exactly as Google's
+   * `client_secret`: resolved at deploy, written into the `<name>-sso`
+   * Secret, rolled into the pods on the next apply after a rotation.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef client_secret = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  /**
+   * The provider's authorization endpoint (e.g.
+   * "https://id.example.com/oauth2/v1/authorize"). Grafana does not read
+   * OpenID discovery documents, so the three endpoints are declared.
+   */
+  string auth_url = 4 [(buf.validate.field).required = true];
+
+  /**
+   * The provider's token endpoint.
+   */
+  string token_url = 5 [(buf.validate.field).required = true];
+
+  /**
+   * The provider's userinfo endpoint.
+   */
+  string api_url = 6 [(buf.validate.field).required = true];
+
+  /**
+   * OAuth scopes to request. Empty = "openid", "email", "profile".
+   */
+  repeated string scopes = 7;
+
+  /**
+   * JMESPath to the email in the provider's claims. Empty = Grafana's
+   * default lookup (the `email` claim).
+   */
+  string email_attribute_path = 8;
+
+  /**
+   * JMESPath to the login name. Empty = Grafana's default lookup.
+   */
+  string login_attribute_path = 9;
+
+  /**
+   * JMESPath to the display name. Empty = Grafana's default lookup.
+   */
+  string name_attribute_path = 10;
+
+  /**
+   * JMESPath over the claims that yields the Grafana role, e.g.
+   * `contains(groups[*], 'platform') && 'Admin' || 'Viewer'`. Empty =
+   * the default role (Viewer).
+   */
+  string role_attribute_path = 11;
+
+  /**
+   * Refuse sign-in when `role_attribute_path` yields no valid role.
+   */
+  bool role_attribute_strict = 12;
+
+  /**
+   * JMESPath to the list of groups in the claims (e.g. "groups"). Needed
+   * by `allowed_groups`.
+   */
+  string groups_attribute_path = 13;
+
+  /**
+   * Groups allowed to sign in; a person in none of them is refused.
+   * Requires `groups_attribute_path`.
+   */
+  repeated string allowed_groups = 14;
+
+  /**
+   * Email domains allowed to sign in.
+   */
+  repeated string allowed_domains = 15;
+
+  /**
+   * Create a Grafana user on first sign-in. Empty = true.
+   */
+  optional bool allow_sign_up = 16 [(dev.planton.shared.options.default) = "true"];
+
+  /**
+   * Skip Grafana's login page and go straight to the provider.
+   */
+  bool auto_login = 17;
+
+  /**
+   * Use PKCE on the authorization request. Empty = true; turn it off
+   * only for a provider that rejects it.
+   */
+  optional bool use_pkce = 18 [(dev.planton.shared.options.default) = "true"];
+
+  option (buf.validate.message).cel = {
+    id: "spec.auth.generic_oauth.allowed_groups_require_groups_path"
+    message: "allowed_groups needs groups_attribute_path, the JMESPath to the groups list in the provider's claims (often \"groups\"); without it Grafana sees no groups and refuses everyone"
+    expression: "size(this.allowed_groups) == 0 || this.groups_attribute_path != ''"
+  };
 }
 
 /**

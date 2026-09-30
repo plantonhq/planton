@@ -22,7 +22,7 @@ The modules pin the chart's fullname to `metadata.name` so child names stay pred
 
 ### Kubernetes Cluster
 
-- **An object-storage bucket** for anything beyond a single filesystem replica — S3 (or an in-cluster **Kubernetes SeaweedFS** S3 endpoint), GCS, or Azure Blob. The bucket must exist; Loki does not create it.
+- **An object-storage bucket** for anything beyond a single filesystem replica — S3 (or an in-cluster **Kubernetes SeaweedFS** S3 endpoint), a **Cloudflare R2 bucket** picked from your catalog, GCS, or Azure Blob. The bucket must exist; Loki does not create it.
 - **A StorageClass** for the persistent volumes — most managed clusters provide a default.
 - **kube-prometheus-stack** — only if you set `serviceMonitorEnabled` (the monitoring.coreos.com CRDs) or wire the ruler's `alertmanagerUrl` by reference.
 
@@ -78,7 +78,7 @@ The InfraPipeline deploys the namespace first, then provisions Loki into it.
 
 These are the most important decisions when configuring a Loki log store. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Two honest topologies — and the storage doctrine that binds them.** `monolithic` (the default when nothing is declared) runs every Loki target in one StatefulSet: right for single-node clusters, dev environments and small production volumes. `simpleScalable` splits into write/read/backend tiers that scale independently and REQUIRES object storage — the tiers rendezvous in the object store, not on a shared disk. Filesystem storage is honest ONLY for a single monolithic replica; more than one replica, or any scalable tier, requires s3/gcs/azure (mirroring the chart's own validation). The chart's microservices mode is deliberately not modeled.
+**Two honest topologies — and the storage doctrine that binds them.** `monolithic` (the default when nothing is declared) runs every Loki target in one StatefulSet: right for single-node clusters, dev environments and small production volumes. `simpleScalable` splits into write/read/backend tiers that scale independently and REQUIRES object storage — the tiers rendezvous in the object store, not on a shared disk. Filesystem storage is honest ONLY for a single monolithic replica; more than one replica, or any scalable tier, requires s3/r2/gcs/azure (mirroring the chart's own validation). The chart's microservices mode is deliberately not modeled.
 
 **Object storage is keyless first.** On EKS leave the S3 credentials empty for ambient IRSA identity; on GKE the missing key Secret means workload identity; on AKS the missing account key means federated identity. Declared credentials are name+key REFERENCES to existing Secrets — the modules inject them as environment variables (S3) or a mounted key file (GCS); they never land in the rendered Loki config. The s3-compatible arm (`endpoint` + `forcePathStyle`) composes with an in-cluster KubernetesSeaweedFs. The chart's bundled MinIO subchart is deprecated by the chart itself and is never enabled by this component.
 

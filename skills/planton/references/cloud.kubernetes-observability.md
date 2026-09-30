@@ -28,7 +28,9 @@ every proposal to that bar and say so plainly when a plan stops short of it.
 3. **The outside heartbeat**: `notifications.heartbeat` to a monitor that
    runs outside every cluster and pages when the heartbeat stops.
 4. **Only then the hub**: Grafana with Loki and Tempo (the pattern's
-   assembled wiring) is where signals are read. It never pages.
+   assembled wiring) is where signals are read. It never pages. Its logs
+   and traces live in a bucket one environment above it, and its sign-in
+   is declared, both before the first person opens it.
 
 ## The questions to ask
 
@@ -73,6 +75,39 @@ Ask these before composing, in the person's words, not the chart's:
   Alertmanager never starts. When Alertmanager is missing, read the
   Alertmanager resource's `Reconciled` condition before anything else.
 
+## The hub: where its data lives, who can open it
+
+- **Logs and traces outlive the hub.** Put them in a bucket declared one
+  environment above the hub (the pattern's "outside the cluster" section),
+  so rebuilding or destroying the hub never destroys the evidence. On
+  Cloudflare, use the `r2` arm: the bucket by reference, the key pair of a
+  token scoped to that one bucket from secrets. Choose the bucket's
+  location hint where the cluster runs, because R2 honours it only at
+  creation; leave `jurisdiction` unset unless the person has a legal
+  residency need, since it changes the bucket's address. Give the bucket a
+  lifecycle expiry longer than Loki's and Tempo's retention, never shorter.
+- **Ask who may open Grafana before composing it.** Usually "everyone at
+  the company, nobody else". For a Google Workspace, the strongest answer
+  is an OAuth client whose consent screen is Internal, which is only
+  possible in a Google project inside the Workspace's own organization:
+  Google then refuses every outside account itself. An External screen
+  admits any Google account (in Testing, only listed test users), and
+  `allowed_domains` on the kind becomes the only wall. Never compose Google
+  sign-in with sign-up on and no `allowed_domains`; the kind refuses it.
+- **The manifest owns sign-in.** Declaring `auth.google` or
+  `auth.generic_oauth` locks Grafana's own authentication screen, because
+  settings saved there live in Grafana's database and silently override
+  the manifest. Tell the person that sign-in changes go through the
+  manifest from then on.
+- **Roles come from `role_attribute_path`,** re-read at every sign-in.
+  Grafana ships Google with role sync off, which ignores a role path; the
+  kind switches it on whenever one is declared, so the path in the manifest
+  is what people get.
+- **Rotation takes effect on apply.** Grafana, Loki and Tempo read their
+  secrets only at start; the pods carry a checksum of the secret, so the
+  apply that writes a new value rolls them onto it. Rotate by updating the
+  secret, then re-applying.
+
 ## Proving it
 
 Do these with the person, and report what arrived and when:
@@ -90,5 +125,11 @@ Do these with the person, and report what arrived and when:
    declared replica count and confirm the heartbeat recovers. A drill never
    breaks a real service to test the pager.
 
-A rotated secret is picked up on the next notification without a restart,
-so rotation needs no drill of its own.
+5. For the hub, sign in with an account the person expects to get in and
+   one that must not (another domain); the first lands with the role the
+   manifest names, the second is refused. Then read a log line and a trace
+   from Grafana and confirm objects are arriving in the bucket.
+
+A rotated alerting secret is picked up on the next notification without a
+restart, so rotation needs no drill of its own; the hub's secrets roll the
+pods on the apply that writes them.
