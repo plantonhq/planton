@@ -224,6 +224,97 @@ spec:
     enabled: false
 ```
 
+## Logs and traces outside the cluster
+
+A hub's logs and traces are the evidence an incident review reads weeks
+later, often after the cluster was rebuilt or moved. Keep them in an object
+store that lives one environment above the hub, so destroying the hub never
+destroys them. On Cloudflare that is the `r2` arm of `KubernetesLoki` and
+`KubernetesTempo`: the bucket is a `CloudflareR2Bucket` declared where it
+outlives the hub, referenced by name, and the key pair of a token scoped to
+that one bucket arrives from secrets. The modules compose the S3 host,
+region and addressing, and keep the pair in their own Secret.
+
+```yaml
+apiVersion: cloudflare.planton.dev/v1alpha1
+kind: CloudflareR2Bucket
+metadata:
+  name: hub-logs
+spec:
+  bucketName: example-hub-logs
+  accountId: 0123456789abcdef0123456789abcdef
+  location: enam
+  publicAccess: false
+---
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLoki
+metadata:
+  name: logs
+spec:
+  namespace:
+    value: observability
+  storage:
+    r2:
+      account_id:
+        valueFrom:
+          kind: CloudflareR2Bucket
+          name: hub-logs
+          fieldPath: status.outputs.account_id
+      bucket:
+        valueFrom:
+          kind: CloudflareR2Bucket
+          name: hub-logs
+          fieldPath: status.outputs.bucket_name
+      credentials:
+        access_key_id:
+          value: $secret/hub-logs-writer-access-key-id
+        secret_access_key:
+          value: $secret/hub-logs-writer-secret-access-key
+  retention_period: 720h
+```
+
+Three things decide whether it holds: the token is scoped to the one bucket
+(Object Read & Write), the bucket's lifecycle expiry runs later than the
+workload's retention, and the location hint is chosen where the cluster
+runs, because R2 honours it only at creation.
+
+## Who can open the hub
+
+Grafana shows every system at once, so who can sign in is part of the
+design. Declare it on the kind: `auth.google` for a Google Workspace,
+`auth.generic_oauth` for any OpenID Connect provider, the client secret
+from secrets, and `server.root_url` set to the address people open (the
+redirect URI is `<root_url>/login/google`). Once sign-in is declared,
+Grafana's own authentication screen can no longer change it, so the
+manifest stays the one record of who gets in.
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGrafana
+metadata:
+  name: hub
+spec:
+  namespace:
+    value: observability
+  server:
+    root_url: https://grafana.example.com
+  auth:
+    google:
+      client_id: 123456789-example.apps.googleusercontent.com
+      client_secret:
+        value: $secret/hub-google-signin-client-secret
+      allowed_domains:
+        - example.com
+      hosted_domain: example.com
+      role_attribute_path: "email == 'lead@example.com' && 'Admin' || 'Viewer'"
+```
+
+Who a Google client admits is decided at Google by its consent screen: an
+Internal screen admits only the Workspace that owns the project, an
+External one any Google account (in Testing, only listed test users).
+Grafana's own gate is `allowed_domains`, matched against the email; the
+kind refuses a Google sign-in that allows sign-up with none.
+
 ## On the diagram
 
 The assembled shape renders as a hub: Grafana with three datasource edges
@@ -241,6 +332,9 @@ need the stack's CRDs regardless). That is a scoped decision, not
 double-tooling — say which signals go where.
 
 ## See also
+
+- `KubernetesLoki` and `KubernetesTempo` guides, "outside the cluster: R2"
+- `KubernetesGrafana` guide, "Who can open Grafana"
 
 Each kind's guide beside its reference page: the stack (CRD singleton +
 the serviceMonitor seam), Grafana (hub vs bundled; ephemeral state), Loki

@@ -6,9 +6,10 @@ spec:
   # Grafana installs as one Helm release NAMED AFTER metadata.name
   # (fullnameOverride pins the Service, the ConfigMap and the
   # chart-generated `<name>` admin Secret the same way), plus the optional
-  # anchor namespace. The admin Secret is CHART-owned (generated once via
-  # the chart's lookup, or the user's own existing Secret) and travels
-  # with the release import — no Secret rows.
+  # anchor namespace and, when sign-in is declared, the module-materialized
+  # `<name>-sso` client-secret Secret (count-indexed). The admin Secret is
+  # CHART-owned (generated once via the chart's lookup, or the user's own
+  # existing Secret) and travels with the release import — no row.
   values:
     - name: release_name
       derivations:
@@ -23,6 +24,25 @@ spec:
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column).
+    # ── the module-materialized sign-in Secret ───────────────────────────
+    # Deterministic name "<metadata.name>-sso"; count-indexed (present only
+    # when auth.google or auth.generic_oauth is declared), so the scoped
+    # suffix derivation serves it.
+    - name: secret_name
+      tofu_resource_name: sso
+      derivations:
+        - from_metadata_name_suffix: "-sso"
+      where_to_find: >-
+        Always "<resource-name>-sso" when sign-in is declared —
+        `kubectl get secrets -n <namespace>` (keys google-client-secret,
+        generic-oauth-client-secret).
+    - name: secret_namespace
+      tofu_resource_name: sso
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:

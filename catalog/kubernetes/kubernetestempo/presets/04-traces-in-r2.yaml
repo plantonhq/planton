@@ -1,0 +1,38 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesTempo
+metadata:
+  name: hub-traces
+spec:
+  namespace:
+    value: observability
+  create_namespace: true
+  replicas: 2
+  # Trace blocks in a Cloudflare R2 bucket, outside every cluster: the
+  # bucket, its account and its jurisdiction by reference to a
+  # CloudflareR2Bucket, and the key pair of a token scoped to that one
+  # bucket, from Planton's secrets. The modules compose the S3 host, region
+  # and addressing, and keep the pair in their own Secret.
+  storage:
+    r2:
+      account_id:
+        valueFrom:
+          kind: CloudflareR2Bucket
+          name: traces-bucket
+          fieldPath: status.outputs.account_id
+      jurisdiction:
+        valueFrom:
+          kind: CloudflareR2Bucket
+          name: traces-bucket
+          fieldPath: status.outputs.jurisdiction
+      bucket:
+        valueFrom:
+          kind: CloudflareR2Bucket
+          name: traces-bucket
+          fieldPath: status.outputs.bucket_name
+      credentials:
+        access_key_id:
+          value: $secret/traces-writer-access-key-id
+        secret_access_key:
+          value: $secret/traces-writer-secret-access-key
+  # The bucket's lifecycle expiry must run LATER than this.
+  retention: 336h

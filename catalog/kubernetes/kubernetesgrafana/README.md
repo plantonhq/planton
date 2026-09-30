@@ -69,9 +69,14 @@ in rendered Helm values; the Secret name lands in the stack outputs.
   in `plugins` to keep using them; the modules enable the chart's
   bundled-plugin shadowing so installs succeed on the read-only image
   directory.
+- **Sign-in is typed** — `auth.google` or `auth.generic_oauth`, with
+  the client secret as a `$secret/` reference the modules write into
+  their own `<name>-sso` Secret. Declaring either locks Grafana's
+  Administration > Authentication screen so the manifest stays the only
+  source of truth, and a rotated secret rolls the pods on the next apply.
 - **`helm_values` is the escape hatch** — merged LAST (Helm `-f`
-  semantics, identical engines) for LDAP/OAuth providers, the image
-  renderer, alerting provisioning, extra sidecars. Never for secrets:
+  semantics, identical engines) for LDAP, the image renderer, alerting
+  provisioning, extra sidecars. Never for secrets:
   the chart refuses to render secrets into its config ConfigMap, and
   every typed credential rides Secrets + environment expansion
   instead.

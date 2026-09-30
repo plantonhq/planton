@@ -549,7 +549,12 @@ Based on scenario:
   (`t == "a" ? {…} : t == "b" ? {…} : null`) selecting between differently
   shaped objects is the same failure wearing a oneof costume: render ONE
   object literal carrying every arm's keys (each key gated on its arm,
-  `null` otherwise) and null-prune it; and `merge(concat(cond ? [{…}] : [], …)...)`
+  `null` otherwise) and null-prune it. When the two branches happen to be
+  convertible (an object literal against a null-pruned for-expression),
+  the ternary does NOT fail at plan -- it unifies both to `map(string)`, and
+  a chart that copies the values into the workload's config hands it a
+  quoted `"true"` (Loki's and Tempo's `s3forcepathstyle`, refused at start
+  and seen only as a Helm install timing out); and `merge(concat(cond ? [{…}] : [], …)...)`
   silently UNIFIES primitive-only sibling objects into `map(string)` — the
   ternary converts each tuple to a list, and concat's element-type
   unification then coerces numbers and booleans to strings
@@ -775,6 +780,21 @@ Based on scenario:
   declares the user without the password, the presets drop their
   placeholder passwords, and the import map gains the by-value row below.
   Reference shapes: `KubernetesValkey`, `KubernetesNeo4j`, `KubernetesNats`.
+- **A module-owned Secret the workload reads only at start carries a
+  checksum on the pod template.** Env variables and most config files are
+  read once, at process start; nothing rolls a Deployment or StatefulSet
+  when the Secret behind them changes, so a rotated `sensitive` value sits
+  unused until someone restarts the pods. Stamp the pods with
+  `checksum/credentials`: the SHA-256 of the Secret's data as JSON with
+  sorted keys (Go `json.Marshal` of the map, OpenTofu
+  `sha256(jsonencode(map))` -- byte-identical, so both engines stamp the
+  same value), wherever the chart takes pod annotations. The apply that
+  writes the new value then rolls the workload onto it. Skip it only when
+  the workload re-reads the value on every use (Alertmanager's `_file`
+  credentials), and say so where the Secret is built. A module test pins
+  that a changed value changes the checksum and an unchanged one does not.
+  Reference shapes: `KubernetesGrafana` (sign-in), `KubernetesLoki` and
+  `KubernetesTempo` (the r2 arm).
 - **A module-generated credential (`random_password`) is import-mappable —
   by VALUE, with two mandatory guards**: the random provider keeps no
   cloud-side state, so its import ID is the password value itself, read

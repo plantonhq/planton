@@ -3,8 +3,9 @@
 # Installs Grafana from the official Helm chart as a real Helm release. The
 # typed spec renders into chart values (locals.helm_values); admin
 # credentials stay chart-owned (generated once via the chart's lookup, or
-# read from an existing Secret); database and datasource credentials ride
-# environment variables sourced from Secrets so no credential ever lands in
+# read from an existing Secret); database, datasource and sign-in
+# credentials ride environment variables sourced from Secrets (sign-in's from
+# the module-owned `<name>-sso` Secret below), so no credential ever lands in
 # the chart's rendered configuration; the helm_values escape hatch is
 # passed as a SECOND values document, which the provider merges over the
 # first with Helm -f semantics — the exact semantic twin of the Pulumi
@@ -19,6 +20,28 @@ resource "kubernetes_namespace_v1" "grafana" {
     name   = local.namespace
     labels = local.labels
   }
+}
+
+# Module-owned Secret carrying the sign-in client secrets (keys
+# `google-client-secret`, `generic-oauth-client-secret`). Created BEFORE the
+# release: Grafana's GF_AUTH_*_CLIENT_SECRET variables read it through
+# secretKeyRef, and a pod whose referenced key is missing never starts. The
+# values arrive resolved from managed-secret references; the provider keeps
+# `data` sensitive.
+resource "kubernetes_secret_v1" "sso" {
+  count = local.sign_in_enabled ? 1 : 0
+
+  metadata {
+    name      = local.sso_secret_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.sso_secret_data
+
+  depends_on = [
+    kubernetes_namespace_v1.grafana,
+  ]
 }
 
 resource "helm_release" "grafana" {
@@ -55,5 +78,6 @@ resource "helm_release" "grafana" {
 
   depends_on = [
     kubernetes_namespace_v1.grafana,
+    kubernetes_secret_v1.sso,
   ]
 }

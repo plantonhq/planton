@@ -180,8 +180,15 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	credentialEnv := []interface{}{}
 	extraVolumes := []interface{}{}
 	extraVolumeMounts := []interface{}{}
-	switch backendType {
-	case "s3":
+	switch {
+	case locals.R2 != nil:
+		// The r2 arm: R2 speaks S3, so loki.storage.type is "s3" and the
+		// values are composed from R2's vocabulary (r2.go). The key pair
+		// rides env expansion from the module-owned Secret.
+		storage["bucketNames"] = locals.R2.BucketNames
+		storage["s3"] = locals.R2.S3Values
+		credentialEnv = append(credentialEnv, r2CredentialEnv(locals.R2CredentialsSecretName)...)
+	case backendType == "s3":
 		s3 := spec.GetStorage().GetS3()
 		storage["bucketNames"] = bucketNames(s3.GetBucket(), s3.GetRulerBucket())
 		s3Values := map[string]interface{}{}
@@ -211,7 +218,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 		if len(s3Values) > 0 {
 			storage["s3"] = s3Values
 		}
-	case "gcs":
+	case backendType == "gcs":
 		gcs := spec.GetStorage().GetGcs()
 		storage["bucketNames"] = bucketNames(gcs.GetBucket(), gcs.GetRulerBucket())
 		// A declared service-account key is mounted from the referenced
@@ -234,7 +241,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 				"readOnly":  true,
 			})
 		}
-	case "azure":
+	case backendType == "azure":
 		azure := spec.GetStorage().GetAzure()
 		storage["bucketNames"] = bucketNames(azure.GetContainer(), azure.GetRulerContainer())
 		azureValues := map[string]interface{}{
@@ -251,6 +258,14 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 		storage["azure"] = azureValues
 	}
 	loki["storage"] = storage
+	// Loki reads its object-store credentials only at start: the
+	// fingerprint of the module-owned Secret changes every Loki pod's
+	// template when the key rotates, so the next apply rolls them onto it.
+	if locals.R2 != nil {
+		loki["podAnnotations"] = map[string]interface{}{
+			vars.CredentialsChecksumAnnotation: credentialsChecksum(locals.R2.SecretData),
+		}
+	}
 
 	// ---- limits + retention ----------------------------------------------
 	limitsConfig := map[string]interface{}{}
@@ -446,7 +461,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 // spec's documented dev default).
 func storageBackendType(storage *kuberneteslokiv1alpha1.KubernetesLokiStorage) string {
 	switch {
-	case storage.GetS3() != nil:
+	case storage.GetS3() != nil, storage.GetR2() != nil:
 		return "s3"
 	case storage.GetGcs() != nil:
 		return "gcs"

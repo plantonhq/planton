@@ -104,27 +104,33 @@ func (KubernetesGrafanaDatabaseEngine) EnumDescriptor() ([]byte, []int) {
 // one replica — SQLite cannot be shared, so `replicas > 1` without a
 // database splits sessions and dashboards across pods.
 //
-// PROVISIONING AS CODE: `datasources` and `dashboards` below render
-// Grafana's provisioning files — the declarative path that survives pod
-// restarts without persistence. The dashboard SIDECAR (on by default)
-// additionally discovers any ConfigMap labeled `grafana_dashboard: "1"`
-// cluster-wide — the contract by which other components and teams ship
-// dashboards to this Grafana without touching its spec.
+// PROVISIONING AS CODE: `datasources` below renders Grafana's datasource
+// provisioning file, and `community_dashboards` imports dashboards by
+// grafana.com ID — the declarative path that survives pod restarts
+// without persistence. The dashboard SIDECAR (on by default) discovers
+// any ConfigMap labeled `grafana_dashboard: "1"` cluster-wide — the
+// contract by which other components and teams ship dashboards to this
+// Grafana without touching its spec.
+//
+// SIGN-IN: `auth.google` and `auth.generic_oauth` put Grafana behind a
+// company's identity provider. The client secret is a managed-secret
+// reference the modules write into their own `<name>-sso` Secret; once
+// either is declared the manifest owns sign-in and Grafana's
+// Administration > Authentication screen can no longer change it.
 //
 // EXPOSURE: the service stays ClusterIP; expose via first-class kinds
 // (KubernetesIngress, Gateway API kinds) over the exported service
 // handle. Set `server.root_url` to the public URL when composing
-// exposure — OAuth redirects and rendered links depend on it.
+// exposure — sign-in redirects and rendered links depend on it.
 //
 // The typed fields below cover the chart's meaningful configuration
 // surface; `helm_values` remains as the escape hatch for chart values
 // beyond them (merged last, Helm `-f` semantics, identical on both
-// engines) — LDAP/OAuth providers, the image renderer, alerting
-// provisioning, extra sidecars — a safety valve, never the primary
-// interface. Never put secret material in `helm_values`: the chart
-// refuses to render secrets into its config ConfigMap, and the typed
-// fields wire every credential through Secrets and environment
-// expansion instead.
+// engines) — LDAP, the image renderer, alerting provisioning, extra
+// sidecars — a safety valve, never the primary interface. Never put
+// secret material in `helm_values`: the chart refuses to render secrets
+// into its config ConfigMap, and the typed fields wire every credential
+// through Secrets and environment variables instead.
 type KubernetesGrafanaSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
@@ -199,7 +205,8 @@ type KubernetesGrafanaSpec struct {
 	// The server identity block of Grafana's configuration.
 	Server *KubernetesGrafanaServer `protobuf:"bytes,13,opt,name=server,proto3" json:"server,omitempty"`
 	// *
-	// Anonymous and login-form behavior.
+	// Who can sign in: anonymous access, the login form, and sign-in
+	// through Google or any OAuth 2.0 / OpenID Connect provider.
 	Auth *KubernetesGrafanaAuth `protobuf:"bytes,14,opt,name=auth,proto3" json:"auth,omitempty"`
 	// *
 	// Outbound email (alert notifications, invites, password resets).
@@ -221,9 +228,10 @@ type KubernetesGrafanaSpec struct {
 	// Escape hatch: additional chart values as a YAML document, merged
 	// LAST over everything the typed fields render (Helm `-f` semantics,
 	// identical on both engines). For the chart surface beyond the typed
-	// fields (LDAP/OAuth in grafana.ini, the image renderer, alerting
+	// fields (LDAP in grafana.ini, the image renderer, alerting
 	// provisioning, notifiers, extra mounts/sidecars, ...) — never the
-	// substitute for them. Do not put secrets here; credential material
+	// substitute for them. Sign-in has typed fields (`auth.google`,
+	// `auth.generic_oauth`). Do not put secrets here; credential material
 	// belongs in the typed secret references.
 	HelmValues    string `protobuf:"bytes,19,opt,name=helm_values,json=helmValues,proto3" json:"helm_values,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1004,9 +1012,30 @@ type KubernetesGrafanaAuth struct {
 	// *
 	// Hide the login form (for pure-SSO or pure-anonymous deployments —
 	// make sure another auth path exists, or the UI locks everyone out).
+	// With sign-in declared, keeping the form is the break-glass path: the
+	// admin account still signs in if the identity provider is down.
 	DisableLoginForm bool `protobuf:"varint,3,opt,name=disable_login_form,json=disableLoginForm,proto3" json:"disable_login_form,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// *
+	// Sign in with Google. The client is a Web application OAuth client
+	// whose authorized redirect URI is `<server.root_url>/login/google`.
+	//
+	// KNOW THIS: who a Google client admits is decided at Google by its
+	// project's consent-screen audience. An Internal audience admits only
+	// the Workspace that owns the project; an External one admits any
+	// Google account (in Testing, only the listed test users). Grafana's
+	// own gate is `allowed_domains`, checked against the signed-in email.
+	// Declaring either sign-in locks every OAuth provider on Grafana's
+	// Administration > Authentication screen, so the manifest stays the only
+	// source of truth for who can sign in (Grafana always leaves LDAP
+	// editable there).
+	Google *KubernetesGrafanaGoogleSignIn `protobuf:"bytes,4,opt,name=google,proto3" json:"google,omitempty"`
+	// *
+	// Sign in with any OAuth 2.0 / OpenID Connect provider (Okta,
+	// Microsoft Entra ID, Keycloak, Auth0, GitLab, ...). The client's
+	// redirect URI is `<server.root_url>/login/generic_oauth`.
+	GenericOauth  *KubernetesGrafanaGenericOAuthSignIn `protobuf:"bytes,5,opt,name=generic_oauth,json=genericOauth,proto3" json:"generic_oauth,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesGrafanaAuth) Reset() {
@@ -1060,6 +1089,392 @@ func (x *KubernetesGrafanaAuth) GetDisableLoginForm() bool {
 	return false
 }
 
+func (x *KubernetesGrafanaAuth) GetGoogle() *KubernetesGrafanaGoogleSignIn {
+	if x != nil {
+		return x.Google
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaAuth) GetGenericOauth() *KubernetesGrafanaGenericOAuthSignIn {
+	if x != nil {
+		return x.GenericOauth
+	}
+	return nil
+}
+
+// *
+// Google sign-in. Every field maps to Grafana's `[auth.google]` section;
+// the client secret never renders into it.
+type KubernetesGrafanaGoogleSignIn struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The OAuth client's id (`<number>-<hash>.apps.googleusercontent.com`).
+	// A public identifier, never a secret; a `$var/` reference keeps it
+	// with the rest of the client's records.
+	ClientId string `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	// *
+	// The OAuth client's secret. Reference-only: the platform refuses a
+	// literal and resolves the `$secret/` reference at deploy. The modules
+	// write it into the `<name>-sso` Secret and hand it to Grafana as an
+	// environment variable. Grafana reads it only at start, so the pods
+	// carry a checksum of the Secret and a rotated value rolls them on the
+	// next apply.
+	ClientSecret *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
+	// *
+	// Email domains allowed to sign in (e.g. "example.com"). Grafana
+	// refuses any account whose email is outside them. Required while
+	// `allow_sign_up` is on, because a Google client otherwise lets any
+	// Google account create a Viewer.
+	AllowedDomains []string `protobuf:"bytes,3,rep,name=allowed_domains,json=allowedDomains,proto3" json:"allowed_domains,omitempty"`
+	// *
+	// The Google Workspace domain Google's account chooser is limited to
+	// (sent as the `hd` parameter). A hint to Google, not a gate — the gate
+	// is `allowed_domains` and the client's consent-screen audience.
+	HostedDomain string `protobuf:"bytes,4,opt,name=hosted_domain,json=hostedDomain,proto3" json:"hosted_domain,omitempty"`
+	// *
+	// Create a Grafana user on first sign-in. Off = only users that
+	// already exist in Grafana can sign in. Empty = true.
+	AllowSignUp *bool `protobuf:"varint,5,opt,name=allow_sign_up,json=allowSignUp,proto3,oneof" json:"allow_sign_up,omitempty"`
+	// *
+	// Skip Grafana's login page and go straight to Google. Leave off while
+	// the login form is the break-glass path people need to find.
+	AutoLogin bool `protobuf:"varint,6,opt,name=auto_login,json=autoLogin,proto3" json:"auto_login,omitempty"`
+	// *
+	// JMESPath over the signed-in person's claims that yields their
+	// Grafana role ("Admin", "Editor", "Viewer"), e.g.
+	// `email == 'lead@example.com' && 'Admin' || 'Viewer'`. Empty = every
+	// new user gets Grafana's default role (Viewer) and admins assign roles
+	// in Grafana. Declared = re-evaluated at every sign-in, so a role changed
+	// here takes effect on the next sign-in. KNOW THIS: Grafana ships Google
+	// with role sync off (`skip_org_role_sync = true`), which silently ignores
+	// a role path; the modules switch sync on whenever a path is declared.
+	RoleAttributePath string `protobuf:"bytes,7,opt,name=role_attribute_path,json=roleAttributePath,proto3" json:"role_attribute_path,omitempty"`
+	// *
+	// Refuse sign-in when `role_attribute_path` yields no valid role,
+	// instead of falling back to the default role.
+	RoleAttributeStrict bool `protobuf:"varint,8,opt,name=role_attribute_strict,json=roleAttributeStrict,proto3" json:"role_attribute_strict,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) Reset() {
+	*x = KubernetesGrafanaGoogleSignIn{}
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesGrafanaGoogleSignIn) ProtoMessage() {}
+
+func (x *KubernetesGrafanaGoogleSignIn) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesGrafanaGoogleSignIn.ProtoReflect.Descriptor instead.
+func (*KubernetesGrafanaGoogleSignIn) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetClientSecret() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ClientSecret
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetAllowedDomains() []string {
+	if x != nil {
+		return x.AllowedDomains
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetHostedDomain() string {
+	if x != nil {
+		return x.HostedDomain
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetAllowSignUp() bool {
+	if x != nil && x.AllowSignUp != nil {
+		return *x.AllowSignUp
+	}
+	return false
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetAutoLogin() bool {
+	if x != nil {
+		return x.AutoLogin
+	}
+	return false
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetRoleAttributePath() string {
+	if x != nil {
+		return x.RoleAttributePath
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGoogleSignIn) GetRoleAttributeStrict() bool {
+	if x != nil {
+		return x.RoleAttributeStrict
+	}
+	return false
+}
+
+// *
+// Sign-in through any OAuth 2.0 / OpenID Connect provider. Every field
+// maps to Grafana's `[auth.generic_oauth]` section; the client secret
+// never renders into it.
+type KubernetesGrafanaGenericOAuthSignIn struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The label on the sign-in button ("Sign in with <name>"). Empty =
+	// "OAuth".
+	Name *string `protobuf:"bytes,1,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	// *
+	// The OAuth client's id at the provider. A public identifier.
+	ClientId string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	// *
+	// The OAuth client's secret. Reference-only, exactly as Google's
+	// `client_secret`: resolved at deploy, written into the `<name>-sso`
+	// Secret, rolled into the pods on the next apply after a rotation.
+	ClientSecret *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
+	// *
+	// The provider's authorization endpoint (e.g.
+	// "https://id.example.com/oauth2/v1/authorize"). Grafana does not read
+	// OpenID discovery documents, so the three endpoints are declared.
+	AuthUrl string `protobuf:"bytes,4,opt,name=auth_url,json=authUrl,proto3" json:"auth_url,omitempty"`
+	// *
+	// The provider's token endpoint.
+	TokenUrl string `protobuf:"bytes,5,opt,name=token_url,json=tokenUrl,proto3" json:"token_url,omitempty"`
+	// *
+	// The provider's userinfo endpoint.
+	ApiUrl string `protobuf:"bytes,6,opt,name=api_url,json=apiUrl,proto3" json:"api_url,omitempty"`
+	// *
+	// OAuth scopes to request. Empty = "openid", "email", "profile".
+	Scopes []string `protobuf:"bytes,7,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	// *
+	// JMESPath to the email in the provider's claims. Empty = Grafana's
+	// default lookup (the `email` claim).
+	EmailAttributePath string `protobuf:"bytes,8,opt,name=email_attribute_path,json=emailAttributePath,proto3" json:"email_attribute_path,omitempty"`
+	// *
+	// JMESPath to the login name. Empty = Grafana's default lookup.
+	LoginAttributePath string `protobuf:"bytes,9,opt,name=login_attribute_path,json=loginAttributePath,proto3" json:"login_attribute_path,omitempty"`
+	// *
+	// JMESPath to the display name. Empty = Grafana's default lookup.
+	NameAttributePath string `protobuf:"bytes,10,opt,name=name_attribute_path,json=nameAttributePath,proto3" json:"name_attribute_path,omitempty"`
+	// *
+	// JMESPath over the claims that yields the Grafana role, e.g.
+	// `contains(groups[*], 'platform') && 'Admin' || 'Viewer'`. Empty =
+	// the default role (Viewer).
+	RoleAttributePath string `protobuf:"bytes,11,opt,name=role_attribute_path,json=roleAttributePath,proto3" json:"role_attribute_path,omitempty"`
+	// *
+	// Refuse sign-in when `role_attribute_path` yields no valid role.
+	RoleAttributeStrict bool `protobuf:"varint,12,opt,name=role_attribute_strict,json=roleAttributeStrict,proto3" json:"role_attribute_strict,omitempty"`
+	// *
+	// JMESPath to the list of groups in the claims (e.g. "groups"). Needed
+	// by `allowed_groups`.
+	GroupsAttributePath string `protobuf:"bytes,13,opt,name=groups_attribute_path,json=groupsAttributePath,proto3" json:"groups_attribute_path,omitempty"`
+	// *
+	// Groups allowed to sign in; a person in none of them is refused.
+	// Requires `groups_attribute_path`.
+	AllowedGroups []string `protobuf:"bytes,14,rep,name=allowed_groups,json=allowedGroups,proto3" json:"allowed_groups,omitempty"`
+	// *
+	// Email domains allowed to sign in.
+	AllowedDomains []string `protobuf:"bytes,15,rep,name=allowed_domains,json=allowedDomains,proto3" json:"allowed_domains,omitempty"`
+	// *
+	// Create a Grafana user on first sign-in. Empty = true.
+	AllowSignUp *bool `protobuf:"varint,16,opt,name=allow_sign_up,json=allowSignUp,proto3,oneof" json:"allow_sign_up,omitempty"`
+	// *
+	// Skip Grafana's login page and go straight to the provider.
+	AutoLogin bool `protobuf:"varint,17,opt,name=auto_login,json=autoLogin,proto3" json:"auto_login,omitempty"`
+	// *
+	// Use PKCE on the authorization request. Empty = true; turn it off
+	// only for a provider that rejects it.
+	UsePkce       *bool `protobuf:"varint,18,opt,name=use_pkce,json=usePkce,proto3,oneof" json:"use_pkce,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) Reset() {
+	*x = KubernetesGrafanaGenericOAuthSignIn{}
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesGrafanaGenericOAuthSignIn) ProtoMessage() {}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesGrafanaGenericOAuthSignIn.ProtoReflect.Descriptor instead.
+func (*KubernetesGrafanaGenericOAuthSignIn) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetClientSecret() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ClientSecret
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetAuthUrl() string {
+	if x != nil {
+		return x.AuthUrl
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetTokenUrl() string {
+	if x != nil {
+		return x.TokenUrl
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetApiUrl() string {
+	if x != nil {
+		return x.ApiUrl
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetScopes() []string {
+	if x != nil {
+		return x.Scopes
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetEmailAttributePath() string {
+	if x != nil {
+		return x.EmailAttributePath
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetLoginAttributePath() string {
+	if x != nil {
+		return x.LoginAttributePath
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetNameAttributePath() string {
+	if x != nil {
+		return x.NameAttributePath
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetRoleAttributePath() string {
+	if x != nil {
+		return x.RoleAttributePath
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetRoleAttributeStrict() bool {
+	if x != nil {
+		return x.RoleAttributeStrict
+	}
+	return false
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetGroupsAttributePath() string {
+	if x != nil {
+		return x.GroupsAttributePath
+	}
+	return ""
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetAllowedGroups() []string {
+	if x != nil {
+		return x.AllowedGroups
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetAllowedDomains() []string {
+	if x != nil {
+		return x.AllowedDomains
+	}
+	return nil
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetAllowSignUp() bool {
+	if x != nil && x.AllowSignUp != nil {
+		return *x.AllowSignUp
+	}
+	return false
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetAutoLogin() bool {
+	if x != nil {
+		return x.AutoLogin
+	}
+	return false
+}
+
+func (x *KubernetesGrafanaGenericOAuthSignIn) GetUsePkce() bool {
+	if x != nil && x.UsePkce != nil {
+		return *x.UsePkce
+	}
+	return false
+}
+
 // *
 // Outbound SMTP.
 type KubernetesGrafanaSmtp struct {
@@ -1090,7 +1505,7 @@ type KubernetesGrafanaSmtp struct {
 
 func (x *KubernetesGrafanaSmtp) Reset() {
 	*x = KubernetesGrafanaSmtp{}
-	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1102,7 +1517,7 @@ func (x *KubernetesGrafanaSmtp) String() string {
 func (*KubernetesGrafanaSmtp) ProtoMessage() {}
 
 func (x *KubernetesGrafanaSmtp) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1115,7 +1530,7 @@ func (x *KubernetesGrafanaSmtp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesGrafanaSmtp.ProtoReflect.Descriptor instead.
 func (*KubernetesGrafanaSmtp) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *KubernetesGrafanaSmtp) GetHost() string {
@@ -1175,7 +1590,7 @@ type KubernetesGrafanaImage struct {
 
 func (x *KubernetesGrafanaImage) Reset() {
 	*x = KubernetesGrafanaImage{}
-	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1187,7 +1602,7 @@ func (x *KubernetesGrafanaImage) String() string {
 func (*KubernetesGrafanaImage) ProtoMessage() {}
 
 func (x *KubernetesGrafanaImage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1200,7 +1615,7 @@ func (x *KubernetesGrafanaImage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesGrafanaImage.ProtoReflect.Descriptor instead.
 func (*KubernetesGrafanaImage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *KubernetesGrafanaImage) GetRepository() string {
@@ -1243,7 +1658,7 @@ type KubernetesGrafanaScheduling struct {
 
 func (x *KubernetesGrafanaScheduling) Reset() {
 	*x = KubernetesGrafanaScheduling{}
-	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1255,7 +1670,7 @@ func (x *KubernetesGrafanaScheduling) String() string {
 func (*KubernetesGrafanaScheduling) ProtoMessage() {}
 
 func (x *KubernetesGrafanaScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1268,7 +1683,7 @@ func (x *KubernetesGrafanaScheduling) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesGrafanaScheduling.ProtoReflect.Descriptor instead.
 func (*KubernetesGrafanaScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *KubernetesGrafanaScheduling) GetNodeSelector() map[string]string {
@@ -1296,7 +1711,7 @@ var File_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesgrafana/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa9\x11\n" +
+	"8catalog/kubernetes/kubernetesgrafana/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbe\x15\n" +
 	"\x15KubernetesGrafanaSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -1321,7 +1736,8 @@ const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc = ""
 	"scheduling\x18\x12 \x01(\v2N.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSchedulingR\n" +
 	"scheduling\x12\x1f\n" +
 	"\vhelm_values\x18\x13 \x01(\tR\n" +
-	"helmValues:\x9a\x04\xbaH\x96\x04\x1a\xb5\x02\n" +
+	"helmValues:\xaf\b\xbaH\xab\b\x1a\x92\x04\n" +
+	"#spec.auth.sign_in_requires_root_url\x12\xe7\x02Google or OAuth sign-in needs server.root_url, the public address people open Grafana at: the provider sends people back to <root_url>/login/google (or /login/generic_oauth), and without it Grafana hands the provider http://localhost:3000, which no browser can reach. Set server.root_url to the URL the exposure layer serves (e.g. https://grafana.example.com)\x1a\x80\x01!has(this.auth) || (!has(this.auth.google) && !has(this.auth.generic_oauth)) || (has(this.server) && this.server.root_url != '')\x1a\xb5\x02\n" +
 	"\x1espec.replicas.require_database\x12\xd1\x01replicas above 1 require the database block — Grafana's embedded SQLite state cannot be shared between pods, so a scaled deployment without an external database splits dashboards and sessions across replicas\x1a?!has(this.replicas) || this.replicas <= 1 || has(this.database)\x1a\xdb\x01\n" +
 	"\x1aspec.storage.single_writer\x12|storage (a ReadWriteOnce volume) cannot back more than one replica — for HA use database for state and leave storage unset\x1a?!has(this.storage) || !has(this.replicas) || this.replicas <= 1B\x10\n" +
 	"\x0e_chart_versionB\v\n" +
@@ -1370,13 +1786,54 @@ const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc = ""
 	"datasource\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"datasource\"4\n" +
 	"\x17KubernetesGrafanaServer\x12\x19\n" +
-	"\broot_url\x18\x01 \x01(\tR\arootUrl\"\xc8\x01\n" +
+	"\broot_url\x18\x01 \x01(\tR\arootUrl\"\xaf\x03\n" +
 	"\x15KubernetesGrafanaAuth\x12+\n" +
 	"\x11anonymous_enabled\x18\x01 \x01(\bR\x10anonymousEnabled\x12=\n" +
 	"\x12anonymous_org_role\x18\x02 \x01(\tB\n" +
 	"\x8a\xa6\x1d\x06ViewerH\x00R\x10anonymousOrgRole\x88\x01\x01\x12,\n" +
-	"\x12disable_login_form\x18\x03 \x01(\bR\x10disableLoginFormB\x15\n" +
-	"\x13_anonymous_org_role\"\xcc\x01\n" +
+	"\x12disable_login_form\x18\x03 \x01(\bR\x10disableLoginForm\x12h\n" +
+	"\x06google\x18\x04 \x01(\v2P.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignInR\x06google\x12{\n" +
+	"\rgeneric_oauth\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignInR\fgenericOauthB\x15\n" +
+	"\x13_anonymous_org_role\"\xde\x06\n" +
+	"\x1dKubernetesGrafanaGoogleSignIn\x12#\n" +
+	"\tclient_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12c\n" +
+	"\rclient_secret\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\fclientSecret\x12'\n" +
+	"\x0fallowed_domains\x18\x03 \x03(\tR\x0eallowedDomains\x12#\n" +
+	"\rhosted_domain\x18\x04 \x01(\tR\fhostedDomain\x121\n" +
+	"\rallow_sign_up\x18\x05 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\vallowSignUp\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"auto_login\x18\x06 \x01(\bR\tautoLogin\x12.\n" +
+	"\x13role_attribute_path\x18\a \x01(\tR\x11roleAttributePath\x122\n" +
+	"\x15role_attribute_strict\x18\b \x01(\bR\x13roleAttributeStrict:\x9c\x03\xbaH\x98\x03\x1a\x95\x03\n" +
+	"1spec.auth.google.sign_up_requires_allowed_domains\x12\x8b\x02Google sign-in with allow_sign_up on and no allowed_domains lets any Google account on the internet create a Viewer. List your email domains in allowed_domains (e.g. [\"example.com\"]), or set allow_sign_up: false so only users that already exist in Grafana can sign in\x1aR(has(this.allow_sign_up) && !this.allow_sign_up) || size(this.allowed_domains) > 0B\x10\n" +
+	"\x0e_allow_sign_up\"\xae\t\n" +
+	"#KubernetesGrafanaGenericOAuthSignIn\x12\"\n" +
+	"\x04name\x18\x01 \x01(\tB\t\x8a\xa6\x1d\x05OAuthH\x00R\x04name\x88\x01\x01\x12#\n" +
+	"\tclient_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12c\n" +
+	"\rclient_secret\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\fclientSecret\x12!\n" +
+	"\bauth_url\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aauthUrl\x12#\n" +
+	"\ttoken_url\x18\x05 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\btokenUrl\x12\x1f\n" +
+	"\aapi_url\x18\x06 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06apiUrl\x12\x16\n" +
+	"\x06scopes\x18\a \x03(\tR\x06scopes\x120\n" +
+	"\x14email_attribute_path\x18\b \x01(\tR\x12emailAttributePath\x120\n" +
+	"\x14login_attribute_path\x18\t \x01(\tR\x12loginAttributePath\x12.\n" +
+	"\x13name_attribute_path\x18\n" +
+	" \x01(\tR\x11nameAttributePath\x12.\n" +
+	"\x13role_attribute_path\x18\v \x01(\tR\x11roleAttributePath\x122\n" +
+	"\x15role_attribute_strict\x18\f \x01(\bR\x13roleAttributeStrict\x122\n" +
+	"\x15groups_attribute_path\x18\r \x01(\tR\x13groupsAttributePath\x12%\n" +
+	"\x0eallowed_groups\x18\x0e \x03(\tR\rallowedGroups\x12'\n" +
+	"\x0fallowed_domains\x18\x0f \x03(\tR\x0eallowedDomains\x121\n" +
+	"\rallow_sign_up\x18\x10 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\vallowSignUp\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"auto_login\x18\x11 \x01(\bR\tautoLogin\x12(\n" +
+	"\buse_pkce\x18\x12 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\ausePkce\x88\x01\x01:\xb7\x02\xbaH\xb3\x02\x1a\xb0\x02\n" +
+	":spec.auth.generic_oauth.allowed_groups_require_groups_path\x12\xad\x01allowed_groups needs groups_attribute_path, the JMESPath to the groups list in the provider's claims (often \"groups\"); without it Grafana sees no groups and refuses everyone\x1aBsize(this.allowed_groups) == 0 || this.groups_attribute_path != ''B\a\n" +
+	"\x05_nameB\x10\n" +
+	"\x0e_allow_sign_upB\v\n" +
+	"\t_use_pkce\"\xcc\x01\n" +
 	"\x15KubernetesGrafanaSmtp\x12\x1a\n" +
 	"\x04host\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04host\x12!\n" +
 	"\ffrom_address\x18\x02 \x01(\tR\vfromAddress\x12\x1b\n" +
@@ -1416,7 +1873,7 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDescGZIP()
 }
 
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_goTypes = []any{
 	(KubernetesGrafanaDatabaseEngine)(0),         // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabaseEngine
 	(*KubernetesGrafanaSpec)(nil),                // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec
@@ -1429,17 +1886,19 @@ var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_goTypes = []an
 	(*KubernetesGrafanaCommunityDashboard)(nil),  // 8: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaCommunityDashboard
 	(*KubernetesGrafanaServer)(nil),              // 9: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaServer
 	(*KubernetesGrafanaAuth)(nil),                // 10: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth
-	(*KubernetesGrafanaSmtp)(nil),                // 11: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSmtp
-	(*KubernetesGrafanaImage)(nil),               // 12: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaImage
-	(*KubernetesGrafanaScheduling)(nil),          // 13: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling
-	nil,                                          // 14: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),                  // 15: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),        // 16: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil),        // 17: dev.planton.kubernetes.WorkloadToleration
+	(*KubernetesGrafanaGoogleSignIn)(nil),        // 11: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignIn
+	(*KubernetesGrafanaGenericOAuthSignIn)(nil),  // 12: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignIn
+	(*KubernetesGrafanaSmtp)(nil),                // 13: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSmtp
+	(*KubernetesGrafanaImage)(nil),               // 14: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaImage
+	(*KubernetesGrafanaScheduling)(nil),          // 15: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling
+	nil,                                          // 16: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),                  // 17: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),        // 18: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil),        // 19: dev.planton.kubernetes.WorkloadToleration
 }
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_depIdxs = []int32{
-	15, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	17, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
 	2,  // 2: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.admin_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAdminSecret
 	3,  // 3: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.storage:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStorage
 	4,  // 4: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.database:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase
@@ -1447,23 +1906,27 @@ var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_depIdxs = []in
 	8,  // 6: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.community_dashboards:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaCommunityDashboard
 	9,  // 7: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.server:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaServer
 	10, // 8: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.auth:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth
-	11, // 9: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.smtp:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSmtp
-	12, // 10: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.image:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaImage
-	13, // 11: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.scheduling:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling
-	15, // 12: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	13, // 9: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.smtp:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSmtp
+	14, // 10: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.image:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaImage
+	15, // 11: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec.scheduling:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling
+	17, // 12: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	0,  // 13: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.engine:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabaseEngine
-	15, // 14: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.host:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	17, // 14: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.host:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	5,  // 15: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatabase.password_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSecretKeyRef
-	15, // 16: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasource.url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	17, // 16: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasource.url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	7,  // 17: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasource.basic_auth:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasourceBasicAuth
 	5,  // 18: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaDatasourceBasicAuth.password_secret:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSecretKeyRef
-	14, // 19: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
-	17, // 20: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	11, // 19: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth.google:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignIn
+	12, // 20: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaAuth.generic_oauth:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignIn
+	17, // 21: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGoogleSignIn.client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	17, // 22: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaGenericOAuthSignIn.client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 23: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.NodeSelectorEntry
+	19, // 24: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	25, // [25:25] is the sub-list for method output_type
+	25, // [25:25] is the sub-list for method input_type
+	25, // [25:25] is the sub-list for extension type_name
+	25, // [25:25] is the sub-list for extension extendee
+	0,  // [0:25] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_init() }
@@ -1476,13 +1939,15 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_init() {
 	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesgrafana_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

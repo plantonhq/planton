@@ -37,7 +37,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: The modules create no Secret of their own -- object-store credentials are read from EXISTING Secrets the manifest references -- but the Helm release stores its state in namespace-scoped release Secrets the runner must manage, and the pinned chart (18.5.4) renders the gateway's htpasswd Secret when spec.multi_tenancy declares tenants (with existing_htpasswd_secret the chart references the named Secret instead of creating one).
+        notes: The modules create exactly one Secret of their own, kubernetes_secret_v1.r2_credentials (`<name>-r2-credentials`, the r2 arm's key pair, only when storage.r2 is declared); the other arms' object-store credentials are read from EXISTING Secrets the manifest references. The Helm release also stores its state in namespace-scoped release Secrets the runner must manage, and the pinned chart (18.5.4) renders the gateway's htpasswd Secret when spec.multi_tenancy declares tenants (with existing_htpasswd_secret the chart references the named Secret instead of creating one).
       - api_groups:
           - ""
         resources:

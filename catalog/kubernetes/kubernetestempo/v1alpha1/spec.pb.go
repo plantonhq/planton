@@ -101,8 +101,10 @@ func (KubernetesTempoMetricsGeneratorProcessor) EnumDescriptor() ([]byte, []int)
 //
 // STORAGE: `local` (the default) keeps trace blocks on a
 // PersistentVolume — honest for a single replica. More than one
-// replica REQUIRES an object-storage backend (s3/gcs/azure); the
-// s3-compatible arm composes with an in-cluster KubernetesSeaweedFs.
+// replica REQUIRES an object-storage backend (s3/r2/gcs/azure); the
+// s3-compatible arm composes with an in-cluster KubernetesSeaweedFs, and
+// the r2 arm stores in a Cloudflare R2 bucket by reference to the
+// catalog's CloudflareR2Bucket, with nothing S3-shaped declared.
 // KNOW THIS: the chart's own default runs on an emptyDir — every trace
 // vanishes on pod restart — so this component provisions a
 // PersistentVolumeClaim by default instead (`ephemeral` restores the
@@ -415,6 +417,7 @@ type KubernetesTempoStorage struct {
 	//	*KubernetesTempoStorage_S3
 	//	*KubernetesTempoStorage_Gcs
 	//	*KubernetesTempoStorage_Azure
+	//	*KubernetesTempoStorage_R2
 	Backend       isKubernetesTempoStorage_Backend `protobuf_oneof:"backend"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -493,6 +496,15 @@ func (x *KubernetesTempoStorage) GetAzure() *KubernetesTempoAzureStorage {
 	return nil
 }
 
+func (x *KubernetesTempoStorage) GetR2() *KubernetesTempoR2Storage {
+	if x != nil {
+		if x, ok := x.Backend.(*KubernetesTempoStorage_R2); ok {
+			return x.R2
+		}
+	}
+	return nil
+}
+
 type isKubernetesTempoStorage_Backend interface {
 	isKubernetesTempoStorage_Backend()
 }
@@ -524,6 +536,18 @@ type KubernetesTempoStorage_Azure struct {
 	Azure *KubernetesTempoAzureStorage `protobuf:"bytes,4,opt,name=azure,proto3,oneof"`
 }
 
+type KubernetesTempoStorage_R2 struct {
+	// *
+	// Cloudflare R2, in R2's own vocabulary: the owning account, the
+	// bucket's jurisdiction, the bucket and the token's key pair, each by
+	// reference onto the catalog's CloudflareR2Bucket and
+	// CloudflareAccountApiToken. The modules compose everything S3-shaped
+	// R2 needs (the jurisdiction's endpoint host, region `auto`,
+	// path-style addressing). No egress fees, and the traces outlive the
+	// cluster that wrote them.
+	R2 *KubernetesTempoR2Storage `protobuf:"bytes,5,opt,name=r2,proto3,oneof"`
+}
+
 func (*KubernetesTempoStorage_Local) isKubernetesTempoStorage_Backend() {}
 
 func (*KubernetesTempoStorage_S3) isKubernetesTempoStorage_Backend() {}
@@ -531,6 +555,8 @@ func (*KubernetesTempoStorage_S3) isKubernetesTempoStorage_Backend() {}
 func (*KubernetesTempoStorage_Gcs) isKubernetesTempoStorage_Backend() {}
 
 func (*KubernetesTempoStorage_Azure) isKubernetesTempoStorage_Backend() {}
+
+func (*KubernetesTempoStorage_R2) isKubernetesTempoStorage_Backend() {}
 
 // *
 // Local (PersistentVolume) trace storage.
@@ -571,6 +597,172 @@ func (*KubernetesTempoLocalStorage) Descriptor() ([]byte, []int) {
 }
 
 // *
+// Cloudflare R2 backend, composed from the catalog's Cloudflare kinds.
+//
+// R2 speaks S3, so Tempo reaches it through its S3 client — but nothing
+// S3-shaped is declared here. The modules compose the endpoint host from
+// the account and the bucket's jurisdiction
+// (`<account>.r2.cloudflarestorage.com`, or
+// `<account>.<jurisdiction>.r2.cloudflarestorage.com` for an eu, fedramp
+// or us bucket — a jurisdictional bucket is served ONLY through its own
+// host), pin the region to `auto` (the only region R2 accepts), use
+// path-style addressing, and hand Tempo the key pair from their own
+// `<name>-r2-credentials` Secret. There is no keyless posture for R2 from
+// any cluster, so a credential is always declared.
+//
+// KNOW THIS: the bucket's lifecycle expiry must be LATER than
+// `retention`, or blocks vanish under Tempo's index. R2 honours a
+// bucket's location hint only at creation, so pick it where the cluster
+// runs.
+type KubernetesTempoR2Storage struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The Cloudflare account that owns the bucket (32 hex characters). By
+	// reference to the bucket resource's `account_id` output, so the arm
+	// follows the bucket; a literal names an account outside the catalog.
+	AccountId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	// *
+	// The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+	// `fedramp`, or `us`. It selects the S3 host the modules compose, so it
+	// must match the bucket exactly; by reference to the bucket resource's
+	// `jurisdiction` output it cannot drift.
+	Jurisdiction *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=jurisdiction,proto3" json:"jurisdiction,omitempty"`
+	// *
+	// The bucket for trace blocks (must exist; Tempo does not create it).
+	// By reference to the bucket resource's `bucket_name` output.
+	Bucket *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	// *
+	// The S3 key pair R2's S3 API authenticates, written into the modules'
+	// own `<name>-r2-credentials` Secret; never plaintext in the rendered
+	// configuration.
+	Credentials   *KubernetesTempoR2Credentials `protobuf:"bytes,4,opt,name=credentials,proto3" json:"credentials,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesTempoR2Storage) Reset() {
+	*x = KubernetesTempoR2Storage{}
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesTempoR2Storage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesTempoR2Storage) ProtoMessage() {}
+
+func (x *KubernetesTempoR2Storage) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesTempoR2Storage.ProtoReflect.Descriptor instead.
+func (*KubernetesTempoR2Storage) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *KubernetesTempoR2Storage) GetAccountId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.AccountId
+	}
+	return nil
+}
+
+func (x *KubernetesTempoR2Storage) GetJurisdiction() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Jurisdiction
+	}
+	return nil
+}
+
+func (x *KubernetesTempoR2Storage) GetBucket() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Bucket
+	}
+	return nil
+}
+
+func (x *KubernetesTempoR2Storage) GetCredentials() *KubernetesTempoR2Credentials {
+	if x != nil {
+		return x.Credentials
+	}
+	return nil
+}
+
+// *
+// The key pair of an R2 API token scoped to the bucket (Object Read and
+// Write is enough).
+type KubernetesTempoR2Credentials struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The S3 access key id: the API token's id. By reference to a
+	// CloudflareAccountApiToken's `r2_access_key_id` output, or a `$secret/`
+	// reference for a token minted in the dashboard.
+	AccessKeyId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
+	// *
+	// The S3 secret access key: the SHA-256 of the API token's value.
+	// Reference-only. Tempo reads it only at start, so the pods carry a
+	// checksum of the credentials Secret and a rotated key rolls them on
+	// the next apply.
+	SecretAccessKey *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *KubernetesTempoR2Credentials) Reset() {
+	*x = KubernetesTempoR2Credentials{}
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesTempoR2Credentials) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesTempoR2Credentials) ProtoMessage() {}
+
+func (x *KubernetesTempoR2Credentials) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesTempoR2Credentials.ProtoReflect.Descriptor instead.
+func (*KubernetesTempoR2Credentials) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *KubernetesTempoR2Credentials) GetAccessKeyId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.AccessKeyId
+	}
+	return nil
+}
+
+func (x *KubernetesTempoR2Credentials) GetSecretAccessKey() *v1.StringValueOrRef {
+	if x != nil {
+		return x.SecretAccessKey
+	}
+	return nil
+}
+
+// *
 // S3 / S3-compatible object storage.
 type KubernetesTempoS3Storage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -607,7 +799,7 @@ type KubernetesTempoS3Storage struct {
 
 func (x *KubernetesTempoS3Storage) Reset() {
 	*x = KubernetesTempoS3Storage{}
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -619,7 +811,7 @@ func (x *KubernetesTempoS3Storage) String() string {
 func (*KubernetesTempoS3Storage) ProtoMessage() {}
 
 func (x *KubernetesTempoS3Storage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -632,7 +824,7 @@ func (x *KubernetesTempoS3Storage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesTempoS3Storage.ProtoReflect.Descriptor instead.
 func (*KubernetesTempoS3Storage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesTempoS3Storage) GetBucket() string {
@@ -696,7 +888,7 @@ type KubernetesTempoGcsStorage struct {
 
 func (x *KubernetesTempoGcsStorage) Reset() {
 	*x = KubernetesTempoGcsStorage{}
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -708,7 +900,7 @@ func (x *KubernetesTempoGcsStorage) String() string {
 func (*KubernetesTempoGcsStorage) ProtoMessage() {}
 
 func (x *KubernetesTempoGcsStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -721,7 +913,7 @@ func (x *KubernetesTempoGcsStorage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesTempoGcsStorage.ProtoReflect.Descriptor instead.
 func (*KubernetesTempoGcsStorage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesTempoGcsStorage) GetBucket() string {
@@ -758,7 +950,7 @@ type KubernetesTempoAzureStorage struct {
 
 func (x *KubernetesTempoAzureStorage) Reset() {
 	*x = KubernetesTempoAzureStorage{}
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -770,7 +962,7 @@ func (x *KubernetesTempoAzureStorage) String() string {
 func (*KubernetesTempoAzureStorage) ProtoMessage() {}
 
 func (x *KubernetesTempoAzureStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -783,7 +975,7 @@ func (x *KubernetesTempoAzureStorage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesTempoAzureStorage.ProtoReflect.Descriptor instead.
 func (*KubernetesTempoAzureStorage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesTempoAzureStorage) GetAccountName() string {
@@ -823,7 +1015,7 @@ type KubernetesTempoObjectStoreCredentials struct {
 
 func (x *KubernetesTempoObjectStoreCredentials) Reset() {
 	*x = KubernetesTempoObjectStoreCredentials{}
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -835,7 +1027,7 @@ func (x *KubernetesTempoObjectStoreCredentials) String() string {
 func (*KubernetesTempoObjectStoreCredentials) ProtoMessage() {}
 
 func (x *KubernetesTempoObjectStoreCredentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -848,7 +1040,7 @@ func (x *KubernetesTempoObjectStoreCredentials) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesTempoObjectStoreCredentials.ProtoReflect.Descriptor instead.
 func (*KubernetesTempoObjectStoreCredentials) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesTempoObjectStoreCredentials) GetAccessKeyIdSecret() *KubernetesTempoSecretKeyRef {
@@ -882,7 +1074,7 @@ type KubernetesTempoSecretKeyRef struct {
 
 func (x *KubernetesTempoSecretKeyRef) Reset() {
 	*x = KubernetesTempoSecretKeyRef{}
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -894,7 +1086,7 @@ func (x *KubernetesTempoSecretKeyRef) String() string {
 func (*KubernetesTempoSecretKeyRef) ProtoMessage() {}
 
 func (x *KubernetesTempoSecretKeyRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -907,7 +1099,7 @@ func (x *KubernetesTempoSecretKeyRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesTempoSecretKeyRef.ProtoReflect.Descriptor instead.
 func (*KubernetesTempoSecretKeyRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesTempoSecretKeyRef) GetName() string {
@@ -952,7 +1144,7 @@ type KubernetesTempoMetricsGenerator struct {
 
 func (x *KubernetesTempoMetricsGenerator) Reset() {
 	*x = KubernetesTempoMetricsGenerator{}
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -964,7 +1156,7 @@ func (x *KubernetesTempoMetricsGenerator) String() string {
 func (*KubernetesTempoMetricsGenerator) ProtoMessage() {}
 
 func (x *KubernetesTempoMetricsGenerator) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -977,7 +1169,7 @@ func (x *KubernetesTempoMetricsGenerator) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesTempoMetricsGenerator.ProtoReflect.Descriptor instead.
 func (*KubernetesTempoMetricsGenerator) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *KubernetesTempoMetricsGenerator) GetEnabled() bool {
@@ -1020,7 +1212,7 @@ type KubernetesTempoScheduling struct {
 
 func (x *KubernetesTempoScheduling) Reset() {
 	*x = KubernetesTempoScheduling{}
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1032,7 +1224,7 @@ func (x *KubernetesTempoScheduling) String() string {
 func (*KubernetesTempoScheduling) ProtoMessage() {}
 
 func (x *KubernetesTempoScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1045,7 +1237,7 @@ func (x *KubernetesTempoScheduling) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesTempoScheduling.ProtoReflect.Descriptor instead.
 func (*KubernetesTempoScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *KubernetesTempoScheduling) GetNodeSelector() map[string]string {
@@ -1073,7 +1265,7 @@ var File_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto protoreflect.Fil
 
 const file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/kubernetes/kubernetestempo/v1alpha1/spec.proto\x12/dev.planton.kubernetes.kubernetestempo.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd1\x10\n" +
+	"6catalog/kubernetes/kubernetestempo/v1alpha1/spec.proto\x12/dev.planton.kubernetes.kubernetestempo.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xee\x10\n" +
 	"\x13KubernetesTempoSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x123\n" +
@@ -1098,8 +1290,8 @@ const file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDesc = "" +
 	"scheduling\x18\x13 \x01(\v2J.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSchedulingR\n" +
 	"scheduling\x12\x1f\n" +
 	"\vhelm_values\x18\x14 \x01(\tR\n" +
-	"helmValues:\x93\x04\xbaH\x8f\x04\x1a\x9a\x02\n" +
-	"$spec.replicas.require_object_storage\x12ymore than one replica requires an object-storage backend (s3, gcs or azure) — replicas cannot share local trace storage\x1awthis.replicas <= 1 || (has(this.storage) && (has(this.storage.s3) || has(this.storage.gcs) || has(this.storage.azure)))\x1a\xef\x01\n" +
+	"helmValues:\xb0\x04\xbaH\xac\x04\x1a\xb7\x02\n" +
+	"$spec.replicas.require_object_storage\x12}more than one replica requires an object-storage backend (s3, r2, gcs or azure) — replicas cannot share local trace storage\x1a\x8f\x01this.replicas <= 1 || (has(this.storage) && (has(this.storage.s3) || has(this.storage.r2) || has(this.storage.gcs) || has(this.storage.azure)))\x1a\xef\x01\n" +
 	"\x1fspec.ephemeral.excludes_storage\x12gephemeral: true runs on emptyDir — a non-default disk_size or a storage_class must not be set with it\x1ac!this.ephemeral || ((!has(this.disk_size) || this.disk_size == '10Gi') && !has(this.storage_class))B\x10\n" +
 	"\x0e_chart_versionB\v\n" +
 	"\t_replicasB\f\n" +
@@ -1108,14 +1300,26 @@ const file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"_retentionB\x1b\n" +
 	"\x19_jaeger_receivers_enabledB\x12\n" +
-	"\x10_usage_reporting\"\xac\x03\n" +
+	"\x10_usage_reporting\"\x89\x04\n" +
 	"\x16KubernetesTempoStorage\x12d\n" +
 	"\x05local\x18\x01 \x01(\v2L.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoLocalStorageH\x00R\x05local\x12[\n" +
 	"\x02s3\x18\x02 \x01(\v2I.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoS3StorageH\x00R\x02s3\x12^\n" +
 	"\x03gcs\x18\x03 \x01(\v2J.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoGcsStorageH\x00R\x03gcs\x12d\n" +
-	"\x05azure\x18\x04 \x01(\v2L.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorageH\x00R\x05azureB\t\n" +
+	"\x05azure\x18\x04 \x01(\v2L.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorageH\x00R\x05azure\x12[\n" +
+	"\x02r2\x18\x05 \x01(\v2I.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2StorageH\x00R\x02r2B\t\n" +
 	"\abackend\"\x1d\n" +
-	"\x1bKubernetesTempoLocalStorage\"\xb6\x02\n" +
+	"\x1bKubernetesTempoLocalStorage\"\x83\a\n" +
+	"\x18KubernetesTempoR2Storage\x12\x9b\x02\n" +
+	"\n" +
+	"account_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xc7\x01\xbaH\xa1\x01\xba\x01\x9a\x01\n" +
+	"!spec.storage.r2.account_id_format\x128account_id is the 32-hex-character Cloudflare account id\x1a;!has(this.value) || this.value.matches('^[0-9a-fA-F]{32}$')\xc8\x01\x01\x88\xd4a\xda6\x92\xd4a\x19status.outputs.account_idR\taccountId\x12\xd8\x02\n" +
+	"\fjurisdiction\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xff\x01\xbaH\xd7\x01\xba\x01\xd3\x01\n" +
+	"\"spec.storage.r2.jurisdiction_valid\x12Sjurisdiction must be one of \"default\", \"eu\", \"fedramp\", \"us\" (or empty for default)\x1aX!has(this.value) || this.value == '' || this.value in ['default', 'eu', 'fedramp', 'us']\x88\xd4a\xda6\x92\xd4a\x1bstatus.outputs.jurisdictionR\fjurisdiction\x12u\n" +
+	"\x06bucket\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xda6\x92\xd4a\x1astatus.outputs.bucket_nameR\x06bucket\x12w\n" +
+	"\vcredentials\x18\x04 \x01(\v2M.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2CredentialsB\x06\xbaH\x03\xc8\x01\x01R\vcredentials\"\xc0\x02\n" +
+	"\x1cKubernetesTempoR2Credentials\x12\x86\x01\n" +
+	"\raccess_key_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\xca9\x92\xd4a\x1fstatus.outputs.r2_access_key_idR\vaccessKeyId\x12\x96\x01\n" +
+	"\x11secret_access_key\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01\x88\xd4a\xca9\x92\xd4a#status.outputs.r2_secret_access_keyR\x0fsecretAccessKey\"\xb6\x02\n" +
 	"\x18KubernetesTempoS3Storage\x12\x1e\n" +
 	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12\"\n" +
 	"\bendpoint\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bendpoint\x12\x16\n" +
@@ -1169,49 +1373,58 @@ func file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDescGZIP() [
 }
 
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_goTypes = []any{
 	(KubernetesTempoMetricsGeneratorProcessor)(0), // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGeneratorProcessor
 	(*KubernetesTempoSpec)(nil),                   // 1: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec
 	(*KubernetesTempoStorage)(nil),                // 2: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage
 	(*KubernetesTempoLocalStorage)(nil),           // 3: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoLocalStorage
-	(*KubernetesTempoS3Storage)(nil),              // 4: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoS3Storage
-	(*KubernetesTempoGcsStorage)(nil),             // 5: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoGcsStorage
-	(*KubernetesTempoAzureStorage)(nil),           // 6: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorage
-	(*KubernetesTempoObjectStoreCredentials)(nil), // 7: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials
-	(*KubernetesTempoSecretKeyRef)(nil),           // 8: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
-	(*KubernetesTempoMetricsGenerator)(nil),       // 9: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator
-	(*KubernetesTempoScheduling)(nil),             // 10: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling
-	nil,                                           // 11: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),                   // 12: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),         // 13: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil),         // 14: dev.planton.kubernetes.WorkloadToleration
+	(*KubernetesTempoR2Storage)(nil),              // 4: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Storage
+	(*KubernetesTempoR2Credentials)(nil),          // 5: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Credentials
+	(*KubernetesTempoS3Storage)(nil),              // 6: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoS3Storage
+	(*KubernetesTempoGcsStorage)(nil),             // 7: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoGcsStorage
+	(*KubernetesTempoAzureStorage)(nil),           // 8: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorage
+	(*KubernetesTempoObjectStoreCredentials)(nil), // 9: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials
+	(*KubernetesTempoSecretKeyRef)(nil),           // 10: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
+	(*KubernetesTempoMetricsGenerator)(nil),       // 11: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator
+	(*KubernetesTempoScheduling)(nil),             // 12: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling
+	nil,                                           // 13: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),                   // 14: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),         // 15: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil),         // 16: dev.planton.kubernetes.WorkloadToleration
 }
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_depIdxs = []int32{
-	12, // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	2,  // 1: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.storage:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage
-	12, // 2: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 3: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.metrics_generator:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator
-	13, // 4: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	10, // 5: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.scheduling:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling
+	14, // 2: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 3: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.metrics_generator:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator
+	15, // 4: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	12, // 5: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec.scheduling:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling
 	3,  // 6: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.local:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoLocalStorage
-	4,  // 7: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.s3:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoS3Storage
-	5,  // 8: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.gcs:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoGcsStorage
-	6,  // 9: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.azure:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorage
-	7,  // 10: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoS3Storage.credentials:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials
-	8,  // 11: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoGcsStorage.service_account_key_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
-	8,  // 12: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorage.account_key_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
-	8,  // 13: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials.access_key_id_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
-	8,  // 14: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials.secret_access_key_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
-	12, // 15: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator.remote_write_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 16: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator.processors:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGeneratorProcessor
-	11, // 17: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.NodeSelectorEntry
-	14, // 18: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	19, // [19:19] is the sub-list for method output_type
-	19, // [19:19] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	6,  // 7: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.s3:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoS3Storage
+	7,  // 8: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.gcs:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoGcsStorage
+	8,  // 9: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.azure:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorage
+	4,  // 10: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStorage.r2:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Storage
+	14, // 11: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Storage.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 12: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Storage.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 13: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Storage.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 14: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Storage.credentials:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Credentials
+	14, // 15: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 16: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 17: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoS3Storage.credentials:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials
+	10, // 18: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoGcsStorage.service_account_key_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
+	10, // 19: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoAzureStorage.account_key_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
+	10, // 20: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials.access_key_id_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
+	10, // 21: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoObjectStoreCredentials.secret_access_key_secret:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSecretKeyRef
+	14, // 22: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator.remote_write_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 23: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGenerator.processors:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoMetricsGeneratorProcessor
+	13, // 24: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.NodeSelectorEntry
+	16, // 25: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	26, // [26:26] is the sub-list for method output_type
+	26, // [26:26] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_init() }
@@ -1225,6 +1438,7 @@ func file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_init() {
 		(*KubernetesTempoStorage_S3)(nil),
 		(*KubernetesTempoStorage_Gcs)(nil),
 		(*KubernetesTempoStorage_Azure)(nil),
+		(*KubernetesTempoStorage_R2)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1232,7 +1446,7 @@ func file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetestempo_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

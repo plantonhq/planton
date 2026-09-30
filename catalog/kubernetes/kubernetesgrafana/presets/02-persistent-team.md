@@ -3,8 +3,9 @@
 The single stateful instance most teams actually want: a 10Gi volume
 under Grafana's embedded database so hand-built dashboards, users and
 preferences survive pod restarts, a Prometheus datasource wired by
-reference to the cluster's metrics stack, sized resources, and the
-public root URL set for composed exposure.
+reference to the cluster's metrics stack, sized resources, the public
+root URL set for composed exposure, and sign-in through the team's
+Google Workspace.
 
 The volume is ReadWriteOnce, which makes this a one-replica shape by
 design — the spec enforces it. That is not a limitation to work
@@ -21,6 +22,15 @@ KubernetesKubePrometheusStack's exported Prometheus endpoint and
 gives the deployment a real dependency edge — the stack deploys
 first, and renaming it updates this Grafana instead of leaving a
 dead literal URL behind.
+
+Sign-in: create a Web application OAuth client whose redirect URI is
+`<root_url>/login/google`, store its secret as a Planton secret, and
+fill the placeholders. An Internal consent screen in a Google project
+of your Workspace's organization admits only your Workspace; an
+External one admits any Google account, which `allowed_domains` then
+narrows. Once sign-in is declared, Grafana's own authentication screen
+can no longer change it, so the manifest stays the only record of who
+can get in.
 
 Change first: replace the `root_url` placeholder with the real
 hostname and compose the ingress or gateway route over the exported

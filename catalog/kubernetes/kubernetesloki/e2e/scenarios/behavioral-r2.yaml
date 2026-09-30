@@ -1,0 +1,42 @@
+# THE r2 proof: Loki stores its chunks in a real Cloudflare R2 bucket
+# through the r2 arm. The verifier (switched on by this scenario's name)
+# pushes a log line, asks Loki to flush, and lists the bucket over R2's S3
+# API for chunk objects this run wrote; then it deletes the Loki pod and
+# reads the line back. The arm's whole promise is proven on the thing
+# itself: the composed endpoint, region and addressing, and the key pair
+# travelling from the manifest through the module-owned
+# `<name>-r2-credentials` Secret into Loki's environment.
+#
+# The bucket and key pair are the owner-arranged fixture in the planton-e2e
+# Cloudflare test account (a bucket, and an R2 token scoped to it with
+# Object Read & Write). Without them the lane skips. Literal values stand
+# in for the references a real composition uses (`valueFrom` on a
+# CloudflareR2Bucket, `$secret/` for the pair).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLoki
+metadata:
+  name: e2e-loki-r2
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_CLOUDFLARE_ACCOUNT_ID,PLANTON_E2E_CLOUDFLARE_R2_BUCKET,PLANTON_E2E_CLOUDFLARE_R2_ACCESS_KEY_ID,PLANTON_E2E_CLOUDFLARE_R2_SECRET_ACCESS_KEY
+spec:
+  namespace:
+    value: e2e-loki-r2
+  create_namespace: true
+  monolithic:
+    replicas: 1
+    disk_size: 2Gi
+  storage:
+    r2:
+      account_id:
+        value: ${E2E_ENV:PLANTON_E2E_CLOUDFLARE_ACCOUNT_ID}
+      bucket:
+        value: ${E2E_ENV:PLANTON_E2E_CLOUDFLARE_R2_BUCKET}
+      credentials:
+        access_key_id:
+          value: ${E2E_ENV:PLANTON_E2E_CLOUDFLARE_R2_ACCESS_KEY_ID}
+        secret_access_key:
+          value: ${E2E_ENV:PLANTON_E2E_CLOUDFLARE_R2_SECRET_ACCESS_KEY}
+  # Kind-honest cache sizing (the behavioral-durability scenario's reason).
+  caching:
+    chunks_cache_memory_mb: 128
+    results_cache_memory_mb: 128
