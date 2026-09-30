@@ -163,9 +163,8 @@ has the full protocol):
 Assume the cost-minimized development shape -- cheap to run, cheap to
 reshape, honest to upgrade. Region unstated? The org's dominant region
 from what you found, else a sensible default. Every assumption goes into
-the ASSUMPTION REGISTER you present after building (Phase 4a) -- an
-assumption silently taken is a bug; an assumption named is an invitation
-to refine.
+the ASSUMPTION REGISTER you present after building (Phase 4a) -- an assumption
+silently taken is a bug; an assumption named is an invitation to refine.
 
 ### Phase 1 -- Plan (read-only)
 
@@ -440,6 +439,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.worked-example.md` | The full shape of a small chart in one place; checking your layout against a known-good one |
 | `references/cloud.aws-architecture.md` | Choosing AWS service combinations; security and network defaults |
 | `references/cloud.kubernetes-architecture.md` | What runs on the cluster: the Istio/external-dns paved road; the shared-infra vs environment-chart split; why a Planton service's own workload and route sit on the service, never in a chart |
+| `references/cloud.kubernetes-observability.md` | The person wants monitoring, alerting or observability on a cluster: the order (stack per cluster, delivery, outside heartbeat, then the hub), who gets woken, composing typed alert delivery with `$secret/` credentials, and proving it with a fired alert and a stopped Alertmanager |
 | `references/cloud.exploration.md` | Running aws/kubectl/planton commands against real clouds; the read-only and mutation rules |
 
 ### Service delivery (`service.*`)

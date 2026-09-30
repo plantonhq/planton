@@ -283,16 +283,16 @@ spec:
 | `spec.security.transportTls.generate` | `bool` |  | `true` |  |
 | `spec.security.transportTls.perNode` | `bool` |  | `true` |  |
 | `spec.security.transportTls.secret` | `string \| valueFrom` |  |  | KubernetesCertificate (`status.outputs.secret_name`) |
-| `spec.security.transportTls.caSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.security.transportTls.caSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.security.transportTls.nodesDn` | `[]string` |  |  |  |
 | `spec.security.transportTls.adminDn` | `[]string` |  |  |  |
 | `spec.security.httpTls` | `KubernetesOpenSearchTlsHttp` |  |  |  |
 | `spec.security.httpTls.generate` | `bool` |  | `true` |  |
 | `spec.security.httpTls.secret` | `string \| valueFrom` |  |  | KubernetesCertificate (`status.outputs.secret_name`) |
 | `spec.security.config` | `KubernetesOpenSearchSecurityConfig` |  |  |  |
-| `spec.security.config.securityConfigSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
-| `spec.security.config.adminSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
-| `spec.security.config.adminCredentialsSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.security.config.securityConfigSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
+| `spec.security.config.adminSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
+| `spec.security.config.adminCredentialsSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.dashboards` | `KubernetesOpenSearchDashboards` |  |  |  |
 | `spec.dashboards.enabled` | `bool` |  |  |  |
 | `spec.dashboards.replicas` | `int32` |  | `1` |  |
@@ -310,7 +310,7 @@ spec:
 | `spec.dashboards.tls.secret` | `string \| valueFrom` |  |  | KubernetesCertificate (`status.outputs.secret_name`) |
 | `spec.dashboards.basePath` | `string` |  |  |  |
 | `spec.dashboards.additionalConfig` | `map<string, string>` |  |  |  |
-| `spec.dashboards.opensearchCredentialsSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.dashboards.opensearchCredentialsSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.dashboards.service` | `KubernetesOpenSearchDashboardsService` |  |  |  |
 | `spec.dashboards.service.type` | `string` |  | `ClusterIP` |  |
 | `spec.dashboards.service.loadBalancerSourceRanges` | `[]string` |  |  |  |
@@ -318,10 +318,10 @@ spec:
 | `spec.monitoring` | `KubernetesOpenSearchMonitoring` |  |  |  |
 | `spec.monitoring.enabled` | `bool` |  |  |  |
 | `spec.monitoring.scrapeInterval` | `string` |  |  |  |
-| `spec.monitoring.monitoringUserSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.monitoring.monitoringUserSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.monitoring.pluginUrl` | `string` |  |  |  |
 | `spec.keystore` | `[]KubernetesOpenSearchKeystoreValue` |  |  |  |
-| `spec.keystore[].secret` | `string \| valueFrom` | yes |  | KubernetesSecret (`metadata.name`) |
+| `spec.keystore[].secret` | `string \| valueFrom` | yes |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.keystore[].keyMappings` | `map<string, string>` |  |  |  |
 | `spec.snapshotRepositories` | `[]KubernetesOpenSearchSnapshotRepo` |  |  |  |
 | `spec.snapshotRepositories[].name` | `string` | yes |  |  |
@@ -775,8 +775,8 @@ Separate Secret holding the CA (ca.crt; with generate=true and
 this set, the existing CA signs the generated node certs — then
 it must also hold ca.key).
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.security.transportTls.nodesDn
 
@@ -838,8 +838,8 @@ credentials for the operator's own API access.
 Secret holding the security plugin YAML files (config.yml,
 internal_users.yml, roles.yml, ...).
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.security.config.adminSecret
 
@@ -849,8 +849,8 @@ TLS Secret with an admin client certificate (tls.key, tls.crt,
 ca.crt) for securityadmin.sh. Required when transport
 certificates are user-provided.
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.security.config.adminCredentialsSecret
 
@@ -861,8 +861,8 @@ its own API calls (drain coordination, health checks). Required
 with a custom security config — the operator's bootstrapped
 credentials do not exist in that case.
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.dashboards
 
@@ -982,8 +982,8 @@ Secret with `username`/`password` Dashboards uses to reach the
 cluster — required ONLY with a custom security config (the
 operator wires its bootstrapped credentials otherwise).
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.dashboards.service
 
@@ -1044,8 +1044,8 @@ Secret with `username`/`password` for the metrics scrape when a
 custom security config is in play. Empty = the operator wires
 its bootstrapped monitoring access.
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.monitoring.pluginUrl
 
@@ -1070,9 +1070,9 @@ map 1:1 into the keystore unless key_mappings renames them.
 
 Existing Secret with the keystore entries.
 
-- references: KubernetesSecret (`metadata.name`)
+- references: KubernetesSecret (`status.outputs.secret_name`)
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.keystore[].keyMappings
 
@@ -1229,15 +1229,15 @@ Fields that can point at another resource's outputs:
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 | `spec.nodePools[].persistence.pvc.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.security.transportTls.secret` | KubernetesCertificate | `status.outputs.secret_name` |
-| `spec.security.transportTls.caSecret` | KubernetesSecret | `metadata.name` |
+| `spec.security.transportTls.caSecret` | KubernetesSecret | `status.outputs.secret_name` |
 | `spec.security.httpTls.secret` | KubernetesCertificate | `status.outputs.secret_name` |
-| `spec.security.config.securityConfigSecret` | KubernetesSecret | `metadata.name` |
-| `spec.security.config.adminSecret` | KubernetesSecret | `metadata.name` |
-| `spec.security.config.adminCredentialsSecret` | KubernetesSecret | `metadata.name` |
+| `spec.security.config.securityConfigSecret` | KubernetesSecret | `status.outputs.secret_name` |
+| `spec.security.config.adminSecret` | KubernetesSecret | `status.outputs.secret_name` |
+| `spec.security.config.adminCredentialsSecret` | KubernetesSecret | `status.outputs.secret_name` |
 | `spec.dashboards.tls.secret` | KubernetesCertificate | `status.outputs.secret_name` |
-| `spec.dashboards.opensearchCredentialsSecret` | KubernetesSecret | `metadata.name` |
-| `spec.monitoring.monitoringUserSecret` | KubernetesSecret | `metadata.name` |
-| `spec.keystore[].secret` | KubernetesSecret | `metadata.name` |
+| `spec.dashboards.opensearchCredentialsSecret` | KubernetesSecret | `status.outputs.secret_name` |
+| `spec.monitoring.monitoringUserSecret` | KubernetesSecret | `status.outputs.secret_name` |
+| `spec.keystore[].secret` | KubernetesSecret | `status.outputs.secret_name` |
 
 ## Referenced By
 

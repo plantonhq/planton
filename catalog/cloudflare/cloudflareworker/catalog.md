@@ -18,7 +18,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection with a Cloudflare API token that has Workers Scripts Write (and Routes / DNS Edit if you attach custom domains or routes).
+- **Cloudflare Provider Connection** -- an active connection with a Cloudflare API token that has Workers Scripts Write (and Routes / DNS Edit if you attach custom domains or routes). A Worker built from an `r2Bundle` also needs the connection's R2 key pair, with Object Read on the bundle bucket.
 
 ### Cloudflare Account
 
@@ -78,7 +78,7 @@ The InfraPipeline resolves the dependency graph, provisions the KV namespace fir
 
 These are the most important decisions when configuring a Worker. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Script source** -- `content` for inline ES modules, `r2Bundle` for a CI-built artifact (`bucket` is a CloudflareR2Bucket reference or a literal name), `assets` for a static site or full-stack app.
+**Script source** -- `content` for inline ES modules, `r2Bundle` for a CI-built artifact (`bucket` is a CloudflareR2Bucket reference or a literal name; read with the connection's R2 keys, whatever the object's Content-Type), `assets` for a static site or full-stack app.
 
 **Bindings** -- grouped by type. Cross-resource fields take a literal or `valueFrom`. Secrets and secret-key material are sensitive.
 

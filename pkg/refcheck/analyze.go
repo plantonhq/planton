@@ -162,11 +162,35 @@ func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind
 		if reason == "" {
 			reason = resolvePath(rootMd, rest)
 		}
+		if reason == "" {
+			reason = ownNameReason(key.Kind, key.FieldPath)
+		}
 		if reason != "" {
 			mk(key.Kind, key.FieldPath, reason)
 		}
 	}
 	return findings
+}
+
+// ownNameReason refuses a "metadata.name" path into a kind whose spec declares its own
+// `name`. metadata.name is the Planton resource's name; such a kind names the object it
+// provisions with spec.name, which a chart may set differently, so the reference would
+// hand the consumer a name nothing carries. The path always resolves, which is why this
+// needs its own rule. It returns an empty string when the path is sound.
+func ownNameReason(kind cloudresourcekind.CloudResourceKind, refPath string) string {
+	if refPath != "metadata.name" {
+		return ""
+	}
+	inst, err := crkreflect.NewInstance(kind)
+	if err != nil {
+		return ""
+	}
+	specFd := inst.ProtoReflect().Descriptor().Fields().ByName("spec")
+	if specFd == nil || specFd.Kind() != protoreflect.MessageKind || specFd.Message().Fields().ByName("name") == nil {
+		return ""
+	}
+	return "'metadata.name' is the Planton resource's name, but " + kind.String() +
+		" names the object it provisions with spec.name, which can differ -- point at the output that publishes the object's name (status.outputs.*_name)"
 }
 
 // isReferenceField reports whether the field carries a reference: a StringValueOrRef or a

@@ -11,8 +11,12 @@
 # r2.cloudflarestorage.com endpoint; the Pulumi module's s3.GetObject via an
 # aws provider configured the same way). That path authenticates with an R2
 # access key ID and secret (S3 credentials minted from an R2 API token at
-# the account), NOT with the Cloudflare API token above. The runner needs
-# read access to the bundle bucket through that credential.
+# the account), NOT with the Cloudflare API token above. The pair is the
+# Cloudflare connection's r2 block (Pulumi: provider_config.r2; OpenTofu:
+# TF_VAR_r2_access_key_id / TF_VAR_r2_secret_access_key) and needs Object
+# Read on the bundle bucket. An inline-content Worker needs no R2 pair: its
+# tofu module configures the storage provider with an inert placeholder that
+# never signs a request.
 #
 # HONEST UNKNOWN: custom-domain attachment (PUT /accounts/{account_id}/workers/domains)
 # connects a hostname in a Cloudflare zone -- whether Cloudflare additionally

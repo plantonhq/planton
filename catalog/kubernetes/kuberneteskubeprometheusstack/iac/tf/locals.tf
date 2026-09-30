@@ -27,9 +27,9 @@ locals {
 
   # Chart version resolved to the pinned default when unset, so both
   # engines install the same chart whether or not the platform's
-  # defaulting middleware ran. Chart 87.19.1 = Prometheus Operator
-  # v0.92.1.
-  chart_version = coalesce(var.spec.chart_version, "87.19.1")
+  # defaulting middleware ran. Chart 91.8.2 = Prometheus Operator
+  # v0.94.1.
+  chart_version = coalesce(var.spec.chart_version, "91.8.2")
 
   namespace = var.spec.namespace
 
@@ -271,18 +271,187 @@ locals {
         }
       ] : null
       priorityClassName = try(var.spec.alertmanager.scheduling.priority_class_name, "") != "" ? var.spec.alertmanager.scheduling.priority_class_name : null
+
+      # The notification credentials Secret, mounted by the operator at
+      # /etc/alertmanager/secrets/<secret>/ for the receivers' `_file`
+      # fields (typed notifications below).
+      secrets = length(local.notifications_secret_data) > 0 ? [local.notifications_secret_name] : null
     } : k => v if v != null
   }
 
-  # The alerting configuration document (route/receivers). The chart
-  # value is a MAP (rendered into the Alertmanager Secret); empty = the
-  # chart's null-receiver + Watchdog default. Credential discipline lives
-  # on the spec field comment.
+  # ---- typed notifications (twin of the Pulumi module's notifications.go) ---
+  # Three pieces the chart already carries: the alertmanager.config map
+  # (routing tree and receivers; Helm merges it over the chart's default
+  # config, so the chart's inhibit rules, resolve timeout and template glob
+  # stay the chart's), alertmanager.templateFiles (the one message
+  # template), and the module-owned credentials Secret, listed in
+  # alertmanagerSpec.secrets so the operator mounts it at
+  # /etc/alertmanager/secrets/<secret>/ for the receivers' `_file` fields.
+  # No credential lands in chart values or in the rendered configuration.
+  notifications = local.alertmanager_enabled ? try(var.spec.alertmanager.notifications, null) : null
+
+  notifications_secret_name = local.notifications == null ? "" : "${local.release_name}-alertmanager-notifications"
+  notifications_secret_dir  = "/etc/alertmanager/secrets/${local.notifications_secret_name}"
+  notifications_heartbeat   = local.notifications == null ? false : try(local.notifications.heartbeat, null) != null
+  notifications_interval    = local.notifications_heartbeat ? coalesce(local.notifications.heartbeat.interval, "1m") : ""
+
+  notification_env_label       = local.notifications == null ? "" : try(coalesce(local.notifications.message.environment_label), "environment")
+  notification_component_label = local.notifications == null ? "" : try(coalesce(local.notifications.message.component_label), "component")
+
+  # Deterministic Secret keys: <receiver>-<integration>-<index>-<field>,
+  # plus heartbeat-bearer-token (twin: the Pulumi module's key format).
+  notifications_secret_data = local.notifications == null ? {} : merge(
+    merge(concat([{}], [for r in local.notifications.receivers : merge(
+      { for j, d in r.discord : "${r.name}-discord-${j}-webhook-url" => d.webhook_url },
+      merge(concat([{}], [for j, p in r.pushover : {
+        "${r.name}-pushover-${j}-token"    = p.token
+        "${r.name}-pushover-${j}-user-key" = p.user_key
+      }])...),
+      { for j, w in r.webhook : "${r.name}-webhook-${j}-bearer-token" => w.bearer_token if w.bearer_token != "" }
+    )])...),
+    local.notifications_heartbeat && try(local.notifications.heartbeat.bearer_token, "") != "" ? {
+      "heartbeat-bearer-token" = local.notifications.heartbeat.bearer_token
+    } : {}
+  )
+
+  notification_title = "{{ template \"planton.title\" . }}"
+  notification_text  = "{{ template \"planton.text\" . }}"
+
+  # The one message shape every Discord and Pushover notification carries
+  # (twin: notificationTemplate, byte for byte). The title leads with
+  # environment and component; the body is the first alert's
+  # customer_impact (else summary, else name), a count when the group holds
+  # more, and the runbook. It renders ONLY those labels and annotations:
+  # never description, namespace or pod, because on a shared cluster a
+  # namespace can name a customer and upstream rule descriptions
+  # interpolate it.
+  notification_template = <<EOT
+{{ define "planton.title" }}{{ if eq .Status "resolved" }}[RESOLVED] {{ end }}[{{ or (index .CommonLabels "${local.notification_env_label}") "unknown" }}] {{ or (index .CommonLabels "${local.notification_component_label}") .CommonLabels.job "unlabelled" }}: {{ .CommonLabels.alertname }}{{ end }}
+{{ define "planton.text" }}{{ with index .Alerts 0 }}{{ or .Annotations.customer_impact .Annotations.summary .Labels.alertname }}{{ end }}{{ if gt (len .Alerts) 1 }} ({{ len .Alerts }} alerts){{ end }}{{ with (index .Alerts 0).Annotations.runbook_url }}
+Runbook: {{ . }}{{ end }}{{ end }}
+EOT
+
+  # A firing alert pushes at the declared priority, the resolved follow-up
+  # at normal, so a recovery never pages (twin: pushoverPriority).
+  pushover_priority = {
+    normal    = "0"
+    high      = "{{ if eq .Status \"firing\" }}1{{ else }}0{{ end }}"
+    emergency = "{{ if eq .Status \"firing\" }}2{{ else }}0{{ end }}"
+  }
+  matcher_operator = {
+    equals            = "="
+    not_equals        = "!="
+    matches_regex     = "=~"
+    not_matches_regex = "!~"
+  }
+
+  # null (never []) when nothing is declared: the receivers and routes are
+  # tuples of differently-shaped objects, which a conditional cannot unify
+  # with an empty tuple. Both are read only inside notification_config.
+  notification_receivers = local.notifications == null ? null : concat(
+    [{ name = "discard" }],
+    local.notifications_heartbeat ? [{
+      name = "heartbeat"
+      webhook_configs = [{
+        for k, v in {
+          url           = local.notifications.heartbeat.url
+          send_resolved = false
+          max_alerts    = 1
+          http_config = try(local.notifications.heartbeat.bearer_token, "") != "" ? {
+            authorization = { type = "Bearer", credentials_file = "${local.notifications_secret_dir}/heartbeat-bearer-token" }
+          } : null
+        } : k => v if v != null
+      }]
+    }] : [],
+    [for r in local.notifications.receivers : {
+      for k, v in {
+        name = r.name
+        discord_configs = length(r.discord) > 0 ? [for j, d in r.discord : {
+          webhook_url_file = "${local.notifications_secret_dir}/${r.name}-discord-${j}-webhook-url"
+          title            = local.notification_title
+          message          = local.notification_text
+        }] : null
+        pushover_configs = length(r.pushover) > 0 ? [for j, p in r.pushover : {
+          token_file    = "${local.notifications_secret_dir}/${r.name}-pushover-${j}-token"
+          user_key_file = "${local.notifications_secret_dir}/${r.name}-pushover-${j}-user-key"
+          title         = local.notification_title
+          message       = local.notification_text
+          url           = "{{ (index .Alerts 0).Annotations.runbook_url }}"
+          url_title     = "Runbook"
+          priority      = lookup(local.pushover_priority, try(coalesce(p.priority), "emergency"), local.pushover_priority.emergency)
+        }] : null
+        webhook_configs = length(r.webhook) > 0 ? [for j, w in r.webhook : {
+          for wk, wv in {
+            url = w.url
+            http_config = w.bearer_token != "" ? {
+              authorization = { type = "Bearer", credentials_file = "${local.notifications_secret_dir}/${r.name}-webhook-${j}-bearer-token" }
+            } : null
+          } : wk => wv if wv != null
+        }] : null
+      } : k => v if v != null
+    }]
+  )
+
+  # The module-owned Watchdog and InfoInhibitor routes come first, so
+  # declared routes never see either; an always-firing alert is re-sent
+  # only every repeat_interval, so the heartbeat route repeats at its own
+  # interval, well inside the outside monitor's staleness window.
+  notification_routes = local.notifications == null ? null : concat(
+    [
+      {
+        for k, v in {
+          receiver        = local.notifications_heartbeat ? "heartbeat" : "discard"
+          matchers        = ["alertname=\"Watchdog\""]
+          group_wait      = local.notifications_heartbeat ? "0s" : null
+          group_interval  = local.notifications_heartbeat ? local.notifications_interval : null
+          repeat_interval = local.notifications_heartbeat ? local.notifications_interval : null
+        } : k => v if v != null
+      },
+      { receiver = "discard", matchers = ["alertname=\"InfoInhibitor\""] },
+    ],
+    [for c in local.notifications.route.routes : {
+      for k, v in {
+        receiver = c.receiver
+        matchers = [for m in c.matchers : format("%s%s\"%s\"",
+          m.label,
+          lookup(local.matcher_operator, try(coalesce(m.operator), "equals"), "="),
+          replace(replace(m.value, "\\", "\\\\"), "\"", "\\\"")
+        )]
+        continue        = c.continue_matching ? true : null
+        repeat_interval = c.repeat_interval != "" ? c.repeat_interval : null
+      } : k => v if v != null
+    }]
+  )
+
+  notification_config = local.notifications == null ? null : {
+    route = {
+      for k, v in {
+        receiver        = local.notifications.route.receiver
+        group_by        = length(local.notifications.route.group_by) > 0 ? local.notifications.route.group_by : ["alertname", local.notification_env_label, local.notification_component_label]
+        group_wait      = local.notifications.route.group_wait != "" ? local.notifications.route.group_wait : null
+        group_interval  = local.notifications.route.group_interval != "" ? local.notifications.route.group_interval : null
+        repeat_interval = local.notifications.route.repeat_interval != "" ? local.notifications.route.repeat_interval : null
+        routes          = local.notification_routes
+      } : k => v if v != null
+    }
+    receivers = local.notification_receivers
+  }
+
+  # The raw config document and the typed notifications are mutually
+  # exclusive (a spec rule); one() picks whichever is declared without
+  # forcing their two object types to unify in a conditional.
+  alertmanager_config_yaml = local.alertmanager_enabled && try(var.spec.alertmanager.config_yaml, "") != "" ? yamldecode(var.spec.alertmanager.config_yaml) : null
+
+  # The alerting configuration (route/receivers). The chart value is a MAP
+  # (rendered into the Alertmanager Secret); neither declared = the chart's
+  # null-receiver + Watchdog default. Credential discipline lives on the
+  # spec field comments.
   alertmanager_values = {
     for k, v in {
       enabled          = local.alertmanager_enabled
       alertmanagerSpec = local.alertmanager_enabled ? local.alertmanager_spec : null
-      config           = local.alertmanager_enabled && try(var.spec.alertmanager.config_yaml, "") != "" ? yamldecode(var.spec.alertmanager.config_yaml) : null
+      config           = one([for c in [local.alertmanager_config_yaml, local.notification_config] : c if c != null])
+      templateFiles    = local.notification_config != null ? { "planton-notifications.tmpl" = local.notification_template } : null
     } : k => v if v != null
   }
 

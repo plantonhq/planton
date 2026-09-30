@@ -22,6 +22,10 @@ import (
 // query answering with data; a metrics stack that cannot answer a query
 // is not a metrics stack).
 //
+// The behavioral-notifications scenario (recognized by name) proves typed
+// alert delivery reaches a sink standing in for Discord and a heartbeat
+// monitor (kubeprometheusstack_notifications.go).
+//
 // The behavioral-alerting scenario (recognized by name) additionally
 // proves the ALERTING PIPELINE end to end using the stack's own
 // dead-man's-switch: the always-firing Watchdog alert must be visible as
@@ -49,6 +53,9 @@ type KubePrometheusStackVerifier struct {
 	GrafanaEnabled       bool
 	// Alerting switches on the Watchdog pipeline proof.
 	Alerting bool
+	// Notifications switches on the alert-delivery proof
+	// (kubeprometheusstack_notifications.go).
+	Notifications bool
 }
 
 // stackCrds are the monitoring.coreos.com CRDs whose keep-on-uninstall
@@ -91,7 +98,13 @@ func (v *KubePrometheusStackVerifier) VerifyExists(ctx context.Context, kubeconf
 		}
 	}
 
-	return v.proveMetricFlow(ctx, kubeconfig)
+	if err := v.proveMetricFlow(ctx, kubeconfig); err != nil {
+		return err
+	}
+	if v.Notifications {
+		return v.proveNotifications(ctx, kubeconfig)
+	}
+	return nil
 }
 
 func (v *KubePrometheusStackVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {

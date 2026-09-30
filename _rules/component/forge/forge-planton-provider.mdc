@@ -265,6 +265,8 @@ This loader is also the one place a credential guard can live. Provider configs 
 
 Add the new file (and its test) to `pkg/iac/stackinput/providerenvvars/BUILD.bazel`, with `//catalog/<provider_package>` in `deps`; gazelle ran during `make protos`, before this file existed.
 
+**A second credential plane rides `TF_VAR_*`.** When the provider config carries a credential the provider plugin itself does not read -- an S3-compatible key pair for the provider's object store (Cloudflare R2, DigitalOcean Spaces) that a module reads through a secondary provider -- emit it as the `TF_VAR_*` name of the sensitive, nullable variable the consuming modules declare in `iac/tf/credentials.tf`, and only when present (`putIfSet`). Terraform silently ignores a `TF_VAR_*` a module does not declare, so emitting it for every kind of the provider is safe. Never emit it as `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`: an S3 state backend authenticated from the environment reads those names too. References: `cloudflare.go` (R2), `digitalocean.go` (Spaces).
+
 **Step 4.2 -- MODIFY `pkg/iac/stackinput/providerenvvars/loader.go`**
 
 1. Add the provider import.

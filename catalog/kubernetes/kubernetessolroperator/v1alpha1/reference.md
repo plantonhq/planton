@@ -118,8 +118,8 @@ spec:
 | `spec.leaderElectionEnabled` | `bool` |  | `true` |  |
 | `spec.metricsEnabled` | `bool` |  | `true` |  |
 | `spec.mtls` | `KubernetesSolrOperatorMtls` |  |  |  |
-| `spec.mtls.clientCertSecret` | `string \| valueFrom` | yes |  | KubernetesSecret (`metadata.name`) |
-| `spec.mtls.caCertSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.mtls.clientCertSecret` | `string \| valueFrom` | yes |  | KubernetesSecret (`status.outputs.secret_name`) |
+| `spec.mtls.caCertSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.mtls.caCertSecretKey` | `string` |  | `ca-cert.pem` |  |
 | `spec.mtls.insecureSkipVerify` | `bool` |  | `true` |  |
 | `spec.mtls.watchForUpdates` | `bool` |  | `true` |  |
@@ -263,9 +263,9 @@ Secret holding the client certificate the operator presents
 an mtls block without a client certificate would render nothing
 and silently leave the operator without an identity.
 
-- references: KubernetesSecret (`metadata.name`)
+- references: KubernetesSecret (`status.outputs.secret_name`)
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.mtls.caCertSecret
 
@@ -273,8 +273,8 @@ and silently leave the operator without an identity.
 
 Secret holding the CA certificate to trust when calling Solr.
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.mtls.caCertSecretKey
 
@@ -480,8 +480,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.mtls.clientCertSecret` | KubernetesSecret | `metadata.name` |
-| `spec.mtls.caCertSecret` | KubernetesSecret | `metadata.name` |
+| `spec.mtls.clientCertSecret` | KubernetesSecret | `status.outputs.secret_name` |
+| `spec.mtls.caCertSecret` | KubernetesSecret | `status.outputs.secret_name` |
 
 ## See Also
 

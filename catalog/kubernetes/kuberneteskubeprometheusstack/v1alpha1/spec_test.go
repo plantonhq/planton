@@ -193,7 +193,7 @@ var _ = ginkgo.Describe("KubernetesKubePrometheusStack Validation Tests", func()
 
 		ginkgo.It("full surface should be valid", func() {
 			input.Spec.CreateNamespace = true
-			input.Spec.ChartVersion = stringPtr("87.19.1")
+			input.Spec.ChartVersion = stringPtr("91.8.2")
 			input.Spec.CrdUpgradeJob = true
 			input.Spec.Prometheus = &KubernetesKubePrometheusStackPrometheus{
 				Replicas:                  int32Ptr(2),
@@ -218,6 +218,18 @@ var _ = ginkgo.Describe("KubernetesKubePrometheusStack Validation Tests", func()
 			}
 			input.Spec.ImageRegistry = "mirror.example.com"
 			input.Spec.ImagePullSecrets = []string{"mirror-pull"}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("typed notifications with every integration, a page route and a heartbeat should be valid", func() {
+			input.Spec.Alertmanager = &KubernetesKubePrometheusStackAlertmanager{Notifications: validNotifications()}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a receiver with no integration (a drop) should be valid", func() {
+			n := validNotifications()
+			n.Receivers = append(n.Receivers, &KubernetesKubePrometheusStackAlertReceiver{Name: "quiet"})
+			input.Spec.Alertmanager = &KubernetesKubePrometheusStackAlertmanager{Notifications: n}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 	})
@@ -355,5 +367,151 @@ var _ = ginkgo.Describe("KubernetesKubePrometheusStack Validation Tests", func()
 			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
+
+		ginkgo.Describe("typed notifications", func() {
+			var n *KubernetesKubePrometheusStackAlertNotifications
+
+			ginkgo.BeforeEach(func() {
+				n = validNotifications()
+				input.Spec.Alertmanager = &KubernetesKubePrometheusStackAlertmanager{Notifications: n}
+			})
+
+			ginkgo.It("declared beside config_yaml should fail (delivery is declared once)", func() {
+				input.Spec.Alertmanager.ConfigYaml = "route:\n  receiver: slack\n"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("with no receivers should fail", func() {
+				n.Receivers = nil
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("without a route should fail", func() {
+				n.Route = nil
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("two receivers with one name should fail", func() {
+				n.Receivers = append(n.Receivers, &KubernetesKubePrometheusStackAlertReceiver{Name: "channel"})
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a receiver named like a module-owned one should fail", func() {
+				n.Receivers = append(n.Receivers, &KubernetesKubePrometheusStackAlertReceiver{Name: "heartbeat"})
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a receiver name with uppercase should fail", func() {
+				n.Receivers[0].Name = "Channel"
+				n.Route.Receiver = "Channel"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a root route to an undeclared receiver should fail", func() {
+				n.Route.Receiver = "nobody"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a child route to an undeclared receiver should fail", func() {
+				n.Route.Routes[0].Receiver = "nobody"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a child route with no matcher should fail", func() {
+				n.Route.Routes[0].Matchers = nil
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a matcher label with a dash should fail", func() {
+				n.Route.Routes[0].Matchers[0].Label = "sev-erity"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a multi-line matcher value should fail", func() {
+				n.Route.Routes[0].Matchers[0].Value = "page\nwarning"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a discord receiver without a webhook url should fail", func() {
+				n.Receivers[0].Discord[0].WebhookUrl = nil
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a pushover receiver without a user key should fail", func() {
+				n.Receivers[1].Pushover[0].UserKey = nil
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a webhook url without a scheme should fail", func() {
+				n.Receivers[1].Webhook[0].Url = "hooks.example.com/alerts"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a heartbeat without a url should fail", func() {
+				n.Heartbeat.Url = ""
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a heartbeat interval in days should fail", func() {
+				n.Heartbeat.Interval = stringPtr("1d")
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("a malformed repeat_interval should fail", func() {
+				n.Route.RepeatInterval = "four hours"
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("an environment label with a dot should fail", func() {
+				n.Message = &KubernetesKubePrometheusStackAlertMessage{EnvironmentLabel: stringPtr("planton.env")}
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
+		})
 	})
 })
+
+// validNotifications is a delivery block exercising every integration: a
+// Discord channel as the default receiver, a pager (Pushover plus a
+// webhook) claiming page-class alerts and continuing to the channel, and a
+// heartbeat.
+func validNotifications() *KubernetesKubePrometheusStackAlertNotifications {
+	emergency := KubernetesKubePrometheusStackPushoverPriority_emergency
+	regex := KubernetesKubePrometheusStackAlertMatchOperator_matches_regex
+	return &KubernetesKubePrometheusStackAlertNotifications{
+		Receivers: []*KubernetesKubePrometheusStackAlertReceiver{
+			{
+				Name:    "channel",
+				Discord: []*KubernetesKubePrometheusStackAlertDiscord{{WebhookUrl: literal("$secret/discord-webhook")}},
+			},
+			{
+				Name: "pager",
+				Pushover: []*KubernetesKubePrometheusStackAlertPushover{{
+					Token:    literal("$secret/pushover-token"),
+					UserKey:  literal("$secret/pushover-user"),
+					Priority: &emergency,
+				}},
+				Webhook: []*KubernetesKubePrometheusStackAlertWebhook{{
+					Url:         "https://hooks.example.com/alerts",
+					BearerToken: literal("$secret/hook-token"),
+				}},
+			},
+		},
+		Route: &KubernetesKubePrometheusStackAlertRoute{
+			Receiver:       "channel",
+			RepeatInterval: "4h",
+			Routes: []*KubernetesKubePrometheusStackAlertChildRoute{{
+				Matchers: []*KubernetesKubePrometheusStackAlertMatcher{
+					{Label: "severity", Value: "page"},
+					{Label: "environment", Operator: &regex, Value: "prod|management"},
+				},
+				Receiver:         "pager",
+				ContinueMatching: true,
+			}},
+		},
+		Heartbeat: &KubernetesKubePrometheusStackAlertHeartbeat{
+			Url:         "https://watcher.example.com/heartbeat/prod",
+			BearerToken: literal("$secret/heartbeat-token"),
+			Interval:    stringPtr("1m"),
+		},
+	}
+}

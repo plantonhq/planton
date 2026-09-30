@@ -259,7 +259,7 @@ message KubernetesMetricsServerTls {
    */
   dev.planton.shared.foreignkey.v1.StringValueOrRef existing_secret_name = 3 [
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
   ];
 
   option (buf.validate.message).cel = {

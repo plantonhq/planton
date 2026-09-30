@@ -114,7 +114,7 @@ spec:
 | `spec.tls.certManagerIssuer.issuer.name` | `string \| valueFrom` | yes |  | KubernetesIssuer (`status.outputs.issuer_name`) |
 | `spec.tls.certManagerIssuer.clusterIssuer` | `CertManagerClusterIssuerRef` |  |  |  |
 | `spec.tls.certManagerIssuer.clusterIssuer.name` | `string \| valueFrom` | yes |  | KubernetesClusterIssuer (`status.outputs.cluster_issuer_name`) |
-| `spec.tls.existingSecretName` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.tls.existingSecretName` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.resources` | `ContainerResources` |  |  |  |
 | `spec.resources.limits` | `CpuMemory` |  |  |  |
 | `spec.resources.limits.cpu` | `string` |  |  |  |
@@ -353,8 +353,8 @@ KubernetesClusterIssuer resource.
 
 Name of the existing kubernetes.io/tls Secret (type existing_secret).
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.resources
 
@@ -554,7 +554,7 @@ Fields that can point at another resource's outputs:
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 | `spec.tls.certManagerIssuer.issuer.name` | KubernetesIssuer | `status.outputs.issuer_name` |
 | `spec.tls.certManagerIssuer.clusterIssuer.name` | KubernetesClusterIssuer | `status.outputs.cluster_issuer_name` |
-| `spec.tls.existingSecretName` | KubernetesSecret | `metadata.name` |
+| `spec.tls.existingSecretName` | KubernetesSecret | `status.outputs.secret_name` |
 
 ## See Also
 

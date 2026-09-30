@@ -707,11 +707,11 @@ const file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDes
 	"\x18insecure_skip_tls_verify\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x15insecureSkipTlsVerify\x88\x01\x01\x12\x1b\n" +
 	"\tca_bundle\x18\x03 \x01(\tR\bcaBundleB\t\n" +
 	"\a_createB\x1b\n" +
-	"\x19_insecure_skip_tls_verify\"\x80\b\n" +
+	"\x19_insecure_skip_tls_verify\"\x8e\b\n" +
 	"\x1aKubernetesMetricsServerTls\x12\x81\x01\n" +
 	"\x04type\x18\x01 \x01(\x0e2W.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsTypeB\x0f\x8a\xa6\x1d\vself_signedH\x00R\x04type\x88\x01\x01\x12\\\n" +
-	"\x13cert_manager_issuer\x18\x04 \x01(\v2,.dev.planton.kubernetes.CertManagerIssuerRefR\x11certManagerIssuer\x12|\n" +
-	"\x14existing_secret_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xa7\x1f\x92\xd4a\rmetadata.nameR\x12existingSecretName:\xf2\x04\xbaH\xee\x04\x1a\xc1\x01\n" +
+	"\x13cert_manager_issuer\x18\x04 \x01(\v2,.dev.planton.kubernetes.CertManagerIssuerRefR\x11certManagerIssuer\x12\x89\x01\n" +
+	"\x14existing_secret_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xa7\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\x12existingSecretName:\xf2\x04\xbaH\xee\x04\x1a\xc1\x01\n" +
 	"&spec.tls.existing_secret_requires_name\x12etls type existing_secret requires existing_secret_name — the Secret holding the serving certificate\x1a0this.type != 3 || has(this.existing_secret_name)\x1a\xc9\x01\n" +
 	"*spec.tls.issuer_requires_cert_manager_type\x12icert_manager_issuer is only used with tls type cert_manager — set type accordingly or remove the issuer\x1a0!has(this.cert_manager_issuer) || this.type == 2\x1a\xdb\x01\n" +
 	"-spec.tls.secret_requires_existing_secret_type\x12wexisting_secret_name is only used with tls type existing_secret — set type accordingly or remove the secret reference\x1a1!has(this.existing_secret_name) || this.type == 3B\a\n" +

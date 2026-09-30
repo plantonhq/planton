@@ -225,7 +225,7 @@ message KubernetesSolrOperatorMtls {
     (buf.validate.field).required = true,
     (dev.planton.shared.options.sensitive_exempt_reason) = "Name of an existing Kubernetes Secret (reference), not secret material",
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
   ];
 
   /**
@@ -234,7 +234,7 @@ message KubernetesSolrOperatorMtls {
   dev.planton.shared.foreignkey.v1.StringValueOrRef ca_cert_secret = 2 [
     (dev.planton.shared.options.sensitive_exempt_reason) = "Name of an existing Kubernetes Secret (reference), not secret material",
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
   ];
 
   /**

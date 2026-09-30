@@ -152,7 +152,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesBackendTlsPolicy | `spec.validation.caCertificateRefs[].name` | `status.outputs.configmap_name` |
 | KubernetesGateway | `spec.tls.frontend.default.validation.caCertificateRefs[].name` | `status.outputs.configmap_name` |
 | KubernetesGateway | `spec.tls.frontend.perPort[].tls.validation.caCertificateRefs[].name` | `status.outputs.configmap_name` |
-| KubernetesGhaRunnerScaleSet | `spec.githubServerTls.configMapName` | `metadata.name` |
+| KubernetesGhaRunnerScaleSet | `spec.githubServerTls.configMapName` | `status.outputs.configmap_name` |
 | KubernetesKafkaConnector | `spec.listOffsets.toConfigMap` | `status.outputs.configmap_name` |
 | KubernetesKafkaConnector | `spec.alterOffsets.fromConfigMap` | `status.outputs.configmap_name` |
 

@@ -222,6 +222,7 @@ be released and must be reported as a critical gap regardless of other scores.
 - [ ] `iac/tf/locals.tf` exists
 - [ ] `iac/tf/main.tf` exists and is substantial (>1KB)
 - [ ] `iac/tf/outputs.tf` exists
+- [ ] Every provider the module declares configures with only the connection's own credential: a provider used on a conditional path only (a secondary S3-compatible provider for R2/Spaces objects) gets its credential from `credentials.tf` variables on that path and a fixed placeholder elsewhere, never an ambient `AWS_*` chain (see the forge Terraform flow's unused-provider note). Prove it with a plan run in a stripped environment, not `tofu validate`
 
 **Module Comment Quality (scored as part of this category):**
 - [ ] HCL carries authoring comments that explain *why* / trade-offs / provider quirks / non-obvious ordering, not line-by-line narration (the same module-comment bar as the Pulumi module)

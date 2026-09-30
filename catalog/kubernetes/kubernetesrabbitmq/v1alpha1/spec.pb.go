@@ -973,11 +973,11 @@ const file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_spec_proto_rawDesc = "
 	"\n" +
 	"env_config\x18\x04 \x01(\tB\xd7\x01\xbaH\xd3\x01\xba\x01\xc9\x01\n" +
 	"3spec.configuration.env_config.no_shell_substitution\x12eenv_config must not contain shell command substitution ('$(...)' or backticks) — the CRD rejects it\x1a+!this.contains('$(') && !this.contains('`')r\x04\x18\xa0\x8d\x06R\tenvConfig\x126\n" +
-	"\x12erlang_inet_config\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\xd0\x0fR\x10erlangInetConfig\"\xc4\x02\n" +
+	"\x12erlang_inet_config\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\xd0\x0fR\x10erlangInetConfig\"\xd1\x02\n" +
 	"\x15KubernetesRabbitMqTls\x12~\n" +
 	"\vsecret_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xc1\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\n" +
-	"secretName\x12p\n" +
-	"\x0eca_secret_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xa7\x1f\x92\xd4a\rmetadata.nameR\fcaSecretName\x129\n" +
+	"secretName\x12}\n" +
+	"\x0eca_secret_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xa7\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\fcaSecretName\x129\n" +
 	"\x19disable_non_tls_listeners\x18\x03 \x01(\bR\x16disableNonTlsListeners\"\xcc\x01\n" +
 	"\x1fKubernetesRabbitMqSecretBackend\x12j\n" +
 	"\x05vault\x18\x01 \x01(\v2R.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqVaultBackendH\x00R\x05vault\x122\n" +

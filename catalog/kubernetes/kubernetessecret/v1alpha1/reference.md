@@ -320,19 +320,19 @@ Fields on other kinds that can point at this resource:
 | KubernetesJob | `spec.pod.imagePullSecrets` | `spec.name` |
 | KubernetesKarapace | `spec.httpAuthentication.basic.secretName` | `status.outputs.secret_name` |
 | KubernetesListenerSet | `spec.listeners[].tls.certificateRefs[].name` | `status.outputs.secret_name` |
-| KubernetesMetricsServer | `spec.tls.existingSecretName` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.transportTls.caSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.config.securityConfigSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.config.adminSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.config.adminCredentialsSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.dashboards.opensearchCredentialsSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.monitoring.monitoringUserSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.keystore[].secret` | `metadata.name` |
-| KubernetesRabbitMq | `spec.tls.caSecretName` | `metadata.name` |
+| KubernetesMetricsServer | `spec.tls.existingSecretName` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.transportTls.caSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.config.securityConfigSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.config.adminSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.config.adminCredentialsSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.dashboards.opensearchCredentialsSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.monitoring.monitoringUserSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.keystore[].secret` | `status.outputs.secret_name` |
+| KubernetesRabbitMq | `spec.tls.caSecretName` | `status.outputs.secret_name` |
 | KubernetesServiceAccount | `spec.imagePullSecrets` | `spec.name` |
-| KubernetesSolr | `spec.security.basicAuthSecret` | `metadata.name` |
-| KubernetesSolrOperator | `spec.mtls.clientCertSecret` | `metadata.name` |
-| KubernetesSolrOperator | `spec.mtls.caCertSecret` | `metadata.name` |
+| KubernetesSolr | `spec.security.basicAuthSecret` | `status.outputs.secret_name` |
+| KubernetesSolrOperator | `spec.mtls.clientCertSecret` | `status.outputs.secret_name` |
+| KubernetesSolrOperator | `spec.mtls.caCertSecret` | `status.outputs.secret_name` |
 | KubernetesStatefulSet | `spec.pod.imagePullSecrets` | `spec.name` |
 
 ## See Also

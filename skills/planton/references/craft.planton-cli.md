@@ -178,6 +178,33 @@ before sending it — fix the field it names (`validate` on a multi-document
 file names the document: "document 2 of 2 (name): …"); **Request Refused** is the server
 refusing a request as invalid, nothing changed — relay its reason.
 
+## What changed, and who changed it
+
+```
+planton activity --since 24h -o json            # the organization's feed, newest first
+planton activity --env prod --attention -o json # what failed or waits for approval in prod
+planton activity --mine --since 7d -o json      # the person's own changes
+planton activity <Kind> <name> -o json          # one resource's activity
+planton history <Kind> <name>                   # one resource's field-by-field versions
+```
+
+`activity` is the answer to "what changed", "what broke" and "who touched
+it": one card per change a person, their CI, or the Assistant made, with
+who, what, when, and how its run ended. Platform housekeeping never appears,
+and every card is trimmed to what the signed-in person may open, so an empty
+page is "nothing you may see in this view", never a refusal. It covers the
+whole organization; `--env` narrows only when passed. Windows (`--since`,
+`--until`) take `24h`, `7d`, `30d`, any `<n>h` or `<n>d`, or an RFC 3339
+moment; `--area` takes `infrastructure`, `services_pipelines`,
+`connections_credentials`, `configuration_secrets` or
+`organization_members`. Each card's `spec.source` names the run behind it:
+read a failed service run's logs or a stack job from there, and a
+configuration change's diff with `history <version-id>`. Lead a summary with
+the `--attention` cards, then the rest by area, naming people and resources.
+If `planton activity` is an unknown command, the CLI is older than this
+feature: tell the person to update it (`brew upgrade planton`) and stop,
+rather than piecing the answer together from other commands.
+
 ## Watching a running deploy (humans; agents prefer snapshots)
 
 ```

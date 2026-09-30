@@ -616,10 +616,10 @@ const file_catalog_kubernetes_kubernetessolroperator_v1alpha1_spec_proto_rawDesc
 	"\ainstall\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\ainstall\x88\x01\x01\x12!\n" +
 	"\fuse_existing\x18\x02 \x01(\bR\vuseExistingB\n" +
 	"\n" +
-	"\b_install\"\xdf\x05\n" +
-	"\x1aKubernetesSolrOperatorMtls\x12\xc8\x01\n" +
-	"\x12client_cert_secret\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBf\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dFName of an existing Kubernetes Secret (reference), not secret material\x88\xd4a\xa7\x1f\x92\xd4a\rmetadata.nameR\x10clientCertSecret\x12\xba\x01\n" +
-	"\x0eca_cert_secret\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB`\xaa\xa6\x1dFName of an existing Kubernetes Secret (reference), not secret material\x88\xd4a\xa7\x1f\x92\xd4a\rmetadata.nameR\fcaCertSecret\x12w\n" +
+	"\b_install\"\xf9\x05\n" +
+	"\x1aKubernetesSolrOperatorMtls\x12\xd5\x01\n" +
+	"\x12client_cert_secret\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBs\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dFName of an existing Kubernetes Secret (reference), not secret material\x88\xd4a\xa7\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\x10clientCertSecret\x12\xc7\x01\n" +
+	"\x0eca_cert_secret\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBm\xaa\xa6\x1dFName of an existing Kubernetes Secret (reference), not secret material\x88\xd4a\xa7\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\fcaCertSecret\x12w\n" +
 	"\x12ca_cert_secret_key\x18\x03 \x01(\tBE\x8a\xa6\x1d\vca-cert.pem\xaa\xa6\x1d2Key NAME within the CA Secret, not secret materialH\x00R\x0fcaCertSecretKey\x88\x01\x01\x12?\n" +
 	"\x14insecure_skip_verify\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x12insecureSkipVerify\x88\x01\x01\x129\n" +
 	"\x11watch_for_updates\x18\x05 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x0fwatchForUpdates\x88\x01\x01B\x15\n" +

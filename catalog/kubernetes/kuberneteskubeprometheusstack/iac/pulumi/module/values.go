@@ -360,11 +360,23 @@ func buildAlertmanagerValues(locals *Locals) (map[string]interface{}, error) {
 	applyScheduling(alertmanagerSpec, am.GetScheduling())
 	alertmanager["alertmanagerSpec"] = alertmanagerSpec
 
-	// The alerting configuration document (route/receivers). The chart
+	// Typed notifications (notifications.go): the routing tree and
+	// receivers, the message template, and the credentials Secret mounted
+	// for the receivers' `_file` fields. Mutually exclusive with
+	// config_yaml (a spec rule).
+	if n := locals.Notifications; n != nil {
+		alertmanager["config"] = n.Config
+		alertmanager["templateFiles"] = n.TemplateFiles
+		if len(n.SecretData) > 0 {
+			alertmanagerSpec["secrets"] = []interface{}{locals.NotificationsSecretName}
+		}
+	}
+
+	// The raw alerting configuration document (route/receivers). The chart
 	// value is a MAP (rendered into the Alertmanager Secret), so the
 	// spec's YAML seam parses here; empty = the chart's null-receiver +
 	// Watchdog default. Credential discipline lives on the spec field
-	// comment (use _file receiver fields / AlertmanagerConfig objects,
+	// comment (use _file receiver fields over a Secret the user mounts,
 	// never inline tokens).
 	if am.GetConfigYaml() != "" {
 		config := map[string]interface{}{}

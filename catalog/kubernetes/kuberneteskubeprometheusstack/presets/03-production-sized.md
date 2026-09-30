@@ -21,12 +21,21 @@ control plane (kubeadm, datacenter) DROP the `control_plane_scrapers`
 and `default_rules` blocks so the controller-manager, scheduler,
 etcd and kube-proxy are scraped and their curated alerts stay armed.
 
+Alert delivery is declared, not left for later: every alert posts to
+the team's Discord channel, `severity=page` alerts also ring the
+on-call phone through Pushover (emergency priority, repeating until
+acknowledged), and the Watchdog heartbeat lets an outside monitor page
+when the cluster goes quiet. The pager receiver carries the channel's
+webhook too, because the root receiver only takes alerts no child
+route claims.
+
 Change first: `external_labels.cluster` to the cluster's real name
-(multi-cluster backends and federation key on it), then
-`alertmanager.config_yaml` with real notification routes — until
-then alerts are visible in the UIs but notify nobody. Add
-`prometheus.remote_write` when a long-term or managed backend enters
-the picture.
+(multi-cluster backends and federation key on it), then the
+`$secret/` placeholders under `alertmanager.notifications` to your
+organization's secrets and the heartbeat URL to your dead-man's-switch
+monitor. Fire one test alert (the guide shows how) before trusting it.
+Add `prometheus.remote_write` when a long-term or managed backend
+enters the picture.
 
 See [03-production-sized.yaml](./03-production-sized.yaml) for the
 manifest.

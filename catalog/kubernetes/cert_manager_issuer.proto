@@ -388,7 +388,7 @@ message CertManagerRoute53ServiceAccountAuth {
   dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_name = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesServiceAccount,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.service_account_name"
   ];
 
   // TokenRequest audiences for the projected token. Empty = cert-manager's
@@ -688,7 +688,7 @@ message CertManagerVaultKubernetesAuth {
   dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_name = 3 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesServiceAccount,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.service_account_name"
   ];
 
   // TokenRequest audiences for the ServiceAccount token. Empty = Vault default.

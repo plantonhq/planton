@@ -86,6 +86,129 @@ func (KubernetesKubePrometheusStackMonitorDiscovery) EnumDescriptor() ([]byte, [
 }
 
 // *
+// **KubernetesKubePrometheusStackPushoverPriority** is Pushover's priority
+// for a firing alert.
+type KubernetesKubePrometheusStackPushoverPriority int32
+
+const (
+	// Unspecified. Defaults to emergency.
+	KubernetesKubePrometheusStackPushoverPriority_kubernetes_kube_prometheus_stack_pushover_priority_unspecified KubernetesKubePrometheusStackPushoverPriority = 0
+	// Pushover priority 0: a notification with the device's usual sound.
+	KubernetesKubePrometheusStackPushoverPriority_normal KubernetesKubePrometheusStackPushoverPriority = 1
+	// Pushover priority 1: bypasses the recipient's quiet hours.
+	KubernetesKubePrometheusStackPushoverPriority_high KubernetesKubePrometheusStackPushoverPriority = 2
+	// Pushover priority 2: repeats every minute for up to an hour until
+	// acknowledged, and can break through silent mode.
+	KubernetesKubePrometheusStackPushoverPriority_emergency KubernetesKubePrometheusStackPushoverPriority = 3
+)
+
+// Enum value maps for KubernetesKubePrometheusStackPushoverPriority.
+var (
+	KubernetesKubePrometheusStackPushoverPriority_name = map[int32]string{
+		0: "kubernetes_kube_prometheus_stack_pushover_priority_unspecified",
+		1: "normal",
+		2: "high",
+		3: "emergency",
+	}
+	KubernetesKubePrometheusStackPushoverPriority_value = map[string]int32{
+		"kubernetes_kube_prometheus_stack_pushover_priority_unspecified": 0,
+		"normal":    1,
+		"high":      2,
+		"emergency": 3,
+	}
+)
+
+func (x KubernetesKubePrometheusStackPushoverPriority) Enum() *KubernetesKubePrometheusStackPushoverPriority {
+	p := new(KubernetesKubePrometheusStackPushoverPriority)
+	*p = x
+	return p
+}
+
+func (x KubernetesKubePrometheusStackPushoverPriority) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (KubernetesKubePrometheusStackPushoverPriority) Descriptor() protoreflect.EnumDescriptor {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_enumTypes[1].Descriptor()
+}
+
+func (KubernetesKubePrometheusStackPushoverPriority) Type() protoreflect.EnumType {
+	return &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_enumTypes[1]
+}
+
+func (x KubernetesKubePrometheusStackPushoverPriority) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackPushoverPriority.Descriptor instead.
+func (KubernetesKubePrometheusStackPushoverPriority) EnumDescriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+// *
+// **KubernetesKubePrometheusStackAlertMatchOperator** is a label
+// matcher's comparison.
+type KubernetesKubePrometheusStackAlertMatchOperator int32
+
+const (
+	// Unspecified. Defaults to equals.
+	KubernetesKubePrometheusStackAlertMatchOperator_kubernetes_kube_prometheus_stack_alert_match_operator_unspecified KubernetesKubePrometheusStackAlertMatchOperator = 0
+	// The label equals the value (`=`).
+	KubernetesKubePrometheusStackAlertMatchOperator_equals KubernetesKubePrometheusStackAlertMatchOperator = 1
+	// The label differs from the value (`!=`).
+	KubernetesKubePrometheusStackAlertMatchOperator_not_equals KubernetesKubePrometheusStackAlertMatchOperator = 2
+	// The label matches the regular expression (`=~`).
+	KubernetesKubePrometheusStackAlertMatchOperator_matches_regex KubernetesKubePrometheusStackAlertMatchOperator = 3
+	// The label does not match the regular expression (`!~`).
+	KubernetesKubePrometheusStackAlertMatchOperator_not_matches_regex KubernetesKubePrometheusStackAlertMatchOperator = 4
+)
+
+// Enum value maps for KubernetesKubePrometheusStackAlertMatchOperator.
+var (
+	KubernetesKubePrometheusStackAlertMatchOperator_name = map[int32]string{
+		0: "kubernetes_kube_prometheus_stack_alert_match_operator_unspecified",
+		1: "equals",
+		2: "not_equals",
+		3: "matches_regex",
+		4: "not_matches_regex",
+	}
+	KubernetesKubePrometheusStackAlertMatchOperator_value = map[string]int32{
+		"kubernetes_kube_prometheus_stack_alert_match_operator_unspecified": 0,
+		"equals":            1,
+		"not_equals":        2,
+		"matches_regex":     3,
+		"not_matches_regex": 4,
+	}
+)
+
+func (x KubernetesKubePrometheusStackAlertMatchOperator) Enum() *KubernetesKubePrometheusStackAlertMatchOperator {
+	p := new(KubernetesKubePrometheusStackAlertMatchOperator)
+	*p = x
+	return p
+}
+
+func (x KubernetesKubePrometheusStackAlertMatchOperator) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (KubernetesKubePrometheusStackAlertMatchOperator) Descriptor() protoreflect.EnumDescriptor {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_enumTypes[2].Descriptor()
+}
+
+func (KubernetesKubePrometheusStackAlertMatchOperator) Type() protoreflect.EnumType {
+	return &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_enumTypes[2]
+}
+
+func (x KubernetesKubePrometheusStackAlertMatchOperator) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertMatchOperator.Descriptor instead.
+func (KubernetesKubePrometheusStackAlertMatchOperator) EnumDescriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+// *
 // **KubernetesKubePrometheusStackSpec** deploys the kube-prometheus-stack —
 // the industry-standard cluster monitoring bundle — from the official
 // `kube-prometheus-stack` Helm chart
@@ -154,8 +277,11 @@ type KubernetesKubePrometheusStackSpec struct {
 	// When false, the namespace must already exist.
 	CreateNamespace bool `protobuf:"varint,2,opt,name=create_namespace,json=createNamespace,proto3" json:"create_namespace,omitempty"`
 	// *
-	// Helm chart version to install (e.g. "87.19.1" — chart 87.19.1 pairs
-	// with Prometheus Operator v0.92.1). Versions must exist as SERVED
+	// Helm chart version to install (e.g. "91.8.2" — chart 91.8.2 pairs
+	// with Prometheus Operator v0.94.1 and Alertmanager v0.34.1; typed
+	// Discord delivery needs operator v0.93 or later, chart 88 or later,
+	// because older operators refuse Discord's webhook_url_file). Versions
+	// must exist as SERVED
 	// charts in the repository index
 	// (https://prometheus-community.github.io/helm-charts). KNOW THIS:
 	// bumping the chart version does NOT upgrade the CRDs (see the CRD
@@ -1050,19 +1176,30 @@ type KubernetesKubePrometheusStackAlertmanager struct {
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,7,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
 	// The Alertmanager configuration document (route/receivers/
-	// inhibit_rules) as YAML — where notification destinations (Slack,
-	// PagerDuty, email, webhooks) are declared. Empty = the chart's
+	// inhibit_rules) as raw YAML, for integrations `notifications` does not
+	// type yet (Slack, PagerDuty, email, Opsgenie, ...). Empty = the chart's
 	// default: everything routes to a "null" receiver (alerts are visible
 	// in the UIs and APIs but notify nobody), with the always-firing
 	// Watchdog alert routed separately as the dead-man's-switch hook.
-	// KNOW THIS: webhook URLs and API keys in this document are
-	// credentials — reference them with Alertmanager's `_file` fields and
-	// mount the Secret via `helm_values`, or manage the whole document as
-	// an AlertmanagerConfig object instead of inlining tokens here.
+	// Prefer `notifications` whenever it covers the destination: its
+	// credentials are managed-secret references the platform enforces, while
+	// this document is plain text. Never inline a webhook URL or API key
+	// here — use Alertmanager's `_file` fields over a Secret you mount
+	// yourself. Mutually exclusive with `notifications`.
 	ConfigYaml string `protobuf:"bytes,8,opt,name=config_yaml,json=configYaml,proto3" json:"config_yaml,omitempty"`
 	// *
 	// Scheduling for the Alertmanager pods.
-	Scheduling    *KubernetesKubePrometheusStackScheduling `protobuf:"bytes,9,opt,name=scheduling,proto3" json:"scheduling,omitempty"`
+	Scheduling *KubernetesKubePrometheusStackScheduling `protobuf:"bytes,9,opt,name=scheduling,proto3" json:"scheduling,omitempty"`
+	// *
+	// Typed alert delivery: who hears about which alert, through Discord,
+	// Pushover or a webhook, plus a heartbeat to an outside dead-man's-switch
+	// monitor. Every credential is a managed-secret reference; the module
+	// writes them into one Secret it owns (`<name>-alertmanager-notifications`),
+	// mounts it into Alertmanager, and renders the configuration with
+	// Alertmanager's `_file` fields, so no credential ever sits in chart
+	// values or in the rendered configuration. Mutually exclusive with
+	// `config_yaml`.
+	Notifications *KubernetesKubePrometheusStackAlertNotifications `protobuf:"bytes,10,opt,name=notifications,proto3" json:"notifications,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1160,6 +1297,770 @@ func (x *KubernetesKubePrometheusStackAlertmanager) GetScheduling() *KubernetesK
 	return nil
 }
 
+func (x *KubernetesKubePrometheusStackAlertmanager) GetNotifications() *KubernetesKubePrometheusStackAlertNotifications {
+	if x != nil {
+		return x.Notifications
+	}
+	return nil
+}
+
+// *
+// **KubernetesKubePrometheusStackAlertNotifications** is the typed
+// Alertmanager configuration: named receivers, one routing tree, an
+// optional heartbeat, and the message shape.
+//
+// WHAT THE MODULE OWNS: two routes are always placed before any route
+// declared here — the always-firing `Watchdog` alert goes to the heartbeat
+// (or is dropped when no heartbeat is declared), and the chart's
+// `InfoInhibitor` helper alert is dropped — so declared routes never see
+// either. Without that, a declared default receiver would get the Watchdog
+// forever. The chart's standard inhibit rules (critical silences warning
+// and info for the same alert in the same namespace) are kept.
+//
+// THE MESSAGE: every Discord and Pushover notification carries the title
+// `[<environment>] <component>: <alertname>` and, per alert, its
+// `customer_impact` annotation (else its `summary`) and `runbook_url`. Only
+// those labels and annotations are rendered — never `description`,
+// `namespace` or `pod`, because on a shared cluster a namespace can name a
+// customer and upstream rule descriptions interpolate it.
+type KubernetesKubePrometheusStackAlertNotifications struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The destinations. Each has a name the routes refer to and any number
+	// of integrations; a receiver with none drops what it receives.
+	Receivers []*KubernetesKubePrometheusStackAlertReceiver `protobuf:"bytes,1,rep,name=receivers,proto3" json:"receivers,omitempty"`
+	// *
+	// The routing tree: the receiver every alert reaches unless a child
+	// route claims it first.
+	Route *KubernetesKubePrometheusStackAlertRoute `protobuf:"bytes,2,opt,name=route,proto3" json:"route,omitempty"`
+	// *
+	// A dead-man's switch: the always-firing Watchdog alert is posted to an
+	// outside monitor every `interval`, so when Alertmanager (or the whole
+	// cluster) dies, the monitor notices the silence and pages. Empty = the
+	// Watchdog is dropped.
+	Heartbeat *KubernetesKubePrometheusStackAlertHeartbeat `protobuf:"bytes,3,opt,name=heartbeat,proto3" json:"heartbeat,omitempty"`
+	// *
+	// Which alert labels name the environment and the component in every
+	// message title.
+	Message       *KubernetesKubePrometheusStackAlertMessage `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertNotifications) Reset() {
+	*x = KubernetesKubePrometheusStackAlertNotifications{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertNotifications) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertNotifications) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertNotifications) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertNotifications.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertNotifications) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *KubernetesKubePrometheusStackAlertNotifications) GetReceivers() []*KubernetesKubePrometheusStackAlertReceiver {
+	if x != nil {
+		return x.Receivers
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertNotifications) GetRoute() *KubernetesKubePrometheusStackAlertRoute {
+	if x != nil {
+		return x.Route
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertNotifications) GetHeartbeat() *KubernetesKubePrometheusStackAlertHeartbeat {
+	if x != nil {
+		return x.Heartbeat
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertNotifications) GetMessage() *KubernetesKubePrometheusStackAlertMessage {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
+// *
+// One named destination and its integrations.
+type KubernetesKubePrometheusStackAlertReceiver struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The name routes refer to (lowercase letters, digits and hyphens). It
+	// also keys this receiver's entries in the module-owned credentials
+	// Secret, so renaming a receiver rewrites its keys.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// *
+	// Discord channels, each through one channel webhook.
+	Discord []*KubernetesKubePrometheusStackAlertDiscord `protobuf:"bytes,2,rep,name=discord,proto3" json:"discord,omitempty"`
+	// *
+	// Pushover recipients (a user or a delivery group). The paging
+	// integration: emergency priority breaks through a phone's silent mode
+	// where the recipient allows it.
+	Pushover []*KubernetesKubePrometheusStackAlertPushover `protobuf:"bytes,3,rep,name=pushover,proto3" json:"pushover,omitempty"`
+	// *
+	// Generic webhooks: Alertmanager's JSON payload POSTed to a URL, with an
+	// optional bearer token.
+	Webhook       []*KubernetesKubePrometheusStackAlertWebhook `protobuf:"bytes,4,rep,name=webhook,proto3" json:"webhook,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertReceiver) Reset() {
+	*x = KubernetesKubePrometheusStackAlertReceiver{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertReceiver) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertReceiver) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertReceiver) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertReceiver.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertReceiver) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *KubernetesKubePrometheusStackAlertReceiver) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertReceiver) GetDiscord() []*KubernetesKubePrometheusStackAlertDiscord {
+	if x != nil {
+		return x.Discord
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertReceiver) GetPushover() []*KubernetesKubePrometheusStackAlertPushover {
+	if x != nil {
+		return x.Pushover
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertReceiver) GetWebhook() []*KubernetesKubePrometheusStackAlertWebhook {
+	if x != nil {
+		return x.Webhook
+	}
+	return nil
+}
+
+// *
+// One Discord channel webhook.
+type KubernetesKubePrometheusStackAlertDiscord struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The channel webhook URL (Channel settings, Integrations, Webhooks).
+	// Anyone holding it can post to the channel, so it is a credential: a
+	// managed-secret reference, never plain text.
+	WebhookUrl    *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=webhook_url,json=webhookUrl,proto3" json:"webhook_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertDiscord) Reset() {
+	*x = KubernetesKubePrometheusStackAlertDiscord{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertDiscord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertDiscord) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertDiscord) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertDiscord.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertDiscord) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *KubernetesKubePrometheusStackAlertDiscord) GetWebhookUrl() *v1.StringValueOrRef {
+	if x != nil {
+		return x.WebhookUrl
+	}
+	return nil
+}
+
+// *
+// One Pushover recipient.
+type KubernetesKubePrometheusStackAlertPushover struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The Pushover application's API token.
+	Token *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	// *
+	// The recipient's user key or delivery-group key.
+	UserKey *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=user_key,json=userKey,proto3" json:"user_key,omitempty"`
+	// *
+	// How hard a FIRING alert pushes; the resolved follow-up is always
+	// normal priority. Default emergency (Alertmanager's own default):
+	// repeats every minute for up to an hour until someone acknowledges it
+	// in the Pushover app. KNOW THIS: Alertmanager cannot cancel an
+	// emergency notification, so it keeps repeating after the alert
+	// resolves until it is acknowledged or the hour runs out.
+	Priority      *KubernetesKubePrometheusStackPushoverPriority `protobuf:"varint,3,opt,name=priority,proto3,enum=dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPushoverPriority,oneof" json:"priority,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertPushover) Reset() {
+	*x = KubernetesKubePrometheusStackAlertPushover{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertPushover) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertPushover) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertPushover) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertPushover.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertPushover) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *KubernetesKubePrometheusStackAlertPushover) GetToken() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Token
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertPushover) GetUserKey() *v1.StringValueOrRef {
+	if x != nil {
+		return x.UserKey
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertPushover) GetPriority() KubernetesKubePrometheusStackPushoverPriority {
+	if x != nil && x.Priority != nil {
+		return *x.Priority
+	}
+	return KubernetesKubePrometheusStackPushoverPriority_kubernetes_kube_prometheus_stack_pushover_priority_unspecified
+}
+
+// *
+// One generic webhook.
+type KubernetesKubePrometheusStackAlertWebhook struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Where Alertmanager POSTs its JSON payload. Put credentials in
+	// `bearer_token`, never in the URL: the URL is plain text.
+	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	// *
+	// Sent as `Authorization: Bearer <token>`. Empty = no Authorization
+	// header.
+	BearerToken   *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=bearer_token,json=bearerToken,proto3" json:"bearer_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertWebhook) Reset() {
+	*x = KubernetesKubePrometheusStackAlertWebhook{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertWebhook) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertWebhook) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertWebhook) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertWebhook.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertWebhook) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *KubernetesKubePrometheusStackAlertWebhook) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertWebhook) GetBearerToken() *v1.StringValueOrRef {
+	if x != nil {
+		return x.BearerToken
+	}
+	return nil
+}
+
+// *
+// The routing tree's root.
+type KubernetesKubePrometheusStackAlertRoute struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The receiver every alert reaches unless a child route claims it.
+	Receiver string `protobuf:"bytes,1,opt,name=receiver,proto3" json:"receiver,omitempty"`
+	// *
+	// Labels that group alerts into one notification. Empty = alertname plus
+	// the environment and component labels (`message`), so one notification
+	// is one problem in one place.
+	GroupBy []string `protobuf:"bytes,2,rep,name=group_by,json=groupBy,proto3" json:"group_by,omitempty"`
+	// *
+	// How long a new group waits for more alerts before its first
+	// notification. Empty = the chart's 30s.
+	GroupWait string `protobuf:"bytes,3,opt,name=group_wait,json=groupWait,proto3" json:"group_wait,omitempty"`
+	// *
+	// How long a group waits before notifying about new alerts added to it.
+	// Empty = the chart's 5m.
+	GroupInterval string `protobuf:"bytes,4,opt,name=group_interval,json=groupInterval,proto3" json:"group_interval,omitempty"`
+	// *
+	// How long before a still-firing group is notified again. Empty = the
+	// chart's 12h.
+	RepeatInterval string `protobuf:"bytes,5,opt,name=repeat_interval,json=repeatInterval,proto3" json:"repeat_interval,omitempty"`
+	// *
+	// Child routes, evaluated in order; the first that matches claims the
+	// alert unless it sets `continue_matching`. An alert no child claims goes
+	// to `receiver`.
+	Routes        []*KubernetesKubePrometheusStackAlertChildRoute `protobuf:"bytes,6,rep,name=routes,proto3" json:"routes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) Reset() {
+	*x = KubernetesKubePrometheusStackAlertRoute{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertRoute) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertRoute.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertRoute) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) GetReceiver() string {
+	if x != nil {
+		return x.Receiver
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) GetGroupBy() []string {
+	if x != nil {
+		return x.GroupBy
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) GetGroupWait() string {
+	if x != nil {
+		return x.GroupWait
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) GetGroupInterval() string {
+	if x != nil {
+		return x.GroupInterval
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) GetRepeatInterval() string {
+	if x != nil {
+		return x.RepeatInterval
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertRoute) GetRoutes() []*KubernetesKubePrometheusStackAlertChildRoute {
+	if x != nil {
+		return x.Routes
+	}
+	return nil
+}
+
+// *
+// One child route.
+type KubernetesKubePrometheusStackAlertChildRoute struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Every matcher must hold for the route to claim an alert.
+	Matchers []*KubernetesKubePrometheusStackAlertMatcher `protobuf:"bytes,1,rep,name=matchers,proto3" json:"matchers,omitempty"`
+	// *
+	// The receiver for the alerts this route claims.
+	Receiver string `protobuf:"bytes,2,opt,name=receiver,proto3" json:"receiver,omitempty"`
+	// *
+	// Keep evaluating the FOLLOWING sibling routes after this one matches
+	// (Alertmanager's `continue`). KNOW THIS: the root receiver only takes
+	// alerts no child route claims, so a continuing route with nothing after
+	// it delivers to its own receiver alone. To reach a pager and a channel,
+	// either give one receiver both integrations, or follow the continuing
+	// route with a route for the channel.
+	ContinueMatching bool `protobuf:"varint,3,opt,name=continue_matching,json=continueMatching,proto3" json:"continue_matching,omitempty"`
+	// *
+	// How long before a still-firing alert on this route is notified again.
+	// Empty = the root route's.
+	RepeatInterval string `protobuf:"bytes,4,opt,name=repeat_interval,json=repeatInterval,proto3" json:"repeat_interval,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertChildRoute) Reset() {
+	*x = KubernetesKubePrometheusStackAlertChildRoute{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertChildRoute) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertChildRoute) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertChildRoute) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertChildRoute.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertChildRoute) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *KubernetesKubePrometheusStackAlertChildRoute) GetMatchers() []*KubernetesKubePrometheusStackAlertMatcher {
+	if x != nil {
+		return x.Matchers
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertChildRoute) GetReceiver() string {
+	if x != nil {
+		return x.Receiver
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertChildRoute) GetContinueMatching() bool {
+	if x != nil {
+		return x.ContinueMatching
+	}
+	return false
+}
+
+func (x *KubernetesKubePrometheusStackAlertChildRoute) GetRepeatInterval() string {
+	if x != nil {
+		return x.RepeatInterval
+	}
+	return ""
+}
+
+// *
+// One label matcher.
+type KubernetesKubePrometheusStackAlertMatcher struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The label name.
+	Label string `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
+	// *
+	// How the label's value is compared. Default equals.
+	Operator *KubernetesKubePrometheusStackAlertMatchOperator `protobuf:"varint,2,opt,name=operator,proto3,enum=dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatchOperator,oneof" json:"operator,omitempty"`
+	// *
+	// The value, or the regular expression (RE2, anchored at both ends) for
+	// the regex operators.
+	Value         string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertMatcher) Reset() {
+	*x = KubernetesKubePrometheusStackAlertMatcher{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertMatcher) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertMatcher) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertMatcher) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertMatcher.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertMatcher) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *KubernetesKubePrometheusStackAlertMatcher) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertMatcher) GetOperator() KubernetesKubePrometheusStackAlertMatchOperator {
+	if x != nil && x.Operator != nil {
+		return *x.Operator
+	}
+	return KubernetesKubePrometheusStackAlertMatchOperator_kubernetes_kube_prometheus_stack_alert_match_operator_unspecified
+}
+
+func (x *KubernetesKubePrometheusStackAlertMatcher) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+// *
+// The heartbeat to an outside dead-man's-switch monitor.
+type KubernetesKubePrometheusStackAlertHeartbeat struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Where the Watchdog is POSTed. Put credentials in `bearer_token`, never
+	// in the URL: the URL is plain text.
+	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	// *
+	// Sent as `Authorization: Bearer <token>`. Empty = no Authorization
+	// header.
+	BearerToken *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=bearer_token,json=bearerToken,proto3" json:"bearer_token,omitempty"`
+	// *
+	// How often the heartbeat is sent. Keep it well under the monitor's
+	// staleness window (a monitor that pages after 5 minutes of silence
+	// wants 1m). Default 1m.
+	Interval      *string `protobuf:"bytes,3,opt,name=interval,proto3,oneof" json:"interval,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertHeartbeat) Reset() {
+	*x = KubernetesKubePrometheusStackAlertHeartbeat{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertHeartbeat) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertHeartbeat) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertHeartbeat) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertHeartbeat.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertHeartbeat) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *KubernetesKubePrometheusStackAlertHeartbeat) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertHeartbeat) GetBearerToken() *v1.StringValueOrRef {
+	if x != nil {
+		return x.BearerToken
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackAlertHeartbeat) GetInterval() string {
+	if x != nil && x.Interval != nil {
+		return *x.Interval
+	}
+	return ""
+}
+
+// *
+// Which alert labels name the environment and the component in every
+// message title.
+type KubernetesKubePrometheusStackAlertMessage struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The label that names the environment. Default `environment`.
+	EnvironmentLabel *string `protobuf:"bytes,1,opt,name=environment_label,json=environmentLabel,proto3,oneof" json:"environment_label,omitempty"`
+	// *
+	// The label that names the component. Default `component`; an alert
+	// without it is titled by its scrape `job` instead.
+	ComponentLabel *string `protobuf:"bytes,2,opt,name=component_label,json=componentLabel,proto3,oneof" json:"component_label,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertMessage) Reset() {
+	*x = KubernetesKubePrometheusStackAlertMessage{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertMessage) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertMessage.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertMessage) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *KubernetesKubePrometheusStackAlertMessage) GetEnvironmentLabel() string {
+	if x != nil && x.EnvironmentLabel != nil {
+		return *x.EnvironmentLabel
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertMessage) GetComponentLabel() string {
+	if x != nil && x.ComponentLabel != nil {
+		return *x.ComponentLabel
+	}
+	return ""
+}
+
 // *
 // The bundled Grafana.
 type KubernetesKubePrometheusStackGrafana struct {
@@ -1196,7 +2097,7 @@ type KubernetesKubePrometheusStackGrafana struct {
 
 func (x *KubernetesKubePrometheusStackGrafana) Reset() {
 	*x = KubernetesKubePrometheusStackGrafana{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1208,7 +2109,7 @@ func (x *KubernetesKubePrometheusStackGrafana) String() string {
 func (*KubernetesKubePrometheusStackGrafana) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackGrafana) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1221,7 +2122,7 @@ func (x *KubernetesKubePrometheusStackGrafana) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use KubernetesKubePrometheusStackGrafana.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackGrafana) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *KubernetesKubePrometheusStackGrafana) GetEnabled() bool {
@@ -1279,7 +2180,7 @@ type KubernetesKubePrometheusStackGrafanaAdminSecret struct {
 
 func (x *KubernetesKubePrometheusStackGrafanaAdminSecret) Reset() {
 	*x = KubernetesKubePrometheusStackGrafanaAdminSecret{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1291,7 +2192,7 @@ func (x *KubernetesKubePrometheusStackGrafanaAdminSecret) String() string {
 func (*KubernetesKubePrometheusStackGrafanaAdminSecret) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackGrafanaAdminSecret) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1304,7 +2205,7 @@ func (x *KubernetesKubePrometheusStackGrafanaAdminSecret) ProtoReflect() protore
 
 // Deprecated: Use KubernetesKubePrometheusStackGrafanaAdminSecret.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackGrafanaAdminSecret) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *KubernetesKubePrometheusStackGrafanaAdminSecret) GetName() string {
@@ -1344,7 +2245,7 @@ type KubernetesKubePrometheusStackGrafanaStorage struct {
 
 func (x *KubernetesKubePrometheusStackGrafanaStorage) Reset() {
 	*x = KubernetesKubePrometheusStackGrafanaStorage{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1356,7 +2257,7 @@ func (x *KubernetesKubePrometheusStackGrafanaStorage) String() string {
 func (*KubernetesKubePrometheusStackGrafanaStorage) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackGrafanaStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1369,7 +2270,7 @@ func (x *KubernetesKubePrometheusStackGrafanaStorage) ProtoReflect() protoreflec
 
 // Deprecated: Use KubernetesKubePrometheusStackGrafanaStorage.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackGrafanaStorage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *KubernetesKubePrometheusStackGrafanaStorage) GetSize() string {
@@ -1408,7 +2309,7 @@ type KubernetesKubePrometheusStackOperator struct {
 
 func (x *KubernetesKubePrometheusStackOperator) Reset() {
 	*x = KubernetesKubePrometheusStackOperator{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1420,7 +2321,7 @@ func (x *KubernetesKubePrometheusStackOperator) String() string {
 func (*KubernetesKubePrometheusStackOperator) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackOperator) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1433,7 +2334,7 @@ func (x *KubernetesKubePrometheusStackOperator) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesKubePrometheusStackOperator.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackOperator) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *KubernetesKubePrometheusStackOperator) GetResources() *kubernetes.ContainerResources {
@@ -1478,7 +2379,7 @@ type KubernetesKubePrometheusStackAdmissionWebhooks struct {
 
 func (x *KubernetesKubePrometheusStackAdmissionWebhooks) Reset() {
 	*x = KubernetesKubePrometheusStackAdmissionWebhooks{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1490,7 +2391,7 @@ func (x *KubernetesKubePrometheusStackAdmissionWebhooks) String() string {
 func (*KubernetesKubePrometheusStackAdmissionWebhooks) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackAdmissionWebhooks) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1503,7 +2404,7 @@ func (x *KubernetesKubePrometheusStackAdmissionWebhooks) ProtoReflect() protoref
 
 // Deprecated: Use KubernetesKubePrometheusStackAdmissionWebhooks.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackAdmissionWebhooks) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *KubernetesKubePrometheusStackAdmissionWebhooks) GetDisabled() bool {
@@ -1546,7 +2447,7 @@ type KubernetesKubePrometheusStackExporters struct {
 
 func (x *KubernetesKubePrometheusStackExporters) Reset() {
 	*x = KubernetesKubePrometheusStackExporters{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1558,7 +2459,7 @@ func (x *KubernetesKubePrometheusStackExporters) String() string {
 func (*KubernetesKubePrometheusStackExporters) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackExporters) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1571,7 +2472,7 @@ func (x *KubernetesKubePrometheusStackExporters) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesKubePrometheusStackExporters.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackExporters) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *KubernetesKubePrometheusStackExporters) GetKubeStateMetricsEnabled() bool {
@@ -1647,7 +2548,7 @@ type KubernetesKubePrometheusStackControlPlaneScrapers struct {
 
 func (x *KubernetesKubePrometheusStackControlPlaneScrapers) Reset() {
 	*x = KubernetesKubePrometheusStackControlPlaneScrapers{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1659,7 +2560,7 @@ func (x *KubernetesKubePrometheusStackControlPlaneScrapers) String() string {
 func (*KubernetesKubePrometheusStackControlPlaneScrapers) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackControlPlaneScrapers) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1672,7 +2573,7 @@ func (x *KubernetesKubePrometheusStackControlPlaneScrapers) ProtoReflect() proto
 
 // Deprecated: Use KubernetesKubePrometheusStackControlPlaneScrapers.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackControlPlaneScrapers) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *KubernetesKubePrometheusStackControlPlaneScrapers) GetKubeApiServer() bool {
@@ -1745,7 +2646,7 @@ type KubernetesKubePrometheusStackDefaultRules struct {
 
 func (x *KubernetesKubePrometheusStackDefaultRules) Reset() {
 	*x = KubernetesKubePrometheusStackDefaultRules{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1757,7 +2658,7 @@ func (x *KubernetesKubePrometheusStackDefaultRules) String() string {
 func (*KubernetesKubePrometheusStackDefaultRules) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackDefaultRules) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1770,7 +2671,7 @@ func (x *KubernetesKubePrometheusStackDefaultRules) ProtoReflect() protoreflect.
 
 // Deprecated: Use KubernetesKubePrometheusStackDefaultRules.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackDefaultRules) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *KubernetesKubePrometheusStackDefaultRules) GetEnabled() bool {
@@ -1806,7 +2707,7 @@ type KubernetesKubePrometheusStackScheduling struct {
 
 func (x *KubernetesKubePrometheusStackScheduling) Reset() {
 	*x = KubernetesKubePrometheusStackScheduling{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1818,7 +2719,7 @@ func (x *KubernetesKubePrometheusStackScheduling) String() string {
 func (*KubernetesKubePrometheusStackScheduling) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1831,7 +2732,7 @@ func (x *KubernetesKubePrometheusStackScheduling) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesKubePrometheusStackScheduling.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *KubernetesKubePrometheusStackScheduling) GetNodeSelector() map[string]string {
@@ -1859,11 +2760,12 @@ var File_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto pr
 
 const file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/spec.proto\x12=dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe3\v\n" +
+	"Dcatalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/spec.proto\x12=dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe2\v\n" +
 	"!KubernetesKubePrometheusStackSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
-	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x125\n" +
-	"\rchart_version\x18\x03 \x01(\tB\v\x8a\xa6\x1d\a87.19.1H\x00R\fchartVersion\x88\x01\x01\x12\x1b\n" +
+	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
+	"\rchart_version\x18\x03 \x01(\tB\n" +
+	"\x8a\xa6\x1d\x0691.8.2H\x00R\fchartVersion\x88\x01\x01\x12\x1b\n" +
 	"\tskip_crds\x18\x04 \x01(\bR\bskipCrds\x12&\n" +
 	"\x0fcrd_upgrade_job\x18\x05 \x01(\bR\rcrdUpgradeJob\x12\x86\x01\n" +
 	"\n" +
@@ -1937,7 +2839,8 @@ const file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_
 	"\x05cloud\x18\x02 \x01(\tR\x05cloud\"a\n" +
 	")KubernetesKubePrometheusStackSecretKeyRef\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x18\n" +
-	"\x03key\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\"\x82\b\n" +
+	"\x03key\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\"\xf3\n" +
+	"\n" +
 	")KubernetesKubePrometheusStackAlertmanager\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12-\n" +
 	"\breplicas\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\breplicas\x88\x01\x01\x12J\n" +
@@ -1950,15 +2853,83 @@ const file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_
 	"configYaml\x12\x86\x01\n" +
 	"\n" +
 	"scheduling\x18\t \x01(\v2f.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSchedulingR\n" +
-	"scheduling:\x82\x02\xbaH\xfe\x01\x1a\xfb\x01\n" +
-	",spec.alertmanager.ephemeral.excludes_storage\x12gephemeral: true runs on emptyDir — a non-default disk_size or a storage_class must not be set with it\x1ab!this.ephemeral || ((!has(this.disk_size) || this.disk_size == '2Gi') && !has(this.storage_class))B\n" +
+	"scheduling\x12\x94\x01\n" +
+	"\rnotifications\x18\n" +
+	" \x01(\v2n.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotificationsR\rnotifications:\xdc\x03\xbaH\xd8\x03\x1a\xfb\x01\n" +
+	",spec.alertmanager.ephemeral.excludes_storage\x12gephemeral: true runs on emptyDir — a non-default disk_size or a storage_class must not be set with it\x1ab!this.ephemeral || ((!has(this.disk_size) || this.disk_size == '2Gi') && !has(this.storage_class))\x1a\xd7\x01\n" +
+	"4spec.alertmanager.notifications.excludes_config_yaml\x12kdeclare alert delivery once: either the typed notifications block or the raw config_yaml document, not both\x1a2!has(this.notifications) || this.config_yaml == ''B\n" +
 	"\n" +
 	"\b_enabledB\v\n" +
 	"\t_replicasB\f\n" +
 	"\n" +
 	"_retentionB\f\n" +
 	"\n" +
-	"_disk_size\"\xac\x04\n" +
+	"_disk_size\"\xe2\v\n" +
+	"/KubernetesKubePrometheusStackAlertNotifications\x12\x91\x01\n" +
+	"\treceivers\x18\x01 \x03(\v2i.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiverB\b\xbaH\x05\x92\x01\x02\b\x01R\treceivers\x12\x84\x01\n" +
+	"\x05route\x18\x02 \x01(\v2f.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertRouteB\x06\xbaH\x03\xc8\x01\x01R\x05route\x12\x88\x01\n" +
+	"\theartbeat\x18\x03 \x01(\v2j.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertHeartbeatR\theartbeat\x12\x82\x01\n" +
+	"\amessage\x18\x04 \x01(\v2h.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMessageR\amessage:\x83\a\xbaH\xff\x06\x1a\xcc\x01\n" +
+	"6spec.alertmanager.notifications.receivers.unique_names\x12Cevery receiver needs its own name — routes pick receivers by name\x1aMthis.receivers.all(r, this.receivers.filter(s, s.name == r.name).size() == 1)\x1a\x85\x02\n" +
+	"8spec.alertmanager.notifications.receivers.reserved_names\x12\x83\x01the receiver names 'heartbeat' and 'discard' belong to the module (the Watchdog heartbeat and the drop route) — pick another name\x1aCthis.receivers.all(r, r.name != 'heartbeat' && r.name != 'discard')\x1a\xbe\x01\n" +
+	"7spec.alertmanager.notifications.route.receiver_declared\x126route.receiver must name one of the declared receivers\x1aK!has(this.route) || this.receivers.exists(r, r.name == this.route.receiver)\x1a\xe4\x01\n" +
+	">spec.alertmanager.notifications.route.routes.receiver_declared\x12Devery child route's receiver must name one of the declared receivers\x1a\\!has(this.route) || this.route.routes.all(c, this.receivers.exists(r, r.name == c.receiver))\"\xc4\x05\n" +
+	"*KubernetesKubePrometheusStackAlertReceiver\x12\x83\x02\n" +
+	"\x04name\x18\x01 \x01(\tB\xee\x01\xbaH\xea\x01\xba\x01\xe3\x01\n" +
+	".spec.alertmanager.notifications.receivers.name\x12{a receiver name is lowercase letters, digits and hyphens, starting and ending with a letter or digit, at most 63 characters\x1a4this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')\xc8\x01\x01R\x04name\x12\x82\x01\n" +
+	"\adiscord\x18\x02 \x03(\v2h.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertDiscordR\adiscord\x12\x85\x01\n" +
+	"\bpushover\x18\x03 \x03(\v2i.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushoverR\bpushover\x12\x82\x01\n" +
+	"\awebhook\x18\x04 \x03(\v2h.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertWebhookR\awebhook\"\x8c\x01\n" +
+	")KubernetesKubePrometheusStackAlertDiscord\x12_\n" +
+	"\vwebhook_url\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\n" +
+	"webhookUrl\"\x91\x03\n" +
+	"*KubernetesKubePrometheusStackAlertPushover\x12T\n" +
+	"\x05token\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x05token\x12Y\n" +
+	"\buser_key\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\auserKey\x12\xa4\x01\n" +
+	"\bpriority\x18\x03 \x01(\x0e2l.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPushoverPriorityB\x15\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\temergencyH\x00R\bpriority\x88\x01\x01B\v\n" +
+	"\t_priority\"\xc0\x02\n" +
+	")KubernetesKubePrometheusStackAlertWebhook\x12\xb5\x01\n" +
+	"\x03url\x18\x01 \x01(\tB\xa2\x01\xbaH\x9e\x01\xba\x01\x97\x01\n" +
+	"+spec.alertmanager.notifications.webhook.url\x12-a webhook url starts with http:// or https://\x1a9this.startsWith('https://') || this.startsWith('http://')\xc8\x01\x01R\x03url\x12[\n" +
+	"\fbearer_token\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\vbearerToken\"\xf6\x06\n" +
+	"'KubernetesKubePrometheusStackAlertRoute\x12\"\n" +
+	"\breceiver\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\breceiver\x12\x19\n" +
+	"\bgroup_by\x18\x02 \x03(\tR\agroupBy\x12\xcf\x01\n" +
+	"\n" +
+	"group_wait\x18\x03 \x01(\tB\xaf\x01\xbaH\xab\x01\xba\x01\xa7\x01\n" +
+	"0spec.alertmanager.notifications.route.group_wait\x12;group_wait must be a Prometheus duration like '30s' or '1m'\x1a6this == '' || this.matches('^[0-9]+(ms|s|m|h|d|w|y)$')R\tgroupWait\x12\xd6\x01\n" +
+	"\x0egroup_interval\x18\x04 \x01(\tB\xae\x01\xbaH\xaa\x01\xba\x01\xa6\x01\n" +
+	"4spec.alertmanager.notifications.route.group_interval\x126group_interval must be a Prometheus duration like '5m'\x1a6this == '' || this.matches('^[0-9]+(ms|s|m|h|d|w|y)$')R\rgroupInterval\x12\xda\x01\n" +
+	"\x0frepeat_interval\x18\x05 \x01(\tB\xb0\x01\xbaH\xac\x01\xba\x01\xa8\x01\n" +
+	"5spec.alertmanager.notifications.route.repeat_interval\x127repeat_interval must be a Prometheus duration like '4h'\x1a6this == '' || this.matches('^[0-9]+(ms|s|m|h|d|w|y)$')R\x0erepeatInterval\x12\x83\x01\n" +
+	"\x06routes\x18\x06 \x03(\v2k.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertChildRouteR\x06routes\"\xee\x03\n" +
+	",KubernetesKubePrometheusStackAlertChildRoute\x12\x8e\x01\n" +
+	"\bmatchers\x18\x01 \x03(\v2h.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatcherB\b\xbaH\x05\x92\x01\x02\b\x01R\bmatchers\x12\"\n" +
+	"\breceiver\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\breceiver\x12+\n" +
+	"\x11continue_matching\x18\x03 \x01(\bR\x10continueMatching\x12\xdb\x01\n" +
+	"\x0frepeat_interval\x18\x04 \x01(\tB\xb1\x01\xbaH\xad\x01\xba\x01\xa9\x01\n" +
+	"6spec.alertmanager.notifications.routes.repeat_interval\x127repeat_interval must be a Prometheus duration like '4h'\x1a6this == '' || this.matches('^[0-9]+(ms|s|m|h|d|w|y)$')R\x0erepeatInterval\"\xaa\x04\n" +
+	")KubernetesKubePrometheusStackAlertMatcher\x12\xc8\x01\n" +
+	"\x05label\x18\x01 \x01(\tB\xb1\x01\xbaH\xad\x01\xba\x01\xa6\x01\n" +
+	".spec.alertmanager.notifications.matchers.label\x12Ja label name is letters, digits and underscores, not starting with a digit\x1a(this.matches('^[a-zA-Z_][a-zA-Z0-9_]*$')\xc8\x01\x01R\x05label\x12\xa3\x01\n" +
+	"\boperator\x18\x02 \x01(\x0e2n.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatchOperatorB\x12\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\x06equalsH\x00R\boperator\x88\x01\x01\x12\x7f\n" +
+	"\x05value\x18\x03 \x01(\tBi\xbaHf\xba\x01c\n" +
+	".spec.alertmanager.notifications.matchers.value\x12\x1ba matcher value is one line\x1a\x14!this.contains('\\n')R\x05valueB\v\n" +
+	"\t_operator\"\x92\x03\n" +
+	"+KubernetesKubePrometheusStackAlertHeartbeat\x12\xb9\x01\n" +
+	"\x03url\x18\x01 \x01(\tB\xa6\x01\xbaH\xa2\x01\xba\x01\x9b\x01\n" +
+	"-spec.alertmanager.notifications.heartbeat.url\x12/a heartbeat url starts with http:// or https://\x1a9this.startsWith('https://') || this.startsWith('http://')\xc8\x01\x01R\x03url\x12[\n" +
+	"\fbearer_token\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\vbearerToken\x12=\n" +
+	"\binterval\x18\x03 \x01(\tB\x1c\xbaH\x13r\x112\x0f^[0-9]+(s|m|h)$\x8a\xa6\x1d\x021mH\x00R\binterval\x88\x01\x01B\v\n" +
+	"\t_interval\"\x93\x02\n" +
+	")KubernetesKubePrometheusStackAlertMessage\x12`\n" +
+	"\x11environment_label\x18\x01 \x01(\tB.\xbaH\x1cr\x1a2\x18^[a-zA-Z_][a-zA-Z0-9_]*$\x8a\xa6\x1d\venvironmentH\x00R\x10environmentLabel\x88\x01\x01\x12Z\n" +
+	"\x0fcomponent_label\x18\x02 \x01(\tB,\xbaH\x1cr\x1a2\x18^[a-zA-Z_][a-zA-Z0-9_]*$\x8a\xa6\x1d\tcomponentH\x01R\x0ecomponentLabel\x88\x01\x01B\x14\n" +
+	"\x12_environment_labelB\x12\n" +
+	"\x10_component_label\"\xac\x04\n" +
 	"$KubernetesKubePrometheusStackGrafana\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12\x91\x01\n" +
 	"\fadmin_secret\x18\x02 \x01(\v2n.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaAdminSecretR\vadminSecret\x12K\n" +
@@ -2029,7 +3000,21 @@ const file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_
 	"-KubernetesKubePrometheusStackMonitorDiscovery\x12B\n" +
 	">kubernetes_kube_prometheus_stack_monitor_discovery_unspecified\x10\x00\x12\x10\n" +
 	"\fall_monitors\x10\x01\x12\x18\n" +
-	"\x14release_managed_only\x10\x02B\xe5\x03\n" +
+	"\x14release_managed_only\x10\x02*\x98\x01\n" +
+	"-KubernetesKubePrometheusStackPushoverPriority\x12B\n" +
+	">kubernetes_kube_prometheus_stack_pushover_priority_unspecified\x10\x00\x12\n" +
+	"\n" +
+	"\x06normal\x10\x01\x12\b\n" +
+	"\x04high\x10\x02\x12\r\n" +
+	"\temergency\x10\x03*\xbe\x01\n" +
+	"/KubernetesKubePrometheusStackAlertMatchOperator\x12E\n" +
+	"Akubernetes_kube_prometheus_stack_alert_match_operator_unspecified\x10\x00\x12\n" +
+	"\n" +
+	"\x06equals\x10\x01\x12\x0e\n" +
+	"\n" +
+	"not_equals\x10\x02\x12\x11\n" +
+	"\rmatches_regex\x10\x03\x12\x15\n" +
+	"\x11not_matches_regex\x10\x04B\xe5\x03\n" +
 	"Acom.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1B\tSpecProtoP\x01Z|github.com/plantonhq/planton/catalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1;kuberneteskubeprometheusstackv1alpha1\xa2\x02\x04DPKK\xaa\x02=Dev.Planton.Kubernetes.Kuberneteskubeprometheusstack.V1alpha1\xca\x02=Dev\\Planton\\Kubernetes\\Kuberneteskubeprometheusstack\\V1alpha1\xe2\x02IDev\\Planton\\Kubernetes\\Kuberneteskubeprometheusstack\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Kubernetes::Kuberneteskubeprometheusstack::V1alpha1b\x06proto3"
 
 var (
@@ -2044,74 +3029,103 @@ func file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_r
 	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_goTypes = []any{
 	(KubernetesKubePrometheusStackMonitorDiscovery)(0),        // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackMonitorDiscovery
-	(*KubernetesKubePrometheusStackSpec)(nil),                 // 1: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec
-	(*KubernetesKubePrometheusStackPrometheus)(nil),           // 2: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus
-	(*KubernetesKubePrometheusStackRemoteWrite)(nil),          // 3: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite
-	(*KubernetesKubePrometheusStackRemoteWriteBasicAuth)(nil), // 4: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth
-	(*KubernetesKubePrometheusStackRemoteWriteSigv4)(nil),     // 5: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4
-	(*KubernetesKubePrometheusStackRemoteWriteAzureAd)(nil),   // 6: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteAzureAd
-	(*KubernetesKubePrometheusStackSecretKeyRef)(nil),         // 7: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
-	(*KubernetesKubePrometheusStackAlertmanager)(nil),         // 8: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager
-	(*KubernetesKubePrometheusStackGrafana)(nil),              // 9: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana
-	(*KubernetesKubePrometheusStackGrafanaAdminSecret)(nil),   // 10: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaAdminSecret
-	(*KubernetesKubePrometheusStackGrafanaStorage)(nil),       // 11: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage
-	(*KubernetesKubePrometheusStackOperator)(nil),             // 12: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator
-	(*KubernetesKubePrometheusStackAdmissionWebhooks)(nil),    // 13: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAdmissionWebhooks
-	(*KubernetesKubePrometheusStackExporters)(nil),            // 14: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters
-	(*KubernetesKubePrometheusStackControlPlaneScrapers)(nil), // 15: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackControlPlaneScrapers
-	(*KubernetesKubePrometheusStackDefaultRules)(nil),         // 16: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackDefaultRules
-	(*KubernetesKubePrometheusStackScheduling)(nil),           // 17: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
-	nil,                                   // 18: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
-	nil,                                   // 19: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),           // 20: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil), // 21: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil), // 22: dev.planton.kubernetes.WorkloadToleration
+	(KubernetesKubePrometheusStackPushoverPriority)(0),        // 1: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPushoverPriority
+	(KubernetesKubePrometheusStackAlertMatchOperator)(0),      // 2: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatchOperator
+	(*KubernetesKubePrometheusStackSpec)(nil),                 // 3: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec
+	(*KubernetesKubePrometheusStackPrometheus)(nil),           // 4: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus
+	(*KubernetesKubePrometheusStackRemoteWrite)(nil),          // 5: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite
+	(*KubernetesKubePrometheusStackRemoteWriteBasicAuth)(nil), // 6: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth
+	(*KubernetesKubePrometheusStackRemoteWriteSigv4)(nil),     // 7: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4
+	(*KubernetesKubePrometheusStackRemoteWriteAzureAd)(nil),   // 8: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteAzureAd
+	(*KubernetesKubePrometheusStackSecretKeyRef)(nil),         // 9: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
+	(*KubernetesKubePrometheusStackAlertmanager)(nil),         // 10: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager
+	(*KubernetesKubePrometheusStackAlertNotifications)(nil),   // 11: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications
+	(*KubernetesKubePrometheusStackAlertReceiver)(nil),        // 12: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver
+	(*KubernetesKubePrometheusStackAlertDiscord)(nil),         // 13: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertDiscord
+	(*KubernetesKubePrometheusStackAlertPushover)(nil),        // 14: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover
+	(*KubernetesKubePrometheusStackAlertWebhook)(nil),         // 15: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertWebhook
+	(*KubernetesKubePrometheusStackAlertRoute)(nil),           // 16: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertRoute
+	(*KubernetesKubePrometheusStackAlertChildRoute)(nil),      // 17: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertChildRoute
+	(*KubernetesKubePrometheusStackAlertMatcher)(nil),         // 18: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatcher
+	(*KubernetesKubePrometheusStackAlertHeartbeat)(nil),       // 19: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertHeartbeat
+	(*KubernetesKubePrometheusStackAlertMessage)(nil),         // 20: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMessage
+	(*KubernetesKubePrometheusStackGrafana)(nil),              // 21: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana
+	(*KubernetesKubePrometheusStackGrafanaAdminSecret)(nil),   // 22: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaAdminSecret
+	(*KubernetesKubePrometheusStackGrafanaStorage)(nil),       // 23: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage
+	(*KubernetesKubePrometheusStackOperator)(nil),             // 24: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator
+	(*KubernetesKubePrometheusStackAdmissionWebhooks)(nil),    // 25: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAdmissionWebhooks
+	(*KubernetesKubePrometheusStackExporters)(nil),            // 26: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters
+	(*KubernetesKubePrometheusStackControlPlaneScrapers)(nil), // 27: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackControlPlaneScrapers
+	(*KubernetesKubePrometheusStackDefaultRules)(nil),         // 28: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackDefaultRules
+	(*KubernetesKubePrometheusStackScheduling)(nil),           // 29: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	nil,                                   // 30: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
+	nil,                                   // 31: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),           // 32: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil), // 33: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil), // 34: dev.planton.kubernetes.WorkloadToleration
 }
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_depIdxs = []int32{
-	20, // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 1: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.prometheus:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus
-	8,  // 2: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.alertmanager:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager
-	9,  // 3: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.grafana:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana
-	12, // 4: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.operator:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator
-	14, // 5: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.exporters:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters
-	15, // 6: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.control_plane_scrapers:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackControlPlaneScrapers
-	16, // 7: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.default_rules:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackDefaultRules
-	20, // 8: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 9: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	18, // 10: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.external_labels:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
+	32, // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 1: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.prometheus:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus
+	10, // 2: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.alertmanager:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager
+	21, // 3: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.grafana:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana
+	24, // 4: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.operator:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator
+	26, // 5: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.exporters:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters
+	27, // 6: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.control_plane_scrapers:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackControlPlaneScrapers
+	28, // 7: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.default_rules:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackDefaultRules
+	32, // 8: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 9: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	30, // 10: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.external_labels:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
 	0,  // 11: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.discovery:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackMonitorDiscovery
-	3,  // 12: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.remote_write:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite
-	17, // 13: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
-	4,  // 14: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.basic_auth:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth
-	7,  // 15: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.bearer_token_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
-	5,  // 16: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.sigv4:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4
-	6,  // 17: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.azure_ad:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteAzureAd
-	7,  // 18: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth.password_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
-	7,  // 19: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4.access_key_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
-	7,  // 20: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4.secret_key_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
-	20, // 21: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 22: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	17, // 23: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
-	10, // 24: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.admin_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaAdminSecret
-	11, // 25: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.storage:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage
-	21, // 26: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	20, // 27: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 28: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	13, // 29: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.admission_webhooks:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAdmissionWebhooks
-	17, // 30: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
-	21, // 31: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.kube_state_metrics_resources:type_name -> dev.planton.kubernetes.ContainerResources
-	21, // 32: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.node_exporter_resources:type_name -> dev.planton.kubernetes.ContainerResources
-	19, // 33: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.node_selector:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
-	22, // 34: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	35, // [35:35] is the sub-list for method output_type
-	35, // [35:35] is the sub-list for method input_type
-	35, // [35:35] is the sub-list for extension type_name
-	35, // [35:35] is the sub-list for extension extendee
-	0,  // [0:35] is the sub-list for field type_name
+	5,  // 12: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.remote_write:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite
+	29, // 13: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	6,  // 14: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.basic_auth:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth
+	9,  // 15: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.bearer_token_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
+	7,  // 16: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.sigv4:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4
+	8,  // 17: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.azure_ad:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteAzureAd
+	9,  // 18: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth.password_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
+	9,  // 19: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4.access_key_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
+	9,  // 20: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4.secret_key_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
+	32, // 21: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 22: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	29, // 23: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	11, // 24: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.notifications:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications
+	12, // 25: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications.receivers:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver
+	16, // 26: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications.route:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertRoute
+	19, // 27: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications.heartbeat:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertHeartbeat
+	20, // 28: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications.message:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMessage
+	13, // 29: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver.discord:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertDiscord
+	14, // 30: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver.pushover:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover
+	15, // 31: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver.webhook:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertWebhook
+	32, // 32: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertDiscord.webhook_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 33: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 34: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.user_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 35: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.priority:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPushoverPriority
+	32, // 36: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertWebhook.bearer_token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	17, // 37: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertRoute.routes:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertChildRoute
+	18, // 38: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertChildRoute.matchers:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatcher
+	2,  // 39: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatcher.operator:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatchOperator
+	32, // 40: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertHeartbeat.bearer_token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // 41: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.admin_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaAdminSecret
+	23, // 42: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.storage:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage
+	33, // 43: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	32, // 44: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 45: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	25, // 46: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.admission_webhooks:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAdmissionWebhooks
+	29, // 47: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	33, // 48: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.kube_state_metrics_resources:type_name -> dev.planton.kubernetes.ContainerResources
+	33, // 49: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.node_exporter_resources:type_name -> dev.planton.kubernetes.ContainerResources
+	31, // 50: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.node_selector:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
+	34, // 51: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	52, // [52:52] is the sub-list for method output_type
+	52, // [52:52] is the sub-list for method input_type
+	52, // [52:52] is the sub-list for extension type_name
+	52, // [52:52] is the sub-list for extension extendee
+	0,  // [0:52] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_init() }
@@ -2128,19 +3142,23 @@ func file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_i
 		(*KubernetesKubePrometheusStackRemoteWrite_AzureAd)(nil),
 	}
 	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
-	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
-	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
-	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
-	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
-	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
 	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[18].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[19].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[23].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[24].OneofWrappers = []any{}
+	file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[25].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   19,
+			NumEnums:      3,
+			NumMessages:   29,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

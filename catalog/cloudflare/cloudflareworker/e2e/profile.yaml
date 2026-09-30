@@ -7,7 +7,10 @@ spec:
   # no prerequisites), then GETs accounts/{account}/workers/services/{name}
   # to prove it exists, then destroy, then prove it is gone. Two live
   # scenarios: minimal (inline hello-world on workers.dev) and
-  # observability-json (nested logs + traces). Durable Object migrations
+  # observability-json (nested logs + traces). A third, r2-bundle, builds
+  # the script from an R2 bundle as the harness's connection-with-r2
+  # identity; it needs an owner-arranged bucket and R2 key pair (see its
+  # header) and skips without them. Durable Object migrations
   # are a one-shot Cloudflare tag — a second apply of the same new_tag is
   # rejected — so they live in e2e/migrations-plan.yaml for offline plan
   # only, never in e2e/scenarios/ (the provider profile asserts apply

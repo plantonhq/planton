@@ -62,6 +62,15 @@ type Locals struct {
 	// when no remote-write entry declares basic auth.
 	RemoteWriteAuthSecretName string
 
+	// Name of the module-owned Secret carrying the notification
+	// credentials (see vars.NotificationsSecretSuffix). Empty when no
+	// notifications are declared or Alertmanager is disabled.
+	NotificationsSecretName string
+
+	// The rendered notifications (notifications.go); nil when none are
+	// declared.
+	Notifications *notifications
+
 	// kubectl one-liners for reaching the UIs from a workstation.
 	PrometheusPortForwardCommand string
 	GrafanaPortForwardCommand    string
@@ -141,7 +150,12 @@ func initializeLocals(_ *pulumi.Context, stackInput *kuberneteskubeprometheussta
 		}
 	}
 
-	return &Locals{
+	notificationsSecretName := ""
+	if alertmanagerEnabled && spec.GetAlertmanager().GetNotifications() != nil {
+		notificationsSecretName = releaseName + vars.NotificationsSecretSuffix
+	}
+
+	locals := &Locals{
 		Spec:                spec,
 		Labels:              labels,
 		Namespace:           namespace,
@@ -158,8 +172,11 @@ func initializeLocals(_ *pulumi.Context, stackInput *kuberneteskubeprometheussta
 		GrafanaEndpoint:           grafanaEndpoint,
 		GrafanaAdminSecretName:    grafanaAdminSecretName,
 		RemoteWriteAuthSecretName: remoteWriteAuthSecretName,
+		NotificationsSecretName:   notificationsSecretName,
 		PrometheusPortForwardCommand: fmt.Sprintf("kubectl port-forward svc/%s -n %s 9090:9090",
 			prometheusService, namespace),
 		GrafanaPortForwardCommand: grafanaPortForwardCommand,
 	}
+	locals.Notifications = buildNotifications(locals)
+	return locals
 }
