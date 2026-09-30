@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripecoupon.v1alpha1;
+
+// StripeCouponStackOutputs identifies the coupon.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/coupon
+message StripeCouponStackOutputs {
+  // id is the coupon's Stripe id, the value a StripePromotionCode, a subscription or a Checkout
+  // session references. It changes when the coupon is replaced.
+  string id = 1;
+
+  // valid is whether the coupon can still be applied to new customers: false once it has passed
+  // redeem_by or reached max_redemptions.
+  bool valid = 2;
+}

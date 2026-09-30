@@ -106,6 +106,30 @@ func TestStripeEntitlementFeature_Tofu(t *testing.T) {
 	runAllScenariosForComponent(t, "stripeentitlementfeature")
 }
 
+func TestStripeCoupon_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripecoupon")
+}
+
+func TestStripePromotionCode_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripepromotioncode")
+}
+
+func TestStripeShippingRate_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripeshippingrate")
+}
+
+func TestStripeTaxRate_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripetaxrate")
+}
+
+func TestStripeBillingMeter_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripebillingmeter")
+}
+
+func TestStripePaymentLink_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripepaymentlink")
+}
+
 // runAllScenariosForComponent discovers and runs every E2E scenario of a Stripe component.
 func runAllScenariosForComponent(t *testing.T, component string) {
 	t.Helper()

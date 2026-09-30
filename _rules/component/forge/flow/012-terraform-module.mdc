@@ -66,6 +66,21 @@ replacement, and its drift is never detected. The object is its own kind (or a f
 this module manages with its own block), composed by reference; the provider-parity manifest
 excludes the inline argument with that reason.
 
+A CHANGE THE PROVIDER ACCEPTS BUT CAN'T SEND FORCES A REPLACEMENT: some provider arguments plan an
+in-place update the vendor's API can never apply (Stripe's payment link can't change a line
+item's price; its update call has no price field), and some are write-only, so a change plans
+nothing at all (the same link's line-item quantity). Either way the change is dropped silently
+or shows as a pending change forever. The module holds those values in a `terraform_data`
+tracker and puts `replace_triggered_by = [terraform_data.<tracker>]` on the resource, with
+`create_before_destroy` when the object's id or address is something other resources read by
+reference. The provider-parity manifest judges the tracker `internal`, and the provider's import
+catalog records `terraform_data` with `not_importable_upstream_reason`: an imported tracker has no
+input, so the first apply after an import would replace the imported object; left out, it is
+simply created. The spec field says in plain words that a change replaces the object. Prove it
+with offline plans against a seeded state: unchanged plans nothing, each tracked change plans a
+replacement, every other change stays in place, and a state without the tracker plans only the
+tracker's creation.
+
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
    ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the existing

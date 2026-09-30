@@ -110,6 +110,15 @@ upsert-style Put, as PutScheduledAction is); a type whose create would
 conflict with its own survivor needs different treatment, and the live
 lane is what verifies the convergence.
 
+A module's own `terraform_data` tracker is recorded the same way, although
+OpenTofu can import one: an imported tracker gets its id and never its
+input, so the first apply after import would see the tracked values change
+and replace the object the tracker guards. Left out of the import, it is
+created on that first apply and the object is untouched. The Stripe catalog
+records it for the payment link's line-item tracker, which forces a
+replacement when a line item's price or quantity changes (changes the
+provider accepts and can't send).
+
 A component map may additionally declare `import_normalized` entries — the
 narrowest tolerance vocabulary, scoped to ONE of the module's own logical
 resources and ONE dotted sub-path each, with a mandatory reason. It exists

@@ -40,30 +40,9 @@ resources:
     reason: "judged as a planned composition into StripeFile (a public link keyed by its file, dropped from state with it)"
 
   # ---- Catalog and pricing --------------------------------------------------
-  - resource: stripe_coupon
-    disposition: model-planned
-    reason: "judged as a planned StripeCoupon kind (a reusable discount: an amount or percentage off, for a duration)"
-  - resource: stripe_promotion_code
-    disposition: model-planned
-    reason: "judged as a planned StripePromotionCode kind (a customer-facing code for a coupon, with its own active state, redemption limits and expiry; campaigns mint codes over a coupon's life); destroy deactivates it"
-  - resource: stripe_shipping_rate
-    disposition: model-planned
-    reason: "judged as a planned StripeShippingRate kind (a shipping option offered at checkout); destroy deactivates it"
-  - resource: stripe_tax_rate
-    disposition: model-planned
-    reason: "judged as a planned StripeTaxRate kind (a manual tax rate; its percentage and inclusiveness cannot change, so a change is a new rate); destroy deactivates it"
   - resource: stripe_tax_registration
     disposition: model-planned
     reason: "judged as a planned StripeTaxRegistration kind (where the account is registered to collect tax, for Stripe Tax); destroy only removes it from state, and Stripe keeps collecting"
-  - resource: stripe_billing_meter
-    disposition: model-planned
-    reason: "judged as a planned StripeBillingMeter kind (how usage events are aggregated for usage-based prices), carrying its alerts; destroy deactivates it"
-  - resource: stripe_billing_alert
-    disposition: model-planned
-    reason: "judged as a planned composition into StripeBillingMeter (a usage threshold alert keyed by its meter, cannot be updated; removing one only removes it from state and Stripe keeps it active)"
-  - resource: stripe_payment_link
-    disposition: model-planned
-    reason: "judged as a planned StripePaymentLink kind (a hosted page selling fixed prices; applying it moves no money, but it is a live URL that takes payments); destroy deactivates it"
 
   # ---- Terminal ---------------------------------------------------------------
   - resource: stripe_terminal_location

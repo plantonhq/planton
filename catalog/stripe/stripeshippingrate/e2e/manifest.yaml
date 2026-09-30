@@ -1,0 +1,26 @@
+# The canonical example: standard shipping at 5 USD (4.50 EUR), 3 to 5
+# business days, tax added on top.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeShippingRate
+metadata:
+  name: standard-shipping
+  org: e2e-org
+  env: testing
+spec:
+  displayName: Standard
+  fixedAmount:
+    amount: 500
+    currency: usd
+    currencyOptions:
+      eur:
+        amount: 450
+        taxBehavior: exclusive
+  deliveryEstimate:
+    minimum:
+      unit: business_day
+      value: 3
+    maximum:
+      unit: business_day
+      value: 5
+  taxBehavior: exclusive
+  taxCode: txcd_92010001

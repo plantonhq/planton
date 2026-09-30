@@ -59,5 +59,5 @@ Import the price by its id (`price_...`). Every field that shapes the charge mus
 
 - **No hidden products**: the provider can create a product inside a price, but that product would be invisible to Planton and never archived. Reference a StripeProduct instead.
 - **A portal lists prices by id**: after a replacement, a portal that pasted the old id still offers the archived price. Reference the StripePrice so the portal follows it on its next apply.
-- **Metered prices need a meter**: set `recurring.usageType: metered` with the billing meter that counts usage.
+- **Metered prices need a meter**: set `recurring.usageType: metered` and name the StripeBillingMeter that counts usage by reference. A metered price without a meter is refused before anything runs, and a replaced meter replaces the price with it.
 - **A price that cannot be read fails the plan**: the provider does not treat a missing price as gone. Recover with `tofu state rm stripe_price.this` and an apply, which creates a new one.

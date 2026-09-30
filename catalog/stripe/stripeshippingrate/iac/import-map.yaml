@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripeshippingrate
+spec:
+  # A shipping rate imports by its Stripe id (shr_...), which a prior deploy reports as its id
+  # output.
+  values:
+    - name: shipping_rate_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Product catalog -> Shipping rates (the rate's id, shr_..., on its page), or `GET /v1/shipping_rates`.

@@ -84,7 +84,7 @@ spec:
 | `spec.recurring.interval` | `enum` |  |  |  |
 | `spec.recurring.intervalCount` | `int64` |  |  |  |
 | `spec.recurring.usageType` | `enum` |  |  |  |
-| `spec.recurring.meter` | `string` |  |  |  |
+| `spec.recurring.meter` | `string \| valueFrom` |  |  | StripeBillingMeter (`status.outputs.id`) |
 | `spec.recurring.trialPeriodDays` | `int64` |  |  |  |
 | `spec.currencyOptions` | `map<string, StripePriceCurrencyOption>` |  |  |  |
 | `spec.currencyOptions.*.unitAmount` | `int64` |  |  |  |
@@ -295,6 +295,7 @@ REPLACES the price.
 
 - rule: a billing period is at most three years (3 years, 36 months, 156 weeks or 1095 days)
 - rule: a meter tracks usage, so it needs usage_type metered
+- rule: a metered price bills what a meter counts: name its meter (a reference to a StripeBillingMeter)
 
 ### spec.recurring.interval
 
@@ -337,11 +338,15 @@ Allowed values (use exactly as shown):
 
 ### spec.recurring.meter
 
-`string`
+`string | valueFrom`
 
-meter is the billing meter (mtr_...) that tracks a metered price's usage.
+meter is the billing meter (mtr_...) whose usage a metered price bills. Reference a
+StripeBillingMeter; a metered price needs one, and a licensed price takes none. Changing it
+REPLACES the price, and so does a replacement of the referenced meter.
 
-- rule: meter is a Stripe billing meter id (mtr_...)
+- references: StripeBillingMeter (`status.outputs.id`)
+- rule: meter is a Stripe billing meter id (mtr_...), or a reference to a StripeBillingMeter
+- rule: write as {value: <literal>} or {valueFrom: {kind: StripeBillingMeter, name: <that resource's name>, fieldPath: status.outputs.id}} -- a bare string does not parse
 
 ### spec.recurring.trialPeriodDays
 
@@ -550,6 +555,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.product` | StripeProduct | `status.outputs.id` |
+| `spec.recurring.meter` | StripeBillingMeter | `status.outputs.id` |
 
 ## Referenced By
 
@@ -558,6 +564,8 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | StripeBillingPortalConfiguration | `spec.features.subscriptionUpdate.products[].prices` | `status.outputs.id` |
+| StripePaymentLink | `spec.lineItems[].price` | `status.outputs.id` |
+| StripePaymentLink | `spec.optionalItems[].price` | `status.outputs.id` |
 
 ## See Also
 

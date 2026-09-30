@@ -1,0 +1,20 @@
+# A repeating coupon limited to one product, named by reference. The harness
+# deploys a run-named StripeProduct first on OpenTofu, and archives it after
+# the coupon is deleted.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeCoupon
+metadata:
+  name: e2e-coupon-products
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-prerequisites: StripeProduct
+spec:
+  name: e2e ${E2E_RUN_ID} products
+  percentOff: 25
+  duration: repeating
+  durationInMonths: 3
+  appliesToProducts:
+    - valueFrom:
+        kind: StripeProduct
+        name: e2e-product-prereq

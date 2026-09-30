@@ -91,6 +91,7 @@ These are the decisions that matter. Explore the full field reference in the [AP
 | Field | Kind | Output |
 |-------|------|--------|
 | `product` | Stripe Product | `status.outputs.id` |
+| `recurring.meter` | Stripe Billing Meter | `status.outputs.id` |
 
 ### What This Component Provides
 
@@ -110,9 +111,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Monthly subscription** -- a flat monthly price in three currencies. Start from the **Monthly Subscription** preset.
 
-**Graduated usage** -- metered usage in tiers that get cheaper with volume. Start from the **Graduated Usage** preset.
+**Graduated usage** -- metered usage in tiers that get cheaper with volume, billing what a Stripe Billing Meter counts. Start from the **Graduated Usage** preset.
 
 ## Works With
 
 - [**Stripe Product**](/cloud-catalog/stripe-product) -- what the price charges for.
+- [**Stripe Billing Meter**](/cloud-catalog/stripe-billing-meter) -- counts the usage a metered price bills.
+- [**Stripe Payment Link**](/cloud-catalog/stripe-payment-link) -- a hosted page that sells the price.
 - [**Stripe Billing Portal Configuration**](/cloud-catalog/stripe-billing-portal-configuration) -- lets customers switch between prices.

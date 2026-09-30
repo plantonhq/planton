@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentlink.v1alpha1;
+
+// StripePaymentLinkStackOutputs identifies the payment link.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_link
+message StripePaymentLinkStackOutputs {
+  // id is the payment link's Stripe id (plink_...). It changes when the link is replaced.
+  string id = 1;
+
+  // url is the page's public address (https://buy.stripe.com/...). A site's configuration reads it
+  // by reference, so it follows a replacement on the same apply.
+  string url = 2;
+
+  // active is false once the link is deactivated (by destroy, by spec.active, by a completed-
+  // session limit, or in the Dashboard).
+  bool active = 3;
+}

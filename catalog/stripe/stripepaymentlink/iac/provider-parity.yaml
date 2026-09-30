@@ -1,0 +1,165 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The provider (Terraform Plugin Framework) nests the payment link entirely
+# through nested attributes, which distill to single flat args -- so
+# line_items, after_completion, subscription_data and the rest are each ONE
+# provider argument. The spec models each tree as typed messages with enums
+# for every closed set; fan-in mappings record every spec leaf each argument
+# realizes. Inside those arguments the module writes three of Stripe's
+# discriminators from the spec's shape (after_completion.type, a custom
+# field's type and label.type, and an account reference's type), and never
+# sets line_items[*].price_data: that inline price would be a second object
+# the module could neither track nor archive -- the price is a StripePrice.
+#
+# The line-item tracker is OpenTofu's built-in terraform_data, which replaces
+# the link when a line item's price or quantity changes (both accepted by the
+# provider and never sent). It has no provider surface.
+resources:
+  stripe_payment_link:
+    mappings:
+      - spec: spec.after_completion.hosted_confirmation.custom_message
+        arg: after_completion
+      - spec: spec.after_completion.redirect.url
+        arg: after_completion
+      - spec: spec.automatic_tax.enabled
+        arg: automatic_tax
+      - spec: spec.automatic_tax.liability.account
+        arg: automatic_tax
+      - spec: spec.consent_collection.payment_method_reuse_agreement.position
+        arg: consent_collection
+      - spec: spec.consent_collection.promotions
+        arg: consent_collection
+      - spec: spec.consent_collection.terms_of_service
+        arg: consent_collection
+      - spec: spec.custom_fields.dropdown.default_value
+        arg: custom_fields
+      - spec: spec.custom_fields.dropdown.options.label
+        arg: custom_fields
+      - spec: spec.custom_fields.dropdown.options.value
+        arg: custom_fields
+      - spec: spec.custom_fields.key
+        arg: custom_fields
+      - spec: spec.custom_fields.label
+        arg: custom_fields
+      - spec: spec.custom_fields.numeric.default_value
+        arg: custom_fields
+      - spec: spec.custom_fields.numeric.maximum_length
+        arg: custom_fields
+      - spec: spec.custom_fields.numeric.minimum_length
+        arg: custom_fields
+      - spec: spec.custom_fields.optional
+        arg: custom_fields
+      - spec: spec.custom_fields.text.default_value
+        arg: custom_fields
+      - spec: spec.custom_fields.text.maximum_length
+        arg: custom_fields
+      - spec: spec.custom_fields.text.minimum_length
+        arg: custom_fields
+      - spec: spec.custom_text.after_submit.message
+        arg: custom_text
+      - spec: spec.custom_text.shipping_address.message
+        arg: custom_text
+      - spec: spec.custom_text.submit.message
+        arg: custom_text
+      - spec: spec.custom_text.terms_of_service_acceptance.message
+        arg: custom_text
+      - spec: spec.invoice_creation.enabled
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.account_tax_ids
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.custom_fields.name
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.custom_fields.value
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.description
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.footer
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.issuer.account
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.metadata
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.rendering_options.amount_tax_display
+        arg: invoice_creation
+      - spec: spec.invoice_creation.invoice_data.rendering_options.template
+        arg: invoice_creation
+      - spec: spec.line_items.adjustable_quantity.enabled
+        arg: line_items
+      - spec: spec.line_items.adjustable_quantity.maximum
+        arg: line_items
+      - spec: spec.line_items.adjustable_quantity.minimum
+        arg: line_items
+      - spec: spec.line_items.price
+        arg: line_items
+      - spec: spec.line_items.quantity
+        arg: line_items
+      - spec: spec.managed_payments.enabled
+        arg: managed_payments
+      - spec: spec.name_collection.business.enabled
+        arg: name_collection
+      - spec: spec.name_collection.business.optional
+        arg: name_collection
+      - spec: spec.name_collection.individual.enabled
+        arg: name_collection
+      - spec: spec.name_collection.individual.optional
+        arg: name_collection
+      - spec: spec.optional_items.adjustable_quantity.enabled
+        arg: optional_items
+      - spec: spec.optional_items.adjustable_quantity.maximum
+        arg: optional_items
+      - spec: spec.optional_items.adjustable_quantity.minimum
+        arg: optional_items
+      - spec: spec.optional_items.price
+        arg: optional_items
+      - spec: spec.optional_items.quantity
+        arg: optional_items
+      - spec: spec.payment_intent_data.capture_method
+        arg: payment_intent_data
+      - spec: spec.payment_intent_data.description
+        arg: payment_intent_data
+      - spec: spec.payment_intent_data.metadata
+        arg: payment_intent_data
+      - spec: spec.payment_intent_data.setup_future_usage
+        arg: payment_intent_data
+      - spec: spec.payment_intent_data.statement_descriptor
+        arg: payment_intent_data
+      - spec: spec.payment_intent_data.statement_descriptor_suffix
+        arg: payment_intent_data
+      - spec: spec.payment_intent_data.transfer_group
+        arg: payment_intent_data
+      - spec: spec.payment_method_options.card.restrictions.brands_blocked
+        arg: payment_method_options
+      - spec: spec.phone_number_collection.enabled
+        arg: phone_number_collection
+      - spec: spec.restrictions.completed_sessions.limit
+        arg: restrictions
+      - spec: spec.shipping_address_collection.allowed_countries
+        arg: shipping_address_collection
+      - spec: spec.shipping_options.shipping_rate
+        arg: shipping_options
+      - spec: spec.subscription_data.description
+        arg: subscription_data
+      - spec: spec.subscription_data.invoice_settings.issuer.account
+        arg: subscription_data
+      - spec: spec.subscription_data.metadata
+        arg: subscription_data
+      - spec: spec.subscription_data.trial_period_days
+        arg: subscription_data
+      - spec: spec.subscription_data.trial_settings.end_behavior.missing_payment_method
+        arg: subscription_data
+      - spec: spec.tax_id_collection.enabled
+        arg: tax_id_collection
+      - spec: spec.tax_id_collection.required
+        arg: tax_id_collection
+      - spec: spec.transfer_data.amount
+        arg: transfer_data
+      - spec: spec.transfer_data.destination
+        arg: transfer_data
+  terraform_data:
+    internal: the module's line-item tracker (OpenTofu's built-in store) -- it holds each line item's price and quantity so a change the provider accepts but can't send replaces the link; it has no provider surface

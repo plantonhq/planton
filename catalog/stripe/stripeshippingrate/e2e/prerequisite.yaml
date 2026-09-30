@@ -1,0 +1,14 @@
+# The install profile a consumer's scenario gets when it names
+# StripeShippingRate as a prerequisite (a payment link's shipping options): a
+# run-named 5 USD rate. Deactivated after the consumer's scenario.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeShippingRate
+metadata:
+  name: e2e-shipping-rate-prereq
+  org: e2e-org
+  env: testing
+spec:
+  displayName: e2e ${E2E_RUN_ID} ${E2E_SCENARIO} shipping
+  fixedAmount:
+    amount: 500
+    currency: usd

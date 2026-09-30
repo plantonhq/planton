@@ -251,12 +251,18 @@ message StripePriceRecurring {
   optional int64 interval_count = 2 [(buf.validate.field).int64.gte = 1];
   // usage_type is how the quantity per period is found. Unset, Stripe uses licensed.
   UsageType usage_type = 3 [(buf.validate.field).enum.defined_only = true];
-  // meter is the billing meter (mtr_...) that tracks a metered price's usage.
-  string meter = 4 [(buf.validate.field).cel = {
-    id: "recurring.meter.format"
-    message: "meter is a Stripe billing meter id (mtr_...)"
-    expression: "this == '' || this.startsWith('mtr_')"
-  }];
+  // meter is the billing meter (mtr_...) whose usage a metered price bills. Reference a
+  // StripeBillingMeter; a metered price needs one, and a licensed price takes none. Changing it
+  // REPLACES the price, and so does a replacement of the referenced meter.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef meter = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeBillingMeter,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).cel = {
+      id: "recurring.meter.format"
+      message: "meter is a Stripe billing meter id (mtr_...), or a reference to a StripeBillingMeter"
+      expression: "!has(this.value) || this.value.startsWith('mtr_')"
+    }
+  ];
   // trial_period_days is the trial a subscription gets when it is created with trial_from_plan.
   optional int64 trial_period_days = 5 [(buf.validate.field).int64.gte = 0];
 
@@ -269,7 +275,13 @@ message StripePriceRecurring {
   option (buf.validate.message).cel = {
     id: "recurring.meter_needs_metered"
     message: "a meter tracks usage, so it needs usage_type metered"
-    expression: "this.meter == '' || this.usage_type == 2"
+    expression: "!has(this.meter) || this.usage_type == 2"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "recurring.metered_needs_meter"
+    message: "a metered price bills what a meter counts: name its meter (a reference to a StripeBillingMeter)"
+    expression: "this.usage_type != 2 || has(this.meter)"
   };
 
   // Interval is a billing period's unit.

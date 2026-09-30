@@ -75,3 +75,62 @@ func TestClient_ReadResource(t *testing.T) {
 		t.Errorf("any other failure carries Stripe's message, got %v", err)
 	}
 }
+
+// A folded child is proven like its parent: the harness reads the children's ids from the map
+// output, checks each after deploy, and proves each one's destroy truth after destroy.
+func TestHarness_VerifiesFoldedChildren(t *testing.T) {
+	featureLinkGone := false
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/v1/products/prod_1":
+			_, _ = w.Write([]byte(`{"id":"prod_1","active":` + map[bool]string{false: "true", true: "false"}[featureLinkGone] + `}`))
+		case "/v1/products/prod_1/features/prodft_1":
+			if featureLinkGone {
+				w.WriteHeader(http.StatusNotFound)
+				_, _ = w.Write([]byte(`{"error":{"message":"No such product feature"}}`))
+				return
+			}
+			_, _ = w.Write([]byte(`{"id":"prodft_1"}`))
+		default:
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = w.Write([]byte(`{"error":{"message":"No such object"}}`))
+		}
+	}))
+	defer server.Close()
+	h := NewHarness()
+	h.client = NewClient("rk_test_key", "")
+	h.client.baseURL = server.URL
+
+	outputs := map[string]interface{}{"id": "prod_1", "product_feature_ids": map[string]interface{}{"feat_1": "prodft_1"}}
+	if err := h.VerifyDeployed(context.Background(), "stripeproduct", outputs); err != nil {
+		t.Fatal(err)
+	}
+	featureLinkGone = true
+	if err := h.VerifyDestroyed(context.Background(), "stripeproduct"); err != nil {
+		t.Errorf("an archived product whose feature link is deleted passes, got %v", err)
+	}
+
+	// The same run with a feature link that survives destroy must fail on the child.
+	featureLinkGone = false
+	if err := h.VerifyDeployed(context.Background(), "stripeproduct", outputs); err != nil {
+		t.Fatal(err)
+	}
+	server.Config.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/v1/products/prod_1" {
+			_, _ = w.Write([]byte(`{"id":"prod_1","active":false}`))
+			return
+		}
+		_, _ = w.Write([]byte(`{"id":"prodft_1"}`))
+	})
+	if err := h.VerifyDestroyed(context.Background(), "stripeproduct"); err == nil || !strings.Contains(err.Error(), "product_feature_ids") {
+		t.Errorf("a feature link that survives destroy must fail on the child, got %v", err)
+	}
+}
+
+func TestHarness_RefusesAMalformedChildOutput(t *testing.T) {
+	h := NewHarness()
+	outputs := map[string]interface{}{"id": "mtr_1", "alert_ids": []interface{}{"alrt_1"}}
+	if err := h.VerifyDeployed(context.Background(), "stripebillingmeter", outputs); err == nil || !strings.Contains(err.Error(), "alert_ids") {
+		t.Errorf("a child output that is not a map of ids must be refused, got %v", err)
+	}
+}

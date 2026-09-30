@@ -7516,10 +7516,54 @@ enum CloudResourceKind {
     prerequisites: [StripeProduct]
     provisioners: ["tofu"]
   }];
+  StripeCoupon = 10102 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpcoup"
+    provisioners: ["tofu"]
+  }];
+  // A promotion code always redeems a coupon (its coupon field is required),
+  // so the coupon deploys first.
+  StripePromotionCode = 10103 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stppc"
+    prerequisites: [StripeCoupon]
+    provisioners: ["tofu"]
+  }];
   StripeEntitlementFeature = 10104 [(kind_meta) = {
     provider: stripe
     version: "v1alpha1"
     id_prefix: "stpef"
+    provisioners: ["tofu"]
+  }];
+  StripeShippingRate = 10105 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpsr"
+    provisioners: ["tofu"]
+  }];
+  // Tax rate, tax registration and terminal reader share the initials "tr",
+  // so the tax rate takes Stripe's own id prefix (txr_).
+  StripeTaxRate = 10106 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stptxr"
+    provisioners: ["tofu"]
+  }];
+  StripeBillingMeter = 10108 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpbm"
+    provisioners: ["tofu"]
+  }];
+  // A payment link always sells at least one price (line_items is required),
+  // so the price deploys first.
+  StripePaymentLink = 10109 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stppl"
+    prerequisites: [StripePrice]
     provisioners: ["tofu"]
   }];
 }

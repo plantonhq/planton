@@ -746,14 +746,20 @@ import (
 	openfgaauthorizationmodelv1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgaauthorizationmodel/v1alpha1"
 	openfgarelationshiptuplev1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgarelationshiptuple/v1alpha1"
 	openfgastorev1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgastore/v1alpha1"
+	stripebillingmeterv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripebillingmeter/v1alpha1"
 	stripebillingportalconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripebillingportalconfiguration/v1alpha1"
+	stripecouponv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripecoupon/v1alpha1"
 	stripeentitlementfeaturev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeentitlementfeature/v1alpha1"
 	stripeeventdestinationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeeventdestination/v1alpha1"
+	stripepaymentlinkv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepaymentlink/v1alpha1"
 	stripepaymentmethodconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepaymentmethodconfiguration/v1alpha1"
 	stripepaymentmethoddomainv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepaymentmethoddomain/v1alpha1"
 	stripepricev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeprice/v1alpha1"
 	stripeproductv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeproduct/v1alpha1"
+	stripepromotioncodev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepromotioncode/v1alpha1"
 	striperadarvaluelistv1alpha1 "github.com/plantonhq/planton/catalog/stripe/striperadarvaluelist/v1alpha1"
+	stripeshippingratev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeshippingrate/v1alpha1"
+	stripetaxratev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripetaxrate/v1alpha1"
 	stripewebhookendpointv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripewebhookendpoint/v1alpha1"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
@@ -1534,14 +1540,20 @@ var ProviderOpenfgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderStripeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_StripeBillingMeter:               &stripebillingmeterv1alpha1.StripeBillingMeter{},
 	cloudresourcekind.CloudResourceKind_StripeBillingPortalConfiguration: &stripebillingportalconfigurationv1alpha1.StripeBillingPortalConfiguration{},
+	cloudresourcekind.CloudResourceKind_StripeCoupon:                     &stripecouponv1alpha1.StripeCoupon{},
 	cloudresourcekind.CloudResourceKind_StripeEntitlementFeature:         &stripeentitlementfeaturev1alpha1.StripeEntitlementFeature{},
 	cloudresourcekind.CloudResourceKind_StripeEventDestination:           &stripeeventdestinationv1alpha1.StripeEventDestination{},
+	cloudresourcekind.CloudResourceKind_StripePaymentLink:                &stripepaymentlinkv1alpha1.StripePaymentLink{},
 	cloudresourcekind.CloudResourceKind_StripePaymentMethodConfiguration: &stripepaymentmethodconfigurationv1alpha1.StripePaymentMethodConfiguration{},
 	cloudresourcekind.CloudResourceKind_StripePaymentMethodDomain:        &stripepaymentmethoddomainv1alpha1.StripePaymentMethodDomain{},
 	cloudresourcekind.CloudResourceKind_StripePrice:                      &stripepricev1alpha1.StripePrice{},
 	cloudresourcekind.CloudResourceKind_StripeProduct:                    &stripeproductv1alpha1.StripeProduct{},
+	cloudresourcekind.CloudResourceKind_StripePromotionCode:              &stripepromotioncodev1alpha1.StripePromotionCode{},
 	cloudresourcekind.CloudResourceKind_StripeRadarValueList:             &striperadarvaluelistv1alpha1.StripeRadarValueList{},
+	cloudresourcekind.CloudResourceKind_StripeShippingRate:               &stripeshippingratev1alpha1.StripeShippingRate{},
+	cloudresourcekind.CloudResourceKind_StripeTaxRate:                    &stripetaxratev1alpha1.StripeTaxRate{},
 	cloudresourcekind.CloudResourceKind_StripeWebhookEndpoint:            &stripewebhookendpointv1alpha1.StripeWebhookEndpoint{},
 }
 

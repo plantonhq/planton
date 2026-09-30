@@ -514,6 +514,14 @@ retrofitting it later means re-deriving every naming decision:
    so destroy would leave it live and its drift would go unseen. Exclude it
    with that reason, point the spec comment and the GUIDE at the kind a
    reader declares instead, and let a reference compose the two.
+   An argument the provider accepts but can't send -- an in-place update the
+   vendor's API has no field for, or a write-only value whose change plans
+   nothing -- is never a silent drop or a pending change forever: the module
+   tracks it in a `terraform_data` tracker that replaces the resource
+   (flow rule 012 has the recipe), the manifest judges the tracker
+   `internal`, the provider's import catalog records `terraform_data` as not
+   importable (an imported tracker would replace the object), and the spec
+   field says a change replaces the object.
 3. Re-run with `--check`; the kind must be at total accounting and OUT of
    `pkg/providerparity/baseline.yaml` (a new kind never ships pre-baselined
    debt). File presence IS enrollment -- the `lint.provider-parity` CI lane
@@ -710,8 +718,13 @@ A new kind is only exercised once it is registered in the provider harness:
   object, still readable and INACTIVE for one the vendor only archives or
   deactivates, and still PRESENT for one the provider merely forgets (its
   destroy makes no call) -- the last proves the GUIDE's "the vendor keeps it"
-  and catches a provider that starts deleting. Stripe's `verify/verifier.go`
-  carries all three shapes.
+  and catches a provider that starts deleting. Read inactive the way the
+  vendor reports it (a flag on most objects, a status field on some). A kind
+  that folds children (a list's items, a parent's links, a meter's alerts)
+  proves each child's destroy truth too, from the map output that keys the
+  children's ids: a folded child is not proven because its parent is.
+  Stripe's `verify/verifier.go` carries all three shapes, both inactive
+  forms, and the child checks.
 - `e2e/<provider>/<provider>_test.go` — add `Test<Kind>_Pulumi` / `Test<Kind>_Terraform` entrypoints. Scenarios are auto-discovered; the entry funcs are not.
 - **Test-name discovery is registry-driven.** The GitHub Actions matrix builder in
   `pkg/e2e/profile/discover.go` maps component directory names (e.g. `awslambda`) to

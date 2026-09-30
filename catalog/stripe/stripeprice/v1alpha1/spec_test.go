@@ -34,6 +34,16 @@ func productRef() *foreignkeyv1.StringValueOrRef {
 	}}
 }
 
+func meterRef() *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_StripeBillingMeter, Name: "api-requests"},
+	}}
+}
+
+func literal(value string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
+}
+
 // proMonthly is the minimal recurring price: 49 USD a month on a referenced product.
 func proMonthly() *StripePriceSpec {
 	return &StripePriceSpec{
@@ -55,7 +65,7 @@ func graduated() *StripePriceSpec {
 			{UpTo: "1000", UnitAmount: int64Ptr(10)},
 			{UpTo: "inf", UnitAmountDecimal: "0.5"},
 		},
-		Recurring: &StripePriceRecurring{Interval: StripePriceRecurring_month, UsageType: StripePriceRecurring_metered, Meter: "mtr_123"},
+		Recurring: &StripePriceRecurring{Interval: StripePriceRecurring_month, UsageType: StripePriceRecurring_metered, Meter: meterRef()},
 	}
 }
 
@@ -79,6 +89,12 @@ var _ = ginkgo.Describe("StripePrice Validation Tests", func() {
 			}
 			spec.Recurring.IntervalCount = int64Ptr(3)
 			spec.Recurring.TrialPeriodDays = int64Ptr(14)
+			gomega.Expect(protovalidate.Validate(price(spec))).To(gomega.Succeed())
+		})
+
+		ginkgo.It("accepts a metered price on a literal meter id", func() {
+			spec := graduated()
+			spec.Recurring.Meter = literal("mtr_123")
 			gomega.Expect(protovalidate.Validate(price(spec))).To(gomega.Succeed())
 		})
 
@@ -225,16 +241,26 @@ var _ = ginkgo.Describe("StripePrice Validation Tests", func() {
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("at most three years"))
 		})
 
-		ginkgo.It("refuses a meter on a licensed price, or a meter that is not a meter id", func() {
+		ginkgo.It("refuses a meter on a licensed price, or a literal that is not a meter id", func() {
 			spec := proMonthly()
-			spec.Recurring.Meter = "mtr_123"
+			spec.Recurring.Meter = meterRef()
 			err := protovalidate.Validate(price(spec))
 			gomega.Expect(err).To(gomega.HaveOccurred())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("needs usage_type metered"))
 
 			spec = graduated()
-			spec.Recurring.Meter = "meter_123"
-			gomega.Expect(protovalidate.Validate(price(spec))).NotTo(gomega.Succeed())
+			spec.Recurring.Meter = literal("meter_123")
+			err = protovalidate.Validate(price(spec))
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("Stripe billing meter id"))
+		})
+
+		ginkgo.It("refuses a metered price with no meter", func() {
+			spec := graduated()
+			spec.Recurring.Meter = nil
+			err := protovalidate.Validate(price(spec))
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("a metered price bills what a meter counts"))
 		})
 
 		ginkgo.It("refuses the main currency among the options, and options of the wrong scheme", func() {

@@ -1,0 +1,23 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# A promotion code always redeems a coupon: the spec names it as coupon, which
+# the module writes into the provider's promotion block with the type Stripe
+# requires. The restrictions' other currencies are a map keyed by currency.
+resources:
+  stripe_promotion_code:
+    mappings:
+      - spec: spec.coupon
+        arg: promotion.coupon
+      - spec: spec.restrictions.currency_options
+        arg: restrictions.currency_options.minimum_amount
+    exclusions:
+      - arg: promotion.type
+        reason: set by the module to coupon, the only promotion type Stripe offers (the provider validates exactly that one value) -- a field of its own could only restate it
+      - arg: restrictions.currency_options.key
+        reason: the currency is the key of the spec's restrictions.currency_options map, which the module writes into each entry's key -- not a field of its own

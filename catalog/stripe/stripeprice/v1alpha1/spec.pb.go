@@ -845,8 +845,10 @@ type StripePriceRecurring struct {
 	IntervalCount *int64 `protobuf:"varint,2,opt,name=interval_count,json=intervalCount,proto3,oneof" json:"interval_count,omitempty"`
 	// usage_type is how the quantity per period is found. Unset, Stripe uses licensed.
 	UsageType StripePriceRecurring_UsageType `protobuf:"varint,3,opt,name=usage_type,json=usageType,proto3,enum=dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring_UsageType" json:"usage_type,omitempty"`
-	// meter is the billing meter (mtr_...) that tracks a metered price's usage.
-	Meter string `protobuf:"bytes,4,opt,name=meter,proto3" json:"meter,omitempty"`
+	// meter is the billing meter (mtr_...) whose usage a metered price bills. Reference a
+	// StripeBillingMeter; a metered price needs one, and a licensed price takes none. Changing it
+	// REPLACES the price, and so does a replacement of the referenced meter.
+	Meter *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=meter,proto3" json:"meter,omitempty"`
 	// trial_period_days is the trial a subscription gets when it is created with trial_from_plan.
 	TrialPeriodDays *int64 `protobuf:"varint,5,opt,name=trial_period_days,json=trialPeriodDays,proto3,oneof" json:"trial_period_days,omitempty"`
 	unknownFields   protoimpl.UnknownFields
@@ -904,11 +906,11 @@ func (x *StripePriceRecurring) GetUsageType() StripePriceRecurring_UsageType {
 	return StripePriceRecurring_usage_type_unspecified
 }
 
-func (x *StripePriceRecurring) GetMeter() string {
+func (x *StripePriceRecurring) GetMeter() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Meter
 	}
-	return ""
+	return nil
 }
 
 func (x *StripePriceRecurring) GetTrialPeriodDays() int64 {
@@ -1089,15 +1091,16 @@ const file_catalog_stripe_stripeprice_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05Round\x12\x15\n" +
 	"\x11round_unspecified\x10\x00\x12\x06\n" +
 	"\x02up\x10\x01\x12\b\n" +
-	"\x04down\x10\x02\"\xc2\b\n" +
+	"\x04down\x10\x02\"\xf3\n" +
+	"\n" +
 	"\x14StripePriceRecurring\x12n\n" +
 	"\binterval\x18\x01 \x01(\x0e2F.dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.IntervalB\n" +
 	"\xbaH\a\x82\x01\x04\x10\x01 \x00R\binterval\x123\n" +
 	"\x0einterval_count\x18\x02 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x00R\rintervalCount\x88\x01\x01\x12p\n" +
 	"\n" +
-	"usage_type\x18\x03 \x01(\x0e2G.dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.UsageTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\tusageType\x12\x89\x01\n" +
-	"\x05meter\x18\x04 \x01(\tBs\xbaHp\xba\x01m\n" +
-	"\x16recurring.meter.format\x12,meter is a Stripe billing meter id (mtr_...)\x1a%this == '' || this.startsWith('mtr_')R\x05meter\x128\n" +
+	"usage_type\x18\x03 \x01(\x0e2G.dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.UsageTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\tusageType\x12\x8e\x02\n" +
+	"\x05meter\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xc3\x01\xbaH\xa5\x01\xba\x01\xa1\x01\n" +
+	"\x16recurring.meter.format\x12Tmeter is a Stripe billing meter id (mtr_...), or a reference to a StripeBillingMeter\x1a1!has(this.value) || this.value.startsWith('mtr_')\x88\xd4a\xfcN\x92\xd4a\x11status.outputs.idR\x05meter\x128\n" +
 	"\x11trial_period_days\x18\x05 \x01(\x03B\a\xbaH\x04\"\x02(\x00H\x01R\x0ftrialPeriodDays\x88\x01\x01\"L\n" +
 	"\bInterval\x12\x18\n" +
 	"\x14interval_unspecified\x10\x00\x12\a\n" +
@@ -1108,9 +1111,10 @@ const file_catalog_stripe_stripeprice_v1alpha1_spec_proto_rawDesc = "" +
 	"\tUsageType\x12\x1a\n" +
 	"\x16usage_type_unspecified\x10\x00\x12\f\n" +
 	"\blicensed\x10\x01\x12\v\n" +
-	"\ametered\x10\x02:\x91\x03\xbaH\x8d\x03\x1a\x89\x02\n" +
+	"\ametered\x10\x02:\xbd\x04\xbaH\xb9\x04\x1a\x89\x02\n" +
 	"&recurring.interval_at_most_three_years\x12Ta billing period is at most three years (3 years, 36 months, 156 weeks or 1095 days)\x1a\x88\x01!has(this.interval_count) || this.interval_count <= (this.interval == 4 ? 3 : this.interval == 3 ? 36 : this.interval == 2 ? 156 : 1095)\x1a\x7f\n" +
-	"\x1drecurring.meter_needs_metered\x124a meter tracks usage, so it needs usage_type metered\x1a(this.meter == '' || this.usage_type == 2B\x11\n" +
+	"\x1drecurring.meter_needs_metered\x124a meter tracks usage, so it needs usage_type metered\x1a(!has(this.meter) || this.usage_type == 2\x1a\xa9\x01\n" +
+	"\x1drecurring.metered_needs_meter\x12_a metered price bills what a meter counts: name its meter (a reference to a StripeBillingMeter)\x1a'this.usage_type != 2 || has(this.meter)B\x11\n" +
 	"\x0f_interval_countB\x14\n" +
 	"\x12_trial_period_days\"\xa1\x04\n" +
 	"\x19StripePriceCurrencyOption\x12-\n" +
@@ -1174,15 +1178,16 @@ var file_catalog_stripe_stripeprice_v1alpha1_spec_proto_depIdxs = []int32{
 	3,  // 10: dev.planton.stripe.stripeprice.v1alpha1.StripePriceTransformQuantity.round:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceTransformQuantity.Round
 	4,  // 11: dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.interval:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.Interval
 	5,  // 12: dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.usage_type:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.UsageType
-	6,  // 13: dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.tax_behavior:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.TaxBehavior
-	8,  // 14: dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.tiers:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceTier
-	9,  // 15: dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.custom_unit_amount:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceCustomUnitAmount
-	12, // 16: dev.planton.stripe.stripeprice.v1alpha1.StripePriceSpec.CurrencyOptionsEntry.value:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	15, // 13: dev.planton.stripe.stripeprice.v1alpha1.StripePriceRecurring.meter:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6,  // 14: dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.tax_behavior:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.TaxBehavior
+	8,  // 15: dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.tiers:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceTier
+	9,  // 16: dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption.custom_unit_amount:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceCustomUnitAmount
+	12, // 17: dev.planton.stripe.stripeprice.v1alpha1.StripePriceSpec.CurrencyOptionsEntry.value:type_name -> dev.planton.stripe.stripeprice.v1alpha1.StripePriceCurrencyOption
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_catalog_stripe_stripeprice_v1alpha1_spec_proto_init() }

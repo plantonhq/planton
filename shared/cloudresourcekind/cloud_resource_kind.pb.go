@@ -2489,8 +2489,20 @@ const (
 	CloudResourceKind_StripeProduct                    CloudResourceKind = 10100
 	// A price always belongs to a product (its product field is required), so
 	// the product deploys first.
-	CloudResourceKind_StripePrice              CloudResourceKind = 10101
+	CloudResourceKind_StripePrice  CloudResourceKind = 10101
+	CloudResourceKind_StripeCoupon CloudResourceKind = 10102
+	// A promotion code always redeems a coupon (its coupon field is required),
+	// so the coupon deploys first.
+	CloudResourceKind_StripePromotionCode      CloudResourceKind = 10103
 	CloudResourceKind_StripeEntitlementFeature CloudResourceKind = 10104
+	CloudResourceKind_StripeShippingRate       CloudResourceKind = 10105
+	// Tax rate, tax registration and terminal reader share the initials "tr",
+	// so the tax rate takes Stripe's own id prefix (txr_).
+	CloudResourceKind_StripeTaxRate      CloudResourceKind = 10106
+	CloudResourceKind_StripeBillingMeter CloudResourceKind = 10108
+	// A payment link always sells at least one price (line_items is required),
+	// so the price deploys first.
+	CloudResourceKind_StripePaymentLink CloudResourceKind = 10109
 )
 
 // Enum value maps for CloudResourceKind.
@@ -3242,7 +3254,13 @@ var (
 		10005: "StripeRadarValueList",
 		10100: "StripeProduct",
 		10101: "StripePrice",
+		10102: "StripeCoupon",
+		10103: "StripePromotionCode",
 		10104: "StripeEntitlementFeature",
+		10105: "StripeShippingRate",
+		10106: "StripeTaxRate",
+		10108: "StripeBillingMeter",
+		10109: "StripePaymentLink",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                                    0,
@@ -3991,7 +4009,13 @@ var (
 		"StripeRadarValueList":                           10005,
 		"StripeProduct":                                  10100,
 		"StripePrice":                                    10101,
+		"StripeCoupon":                                   10102,
+		"StripePromotionCode":                            10103,
 		"StripeEntitlementFeature":                       10104,
+		"StripeShippingRate":                             10105,
+		"StripeTaxRate":                                  10106,
+		"StripeBillingMeter":                             10108,
+		"StripePaymentLink":                              10109,
 	}
 )
 
@@ -4439,7 +4463,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xda\xe7\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xaa\xea\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5260,8 +5284,14 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x19StripePaymentMethodDomain\x10\x94N\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stppmdb\x04tofu\x129\n" +
 	"\x14StripeRadarValueList\x10\x95N\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stprvlb\x04tofu\x123\n" +
 	"\rStripeProduct\x10\xf4N\x1a\x1f\xa2\xf7\x04\x1b\b\x1d\x12\bv1alpha1\"\astpprodb\x04tofu\x126\n" +
-	"\vStripePrice\x10\xf5N\x1a$\xa2\xf7\x04 \b\x1d\x12\bv1alpha1\"\bstpprice:\x02\xf4Nb\x04tofu\x12<\n" +
-	"\x18StripeEntitlementFeature\x10\xf8N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpefb\x04tofu:|\n" +
+	"\vStripePrice\x10\xf5N\x1a$\xa2\xf7\x04 \b\x1d\x12\bv1alpha1\"\bstpprice:\x02\xf4Nb\x04tofu\x122\n" +
+	"\fStripeCoupon\x10\xf6N\x1a\x1f\xa2\xf7\x04\x1b\b\x1d\x12\bv1alpha1\"\astpcoupb\x04tofu\x12;\n" +
+	"\x13StripePromotionCode\x10\xf7N\x1a!\xa2\xf7\x04\x1d\b\x1d\x12\bv1alpha1\"\x05stppc:\x02\xf6Nb\x04tofu\x12<\n" +
+	"\x18StripeEntitlementFeature\x10\xf8N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpefb\x04tofu\x126\n" +
+	"\x12StripeShippingRate\x10\xf9N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpsrb\x04tofu\x122\n" +
+	"\rStripeTaxRate\x10\xfaN\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stptxrb\x04tofu\x126\n" +
+	"\x12StripeBillingMeter\x10\xfcN\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpbmb\x04tofu\x129\n" +
+	"\x11StripePaymentLink\x10\xfdN\x1a!\xa2\xf7\x04\x1d\b\x1d\x12\bv1alpha1\"\x05stppl:\x02\xf5Nb\x04tofu:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.dev.planton.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xad\x02\n" +
 	"(com.dev.planton.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
 

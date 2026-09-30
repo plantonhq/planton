@@ -1,0 +1,14 @@
+# The install profile a consumer's scenario gets when it names StripeCoupon as
+# a prerequisite (every StripePromotionCode does, through its registry
+# prerequisite): a run-named 10% coupon with no limits, so a code's own
+# limits never exceed it. Deleted after the consumer's scenario.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeCoupon
+metadata:
+  name: e2e-coupon-prereq
+  org: e2e-org
+  env: testing
+spec:
+  name: e2e ${E2E_RUN_ID} ${E2E_SCENARIO} coupon
+  percentOff: 10
+  duration: forever

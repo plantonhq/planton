@@ -45,3 +45,32 @@ spec:
       id_format: "{price_id}"
     - terraform_type: stripe_entitlements_feature
       id_format: "{entitlements_feature_id}"
+    - terraform_type: stripe_coupon
+      id_format: "{coupon_id}"
+    - terraform_type: stripe_promotion_code
+      id_format: "{promotion_code_id}"
+    - terraform_type: stripe_shipping_rate
+      id_format: "{shipping_rate_id}"
+    - terraform_type: stripe_tax_rate
+      id_format: "{tax_rate_id}"
+    - terraform_type: stripe_billing_meter
+      id_format: "{billing_meter_id}"
+    # An alert imports by its own id; the provider's delete only forgets it,
+    # so a round trip leaves the imported alert active in Stripe either way.
+    - terraform_type: stripe_billing_alert
+      id_format: "{billing_alert_id}"
+    # An imported payment link has no line-item quantities in state: the
+    # provider marks them write-only and never stores them.
+    - terraform_type: stripe_payment_link
+      id_format: "{payment_link_id}"
+    # The payment link module's line-item tracker, OpenTofu's built-in
+    # terraform_data. It holds nothing in Stripe; it exists so a change the
+    # provider can't send (a line item's price or quantity) replaces the link.
+    - terraform_type: terraform_data
+      not_importable_upstream_reason: >-
+        terraform_data is OpenTofu's built-in store, not a Stripe object: it
+        accepts an import id but never its input, so an imported tracker would
+        hold nothing and the first apply after import would replace the
+        imported payment link, giving it a new address. Left out of the
+        import, the tracker is created on that first apply and the link is
+        untouched (the round trip's only re-create).

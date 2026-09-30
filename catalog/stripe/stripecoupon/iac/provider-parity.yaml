@@ -1,0 +1,22 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The spec names the products a coupon applies to as a flat list of
+# references (applies_to_products), which the module writes into the
+# provider's applies_to block, and models the other currencies as a map keyed
+# by currency, which the module writes into each entry's key.
+resources:
+  stripe_coupon:
+    mappings:
+      - spec: spec.applies_to_products
+        arg: applies_to.products
+      - spec: spec.currency_options
+        arg: currency_options.amount_off
+    exclusions:
+      - arg: currency_options.key
+        reason: the currency is the key of the spec's currency_options map, which the module writes into each entry's key -- not a field of its own

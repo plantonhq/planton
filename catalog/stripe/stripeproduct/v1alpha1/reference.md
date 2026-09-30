@@ -273,6 +273,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | StripeBillingPortalConfiguration | `spec.features.subscriptionUpdate.products[].product` | `status.outputs.id` |
+| StripeCoupon | `spec.appliesToProducts` | `status.outputs.id` |
 | StripePrice | `spec.product` | `status.outputs.id` |
 
 ## See Also

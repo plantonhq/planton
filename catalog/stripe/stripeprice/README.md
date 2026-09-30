@@ -39,7 +39,7 @@ spec:
 | `unitAmount` / `unitAmountDecimal` / `customUnitAmount` | Exactly one, for a per-unit price. **Replaces** |
 | `billingScheme`, `tiersMode`, `tiers` | A tiered price: its mode and steps, the last `upTo: inf`. **Replaces** |
 | `transformQuantity` | Divide the quantity before billing; not with tiers. **Replaces** |
-| `recurring` | Interval, count, usage type, meter, trial days. Unset: one-time. **Replaces** |
+| `recurring` | Interval, count, usage type, trial days, and a metered price's meter by reference to a StripeBillingMeter. Unset: one-time. **Replaces** |
 | `currencyOptions` | Amounts in other currencies, keyed by currency. Changes in place |
 | `lookupKey` | A stable name your code retrieves the price by. Changes in place |
 | `transferLookupKey` | Move the lookup key to this price from whichever price holds it |

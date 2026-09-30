@@ -1,0 +1,32 @@
+# The canonical example: a subscription page for one price with a 14-day
+# trial, promotion codes, and a redirect to the account's site after payment.
+# The price is a literal id here so the manifest plans on its own; a real
+# manifest references its StripePrice (see the scenarios).
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentLink
+metadata:
+  name: pro-monthly-link
+  org: e2e-org
+  env: testing
+spec:
+  lineItems:
+    - price:
+        value: price_pro_monthly
+      quantity: 1
+      adjustableQuantity:
+        enabled: true
+        minimum: 1
+        maximum: 50
+  allowPromotionCodes: true
+  afterCompletion:
+    redirect:
+      url: https://example.com/welcome?session={CHECKOUT_SESSION_ID}
+  subscriptionData:
+    trialPeriodDays: 14
+    trialSettings:
+      endBehavior:
+        missingPaymentMethod: cancel
+  paymentMethodCollection: if_required
+  inactiveMessage: This offer has ended.
+  metadata:
+    campaign: launch

@@ -1,0 +1,26 @@
+# A summing meter with every field and two alerts, one left without a
+# customer or recurrence (the optional scalars inside a present alert). After
+# destroy the meter reads back inactive and both alerts are still present in
+# Stripe: the provider only forgets them, and the verifier proves it.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingMeter
+metadata:
+  name: e2e-meter-alerts
+  org: e2e-org
+  env: testing
+spec:
+  displayName: e2e ${E2E_RUN_ID} alerts
+  eventName: e2e_${E2E_RUN_ID_UNDERSCORE}_with_alerts
+  defaultAggregation:
+    formula: sum
+  customerMapping:
+    eventPayloadKey: stripe_customer_id
+  valueSettings:
+    eventPayloadKey: requests
+  eventTimeWindow: hour
+  alerts:
+    - title: e2e ${E2E_RUN_ID} 10k
+      gte: 10000
+    - title: e2e ${E2E_RUN_ID} 1m
+      gte: 1000000
+      recurrence: one_time

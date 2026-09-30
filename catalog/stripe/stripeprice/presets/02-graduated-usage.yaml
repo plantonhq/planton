@@ -22,5 +22,8 @@ spec:
   recurring:
     interval: month
     usageType: metered
-    meter: mtr_REPLACE_API_CALLS
+    meter:
+      valueFrom:
+        kind: StripeBillingMeter
+        name: api-calls
   nickname: API calls, graduated

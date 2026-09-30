@@ -1,0 +1,18 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeShippingRate
+metadata:
+  name: free-express
+  org: example-org
+  env: production
+spec:
+  displayName: Free express
+  fixedAmount:
+    amount: 0
+    currency: usd
+  deliveryEstimate:
+    minimum:
+      unit: business_day
+      value: 1
+    maximum:
+      unit: business_day
+      value: 2

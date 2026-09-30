@@ -30,14 +30,16 @@ const (
 type Harness struct {
 	client *Client
 
-	// mu guards deployedIDs, written by VerifyDeployed and read by VerifyDestroyed.
-	mu          sync.Mutex
-	deployedIDs map[string]string // manifest path + component -> Stripe id
+	// mu guards deployedIDs and deployedChildren, written by VerifyDeployed and read by
+	// VerifyDestroyed.
+	mu               sync.Mutex
+	deployedIDs      map[string]string            // manifest path + component -> Stripe id
+	deployedChildren map[string]map[string]string // manifest path + component -> child key -> Stripe id
 }
 
 // NewHarness creates a Stripe harness; credentials are read in Setup.
 func NewHarness() *Harness {
-	return &Harness{deployedIDs: make(map[string]string)}
+	return &Harness{deployedIDs: make(map[string]string), deployedChildren: make(map[string]map[string]string)}
 }
 
 // Setup refuses any key that is not a test-mode key, before the first API call, then proves the
@@ -66,7 +68,9 @@ func (h *Harness) Teardown(ctx context.Context) error {
 }
 
 // VerifyDeployed checks the object the module created, reading its id from the outputs, and
-// stores the id for VerifyDestroyed.
+// stores the id for VerifyDestroyed. A kind that folds children (a meter's alerts, a product's
+// feature links, a Radar list's items) reports their ids as a map output, and each child is
+// checked and stored too.
 func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
 	v, err := verify.GetVerifier(component)
 	if err != nil {
@@ -76,12 +80,27 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	if id == "" {
 		return errors.Errorf("no id found in the outputs of %s", component)
 	}
+	var children map[string]string
+	cv, folds := v.(verify.ChildVerifier)
+	if folds {
+		if children, err = childIDs(outputs[cv.ChildOutput()]); err != nil {
+			return errors.Wrapf(err, "%s: output %s", component, cv.ChildOutput())
+		}
+	}
 
+	key := componentKey(ctx, component)
 	h.mu.Lock()
-	h.deployedIDs[componentKey(ctx, component)] = id
+	h.deployedIDs[key] = id
+	h.deployedChildren[key] = children
 	h.mu.Unlock()
 
-	return v.VerifyExists(h.client, id)
+	if err := v.VerifyExists(h.client, id); err != nil {
+		return err
+	}
+	if folds {
+		return cv.VerifyChildrenExist(h.client, id, children)
+	}
+	return nil
 }
 
 // VerifyDestroyed checks what destroy left, which differs by kind: a deleted endpoint is gone,
@@ -91,13 +110,45 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	if err != nil {
 		return err
 	}
+	key := componentKey(ctx, component)
 	h.mu.Lock()
-	id, stored := h.deployedIDs[componentKey(ctx, component)]
+	id, stored := h.deployedIDs[key]
+	children := h.deployedChildren[key]
 	h.mu.Unlock()
 	if !stored {
 		return errors.Errorf("no stored id for %s -- VerifyDeployed may not have run", component)
 	}
-	return v.VerifyDestroyed(h.client, id)
+	if err := v.VerifyDestroyed(h.client, id); err != nil {
+		return err
+	}
+	if cv, folds := v.(verify.ChildVerifier); folds {
+		return cv.VerifyChildrenDestroyed(h.client, id, children)
+	}
+	return nil
+}
+
+// childIDs reads a map output of child ids. A kind that declared no children reports an empty
+// map, or no output at all.
+func childIDs(output interface{}) (map[string]string, error) {
+	ids := map[string]string{}
+	switch m := output.(type) {
+	case nil:
+	case map[string]string:
+		for k, id := range m {
+			ids[k] = id
+		}
+	case map[string]interface{}:
+		for k, raw := range m {
+			id, ok := raw.(string)
+			if !ok || id == "" {
+				return nil, errors.Errorf("child %q has no id (got %v)", k, raw)
+			}
+			ids[k] = id
+		}
+	default:
+		return nil, errors.Errorf("want a map of child ids, got %T", output)
+	}
+	return ids, nil
 }
 
 // componentKey combines the manifest path from the context with the component, so scenarios of

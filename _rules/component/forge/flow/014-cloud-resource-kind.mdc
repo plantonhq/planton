@@ -50,7 +50,7 @@ ID PREFIX PATTERNS
 - DigitalOcean: "do" prefix + abbreviation (e.g., "doapp", "dodns", "docert")
 - Cloudflare: "cf" prefix + abbreviation (e.g., "cfdns", "cfkvn", "cfr2b")
 - Auth0: "a0" prefix + abbreviation (e.g., "a0cli", "a0conn", "a0es")
-- Stripe: "stp" prefix + abbreviation of the Stripe object. A multi-word object takes its initials ("stpwh" webhook endpoint, "stpbpc" billing portal configuration, "stppmc" payment method configuration, "stped" event destination, "stpef" entitlement feature); a one-word object is spelled out, shortened to at most five letters, so two one-word objects never read one letter apart ("stpprod" product, "stpprice" price)
+- Stripe: "stp" prefix + abbreviation of the Stripe object. A multi-word object takes its initials ("stpwh" webhook endpoint, "stpbpc" billing portal configuration, "stppmc" payment method configuration, "stped" event destination, "stpef" entitlement feature); a one-word object is spelled out, shortened to at most five letters, so two one-word objects never read one letter apart ("stpprod" product, "stpprice" price); when two Stripe objects share initials, each takes Stripe's own id prefix instead ("stptxr" tax rate, from txr_, because tax rate, tax registration and terminal reader all start "tr")
 
 SEQUENTIAL STEPS
 1) Identify: Determine the provider and kind name from the resource being forged

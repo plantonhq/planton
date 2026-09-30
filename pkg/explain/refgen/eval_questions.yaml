@@ -712,3 +712,57 @@ questions:
       - kind: StripePrice
         file: GUIDE.md
         pattern: '## One Owner per Object'
+
+  - id: q29
+    class: wisdom
+    question: >
+      A team sells its Pro plan through a StripePaymentLink whose address is
+      pasted into their marketing site's buy button. They move Pro to a new
+      StripePrice. What happens to the link, and how should the site get the
+      address so the button keeps working?
+    answer: >
+      Stripe can't change which price a payment link sells, so the change
+      replaces the link: Planton creates a new link, with a new address,
+      before deactivating the old one, and visitors to the old address see
+      the link's inactiveMessage. A quantity change does the same, because
+      the provider never stores a line item's quantity. The site should read
+      the address from the link's status.outputs.url by reference in the
+      same chart, so it picks up the new address on the same apply; a pasted
+      address stops working.
+    checks:
+      - kind: StripePaymentLink
+        file: GUIDE.md
+        pattern: '## Changing the Price a Link Sells'
+      - kind: StripePaymentLink
+        file: GUIDE.md
+        pattern: 'Your site, reading `status.outputs.url` by reference, picks up the new address on the same apply'
+      - kind: StripePaymentLink
+        file: reference.md
+        pattern: '`spec\.lineItems\[\]\.price`'
+
+  - id: q30
+    class: wisdom
+    question: >
+      A team bills per API request with a StripeBillingMeter and a metered
+      StripePrice. Their application must send usage events under the
+      meter's event name. How should the application's deployment learn that
+      name, and what happens if the meter's event name changes?
+    answer: >
+      Read it by reference: the deployment's environment variable takes the
+      meter's status.outputs.event_name through valueFrom, in the same chart
+      as the meter and the price, so the name the application sends and the
+      name the meter counts can't drift. Changing the event name replaces the
+      meter (only its display name changes in place); the metered price that
+      names the meter is replaced with it, and the deployment picks up the
+      new name on the same apply. The price must name its meter: a metered
+      price without one is refused before anything runs.
+    checks:
+      - kind: StripeBillingMeter
+        file: GUIDE.md
+        pattern: '## How Your Application Learns the Event Name'
+      - kind: StripeBillingMeter
+        file: reference.md
+        pattern: '`spec\.eventName`'
+      - kind: StripePrice
+        file: reference.md
+        pattern: 'a metered price bills what a meter counts'

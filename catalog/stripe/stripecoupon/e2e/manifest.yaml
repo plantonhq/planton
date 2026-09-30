@@ -1,0 +1,19 @@
+# The canonical example: 25% off for three months on one product. The product
+# is a literal id here so the manifest plans on its own; a real manifest
+# references its StripeProduct (see the scenarios).
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeCoupon
+metadata:
+  name: launch-25
+  org: e2e-org
+  env: testing
+spec:
+  name: Launch 25% off
+  percentOff: 25
+  duration: repeating
+  durationInMonths: 3
+  maxRedemptions: 500
+  appliesToProducts:
+    - value: prod_pro
+  metadata:
+    campaign: launch
