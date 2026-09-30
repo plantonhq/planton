@@ -1,16 +1,34 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "provisioner",
     srcs = [
         "binary.go",
+        "kind.go",
         "provisioner.go",
     ],
     importpath = "github.com/plantonhq/planton/pkg/iac/provisioner",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/crkreflect",
         "//pkg/iac/provisionerannotationkeys",
         "//pkg/reflection/metadatareflect",
+        "//shared",
+        "//shared/cloudresourcekind",
+        "@com_github_pkg_errors//:errors",
         "@org_golang_google_protobuf//proto",
+    ],
+)
+
+go_test(
+    name = "provisioner_test",
+    srcs = ["kind_test.go"],
+    embed = [":provisioner"],
+    deps = [
+        "//catalog/aws/awss3bucket/v1alpha1",
+        "//catalog/openfga/openfgastore/v1alpha1",
+        "//pkg/iac/provisionerannotationkeys",
+        "//shared",
+        "//shared/cloudresourcekind",
     ],
 )

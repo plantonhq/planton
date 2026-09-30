@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripepaymentmethodconfiguration
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for payment-method configurations (docs.stripe.com/payments/payment-method-configurations)."
+  notes: "Each payment method has its own processing price (stripe.com/pricing/local-payment-methods), charged per payment. Turning a method on changes which prices can apply to future payments; the configuration itself costs nothing."

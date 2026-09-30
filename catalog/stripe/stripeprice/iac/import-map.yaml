@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripeprice
+spec:
+  # A price imports by its Stripe id (price_...), which a prior deploy reports as its id output.
+  values:
+    - name: price_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Product catalog -> the product's Pricing section (the price's id,
+        price_...), or `GET /v1/prices?product=<product id>`.

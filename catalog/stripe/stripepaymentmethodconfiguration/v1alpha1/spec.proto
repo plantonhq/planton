@@ -1,0 +1,246 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/options/options.proto";
+
+// StripePaymentMethodConfigurationSpec declares which payment methods checkout offers, method by
+// method: on, off, or left to Stripe.
+//
+// An account holds many configurations and one of them is its default, which Stripe uses when a
+// checkout or payment names none. This kind always creates a configuration of its own and never
+// adopts or edits the default: the application names this configuration's id
+// (status.outputs.id) when it creates a Checkout Session or PaymentIntent, and a portal
+// configuration can reference it so the portal offers the same methods. A method is shown only
+// where its capability is active on the account and the payment qualifies (currency, country,
+// amount); status.outputs.available_payment_methods lists the methods Stripe reports available.
+//
+// Stripe never deletes a configuration. Destroy deactivates it (active = false) and Stripe keeps
+// it, inactive, forever. A method removed from the manifest keeps its last preference in Stripe
+// -- the provider sends only values that are set -- so set it to "none" to hand it back to
+// Stripe's default. A configuration that cannot be read makes the plan fail until it is removed
+// from state.
+//
+// Stripe's API also accepts fr_meal_voucher_conecs (French meal vouchers); the pinned provider
+// does not expose it, so it is left to Stripe's default here.
+//
+// The key needs "Payment Method Configurations" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/payments/payment-method-configurations
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_method_configuration
+message StripePaymentMethodConfigurationSpec {
+  // name is a label for the configuration, shown only to the account's team.
+  string name = 1;
+
+  // active is whether payments may use this configuration. Setting it false deactivates the
+  // configuration without destroying the resource; destroy deactivates it too.
+  optional bool active = 2 [(dev.planton.shared.options.default) = "true"];
+
+  // parent is, for a Connect platform, the platform configuration (pmc_...) this child
+  // configuration inherits from; its methods start from the parent's and override only what is
+  // set here. Changing it REPLACES the configuration.
+  string parent = 3 [(buf.validate.field).cel = {
+    id: "spec.parent.format"
+    message: "parent is a payment method configuration id (pmc_...)"
+    expression: "this == '' || this.startsWith('pmc_')"
+  }];
+
+  // acss_debit is ACSS Debit (Canadian pre-authorized debits).
+  StripePaymentMethodPreference acss_debit = 10;
+
+  // affirm is Affirm.
+  StripePaymentMethodPreference affirm = 11;
+
+  // afterpay_clearpay is Afterpay / Clearpay.
+  StripePaymentMethodPreference afterpay_clearpay = 12;
+
+  // alipay is Alipay.
+  StripePaymentMethodPreference alipay = 13;
+
+  // alma is Alma.
+  StripePaymentMethodPreference alma = 14;
+
+  // amazon_pay is Amazon Pay.
+  StripePaymentMethodPreference amazon_pay = 15;
+
+  // apple_pay is Apple Pay.
+  StripePaymentMethodPreference apple_pay = 16;
+
+  // apple_pay_later is Apple Pay Later.
+  // Stripe never returns this setting, so it is sent on every apply and never read back.
+  StripePaymentMethodPreference apple_pay_later = 17;
+
+  // au_becs_debit is BECS Direct Debit (Australia).
+  StripePaymentMethodPreference au_becs_debit = 18;
+
+  // bacs_debit is Bacs Direct Debit (UK).
+  StripePaymentMethodPreference bacs_debit = 19;
+
+  // bancontact is Bancontact.
+  StripePaymentMethodPreference bancontact = 20;
+
+  // billie is Billie.
+  StripePaymentMethodPreference billie = 21;
+
+  // bizum is Bizum.
+  StripePaymentMethodPreference bizum = 22;
+
+  // blik is BLIK.
+  StripePaymentMethodPreference blik = 23;
+
+  // boleto is Boleto.
+  StripePaymentMethodPreference boleto = 24;
+
+  // card is cards.
+  StripePaymentMethodPreference card = 25;
+
+  // cartes_bancaires is Cartes Bancaires.
+  StripePaymentMethodPreference cartes_bancaires = 26;
+
+  // cashapp is Cash App Pay.
+  StripePaymentMethodPreference cashapp = 27;
+
+  // crypto is stablecoin payments.
+  StripePaymentMethodPreference crypto = 28;
+
+  // customer_balance is bank transfers into the customer balance.
+  StripePaymentMethodPreference customer_balance = 29;
+
+  // eps is EPS.
+  StripePaymentMethodPreference eps = 30;
+
+  // fpx is FPX.
+  StripePaymentMethodPreference fpx = 31;
+
+  // giropay is Giropay.
+  StripePaymentMethodPreference giropay = 32;
+
+  // google_pay is Google Pay.
+  StripePaymentMethodPreference google_pay = 33;
+
+  // grabpay is GrabPay.
+  StripePaymentMethodPreference grabpay = 34;
+
+  // ideal is iDEAL.
+  StripePaymentMethodPreference ideal = 35;
+
+  // jcb is JCB.
+  StripePaymentMethodPreference jcb = 36;
+
+  // kakao_pay is Kakao Pay.
+  StripePaymentMethodPreference kakao_pay = 37;
+
+  // klarna is Klarna.
+  StripePaymentMethodPreference klarna = 38;
+
+  // konbini is Konbini.
+  StripePaymentMethodPreference konbini = 39;
+
+  // kr_card is Korean cards.
+  StripePaymentMethodPreference kr_card = 40;
+
+  // link is Link, Stripe's saved-details checkout.
+  StripePaymentMethodPreference link = 41;
+
+  // mb_way is MB WAY.
+  StripePaymentMethodPreference mb_way = 42;
+
+  // mobilepay is MobilePay.
+  StripePaymentMethodPreference mobilepay = 43;
+
+  // multibanco is Multibanco.
+  StripePaymentMethodPreference multibanco = 44;
+
+  // naver_pay is Naver Pay.
+  StripePaymentMethodPreference naver_pay = 45;
+
+  // nz_bank_account is New Zealand BECS Direct Debit.
+  StripePaymentMethodPreference nz_bank_account = 46;
+
+  // oxxo is OXXO.
+  StripePaymentMethodPreference oxxo = 47;
+
+  // p24 is Przelewy24.
+  StripePaymentMethodPreference p24 = 48;
+
+  // pay_by_bank is Pay by Bank.
+  StripePaymentMethodPreference pay_by_bank = 49;
+
+  // payco is PAYCO.
+  StripePaymentMethodPreference payco = 50;
+
+  // paynow is PayNow.
+  StripePaymentMethodPreference paynow = 51;
+
+  // paypal is PayPal.
+  StripePaymentMethodPreference paypal = 52;
+
+  // payto is PayTo.
+  StripePaymentMethodPreference payto = 53;
+
+  // pix is Pix.
+  StripePaymentMethodPreference pix = 54;
+
+  // promptpay is PromptPay.
+  StripePaymentMethodPreference promptpay = 55;
+
+  // revolut_pay is Revolut Pay.
+  StripePaymentMethodPreference revolut_pay = 56;
+
+  // samsung_pay is Samsung Pay.
+  StripePaymentMethodPreference samsung_pay = 57;
+
+  // satispay is Satispay.
+  StripePaymentMethodPreference satispay = 58;
+
+  // scalapay is Scalapay.
+  StripePaymentMethodPreference scalapay = 59;
+
+  // sepa_debit is SEPA Direct Debit.
+  StripePaymentMethodPreference sepa_debit = 60;
+
+  // sofort is Sofort.
+  StripePaymentMethodPreference sofort = 61;
+
+  // sunbit is Sunbit.
+  StripePaymentMethodPreference sunbit = 62;
+
+  // swish is Swish.
+  StripePaymentMethodPreference swish = 63;
+
+  // twint is TWINT.
+  StripePaymentMethodPreference twint = 64;
+
+  // upi is UPI.
+  StripePaymentMethodPreference upi = 65;
+
+  // us_bank_account is ACH Direct Debit (US bank accounts).
+  StripePaymentMethodPreference us_bank_account = 66;
+
+  // wechat_pay is WeChat Pay.
+  StripePaymentMethodPreference wechat_pay = 67;
+
+  // zip is Zip.
+  StripePaymentMethodPreference zip = 68;
+}
+
+// StripePaymentMethodPreference is one payment method's setting.
+message StripePaymentMethodPreference {
+  // preference is whether checkout offers the method: "on", "off", or "none" to leave it to
+  // Stripe's default (or, for a Connect child configuration, to the parent's). Planton reads a
+  // bare on or off; quote them ("on") in files that YAML 1.1 tools such as PyYAML also read,
+  // since those read a bare on or off as a boolean.
+  Preference preference = 1 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+
+  // Preference is a payment method's display preference.
+  enum Preference {
+    preference_unspecified = 0;
+    on = 1;
+    off = 2;
+    none = 3;
+  }
+}

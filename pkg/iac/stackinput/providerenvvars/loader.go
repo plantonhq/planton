@@ -239,6 +239,8 @@ func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.C
 		return loadAzureEnvVars(providerConfigYaml, opts)
 	case cloudresourcekind.CloudResourceProvider_auth0:
 		return loadAuth0EnvVars(providerConfigYaml)
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return loadStripeEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return loadKubernetesEnvVars(providerConfigYaml, opts.FileCacheLoc)
 	case cloudresourcekind.CloudResourceProvider_cloudflare:

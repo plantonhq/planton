@@ -1,0 +1,718 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentlink.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// StripePaymentLinkSpec declares a Stripe-hosted payment page at a public address: the prices it
+// sells, what it collects from the buyer, and where the buyer goes after paying.
+//
+// The link takes payments from the moment it is applied: anyone with its address can pay for the
+// declared prices. Applying it moves no money and creates no customer; buyers do both, later.
+//
+// A link can never change which prices it sells, and the provider never stores a line item's
+// quantity. Changing the line items' prices or quantities (their order included), the currency, the Connect fields, consent collection, managed payments, the payment's capture
+// method or future-usage setting, the subscription description or the shipping options REPLACES
+// the link: Planton creates the new link first, then deactivates the old one. The new link has a
+// new address, so read status.outputs.url by reference wherever the address is used; visitors to
+// the old address see inactive_message. A referenced price that is itself replaced replaces the
+// link too. Adjustable quantities, optional items and every other field update in place.
+//
+// Validation can't see the price behind a reference, so three of Stripe's rules are checked at
+// apply, not here: application_fee_amount needs a link with no recurring prices,
+// application_fee_percent needs one with a recurring price, and payment_method_collection and
+// subscription_data need a subscription (a recurring price).
+//
+// One owner per object: declare a link here only if nothing else creates or edits it. When the
+// application's own code or the Dashboard owns the account's payment links, leave them there.
+//
+// Stripe never deletes a payment link. Destroy deactivates it (active = false): its address shows
+// inactive_message, and payments already taken stay. A link that cannot be read makes the plan
+// fail (the provider does not treat a missing link as gone); remove it from state and apply
+// again.
+//
+// The key needs "Payment Links" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/payment-links
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_link
+message StripePaymentLinkSpec {
+  // line_items are the prices the link sells, 1 to 20, in the order shown. Changing a price, a
+  // quantity or the order REPLACES the link; adjustable quantities update in place.
+  repeated StripePaymentLinkLineItem line_items = 1 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 20
+  }];
+
+  // optional_items are up to 10 extra prices the buyer may add at checkout. They update in place.
+  repeated StripePaymentLinkOptionalItem optional_items = 2 [(buf.validate.field).repeated.max_items = 10];
+
+  // active is whether the link accepts payments. Setting it false deactivates the link without
+  // destroying the resource; its address shows inactive_message.
+  optional bool active = 3 [(dev.planton.shared.options.default) = "true"];
+
+  // inactive_message is shown at the link's address while it is deactivated, up to 500 characters.
+  string inactive_message = 4 [(buf.validate.field).string.max_len = 500];
+
+  // after_completion is what the buyer sees after paying. Unset, Stripe's confirmation page.
+  StripePaymentLinkAfterCompletion after_completion = 5;
+
+  // allow_promotion_codes lets the buyer enter a promotion code.
+  optional bool allow_promotion_codes = 6;
+
+  // automatic_tax calculates tax with Stripe Tax.
+  StripePaymentLinkAutomaticTax automatic_tax = 7;
+
+  // billing_address_collection is whether the buyer's billing address is always collected.
+  // Unset, auto: only when needed.
+  BillingAddressCollection billing_address_collection = 8 [(buf.validate.field).enum.defined_only = true];
+
+  // consent_collection asks the buyer to agree to terms or promotional emails. Changing it
+  // REPLACES the link.
+  StripePaymentLinkConsentCollection consent_collection = 9;
+
+  // currency is the lowercase three-letter ISO code the link charges in, when its prices offer
+  // several ("usd"). Changing it REPLACES the link.
+  string currency = 10 [(buf.validate.field).cel = {
+    id: "spec.currency.format"
+    message: "currency is a lowercase three-letter ISO code, such as usd"
+    expression: "this == '' || this.matches('^[a-z]{3}$')"
+  }];
+
+  // custom_fields are up to 3 extra questions the buyer answers.
+  repeated StripePaymentLinkCustomField custom_fields = 11 [(buf.validate.field).repeated.max_items = 3];
+
+  // custom_text is extra text shown on the page.
+  StripePaymentLinkCustomText custom_text = 12;
+
+  // customer_creation is whether a one-time payment creates a Stripe customer. Unset,
+  // if_required. A subscription always creates one.
+  CustomerCreation customer_creation = 13 [(buf.validate.field).enum.defined_only = true];
+
+  // invoice_creation sends a post-purchase invoice for one-time payments.
+  StripePaymentLinkInvoiceCreation invoice_creation = 14;
+
+  // managed_payments sells through Stripe's managed payments. Changing it REPLACES the link.
+  StripePaymentLinkManagedPayments managed_payments = 15;
+
+  // name_collection collects the buyer's name, as an individual or a business.
+  StripePaymentLinkNameCollection name_collection = 16;
+
+  // payment_intent_data configures the payment a one-time purchase creates.
+  StripePaymentLinkPaymentIntentData payment_intent_data = 17;
+
+  // payment_method_collection is whether a subscription collects a payment method when the first
+  // invoice is free (a trial). Unset, always.
+  StripePaymentLinkPaymentMethodCollection payment_method_collection = 18 [(buf.validate.field).enum.defined_only = true];
+
+  // payment_method_options configure individual payment methods.
+  StripePaymentLinkPaymentMethodOptions payment_method_options = 19;
+
+  // payment_method_types are the payment methods offered ("card", "link"). Unset, Stripe chooses
+  // from the account's payment method settings, which is recommended.
+  repeated string payment_method_types = 20 [(buf.validate.field).repeated.unique = true];
+
+  // phone_number_collection collects the buyer's phone number.
+  StripePaymentLinkEnabled phone_number_collection = 21;
+
+  // restrictions stop the link after a number of completed payments.
+  StripePaymentLinkRestrictions restrictions = 22;
+
+  // shipping_address_collection collects a shipping address in the listed countries.
+  StripePaymentLinkShippingAddressCollection shipping_address_collection = 23;
+
+  // shipping_options are the shipping rates the buyer chooses from (shr_...). Reference a
+  // StripeShippingRate. Changing them REPLACES the link.
+  repeated StripePaymentLinkShippingOption shipping_options = 24;
+
+  // submit_type is the payment button's label. Unset, auto (pay, or subscribe for a subscription).
+  StripePaymentLinkSubmitType submit_type = 25 [(buf.validate.field).enum.defined_only = true];
+
+  // subscription_data configures the subscription a recurring price creates.
+  StripePaymentLinkSubscriptionData subscription_data = 26;
+
+  // tax_id_collection collects the buyer's tax id.
+  StripePaymentLinkTaxIdCollection tax_id_collection = 27;
+
+  // application_fee_amount is the platform's fee, in the smallest currency unit, taken from each
+  // one-time payment and kept by the Connect platform. Only for links with no recurring prices.
+  // Changing it REPLACES the link.
+  optional int64 application_fee_amount = 28 [(buf.validate.field).int64.gte = 0];
+
+  // application_fee_percent is the platform's share of each subscription payment, 0 to 100, kept
+  // by the Connect platform. Only for links with a recurring price. Changing it REPLACES the link.
+  optional double application_fee_percent = 29 [(buf.validate.field).double = {
+    gte: 0
+    lte: 100
+  }];
+
+  // on_behalf_of is the connected account (acct_...) the payments are made on behalf of: it
+  // becomes the settlement merchant, and its name and statement descriptor are shown to the buyer.
+  // Changing it REPLACES the link.
+  string on_behalf_of = 30 [(buf.validate.field).cel = {
+    id: "spec.on_behalf_of.format"
+    message: "on_behalf_of is a Stripe connected account id (acct_...)"
+    expression: "this == '' || this.startsWith('acct_')"
+  }];
+
+  // transfer_data sends each payment's funds to a connected account. Changing it REPLACES the
+  // link.
+  StripePaymentLinkTransferData transfer_data = 31;
+
+  // metadata is a set of key-value pairs stored on the link. It updates in place.
+  map<string, string> metadata = 32;
+
+  option (buf.validate.message).cel = {
+    id: "spec.items_at_most_twenty"
+    message: "a link sells at most 20 prices: line_items and optional_items together are at most 20"
+    expression: "size(this.line_items) + size(this.optional_items) <= 20"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.one_application_fee"
+    message: "a link takes one kind of platform fee: application_fee_amount (one-time) or application_fee_percent (subscription), not both"
+    expression: "!has(this.application_fee_amount) || !has(this.application_fee_percent)"
+  };
+
+  // BillingAddressCollection is when a buyer's billing address is collected.
+  enum BillingAddressCollection {
+    billing_address_collection_unspecified = 0;
+    // auto collects it only when needed.
+    auto = 1;
+    // required always collects it.
+    required = 2;
+  }
+
+  // CustomerCreation is whether a one-time payment creates a customer.
+  enum CustomerCreation {
+    customer_creation_unspecified = 0;
+    // always creates a customer.
+    always = 1;
+    // if_required creates one only when needed.
+    if_required = 2;
+  }
+}
+
+// StripePaymentLinkSubmitType is a payment button's label.
+enum StripePaymentLinkSubmitType {
+  stripe_payment_link_submit_type_unspecified = 0;
+  auto = 1;
+  book = 2;
+  donate = 3;
+  pay = 4;
+  subscribe = 5;
+}
+
+// StripePaymentLinkPaymentMethodCollection is whether a subscription collects a payment method
+// when nothing is due yet.
+enum StripePaymentLinkPaymentMethodCollection {
+  stripe_payment_link_payment_method_collection_unspecified = 0;
+  // always collects a payment method.
+  always = 1;
+  // if_required collects one only when something is due.
+  if_required = 2;
+}
+
+// StripePaymentLinkTermsOfService is whether a buyer must accept the account's terms.
+enum StripePaymentLinkTermsOfService {
+  stripe_payment_link_terms_of_service_unspecified = 0;
+  none = 1;
+  required = 2;
+}
+
+// StripePaymentLinkLineItem is one price a link sells.
+message StripePaymentLinkLineItem {
+  // price is the price sold (price_...). Reference a StripePrice. Changing it REPLACES the link.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef price = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripePrice,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).cel = {
+      id: "line_item.price.format"
+      message: "price is a Stripe price id (price_...), or a reference to a StripePrice"
+      expression: "!has(this.value) || this.value.startsWith('price_')"
+    }
+  ];
+
+  // quantity is how many are sold, at least 1. Changing it REPLACES the link: the provider never
+  // stores it, so an update in place could never be detected or sent.
+  int64 quantity = 2 [(buf.validate.field).int64.gte = 1];
+
+  // adjustable_quantity lets the buyer change the quantity. It updates in place.
+  StripePaymentLinkAdjustableQuantity adjustable_quantity = 3;
+}
+
+// StripePaymentLinkOptionalItem is an extra price the buyer may add.
+message StripePaymentLinkOptionalItem {
+  // price is the price offered (price_...). Reference a StripePrice.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef price = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripePrice,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).cel = {
+      id: "optional_item.price.format"
+      message: "price is a Stripe price id (price_...), or a reference to a StripePrice"
+      expression: "!has(this.value) || this.value.startsWith('price_')"
+    }
+  ];
+
+  // quantity is the quantity added when the buyer takes the item, at least 1.
+  int64 quantity = 2 [(buf.validate.field).int64.gte = 1];
+
+  // adjustable_quantity lets the buyer change the quantity.
+  StripePaymentLinkAdjustableQuantity adjustable_quantity = 3;
+}
+
+// StripePaymentLinkAdjustableQuantity lets the buyer change a quantity.
+message StripePaymentLinkAdjustableQuantity {
+  // enabled lets the buyer change the quantity.
+  bool enabled = 1;
+  // minimum is the smallest quantity the buyer may choose.
+  optional int64 minimum = 2 [(buf.validate.field).int64.gte = 0];
+  // maximum is the largest quantity the buyer may choose.
+  optional int64 maximum = 3 [(buf.validate.field).int64.gte = 1];
+
+  option (buf.validate.message).cel = {
+    id: "adjustable_quantity.range"
+    message: "adjustable_quantity keeps minimum <= maximum"
+    expression: "!has(this.minimum) || !has(this.maximum) || this.minimum <= this.maximum"
+  };
+}
+
+// StripePaymentLinkAfterCompletion is what the buyer sees after paying: Stripe's confirmation
+// page, or a redirect to the account's site. The block that is set is the behavior.
+message StripePaymentLinkAfterCompletion {
+  // hosted_confirmation shows Stripe's confirmation page, optionally with a custom message.
+  StripePaymentLinkHostedConfirmation hosted_confirmation = 1;
+
+  // redirect sends the buyer to the account's site.
+  StripePaymentLinkRedirect redirect = 2;
+
+  option (buf.validate.message).cel = {
+    id: "after_completion.one_behavior"
+    message: "after_completion sets exactly one of hosted_confirmation and redirect"
+    expression: "has(this.hosted_confirmation) != has(this.redirect)"
+  };
+}
+
+// StripePaymentLinkHostedConfirmation customizes Stripe's confirmation page.
+message StripePaymentLinkHostedConfirmation {
+  // custom_message replaces the page's default message.
+  string custom_message = 1;
+}
+
+// StripePaymentLinkRedirect sends the buyer to the account's site.
+message StripePaymentLinkRedirect {
+  // url is where the buyer goes. {CHECKOUT_SESSION_ID} in it is replaced with the session's id.
+  string url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "redirect.url.format"
+      message: "url is an https:// or http:// address"
+      expression: "this.startsWith('https://') || this.startsWith('http://')"
+    }
+  ];
+}
+
+// StripePaymentLinkAutomaticTax calculates tax with Stripe Tax.
+message StripePaymentLinkAutomaticTax {
+  // enabled turns Stripe Tax on for the link.
+  bool enabled = 1;
+  // liability is the account liable for the tax. Unset, the account itself.
+  StripePaymentLinkAccountRef liability = 2;
+}
+
+// StripePaymentLinkAccountRef names an account: a connected account, or (left empty) the
+// account the link belongs to.
+message StripePaymentLinkAccountRef {
+  // account is the connected account (acct_...). Empty, the account the link belongs to.
+  string account = 1 [(buf.validate.field).cel = {
+    id: "account_ref.account.format"
+    message: "account is a Stripe connected account id (acct_...)"
+    expression: "this == '' || this.startsWith('acct_')"
+  }];
+}
+
+// StripePaymentLinkConsentCollection asks the buyer to agree to something.
+message StripePaymentLinkConsentCollection {
+  // payment_method_reuse_agreement is where the agreement to save the payment method is shown.
+  StripePaymentLinkPaymentMethodReuseAgreement payment_method_reuse_agreement = 1;
+  // promotions asks the buyer to agree to promotional emails. Unset, none.
+  Promotions promotions = 2 [(buf.validate.field).enum.defined_only = true];
+  // terms_of_service requires the buyer to accept the account's terms (set in the Dashboard's
+  // public details). Unset, none.
+  StripePaymentLinkTermsOfService terms_of_service = 3 [(buf.validate.field).enum.defined_only = true];
+
+  // Promotions is whether promotional-email consent is collected.
+  enum Promotions {
+    promotions_unspecified = 0;
+    // auto asks where the law requires it.
+    auto = 1;
+    none = 2;
+  }
+}
+
+// StripePaymentLinkPaymentMethodReuseAgreement is where the reuse agreement is shown.
+message StripePaymentLinkPaymentMethodReuseAgreement {
+  // position is auto (Stripe shows it where needed) or hidden (the account shows its own).
+  Position position = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // Position is where the agreement is shown.
+  enum Position {
+    position_unspecified = 0;
+    auto = 1;
+    hidden = 2;
+  }
+}
+
+// StripePaymentLinkCustomField is an extra question the buyer answers.
+message StripePaymentLinkCustomField {
+  // key identifies the answer in the Checkout session, up to 200 letters and digits.
+  string key = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-zA-Z0-9]{1,200}$"
+  ];
+  // label is the question as the buyer sees it, up to 50 characters.
+  string label = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 50
+  ];
+  // optional lets the buyer skip the question.
+  optional bool optional = 3;
+  // dropdown makes the answer a choice from a list. The block that is set is the field's type.
+  StripePaymentLinkDropdown dropdown = 4;
+  // numeric makes the answer a number (numeric: {} with no bounds is enough to choose it).
+  StripePaymentLinkTextBounds numeric = 5;
+  // text makes the answer free text.
+  StripePaymentLinkTextBounds text = 6;
+
+  option (buf.validate.message).cel = {
+    id: "custom_field.one_type"
+    message: "a custom field sets exactly one of dropdown, numeric and text"
+    expression: "(has(this.dropdown) ? 1 : 0) + (has(this.numeric) ? 1 : 0) + (has(this.text) ? 1 : 0) == 1"
+  };
+}
+
+// StripePaymentLinkDropdown is a custom field's choices.
+message StripePaymentLinkDropdown {
+  // options are the choices, 1 to 200.
+  repeated StripePaymentLinkDropdownOption options = 1 [(buf.validate.field).repeated = {
+    min_items: 1
+    max_items: 200
+  }];
+  // default_value is the value of the option selected at first.
+  string default_value = 2;
+}
+
+// StripePaymentLinkDropdownOption is one choice.
+message StripePaymentLinkDropdownOption {
+  // label is the choice as the buyer sees it, up to 100 characters.
+  string label = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 100
+  ];
+  // value is what the Checkout session records, up to 100 letters and digits.
+  string value = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-zA-Z0-9]{1,100}$"
+  ];
+}
+
+// StripePaymentLinkTextBounds bounds a text or numeric answer's length.
+message StripePaymentLinkTextBounds {
+  // default_value is the answer filled in at first.
+  string default_value = 1;
+  // minimum_length is the shortest answer, 0 to 255.
+  optional int64 minimum_length = 2 [(buf.validate.field).int64 = {
+    gte: 0
+    lte: 255
+  }];
+  // maximum_length is the longest answer, 1 to 255.
+  optional int64 maximum_length = 3 [(buf.validate.field).int64 = {
+    gte: 1
+    lte: 255
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "text_bounds.range"
+    message: "minimum_length is at most maximum_length"
+    expression: "!has(this.minimum_length) || !has(this.maximum_length) || this.minimum_length <= this.maximum_length"
+  };
+}
+
+// StripePaymentLinkCustomText is extra text shown on the page.
+message StripePaymentLinkCustomText {
+  // after_submit is shown after the payment button.
+  StripePaymentLinkMessage after_submit = 1;
+  // shipping_address is shown beside the shipping address form.
+  StripePaymentLinkMessage shipping_address = 2;
+  // submit is shown beside the payment button.
+  StripePaymentLinkMessage submit = 3;
+  // terms_of_service_acceptance replaces the terms acceptance text.
+  StripePaymentLinkMessage terms_of_service_acceptance = 4;
+}
+
+// StripePaymentLinkMessage is a piece of custom text.
+message StripePaymentLinkMessage {
+  // message is the text, up to 1200 characters.
+  string message = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 1200
+  ];
+}
+
+// StripePaymentLinkInvoiceCreation sends a post-purchase invoice for a one-time payment.
+message StripePaymentLinkInvoiceCreation {
+  // enabled sends the invoice.
+  bool enabled = 1;
+  // invoice_data configures the invoice.
+  StripePaymentLinkInvoiceData invoice_data = 2;
+}
+
+// StripePaymentLinkInvoiceData configures a post-purchase invoice.
+message StripePaymentLinkInvoiceData {
+  // account_tax_ids are the account's tax ids shown on the invoice (txi_...).
+  repeated string account_tax_ids = 1 [(buf.validate.field).repeated.unique = true];
+  // custom_fields are up to 4 name-value lines shown on the invoice.
+  repeated StripePaymentLinkInvoiceCustomField custom_fields = 2 [(buf.validate.field).repeated.max_items = 4];
+  // description is the invoice's description.
+  string description = 3;
+  // footer is the invoice's footer.
+  string footer = 4;
+  // issuer is the account that issues the invoice. Unset, the account itself.
+  StripePaymentLinkAccountRef issuer = 5;
+  // metadata is a set of key-value pairs stored on the invoice.
+  map<string, string> metadata = 6;
+  // rendering_options control the invoice's PDF.
+  StripePaymentLinkRenderingOptions rendering_options = 7;
+}
+
+// StripePaymentLinkInvoiceCustomField is a name-value line on an invoice.
+message StripePaymentLinkInvoiceCustomField {
+  // name is the line's label, up to 40 characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 40
+  ];
+  // value is the line's value, up to 140 characters.
+  string value = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 140
+  ];
+}
+
+// StripePaymentLinkRenderingOptions control an invoice's PDF.
+message StripePaymentLinkRenderingOptions {
+  // amount_tax_display is how amounts show tax on the PDF: exclude_tax, or
+  // include_inclusive_tax. Unset, Stripe's default.
+  string amount_tax_display = 1;
+  // template is the invoice rendering template to use (inrtem_...).
+  string template = 2;
+}
+
+// StripePaymentLinkManagedPayments sells through Stripe's managed payments.
+message StripePaymentLinkManagedPayments {
+  // enabled sells through managed payments.
+  optional bool enabled = 1;
+}
+
+// StripePaymentLinkNameCollection collects the buyer's name.
+message StripePaymentLinkNameCollection {
+  // business collects a business name.
+  StripePaymentLinkNameField business = 1;
+  // individual collects a person's name.
+  StripePaymentLinkNameField individual = 2;
+}
+
+// StripePaymentLinkNameField collects one kind of name.
+message StripePaymentLinkNameField {
+  // enabled shows the field.
+  bool enabled = 1;
+  // optional lets the buyer leave it empty.
+  optional bool optional = 2;
+}
+
+// StripePaymentLinkPaymentIntentData configures the payment a one-time purchase creates.
+message StripePaymentLinkPaymentIntentData {
+  // capture_method is when the funds are captured. Unset, Stripe's default. Changing it REPLACES
+  // the link.
+  CaptureMethod capture_method = 1 [(buf.validate.field).enum.defined_only = true];
+  // description is the payment's description.
+  string description = 2;
+  // metadata is a set of key-value pairs stored on the payment.
+  map<string, string> metadata = 3;
+  // setup_future_usage saves the payment method for later payments. Changing it REPLACES the
+  // link.
+  SetupFutureUsage setup_future_usage = 4 [(buf.validate.field).enum.defined_only = true];
+  // statement_descriptor is the text on the buyer's card statement for a non-card payment, up
+  // to 22 characters.
+  string statement_descriptor = 5 [(buf.validate.field).string.max_len = 22];
+  // statement_descriptor_suffix is appended to the account's statement descriptor for a card
+  // payment, up to 22 characters in total.
+  string statement_descriptor_suffix = 6 [(buf.validate.field).string.max_len = 22];
+  // transfer_group groups the payment's Connect transfers.
+  string transfer_group = 7;
+
+  // CaptureMethod is when a payment's funds are captured.
+  enum CaptureMethod {
+    capture_method_unspecified = 0;
+    automatic = 1;
+    automatic_async = 2;
+    // manual authorizes now and captures later.
+    manual = 3;
+  }
+
+  // SetupFutureUsage is how a saved payment method will be used.
+  enum SetupFutureUsage {
+    setup_future_usage_unspecified = 0;
+    off_session = 1;
+    on_session = 2;
+  }
+}
+
+// StripePaymentLinkPaymentMethodOptions configure individual payment methods.
+message StripePaymentLinkPaymentMethodOptions {
+  // card configures card payments.
+  StripePaymentLinkCardOptions card = 1;
+}
+
+// StripePaymentLinkCardOptions configure card payments.
+message StripePaymentLinkCardOptions {
+  // restrictions limit which cards are accepted.
+  StripePaymentLinkCardRestrictions restrictions = 1;
+}
+
+// StripePaymentLinkCardRestrictions limit which cards are accepted.
+message StripePaymentLinkCardRestrictions {
+  // brands_blocked are the card brands refused ("american_express", "discover_global_network",
+  // "mastercard", "visa").
+  repeated string brands_blocked = 1 [(buf.validate.field).repeated.unique = true];
+}
+
+// StripePaymentLinkEnabled turns a collection on.
+message StripePaymentLinkEnabled {
+  // enabled turns it on.
+  bool enabled = 1;
+}
+
+// StripePaymentLinkRestrictions stop a link after some payments.
+message StripePaymentLinkRestrictions {
+  // completed_sessions deactivates the link after a number of completed payments.
+  StripePaymentLinkCompletedSessions completed_sessions = 1 [(buf.validate.field).required = true];
+}
+
+// StripePaymentLinkCompletedSessions is a limit on completed payments.
+message StripePaymentLinkCompletedSessions {
+  // limit is the number of completed payments after which the link deactivates itself.
+  int64 limit = 1 [(buf.validate.field).int64.gte = 1];
+}
+
+// StripePaymentLinkShippingAddressCollection collects a shipping address.
+message StripePaymentLinkShippingAddressCollection {
+  // allowed_countries are the two-letter ISO codes of the countries shipped to ("US", "DE").
+  repeated string allowed_countries = 1 [(buf.validate.field).repeated = {
+    min_items: 1
+    unique: true
+    items: {
+      string: {pattern: "^[A-Z]{2}$"}
+    }
+  }];
+}
+
+// StripePaymentLinkShippingOption is a shipping rate the buyer may choose.
+message StripePaymentLinkShippingOption {
+  // shipping_rate is the rate (shr_...). Reference a StripeShippingRate.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef shipping_rate = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeShippingRate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).cel = {
+      id: "shipping_option.shipping_rate.format"
+      message: "shipping_rate is a Stripe shipping rate id (shr_...), or a reference to a StripeShippingRate"
+      expression: "!has(this.value) || this.value.startsWith('shr_')"
+    }
+  ];
+}
+
+// StripePaymentLinkSubscriptionData configures the subscription a recurring price creates.
+message StripePaymentLinkSubscriptionData {
+  // description is the subscription's description, shown in the customer portal and on invoices.
+  // Changing it REPLACES the link.
+  string description = 1;
+  // invoice_settings configure the subscription's invoices.
+  StripePaymentLinkSubscriptionInvoiceSettings invoice_settings = 2;
+  // metadata is a set of key-value pairs stored on each subscription.
+  map<string, string> metadata = 3;
+  // trial_period_days is the free trial each subscription starts with, at least 1 day.
+  optional int64 trial_period_days = 4 [(buf.validate.field).int64.gte = 1];
+  // trial_settings are what happens when a trial ends.
+  StripePaymentLinkTrialSettings trial_settings = 5;
+}
+
+// StripePaymentLinkSubscriptionInvoiceSettings configure a subscription's invoices.
+message StripePaymentLinkSubscriptionInvoiceSettings {
+  // issuer is the account that issues the invoices. Unset, the account itself.
+  StripePaymentLinkAccountRef issuer = 1;
+}
+
+// StripePaymentLinkTrialSettings are what happens when a trial ends.
+message StripePaymentLinkTrialSettings {
+  // end_behavior is what happens at the trial's end.
+  StripePaymentLinkTrialEndBehavior end_behavior = 1 [(buf.validate.field).required = true];
+}
+
+// StripePaymentLinkTrialEndBehavior is what happens at a trial's end.
+message StripePaymentLinkTrialEndBehavior {
+  // missing_payment_method is what happens when the trial ends without a payment method.
+  MissingPaymentMethod missing_payment_method = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // MissingPaymentMethod is what happens to a trial that ends without a payment method.
+  enum MissingPaymentMethod {
+    missing_payment_method_unspecified = 0;
+    // cancel cancels the subscription.
+    cancel = 1;
+    // create_invoice creates an invoice the customer must pay.
+    create_invoice = 2;
+    // pause pauses the subscription until a payment method is added.
+    pause = 3;
+  }
+}
+
+// StripePaymentLinkTaxIdCollection collects the buyer's tax id.
+message StripePaymentLinkTaxIdCollection {
+  // enabled shows the tax id field.
+  bool enabled = 1;
+  // required is whether a business buyer must give one. Unset, never.
+  Required required = 2 [(buf.validate.field).enum.defined_only = true];
+
+  // Required is whether a tax id is required.
+  enum Required {
+    required_unspecified = 0;
+    // if_supported requires one where Stripe can validate it.
+    if_supported = 1;
+    never = 2;
+  }
+}
+
+// StripePaymentLinkTransferData sends a payment's funds to a connected account.
+message StripePaymentLinkTransferData {
+  // destination is the connected account that receives the funds (acct_...).
+  string destination = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "transfer_data.destination.format"
+      message: "destination is a Stripe connected account id (acct_...)"
+      expression: "this.startsWith('acct_')"
+    }
+  ];
+  // amount is how much of each payment is transferred, in the smallest currency unit. Unset, the
+  // whole payment less fees.
+  optional int64 amount = 2 [(buf.validate.field).int64.gte = 0];
+}

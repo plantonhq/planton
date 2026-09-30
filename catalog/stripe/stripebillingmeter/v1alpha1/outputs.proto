@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingmeter.v1alpha1;
+
+// StripeBillingMeterStackOutputs identifies the meter and its alerts.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/billing_meter
+message StripeBillingMeterStackOutputs {
+  // id is the meter's Stripe id (mtr_...), the value a metered StripePrice's recurring.meter
+  // references. It changes when the meter is replaced.
+  string id = 1;
+
+  // event_name is the name the application sends with each usage event. An application's
+  // deployment reads it by reference, so it follows a replacement.
+  string event_name = 2;
+
+  // status is active, or inactive once the meter is deactivated (by destroy or in the Dashboard).
+  string status = 3;
+
+  // alert_ids maps each alert's title to its Stripe id.
+  map<string, string> alert_ids = 4;
+}

@@ -1,0 +1,81 @@
+apiVersion: iac.planton.dev/v1
+kind: ProviderImportCatalog
+metadata:
+  name: stripe
+spec:
+  # Import-ID formats per Stripe resource type, as the stripe/stripe provider
+  # (0.3.0) reads them. The FORMAT lives here (provider knowledge, shared by
+  # every component); which concrete value fills each {placeholder} lives in
+  # the owning component's import-map.yaml. Correctness is machine-proven by
+  # the E2E import round-trip (deploy a fixture, set state aside, re-import
+  # blind, plan must show zero diff) -- never by review alone.
+  #
+  # Every Stripe resource here imports by its plain Stripe id (the provider
+  # passes the import id through as `id`), except a product's feature link,
+  # which imports as "<product id>/<link id>". Stripe kinds run on OpenTofu
+  # only, so no Pulumi type is declared.
+  resource_types:
+    # --- Account and delivery ---------------------------------------------------
+    # An imported webhook endpoint carries no signing secret: Stripe returns it
+    # only at creation, so the round-trip's zero-diff plan never compares it.
+    - terraform_type: stripe_webhook_endpoint
+      id_format: "{webhook_endpoint_id}"
+    - terraform_type: stripe_billing_portal_configuration
+      id_format: "{billing_portal_configuration_id}"
+    - terraform_type: stripe_payment_method_configuration
+      id_format: "{payment_method_configuration_id}"
+    # An imported event destination carries no signing secret, and one of type
+    # amazon_eventbridge has no region in state (the API never returns it), so
+    # its first apply after import replaces it.
+    - terraform_type: stripe_v2_core_event_destination
+      id_format: "{event_destination_id}"
+    - terraform_type: stripe_payment_method_domain
+      id_format: "{payment_method_domain_id}"
+    - terraform_type: stripe_radar_value_list
+      id_format: "{radar_value_list_id}"
+    - terraform_type: stripe_radar_value_list_item
+      id_format: "{radar_value_list_item_id}"
+
+    # --- Catalog and pricing ----------------------------------------------------
+    - terraform_type: stripe_product
+      id_format: "{product_id}"
+    - terraform_type: stripe_product_feature
+      id_format: "{product_id}/{product_feature_id}"
+    - terraform_type: stripe_price
+      id_format: "{price_id}"
+    - terraform_type: stripe_entitlements_feature
+      id_format: "{entitlements_feature_id}"
+    - terraform_type: stripe_coupon
+      id_format: "{coupon_id}"
+    - terraform_type: stripe_promotion_code
+      id_format: "{promotion_code_id}"
+    - terraform_type: stripe_shipping_rate
+      id_format: "{shipping_rate_id}"
+    - terraform_type: stripe_tax_rate
+      id_format: "{tax_rate_id}"
+    # A registration imports by its own id; the provider's delete only
+    # forgets it, so a round trip leaves the imported registration in Stripe
+    # either way.
+    - terraform_type: stripe_tax_registration
+      id_format: "{tax_registration_id}"
+    - terraform_type: stripe_billing_meter
+      id_format: "{billing_meter_id}"
+    # An alert imports by its own id; the provider's delete only forgets it,
+    # so a round trip leaves the imported alert active in Stripe either way.
+    - terraform_type: stripe_billing_alert
+      id_format: "{billing_alert_id}"
+    # An imported payment link has no line-item quantities in state: the
+    # provider marks them write-only and never stores them.
+    - terraform_type: stripe_payment_link
+      id_format: "{payment_link_id}"
+    # The payment link module's line-item tracker, OpenTofu's built-in
+    # terraform_data. It holds nothing in Stripe; it exists so a change the
+    # provider can't send (a line item's price or quantity) replaces the link.
+    - terraform_type: terraform_data
+      not_importable_upstream_reason: >-
+        terraform_data is OpenTofu's built-in store, not a Stripe object: it
+        accepts an import id but never its input, so an imported tracker would
+        hold nothing and the first apply after import would replace the
+        imported payment link, giving it a new address. Left out of the
+        import, the tracker is created on that first apply and the link is
+        untouched (the round trip's only re-create).

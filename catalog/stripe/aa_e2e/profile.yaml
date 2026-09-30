@@ -1,0 +1,27 @@
+apiVersion: qa.planton.dev/v1
+kind: ProviderE2EProfile
+metadata:
+  name: stripe
+spec:
+  # Stripe is a SaaS control plane: every object is behind api.stripe.com,
+  # authenticated by the dedicated test sandbox's restricted key
+  # (STRIPE_API_KEY, which OpenTofu reads from the environment). The harness
+  # refuses any key that is not a test-mode key before a lane starts, so no
+  # run can reach a live account.
+  credential_approach: api_token
+  test_substrate: real_cloud
+  # A sandbox moves no money and charges nothing.
+  default_cost_class: free_cloud
+  default_schedule_lane: weekly
+  # Stripe kinds run on OpenTofu only.
+  required_tools:
+    - tofu
+  github_environment: e2e-stripe
+  # Stripe's API allows 25 requests per second per sandbox; lanes make a few
+  # calls each, so modest parallelism stays well under it.
+  max_concurrent_tests: 3
+  # Every lane re-plans after apply and fails on any pending change. The
+  # provider is generated from Stripe's OpenAPI spec and rich in
+  # optional-and-computed attributes -- exactly the echo class this gate
+  # catches.
+  assert_apply_idempotency: true

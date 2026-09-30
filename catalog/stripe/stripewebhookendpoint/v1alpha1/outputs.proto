@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripewebhookendpoint.v1alpha1;
+
+import "shared/options/options.proto";
+
+// StripeWebhookEndpointStackOutputs identifies the endpoint and carries its signing secret.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/webhook_endpoint
+message StripeWebhookEndpointStackOutputs {
+  // id is the endpoint's Stripe id (we_...).
+  string id = 1;
+
+  // secret is the signing secret (whsec_...) the receiving service verifies each delivery's
+  // Stripe-Signature header with. Stripe returns it only when the endpoint is created, so it is
+  // empty for an imported endpoint, and a replacement (api_version or connect changed) yields a
+  // new one.
+  string secret = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  // status is "enabled" or "disabled" as Stripe reports it. Stripe disables an endpoint whose
+  // deliveries keep failing; this kind does not toggle it.
+  string status = 3;
+
+  // url is the address events are delivered to.
+  string url = 4;
+
+  // application is the Connect application that created the endpoint, when one did.
+  string application = 5;
+}

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.stripe.striperadarvaluelist.v1alpha1;
+
+// StripeRadarValueListStackOutputs identifies the list and each of its items.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/radar_value_list
+message StripeRadarValueListStackOutputs {
+  // id is the list's Stripe id (rsl_...).
+  string id = 1;
+
+  // alias is the name Radar rules reference the list by.
+  string alias = 2;
+
+  // item_ids maps each item's value to its Stripe id (rsli_...), the id Stripe needs to import or
+  // delete that item.
+  map<string, string> item_ids = 3;
+}

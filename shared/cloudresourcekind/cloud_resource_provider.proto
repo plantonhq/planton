@@ -63,4 +63,8 @@ enum CloudResourceProvider {
     group: "vault.planton.dev"
     display_name: "Vault"
   }];
+  stripe = 29 [(provider_meta) = {
+    group: "stripe.planton.dev"
+    display_name: "Stripe"
+  }];
 }

@@ -64,6 +64,15 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		Passed:    true,
 	}
 
+	// A kind that declares the engines it runs on is never deployed on another, whatever the
+	// lane or PLANTON_E2E_TF_BINARY asks for -- the same refusal the CLI gives.
+	if err := requireLaneEngine(tc.Component, tc.Engine); err != nil {
+		result.Passed = false
+		result.Phases = append(result.Phases, PhaseResult{Phase: PhaseValidate, Passed: false, Error: err})
+		result.Duration = time.Since(start)
+		return result
+	}
+
 	// Expand per-run unique-id tokens before anything parses the manifest, so
 	// identifiers that cloud providers reserve across soft-delete windows get a
 	// fresh value on every run (and on each engine within a run).
@@ -92,7 +101,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		// The engine-scoped id is passed down so prerequisite manifests expand to
 		// the same values as the scenario under test (their tokens must line up),
 		// and so each engine's prerequisite deploys get distinct identifiers.
-		dependencyStates, err = DeployDependencies(ctx, tc.RepoRoot, tc.Provider, tc.Component, tc.ManifestPath, tc.BackendURL, expandRunID, harness)
+		dependencyStates, err = DeployDependencies(ctx, tc.T, tc.RepoRoot, tc.Provider, tc.Component, tc.ManifestPath, tc.BackendURL, expandRunID, harness)
 		pr := PhaseResult{
 			Phase:    PhaseDepsUp,
 			Duration: time.Since(depStart),

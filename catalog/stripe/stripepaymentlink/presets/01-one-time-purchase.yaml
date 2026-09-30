@@ -1,0 +1,21 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentLink
+metadata:
+  name: ebook-link
+  org: example-org
+  env: production
+spec:
+  lineItems:
+    - price:
+        valueFrom:
+          kind: StripePrice
+          name: ebook
+      quantity: 1
+  allowPromotionCodes: true
+  customerCreation: always
+  invoiceCreation:
+    enabled: true
+  afterCompletion:
+    hostedConfirmation:
+      customMessage: Thanks! Your download link is on its way.
+  inactiveMessage: This offer has ended.

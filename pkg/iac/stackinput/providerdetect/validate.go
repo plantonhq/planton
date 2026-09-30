@@ -16,6 +16,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	kubernetesprovider "github.com/plantonhq/planton/catalog/kubernetes"
 	openfgaprovider "github.com/plantonhq/planton/catalog/openfga"
+	stripeprovider "github.com/plantonhq/planton/catalog/stripe"
 )
 
 // ValidateProviderConfig validates that the provider config file can be loaded
@@ -63,6 +64,8 @@ func ProviderConfigProto(provider cloudresourcekind.CloudResourceProvider) (prot
 		return new(kubernetesprovider.KubernetesProviderConfig), nil
 	case cloudresourcekind.CloudResourceProvider_openfga:
 		return new(openfgaprovider.OpenFgaProviderConfig), nil
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return new(stripeprovider.StripeProviderConfig), nil
 	default:
 		return nil, errors.Errorf("unsupported provider: %s", provider.String())
 	}

@@ -38,7 +38,8 @@ const (
 	CloudResourceProvider_openfga                             CloudResourceProvider = 22
 	// Credential broker family: one provider serves both HashiCorp Vault and
 	// OpenBAO (the API-compatible fork) -- one wire protocol, one client.
-	CloudResourceProvider_vault CloudResourceProvider = 28
+	CloudResourceProvider_vault  CloudResourceProvider = 28
+	CloudResourceProvider_stripe CloudResourceProvider = 29
 )
 
 // Enum value maps for CloudResourceProvider.
@@ -55,6 +56,7 @@ var (
 		21: "auth0",
 		22: "openfga",
 		28: "vault",
+		29: "stripe",
 	}
 	CloudResourceProvider_value = map[string]int32{
 		"cloud_resource_provider_unspecified": 0,
@@ -68,6 +70,7 @@ var (
 		"auth0":                               21,
 		"openfga":                             22,
 		"vault":                               28,
+		"stripe":                              29,
 	}
 )
 
@@ -177,7 +180,7 @@ const file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc = "" +
 	"6shared/cloudresourcekind/cloud_resource_provider.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\"T\n" +
 	"\x19CloudResourceProviderMeta\x12\x14\n" +
 	"\x05group\x18\x01 \x01(\tR\x05group\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xac\x04\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xda\x04\n" +
 	"\x15CloudResourceProvider\x12'\n" +
 	"#cloud_resource_provider_unspecified\x10\x00\x128\n" +
 	"\x05_test\x10\x01\x1a-\xea\xcc')\n" +
@@ -203,7 +206,9 @@ const file_shared_cloudresourcekind_cloud_resource_provider_proto_rawDesc = "" +
 	"\aopenfga\x10\x16\x1a\"\xea\xcc'\x1e\n" +
 	"\x13openfga.planton.dev\x12\aOpenFGA\x12)\n" +
 	"\x05vault\x10\x1c\x1a\x1e\xea\xcc'\x1a\n" +
-	"\x11vault.planton.dev\x12\x05Vault:\x89\x01\n" +
+	"\x11vault.planton.dev\x12\x05Vault\x12,\n" +
+	"\x06stripe\x10\x1d\x1a \xea\xcc'\x1c\n" +
+	"\x12stripe.planton.dev\x12\x06Stripe:\x89\x01\n" +
 	"\rprovider_meta\x12!.google.protobuf.EnumValueOptions\x18\xcd\xf9\x04 \x01(\v2?.dev.planton.shared.cloudresourcekind.CloudResourceProviderMetaR\fproviderMetaB\xb1\x02\n" +
 	"(com.dev.planton.shared.cloudresourcekindB\x1aCloudResourceProviderProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
 

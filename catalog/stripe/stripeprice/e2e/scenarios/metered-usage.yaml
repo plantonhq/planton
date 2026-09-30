@@ -1,0 +1,27 @@
+# A metered monthly price that bills what a run-named StripeBillingMeter
+# counts, named by reference. The harness deploys the meter (a scenario
+# prerequisite) and the product (the price's registry prerequisite) first on
+# OpenTofu, and deactivates and archives them after the price is archived.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePrice
+metadata:
+  name: e2e-price-metered
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-prerequisites: StripeBillingMeter
+spec:
+  product:
+    valueFrom:
+      kind: StripeProduct
+      name: e2e-product-prereq
+  currency: usd
+  unitAmountDecimal: "0.1"
+  recurring:
+    interval: month
+    usageType: metered
+    meter:
+      valueFrom:
+        kind: StripeBillingMeter
+        name: e2e-meter-prereq
+  nickname: e2e ${E2E_RUN_ID} metered

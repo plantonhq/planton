@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripetaxregistration
+spec:
+  billing_model: free
+  free_tier: "Stripe charges nothing for the registration object itself: it records where the account collects tax."
+  notes: "Stripe Tax, which a registration switches on for that place, is priced per transaction it calculates (stripe.com/tax/pricing); that charge follows the payments, never the registration."

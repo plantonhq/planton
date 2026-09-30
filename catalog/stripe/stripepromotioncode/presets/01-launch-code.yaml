@@ -1,0 +1,16 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePromotionCode
+metadata:
+  name: launch25
+  org: example-org
+  env: production
+spec:
+  coupon:
+    valueFrom:
+      kind: StripeCoupon
+      name: launch-25
+  code: LAUNCH25
+  maxRedemptions: 500
+  expiresAt: 1798761599
+  restrictions:
+    firstTimeTransaction: true

@@ -172,6 +172,22 @@ session. (In the forge sequence Pulumi is generated first, so Terraform is recon
 against the existing Pulumi module — but if the Pulumi module is the one that is wrong, fix
 Pulumi.)
 
+**The one exception: a kind that declares fewer engines.** When the provider publishes no
+Pulumi provider, or its kinds are proven on OpenTofu alone (OpenFGA runs on OpenTofu and
+Terraform; Stripe on OpenTofu only), the kind says so in its enum entry --
+`provisioners: ["tofu"]` or `["tofu", "terraform"]` in `kind_meta` (flow rule 014) -- and
+ships only `iac/tf/`. Skip Phase 5 (the Pulumi rules) and the Phase 6b gate, which has no
+pair to compare. Never write a placeholder Pulumi module that succeeds while creating
+nothing: the anatomy gate fails a declared kind that carries `iac/pulumi/`, and the CLI
+(`pkg/iac/provisioner`) and the platform refuse the undeclared engine before anything runs,
+in one sentence naming the engines the kind runs on. The kind's E2E profile lists only its
+declared engines in `validated_provisioners`, and each test entrypoint is named for one of
+them: the matrix builder schedules `Test<Kind>_<Provisioner>` with the provisioner name
+capitalized, so an OpenTofu-only kind's entrypoint is `Test<Kind>_Tofu` (it still passes the
+framework's `"terraform"` engine, which runs the `tofu` binary; the runner refuses any binary
+the kind does not declare). No `_Pulumi` entrypoint exists for such a kind. `e2e/stripe/` is
+the worked example.
+
 **Deviation is allowed ONLY with a strong, documented technical reason.** If the two
 engines genuinely cannot match (a provider feature exists in one SDK but not the other, an
 operator names a resource differently, etc.), you MUST:
@@ -324,7 +340,10 @@ The following 21 rules execute in order. Each rule is atomic and can be run indi
 10. **008-e2e-manifest** - Generate the component-root e2e/manifest.yaml (the kind's
     complete, protovalidate-valid example manifest -- embedded as the reference page's
     Example block AND deployed by the E2E framework, which treats its presence as the
-    testability marker)
+    testability marker). Because it round-trips into its typed message, no run token can
+    stand in a number field there; a date the vendor requires in the future is a literal
+    far enough ahead that no lane goes stale. Stripe's convention is 1 January 2100
+    (`4102444800`), with any expiry a day later, in the manifest and its scenarios alike.
 
 ### Phase 5: Pulumi Implementation (Rules 009-011)
 
@@ -491,6 +510,21 @@ retrofitting it later means re-deriving every naming decision:
    enablement, module-wired parent linkage) -- the resource-level `internal`
    disposition. For every uncovered spec field, either fix the mapping or
    record a `specExclusions` entry (platform-level fields).
+   An argument that makes the provider create a SECOND object inline -- a
+   `*_data` block such as a product's `default_price_data` (a price) or a
+   price's `product_data` (a product), or a file's inline link -- is never
+   offered: the module would neither track, update nor destroy that object,
+   so destroy would leave it live and its drift would go unseen. Exclude it
+   with that reason, point the spec comment and the GUIDE at the kind a
+   reader declares instead, and let a reference compose the two.
+   An argument the provider accepts but can't send -- an in-place update the
+   vendor's API has no field for, or a write-only value whose change plans
+   nothing -- is never a silent drop or a pending change forever: the module
+   tracks it in a `terraform_data` tracker that replaces the resource
+   (flow rule 012 has the recipe), the manifest judges the tracker
+   `internal`, the provider's import catalog records `terraform_data` as not
+   importable (an imported tracker would replace the object), and the spec
+   field says a change replaces the object.
 3. Re-run with `--check`; the kind must be at total accounting and OUT of
    `pkg/providerparity/baseline.yaml` (a new kind never ships pre-baselined
    debt). File presence IS enrollment -- the `lint.provider-parity` CI lane
@@ -682,7 +716,18 @@ A new kind is only exercised once it is registered in the provider harness:
   "<component>", pathFormat: "<api-path>/%s"}`); cloud-SDK providers (e.g. AWS)
   implement the three-method `Verifier` interface against the provider SDK,
   keyed on the API's own identifier for the resource and treating the provider's
-  typed not-found error as the absent signal.
+  typed not-found error as the absent signal. The destroy check asserts what the
+  provider's destroy really leaves, never plain absence: GONE for a deleted
+  object, still readable and INACTIVE for one the vendor only archives or
+  deactivates, and still PRESENT for one the provider merely forgets (its
+  destroy makes no call) -- the last proves the GUIDE's "the vendor keeps it"
+  and catches a provider that starts deleting. Read inactive the way the
+  vendor reports it (a flag on most objects, a status field on some). A kind
+  that folds children (a list's items, a parent's links, a meter's alerts)
+  proves each child's destroy truth too, from the map output that keys the
+  children's ids: a folded child is not proven because its parent is.
+  Stripe's `verify/verifier.go` carries all three shapes, both inactive
+  forms, and the child checks.
 - `e2e/<provider>/<provider>_test.go` — add `Test<Kind>_Pulumi` / `Test<Kind>_Terraform` entrypoints. Scenarios are auto-discovered; the entry funcs are not.
 - **Test-name discovery is registry-driven.** The GitHub Actions matrix builder in
   `pkg/e2e/profile/discover.go` maps component directory names (e.g. `awslambda`) to
@@ -727,7 +772,12 @@ and verifies it with that provider's harness -- which the suite lends in its
 set up only when a scenario first needs it, and torn down with
 `runner.TeardownDependencyHarnesses`. The prerequisite deploys with that
 provider's ambient credentials, so the scenario's `e2e-required-env` names the
-arrangement it needs. Unknown kinds and self-references fail loudly. Singular AND
+arrangement it needs. Each prerequisite deploys on ITS OWN kind's engine,
+whatever the lane runs: on Pulumi when the kind has a Pulumi module, and on
+the HCL lane (its `iac/tf` module in a disposable working copy with local
+state) when the kind declares HCL engines only -- so an OpenTofu-only kind
+can be a prerequisite, and its `e2e/prerequisite.yaml` is written exactly as
+any other. Unknown kinds and self-references fail loudly. Singular AND
 repeated `StringValueOrRef` fields both resolve, refs nested inside (repeated)
 spec messages resolve too, and a repeated list can mix literals with
 references. Audit the annotation against EVERY `valueFrom` kind the scenario

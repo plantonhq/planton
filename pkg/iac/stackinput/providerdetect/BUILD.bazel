@@ -18,6 +18,7 @@ go_library(
         "//catalog/gcp",
         "//catalog/kubernetes",
         "//catalog/openfga",
+        "//catalog/stripe",
         "//pkg/crkreflect",
         "//pkg/protobufyaml",
         "//shared/cloudresourcekind",

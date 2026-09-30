@@ -13,7 +13,7 @@ An **authorization model** in OpenFGA defines the types, relations, and access r
 
 ## Important Notes
 
-**Terraform-Only**: OpenFGA only has a Terraform provider. There is no Pulumi provider available. You must use `--provisioner tofu` when deploying.
+**OpenTofu or Terraform**: OpenFGA only has a Terraform provider, so this component runs on OpenTofu or Terraform. Set `planton.dev/provisioner: tofu` (or `terraform`) on the manifest, or leave it unset and the CLI asks between the two; Pulumi is refused before anything runs.
 
 **Immutable Models**: Authorization models in OpenFGA are immutable. Each change to `modelJson` creates a new model version with a new ID. The previous model version is retained.
 

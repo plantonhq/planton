@@ -1,0 +1,15 @@
+# The install profile a consumer's scenario gets when it names
+# StripeBillingMeter as a prerequisite (a metered StripePrice): a run-named
+# summing meter with no alerts, so nothing is left active in the sandbox but
+# the deactivated meter. Deactivated after the consumer's scenario.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingMeter
+metadata:
+  name: e2e-meter-prereq
+  org: e2e-org
+  env: testing
+spec:
+  displayName: e2e ${E2E_RUN_ID} ${E2E_SCENARIO} meter
+  eventName: e2e_${E2E_RUN_ID_UNDERSCORE}_prereq_${E2E_SCENARIO}
+  defaultAggregation:
+    formula: sum

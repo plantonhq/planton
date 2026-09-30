@@ -29,13 +29,48 @@ type E2EProof struct {
 	// Engines are the validated provisioners, sorted (e.g. pulumi,
 	// terraform).
 	Engines []string
+	// RunsOn are the engines the kind declares it runs on
+	// (kind_meta.provisioners), sorted; empty for the ordinary kind, which
+	// runs on every engine and ships both a Pulumi and an HCL module.
+	RunsOn []string
 }
 
 // Proven is THE definition of proven for every report surface: green live
-// runs with both IaC engines validated. A green profile with one engine is
-// progress, not proof.
+// runs that exercised every module the kind ships -- its Pulumi module and
+// its HCL module for the ordinary kind, only the HCL module for a kind that
+// declares OpenTofu (or Terraform) alone. The HCL module is proven by either
+// of the engines that run it. A green profile that leaves a shipped module
+// unexercised is progress, not proof.
 func (p E2EProof) Proven() bool {
-	return p.Green && len(p.Engines) >= 2
+	if !p.Green {
+		return false
+	}
+	validated := moduleFamilies(p.Engines)
+	needed := map[string]bool{"pulumi": true, "hcl": true}
+	if len(p.RunsOn) > 0 {
+		needed = moduleFamilies(p.RunsOn)
+	}
+	for family := range needed {
+		if !validated[family] {
+			return false
+		}
+	}
+	return true
+}
+
+// moduleFamilies maps engine names to the modules they run: pulumi runs the
+// Pulumi module, and tofu and terraform both run the one HCL module.
+func moduleFamilies(engines []string) map[string]bool {
+	families := map[string]bool{}
+	for _, engine := range engines {
+		switch engine {
+		case "pulumi":
+			families["pulumi"] = true
+		case "tofu", "terraform":
+			families["hcl"] = true
+		}
+	}
+	return families
 }
 
 // BuildE2EProofs reads every component E2E profile of one provider and maps
@@ -66,9 +101,19 @@ func BuildE2EProofs(repoRoot string, provider cloudresourcekind.CloudResourcePro
 			engines = append(engines, strings.ToLower(sharedpb.IacProvisioner_name[int32(vp)]))
 		}
 		sort.Strings(engines)
+		declared, err := crkreflect.Provisioners(kind)
+		if err != nil {
+			return nil, err
+		}
+		runsOn := make([]string, 0, len(declared))
+		for _, p := range declared {
+			runsOn = append(runsOn, strings.ToLower(p.String()))
+		}
+		sort.Strings(runsOn)
 		proofs[kind.String()] = E2EProof{
 			Green:   spec.Status == componentv1.ComponentE2EProfileSpec_green,
 			Engines: engines,
+			RunsOn:  runsOn,
 		}
 	}
 	return proofs, nil

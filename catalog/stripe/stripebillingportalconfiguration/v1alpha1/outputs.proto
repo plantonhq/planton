@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingportalconfiguration.v1alpha1;
+
+// StripeBillingPortalConfigurationStackOutputs identifies the configuration a portal session
+// names.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/billing_portal_configuration
+message StripeBillingPortalConfigurationStackOutputs {
+  // id is the configuration's Stripe id (bpc_...), the value an application passes as
+  // `configuration` when it creates a portal session.
+  string id = 1;
+
+  // is_default is whether this is the account's default configuration. A configuration this kind
+  // creates is not the default unless someone makes it so in the Dashboard.
+  bool is_default = 2;
+
+  // active is whether portal sessions may use the configuration.
+  bool active = 3;
+
+  // login_page_url is the shareable portal sign-in URL, when login_page is enabled.
+  string login_page_url = 4;
+}

@@ -1,0 +1,20 @@
+# The canonical example: API requests summed per customer, with an alert at
+# 10,000.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingMeter
+metadata:
+  name: api-requests
+  org: e2e-org
+  env: testing
+spec:
+  displayName: API requests
+  eventName: api_requests
+  defaultAggregation:
+    formula: sum
+  customerMapping:
+    eventPayloadKey: stripe_customer_id
+  valueSettings:
+    eventPayloadKey: value
+  alerts:
+    - title: 10k requests
+      gte: 10000

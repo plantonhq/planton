@@ -1,0 +1,23 @@
+# A code with every limit: first-time customers, a 50 USD minimum with a euro
+# minimum, a redemption cap and an expiry. The minimal scenario leaves every
+# limit out, so the module's handling of both is exercised.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePromotionCode
+metadata:
+  name: e2e-promotion-code-restricted
+  org: e2e-org
+  env: testing
+spec:
+  coupon:
+    valueFrom:
+      kind: StripeCoupon
+      name: e2e-coupon-prereq
+  code: E2E-${E2E_RUN_ID}-${E2E_SCENARIO}
+  maxRedemptions: 10
+  expiresAt: 4102444800
+  restrictions:
+    firstTimeTransaction: true
+    minimumAmount: 5000
+    minimumAmountCurrency: usd
+    currencyOptions:
+      eur: 4500

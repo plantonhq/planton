@@ -27,4 +27,8 @@ go_test(
     name = "profile_test",
     srcs = ["discover_test.go"],
     embed = [":profile"],
+    deps = [
+        "//qa/componente2eprofile/v1:componente2eprofile",
+        "//shared",
+    ],
 )

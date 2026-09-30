@@ -1,0 +1,128 @@
+# Breadth dispositions ledger for the stripe provider (stripe/stripe, pinned
+# exactly) -- the recorded judgment for every resource the provider serves.
+# Two classes never appear here because they are computed: modeled (the module
+# census proves consumption) and schema-flagged deprecations (none at 0.3.0).
+#
+# Entries record judgment, one disposition per resource, reason mandatory:
+#   composed            -- covered by fields of an existing kind (name it)
+#   model-planned       -- covered by a planned kind not built yet: a kind of
+#                          its own, or a planned composition into one; flips to
+#                          modeled or composed when the kind ships
+#   deferred            -- deliberately not offered, with the reason
+#   excluded-deprecated -- deprecated/superseded in docs but not flagged in
+#                          the schema
+#
+# The shape rule: a kind is something a person declares, with its own identity
+# and lifecycle; an object keyed by a parent, created and destroyed with it and
+# referenced by nothing else folds into that parent's kind. Two surfaces are
+# not offered. The first moves money or creates a record of business the
+# moment it is applied: a catalog kind promises declared state with a destroy
+# that tells the truth, and for most of that surface the provider's destroy
+# only forgets the object while Stripe keeps it running (a subscription keeps
+# billing, an issued card stays able to spend). The second is not a setting
+# anyone declares: enrolled hardware, in-store fleets, uploaded files and
+# printed card designs, each with its reason below.
+#
+# Delete semantics differ by resource and every kind states its own: webhook
+# endpoints, event destinations, coupons and value lists are deleted; portal
+# and payment-method configurations, products, prices, promotion codes,
+# shipping rates, tax rates, entitlement features and payment links are
+# deactivated (Stripe keeps them); a billing meter is deactivated through its
+# own endpoint; tax registrations, payment-method domains and billing alerts
+# are only removed from state.
+provider: stripe
+resources:
+  # ---- Not a declared setting: not offered ------------------------------------
+  - resource: stripe_terminal_reader
+    disposition: deferred
+    reason: "enrolls a physical card reader with a code the device shows once and the provider never stores, so the declaration can never be applied again or recreated without a person at the reader; hardware enrollment, not declared configuration"
+  - resource: stripe_terminal_location
+    disposition: deferred
+    reason: "a store's address that in-person readers register to; it serves only businesses with physical checkout, which configure their shop fleet in the Dashboard or their own point-of-sale software"
+  - resource: stripe_terminal_configuration
+    disposition: deferred
+    reason: "in-store reader behavior (tipping, splash screens, offline mode, Wi-Fi); it serves only physical checkout fleets, and its images and certificates are uploaded files, which are not offered either"
+  - resource: stripe_file
+    disposition: deferred
+    reason: "an uploaded file is an input other objects name by id, never a setting declared for its own sake, and the provider uploads it from a path on the machine running the engine; destroy only removes it from state"
+  - resource: stripe_file_link
+    disposition: deferred
+    reason: "a public link to an uploaded file, which is not offered"
+  - resource: stripe_issuing_personalization_design
+    disposition: deferred
+    reason: "the printed design of issued cards needs an approved Issuing program, and its card logo needs a file of purpose issuing_logo that the provider's file upload cannot create; destroy only removes it from state"
+  # ---- Superseded -------------------------------------------------------------
+  - resource: stripe_plan
+    disposition: excluded-deprecated
+    reason: "the provider's own description: the Prices API replaces the Plans API; StripePrice covers recurring prices"
+  - resource: stripe_source
+    disposition: excluded-deprecated
+    reason: "the provider's own description: Stripe does not recommend the deprecated Sources API; payment methods replace it"
+  - resource: stripe_apple_pay_domain
+    disposition: excluded-deprecated
+    reason: "Stripe's Apple Pay guide registers domains as payment method domains, which cover Apple Pay with every other wallet method (StripePaymentMethodDomain); no guide uses the Apple Pay domain endpoint, though Stripe's API spec does not flag it"
+
+  # ---- Money movement and records of business: not offered ----------------------
+  - resource: stripe_charge
+    disposition: deferred
+    reason: "applying it charges a card immediately, and destroy refunds nothing; a record of business, not declared configuration (the provider also calls direct charges a legacy flow)"
+  - resource: stripe_payment_intent
+    disposition: deferred
+    reason: "with confirm set, applying it takes payment, and destroy neither cancels nor refunds it; a record of business, not declared configuration"
+  - resource: stripe_setup_intent
+    disposition: deferred
+    reason: "saves a customer's payment credentials, and destroy only removes it from state; a record of business, not declared configuration"
+  - resource: stripe_payment_method
+    disposition: deferred
+    reason: "a customer's payment instrument, and destroy does not detach it; a record of business, not declared configuration"
+  - resource: stripe_customer
+    disposition: deferred
+    reason: "a customer is a record of business the account's own flows create and own, not declared configuration"
+  - resource: stripe_customer_balance_transaction
+    disposition: deferred
+    reason: "a ledger credit or debit applied to a customer's next invoice, and destroy reverses nothing; an event, not declared state"
+  - resource: stripe_tax_id
+    disposition: deferred
+    reason: "part of a customer record, which is not offered"
+  - resource: stripe_subscription
+    disposition: deferred
+    reason: "bills a customer on a schedule, and destroy only removes it from state while Stripe keeps billing; a record of business, not declared configuration"
+  - resource: stripe_subscription_item
+    disposition: deferred
+    reason: "part of a subscription, which is not offered; changing one changes what a customer is billed"
+  - resource: stripe_subscription_schedule
+    disposition: deferred
+    reason: "future billing changes for a customer, and destroy only removes it from state while the schedule keeps running; a record of business"
+  - resource: stripe_invoice
+    disposition: deferred
+    reason: "a bill to a customer that Stripe can finalize and collect automatically; a record of business, not declared configuration"
+  - resource: stripe_invoice_item
+    disposition: deferred
+    reason: "adds a charge to a customer's next invoice; a record of business, not declared configuration"
+  - resource: stripe_quote
+    disposition: deferred
+    reason: "a sales offer to a customer, and destroy only removes it from state; a record of business, not declared configuration"
+  - resource: stripe_credit_note
+    disposition: deferred
+    reason: "can refund money on apply, and destroy voids nothing; a record of business, not declared configuration"
+  - resource: stripe_billing_credit_grant
+    disposition: deferred
+    reason: "grants a customer billing credit, and destroy only removes it from state; a record of business, not declared configuration"
+  - resource: stripe_climate_order
+    disposition: deferred
+    reason: "a purchase paid from the merchant balance, and destroy cancels nothing; money movement, not declared configuration"
+  - resource: stripe_issuing_cardholder
+    disposition: deferred
+    reason: "a person or company authorized to spend on issued cards, and destroy only removes it from state; a record of business, not declared configuration"
+  - resource: stripe_issuing_card
+    disposition: deferred
+    reason: "an issued card that can spend once active, and destroy only removes it from state while the card stays live; money movement, not declared configuration"
+  - resource: stripe_issuing_dispute
+    disposition: deferred
+    reason: "a dispute over a card transaction, and destroy only removes it from state; a record of business, not declared configuration"
+  - resource: stripe_treasury_financial_account
+    disposition: deferred
+    reason: "an account that holds money, and destroy does not close it; money movement, not declared configuration"
+  - resource: stripe_person
+    disposition: deferred
+    reason: "an identity record (with personal data) of a Connect account's representative or owner; a record of business, not declared configuration"

@@ -1,0 +1,42 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingPortalConfiguration
+metadata:
+  name: plan-switching-portal
+  org: example-org
+  env: production
+spec:
+  name: Plan switching portal
+  defaultReturnUrl: https://app.example.com/billing
+  features:
+    invoiceHistory:
+      enabled: true
+    paymentMethodUpdate:
+      enabled: true
+    subscriptionCancel:
+      enabled: true
+      mode: at_period_end
+    subscriptionUpdate:
+      enabled: true
+      defaultAllowedUpdates:
+        - price
+        - quantity
+      prorationBehavior: create_prorations
+      products:
+        - product:
+            valueFrom:
+              kind: StripeProduct
+              name: team-plan
+          prices:
+            - valueFrom:
+                kind: StripePrice
+                name: team-monthly
+            - valueFrom:
+                kind: StripePrice
+                name: team-yearly
+          adjustableQuantity:
+            enabled: true
+            minimum: 1
+            maximum: 50
+      scheduleAtPeriodEnd:
+        conditions:
+          - type: decreasing_item_amount

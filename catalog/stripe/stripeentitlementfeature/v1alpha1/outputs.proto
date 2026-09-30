@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeentitlementfeature.v1alpha1;
+
+// StripeEntitlementFeatureStackOutputs identifies the feature.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/entitlements_feature
+message StripeEntitlementFeatureStackOutputs {
+  // id is the feature's Stripe id (feat_...), the value a StripeProduct's features reference.
+  string id = 1;
+
+  // lookup_key is the feature's stable name, as the application checks it.
+  string lookup_key = 2;
+
+  // active is false once the feature is archived (by destroy, or in the Dashboard).
+  bool active = 3;
+}

@@ -43,6 +43,7 @@ go_test(
     name = "providerparity_test",
     srcs = [
         "accounting_test.go",
+        "e2eproof_test.go",
         "enrollment_test.go",
         "manifest_test.go",
         "module_census_test.go",

@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "stripekey",
+    srcs = ["stripekey.go"],
+    importpath = "github.com/plantonhq/planton/pkg/iac/provider/stripe/stripekey",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/stripe",
+        "@com_github_pkg_errors//:errors",
+    ],
+)
+
+go_test(
+    name = "stripekey_test",
+    srcs = ["stripekey_test.go"],
+    embed = [":stripekey"],
+    deps = ["//catalog/stripe"],
+)

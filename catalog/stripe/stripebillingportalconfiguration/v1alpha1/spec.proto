@@ -1,0 +1,362 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingportalconfiguration.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// StripeBillingPortalConfigurationSpec declares what Stripe's customer portal lets a customer
+// do: cancel (and how), switch plans (and to which prices), update payment methods and details,
+// and see invoice history.
+//
+// An account holds many configurations and one of them is its default, which Stripe uses when a
+// portal session names none. This kind always creates a configuration of its own and never
+// adopts or edits the default: the application names this configuration's id
+// (status.outputs.id) when it opens a portal session, so every customer sees exactly what is
+// declared here.
+//
+// Stripe never deletes a configuration. Destroy deactivates it (active = false) and Stripe keeps
+// it, inactive, forever; a portal session that names it afterwards is refused. A setting removed
+// from the manifest is not reset in Stripe -- the provider sends only values that are set -- so
+// change a setting to its opposite rather than deleting it. A configuration deactivated outside
+// Planton is reactivated by the next apply; one that cannot be read makes the plan fail until it
+// is removed from state.
+//
+// The key needs "Customer portal" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/customer-management/configure-portal
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/billing_portal_configuration
+message StripeBillingPortalConfigurationSpec {
+  // name is a label for the configuration, shown only to the account's team.
+  string name = 1;
+
+  // features are what a customer can do in the portal. Every feature is off unless enabled here.
+  StripeBillingPortalFeatures features = 2 [(buf.validate.field).required = true];
+
+  // business_profile is the portal's headline and the policy links it shows.
+  StripeBillingPortalBusinessProfile business_profile = 3;
+
+  // default_return_url is where the portal's "return" link leads when the session that opened
+  // the portal names no return URL of its own.
+  string default_return_url = 4 [(buf.validate.field).cel = {
+    id: "spec.default_return_url.format"
+    message: "default_return_url is an https:// or http:// URL"
+    expression: "this == '' || this.startsWith('https://') || this.startsWith('http://')"
+  }];
+
+  // login_page turns on a shareable portal URL where a customer signs in with their email
+  // (status.outputs.login_page_url), for accounts that do not open sessions from their own
+  // application.
+  StripeBillingPortalLoginPage login_page = 5;
+
+  // active is whether portal sessions may use this configuration. Setting it false deactivates
+  // the configuration without destroying the resource; destroy deactivates it too.
+  optional bool active = 6 [(dev.planton.shared.options.default) = "true"];
+
+  // metadata is a set of key-value pairs stored on the configuration.
+  map<string, string> metadata = 7;
+}
+
+// StripeBillingPortalFeatures are the portal's capabilities.
+message StripeBillingPortalFeatures {
+  // customer_update lets a customer edit their own details.
+  StripeBillingPortalCustomerUpdate customer_update = 1;
+  // invoice_history lets a customer see and download past invoices.
+  StripeBillingPortalInvoiceHistory invoice_history = 2;
+  // payment_method_update lets a customer add and change payment methods.
+  StripeBillingPortalPaymentMethodUpdate payment_method_update = 3;
+  // subscription_cancel lets a customer cancel a subscription.
+  StripeBillingPortalSubscriptionCancel subscription_cancel = 4;
+  // subscription_update lets a customer switch plans or quantities.
+  StripeBillingPortalSubscriptionUpdate subscription_update = 5;
+}
+
+// StripeBillingPortalCustomerUpdate lets a customer edit their own details.
+message StripeBillingPortalCustomerUpdate {
+  // enabled turns the feature on.
+  bool enabled = 1;
+  // allowed_updates are the details a customer may edit. Empty with the feature enabled, the
+  // portal allows none.
+  repeated AllowedUpdate allowed_updates = 2 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      enum: {
+        defined_only: true
+        not_in: [0]
+      }
+    }
+  }];
+
+  // AllowedUpdate is one customer detail the portal may edit.
+  enum AllowedUpdate {
+    allowed_update_unspecified = 0;
+    address = 1;
+    email = 2;
+    name = 3;
+    phone = 4;
+    shipping = 5;
+    tax_id = 6;
+  }
+}
+
+// StripeBillingPortalInvoiceHistory lets a customer see past invoices.
+message StripeBillingPortalInvoiceHistory {
+  // enabled turns the feature on.
+  bool enabled = 1;
+}
+
+// StripeBillingPortalPaymentMethodUpdate lets a customer manage payment methods.
+message StripeBillingPortalPaymentMethodUpdate {
+  // enabled turns the feature on.
+  bool enabled = 1;
+  // payment_method_configuration is the payment-method configuration (pmc_...) that decides
+  // which methods a customer may add in the portal. Reference a StripePaymentMethodConfiguration
+  // so the portal offers the same methods as checkout. Unset, the account's default
+  // payment-method configuration applies.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef payment_method_configuration = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripePaymentMethodConfiguration,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id"
+  ];
+}
+
+// StripeBillingPortalSubscriptionCancel lets a customer cancel a subscription.
+message StripeBillingPortalSubscriptionCancel {
+  // enabled turns the feature on.
+  bool enabled = 1;
+  // mode is when a cancellation takes effect. Unset, Stripe cancels at the end of the period.
+  Mode mode = 2 [(buf.validate.field).enum.defined_only = true];
+  // proration_behavior is how an immediate cancellation settles the unused time. It applies only
+  // with mode immediately.
+  ProrationBehavior proration_behavior = 3 [(buf.validate.field).enum.defined_only = true];
+  // cancellation_reason asks the customer why they are leaving.
+  StripeBillingPortalCancellationReason cancellation_reason = 4;
+
+  option (buf.validate.message).cel = {
+    id: "subscription_cancel.proration_needs_immediate"
+    message: "proration_behavior always_invoice or create_prorations settles unused time, which only an immediate cancellation leaves: set mode immediately, or proration_behavior none"
+    expression: "this.proration_behavior == 0 || this.proration_behavior == 3 || this.mode == 2"
+  };
+
+  // Mode is when a cancellation takes effect.
+  enum Mode {
+    mode_unspecified = 0;
+    // at_period_end keeps the subscription until the paid period ends.
+    at_period_end = 1;
+    // immediately ends the subscription now.
+    immediately = 2;
+  }
+
+  // ProrationBehavior is how an immediate cancellation settles unused time.
+  enum ProrationBehavior {
+    proration_behavior_unspecified = 0;
+    // always_invoice credits the unused time and invoices the result at once.
+    always_invoice = 1;
+    // create_prorations credits the unused time to the customer's next invoice.
+    create_prorations = 2;
+    // none leaves the unused time unrefunded.
+    none = 3;
+  }
+}
+
+// StripeBillingPortalCancellationReason asks a cancelling customer for a reason.
+message StripeBillingPortalCancellationReason {
+  // enabled shows the question.
+  bool enabled = 1;
+  // options are the reasons offered, in Stripe's fixed vocabulary.
+  repeated Option options = 2 [(buf.validate.field).repeated = {
+    min_items: 1
+    unique: true
+    items: {
+      enum: {
+        defined_only: true
+        not_in: [0]
+      }
+    }
+  }];
+
+  // Option is one cancellation reason.
+  enum Option {
+    option_unspecified = 0;
+    customer_service = 1;
+    low_quality = 2;
+    missing_features = 3;
+    other = 4;
+    switched_service = 5;
+    too_complex = 6;
+    too_expensive = 7;
+    unused = 8;
+  }
+}
+
+// StripeBillingPortalSubscriptionUpdate lets a customer change a subscription.
+message StripeBillingPortalSubscriptionUpdate {
+  // enabled turns the feature on. The portal needs at least one product to switch between.
+  bool enabled = 1;
+  // default_allowed_updates are what a customer may change on a subscription.
+  repeated DefaultAllowedUpdate default_allowed_updates = 2 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      enum: {
+        defined_only: true
+        not_in: [0]
+      }
+    }
+  }];
+  // proration_behavior is how a change mid-period settles the difference. Unset, Stripe uses
+  // none.
+  ProrationBehavior proration_behavior = 3 [(buf.validate.field).enum.defined_only = true];
+  // billing_cycle_anchor is whether a change restarts the billing period. Unset, Stripe keeps it
+  // unchanged.
+  BillingCycleAnchor billing_cycle_anchor = 4 [(buf.validate.field).enum.defined_only = true];
+  // trial_update_behavior is what a change does to a subscription still in trial. Unset, Stripe
+  // ends the trial.
+  TrialUpdateBehavior trial_update_behavior = 5 [(buf.validate.field).enum.defined_only = true];
+  // products are the products, and their prices, a customer may switch between. Stripe allows up
+  // to ten.
+  repeated StripeBillingPortalProduct products = 6 [(buf.validate.field).repeated.max_items = 10];
+  // schedule_at_period_end defers some changes to the end of the period instead of applying them
+  // at once.
+  StripeBillingPortalScheduleAtPeriodEnd schedule_at_period_end = 7;
+
+  option (buf.validate.message).cel = {
+    id: "subscription_update.price_needs_products"
+    message: "switching prices needs the prices to switch between: list at least one product under products, or drop price from default_allowed_updates"
+    expression: "!this.enabled || !(1 in this.default_allowed_updates) || size(this.products) > 0"
+  };
+
+  // DefaultAllowedUpdate is one thing a customer may change on a subscription.
+  enum DefaultAllowedUpdate {
+    default_allowed_update_unspecified = 0;
+    price = 1;
+    promotion_code = 2;
+    quantity = 3;
+  }
+
+  // ProrationBehavior is how a mid-period change settles the difference.
+  enum ProrationBehavior {
+    proration_behavior_unspecified = 0;
+    always_invoice = 1;
+    create_prorations = 2;
+    none = 3;
+  }
+
+  // BillingCycleAnchor is whether a change restarts the billing period.
+  enum BillingCycleAnchor {
+    billing_cycle_anchor_unspecified = 0;
+    now = 1;
+    unchanged = 2;
+  }
+
+  // TrialUpdateBehavior is what a change does to a trialing subscription.
+  enum TrialUpdateBehavior {
+    trial_update_behavior_unspecified = 0;
+    continue_trial = 1;
+    end_trial = 2;
+  }
+}
+
+// StripeBillingPortalProduct is one product a customer may switch to, with its prices.
+message StripeBillingPortalProduct {
+  // product is the product a customer may switch to (prod_...). Reference a StripeProduct so the
+  // portal offers exactly the plan declared beside it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef product = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeProduct,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).cel = {
+      id: "product.product.format"
+      message: "product is a Stripe product id (prod_...), or a reference to a StripeProduct"
+      expression: "!has(this.value) || this.value.startsWith('prod_')"
+    }
+  ];
+  // prices are the product's prices a customer may choose (price_...). Reference each
+  // StripePrice. A price replaced after an amount change has a new id, and a reference follows it
+  // on the portal's next apply.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef prices = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripePrice,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).repeated = {
+      min_items: 1
+      items: {
+        cel: {
+          id: "product.prices.format"
+          message: "a price is a Stripe price id (price_...), or a reference to a StripePrice"
+          expression: "!has(this.value) || this.value.startsWith('price_')"
+        }
+      }
+    }
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "product.prices.unique"
+    message: "each price is listed once: remove the repeated price id"
+    expression: "this.prices.all(p, !has(p.value) || this.prices.filter(q, has(q.value) && q.value == p.value).size() == 1)"
+  };
+  // adjustable_quantity lets a customer change the quantity of this product.
+  StripeBillingPortalAdjustableQuantity adjustable_quantity = 3;
+}
+
+// StripeBillingPortalAdjustableQuantity bounds the quantity a customer may choose.
+message StripeBillingPortalAdjustableQuantity {
+  // enabled lets the customer change the quantity.
+  bool enabled = 1;
+  // minimum is the smallest quantity allowed.
+  optional int64 minimum = 2 [(buf.validate.field).int64.gte = 0];
+  // maximum is the largest quantity allowed.
+  optional int64 maximum = 3 [(buf.validate.field).int64.gte = 1];
+
+  option (buf.validate.message).cel = {
+    id: "adjustable_quantity.range"
+    message: "minimum must not exceed maximum"
+    expression: "!has(this.minimum) || !has(this.maximum) || this.minimum <= this.maximum"
+  };
+}
+
+// StripeBillingPortalScheduleAtPeriodEnd defers changes to the end of the period.
+message StripeBillingPortalScheduleAtPeriodEnd {
+  // conditions are the changes that wait for the period to end.
+  repeated StripeBillingPortalScheduleCondition conditions = 1;
+}
+
+// StripeBillingPortalScheduleCondition is one kind of change deferred to period end.
+message StripeBillingPortalScheduleCondition {
+  // type is the change deferred.
+  Type type = 1 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+
+  // Type is a change that can be deferred.
+  enum Type {
+    type_unspecified = 0;
+    // decreasing_item_amount defers a change that lowers what the customer pays.
+    decreasing_item_amount = 1;
+    // shortening_interval defers a change to a shorter billing interval.
+    shortening_interval = 2;
+  }
+}
+
+// StripeBillingPortalBusinessProfile is the portal's headline and policy links.
+message StripeBillingPortalBusinessProfile {
+  // headline is the message shown to customers at the top of the portal.
+  string headline = 1;
+  // privacy_policy_url links the business's privacy policy.
+  string privacy_policy_url = 2 [(buf.validate.field).cel = {
+    id: "business_profile.privacy_policy_url.format"
+    message: "privacy_policy_url is an https:// or http:// URL"
+    expression: "this == '' || this.startsWith('https://') || this.startsWith('http://')"
+  }];
+  // terms_of_service_url links the business's terms of service.
+  string terms_of_service_url = 3 [(buf.validate.field).cel = {
+    id: "business_profile.terms_of_service_url.format"
+    message: "terms_of_service_url is an https:// or http:// URL"
+    expression: "this == '' || this.startsWith('https://') || this.startsWith('http://')"
+  }];
+}
+
+// StripeBillingPortalLoginPage is the portal's shareable sign-in URL.
+message StripeBillingPortalLoginPage {
+  // enabled creates the shareable URL; turning it off retires the URL.
+  bool enabled = 1;
+}

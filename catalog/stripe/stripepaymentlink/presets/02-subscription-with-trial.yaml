@@ -1,0 +1,26 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentLink
+metadata:
+  name: pro-monthly-link
+  org: example-org
+  env: production
+spec:
+  lineItems:
+    - price:
+        valueFrom:
+          kind: StripePrice
+          name: pro-monthly
+      quantity: 1
+  allowPromotionCodes: true
+  consentCollection:
+    termsOfService: required
+  subscriptionData:
+    trialPeriodDays: 14
+    trialSettings:
+      endBehavior:
+        missingPaymentMethod: cancel
+  paymentMethodCollection: if_required
+  afterCompletion:
+    redirect:
+      url: https://example.com/welcome?session={CHECKOUT_SESSION_ID}
+  inactiveMessage: This plan has moved. Visit example.com/pricing.

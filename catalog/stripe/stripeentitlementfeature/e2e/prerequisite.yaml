@@ -1,0 +1,12 @@
+# The install profile a consumer's scenario gets when it names
+# StripeEntitlementFeature as a prerequisite: a run-named feature a product can
+# grant. Archived after the consumer's scenario.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeEntitlementFeature
+metadata:
+  name: e2e-feature-prereq
+  org: e2e-org
+  env: testing
+spec:
+  lookupKey: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}-feature
+  name: e2e ${E2E_RUN_ID} prerequisite feature

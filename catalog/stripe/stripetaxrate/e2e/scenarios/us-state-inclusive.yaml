@@ -1,0 +1,18 @@
+# An inclusive state sales tax with every in-place field set.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRate
+metadata:
+  name: e2e-tax-rate-state
+  org: e2e-org
+  env: testing
+spec:
+  displayName: Sales tax
+  percentage: 8.875
+  inclusive: true
+  country: US
+  state: NY
+  jurisdiction: New York
+  description: e2e ${E2E_RUN_ID} state
+  taxType: sales_tax
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

@@ -1,0 +1,18 @@
+# A link that sells the run-named monthly price (the registry prerequisite,
+# deployed first on OpenTofu with its product) with nothing else set. Updated
+# in place (the metadata carries the run) and deactivated on destroy.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentLink
+metadata:
+  name: e2e-payment-link
+  org: e2e-org
+  env: testing
+spec:
+  lineItems:
+    - price:
+        valueFrom:
+          kind: StripePrice
+          name: e2e-price-prereq
+      quantity: 1
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

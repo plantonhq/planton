@@ -1,0 +1,14 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeRadarValueList
+metadata:
+  name: blocked-countries
+  org: example-org
+  env: production
+spec:
+  alias: blocked_countries
+  name: Blocked countries
+  itemType: country
+  items:
+    - KP
+    - IR
+    - SY

@@ -1,0 +1,16 @@
+# An amount coupon, once, with a euro amount (the currency options update in
+# place) and redemption limits.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeCoupon
+metadata:
+  name: e2e-coupon-amount
+  org: e2e-org
+  env: testing
+spec:
+  name: e2e ${E2E_RUN_ID} amount
+  amountOff: 1000
+  currency: usd
+  currencyOptions:
+    eur: 900
+  duration: once
+  maxRedemptions: 5
