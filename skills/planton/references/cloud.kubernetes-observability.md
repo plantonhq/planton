@@ -26,7 +26,10 @@ every proposal to that bar and say so plainly when a plan stops short of it.
 2. **Alert delivery in the same change**: `alertmanager.notifications`, not
    a follow-up. Out of the box Alertmanager notifies nobody.
 3. **The outside heartbeat**: `notifications.heartbeat` to a monitor that
-   runs outside every cluster and pages when the heartbeat stops.
+   runs outside every cluster and pages when the heartbeat stops. Apply
+   the stack and see its first heartbeat arrive, then tell the monitor to
+   expect the cluster; the other order opens with a false "cluster silent"
+   alert.
 4. **Only then the hub**: Grafana with Loki and Tempo (the pattern's
    assembled wiring) is where signals are read. It never pages. Its logs
    and traces live in a bucket one environment above it, and its sign-in
@@ -62,11 +65,17 @@ Ask these before composing, in the person's words, not the chart's:
   shared cluster a namespace can name a customer. Tell the person when it
   matters to them: their alert channel can be read by people who must not
   see customer names.
-- Give Prometheus and Alertmanager a `KubernetesPriorityClass` just below
-  the workloads (value -1, preemption `never`) through their `scheduling`
-  blocks, so monitoring is evicted first and evicts nothing. Never go below
-  -10: the cluster autoscaler treats those pods as expendable and will not
-  add a node for them.
+- Give Prometheus, Alertmanager and the operator a `KubernetesPriorityClass`
+  just below the workloads (value -1, preemption `never`) through their
+  `scheduling` blocks, so monitoring is evicted first and evicts nothing.
+  Never go below -10: the cluster autoscaler treats those pods as
+  expendable and will not add a node for them.
+- Ask where the cluster runs. On a managed control plane (GKE, EKS, AKS)
+  turn off the controller-manager, scheduler, etcd and kube-proxy
+  scrapers together with their rule groups (the kind's guide names them),
+  and on GKE the CoreDNS scraper too, because GKE runs kube-dns. Left on,
+  each is a target that is down forever and an alert that never clears,
+  which teaches the person to ignore the channel on day one.
 - Pushover's emergency priority repeats every minute until someone
   acknowledges it in the app, even after the alert resolves. Say so before
   the person's phone starts ringing.
@@ -112,18 +121,32 @@ Ask these before composing, in the person's words, not the chart's:
 
 Do these with the person, and report what arrived and when:
 
+0. Minutes after install, confirm every active scrape target reads `up`
+   (Prometheus's targets page or API). A target that is down now is a
+   wrong scraper posture, not an incident.
 1. Fire a channel alert from inside the Alertmanager pod:
    `amtool alert add alertname=Drill severity=warning environment=<env> --alertmanager.url=http://localhost:9093`.
-   It must arrive in the channel, titled with the environment.
+   It must arrive in the channel, titled with the environment. Double-quote
+   any value with spaces inside its argument
+   (`--annotation='summary="Drill: no action needed."'`). Alertmanager's
+   `alertmanager_notifications_total` and `_failed_total` for the
+   integration prove delivery even when the channel can't be read back;
+   the person confirms what the post says.
 2. Test the paging route without paging anyone:
    `amtool config routes test --config.file=/etc/alertmanager/config_out/alertmanager.env.yaml severity=page environment=<env>`
-   must name the pager receiver.
+   must name the pager receiver. Pass each label as its own argument: in
+   zsh, a label list held in one variable arrives as one malformed label
+   and every test falsely names the root receiver.
 3. With the person's go, fire one `severity=page` alert and confirm the
-   phone rang; they acknowledge it.
+   phone rang. Resolve it (`amtool alert add ... --end=<now>`) before they
+   acknowledge: it keeps ringing, and the resolved notice arrives one
+   `group_interval` (5 minutes by default) later. That is the behaviour to
+   warn them about.
 4. With the person's go, scale the Alertmanager resource to zero replicas
-   and confirm the outside monitor pages within its window; restore the
-   declared replica count and confirm the heartbeat recovers. A drill never
-   breaks a real service to test the pager.
+   and confirm the outside monitor pages within its window (a 5-minute
+   window pages about five and a half minutes after the stop); restore the
+   declared replica count and confirm the heartbeat recovers within a
+   minute. A drill never breaks a real service to test the pager.
 
 5. For the hub, sign in with an account the person expects to get in and
    one that must not (another domain); the first lands with the role the

@@ -26,6 +26,20 @@ the [namespace-ownership pattern](../../_patterns/namespace-ownership.md)'s
 sole-tenant case). Note the reference page's 26-character name budget —
 the chart silently truncates longer fullnames.
 
+## Scrape only what the cluster can show you
+
+The defaults scrape a control plane you own. On a managed one (GKE, EKS,
+AKS) the controller manager, scheduler and etcd are the provider's and
+unreachable, and kube-proxy's metrics port usually binds to localhost:
+switch those `control_plane_scrapers` off AND name their groups in
+`default_rules.disabled_groups` (`kubeControllerManager`, `etcd`,
+`kubeSchedulerAlerting`, `kubeSchedulerRecording`, `kubeProxy`). A scraper
+left on is a target that is down forever and a `TargetDown` that never
+clears; a rule group left on is an alert that can never fire truthfully.
+GKE runs kube-dns instead of CoreDNS, so nothing answers on CoreDNS's
+metrics port there: set `core_dns: false` too. The check that the posture
+is right: minutes after install, every active target reads `up`.
+
 ## Alerts that reach a person
 
 Out of the box Alertmanager notifies nobody. Monitoring exists only when
@@ -42,7 +56,10 @@ same day. Five things decide whether it works:
   posted to a monitor OUTSIDE the cluster every `heartbeat.interval`, is
   the only thing that notices when Alertmanager or the whole cluster
   dies. Keep the interval well under the monitor's staleness window (1m
-  for a 5-minute window).
+  for a 5-minute window). Install first and see the heartbeat arrive
+  before telling the monitor to expect the cluster, or it opens with a
+  false "cluster silent" alert. Stopped on purpose, a 5-minute window
+  pages about five and a half minutes later.
 - **Pages and channels split by label, and `continue_matching` has a
   trap.** Route `severity=page` (only on rules where a person must act
   now) to a pager receiver. The root receiver takes only alerts no child
@@ -58,8 +75,10 @@ same day. Five things decide whether it works:
   every alert through `prometheus.external_labels`, and `component` on
   your own rules.
 - **Pushover's emergency priority repeats until acknowledged**, even
-  after the alert resolves: Alertmanager cannot cancel it. Whoever holds
-  the phone acknowledges in the app.
+  after the alert resolves: Alertmanager cannot cancel it (proven live:
+  it kept ringing after the resolve and after the resolved notice, which
+  arrives one `group_interval`, 5 minutes by default, later). Whoever
+  holds the phone acknowledges in the app.
 
 Typed Discord delivery needs chart 88 or later (Prometheus Operator
 v0.93): older operators re-parse the configuration and refuse Discord's
@@ -73,7 +92,11 @@ add alertname=Drill severity=warning environment=<env>
 --alertmanager.url=http://localhost:9093`; it must arrive in the
 channel. Then `amtool config routes test
 --config.file=/etc/alertmanager/config_out/alertmanager.env.yaml
-severity=page environment=<env>` must name the pager.
+severity=page environment=<env>` must name the pager. Pass each label as
+its own argument (in zsh, a label list held in one variable reaches
+`amtool` as one malformed label and every route test reads the root), and
+double-quote a value that has spaces inside the argument:
+`--annotation='summary="Drill: no action needed."'`.
 
 ## The bundled Grafana boundary
 

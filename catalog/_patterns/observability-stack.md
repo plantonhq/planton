@@ -152,12 +152,24 @@ dashboard exists.
   Watchdog alert, sent as `notifications.heartbeat` to a monitor
   running outside every cluster, is the only signal that survives the
   cluster (or Alertmanager) dying. The monitor pages on silence.
-- **Monitoring yields to the workload.** Give Prometheus and
-  Alertmanager a KubernetesPriorityClass BELOW the platform's (for
+  Install the stack first and confirm its heartbeat arrives, THEN tell
+  the monitor to expect that cluster: expected before the first
+  heartbeat, it opens with a false "cluster silent" alert.
+- **Monitoring yields to the workload.** Give Prometheus, Alertmanager
+  and the operator a KubernetesPriorityClass BELOW the platform's (for
   example -1, with preemption `Never`) through their `scheduling`
   blocks, so under pressure monitoring is evicted first and never
   evicts anything. Stay at -10 or above: the cluster autoscaler treats
   lower-priority pods as expendable and never adds a node for them.
+- **Scrape only what the cluster can show you.** On a managed control
+  plane (GKE, EKS, AKS) the controller manager, scheduler and etcd are
+  the provider's, and kube-proxy's metrics are usually unreachable:
+  turn those `control_plane_scrapers` off together with their
+  `default_rules.disabled_groups`, or the cluster carries targets that
+  are down forever and alerts that can never clear. GKE's cluster DNS
+  is kube-dns, not CoreDNS, so `core_dns` goes off there too. After
+  install, every active target reading `up` is the check that the
+  posture is right.
 - **No alert names a customer.** Messages render environment,
   component, summary and runbook only; a namespace on a shared cluster
   can be a customer's name.
@@ -220,8 +232,26 @@ spec:
         url: https://watcher.example.com/heartbeat/prod-cluster
         bearer_token:
           value: $secret/heartbeat-token
+  operator:
+    scheduling:
+      priority_class_name: observability
   grafana:
     enabled: false
+  # A GKE cluster: the managed control plane's scrapers and their rule
+  # groups are off together, and kube-dns replaces CoreDNS.
+  control_plane_scrapers:
+    kube_controller_manager: false
+    kube_etcd: false
+    kube_scheduler: false
+    kube_proxy: false
+    core_dns: false
+  default_rules:
+    disabled_groups:
+      - etcd
+      - kubeControllerManager
+      - kubeSchedulerAlerting
+      - kubeSchedulerRecording
+      - kubeProxy
 ```
 
 ## Logs and traces outside the cluster
