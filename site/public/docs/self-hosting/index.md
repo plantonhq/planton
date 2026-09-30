@@ -159,5 +159,5 @@ Config changes are edits to the `PlantonPlatform` resource; the operator reconci
 
 - Kubernetes 1.24+, amd64 nodes (arm64 works only under emulation, e.g. local Docker Desktop)
 - A default StorageClass whose storage driver is actually installed (or pin one via `spec.storage.storageClassName`)
-- 6 GiB+ allocatable memory is comfortable; smaller evaluation clusters work with resource floors
-- Every component runs a size the operator measured. To change one, set that component's `resources` (e.g. `spec.controlPlane.resources.limits.memory: 6Gi`): each quantity you set replaces only its own default, and `status.components.<name>.sizing` shows what each workload runs with. A size no workload can run with (a request above its limit) is refused before anything changes, naming the field
+- Memory: the platform's own workloads request about 4 GiB at their defaults (about 6 GiB with the optional graph database), and the control plane bursts toward its 6 GiB limit under parallel deploys, so 8 GiB allocatable is comfortable (10 GiB with the graph database). Smaller evaluation clusters work with smaller sizes set per component
+- Every component runs a size the operator measured. To change one, set that component's `resources` (e.g. `spec.controlPlane.resources.limits.memory: 8Gi`): each quantity you set replaces only its own default, and `status.components.<name>.sizing` shows what each workload runs with. A size no workload can run with (a request above its limit) is refused before anything changes, naming the field

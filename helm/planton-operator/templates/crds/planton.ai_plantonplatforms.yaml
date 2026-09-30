@@ -404,10 +404,10 @@ spec:
                   resources:
                     description: |-
                       resources sizes the control plane's container. Defaults to requests of
-                      250m CPU and 1Gi memory with a 4Gi memory limit (~3.3Gi resident live
-                      under pipeline fan-out). The JVM's heap is 60% of the memory limit (the
-                      image runs -XX:MaxRAMPercentage=60), so the limit is the heap: raise it
-                      when this component reports OutOfMemory. A quantity you set wins; one
+                      250m CPU and 1Gi memory with a 6Gi memory limit (the heaviest measured
+                      parallel-deploy peak, 4.52Gi, plus 25%). The JVM's heap is 60% of the
+                      memory limit (the image runs -XX:MaxRAMPercentage=60), so the limit is
+                      the heap: raise it when this component reports OutOfMemory. A quantity you set wins; one
                       you leave unset keeps the default. A CPU limit is allowed, and the
                       operator sets none: a throttled cold start fails its own probes.
                       Changing it rolls the control plane, a new pod ready before the old

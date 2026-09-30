@@ -109,6 +109,32 @@ func TemporalHelmValues(opts TemporalHelmOptions) map[string]any {
 	}
 }
 
+// TemporalServerService is one of the chart's four server services: its own
+// Deployment, sized by its own field.
+type TemporalServerService struct {
+	// Name is the chart's name for the service (frontend, history,
+	// matching, worker).
+	Name string
+	// SizedBy is the registry path that sizes it.
+	SizedBy string
+}
+
+// TemporalServerServices are the four server services the chart renders, in
+// the order a client meets them: the frontend first (the one clients dial and
+// the one readiness waits on), then the services behind it.
+var TemporalServerServices = []TemporalServerService{
+	{Name: "frontend", SizedBy: SizingTemporalFrontend},
+	{Name: "history", SizedBy: SizingTemporalHistory},
+	{Name: "matching", SizedBy: SizingTemporalMatching},
+	{Name: "worker", SizedBy: SizingTemporalWorker},
+}
+
+// TemporalServiceDeploymentName returns the Deployment the chart renders for
+// one server service: the release name, then the service's.
+func TemporalServiceDeploymentName(crName, service string) string {
+	return fmt.Sprintf("%s-temporal-%s", crName, service)
+}
+
 // TemporalFrontendServiceName returns the Kubernetes Service name for the
 // Temporal frontend, which is the primary gRPC endpoint applications connect to.
 func TemporalFrontendServiceName(crName string) string {

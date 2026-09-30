@@ -94,7 +94,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		ginkgo.It("should accept sizing on every component, the store's ceiling in Valkey's units", func() {
 			input := minimalValidPlatform()
 			input.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{
-				Resources: &kubernetes.ContainerResources{Limits: &kubernetes.CpuMemory{Memory: "6Gi"}},
+				Resources: &kubernetes.ContainerResources{Limits: &kubernetes.CpuMemory{Memory: "8Gi"}},
 			}
 			input.Spec.Database = &KubernetesPlantonPlatformDatabase{Redis: &KubernetesPlantonPlatformRedis{
 				MaxMemory: "2gb",

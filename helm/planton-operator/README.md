@@ -254,6 +254,13 @@ health check and Temporal's pods restart until its schema job finishes -- both r
 the wait they are. When the message prints a `kubectl logs` command, that log is the
 component's own account.
 
+A component can read `Ready` with reason `OutOfMemory`: one of its containers was killed
+for exceeding its memory limit and is serving again. The message says when, and names the
+field to raise (for example `spec.controlPlane.resources.limits.memory`); it stays until
+a new pod replaces the one that was killed, which raising the limit does, and a Normal
+`ComponentRecovered` Event marks the moment it clears. A kill the pod recovered from in a
+minute is the warning before an outage, so it never reads as `Healthy`.
+
 ## CRD Management
 
 The operator's definitions (`PlantonPlatform` and `PlantonIdentityProvider`) are
