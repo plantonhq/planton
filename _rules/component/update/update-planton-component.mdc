@@ -549,7 +549,12 @@ Based on scenario:
   (`t == "a" ? {…} : t == "b" ? {…} : null`) selecting between differently
   shaped objects is the same failure wearing a oneof costume: render ONE
   object literal carrying every arm's keys (each key gated on its arm,
-  `null` otherwise) and null-prune it; and `merge(concat(cond ? [{…}] : [], …)...)`
+  `null` otherwise) and null-prune it. When the two branches happen to be
+  convertible (an object literal against a null-pruned for-expression),
+  the ternary does NOT fail at plan -- it unifies both to `map(string)`, and
+  a chart that copies the values into the workload's config hands it a
+  quoted `"true"` (Loki's and Tempo's `s3forcepathstyle`, refused at start
+  and seen only as a Helm install timing out); and `merge(concat(cond ? [{…}] : [], …)...)`
   silently UNIFIES primitive-only sibling objects into `map(string)` — the
   ternary converts each tuple to a list, and concat's element-type
   unification then coerces numbers and booleans to strings

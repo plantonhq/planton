@@ -67,21 +67,19 @@ locals {
   gcs_key_mount_path = "/var/secrets/gcs"
   gcs_key_volume     = "gcs-service-account"
 
-  trace_s3 = local.r2 != null ? {
-    bucket         = local.r2.bucket
-    endpoint       = local.r2_endpoint
-    region         = "auto"
-    forcepathstyle = true
-    access_key     = "$${TEMPO_S3_ACCESS_KEY_ID}"
-    secret_key     = "$${TEMPO_S3_SECRET_ACCESS_KEY}"
-    } : local.backend_type != "s3" ? null : { for k, v in {
-      bucket         = var.spec.storage.s3.bucket
-      endpoint       = var.spec.storage.s3.endpoint
-      region         = try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null
-      forcepathstyle = try(var.spec.storage.s3.force_path_style, false) ? true : null
-      insecure       = try(var.spec.storage.s3.insecure, false) ? true : null
-      access_key     = local.s3_creds_declared ? "$${TEMPO_S3_ACCESS_KEY_ID}" : null
-      secret_key     = local.s3_creds_declared ? "$${TEMPO_S3_SECRET_ACCESS_KEY}" : null
+  # One object for both arms that speak S3 (s3 and r2), each attribute
+  # choosing its own value: a conditional between two differently shaped
+  # objects makes OpenTofu unify them to map(string), and the chart copies
+  # these values into Tempo's config verbatim, where a quoted "true" is a
+  # string Tempo refuses to parse.
+  trace_s3 = local.backend_type != "s3" ? null : { for k, v in {
+    bucket         = local.r2 != null ? local.r2.bucket : var.spec.storage.s3.bucket
+    endpoint       = local.r2 != null ? local.r2_endpoint : var.spec.storage.s3.endpoint
+    region         = local.r2 != null ? "auto" : (try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null)
+    forcepathstyle = local.r2 != null || try(var.spec.storage.s3.force_path_style, false) ? true : null
+    insecure       = local.r2 == null && try(var.spec.storage.s3.insecure, false) ? true : null
+    access_key     = local.r2 != null || local.s3_creds_declared ? "$${TEMPO_S3_ACCESS_KEY_ID}" : null
+    secret_key     = local.r2 != null || local.s3_creds_declared ? "$${TEMPO_S3_SECRET_ACCESS_KEY}" : null
   } : k => v if v != null }
 
   trace_azure = local.backend_type != "azure" ? null : { for k, v in {

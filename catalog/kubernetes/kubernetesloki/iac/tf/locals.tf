@@ -254,19 +254,18 @@ locals {
   ] : []
 
   # ---- storage block -----------------------------------------------------
-  storage_s3 = local.r2 != null ? {
-    endpoint         = local.r2_endpoint
-    region           = "auto"
-    s3ForcePathStyle = true
-    accessKeyId      = "$${LOKI_S3_ACCESS_KEY_ID}"
-    secretAccessKey  = "$${LOKI_S3_SECRET_ACCESS_KEY}"
-    } : local.backend_type != "s3" ? null : { for k, v in {
-      endpoint         = try(var.spec.storage.s3.endpoint, "") != "" ? var.spec.storage.s3.endpoint : null
-      region           = try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null
-      s3ForcePathStyle = try(var.spec.storage.s3.force_path_style, false) ? true : null
-      insecure         = try(var.spec.storage.s3.insecure, false) ? true : null
-      accessKeyId      = local.s3_creds_declared ? "$${LOKI_S3_ACCESS_KEY_ID}" : null
-      secretAccessKey  = local.s3_creds_declared ? "$${LOKI_S3_SECRET_ACCESS_KEY}" : null
+  # One object for both arms that speak S3 (s3 and r2), each attribute
+  # choosing its own value: a conditional between two differently shaped
+  # objects makes OpenTofu unify them to map(string), and the chart copies
+  # these values into Loki's config verbatim -- a quoted "true" for
+  # s3ForcePathStyle is a string Loki refuses to parse, and it never starts.
+  storage_s3 = local.backend_type != "s3" ? null : { for k, v in {
+    endpoint         = local.r2 != null ? local.r2_endpoint : (try(var.spec.storage.s3.endpoint, "") != "" ? var.spec.storage.s3.endpoint : null)
+    region           = local.r2 != null ? "auto" : (try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null)
+    s3ForcePathStyle = local.r2 != null || try(var.spec.storage.s3.force_path_style, false) ? true : null
+    insecure         = local.r2 == null && try(var.spec.storage.s3.insecure, false) ? true : null
+    accessKeyId      = local.r2 != null || local.s3_creds_declared ? "$${LOKI_S3_ACCESS_KEY_ID}" : null
+    secretAccessKey  = local.r2 != null || local.s3_creds_declared ? "$${LOKI_S3_SECRET_ACCESS_KEY}" : null
   } : k => v if v != null }
 
   storage_azure = local.backend_type != "azure" ? null : { for k, v in {
