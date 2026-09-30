@@ -31,7 +31,7 @@ import (
 )
 
 func main() {
-	cmd := validatecmd.NewChartValidateCommand()
+	cmd := validatecmd.NewChartValidateCommand(validatecmd.Options{})
 	cmd.Use = "chart-validator [chart-dir ...]"
 	if err := cmd.Execute(); err != nil {
 		// The command runs with SilenceErrors (the handler prints the full

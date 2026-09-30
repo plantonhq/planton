@@ -183,7 +183,7 @@ func walkEngineUnderHost(t *testing.T) {
 	host.PersistentFlags().String("account", "", "")
 	RegisterCommands(host, Options{})
 	chart := &cobra.Command{Use: "chart"}
-	chart.AddCommand(NewChartValidateCommand())
+	chart.AddCommand(NewChartValidateCommand(ChartValidateOptions{}))
 	host.AddCommand(chart)
 
 	var walk func(cmd *cobra.Command, inherited []*pflag.Flag)

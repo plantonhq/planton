@@ -31,6 +31,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Options are a host's own rules, applied to every chart the command
+// validates. The open-source CLI sets neither: its backendless deploy takes
+// literals and refuses a reference token, so every rule judges what is
+// written.
+type Options struct {
+	// DocumentChecks run over each rendered, schema-valid document
+	// (infrachart.Options.DocumentChecks). The Planton Platform CLI passes
+	// its rule for where secrets may go.
+	DocumentChecks []infrachart.DocumentCheck
+
+	// IsDeferredToken names the values the host resolves before anything
+	// deploys (infrachart.Options.IsDeferredToken). The Planton Platform CLI
+	// passes its `$secret/` and `$var/` grammar, so a rule written about the
+	// literal waits for the token's value instead of refusing the token.
+	IsDeferredToken func(value string) bool
+}
+
 // NewChartValidateCommand builds the `chart validate` command. It is a
 // constructor rather than a package variable because cobra commands are
 // stateful (flag values live on the instance) and this command mounts in
@@ -39,10 +56,9 @@ import (
 // The command is fully offline -- it dials nothing and needs no configuration
 // -- so hosts that guard backend-requiring commands must exempt it.
 //
-// checks are the host's own rules over each rendered document
-// (infrachart.Options.DocumentChecks): the open-source CLI passes none, and the
-// Planton Platform CLI passes the platform's rule for where secrets may go.
-func NewChartValidateCommand(checks ...infrachart.DocumentCheck) *cobra.Command {
+// opts carries what the host adds to every run; the open-source CLI and the
+// CI binary pass the zero value.
+func NewChartValidateCommand(opts Options) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validate [chart-dir ...]",
 		Short: "render and validate infra-charts against the compiled-in kind registry",
@@ -70,7 +86,10 @@ compiled into this binary, rendered the way the control plane renders them. The 
 plane validates each document again when a chart is published or installed; a host CLI
 may add its own document checks (the Planton Platform CLI adds where secrets may go:
 a secret field takes only a $secret/ reference, and a generated secret feeds only a
-secret field).`,
+secret field). A host CLI that resolves references may also name them (the Planton
+Platform CLI names $secret/ and $var/): a rule written about a field's value, such as a
+base64 or CIDR format, then waits for the referenced value rather than judging the
+reference itself.`,
 		Example: `
 	# Validate one chart
 	planton chart validate charts/gcp/cloud-run-service
@@ -87,7 +106,7 @@ secret field).`,
 	# Render for a specific environment (catches names that break on a hyphenated slug)
 	planton chart validate charts/gcp/cloud-run-service --set env=production-eu`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return chartValidateHandler(cmd, args, checks)
+			return chartValidateHandler(cmd, args, opts)
 		},
 		// The handler prints the full per-chart report itself; the returned error is a
 		// one-line summary for the host root's error path, so neither cobra's usage
@@ -113,7 +132,7 @@ func hostScope(cmd *cobra.Command, name string) string {
 	return ""
 }
 
-func chartValidateHandler(cmd *cobra.Command, args []string, checks []infrachart.DocumentCheck) error {
+func chartValidateHandler(cmd *cobra.Command, args []string, opts Options) error {
 	all, _ := cmd.Flags().GetBool("all")
 	verbose, _ := cmd.Flags().GetBool("verbose")
 	setFlags, _ := cmd.Flags().GetStringArray("set")
@@ -156,7 +175,10 @@ func chartValidateHandler(cmd *cobra.Command, args []string, checks []infrachart
 			defer wg.Done()
 			semaphore <- struct{}{}
 			defer func() { <-semaphore }()
-			report, err := infrachart.Validate(dir, infrachart.Options{Org: org, Env: env, Set: setOverrides, DocumentChecks: checks})
+			report, err := infrachart.Validate(dir, infrachart.Options{
+				Org: org, Env: env, Set: setOverrides,
+				DocumentChecks: opts.DocumentChecks, IsDeferredToken: opts.IsDeferredToken,
+			})
 			outcomes[i] = outcome{report: report, err: err}
 		}()
 	}
