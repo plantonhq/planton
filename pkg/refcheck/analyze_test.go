@@ -3,7 +3,11 @@
 
 package refcheck
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
+)
 
 // TestForeignKeyReferencesAllResolve enforces the registry-wide invariant: every
 // (default_kind_field_path) annotation must resolve against the referenced kind's
@@ -17,5 +21,30 @@ func TestForeignKeyReferencesAllResolve(t *testing.T) {
 	}
 	if n := len(findings); n > 0 {
 		t.Errorf("%d dangling foreign-key reference(s)", n)
+	}
+}
+
+// A reference into a kind that names its object with spec.name must not read the Planton
+// resource's metadata.name: the path resolves on every kind, so only this rule catches a
+// consumer handed a Secret, ConfigMap or ServiceAccount name that does not exist.
+func TestOwnNameReason(t *testing.T) {
+	cases := []struct {
+		name    string
+		kind    cloudresourcekind.CloudResourceKind
+		refPath string
+		wantBad bool
+	}{
+		{"metadata.name into a kind with spec.name is refused", cloudresourcekind.CloudResourceKind_KubernetesSecret, "metadata.name", true},
+		{"metadata.name into a ServiceAccount is refused", cloudresourcekind.CloudResourceKind_KubernetesServiceAccount, "metadata.name", true},
+		{"the published name output is sound", cloudresourcekind.CloudResourceKind_KubernetesSecret, "status.outputs.secret_name", false},
+		{"spec.name itself is sound", cloudresourcekind.CloudResourceKind_KubernetesSecret, "spec.name", false},
+		{"metadata.name into a kind without spec.name is sound", cloudresourcekind.CloudResourceKind_KubernetesClusterIssuer, "metadata.name", false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := ownNameReason(c.kind, c.refPath) != ""; got != c.wantBad {
+				t.Errorf("ownNameReason(%s, %q) refused=%v, want %v", c.kind, c.refPath, got, c.wantBad)
+			}
+		})
 	}
 }

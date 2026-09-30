@@ -1699,7 +1699,11 @@ reuse, not in any single annotation — so sweep by message: for every message c
 
 **What it does:**
 1. Establishes the correct target from the producing kind's `outputs.proto` (never from
-   memory): the output field must exist and hold the referenced value's name. When NO
+   memory): the output field must exist and hold the referenced value's name. A reference
+   to a named object points at the output that publishes the object's name
+   (`status.outputs.secret_name`), never at `metadata.name`: that is the Planton resource's
+   name, and a kind with its own `spec.name` can name its object differently
+   (`pkg/refcheck` refuses it). When NO
    catalog kind produces the value (e.g. a bring-your-own HTTP Basic credential), the
    honest fix is a message with NO default annotation — a bare `StringValueOrRef` is an
    established shape; never point a default at a kind that merely lives nearby.

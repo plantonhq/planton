@@ -146,7 +146,7 @@ spec:
 | `spec.proxy.https.credentialSecretName` | `string` |  |  |  |
 | `spec.proxy.noProxy` | `[]string` |  |  |  |
 | `spec.githubServerTls` | `KubernetesGhaRunnerScaleSetGithubServerTls` |  |  |  |
-| `spec.githubServerTls.configMapName` | `string \| valueFrom` | yes |  | KubernetesConfigMap (`metadata.name`) |
+| `spec.githubServerTls.configMapName` | `string \| valueFrom` | yes |  | KubernetesConfigMap (`status.outputs.configmap_name`) |
 | `spec.githubServerTls.key` | `string` |  | `ca.crt` |  |
 | `spec.githubServerTls.runnerMountPath` | `string` |  |  |  |
 | `spec.controllerServiceAccount` | `KubernetesGhaRunnerScaleSetControllerRef` |  |  |  |
@@ -480,9 +480,9 @@ with a self-signed certificate.
 ConfigMap holding the CA certificate. Accepts a literal name or a
 reference to a KubernetesConfigMap resource.
 
-- references: KubernetesConfigMap (`metadata.name`)
+- references: KubernetesConfigMap (`status.outputs.configmap_name`)
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesConfigMap, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesConfigMap, name: <that resource's name>, fieldPath: status.outputs.configmap_name}} -- a bare string does not parse
 
 ### spec.githubServerTls.key
 
@@ -563,7 +563,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 | `spec.containerMode.kubernetesWorkVolume.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
-| `spec.githubServerTls.configMapName` | KubernetesConfigMap | `metadata.name` |
+| `spec.githubServerTls.configMapName` | KubernetesConfigMap | `status.outputs.configmap_name` |
 
 ## See Also
 

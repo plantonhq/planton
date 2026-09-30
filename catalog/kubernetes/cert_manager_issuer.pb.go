@@ -2787,9 +2787,9 @@ const file_catalog_kubernetes_cert_manager_issuer_proto_rawDesc = "" +
 	"#CertManagerRoute53StaticCredentials\x12*\n" +
 	"\raccess_key_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vaccessKeyId\x126\n" +
 	"\x11secret_access_key\x18\x02 \x01(\tB\n" +
-	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x0fsecretAccessKey\"\xc9\x01\n" +
-	"$CertManagerRoute53ServiceAccountAuth\x12\x82\x01\n" +
-	"\x14service_account_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xab\x1f\x92\xd4a\rmetadata.nameR\x12serviceAccountName\x12\x1c\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x0fsecretAccessKey\"\xdf\x01\n" +
+	"$CertManagerRoute53ServiceAccountAuth\x12\x98\x01\n" +
+	"\x14service_account_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\xab\x1f\x92\xd4a#status.outputs.service_account_nameR\x12serviceAccountName\x12\x1c\n" +
 	"\taudiences\x18\x02 \x03(\tR\taudiences\"\xd8\n" +
 	"\n" +
 	"\x18CertManagerDns01AzureDns\x12/\n" +
@@ -2877,13 +2877,13 @@ const file_catalog_kubernetes_cert_manager_issuer_proto_rawDesc = "" +
 	"\x04path\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04path\x12\x1f\n" +
 	"\arole_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06roleId\x12'\n" +
 	"\tsecret_id\x18\x03 \x01(\tB\n" +
-	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\bsecretId\"\xa2\x02\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\bsecretId\"\xb8\x02\n" +
 	"\x1eCertManagerVaultKubernetesAuth\x12\x1a\n" +
 	"\x04role\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04role\x122\n" +
 	"\n" +
 	"mount_path\x18\x02 \x01(\tB\x0e\x8a\xa6\x1d\n" +
-	"kubernetesH\x00R\tmountPath\x88\x01\x01\x12\x82\x01\n" +
-	"\x14service_account_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xab\x1f\x92\xd4a\rmetadata.nameR\x12serviceAccountName\x12\x1c\n" +
+	"kubernetesH\x00R\tmountPath\x88\x01\x01\x12\x98\x01\n" +
+	"\x14service_account_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\xab\x1f\x92\xd4a#status.outputs.service_account_nameR\x12serviceAccountName\x12\x1c\n" +
 	"\taudiences\x18\x04 \x03(\tR\taudiencesB\r\n" +
 	"\v_mount_path\"\xd3\x03\n" +
 	"\x14CertManagerIssuerRef\x12P\n" +

@@ -228,8 +228,8 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
-| KubernetesClusterIssuer | `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `metadata.name` |
-| KubernetesClusterIssuer | `spec.config.vault.kubernetesAuth.serviceAccountName` | `metadata.name` |
+| KubernetesClusterIssuer | `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `status.outputs.service_account_name` |
+| KubernetesClusterIssuer | `spec.config.vault.kubernetesAuth.serviceAccountName` | `status.outputs.service_account_name` |
 | KubernetesClusterSecretStore | `spec.config.aws.serviceAccountName` | `status.outputs.service_account_name` |
 | KubernetesClusterSecretStore | `spec.config.gcpSecretManager.serviceAccountName` | `status.outputs.service_account_name` |
 | KubernetesClusterSecretStore | `spec.config.azureKeyVault.serviceAccountName` | `status.outputs.service_account_name` |
@@ -238,8 +238,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesCronJob | `spec.jobTemplate.pod.serviceAccount` | `status.outputs.service_account_name` |
 | KubernetesDaemonSet | `spec.pod.serviceAccount` | `status.outputs.service_account_name` |
 | KubernetesDeployment | `spec.pod.serviceAccount` | `status.outputs.service_account_name` |
-| KubernetesIssuer | `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `metadata.name` |
-| KubernetesIssuer | `spec.config.vault.kubernetesAuth.serviceAccountName` | `metadata.name` |
+| KubernetesIssuer | `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `status.outputs.service_account_name` |
+| KubernetesIssuer | `spec.config.vault.kubernetesAuth.serviceAccountName` | `status.outputs.service_account_name` |
 | KubernetesJob | `spec.pod.serviceAccount` | `status.outputs.service_account_name` |
 | KubernetesRbac | `spec.subjects[].serviceAccount.name` | `spec.name` |
 | KubernetesSecret | `spec.serviceAccountToken.serviceAccountName` | `spec.name` |
