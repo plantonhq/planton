@@ -7,8 +7,8 @@ import (
 
 // loadDigitalOceanEnvVars loads DigitalOcean provider config and returns environment variables.
 //
-// Unlike Cloudflare (whose tofu modules ship an empty provider block read from CLOUDFLARE_* env
-// vars), the DigitalOcean tofu modules declare the credentials as Terraform variables
+// Unlike Cloudflare's API credential (read by an empty provider block from CLOUDFLARE_* env vars),
+// the DigitalOcean tofu modules declare the credentials as Terraform variables
 // (`token = var.digitalocean_token`, plus `var.spaces_access_id`/`var.spaces_secret_key` on the
 // Spaces-backed kinds), so the bridge emits TF_VAR_* forms. Every one of those variables defaults
 // to null, and a null token/key makes the provider fall back to its own environment defaults

@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -20,6 +20,20 @@ go_library(
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/s3",
         "@com_github_pulumi_pulumi_cloudflare_sdk_v6//go/cloudflare",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["main_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/cloudflare",
+        "//catalog/cloudflare/cloudflareworker/v1alpha1",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
+        "@com_github_pulumi_pulumi_sdk_v3//go/common/resource",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )

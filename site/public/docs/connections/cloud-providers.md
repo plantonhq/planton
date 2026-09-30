@@ -215,13 +215,15 @@ Cloudflare connections support two authentication schemes. The recommended appro
 
 ### R2 Storage Credentials
 
-If you deploy Cloudflare Workers that use R2 storage, you also need R2 credentials:
+If you deploy a Cloudflare Worker whose code is a pre-built bundle stored in R2 (the Worker's `r2Bundle` source), the connection also needs an R2 key pair. Planton reads the bundle through R2's S3-compatible API, which the API token cannot sign for. A Worker that is only bound to an R2 bucket needs no R2 keys.
 
 | Field | Description |
 |-------|-------------|
-| R2 Access Key ID | Access key for R2 API operations (minimum 20 characters) |
-| R2 Secret Access Key | Secret key for R2 API operations (minimum 20 characters) |
-| R2 Endpoint | Custom endpoint URL (optional) |
+| R2 Access Key ID | Access key of an R2 API token with Object Read on the bundle bucket (minimum 20 characters) |
+| R2 Secret Access Key | Secret key paired with the access key (minimum 20 characters) |
+| R2 Endpoint | Custom endpoint URL (optional; defaults to `https://<account_id>.r2.cloudflarestorage.com`) |
+
+Create an R2 key pair in the Cloudflare dashboard under **R2 > Manage R2 API Tokens**.
 
 Create API tokens in the Cloudflare dashboard under **My Profile > API Tokens**. Use the **Create Token** button to create a scoped token with only the permissions your deployments need.
 

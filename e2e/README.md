@@ -639,6 +639,17 @@ must live on a typed kind whose rules are exact (the OpenSearch operator
 carries `crds-apply-denied`). `declared` alone is how a kind proves its
 least-privilege claim by running under it.
 
+The Cloudflare harness accepts `connection-with-r2`: the credential a
+Cloudflare connection carrying R2 keys resolves to, the harness's API token
+plus an owner-arranged R2 key pair (`PLANTON_E2E_CLOUDFLARE_R2_ACCESS_KEY_ID`
+/ `PLANTON_E2E_CLOUDFLARE_R2_SECRET_ACCESS_KEY`; Cloudflare mints R2 keys only
+in its dashboard). Pulumi receives the pair as `provider_config.r2` and
+OpenTofu as `TF_VAR_r2_*`, exactly as a console deploy delivers it, so a
+component that reads R2 objects through the S3 API (the Worker's r2 bundle)
+is proven on the product path rather than on whatever `AWS_*` credentials the
+machine holds. A scenario declaring it lists those variables in
+`planton.dev/e2e-required-env`.
+
 Two cluster facts the lanes must respect. Kept CRDs are cluster-scoped and
 outlive their lane, so a lane that leaves CRDs at a HIGHER version than a
 later lane pins would make that later lane's install a refused downgrade,

@@ -48,6 +48,7 @@ go_test(
     name = "tofumodule_test",
     srcs = [
         "capture_outputs_test.go",
+        "cloudflareworker_isolated_plan_test.go",
         "module_directory_test.go",
         "reapable_command_test.go",
         "stderr_tail_test.go",
@@ -55,8 +56,18 @@ go_test(
     ],
     embed = [":tofumodule"],
     deps = [
+        "//catalog/cloudflare/cloudflareworker/v1alpha1",
+        "//internal/manifest",
+        "//pkg/fileutil",
+        "//pkg/iac/stackinput",
+        "//pkg/iac/stackinput/stackinputproviderconfig",
+        "//pkg/iac/tofu/generators",
+        "//shared",
+        "//shared/cloudresourcekind",
+        "//shared/foreignkey/v1:foreignkey",
         "//shared/iac/terraform",
         "@com_github_stretchr_testify//assert",
+        "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//types/known/structpb",
     ],
 )

@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "client.go",
         "harness.go",
+        "identity.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/cloudflare/aa_e2e",
     visibility = ["//visibility:public"],

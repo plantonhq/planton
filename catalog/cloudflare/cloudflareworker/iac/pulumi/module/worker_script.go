@@ -1,6 +1,7 @@
 package module
 
 import (
+	"encoding/base64"
 	"fmt"
 	"time"
 
@@ -53,11 +54,7 @@ func worker(
 			scriptArgs.MainModule = pulumi.String(mainModule)
 		}
 	} else if bundle := spec.GetR2Bundle(); bundle != nil {
-		obj := s3.GetObjectOutput(ctx, s3.GetObjectOutputArgs{
-			Bucket: pulumi.String(fkValue(bundle.Bucket)),
-			Key:    pulumi.String(bundle.Path),
-		}, pulumi.Provider(r2Provider))
-		scriptArgs.Content = obj.Body().ApplyT(func(s string) *string { return &s }).(pulumi.StringPtrOutput)
+		scriptArgs.Content = bundleContent(ctx, r2Provider, fkValue(bundle.Bucket), bundle.Path)
 		if spec.BodyPart != "" {
 			scriptArgs.BodyPart = pulumi.String(spec.BodyPart)
 		} else {
@@ -305,6 +302,35 @@ func worker(
 	ctx.Export(OpRouteZoneIds, routeZoneIds)
 
 	return nil
+}
+
+// bundleContent reads the Worker's pre-built bundle from R2 and returns its text.
+//
+// DownloadBody returns the object's bytes as BodyBase64 whatever its Content-Type. The
+// plain Body is filled only for a short list of "readable" types, which excludes
+// application/javascript -- the type many upload tools give a .js file -- so a bundle
+// read through it can come back empty. An empty bundle is refused here, naming the
+// object, instead of reaching Cloudflare as a Worker with no code. Mirrors the tofu
+// module's download_body read and its postcondition.
+func bundleContent(ctx *pulumi.Context, r2Provider *aws.Provider, bucket, key string) pulumi.StringPtrOutput {
+	obj := s3.GetObjectOutput(ctx, s3.GetObjectOutputArgs{
+		Bucket:       pulumi.String(bucket),
+		Key:          pulumi.String(key),
+		DownloadBody: pulumi.String("true"),
+	}, pulumi.Provider(r2Provider))
+
+	return obj.BodyBase64().ApplyT(func(encoded string) (*string, error) {
+		decoded, err := base64.StdEncoding.DecodeString(encoded)
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to decode the Worker bundle r2://%s/%s", bucket, key)
+		}
+		if len(decoded) == 0 {
+			return nil, errors.Errorf("the Worker bundle r2://%s/%s is empty: upload the built script to that key, "+
+				"or point spec.r2_bundle.path at the object that holds it", bucket, key)
+		}
+		content := string(decoded)
+		return &content, nil
+	}).(pulumi.StringPtrOutput)
 }
 
 func buildMigrations(m *cloudflareworkerv1alpha1.CloudflareWorkerMigrations) *cloudfl.WorkersScriptMigrationsArgs {

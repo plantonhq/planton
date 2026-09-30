@@ -173,6 +173,34 @@ NOTES
   source, referencing it as `data.google_project.this[0]`. This also mirrors the
   Pulumi side's only-when-needed `GetClientConfig` lookup, keeping the engines'
   resolution behavior identical.
+- **A provider the default deploy never uses must still configure with nothing but
+  the connection's own credential.** OpenTofu and Terraform configure EVERY provider
+  a module references, even when the only block reading through it has `count = 0`
+  -- typically a secondary S3-compatible provider that reads an object store the
+  connection reaches with a separate key pair (R2, Spaces). The AWS provider refuses
+  to configure without SOME credential source even with every `skip_*` flag set, so
+  a module that declares it unconditionally fails for every customer whose runner
+  holds no AWS credential. The shape: the real key pair arrives as sensitive,
+  nullable variables in `iac/tf/credentials.tf`, fed by the provider-environment
+  loader (`pkg/iac/stackinput/providerenvvars`) as `TF_VAR_*`; on the path that
+  reads through the provider it gets those variables, and on every other path a
+  fixed placeholder key pair, which with the skip flags makes no network call and
+  signs nothing. Never a provider-level `for_each` (Terraform cannot load a module
+  that uses one, and every module serves both engines), and never `AWS_*`
+  environment variables for a non-AWS credential (an S3 state backend
+  authenticated from the environment reads the same names). `tofu validate` never
+  configures a provider, and a live lane passes whenever the machine running it
+  happens to hold the credential, so only a plan run with ONLY the connection's
+  variables in the environment catches this: the credential-isolated plan guards in
+  `pkg/iac/tofu/tofumodule` (`PLANTON_TF_PLAN_GUARDS=1`) are the shape to copy.
+  Exemplar: CloudflareWorker's `aws.r2` provider.
+- **Read object-store content as bytes, never through a "readable types" shortcut.**
+  `aws_s3_object`'s plain `body` is filled only for a short list of Content-Types
+  (`text/*`, `application/json`, ...; NOT `application/javascript`), so content an
+  upload tool typed differently reads back empty without an error. Set
+  `download_body = true`, decode `body_base64`, and refuse an empty object in a
+  `postcondition` that names it (the Pulumi twin: `DownloadBody` + `BodyBase64` and
+  an `errors.Errorf`).
 - **Outputs surfacing provider-`Sensitive` attributes MUST carry `sensitive = true`.**
   OpenTofu rejects the whole configuration at plan time ("Output refers to
   sensitive values") when a root output references any attribute the provider

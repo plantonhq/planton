@@ -13,6 +13,8 @@ script source (the two are mutually exclusive), optionally alongside `assets`:
   for quick iteration.
 - `r2Bundle` — `{bucket, path}` pointing at a pre-built bundle stored in an R2
   bucket. Best for CI/CD: build the bundle, upload it to R2, and reference it.
+  The Cloudflare connection must carry an R2 key pair that can read the bucket;
+  an inline-content Worker needs only the API token.
 
 ```yaml
 spec:
