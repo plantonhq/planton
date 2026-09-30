@@ -89,6 +89,9 @@ func Eject(in Input) (*Result, error) {
 	default:
 		return nil, errors.New("provisioner must be one of 'tofu', 'terraform', or 'pulumi'")
 	}
+	if err := provisioner.Require(kind, in.Provisioner); err != nil {
+		return nil, err
+	}
 
 	outputDir, err := prepareOutputDir(in.OutputDir)
 	if err != nil {

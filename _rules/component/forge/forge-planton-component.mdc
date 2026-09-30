@@ -172,6 +172,18 @@ session. (In the forge sequence Pulumi is generated first, so Terraform is recon
 against the existing Pulumi module — but if the Pulumi module is the one that is wrong, fix
 Pulumi.)
 
+**The one exception: a kind that declares fewer engines.** When the provider publishes no
+Pulumi provider, or its kinds are proven on OpenTofu alone (OpenFGA runs on OpenTofu and
+Terraform; Stripe on OpenTofu only), the kind says so in its enum entry --
+`provisioners: ["tofu"]` or `["tofu", "terraform"]` in `kind_meta` (flow rule 014) -- and
+ships only `iac/tf/`. Skip Phase 5 (the Pulumi rules) and the Phase 6b gate, which has no
+pair to compare. Never write a placeholder Pulumi module that succeeds while creating
+nothing: the anatomy gate fails a declared kind that carries `iac/pulumi/`, and the CLI
+(`pkg/iac/provisioner`) and the platform refuse the undeclared engine before anything runs,
+in one sentence naming the engines the kind runs on. The kind's E2E profile lists only its
+declared engines in `validated_provisioners`, and its provider writes only `_Terraform`
+test entrypoints.
+
 **Deviation is allowed ONLY with a strong, documented technical reason.** If the two
 engines genuinely cannot match (a provider feature exists in one SDK but not the other, an
 operator names a resource differently, etc.), you MUST:

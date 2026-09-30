@@ -12,6 +12,7 @@ import (
 	"github.com/plantonhq/planton/catalog/gcp"
 	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/catalog/openfga"
+	"github.com/plantonhq/planton/catalog/stripe"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 )
 
@@ -34,6 +35,8 @@ func ProviderConfigExample(provider cloudresourcekind.CloudResourceProvider) str
 		return kubernetes.ConfigFileExample
 	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.ConfigFileExample
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return stripe.ConfigFileExample
 	default:
 		return "# Provider config format not available"
 	}
@@ -58,6 +61,8 @@ func ProviderConfigFilename(provider cloudresourcekind.CloudResourceProvider) st
 		return kubernetes.ConfigFileName
 	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.ConfigFileName
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return stripe.ConfigFileName
 	default:
 		return "provider-config.yaml"
 	}
@@ -82,6 +87,8 @@ func ProviderEnvironmentVariablesHelp(provider cloudresourcekind.CloudResourcePr
 		return kubernetes.EnvironmentVariablesHelp
 	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.EnvironmentVariablesHelp
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return stripe.EnvironmentVariablesHelp
 	default:
 		return "# Environment variables not available for this provider"
 	}
@@ -106,6 +113,8 @@ func ProviderDocsURL(provider cloudresourcekind.CloudResourceProvider) string {
 		return kubernetes.ProviderDocsURL
 	case cloudresourcekind.CloudResourceProvider_openfga:
 		return openfga.ProviderDocsURL
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return stripe.ProviderDocsURL
 	default:
 		return ""
 	}

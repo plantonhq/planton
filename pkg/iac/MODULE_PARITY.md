@@ -6,6 +6,14 @@ a Pulumi module (`pulumi/module/*.go`) and an OpenTofu module (`tf/*.tf`). For a
 environment, and stack outputs. A divergence here is not cosmetic: it silently changes
 what gets deployed depending on which provisioner a resource happens to use.
 
+A kind may declare that it runs on fewer engines (`kind_meta.provisioners` in
+`shared/cloudresourcekind/cloud_resource_kind.proto`) -- a provider with no Pulumi
+provider, or kinds proven on OpenTofu alone. Such a kind ships only the modules its
+declared engines run (the anatomy gate holds the tree to the declaration), so it has no
+cross-engine pair to keep in parity; everything below applies between the modules a
+kind actually ships. It never ships a placeholder module for an engine it does not run
+on: the CLI and the platform refuse that engine instead.
+
 **Neither engine is the reference.** Both must match the proto contract (`spec.proto` +
 `*_outputs.proto`) and the intended behavior. When the two disagree, determine which
 is correct against that contract/intent and fix the incorrect one — it can be either engine,

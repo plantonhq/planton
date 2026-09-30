@@ -142,8 +142,10 @@ type CatalogEntryContractLinks struct {
 // CatalogEntryIacModules names the official module directories the release
 // ships for a component. An engine whose directory is absent from the tree
 // stays empty here, and deploy paths refuse that engine for the kind --
-// presence is truth from the release's own tree, never an assumption (some
-// components ship one engine only).
+// presence is truth from the release's own tree, never an assumption. A
+// component ships one engine's module only when its kind declares that
+// (kind_meta.provisioners), and the anatomy gate holds the tree to the
+// declaration, so this projection and the declaration always agree.
 type CatalogEntryIacModules struct {
 	// TerraformModuleDir is the repository-relative directory of the
 	// terraform-authored module (also executed by OpenTofu). Example:

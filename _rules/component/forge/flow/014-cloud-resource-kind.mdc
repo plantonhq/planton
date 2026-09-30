@@ -31,6 +31,7 @@ itself -- read it if this list ever disagrees):
 - Cloudflare: 7000-7999
 - Auth0: 8000-8999
 - OpenFGA: 9000-9999
+- Stripe: 10000-10999
 
 Providers organize their bands into FAMILY SUB-BANDS (see the `--- ... ---`
 comments inside each band). When a wave of related kinds is planned, its
@@ -114,6 +115,13 @@ SEQUENTIAL STEPS
      ```
    - For kinds that project a single Kubernetes custom resource, add
      kubernetes_manifest_projection if applicable
+   - For a kind that deliberately runs on fewer engines than both, add
+     `provisioners` with the engines it runs on, by IacProvisioner value
+     name: `provisioners: ["tofu"]` for a kind proven on OpenTofu alone,
+     `["tofu", "terraform"]` for a provider with no Pulumi provider. Leave
+     it out for the ordinary kind with both modules. The anatomy gate then
+     holds the component's iac/ folder to exactly the modules those engines
+     need, and the CLI and the platform refuse any other engine
    - Maintain consistent indentation (2 spaces)
 
 6) Regenerate the Kind Reflection Map (MANDATORY):

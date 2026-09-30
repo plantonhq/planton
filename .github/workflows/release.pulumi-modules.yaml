@@ -86,7 +86,6 @@ jobs:
           - digitalocean
           - gcp
           - kubernetes
-          - openfga
         platform:
           - goos: linux
             goarch: amd64

@@ -145,6 +145,22 @@ message CloudResourceKindMeta {
   //workloads waiting on a connection that never comes, which is why the
   //platform's conformance test binds the two.
   bool publishes_kubernetes_connection = 11;
+
+  //the IaC engines this kind runs on, by dev.planton.shared.IacProvisioner
+  //value name ("tofu", "terraform", "pulumi"). EMPTY means every engine the
+  //kind ships a module for -- the default for a kind with both a Pulumi and a
+  //Terraform module. set it only when a kind deliberately runs on fewer: a
+  //provider with no Pulumi provider at all, or one whose kinds are proven on
+  //OpenTofu alone. every surface that picks an engine honors it: the CLI uses
+  //the sole engine when a manifest names none and refuses an engine not
+  //listed, before anything runs; the anatomy gate holds the tree to it (a
+  //kind that does not list pulumi carries no iac/pulumi, and one that lists
+  //neither tofu nor terraform carries no iac/tf); and the platform resolves a
+  //resource of the kind to a listed engine whatever its organization's
+  //default. names rather than the enum because this file cannot import
+  //shared/iac.proto without a package cycle; the crkreflect registry tests
+  //hold every value to a real, non-duplicated provisioner name.
+  repeated string provisioners = 12;
 }
 
 //marks one of a kind's schema versions as deprecated. carried on
@@ -181,6 +197,7 @@ enum CloudResourceKind {
   //   3000–3999   GCP                    4000–4999   Kubernetes
   //   5000–5999   DigitalOcean           7000–7999   Cloudflare
   //   8000–8999   Auth0                  9000–9999   OpenFGA
+  //   10000–10999 Stripe
   //
   // The next new provider takes the next free 1,000 band. Within a band,
   // allocate contiguous family sub-bands deliberately
@@ -7410,22 +7427,35 @@ enum CloudResourceKind {
   }];
 
   // 9000–9999: OpenFGA resources
-  // Note: OpenFGA is Terraform-only - there is no Pulumi provider available.
-  // Pulumi modules for OpenFGA resources are pass-through placeholders.
+  // OpenFGA publishes a Terraform provider and no Pulumi provider, so its
+  // kinds ship one HCL module and declare the engines that run it; the CLI
+  // and the platform refuse Pulumi for them before anything runs.
   OpenFgaStore = 9000 [(kind_meta) = {
     provider: openfga
     version: "v1alpha1"
     id_prefix: "fgastore"
     container_kind: true
+    provisioners: [
+      "tofu",
+      "terraform"
+    ]
   }];
   OpenFgaAuthorizationModel = 9001 [(kind_meta) = {
     provider: openfga
     version: "v1alpha1"
     id_prefix: "fgamodel"
+    provisioners: [
+      "tofu",
+      "terraform"
+    ]
   }];
   OpenFgaRelationshipTuple = 9002 [(kind_meta) = {
     provider: openfga
     version: "v1alpha1"
     id_prefix: "fgatuple"
+    provisioners: [
+      "tofu",
+      "terraform"
+    ]
   }];
 }

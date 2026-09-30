@@ -27,6 +27,7 @@ go_library(
         "//pkg/crkreflect",
         "//pkg/failure",
         "//pkg/fileutil",
+        "//pkg/iac/provisioner",
         "//pkg/iac/stackinput",
         "//pkg/iac/stackinput/providerenvvars",
         "//pkg/iac/stackinput/stackinputproviderconfig",
@@ -48,6 +49,7 @@ go_test(
     name = "tofumodule_test",
     srcs = [
         "capture_outputs_test.go",
+        "engine_refusal_test.go",
         "module_directory_test.go",
         "reapable_command_test.go",
         "stderr_tail_test.go",
@@ -55,6 +57,8 @@ go_test(
     ],
     embed = [":tofumodule"],
     deps = [
+        "//catalog/openfga/openfgastore/v1alpha1",
+        "//shared",
         "//shared/iac/terraform",
         "@com_github_stretchr_testify//assert",
         "@org_golang_google_protobuf//types/known/structpb",

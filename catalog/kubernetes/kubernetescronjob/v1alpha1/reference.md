@@ -2067,7 +2067,7 @@ Allowed values (use exactly as shown):
 - `Auth0EmailProvider`
 - `Auth0EmailTemplate`
 - `Auth0ClientFromMetadataDocument`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 
@@ -2970,7 +2970,7 @@ Allowed values (use exactly as shown):
 - `Auth0EmailProvider`
 - `Auth0EmailTemplate`
 - `Auth0ClientFromMetadataDocument`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 
@@ -5074,7 +5074,7 @@ Allowed values (use exactly as shown):
 - `Auth0EmailProvider`
 - `Auth0EmailTemplate`
 - `Auth0ClientFromMetadataDocument`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 
@@ -5977,7 +5977,7 @@ Allowed values (use exactly as shown):
 - `Auth0EmailProvider`
 - `Auth0EmailTemplate`
 - `Auth0ClientFromMetadataDocument`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 
@@ -8195,7 +8195,7 @@ Allowed values (use exactly as shown):
 - `Auth0EmailProvider`
 - `Auth0EmailTemplate`
 - `Auth0ClientFromMetadataDocument`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 
@@ -9098,7 +9098,7 @@ Allowed values (use exactly as shown):
 - `Auth0EmailProvider`
 - `Auth0EmailTemplate`
 - `Auth0ClientFromMetadataDocument`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 

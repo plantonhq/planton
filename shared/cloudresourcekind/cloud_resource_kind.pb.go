@@ -2468,8 +2468,9 @@ const (
 	CloudResourceKind_Auth0EmailTemplate              CloudResourceKind = 8015
 	CloudResourceKind_Auth0ClientFromMetadataDocument CloudResourceKind = 8016
 	// 9000–9999: OpenFGA resources
-	// Note: OpenFGA is Terraform-only - there is no Pulumi provider available.
-	// Pulumi modules for OpenFGA resources are pass-through placeholders.
+	// OpenFGA publishes a Terraform provider and no Pulumi provider, so its
+	// kinds ship one HCL module and declare the engines that run it; the CLI
+	// and the platform refuse Pulumi for them before anything runs.
 	CloudResourceKind_OpenFgaStore              CloudResourceKind = 9000
 	CloudResourceKind_OpenFgaAuthorizationModel CloudResourceKind = 9001
 	CloudResourceKind_OpenFgaRelationshipTuple  CloudResourceKind = 9002
@@ -4111,8 +4112,23 @@ type CloudResourceKindMeta struct {
 	// workloads waiting on a connection that never comes, which is why the
 	// platform's conformance test binds the two.
 	PublishesKubernetesConnection bool `protobuf:"varint,11,opt,name=publishes_kubernetes_connection,json=publishesKubernetesConnection,proto3" json:"publishes_kubernetes_connection,omitempty"`
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
+	// the IaC engines this kind runs on, by dev.planton.shared.IacProvisioner
+	// value name ("tofu", "terraform", "pulumi"). EMPTY means every engine the
+	// kind ships a module for -- the default for a kind with both a Pulumi and a
+	// Terraform module. set it only when a kind deliberately runs on fewer: a
+	// provider with no Pulumi provider at all, or one whose kinds are proven on
+	// OpenTofu alone. every surface that picks an engine honors it: the CLI uses
+	// the sole engine when a manifest names none and refuses an engine not
+	// listed, before anything runs; the anatomy gate holds the tree to it (a
+	// kind that does not list pulumi carries no iac/pulumi, and one that lists
+	// neither tofu nor terraform carries no iac/tf); and the platform resolves a
+	// resource of the kind to a listed engine whatever its organization's
+	// default. names rather than the enum because this file cannot import
+	// shared/iac.proto without a package cycle; the crkreflect registry tests
+	// hold every value to a real, non-duplicated provisioner name.
+	Provisioners  []string `protobuf:"bytes,12,rep,name=provisioners,proto3" json:"provisioners,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CloudResourceKindMeta) Reset() {
@@ -4220,6 +4236,13 @@ func (x *CloudResourceKindMeta) GetPublishesKubernetesConnection() bool {
 		return x.PublishesKubernetesConnection
 	}
 	return false
+}
+
+func (x *CloudResourceKindMeta) GetProvisioners() []string {
+	if x != nil {
+		return x.Provisioners
+	}
+	return nil
 }
 
 // marks one of a kind's schema versions as deprecated. carried on
@@ -4360,7 +4383,7 @@ var File_shared_cloudresourcekind_cloud_resource_kind_proto protoreflect.FileDes
 
 const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\n" +
-	"2shared/cloudresourcekind/cloud_resource_kind.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a;shared/cloudresourcekind/cloud_provider_service_group.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\x91\x06\n" +
+	"2shared/cloudresourcekind/cloud_resource_kind.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a;shared/cloudresourcekind/cloud_provider_service_group.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\xb5\x06\n" +
 	"\x15CloudResourceKindMeta\x12W\n" +
 	"\bprovider\x18\x01 \x01(\x0e2;.dev.planton.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x12\n" +
@@ -4373,14 +4396,15 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\fdeprecations\x18\t \x03(\v2I.dev.planton.shared.cloudresourcekind.CloudResourceKindVersionDeprecationR\fdeprecations\x12d\n" +
 	"\rservice_group\x18\n" +
 	" \x01(\x0e2?.dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupR\fserviceGroup\x12F\n" +
-	"\x1fpublishes_kubernetes_connection\x18\v \x01(\bR\x1dpublishesKubernetesConnection\"S\n" +
+	"\x1fpublishes_kubernetes_connection\x18\v \x01(\bR\x1dpublishesKubernetesConnection\x12\"\n" +
+	"\fprovisioners\x18\f \x03(\tR\fprovisioners\"S\n" +
 	"#CloudResourceKindVersionDeprecation\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\tR\aversion\x12\x12\n" +
 	"\x04note\x18\x02 \x01(\tR\x04note\"S\n" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xfc\xe2\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xaf\xe3\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5190,10 +5214,10 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x19Auth0PromptScreenPartials\x10\xcd>\x1a\x1a\xa2\xf7\x04\x16\b\x15\x12\bv1alpha1\"\ba0pspart\x121\n" +
 	"\x12Auth0EmailProvider\x10\xce>\x1a\x18\xa2\xf7\x04\x14\b\x15\x12\bv1alpha1\"\x06a0emlp\x125\n" +
 	"\x12Auth0EmailTemplate\x10\xcf>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0emlt:\x02\xce>\x12B\n" +
-	"\x1fAuth0ClientFromMetadataDocument\x10\xd0>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0cimd:\x02\xc7>\x12/\n" +
-	"\fOpenFgaStore\x10\xa8F\x1a\x1c\xa2\xf7\x04\x18\b\x16\x12\bv1alpha1\"\bfgastore0\x01\x12:\n" +
-	"\x19OpenFgaAuthorizationModel\x10\xa9F\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgamodel\x129\n" +
-	"\x18OpenFgaRelationshipTuple\x10\xaaF\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgatuple:|\n" +
+	"\x1fAuth0ClientFromMetadataDocument\x10\xd0>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0cimd:\x02\xc7>\x12@\n" +
+	"\fOpenFgaStore\x10\xa8F\x1a-\xa2\xf7\x04)\b\x16\x12\bv1alpha1\"\bfgastore0\x01b\x04tofub\tterraform\x12K\n" +
+	"\x19OpenFgaAuthorizationModel\x10\xa9F\x1a+\xa2\xf7\x04'\b\x16\x12\bv1alpha1\"\bfgamodelb\x04tofub\tterraform\x12J\n" +
+	"\x18OpenFgaRelationshipTuple\x10\xaaF\x1a+\xa2\xf7\x04'\b\x16\x12\bv1alpha1\"\bfgatupleb\x04tofub\tterraform:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.dev.planton.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xad\x02\n" +
 	"(com.dev.planton.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
 

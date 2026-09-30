@@ -31,7 +31,6 @@ go_library(
         "//pkg/kubernetes/kubecontext",
         "//pkg/outputs",
         "//pkg/setdeploy",
-        "//shared",
         "//shared/iac/pulumi",
         "//shared/iac/terraform",
         "@com_github_pkg_errors//:errors",
