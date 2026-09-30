@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "validatecmd",
@@ -10,4 +10,10 @@ go_library(
         "//pkg/infrachart",
         "@com_github_spf13_cobra//:cobra",
     ],
+)
+
+go_test(
+    name = "validatecmd_test",
+    srcs = ["command_test.go"],
+    embed = [":validatecmd"],
 )
