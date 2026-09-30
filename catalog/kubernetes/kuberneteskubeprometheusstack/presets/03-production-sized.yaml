@@ -34,6 +34,37 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
+    # Every alert posts to the team channel; severity=page also rings the
+    # on-call phone. The pager receiver carries the channel too, because
+    # the root receiver only takes alerts no child route claims. The
+    # heartbeat lets an outside monitor page when this cluster goes quiet.
+    notifications:
+      receivers:
+        - name: channel
+          discord:
+            - webhook_url:
+                value: $secret/<discord-alerts-webhook-url>
+        - name: pager
+          pushover:
+            - token:
+                value: $secret/<pushover-app-token>
+              user_key:
+                value: $secret/<pushover-on-call-user-key>
+          discord:
+            - webhook_url:
+                value: $secret/<discord-alerts-webhook-url>
+      route:
+        receiver: channel
+        repeat_interval: 4h
+        routes:
+          - matchers:
+              - label: severity
+                value: page
+            receiver: pager
+      heartbeat:
+        url: https://<dead-mans-switch-monitor>/heartbeat/<cluster-name>
+        bearer_token:
+          value: $secret/<heartbeat-token>
   grafana:
     storage:
       size: 10Gi

@@ -5,7 +5,9 @@
 # (locals.helm_values); the CRDs ride the chart's crds subchart
 # (install-once, keep-on-uninstall); declared remote-write usernames are
 # materialized into a module-owned Secret (the Prometheus CRD reads both
-# basic-auth halves from Secrets); the helm_values escape hatch is passed
+# basic-auth halves from Secrets); typed notification credentials are
+# materialized into a second module-owned Secret that Alertmanager mounts;
+# the helm_values escape hatch is passed
 # as a SECOND values document, which the provider merges over the first
 # with Helm -f semantics — the exact semantic twin of the Pulumi module's
 # buildHelmValues + mergeMaps.
@@ -37,6 +39,28 @@ resource "kubernetes_secret_v1" "remote_write_auth" {
   }
 
   data = local.remote_write_username_data
+
+  depends_on = [
+    kubernetes_namespace_v1.kube_prometheus_stack,
+  ]
+}
+
+# Module-owned Secret carrying the typed notification credentials (keys
+# `<receiver>-<integration>-<index>-<field>` and `heartbeat-bearer-token`).
+# Created BEFORE the release: Alertmanager mounts it through
+# alertmanagerSpec.secrets, and a pod whose Secret volume is missing never
+# starts. The values arrive resolved from managed-secret references; the
+# provider keeps `data` sensitive.
+resource "kubernetes_secret_v1" "alertmanager_notifications" {
+  count = length(local.notifications_secret_data) > 0 ? 1 : 0
+
+  metadata {
+    name      = local.notifications_secret_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.notifications_secret_data
 
   depends_on = [
     kubernetes_namespace_v1.kube_prometheus_stack,
@@ -91,5 +115,6 @@ resource "helm_release" "kube_prometheus_stack" {
   depends_on = [
     kubernetes_namespace_v1.kube_prometheus_stack,
     kubernetes_secret_v1.remote_write_auth,
+    kubernetes_secret_v1.alertmanager_notifications,
   ]
 }

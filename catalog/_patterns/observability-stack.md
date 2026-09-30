@@ -2,6 +2,7 @@
 kinds:
   - KubernetesNamespace
   - KubernetesKubePrometheusStack
+  - KubernetesPriorityClass
   - KubernetesGrafana
   - KubernetesLoki
   - KubernetesTempo
@@ -126,6 +127,102 @@ gateway collector) send OTLP to Tempo's `otlp_grpc_endpoint`, and metric
 scraping is declared through the stack's ServiceMonitor machinery. Loki's
 `ruler.alertmanagerUrl` can reference the stack's Alertmanager, so even
 log-driven alerts route through the one alerting system.
+
+## Alerts that reach a person, on every cluster
+
+Dashboards tell you why; alerts tell you THAT, and only alerts wake
+anyone. Build the alerting half first and prove it before the first
+dashboard exists.
+
+- **One stack per cluster, each with its own Alertmanager.** Rules
+  evaluate next to complete data and each cluster pages on its own, so
+  a network blip to a central hub never causes a false page and a dead
+  hub never silences production. A central Grafana (and its long-term
+  store) is where signals are READ, never what pages.
+- **Delivery is typed and its credentials are managed secrets.**
+  `alertmanager.notifications` declares Discord, Pushover or webhook
+  receivers whose URLs, tokens and keys are `$secret/<slug>`
+  references; nothing sensitive sits in chart values.
+- **Split by severity, not by volume.** Only alerts where a person must
+  act now carry `severity=page` and reach a phone; everything else
+  posts to a team channel and is read in the morning. A page route
+  that continues does not reach the root receiver: give the pager
+  receiver the channel's integration too.
+- **Watch the watcher from outside.** The stack's always-firing
+  Watchdog alert, sent as `notifications.heartbeat` to a monitor
+  running outside every cluster, is the only signal that survives the
+  cluster (or Alertmanager) dying. The monitor pages on silence.
+- **Monitoring yields to the workload.** Give Prometheus and
+  Alertmanager a KubernetesPriorityClass BELOW the platform's (for
+  example -1, with preemption `Never`) through their `scheduling`
+  blocks, so under pressure monitoring is evicted first and never
+  evicts anything. Stay at -10 or above: the cluster autoscaler treats
+  lower-priority pods as expendable and never adds a node for them.
+- **No alert names a customer.** Messages render environment,
+  component, summary and runbook only; a namespace on a shared cluster
+  can be a customer's name.
+- **Proven, not assumed.** Fire a synthetic alert with `amtool alert
+  add` and watch it arrive; stop Alertmanager and watch the outside
+  monitor page. Until both have happened, the cluster is not
+  monitored.
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPriorityClass
+metadata:
+  name: observability
+spec:
+  name: observability
+  value: -1
+  preemption_policy: never
+  description: Monitoring yields to the workloads it watches.
+---
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesKubePrometheusStack
+metadata:
+  name: prod-metrics
+spec:
+  namespace:
+    valueFrom:
+      name: observability
+  prometheus:
+    external_labels:
+      environment: prod
+      cluster: prod-cluster
+    scheduling:
+      priority_class_name: observability
+  alertmanager:
+    scheduling:
+      priority_class_name: observability
+    notifications:
+      receivers:
+        - name: channel
+          discord:
+            - webhook_url:
+                value: $secret/discord-alerts-webhook-url
+        - name: pager
+          pushover:
+            - token:
+                value: $secret/pushover-app-token
+              user_key:
+                value: $secret/pushover-on-call-user-key
+          discord:
+            - webhook_url:
+                value: $secret/discord-alerts-webhook-url
+      route:
+        receiver: channel
+        routes:
+          - matchers:
+              - label: severity
+                value: page
+            receiver: pager
+      heartbeat:
+        url: https://watcher.example.com/heartbeat/prod-cluster
+        bearer_token:
+          value: $secret/heartbeat-token
+  grafana:
+    enabled: false
+```
 
 ## On the diagram
 

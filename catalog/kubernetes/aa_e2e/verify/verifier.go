@@ -709,8 +709,12 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// proof (a healthy kube-state-metrics target + a PromQL answer). The
 	// behavioral-alerting scenario (recognized by name) proves the
 	// pipeline end to end via the always-firing Watchdog alert in BOTH
-	// Prometheus and Alertmanager. Destroy asserts the crds-subchart
-	// keep posture (the monitoring CRDs must SURVIVE uninstall).
+	// Prometheus and Alertmanager; the behavioral-notifications scenario
+	// proves typed alert delivery reaches a sink (heartbeat with its
+	// token, a page reaching the pager and the channel, no customer label
+	// in the message, rotation without a restart). Destroy asserts the
+	// crds-subchart keep posture (the monitoring CRDs must SURVIVE
+	// uninstall).
 	case "kuberneteskubeprometheusstack":
 		spec := manifestSpecMap(manifestPath)
 		return &KubePrometheusStackVerifier{
@@ -721,6 +725,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			AlertmanagerReplicas: kpsReplicas(spec, "alertmanager"),
 			GrafanaEnabled:       kpsHalfEnabled(spec, "grafana"),
 			Alerting:             strings.Contains(manifestPath, "behavioral-alerting"),
+			Notifications:        strings.Contains(manifestPath, "behavioral-notifications"),
 		}, nil
 
 	// A standalone Grafana: Deployment available, /api/health reporting

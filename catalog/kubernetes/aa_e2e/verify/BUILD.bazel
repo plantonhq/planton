@@ -42,6 +42,7 @@ go_library(
         "keycloakoperator.go",
         "kubectl.go",
         "kubeprometheusstack.go",
+        "kubeprometheusstack_notifications.go",
         "kuberayoperator.go",
         "kyverno.go",
         "lbaddress.go",

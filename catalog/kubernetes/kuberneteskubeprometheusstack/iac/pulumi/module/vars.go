@@ -8,7 +8,7 @@ var vars = struct {
 	HelmChartRepo string
 	// Fallback when spec.chart_version is unset — mirror of the proto
 	// field's default option and the Terraform module's coalesce. Chart
-	// 87.19.1 pairs with Prometheus Operator v0.92.1; the chart pin
+	// 91.8.2 pairs with Prometheus Operator v0.94.1; the chart pin
 	// governs.
 	DefaultChartVersion string
 	// Fallbacks for the storage arms — mirrors of the proto defaults.
@@ -29,13 +29,28 @@ var vars = struct {
 	// Secret (the declared-credentials pattern) rather than pushing a
 	// pre-created Secret onto the user for a non-secret value.
 	RemoteWriteAuthSecretSuffix string
+	// Suffix of the module-owned Secret carrying the notification
+	// credentials (spec.alertmanager.notifications): every credential is a
+	// managed-secret reference the platform resolves at deploy, and the
+	// module writes the resolved values here for Alertmanager's `_file`
+	// fields to read.
+	NotificationsSecretSuffix string
+	// Fallbacks mirroring the notifications proto defaults: the heartbeat
+	// interval and the labels that title every message.
+	DefaultHeartbeatInterval string
+	DefaultEnvironmentLabel  string
+	DefaultComponentLabel    string
 }{
 	HelmChartName:               "kube-prometheus-stack",
 	HelmChartRepo:               "https://prometheus-community.github.io/helm-charts",
-	DefaultChartVersion:         "87.19.1",
+	DefaultChartVersion:         "91.8.2",
 	DefaultPrometheusDiskSize:   "50Gi",
 	DefaultAlertmanagerDiskSize: "2Gi",
 	DefaultGrafanaStorageSize:   "10Gi",
 	FullnameBudget:              26,
 	RemoteWriteAuthSecretSuffix: "-remote-write-auth",
+	NotificationsSecretSuffix:   "-alertmanager-notifications",
+	DefaultHeartbeatInterval:    "1m",
+	DefaultEnvironmentLabel:     "environment",
+	DefaultComponentLabel:       "component",
 }

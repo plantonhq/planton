@@ -39,6 +39,14 @@ annotation," stop and add external-dns instead.
 `KubernetesIngressNginx` exists in the catalog but is the unpaved
 alternative — offer it only when the user explicitly wants nginx.
 
+## Monitoring rides with the cluster
+
+A cluster that runs anything a person relies on gets its monitoring stack
+and working alert delivery in the same shared-cluster chart, not as a
+follow-up: `KubernetesKubePrometheusStack` with `alertmanager.notifications`
+and an outside heartbeat. The craft, the questions to ask and the proof are
+in `cloud.kubernetes-observability.md`.
+
 ## Educate at moments of leverage
 
 When a platform capability erases work the user was bracing for, say so in

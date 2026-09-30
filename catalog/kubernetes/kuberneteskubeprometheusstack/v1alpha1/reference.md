@@ -72,7 +72,10 @@ never the primary interface.
 # retention/size trimming and a tuned PVC, external labels, all four
 # remote-write auth arms (basic auth with the module-materialized username
 # Secret, bearer token, keyless SigV4 with a role, Azure managed identity),
-# the raw scrape-config seam, a 3-replica Alertmanager with a routed config,
+# the raw scrape-config seam, a 3-replica Alertmanager with typed
+# notifications (Discord, Pushover, a webhook, a page route that continues
+# into a catch-all channel route, and a heartbeat; their credentials land in the
+# module-owned Secret),
 # the bundled Grafana with an existing admin Secret and persistence,
 # operator sizing with cert-manager-issued webhook certificates, exporter
 # sizing, the managed-cloud scraper posture with its matching rule-group
@@ -88,7 +91,7 @@ spec:
   namespace:
     value: kps-hack
   createNamespace: true
-  chartVersion: 87.19.1
+  chartVersion: 91.8.2
   crdUpgradeJob: true
   prometheus:
     replicas: 2
@@ -160,20 +163,48 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
-    configYaml: |
-      route:
-        group_by:
-          - namespace
-        receiver: team-webhook
-        routes:
-          - receiver: "null"
-            matchers:
-              - alertname = "Watchdog"
+    notifications:
       receivers:
-        - name: "null"
-        - name: team-webhook
-          webhook_configs:
-            - url_file: /etc/alertmanager/secrets/team-webhook/url
+        - name: channel
+          discord:
+            - webhookUrl:
+                value: https://discord.com/api/webhooks/000/placeholder
+        - name: pager
+          pushover:
+            - token:
+                value: placeholder-app-token
+              userKey:
+                value: placeholder-user-key
+              priority: emergency
+          webhook:
+            - url: https://hooks.example.com/alerts
+              bearerToken:
+                value: placeholder-hook-token
+      route:
+        receiver: channel
+        repeatInterval: 4h
+        routes:
+          - matchers:
+              - label: severity
+                value: page
+              - label: environment
+                operator: matches_regex
+                value: prod|management
+            receiver: pager
+            continueMatching: true
+          - matchers:
+              - label: alertname
+                operator: matches_regex
+                value: .+
+            receiver: channel
+      heartbeat:
+        url: https://watcher.example.com/heartbeat/kps-hack
+        bearerToken:
+          value: placeholder-heartbeat-token
+        interval: 1m
+      message:
+        environmentLabel: environment
+        componentLabel: component
     scheduling:
       nodeSelector:
         workload: monitoring
@@ -251,7 +282,7 @@ spec:
 |---|---|---|---|---|
 | `spec.namespace` | `string \| valueFrom` | yes |  | KubernetesNamespace (`spec.name`) |
 | `spec.createNamespace` | `bool` |  |  |  |
-| `spec.chartVersion` | `string` |  | `87.19.1` |  |
+| `spec.chartVersion` | `string` |  | `91.8.2` |  |
 | `spec.skipCrds` | `bool` |  |  |  |
 | `spec.crdUpgradeJob` | `bool` |  |  |  |
 | `spec.prometheus` | `KubernetesKubePrometheusStackPrometheus` |  |  |  |
@@ -330,6 +361,39 @@ spec:
 | `spec.alertmanager.scheduling.tolerations[].effect` | `string` |  |  |  |
 | `spec.alertmanager.scheduling.tolerations[].tolerationSeconds` | `int64` |  |  |  |
 | `spec.alertmanager.scheduling.priorityClassName` | `string` |  |  |  |
+| `spec.alertmanager.notifications` | `KubernetesKubePrometheusStackAlertNotifications` |  |  |  |
+| `spec.alertmanager.notifications.receivers` | `[]KubernetesKubePrometheusStackAlertReceiver` | yes |  |  |
+| `spec.alertmanager.notifications.receivers[].name` | `string` | yes |  |  |
+| `spec.alertmanager.notifications.receivers[].discord` | `[]KubernetesKubePrometheusStackAlertDiscord` |  |  |  |
+| `spec.alertmanager.notifications.receivers[].discord[].webhookUrl` | `string \| valueFrom` (sensitive) | yes |  |  |
+| `spec.alertmanager.notifications.receivers[].pushover` | `[]KubernetesKubePrometheusStackAlertPushover` |  |  |  |
+| `spec.alertmanager.notifications.receivers[].pushover[].token` | `string \| valueFrom` (sensitive) | yes |  |  |
+| `spec.alertmanager.notifications.receivers[].pushover[].userKey` | `string \| valueFrom` (sensitive) | yes |  |  |
+| `spec.alertmanager.notifications.receivers[].pushover[].priority` | `enum` |  | `emergency` |  |
+| `spec.alertmanager.notifications.receivers[].webhook` | `[]KubernetesKubePrometheusStackAlertWebhook` |  |  |  |
+| `spec.alertmanager.notifications.receivers[].webhook[].url` | `string` | yes |  |  |
+| `spec.alertmanager.notifications.receivers[].webhook[].bearerToken` | `string \| valueFrom` (sensitive) |  |  |  |
+| `spec.alertmanager.notifications.route` | `KubernetesKubePrometheusStackAlertRoute` | yes |  |  |
+| `spec.alertmanager.notifications.route.receiver` | `string` | yes |  |  |
+| `spec.alertmanager.notifications.route.groupBy` | `[]string` |  |  |  |
+| `spec.alertmanager.notifications.route.groupWait` | `string` |  |  |  |
+| `spec.alertmanager.notifications.route.groupInterval` | `string` |  |  |  |
+| `spec.alertmanager.notifications.route.repeatInterval` | `string` |  |  |  |
+| `spec.alertmanager.notifications.route.routes` | `[]KubernetesKubePrometheusStackAlertChildRoute` |  |  |  |
+| `spec.alertmanager.notifications.route.routes[].matchers` | `[]KubernetesKubePrometheusStackAlertMatcher` | yes |  |  |
+| `spec.alertmanager.notifications.route.routes[].matchers[].label` | `string` | yes |  |  |
+| `spec.alertmanager.notifications.route.routes[].matchers[].operator` | `enum` |  | `equals` |  |
+| `spec.alertmanager.notifications.route.routes[].matchers[].value` | `string` |  |  |  |
+| `spec.alertmanager.notifications.route.routes[].receiver` | `string` | yes |  |  |
+| `spec.alertmanager.notifications.route.routes[].continueMatching` | `bool` |  |  |  |
+| `spec.alertmanager.notifications.route.routes[].repeatInterval` | `string` |  |  |  |
+| `spec.alertmanager.notifications.heartbeat` | `KubernetesKubePrometheusStackAlertHeartbeat` |  |  |  |
+| `spec.alertmanager.notifications.heartbeat.url` | `string` | yes |  |  |
+| `spec.alertmanager.notifications.heartbeat.bearerToken` | `string \| valueFrom` (sensitive) |  |  |  |
+| `spec.alertmanager.notifications.heartbeat.interval` | `string` |  | `1m` |  |
+| `spec.alertmanager.notifications.message` | `KubernetesKubePrometheusStackAlertMessage` |  |  |  |
+| `spec.alertmanager.notifications.message.environmentLabel` | `string` |  | `environment` |  |
+| `spec.alertmanager.notifications.message.componentLabel` | `string` |  | `component` |  |
 | `spec.grafana` | `KubernetesKubePrometheusStackGrafana` |  |  |  |
 | `spec.grafana.enabled` | `bool` |  | `true` |  |
 | `spec.grafana.adminSecret` | `KubernetesKubePrometheusStackGrafanaAdminSecret` |  |  |  |
@@ -424,15 +488,18 @@ When false, the namespace must already exist.
 
 `string` · optional (explicit presence)
 
-Helm chart version to install (e.g. "87.19.1" — chart 87.19.1 pairs
-with Prometheus Operator v0.92.1). Versions must exist as SERVED
+Helm chart version to install (e.g. "91.8.2" — chart 91.8.2 pairs
+with Prometheus Operator v0.94.1 and Alertmanager v0.34.1; typed
+Discord delivery needs operator v0.93 or later, chart 88 or later,
+because older operators refuse Discord's webhook_url_file). Versions
+must exist as SERVED
 charts in the repository index
 (https://prometheus-community.github.io/helm-charts). KNOW THIS:
 bumping the chart version does NOT upgrade the CRDs (see the CRD
 LIFECYCLE note above) — pair upgrades across operator minors with
 `crd_upgrade_job`.
 
-- default: `87.19.1`
+- default: `91.8.2`
 
 ### spec.skipCrds
 
@@ -884,6 +951,7 @@ Alertmanager (rendered as an Alertmanager CR). Deployed by default —
 disable only when alerts are routed to an external Alertmanager.
 
 - rule: ephemeral: true runs on emptyDir — a non-default disk_size or a storage_class must not be set with it
+- rule: declare alert delivery once: either the typed notifications block or the raw config_yaml document, not both
 
 ### spec.alertmanager.enabled
 
@@ -989,15 +1057,16 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 `string`
 
 The Alertmanager configuration document (route/receivers/
-inhibit_rules) as YAML — where notification destinations (Slack,
-PagerDuty, email, webhooks) are declared. Empty = the chart's
+inhibit_rules) as raw YAML, for integrations `notifications` does not
+type yet (Slack, PagerDuty, email, Opsgenie, ...). Empty = the chart's
 default: everything routes to a "null" receiver (alerts are visible
 in the UIs and APIs but notify nobody), with the always-firing
 Watchdog alert routed separately as the dead-man's-switch hook.
-KNOW THIS: webhook URLs and API keys in this document are
-credentials — reference them with Alertmanager's `_file` fields and
-mount the Secret via `helm_values`, or manage the whole document as
-an AlertmanagerConfig object instead of inlining tokens here.
+Prefer `notifications` whenever it covers the destination: its
+credentials are managed-secret references the platform enforces, while
+this document is plain text. Never inline a webhook URL or API key
+here — use Alertmanager's `_file` fields over a Secret you mount
+yourself. Mutually exclusive with `notifications`.
 
 ### spec.alertmanager.scheduling
 
@@ -1059,6 +1128,330 @@ after the taint appears. Unset means tolerate forever.
 `string`
 
 Priority class name for the component's pods.
+
+### spec.alertmanager.notifications
+
+`KubernetesKubePrometheusStackAlertNotifications`
+
+Typed alert delivery: who hears about which alert, through Discord,
+Pushover or a webhook, plus a heartbeat to an outside dead-man's-switch
+monitor. Every credential is a managed-secret reference; the module
+writes them into one Secret it owns (`<name>-alertmanager-notifications`),
+mounts it into Alertmanager, and renders the configuration with
+Alertmanager's `_file` fields, so no credential ever sits in chart
+values or in the rendered configuration. Mutually exclusive with
+`config_yaml`.
+
+- rule: every receiver needs its own name — routes pick receivers by name
+- rule: the receiver names 'heartbeat' and 'discard' belong to the module (the Watchdog heartbeat and the drop route) — pick another name
+- rule: route.receiver must name one of the declared receivers
+- rule: every child route's receiver must name one of the declared receivers
+
+### spec.alertmanager.notifications.receivers
+
+`[]KubernetesKubePrometheusStackAlertReceiver` · required
+
+The destinations. Each has a name the routes refer to and any number
+of integrations; a receiver with none drops what it receives.
+
+- rule: {"repeated":{"minItems":"1"}}
+
+### spec.alertmanager.notifications.receivers[].name
+
+`string` · required
+
+The name routes refer to (lowercase letters, digits and hyphens). It
+also keys this receiver's entries in the module-owned credentials
+Secret, so renaming a receiver rewrites its keys.
+
+- rule: a receiver name is lowercase letters, digits and hyphens, starting and ending with a letter or digit, at most 63 characters
+- rule: {"required":true}
+
+### spec.alertmanager.notifications.receivers[].discord
+
+`[]KubernetesKubePrometheusStackAlertDiscord`
+
+Discord channels, each through one channel webhook.
+
+### spec.alertmanager.notifications.receivers[].discord[].webhookUrl
+
+`string | valueFrom` · required · sensitive
+
+The channel webhook URL (Channel settings, Integrations, Webhooks).
+Anyone holding it can post to the channel, so it is a credential: a
+managed-secret reference, never plain text.
+
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+
+### spec.alertmanager.notifications.receivers[].pushover
+
+`[]KubernetesKubePrometheusStackAlertPushover`
+
+Pushover recipients (a user or a delivery group). The paging
+integration: emergency priority breaks through a phone's silent mode
+where the recipient allows it.
+
+### spec.alertmanager.notifications.receivers[].pushover[].token
+
+`string | valueFrom` · required · sensitive
+
+The Pushover application's API token.
+
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+
+### spec.alertmanager.notifications.receivers[].pushover[].userKey
+
+`string | valueFrom` · required · sensitive
+
+The recipient's user key or delivery-group key.
+
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+
+### spec.alertmanager.notifications.receivers[].pushover[].priority
+
+`enum` · optional (explicit presence)
+
+How hard a FIRING alert pushes; the resolved follow-up is always
+normal priority. Default emergency (Alertmanager's own default):
+repeats every minute for up to an hour until someone acknowledges it
+in the Pushover app. KNOW THIS: Alertmanager cannot cancel an
+emergency notification, so it keeps repeating after the alert
+resolves until it is acknowledged or the hour runs out.
+
+- default: `emergency`
+- rule: {"enum":{"definedOnly":true}}
+
+Allowed values (use exactly as shown):
+
+- `kubernetes_kube_prometheus_stack_pushover_priority_unspecified` -- Unspecified. Defaults to emergency.
+- `normal` -- Pushover priority 0: a notification with the device's usual sound.
+- `high` -- Pushover priority 1: bypasses the recipient's quiet hours.
+- `emergency` -- Pushover priority 2: repeats every minute for up to an hour until acknowledged, and can break through silent mode.
+
+### spec.alertmanager.notifications.receivers[].webhook
+
+`[]KubernetesKubePrometheusStackAlertWebhook`
+
+Generic webhooks: Alertmanager's JSON payload POSTed to a URL, with an
+optional bearer token.
+
+### spec.alertmanager.notifications.receivers[].webhook[].url
+
+`string` · required
+
+Where Alertmanager POSTs its JSON payload. Put credentials in
+`bearer_token`, never in the URL: the URL is plain text.
+
+- rule: a webhook url starts with http:// or https://
+- rule: {"required":true}
+
+### spec.alertmanager.notifications.receivers[].webhook[].bearerToken
+
+`string | valueFrom` · sensitive
+
+Sent as `Authorization: Bearer <token>`. Empty = no Authorization
+header.
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+
+### spec.alertmanager.notifications.route
+
+`KubernetesKubePrometheusStackAlertRoute` · required
+
+The routing tree: the receiver every alert reaches unless a child
+route claims it first.
+
+- rule: {"required":true}
+
+### spec.alertmanager.notifications.route.receiver
+
+`string` · required
+
+The receiver every alert reaches unless a child route claims it.
+
+- rule: {"required":true}
+
+### spec.alertmanager.notifications.route.groupBy
+
+`[]string`
+
+Labels that group alerts into one notification. Empty = alertname plus
+the environment and component labels (`message`), so one notification
+is one problem in one place.
+
+### spec.alertmanager.notifications.route.groupWait
+
+`string`
+
+How long a new group waits for more alerts before its first
+notification. Empty = the chart's 30s.
+
+- rule: group_wait must be a Prometheus duration like '30s' or '1m'
+
+### spec.alertmanager.notifications.route.groupInterval
+
+`string`
+
+How long a group waits before notifying about new alerts added to it.
+Empty = the chart's 5m.
+
+- rule: group_interval must be a Prometheus duration like '5m'
+
+### spec.alertmanager.notifications.route.repeatInterval
+
+`string`
+
+How long before a still-firing group is notified again. Empty = the
+chart's 12h.
+
+- rule: repeat_interval must be a Prometheus duration like '4h'
+
+### spec.alertmanager.notifications.route.routes
+
+`[]KubernetesKubePrometheusStackAlertChildRoute`
+
+Child routes, evaluated in order; the first that matches claims the
+alert unless it sets `continue_matching`. An alert no child claims goes
+to `receiver`.
+
+### spec.alertmanager.notifications.route.routes[].matchers
+
+`[]KubernetesKubePrometheusStackAlertMatcher` · required
+
+Every matcher must hold for the route to claim an alert.
+
+- rule: {"repeated":{"minItems":"1"}}
+
+### spec.alertmanager.notifications.route.routes[].matchers[].label
+
+`string` · required
+
+The label name.
+
+- rule: a label name is letters, digits and underscores, not starting with a digit
+- rule: {"required":true}
+
+### spec.alertmanager.notifications.route.routes[].matchers[].operator
+
+`enum` · optional (explicit presence)
+
+How the label's value is compared. Default equals.
+
+- default: `equals`
+- rule: {"enum":{"definedOnly":true}}
+
+Allowed values (use exactly as shown):
+
+- `kubernetes_kube_prometheus_stack_alert_match_operator_unspecified` -- Unspecified. Defaults to equals.
+- `equals` -- The label equals the value (`=`).
+- `not_equals` -- The label differs from the value (`!=`).
+- `matches_regex` -- The label matches the regular expression (`=~`).
+- `not_matches_regex` -- The label does not match the regular expression (`!~`).
+
+### spec.alertmanager.notifications.route.routes[].matchers[].value
+
+`string`
+
+The value, or the regular expression (RE2, anchored at both ends) for
+the regex operators.
+
+- rule: a matcher value is one line
+
+### spec.alertmanager.notifications.route.routes[].receiver
+
+`string` · required
+
+The receiver for the alerts this route claims.
+
+- rule: {"required":true}
+
+### spec.alertmanager.notifications.route.routes[].continueMatching
+
+`bool`
+
+Keep evaluating the FOLLOWING sibling routes after this one matches
+(Alertmanager's `continue`). KNOW THIS: the root receiver only takes
+alerts no child route claims, so a continuing route with nothing after
+it delivers to its own receiver alone. To reach a pager and a channel,
+either give one receiver both integrations, or follow the continuing
+route with a route for the channel.
+
+### spec.alertmanager.notifications.route.routes[].repeatInterval
+
+`string`
+
+How long before a still-firing alert on this route is notified again.
+Empty = the root route's.
+
+- rule: repeat_interval must be a Prometheus duration like '4h'
+
+### spec.alertmanager.notifications.heartbeat
+
+`KubernetesKubePrometheusStackAlertHeartbeat`
+
+A dead-man's switch: the always-firing Watchdog alert is posted to an
+outside monitor every `interval`, so when Alertmanager (or the whole
+cluster) dies, the monitor notices the silence and pages. Empty = the
+Watchdog is dropped.
+
+### spec.alertmanager.notifications.heartbeat.url
+
+`string` · required
+
+Where the Watchdog is POSTed. Put credentials in `bearer_token`, never
+in the URL: the URL is plain text.
+
+- rule: a heartbeat url starts with http:// or https://
+- rule: {"required":true}
+
+### spec.alertmanager.notifications.heartbeat.bearerToken
+
+`string | valueFrom` · sensitive
+
+Sent as `Authorization: Bearer <token>`. Empty = no Authorization
+header.
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+
+### spec.alertmanager.notifications.heartbeat.interval
+
+`string` · optional (explicit presence)
+
+How often the heartbeat is sent. Keep it well under the monitor's
+staleness window (a monitor that pages after 5 minutes of silence
+wants 1m). Default 1m.
+
+- default: `1m`
+- rule: {"string":{"pattern":"^[0-9]+(s|m|h)$"}}
+
+### spec.alertmanager.notifications.message
+
+`KubernetesKubePrometheusStackAlertMessage`
+
+Which alert labels name the environment and the component in every
+message title.
+
+### spec.alertmanager.notifications.message.environmentLabel
+
+`string` · optional (explicit presence)
+
+The label that names the environment. Default `environment`.
+
+- default: `environment`
+- rule: {"string":{"pattern":"^[a-zA-Z_][a-zA-Z0-9_]*$"}}
+
+### spec.alertmanager.notifications.message.componentLabel
+
+`string` · optional (explicit presence)
+
+The label that names the component. Default `component`; an alert
+without it is titled by its scrape `job` instead.
+
+- default: `component`
+- rule: {"string":{"pattern":"^[a-zA-Z_][a-zA-Z0-9_]*$"}}
 
 ### spec.grafana
 

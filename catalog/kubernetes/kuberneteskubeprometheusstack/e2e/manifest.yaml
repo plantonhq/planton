@@ -2,7 +2,10 @@
 # retention/size trimming and a tuned PVC, external labels, all four
 # remote-write auth arms (basic auth with the module-materialized username
 # Secret, bearer token, keyless SigV4 with a role, Azure managed identity),
-# the raw scrape-config seam, a 3-replica Alertmanager with a routed config,
+# the raw scrape-config seam, a 3-replica Alertmanager with typed
+# notifications (Discord, Pushover, a webhook, a page route that continues
+# into a catch-all channel route, and a heartbeat; their credentials land in the
+# module-owned Secret),
 # the bundled Grafana with an existing admin Secret and persistence,
 # operator sizing with cert-manager-issued webhook certificates, exporter
 # sizing, the managed-cloud scraper posture with its matching rule-group
@@ -18,7 +21,7 @@ spec:
   namespace:
     value: kps-hack
   createNamespace: true
-  chartVersion: 87.19.1
+  chartVersion: 91.8.2
   crdUpgradeJob: true
   prometheus:
     replicas: 2
@@ -90,20 +93,48 @@ spec:
       limits:
         cpu: 500m
         memory: 512Mi
-    configYaml: |
-      route:
-        group_by:
-          - namespace
-        receiver: team-webhook
-        routes:
-          - receiver: "null"
-            matchers:
-              - alertname = "Watchdog"
+    notifications:
       receivers:
-        - name: "null"
-        - name: team-webhook
-          webhook_configs:
-            - url_file: /etc/alertmanager/secrets/team-webhook/url
+        - name: channel
+          discord:
+            - webhookUrl:
+                value: https://discord.com/api/webhooks/000/placeholder
+        - name: pager
+          pushover:
+            - token:
+                value: placeholder-app-token
+              userKey:
+                value: placeholder-user-key
+              priority: emergency
+          webhook:
+            - url: https://hooks.example.com/alerts
+              bearerToken:
+                value: placeholder-hook-token
+      route:
+        receiver: channel
+        repeatInterval: 4h
+        routes:
+          - matchers:
+              - label: severity
+                value: page
+              - label: environment
+                operator: matches_regex
+                value: prod|management
+            receiver: pager
+            continueMatching: true
+          - matchers:
+              - label: alertname
+                operator: matches_regex
+                value: .+
+            receiver: channel
+      heartbeat:
+        url: https://watcher.example.com/heartbeat/kps-hack
+        bearerToken:
+          value: placeholder-heartbeat-token
+        interval: 1m
+      message:
+        environmentLabel: environment
+        componentLabel: component
     scheduling:
       nodeSelector:
         workload: monitoring

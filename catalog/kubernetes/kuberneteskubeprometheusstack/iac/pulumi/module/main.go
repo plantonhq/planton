@@ -15,7 +15,9 @@ import (
 // (values.go); the CRDs ride the chart's crds subchart (install-once,
 // keep-on-uninstall); declared remote-write usernames are materialized into
 // a module-owned Secret (the Prometheus CRD reads both basic-auth halves
-// from Secrets); the helm_values escape hatch merges last with Helm -f
+// from Secrets); typed notification credentials are materialized into a
+// second module-owned Secret that Alertmanager mounts; the helm_values
+// escape hatch merges last with Helm -f
 // semantics — the exact semantic twin of the Terraform module's
 // helm_release with values = [typed, helm_values].
 func Resources(ctx *pulumi.Context, stackInput *kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackStackInput) error {
@@ -75,6 +77,29 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteskubeprometheusstackv1a
 			append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, releaseDeps...)...)
 		if err != nil {
 			return errors.Wrap(err, "failed to create remote-write auth secret")
+		}
+		releaseDeps = append(releaseDeps, pulumi.DependsOn([]pulumi.Resource{createdSecret}))
+	}
+
+	// ------------------- notification credentials Secret ------------------
+	// Created BEFORE the release: Alertmanager mounts it through
+	// alertmanagerSpec.secrets, and a pod whose Secret volume is missing
+	// never starts. The values arrive resolved from managed-secret
+	// references; the provider stores Secret data as Pulumi secrets.
+	if n := locals.Notifications; n != nil && len(n.SecretData) > 0 {
+		createdSecret, err := kubernetescorev1.NewSecret(ctx,
+			locals.NotificationsSecretName,
+			&kubernetescorev1.SecretArgs{
+				Metadata: kubernetesmeta.ObjectMetaPtrInput(&kubernetesmeta.ObjectMetaArgs{
+					Name:      pulumi.String(locals.NotificationsSecretName),
+					Namespace: pulumi.String(locals.Namespace),
+					Labels:    pulumi.ToStringMap(locals.Labels),
+				}),
+				StringData: pulumi.ToSecret(pulumi.ToStringMap(n.SecretData)).(pulumi.StringMapOutput),
+			},
+			append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, releaseDeps...)...)
+		if err != nil {
+			return errors.Wrap(err, "failed to create alertmanager notifications secret")
 		}
 		releaseDeps = append(releaseDeps, pulumi.DependsOn([]pulumi.Resource{createdSecret}))
 	}
