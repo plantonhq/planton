@@ -232,31 +232,140 @@ message KubernetesNetworkPolicyPeer {
 
 /**
  * **KubernetesNetworkPolicyIpBlock** is a CIDR allow with exceptions.
+ *
+ * Each range is a literal CIDR or a reference to the resource that owns it:
+ * a VPC's or subnet's range, a GKE subnetwork's primary or secondary (pods,
+ * services) range, a cluster's service or pod range. A reference keeps an
+ * allowlist true to the network it guards -- an egress policy that excludes
+ * the cluster's own ranges never repeats addresses the network chart already
+ * declares. The CIDR rule checks a literal here, and a referenced value where
+ * it is resolved, before anything deploys.
  */
 message KubernetesNetworkPolicyIpBlock {
   /**
    * The allowed CIDR, e.g. "10.100.0.0/16" or "2001:db8::/64". "0.0.0.0/0"
    * allows all IPv4 — pair it with `except` to allow "everything but".
    */
-  string cidr = 1 [
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cidr = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).cel = {
       id: "cidr.format"
       message: "cidr must be a valid CIDR (e.g. \"10.100.0.0/16\", \"2001:db8::/64\")"
-      expression: "this.isIpPrefix()"
+      expression: "!has(this.value) || this.value.isIpPrefix()"
+    },
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpSubnetwork
+      field_path: "status.outputs.ip_cidr_range"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpSubnetwork
+      field_path: "status.outputs.secondary_ranges"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "spec.ip_allocation.cluster_ipv4_cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "spec.ip_allocation.services_ipv4_cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "spec.private_cluster.master_ipv4_cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsVpc
+      field_path: "status.outputs.cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsSubnet
+      field_path: "status.outputs.cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsEksCluster
+      field_path: "spec.service_ipv4_cidr"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureVirtualNetwork
+      field_path: "status.outputs.address_spaces"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureSubnet
+      field_path: "status.outputs.address_prefixes"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureAksCluster
+      field_path: "spec.network_profile.pod_cidr"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureAksCluster
+      field_path: "spec.network_profile.service_cidr"
     }
   ];
 
   /**
    * CIDRs carved OUT of the allow — each must be a sub-range of `cidr` (the API
    * rejects out-of-range exceptions). E.g. allow "0.0.0.0/0" except
-   * "169.254.169.254/32" (the cloud metadata endpoint).
+   * "169.254.169.254/32" (the cloud metadata endpoint), or except the
+   * cluster's own pod, service and node ranges by reference.
    */
-  repeated string except = 2 [(buf.validate.field).repeated.items.cel = {
-    id: "except.format"
-    message: "each except entry must be a valid CIDR inside the allowed cidr range"
-    expression: "this.isIpPrefix()"
-  }];
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef except = 2 [
+    (buf.validate.field).repeated.items.cel = {
+      id: "except.format"
+      message: "each except entry must be a valid CIDR inside the allowed cidr range"
+      expression: "!has(this.value) || this.value.isIpPrefix()"
+    },
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpSubnetwork
+      field_path: "status.outputs.ip_cidr_range"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpSubnetwork
+      field_path: "status.outputs.secondary_ranges"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "spec.ip_allocation.cluster_ipv4_cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "spec.ip_allocation.services_ipv4_cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "spec.private_cluster.master_ipv4_cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsVpc
+      field_path: "status.outputs.cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsSubnet
+      field_path: "status.outputs.cidr_block"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsEksCluster
+      field_path: "spec.service_ipv4_cidr"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureVirtualNetwork
+      field_path: "status.outputs.address_spaces"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureSubnet
+      field_path: "status.outputs.address_prefixes"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureAksCluster
+      field_path: "spec.network_profile.pod_cidr"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureAksCluster
+      field_path: "spec.network_profile.service_cidr"
+    }
+  ];
 }
 
 /**

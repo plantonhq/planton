@@ -146,12 +146,12 @@ API uses for `data` in YAML manifests. Use this for payloads that are not valid 
 `data` keys: both maps merge into the same underlying Secret data.
 
 Each value is a secret field: on Planton it takes only a reference to a managed secret
-(`$secret/...`) in place of the literal, which the runner resolves to the stored value
-before the module runs, and the stored value is then the base64 the module writes. A deploy
-without the platform takes the literal, and the literal arm keeps refusing malformed base64
-before any apply.
+(`$secret/...`) in place of the literal. The platform checks the base64 rule on the value
+the reference resolves to, before the module runs, and the stored value is then the base64
+the module writes. A deploy without the platform takes the literal, and the rule refuses
+malformed base64 before any apply.
 
-- rule: {"map":{"keys":{"string":{"maxLen":"253","pattern":"^[-._a-zA-Z0-9]+$"}},"values":{"string":{"pattern":"^(?:\\$secret/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$"}}}}
+- rule: {"map":{"keys":{"string":{"maxLen":"253","pattern":"^[-._a-zA-Z0-9]+$"}},"values":{"string":{"pattern":"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"}}}}
 
 ### spec.tls
 

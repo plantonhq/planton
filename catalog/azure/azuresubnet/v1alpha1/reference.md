@@ -423,6 +423,10 @@ Fields on other kinds that can point at this resource:
 | AzureStorageAccount | `spec.networkRules.virtualNetworkSubnetIds` | `status.outputs.subnet_id` |
 | AzureVirtualMachineScaleSet | `spec.networkInterfaces[].ipConfigurations[].subnetId` | `status.outputs.subnet_id` |
 | AzureVirtualNetworkGateway | `spec.ipConfigurations[].subnetId` | `status.outputs.subnet_id` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.address_prefixes` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `status.outputs.address_prefixes` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `status.outputs.address_prefixes` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `status.outputs.address_prefixes` |
 
 ## See Also
 

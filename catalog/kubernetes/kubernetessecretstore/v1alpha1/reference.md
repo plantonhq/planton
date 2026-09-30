@@ -652,7 +652,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
-| KubernetesExternalSecret | `spec.storeRef.name` | `status.outputs.store_name` |
+| KubernetesExternalSecret | `spec.storeRef.secretStore.name` | `status.outputs.store_name` |
 
 ## See Also
 

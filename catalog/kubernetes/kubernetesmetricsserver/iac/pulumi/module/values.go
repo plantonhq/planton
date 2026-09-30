@@ -170,15 +170,12 @@ func tlsMap(tls *kubernetesmetricsserverv1alpha1.KubernetesMetricsServerTls) map
 	case kubernetesmetricsserverv1alpha1.KubernetesMetricsServerTlsType_cert_manager:
 		out := map[string]interface{}{"type": "cert-manager"}
 		if issuer := tls.GetCertManagerIssuer(); issuer != nil {
-			kind := "Issuer"
-			if issuer.GetKind() == kubernetesmetricsserverv1alpha1.KubernetesMetricsServerIssuerKind_cluster_issuer {
-				kind = "ClusterIssuer"
-			}
+			kind, name := issuer.CRDKind()
 			out["certManager"] = map[string]interface{}{
 				"existingIssuer": map[string]interface{}{
 					"enabled": true,
 					"kind":    kind,
-					"name":    issuer.GetName().GetValue(),
+					"name":    name,
 				},
 			}
 		}

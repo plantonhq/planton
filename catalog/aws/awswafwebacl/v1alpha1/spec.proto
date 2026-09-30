@@ -2000,8 +2000,23 @@ message AwsWafWebAclLoggingConfig {
   // "You can associate one logging destination to a web ACL" — is one).
   //
   // No default_kind is set because the destination can be any of three
-  // different resource types.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef destination_arn = 1 [(buf.validate.field).required = true];
+  // different resource types; the three are declared as candidates, each
+  // with its ARN output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef destination_arn = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsCloudwatchLogGroup
+      field_path: "status.outputs.log_group_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsS3Bucket
+      field_path: "status.outputs.bucket_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsKinesisFirehose
+      field_path: "status.outputs.delivery_stream_arn"
+    }
+  ];
 
   // HTTP header names to redact from logs (each 1-64 characters). Redacted
   // headers appear as "REDACTED" in log entries instead of their actual

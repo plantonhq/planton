@@ -233,11 +233,8 @@ func writeFieldTable(b *strings.Builder, rows []flatField) {
 			def = "`" + f.RecommendedDefault + "`"
 		}
 		ref := ""
-		if f.RefKind != "" {
-			ref = f.RefKind
-			if f.RefFieldPath != "" {
-				ref += " (`" + f.RefFieldPath + "`)"
-			}
+		if f.RefKind != "" || len(f.RefTargets) > 0 {
+			ref = f.referenceSummary("`")
 		}
 		fmt.Fprintf(b, "| `%s` | %s | %s | %s | %s |\n",
 			row.Path, tableCell(typeCell), required, tableCell(def), ref)
@@ -278,17 +275,13 @@ func writeFieldDetail(b *strings.Builder, row flatField) {
 	if f.RecommendedDefault != "" {
 		fmt.Fprintf(b, "- default: `%s`\n", f.RecommendedDefault)
 	}
-	if f.RefKind != "" || f.RefFieldPath != "" {
-		ref := "- references: " + f.RefKind
-		if f.RefFieldPath != "" {
-			ref += " (`" + f.RefFieldPath + "`)"
-		}
-		b.WriteString(ref + "\n")
+	if targets := f.referenceSummary("`"); targets != "" {
+		b.WriteString("- references: " + targets + "\n")
 	}
 	for _, constraint := range f.Constraints {
 		fmt.Fprintf(b, "- rule: %s\n", flattenText(constraint))
 	}
-	if f.RecommendedDefault != "" || f.RefKind != "" || f.RefFieldPath != "" || len(f.Constraints) > 0 {
+	if f.RecommendedDefault != "" || len(f.referenceTargets()) > 0 || len(f.Constraints) > 0 {
 		b.WriteString("\n")
 	}
 
@@ -312,7 +305,7 @@ func writeFieldDetail(b *strings.Builder, row flatField) {
 func writeReferences(b *strings.Builder, rows []flatField) {
 	var refs []flatField
 	for _, row := range rows {
-		if row.Field.RefKind != "" {
+		if len(row.Field.referenceTargets()) > 0 && (row.Field.RefKind != "" || len(row.Field.RefTargets) > 0) {
 			refs = append(refs, row)
 		}
 	}
@@ -324,8 +317,9 @@ func writeReferences(b *strings.Builder, rows []flatField) {
 	b.WriteString("| Field | Kind | Output |\n")
 	b.WriteString("|---|---|---|\n")
 	for _, row := range refs {
-		fmt.Fprintf(b, "| `%s` | %s | `%s` |\n",
-			row.Path, row.Field.RefKind, row.Field.RefFieldPath)
+		for _, target := range row.Field.referenceTargets() {
+			fmt.Fprintf(b, "| `%s` | %s | `%s` |\n", row.Path, target.Kind, target.FieldPath)
+		}
 	}
 	b.WriteString("\n")
 }
@@ -369,14 +363,16 @@ type ReferenceEdge struct {
 func ReferenceEdges(report *Report) []ReferenceEdge {
 	var edges []ReferenceEdge
 	for _, row := range flattenFields("spec", report.Spec, authoredName) {
-		if row.Field.RefKind == "" {
+		if row.Field.RefKind == "" && len(row.Field.RefTargets) == 0 {
 			continue
 		}
-		edges = append(edges, ReferenceEdge{
-			FieldPath:       row.Path,
-			Kind:            row.Field.RefKind,
-			TargetFieldPath: row.Field.RefFieldPath,
-		})
+		for _, target := range row.Field.referenceTargets() {
+			edges = append(edges, ReferenceEdge{
+				FieldPath:       row.Path,
+				Kind:            target.Kind,
+				TargetFieldPath: target.FieldPath,
+			})
+		}
 	}
 	return edges
 }

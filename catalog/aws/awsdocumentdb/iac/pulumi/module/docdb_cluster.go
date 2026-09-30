@@ -53,8 +53,8 @@ func docdbCluster(ctx *pulumi.Context, locals *Locals, provider *aws.Provider,
 	// create-only -- letting AWS choose is almost always right).
 	if createdSubnetGroup != nil {
 		args.DbSubnetGroupName = createdSubnetGroup.Name
-	} else if spec.DbSubnetGroupName.GetValue() != "" {
-		args.DbSubnetGroupName = pulumi.String(spec.DbSubnetGroupName.GetValue())
+	} else if spec.DbSubnetGroupName != "" {
+		args.DbSubnetGroupName = pulumi.String(spec.DbSubnetGroupName)
 	}
 	if len(spec.SecurityGroupIds) > 0 {
 		securityGroupIds := pulumi.StringArray{}

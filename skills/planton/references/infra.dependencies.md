@@ -46,6 +46,31 @@ Rules:
 Fields typed `string | valueFrom` in the schema report accept either a plain
 string or the `valueFrom` block above.
 
+### Which kinds a field accepts
+
+The schema report and the component reference page list, for each such
+field, the kinds it composes from and the output each one gives
+(`references: AwsS3Bucket (status.outputs.bucket_arn), AwsCloudwatchLogGroup
+(status.outputs.log_group_arn), ...`). Read them there:
+
+- A field with one listed kind is its default: `kind:` and `fieldPath:` may
+  be left out.
+- A field with several listed kinds needs `kind:`; `fieldPath:` may be left
+  out when that kind is listed once, and must name one of its outputs when it
+  is listed more than once (a GCP subnetwork's primary range or one of its
+  secondary ranges: `status.outputs.secondary_ranges.0.ip_cidr_range` --
+  appending a list index or map key to a listed output is fine).
+- Naming a listed kind with a different output is refused: the listed output
+  is the one the component is proven to consume (an ARN, not a name).
+- A kind the field does not list still works with an explicit `kind:` and
+  `fieldPath:` when the value fits.
+
+A reference whose grain matters is split into named arms rather than a
+selector: an External Secret's store is `storeRef.secretStore.name` or
+`storeRef.clusterSecretStore.name`; a cert-manager issuer is
+`...issuer.name` or `...clusterIssuer.name`. Pick the arm, and its kind is
+implied.
+
 ### A secret output (a credential the producer generates)
 
 Some outputs are secrets the producer creates: an Auth0 client's

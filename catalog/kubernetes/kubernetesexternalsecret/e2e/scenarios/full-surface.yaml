@@ -16,11 +16,10 @@ spec:
   namespace:
     value: default
   storeRef:
-    name:
-      valueFrom:
-        kind: KubernetesClusterSecretStore
-        name: e2e-css-fixture
-    kind: ClusterSecretStore
+    clusterSecretStore:
+      name:
+        valueFrom:
+          name: e2e-css-fixture
   refreshInterval: 30s
   refreshPolicy: Periodic
   target:

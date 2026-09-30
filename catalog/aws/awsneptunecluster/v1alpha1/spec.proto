@@ -49,7 +49,7 @@ message AwsNeptuneClusterSpec {
   // Name of an existing Neptune subnet group to place the cluster in,
   // instead of providing subnet_ids. Changing the subnet group replaces
   // the cluster.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef neptune_subnet_group_name = 3;
+  string neptune_subnet_group_name = 3;
 
   // Security groups attached to the cluster. Empty uses the VPC's
   // default security group (the AWS default). Reference AwsSecurityGroup
@@ -273,7 +273,7 @@ message AwsNeptuneClusterSpec {
   option (buf.validate.message).cel = {
     id: "subnets_or_group"
     message: "provide at least two subnet_ids (distinct AZs) or an existing neptune_subnet_group_name"
-    expression: "(this.subnet_ids.size() >= 2) || has(this.neptune_subnet_group_name)"
+    expression: "(this.subnet_ids.size() >= 2) || this.neptune_subnet_group_name != ''"
   };
 
   option (buf.validate.message).cel = {

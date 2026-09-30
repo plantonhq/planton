@@ -51,8 +51,9 @@ type AwsLbListenerSpec struct {
 	// balancer's region. Example: "us-west-2", "eu-west-1".
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The load balancer this listener attaches to. Defaults to referencing an
-	// AwsAlb's ARN; attach to an AwsNlb (or an external load balancer) with an
-	// explicit valueFrom or a literal ARN. Immutable: changing the load
+	// AwsAlb's ARN; attach to an AwsNlb with a valueFrom naming that kind (both
+	// are declared candidates, so the ARN output fills in), or to an external
+	// load balancer with a literal ARN. Immutable: changing the load
 	// balancer replaces the listener.
 	LoadBalancerArn *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=load_balancer_arn,json=loadBalancerArn,proto3" json:"load_balancer_arn,omitempty"`
 	// Port the listener accepts traffic on, 1-65535. The classic pairs are 80
@@ -1489,10 +1490,10 @@ var File_catalog_aws_awslblistener_v1alpha1_spec_proto protoreflect.FileDescript
 
 const file_catalog_aws_awslblistener_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awslblistener/v1alpha1/spec.proto\x12&dev.planton.aws.awslblistener.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xef\x12\n" +
+	"-catalog/aws/awslblistener/v1alpha1/spec.proto\x12&dev.planton.aws.awslblistener.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc2\x13\n" +
 	"\x11AwsLbListenerSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x8f\x01\n" +
-	"\x11load_balancer_arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB/\xbaH\x03\xc8\x01\x01\x88\xd4a\xe8\a\x92\xd4a status.outputs.load_balancer_arnR\x0floadBalancerArn\x12\"\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\xe2\x01\n" +
+	"\x11load_balancer_arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x81\x01\xbaH\x03\xc8\x01\x01\x88\xd4a\xe8\a\x92\xd4a status.outputs.load_balancer_arn\xa2\xd4a%\b\xe8\a\x12 status.outputs.load_balancer_arn\xa2\xd4a%\b\xb8\b\x12 status.outputs.load_balancer_arnR\x0floadBalancerArn\x12\"\n" +
 	"\x04port\x18\x03 \x01(\x05B\x0e\xbaH\v\xc8\x01\x01\x1a\x06\x18\xff\xff\x03(\x01R\x04port\x12\"\n" +
 	"\bprotocol\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bprotocol\x12}\n" +
 	"\x0fcertificate_arn\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xe9\a\x92\xd4a\x17status.outputs.cert_arnR\x0ecertificateArn\x12\x94\x01\n" +

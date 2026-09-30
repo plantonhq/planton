@@ -302,12 +302,16 @@ type AzureFrontDoorOriginPrivateLink struct {
 	// "westeurope".
 	Location string `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
 	// The ARM ID of the resource Front Door connects to privately -- an
-	// App Service site, a storage account, a Container Apps environment,
-	// or a Private Link Service fronting an internal load balancer. Kept
-	// as a plain ARM ID (not a typed reference) because the target spans
-	// many kinds; paste the ID or reference the target's id output with an
-	// explicit valueFrom kind.
-	PrivateLinkTargetId string `protobuf:"bytes,2,opt,name=private_link_target_id,json=privateLinkTargetId,proto3" json:"private_link_target_id,omitempty"`
+	// App Service site or function app, a storage account, a Container Apps
+	// environment, an Application Gateway, or a Private Link Service
+	// fronting an internal load balancer. A literal ARM ID, or a reference
+	// to the target's resource ID output: the catalog kinds a target can be
+	// are declared as candidates. Set target_type to the sub-resource the
+	// target exposes (every target but a Private Link Service needs one).
+	//
+	// Containment-exempt: Front Door reaches the target privately; the
+	// origin does not live inside it.
+	PrivateLinkTargetId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=private_link_target_id,json=privateLinkTargetId,proto3" json:"private_link_target_id,omitempty"`
 	// Which sub-resource of the target the private endpoint attaches to.
 	// Required for every target EXCEPT a Private Link Service (whose ARM
 	// ID is itself the attachment point). Azure rejects the apply when
@@ -358,11 +362,11 @@ func (x *AzureFrontDoorOriginPrivateLink) GetLocation() string {
 	return ""
 }
 
-func (x *AzureFrontDoorOriginPrivateLink) GetPrivateLinkTargetId() string {
+func (x *AzureFrontDoorOriginPrivateLink) GetPrivateLinkTargetId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.PrivateLinkTargetId
 	}
-	return ""
+	return nil
 }
 
 func (x *AzureFrontDoorOriginPrivateLink) GetTargetType() AzureFrontDoorOriginPrivateLinkTargetType {
@@ -408,16 +412,17 @@ const file_catalog_azure_azurefrontdoororigin_v1alpha1_spec_proto_rawDesc = "" +
 	"\t_priorityB\t\n" +
 	"\a_weightB\n" +
 	"\n" +
-	"\b_enabled\"\xd0\x06\n" +
+	"\b_enabled\"\xf3\n" +
+	"\n" +
 	"\x1fAzureFrontDoorOriginPrivateLink\x12&\n" +
 	"\blocation\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\blocation\x12\xe6\x01\n" +
-	"\x16private_link_target_id\x18\x02 \x01(\tB\xb0\x01\xbaH\xac\x01\xba\x01\xa5\x01\n" +
-	",front_door_origin_private_link_target_arm_id\x12Qprivate_link_target_id must be an ARM resource ID (starting with /subscriptions/)\x1a\"this.startsWith('/subscriptions/')\xc8\x01\x01R\x13privateLinkTargetId\x12\x85\x01\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\blocation\x12\xd5\x04\n" +
+	"\x16private_link_target_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xeb\x03\xbaH\xc6\x01\xba\x01\xbf\x01\n" +
+	",front_door_origin_private_link_target_arm_id\x12Qprivate_link_target_id must be an ARM resource ID (starting with /subscriptions/)\x1a<!has(this.value) || this.value.startsWith('/subscriptions/')\xc8\x01\x01\x98\xd4a\x01\xa2\xd4a\x1e\b\xfc\x0f\x12\x19status.outputs.web_app_id\xa2\xd4a#\b\xfb\x0f\x12\x1estatus.outputs.function_app_id\xa2\xd4a#\b\xa2\x11\x12\x1estatus.outputs.function_app_id\xa2\xd4a&\b\xd9\x0f\x12!status.outputs.storage_account_id\xa2\xd4a\"\b\xf8\x0f\x12\x1dstatus.outputs.environment_id\xa2\xd4a*\b\xe0\x0f\x12%status.outputs.application_gateway_id\xa2\xd4a+\b\xdf\x10\x12&status.outputs.private_link_service_idR\x13privateLinkTargetId\x12\x85\x01\n" +
 	"\vtarget_type\x18\x03 \x01(\x0e2Z.dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLinkTargetTypeB\b\xbaH\x05\x82\x01\x02\x10\x01R\n" +
 	"targetType\x12n\n" +
-	"\x0frequest_message\x18\x04 \x01(\tB@\xbaH\x05r\x03\x18\x8c\x01\x8a\xa6\x1d4Access request for CDN FrontDoor Private Link OriginH\x00R\x0erequestMessage\x88\x01\x01:\x8f\x02\xbaH\x8b\x02\x1a\x88\x02\n" +
-	"1front_door_origin_private_link_target_type_or_pls\x12{target_type is required unless private_link_target_id is a Private Link Service (Azure needs the sub-resource to attach to)\x1aVthis.target_type != 0 || this.private_link_target_id.contains('/privateLinkServices/')B\x12\n" +
+	"\x0frequest_message\x18\x04 \x01(\tB@\xbaH\x05r\x03\x18\x8c\x01\x8a\xa6\x1d4Access request for CDN FrontDoor Private Link OriginH\x00R\x0erequestMessage\x88\x01\x01:\xc3\x03\xbaH\xbf\x03\x1a\xbc\x03\n" +
+	"1front_door_origin_private_link_target_type_or_pls\x12\xc1\x01target_type is required unless private_link_target_id is a Private Link Service (a /privateLinkServices/ ID or an AzurePrivateLinkService reference) -- Azure needs the sub-resource to attach to\x1a\xc2\x01this.target_type != 0 || (has(this.private_link_target_id.value_from) ? this.private_link_target_id.value_from.kind == 2143 : this.private_link_target_id.value.contains('/privateLinkServices/'))B\x12\n" +
 	"\x10_request_message*\xd9\x01\n" +
 	")AzureFrontDoorOriginPrivateLinkTargetType\x12@\n" +
 	"<azure_front_door_origin_private_link_target_type_unspecified\x10\x00\x12\t\n" +
@@ -455,12 +460,13 @@ var file_catalog_azure_azurefrontdoororigin_v1alpha1_spec_proto_depIdxs = []int3
 	3, // 1: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginSpec.host_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	3, // 2: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginSpec.origin_host_header:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	2, // 3: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginSpec.private_link:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLink
-	0, // 4: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLink.target_type:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLinkTargetType
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	3, // 4: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLink.private_link_target_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0, // 5: dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLink.target_type:type_name -> dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLinkTargetType
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_catalog_azure_azurefrontdoororigin_v1alpha1_spec_proto_init() }

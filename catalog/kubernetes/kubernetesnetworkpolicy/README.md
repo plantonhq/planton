@@ -44,7 +44,7 @@ Each peer takes one of three forms, with precise combination semantics:
 - **`pod_selector` alone**: pods matching the selector in the policy's OWN namespace
 - **`namespace_selector` alone**: ALL pods in namespaces matching the selector (e.g. the automatic `kubernetes.io/metadata.name: <name>` label every namespace carries)
 - **Both together in ONE peer**: pods matching `pod_selector` in namespaces matching `namespace_selector` — a single AND. This is different from listing them as two separate peers, which ORs: *any* pod in the selected namespaces, plus matching pods in the policy's own namespace
-- **`ip_block`**: a CIDR (with optional `except` carve-outs) for traffic outside the cluster's pod network. Mutually exclusive with the selector forms — cluster-internal pod IPs are ephemeral and should be matched with selectors, never CIDRs
+- **`ip_block`**: a CIDR (with optional `except` carve-outs) for traffic outside the cluster's pod network. Mutually exclusive with the selector forms — cluster-internal pod IPs are ephemeral and should be matched with selectors, never CIDRs. Each range is a literal (`cidr: {value: 10.100.0.0/16}`) or a reference to the resource that owns it — a VPC's or subnet's `cidr_block`, a GKE subnetwork's `ip_cidr_range` or one of its `secondary_ranges` (`status.outputs.secondary_ranges.0.ip_cidr_range`), a cluster's service or pod range — so an egress allowlist that carves out the cluster's own ranges never repeats addresses the network chart declares
 
 ### Rules — the OR/AND grid
 

@@ -8,6 +8,7 @@ import (
 	kubernetesgatewayv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgateway/v1alpha1"
 	kuberneteshttproutev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteshttproute/v1alpha1"
 	kubernetespostgresv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1"
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
@@ -72,7 +73,7 @@ func TestCollectLiteralUses_ReadsTheLiteralArmAtDepth(t *testing.T) {
 	assert.Equal(t, "public-gateway", paths["spec.parent_refs[0].name"],
 		"a literal inside a repeated message is found on the same traversal that finds references")
 	assert.Equal(t, cloudresourcekind.CloudResourceKind_KubernetesGateway,
-		annotatedKind(uses[len(uses)-1].Field), "the declaring field carries the default kind the literal is matched against")
+		refannotations.Of(uses[len(uses)-1].Field).DefaultKind, "the declaring field carries the default kind the literal is matched against")
 }
 
 func TestLiteralSibling_MatchesTheDeclaredKindBySlugInTheSameEnv(t *testing.T) {

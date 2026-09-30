@@ -10,9 +10,9 @@ and what happens to the projected Secret when the declaration goes away.
 Declare the ExternalSecret in the namespace of the workload that consumes
 the materialized Secret — that is where the Secret lands, and workloads
 mount it like any other. The backend connection is someone else's node:
-`storeRef` points at a same-namespace KubernetesSecretStore by default,
-or a platform [KubernetesClusterSecretStore](../kubernetesclustersecretstore/GUIDE.md)
-when `kind: ClusterSecretStore` is said explicitly.
+`storeRef.secretStore` points at a same-namespace KubernetesSecretStore,
+`storeRef.clusterSecretStore` at a platform
+[KubernetesClusterSecretStore](../kubernetesclustersecretstore/GUIDE.md).
 
 ## Explicit entries vs bulk pulls
 

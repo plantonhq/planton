@@ -23,6 +23,8 @@
 package explain
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -123,6 +125,11 @@ type Field struct {
 	// output field the reference reads.
 	RefKind      string `json:"refKind,omitempty"`
 	RefFieldPath string `json:"refFieldPath,omitempty"`
+	// RefTargets lists every kind and output the field composes from -- its
+	// default target first, then each declared candidate -- when the field
+	// declares candidates. A valueFrom naming one of these kinds defaults its
+	// fieldPath only when the kind is listed once.
+	RefTargets []RefTarget `json:"refTargets,omitempty"`
 	// Provenance labels who writes the field when it is not the manifest
 	// author: "assembled" (tooling fills it from companion files) or
 	// "computed" (the platform derives it). Empty means hand-authored.
@@ -135,6 +142,39 @@ type Field struct {
 	Constraints []string `json:"constraints,omitempty"`
 
 	Fields []Field `json:"fields,omitempty"`
+}
+
+// RefTarget is one kind a reference field can point at and the output it
+// composes from.
+type RefTarget struct {
+	Kind      string `json:"kind"`
+	FieldPath string `json:"fieldPath"`
+}
+
+// referenceTargets is every target a reference field names, for rendering:
+// the declared candidates when there are any, else the default target alone.
+func (f Field) referenceTargets() []RefTarget {
+	if len(f.RefTargets) > 0 {
+		return f.RefTargets
+	}
+	if f.RefKind == "" && f.RefFieldPath == "" {
+		return nil
+	}
+	return []RefTarget{{Kind: f.RefKind, FieldPath: f.RefFieldPath}}
+}
+
+// referenceSummary renders a field's targets on one line, each output in
+// the given quote: "AwsS3Bucket (`status.outputs.bucket_arn`), AwsKinesisFirehose (...)".
+func (f Field) referenceSummary(quote string) string {
+	var parts []string
+	for _, t := range f.referenceTargets() {
+		part := t.Kind
+		if t.FieldPath != "" {
+			part += " (" + quote + t.FieldPath + quote + ")"
+		}
+		parts = append(parts, part)
+	}
+	return strings.Join(parts, ", ")
 }
 
 // Explain resolves path (dotted protojson segments below the resource name,

@@ -13,11 +13,15 @@ func buildExternalSecretSpec(locals *Locals) map[string]interface{} {
 	rendered := map[string]interface{}{}
 
 	// ---- store reference --------------------------------------------------
-	storeRef := map[string]interface{}{
-		"name": spec.GetStoreRef().GetName().GetValue(),
-	}
-	if spec.GetStoreRef().Kind != nil {
-		storeRef["kind"] = spec.GetStoreRef().GetKind()
+	// The arm is the grain: a cluster store renders its kind, a namespaced
+	// store renders only its name (SecretStore is the CRD's default).
+	storeRef := map[string]interface{}{}
+	switch store := spec.GetStoreRef().GetStoreType().(type) {
+	case *kubernetesexternalsecretv1alpha1.KubernetesExternalSecretStoreRef_ClusterSecretStore:
+		storeRef["name"] = store.ClusterSecretStore.GetName().GetValue()
+		storeRef["kind"] = "ClusterSecretStore"
+	case *kubernetesexternalsecretv1alpha1.KubernetesExternalSecretStoreRef_SecretStore:
+		storeRef["name"] = store.SecretStore.GetName().GetValue()
 	}
 	rendered["secretStoreRef"] = storeRef
 

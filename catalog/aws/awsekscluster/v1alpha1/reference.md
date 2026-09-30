@@ -457,6 +457,10 @@ Fields on other kinds that can point at this resource:
 | AwsEksNodeGroup | `spec.clusterName` | `status.outputs.name` |
 | AwsIamOidcProvider | `spec.url` | `status.outputs.oidc_issuer_url` |
 | AwsManagedPrometheusScraper | `spec.sourceEks.clusterArn` | `status.outputs.cluster_arn` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.service_ipv4_cidr` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `spec.service_ipv4_cidr` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `spec.service_ipv4_cidr` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `spec.service_ipv4_cidr` |
 
 ## See Also
 

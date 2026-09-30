@@ -79,7 +79,7 @@ spec:
 | Path | Type | Required | Default | References |
 |---|---|---|---|---|
 | `spec.region` | `string` | yes |  |  |
-| `spec.loadBalancerArn` | `string \| valueFrom` | yes |  | AwsAlb (`status.outputs.load_balancer_arn`) |
+| `spec.loadBalancerArn` | `string \| valueFrom` | yes |  | AwsAlb (`status.outputs.load_balancer_arn`), AwsNlb (`status.outputs.load_balancer_arn`) |
 | `spec.port` | `int32` | yes |  |  |
 | `spec.protocol` | `string` | yes |  |  |
 | `spec.certificateArn` | `string \| valueFrom` |  |  | AwsCertManagerCert (`status.outputs.cert_arn`) |
@@ -180,11 +180,12 @@ balancer's region. Example: "us-west-2", "eu-west-1".
 `string | valueFrom` · required
 
 The load balancer this listener attaches to. Defaults to referencing an
-AwsAlb's ARN; attach to an AwsNlb (or an external load balancer) with an
-explicit valueFrom or a literal ARN. Immutable: changing the load
+AwsAlb's ARN; attach to an AwsNlb with a valueFrom naming that kind (both
+are declared candidates, so the ARN output fills in), or to an external
+load balancer with a literal ARN. Immutable: changing the load
 balancer replaces the listener.
 
-- references: AwsAlb (`status.outputs.load_balancer_arn`)
+- references: AwsAlb (`status.outputs.load_balancer_arn`), AwsNlb (`status.outputs.load_balancer_arn`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsAlb, name: <that resource's name>, fieldPath: status.outputs.load_balancer_arn}} -- a bare string does not parse
 
@@ -890,6 +891,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.loadBalancerArn` | AwsAlb | `status.outputs.load_balancer_arn` |
+| `spec.loadBalancerArn` | AwsNlb | `status.outputs.load_balancer_arn` |
 | `spec.certificateArn` | AwsCertManagerCert | `status.outputs.cert_arn` |
 | `spec.additionalCertificateArns` | AwsCertManagerCert | `status.outputs.cert_arn` |
 | `spec.defaultActions[].forward.targetGroups[].arn` | AwsLbTargetGroup | `status.outputs.target_group_arn` |

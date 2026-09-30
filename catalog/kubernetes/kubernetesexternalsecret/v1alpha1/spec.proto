@@ -94,33 +94,53 @@ message KubernetesExternalSecretSpec {
 }
 
 /**
- * Reference to the store this secret syncs from.
+ * Selects the store this secret syncs from: a namespaced SecretStore (in the
+ * ExternalSecret's own namespace) or a cluster-scoped ClusterSecretStore.
+ * The grain is the arm, so every reader -- the reference picker, the
+ * dependency graph, the modules -- knows which store kind a literal name or
+ * a reference means.
  */
 message KubernetesExternalSecretStoreRef {
-  /**
-   * Store name. Accepts a literal name or a reference to a
-   * KubernetesSecretStore (default) / KubernetesClusterSecretStore
-   * resource's output — set `kind` to match.
-   */
+  option (buf.validate.message).cel = {
+    id: "store_ref.one_required"
+    message: "A store is required -- choose 'secret_store' (a namespaced SecretStore in this secret's namespace) or 'cluster_secret_store' (a cluster-scoped ClusterSecretStore any namespace can read)"
+    expression: "[has(this.secret_store), has(this.cluster_secret_store)].filter(x, x).size() == 1"
+  };
+
+  // The store's name and grain moved into the typed arms below.
+  reserved 1, 2;
+  reserved "name", "kind";
+
+  oneof store_type {
+    // A namespaced SecretStore in this secret's namespace, by name.
+    KubernetesExternalSecretSecretStoreRef secret_store = 3;
+
+    // A cluster-scoped ClusterSecretStore, by name.
+    KubernetesExternalSecretClusterSecretStoreRef cluster_secret_store = 4;
+  }
+}
+
+// Reference to a namespaced SecretStore.
+message KubernetesExternalSecretSecretStoreRef {
+  // SecretStore name. Accepts a literal name or a reference to a
+  // KubernetesSecretStore resource.
   dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecretStore,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.store_name",
     (dev.planton.shared.options.diagram_label) = "reads from"
   ];
+}
 
-  /**
-   * Store kind: "SecretStore" (namespaced, upstream default) or
-   * "ClusterSecretStore" (cluster-scoped).
-   */
-  optional string kind = 2 [
-    (dev.planton.shared.options.default) = "SecretStore",
-    (buf.validate.field).string = {
-      in: [
-        "SecretStore",
-        "ClusterSecretStore"
-      ]
-    }
+// Reference to a cluster-scoped ClusterSecretStore.
+message KubernetesExternalSecretClusterSecretStoreRef {
+  // ClusterSecretStore name. Accepts a literal name or a reference to a
+  // KubernetesClusterSecretStore resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesClusterSecretStore,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.store_name",
+    (dev.planton.shared.options.diagram_label) = "reads from"
   ];
 }
 

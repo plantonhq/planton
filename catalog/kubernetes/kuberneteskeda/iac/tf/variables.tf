@@ -88,8 +88,12 @@ variable "spec" {
     certificates = optional(object({
       type = optional(string)
       cert_manager_issuer = optional(object({
-        kind = optional(string)
-        name = string
+        issuer = optional(object({
+          name = string
+        }))
+        cluster_issuer = optional(object({
+          name = string
+        }))
       }))
     }))
 

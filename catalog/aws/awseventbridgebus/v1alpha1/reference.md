@@ -307,6 +307,7 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | AwsAppSyncApi | `spec.datasources[].eventbridge.eventBusArn` | `status.outputs.bus_arn` |
 | AwsEventBridgeRule | `spec.eventBusName` | `status.outputs.bus_name` |
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.bus_arn` |
 | AwsSesConfigurationSet | `spec.eventDestinations[].eventBus` | `status.outputs.bus_arn` |
 
 ## See Also

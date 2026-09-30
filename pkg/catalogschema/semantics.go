@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	validatepb "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/plantonhq/planton/shared/options"
@@ -69,6 +70,20 @@ func extractFieldSemantics(fd protoreflect.FieldDescriptor) (*ProtoFieldSemantic
 	if proto.HasExtension(opts, foreignkeyv1.E_DefaultKindFieldPath) {
 		path := proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
 		parts = append(parts, fmt.Sprintf(`(dev.planton.shared.foreignkey.v1.default_kind_field_path) = "%s"`, path))
+	}
+
+	// 6. dev.planton.shared.foreignkey.v1.candidate (repeated)
+	candidates, _ := proto.GetExtension(opts, foreignkeyv1.E_Candidate).([]*foreignkeyv1.ReferenceCandidate)
+	for _, c := range candidates {
+		parts = append(parts, fmt.Sprintf(`(dev.planton.shared.foreignkey.v1.candidate) = {kind: %s, field_path: "%s"}`,
+			c.GetKind().String(), c.GetFieldPath()))
+	}
+	if len(candidates) > 0 {
+		for _, key := range refannotations.Of(fd).Keys() {
+			sem.ForeignKeyCandidates = append(sem.ForeignKeyCandidates,
+				ForeignKeyCandidate{Kind: key.Kind.String(), FieldPath: key.FieldPath})
+		}
+		hasAnySemantic = true
 	}
 
 	rawOpts := strings.Join(parts, ", ")

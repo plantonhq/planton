@@ -686,6 +686,14 @@ Fields that can point at another resource's outputs:
 | `spec.config.vault.kubernetes.serviceAccountName` | KubernetesServiceAccount | `status.outputs.service_account_name` |
 | `spec.config.kubernetes.serviceAccountName` | KubernetesServiceAccount | `status.outputs.service_account_name` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| KubernetesExternalSecret | `spec.storeRef.clusterSecretStore.name` | `status.outputs.store_name` |
+
 ## See Also
 
 - [Overview](../README.md)

@@ -177,10 +177,12 @@ locals {
   cert_manager_values = {
     for k, v in {
       enabled = true
+      # The arm is the grain: cluster_issuer renders a ClusterIssuer, issuer
+      # a namespaced Issuer.
       issuer = try(var.spec.certificates.cert_manager_issuer, null) != null ? {
         generate = false
-        name     = var.spec.certificates.cert_manager_issuer.name
-        kind     = try(var.spec.certificates.cert_manager_issuer.kind, "issuer") == "cluster_issuer" ? "ClusterIssuer" : "Issuer"
+        name     = try(var.spec.certificates.cert_manager_issuer.cluster_issuer.name, var.spec.certificates.cert_manager_issuer.issuer.name)
+        kind     = try(var.spec.certificates.cert_manager_issuer.cluster_issuer.name, null) != null ? "ClusterIssuer" : "Issuer"
         group    = "cert-manager.io"
       } : null
     } : k => v if v != null

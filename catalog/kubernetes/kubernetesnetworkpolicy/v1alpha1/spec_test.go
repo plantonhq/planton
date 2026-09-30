@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -112,8 +113,8 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 				EgressRules: []*KubernetesNetworkPolicyEgressRule{{
 					To: []*KubernetesNetworkPolicyPeer{{
 						IpBlock: &KubernetesNetworkPolicyIpBlock{
-							Cidr:   "0.0.0.0/0",
-							Except: []string{"169.254.169.254/32"},
+							Cidr:   literalRange("0.0.0.0/0"),
+							Except: []*foreignkeyv1.StringValueOrRef{literalRange("169.254.169.254/32")},
 						},
 					}},
 					Ports: []*KubernetesNetworkPolicyPort{{
@@ -190,7 +191,7 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 				Name: "bad",
 				IngressRules: []*KubernetesNetworkPolicyIngressRule{{
 					From: []*KubernetesNetworkPolicyPeer{{
-						IpBlock: &KubernetesNetworkPolicyIpBlock{Cidr: "10.0.0.0/8"},
+						IpBlock: &KubernetesNetworkPolicyIpBlock{Cidr: literalRange("10.0.0.0/8")},
 						PodSelector: &KubernetesNetworkPolicyLabelSelector{
 							MatchLabels: map[string]string{"app": "x"},
 						},
@@ -233,12 +234,31 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 			gomega.Expect(protovalidate.Validate(spec)).ToNot(gomega.BeNil())
 		})
 
+		ginkgo.It("accepts ranges by reference to the resources that own them", func() {
+			spec := &KubernetesNetworkPolicySpec{
+				Name:        "build-egress",
+				PolicyTypes: []KubernetesNetworkPolicySpec_KubernetesNetworkPolicyType{KubernetesNetworkPolicySpec_egress},
+				EgressRules: []*KubernetesNetworkPolicyEgressRule{{
+					To: []*KubernetesNetworkPolicyPeer{{
+						IpBlock: &KubernetesNetworkPolicyIpBlock{
+							Cidr: literalRange("0.0.0.0/0"),
+							Except: []*foreignkeyv1.StringValueOrRef{
+								rangeFrom(cloudresourcekind.CloudResourceKind_GcpSubnetwork, "gke-nodes", "status.outputs.ip_cidr_range"),
+								rangeFrom(cloudresourcekind.CloudResourceKind_GcpSubnetwork, "gke-nodes", "status.outputs.secondary_ranges.0.ip_cidr_range"),
+							},
+						},
+					}},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("rejects an invalid CIDR", func() {
 			spec := &KubernetesNetworkPolicySpec{
 				Name: "bad",
 				IngressRules: []*KubernetesNetworkPolicyIngressRule{{
 					From: []*KubernetesNetworkPolicyPeer{{
-						IpBlock: &KubernetesNetworkPolicyIpBlock{Cidr: "10.0.0.5"},
+						IpBlock: &KubernetesNetworkPolicyIpBlock{Cidr: literalRange("10.0.0.5")},
 					}},
 				}},
 			}
@@ -251,8 +271,8 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 				IngressRules: []*KubernetesNetworkPolicyIngressRule{{
 					From: []*KubernetesNetworkPolicyPeer{{
 						IpBlock: &KubernetesNetworkPolicyIpBlock{
-							Cidr:   "10.0.0.0/8",
-							Except: []string{"not-a-cidr"},
+							Cidr:   literalRange("10.0.0.0/8"),
+							Except: []*foreignkeyv1.StringValueOrRef{literalRange("not-a-cidr")},
 						},
 					}},
 				}},
@@ -338,3 +358,15 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 		})
 	})
 })
+
+// literalRange is an ip_block range written as a literal CIDR.
+func literalRange(cidr string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: cidr}}
+}
+
+// rangeFrom is an ip_block range read from another resource's output.
+func rangeFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name, FieldPath: fieldPath},
+	}}
+}

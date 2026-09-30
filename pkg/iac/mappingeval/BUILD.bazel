@@ -24,6 +24,7 @@ go_library(
         "//pkg/crkreflect",
         "//pkg/iac/importmap",
         "//pkg/protobufyaml",
+        "//pkg/refannotations",
         "//qa/mappingevalsuite/v1:mappingevalsuite",
         "//shared/cloudresourcekind",
         "//shared/foreignkey/v1:foreignkey",

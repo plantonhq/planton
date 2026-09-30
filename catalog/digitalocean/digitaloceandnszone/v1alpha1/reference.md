@@ -277,6 +277,7 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | DigitalOceanApp | `spec.domains[].zone` | `status.outputs.zone_name` |
 | DigitalOceanDnsRecord | `spec.domain` | `status.outputs.zone_name` |
+| DigitalOceanProject | `spec.resources` | `status.outputs.urn` |
 
 ## See Also
 

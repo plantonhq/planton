@@ -3156,6 +3156,14 @@ Fields on other kinds that can point at this resource:
 | AzureAksNodePool | `spec.kubernetesClusterId` | `status.outputs.cluster_id` |
 | AzureDataProtectionBackupInstance | `spec.kubernetesCluster.kubernetesClusterId` | `status.outputs.cluster_id` |
 | AzureFederatedIdentityCredential | `spec.issuer` | `status.outputs.oidc_issuer_url` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.network_profile.pod_cidr` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.network_profile.service_cidr` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `spec.network_profile.pod_cidr` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `spec.network_profile.service_cidr` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `spec.network_profile.pod_cidr` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `spec.network_profile.service_cidr` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `spec.network_profile.pod_cidr` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `spec.network_profile.service_cidr` |
 
 ## See Also
 

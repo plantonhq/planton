@@ -554,6 +554,7 @@ Fields on other kinds that can point at this resource:
 | AzureContainerAppEnvironmentManagedCertificate | `spec.containerAppEnvironmentId` | `status.outputs.environment_id` |
 | AzureContainerAppEnvironmentStorage | `spec.containerAppEnvironmentId` | `status.outputs.environment_id` |
 | AzureContainerAppJob | `spec.containerAppEnvironmentId` | `status.outputs.environment_id` |
+| AzureFrontDoorOrigin | `spec.privateLink.privateLinkTargetId` | `status.outputs.environment_id` |
 | AzurePlantonRunner | `spec.containerAppEnvironmentId` | `status.outputs.environment_id` |
 
 ## See Also

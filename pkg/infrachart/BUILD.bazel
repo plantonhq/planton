@@ -14,6 +14,7 @@ go_library(
     deps = [
         "//internal/manifest",
         "//pkg/crkreflect",
+        "//pkg/deferrules",
         "//pkg/manifestgraph",
         "//pkg/reflection/metadatareflect",
         "//shared/cloudresourcekind",

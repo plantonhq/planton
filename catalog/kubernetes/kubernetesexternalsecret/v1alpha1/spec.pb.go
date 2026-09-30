@@ -160,18 +160,18 @@ func (x *KubernetesExternalSecretSpec) GetDataFrom() []*KubernetesExternalSecret
 }
 
 // *
-// Reference to the store this secret syncs from.
+// Selects the store this secret syncs from: a namespaced SecretStore (in the
+// ExternalSecret's own namespace) or a cluster-scoped ClusterSecretStore.
+// The grain is the arm, so every reader -- the reference picker, the
+// dependency graph, the modules -- knows which store kind a literal name or
+// a reference means.
 type KubernetesExternalSecretStoreRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// Store name. Accepts a literal name or a reference to a
-	// KubernetesSecretStore (default) / KubernetesClusterSecretStore
-	// resource's output — set `kind` to match.
-	Name *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// *
-	// Store kind: "SecretStore" (namespaced, upstream default) or
-	// "ClusterSecretStore" (cluster-scoped).
-	Kind          *string `protobuf:"bytes,2,opt,name=kind,proto3,oneof" json:"kind,omitempty"`
+	// Types that are valid to be assigned to StoreType:
+	//
+	//	*KubernetesExternalSecretStoreRef_SecretStore
+	//	*KubernetesExternalSecretStoreRef_ClusterSecretStore
+	StoreType     isKubernetesExternalSecretStoreRef_StoreType `protobuf_oneof:"store_type"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -206,18 +206,142 @@ func (*KubernetesExternalSecretStoreRef) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesExternalSecretStoreRef) GetName() *v1.StringValueOrRef {
+func (x *KubernetesExternalSecretStoreRef) GetStoreType() isKubernetesExternalSecretStoreRef_StoreType {
+	if x != nil {
+		return x.StoreType
+	}
+	return nil
+}
+
+func (x *KubernetesExternalSecretStoreRef) GetSecretStore() *KubernetesExternalSecretSecretStoreRef {
+	if x != nil {
+		if x, ok := x.StoreType.(*KubernetesExternalSecretStoreRef_SecretStore); ok {
+			return x.SecretStore
+		}
+	}
+	return nil
+}
+
+func (x *KubernetesExternalSecretStoreRef) GetClusterSecretStore() *KubernetesExternalSecretClusterSecretStoreRef {
+	if x != nil {
+		if x, ok := x.StoreType.(*KubernetesExternalSecretStoreRef_ClusterSecretStore); ok {
+			return x.ClusterSecretStore
+		}
+	}
+	return nil
+}
+
+type isKubernetesExternalSecretStoreRef_StoreType interface {
+	isKubernetesExternalSecretStoreRef_StoreType()
+}
+
+type KubernetesExternalSecretStoreRef_SecretStore struct {
+	// A namespaced SecretStore in this secret's namespace, by name.
+	SecretStore *KubernetesExternalSecretSecretStoreRef `protobuf:"bytes,3,opt,name=secret_store,json=secretStore,proto3,oneof"`
+}
+
+type KubernetesExternalSecretStoreRef_ClusterSecretStore struct {
+	// A cluster-scoped ClusterSecretStore, by name.
+	ClusterSecretStore *KubernetesExternalSecretClusterSecretStoreRef `protobuf:"bytes,4,opt,name=cluster_secret_store,json=clusterSecretStore,proto3,oneof"`
+}
+
+func (*KubernetesExternalSecretStoreRef_SecretStore) isKubernetesExternalSecretStoreRef_StoreType() {}
+
+func (*KubernetesExternalSecretStoreRef_ClusterSecretStore) isKubernetesExternalSecretStoreRef_StoreType() {
+}
+
+// Reference to a namespaced SecretStore.
+type KubernetesExternalSecretSecretStoreRef struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// SecretStore name. Accepts a literal name or a reference to a
+	// KubernetesSecretStore resource.
+	Name          *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesExternalSecretSecretStoreRef) Reset() {
+	*x = KubernetesExternalSecretSecretStoreRef{}
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesExternalSecretSecretStoreRef) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesExternalSecretSecretStoreRef) ProtoMessage() {}
+
+func (x *KubernetesExternalSecretSecretStoreRef) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesExternalSecretSecretStoreRef.ProtoReflect.Descriptor instead.
+func (*KubernetesExternalSecretSecretStoreRef) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *KubernetesExternalSecretSecretStoreRef) GetName() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Name
 	}
 	return nil
 }
 
-func (x *KubernetesExternalSecretStoreRef) GetKind() string {
-	if x != nil && x.Kind != nil {
-		return *x.Kind
+// Reference to a cluster-scoped ClusterSecretStore.
+type KubernetesExternalSecretClusterSecretStoreRef struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ClusterSecretStore name. Accepts a literal name or a reference to a
+	// KubernetesClusterSecretStore resource.
+	Name          *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesExternalSecretClusterSecretStoreRef) Reset() {
+	*x = KubernetesExternalSecretClusterSecretStoreRef{}
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesExternalSecretClusterSecretStoreRef) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesExternalSecretClusterSecretStoreRef) ProtoMessage() {}
+
+func (x *KubernetesExternalSecretClusterSecretStoreRef) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-	return ""
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesExternalSecretClusterSecretStoreRef.ProtoReflect.Descriptor instead.
+func (*KubernetesExternalSecretClusterSecretStoreRef) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *KubernetesExternalSecretClusterSecretStoreRef) GetName() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Name
+	}
+	return nil
 }
 
 // *
@@ -268,7 +392,7 @@ type KubernetesExternalSecretTarget struct {
 
 func (x *KubernetesExternalSecretTarget) Reset() {
 	*x = KubernetesExternalSecretTarget{}
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -280,7 +404,7 @@ func (x *KubernetesExternalSecretTarget) String() string {
 func (*KubernetesExternalSecretTarget) ProtoMessage() {}
 
 func (x *KubernetesExternalSecretTarget) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -293,7 +417,7 @@ func (x *KubernetesExternalSecretTarget) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesExternalSecretTarget.ProtoReflect.Descriptor instead.
 func (*KubernetesExternalSecretTarget) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesExternalSecretTarget) GetName() string {
@@ -364,7 +488,7 @@ type KubernetesExternalSecretTemplate struct {
 
 func (x *KubernetesExternalSecretTemplate) Reset() {
 	*x = KubernetesExternalSecretTemplate{}
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -376,7 +500,7 @@ func (x *KubernetesExternalSecretTemplate) String() string {
 func (*KubernetesExternalSecretTemplate) ProtoMessage() {}
 
 func (x *KubernetesExternalSecretTemplate) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -389,7 +513,7 @@ func (x *KubernetesExternalSecretTemplate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesExternalSecretTemplate.ProtoReflect.Descriptor instead.
 func (*KubernetesExternalSecretTemplate) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesExternalSecretTemplate) GetType() string {
@@ -443,7 +567,7 @@ type KubernetesExternalSecretData struct {
 
 func (x *KubernetesExternalSecretData) Reset() {
 	*x = KubernetesExternalSecretData{}
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -455,7 +579,7 @@ func (x *KubernetesExternalSecretData) String() string {
 func (*KubernetesExternalSecretData) ProtoMessage() {}
 
 func (x *KubernetesExternalSecretData) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -468,7 +592,7 @@ func (x *KubernetesExternalSecretData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesExternalSecretData.ProtoReflect.Descriptor instead.
 func (*KubernetesExternalSecretData) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesExternalSecretData) GetSecretKey() string {
@@ -518,7 +642,7 @@ type KubernetesExternalSecretRemoteRef struct {
 
 func (x *KubernetesExternalSecretRemoteRef) Reset() {
 	*x = KubernetesExternalSecretRemoteRef{}
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -530,7 +654,7 @@ func (x *KubernetesExternalSecretRemoteRef) String() string {
 func (*KubernetesExternalSecretRemoteRef) ProtoMessage() {}
 
 func (x *KubernetesExternalSecretRemoteRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -543,7 +667,7 @@ func (x *KubernetesExternalSecretRemoteRef) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesExternalSecretRemoteRef.ProtoReflect.Descriptor instead.
 func (*KubernetesExternalSecretRemoteRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesExternalSecretRemoteRef) GetKey() string {
@@ -595,7 +719,7 @@ type KubernetesExternalSecretDataFrom struct {
 
 func (x *KubernetesExternalSecretDataFrom) Reset() {
 	*x = KubernetesExternalSecretDataFrom{}
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -607,7 +731,7 @@ func (x *KubernetesExternalSecretDataFrom) String() string {
 func (*KubernetesExternalSecretDataFrom) ProtoMessage() {}
 
 func (x *KubernetesExternalSecretDataFrom) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -620,7 +744,7 @@ func (x *KubernetesExternalSecretDataFrom) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesExternalSecretDataFrom.ProtoReflect.Descriptor instead.
 func (*KubernetesExternalSecretDataFrom) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesExternalSecretDataFrom) GetSource() isKubernetesExternalSecretDataFrom_Source {
@@ -697,7 +821,7 @@ type KubernetesExternalSecretFind struct {
 
 func (x *KubernetesExternalSecretFind) Reset() {
 	*x = KubernetesExternalSecretFind{}
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -709,7 +833,7 @@ func (x *KubernetesExternalSecretFind) String() string {
 func (*KubernetesExternalSecretFind) ProtoMessage() {}
 
 func (x *KubernetesExternalSecretFind) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -722,7 +846,7 @@ func (x *KubernetesExternalSecretFind) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesExternalSecretFind.ProtoReflect.Descriptor instead.
 func (*KubernetesExternalSecretFind) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesExternalSecretFind) GetPath() string {
@@ -762,7 +886,7 @@ type KubernetesExternalSecretRewrite struct {
 
 func (x *KubernetesExternalSecretRewrite) Reset() {
 	*x = KubernetesExternalSecretRewrite{}
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -774,7 +898,7 @@ func (x *KubernetesExternalSecretRewrite) String() string {
 func (*KubernetesExternalSecretRewrite) ProtoMessage() {}
 
 func (x *KubernetesExternalSecretRewrite) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -787,7 +911,7 @@ func (x *KubernetesExternalSecretRewrite) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesExternalSecretRewrite.ProtoReflect.Descriptor instead.
 func (*KubernetesExternalSecretRewrite) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *KubernetesExternalSecretRewrite) GetSource() string {
@@ -819,12 +943,19 @@ const file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDe
 	"\tdata_from\x18\a \x03(\v2Z.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFromR\bdataFrom:\x9d\x01\xbaH\x99\x01\x1a\x96\x01\n" +
 	"\x16xsec.data_or_data_from\x12KDeclare something to sync — at least one data entry or one data_from pull\x1a/size(this.data) > 0 || size(this.data_from) > 0B\x13\n" +
 	"\x11_refresh_intervalB\x11\n" +
-	"\x0f_refresh_policy\"\xfb\x01\n" +
-	" KubernetesExternalSecretStoreRef\x12~\n" +
+	"\x0f_refresh_policy\"\x9f\x05\n" +
+	" KubernetesExternalSecretStoreRef\x12\x85\x01\n" +
+	"\fsecret_store\x18\x03 \x01(\v2`.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSecretStoreRefH\x00R\vsecretStore\x12\x9b\x01\n" +
+	"\x14cluster_secret_store\x18\x04 \x01(\v2g.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretClusterSecretStoreRefH\x00R\x12clusterSecretStore:\xae\x02\xbaH\xaa\x02\x1a\xa7\x02\n" +
+	"\x16store_ref.one_required\x12\xb9\x01A store is required -- choose 'secret_store' (a namespaced SecretStore in this secret's namespace) or 'cluster_secret_store' (a cluster-scoped ClusterSecretStore any namespace can read)\x1aQ[has(this.secret_store), has(this.cluster_secret_store)].filter(x, x).size() == 1B\f\n" +
+	"\n" +
+	"store_typeJ\x04\b\x01\x10\x02J\x04\b\x02\x10\x03R\x04nameR\x04kind\"\xa8\x01\n" +
+	"&KubernetesExternalSecretSecretStoreRef\x12~\n" +
 	"\x04name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x03\xc8\x01\x01\xb2\xa6\x1d\n" +
-	"reads from\x88\xd4a\xc5\x1f\x92\xd4a\x19status.outputs.store_nameR\x04name\x12N\n" +
-	"\x04kind\x18\x02 \x01(\tB5\xbaH#r!R\vSecretStoreR\x12ClusterSecretStore\x8a\xa6\x1d\vSecretStoreH\x00R\x04kind\x88\x01\x01B\a\n" +
-	"\x05_kind\"\xa2\x03\n" +
+	"reads from\x88\xd4a\xc5\x1f\x92\xd4a\x19status.outputs.store_nameR\x04name\"\xaf\x01\n" +
+	"-KubernetesExternalSecretClusterSecretStoreRef\x12~\n" +
+	"\x04name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x03\xc8\x01\x01\xb2\xa6\x1d\n" +
+	"reads from\x88\xd4a\xc4\x1f\x92\xd4a\x19status.outputs.store_nameR\x04name\"\xa2\x03\n" +
 	"\x1eKubernetesExternalSecretTarget\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12X\n" +
 	"\x0fcreation_policy\x18\x02 \x01(\tB*\xbaH\x1er\x1cR\x05OwnerR\x06OrphanR\x05MergeR\x04None\x8a\xa6\x1d\x05OwnerH\x00R\x0ecreationPolicy\x88\x01\x01\x12T\n" +
@@ -892,44 +1023,49 @@ func file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDes
 	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_goTypes = []any{
-	(*KubernetesExternalSecretSpec)(nil),      // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec
-	(*KubernetesExternalSecretStoreRef)(nil),  // 1: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStoreRef
-	(*KubernetesExternalSecretTarget)(nil),    // 2: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTarget
-	(*KubernetesExternalSecretTemplate)(nil),  // 3: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate
-	(*KubernetesExternalSecretData)(nil),      // 4: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretData
-	(*KubernetesExternalSecretRemoteRef)(nil), // 5: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRemoteRef
-	(*KubernetesExternalSecretDataFrom)(nil),  // 6: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom
-	(*KubernetesExternalSecretFind)(nil),      // 7: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind
-	(*KubernetesExternalSecretRewrite)(nil),   // 8: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRewrite
-	nil,                                       // 9: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.LabelsEntry
-	nil,                                       // 10: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.AnnotationsEntry
-	nil,                                       // 11: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.DataEntry
-	nil,                                       // 12: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind.TagsEntry
-	(*v1.StringValueOrRef)(nil),               // 13: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*KubernetesExternalSecretSpec)(nil),                  // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec
+	(*KubernetesExternalSecretStoreRef)(nil),              // 1: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStoreRef
+	(*KubernetesExternalSecretSecretStoreRef)(nil),        // 2: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSecretStoreRef
+	(*KubernetesExternalSecretClusterSecretStoreRef)(nil), // 3: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretClusterSecretStoreRef
+	(*KubernetesExternalSecretTarget)(nil),                // 4: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTarget
+	(*KubernetesExternalSecretTemplate)(nil),              // 5: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate
+	(*KubernetesExternalSecretData)(nil),                  // 6: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretData
+	(*KubernetesExternalSecretRemoteRef)(nil),             // 7: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRemoteRef
+	(*KubernetesExternalSecretDataFrom)(nil),              // 8: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom
+	(*KubernetesExternalSecretFind)(nil),                  // 9: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind
+	(*KubernetesExternalSecretRewrite)(nil),               // 10: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRewrite
+	nil,                                                   // 11: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.LabelsEntry
+	nil,                                                   // 12: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.AnnotationsEntry
+	nil,                                                   // 13: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.DataEntry
+	nil,                                                   // 14: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind.TagsEntry
+	(*v1.StringValueOrRef)(nil),                           // 15: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_depIdxs = []int32{
-	13, // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 1: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.store_ref:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStoreRef
-	2,  // 2: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.target:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTarget
-	4,  // 3: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.data:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretData
-	6,  // 4: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.data_from:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom
-	13, // 5: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStoreRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 6: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTarget.template:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate
-	9,  // 7: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.labels:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.LabelsEntry
-	10, // 8: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.annotations:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.AnnotationsEntry
-	11, // 9: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.data:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.DataEntry
-	5,  // 10: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretData.remote_ref:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRemoteRef
-	5,  // 11: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom.extract:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRemoteRef
-	7,  // 12: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom.find:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind
-	8,  // 13: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom.rewrite:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRewrite
-	12, // 14: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind.tags:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind.TagsEntry
-	15, // [15:15] is the sub-list for method output_type
-	15, // [15:15] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	4,  // 2: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.target:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTarget
+	6,  // 3: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.data:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretData
+	8,  // 4: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSpec.data_from:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom
+	2,  // 5: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStoreRef.secret_store:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSecretStoreRef
+	3,  // 6: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStoreRef.cluster_secret_store:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretClusterSecretStoreRef
+	15, // 7: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretSecretStoreRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 8: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretClusterSecretStoreRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 9: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTarget.template:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate
+	11, // 10: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.labels:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.LabelsEntry
+	12, // 11: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.annotations:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.AnnotationsEntry
+	13, // 12: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.data:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.DataEntry
+	7,  // 13: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretData.remote_ref:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRemoteRef
+	7,  // 14: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom.extract:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRemoteRef
+	9,  // 15: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom.find:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind
+	10, // 16: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretDataFrom.rewrite:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretRewrite
+	14, // 17: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind.tags:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretFind.TagsEntry
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_init() }
@@ -938,11 +1074,14 @@ func file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_init()
 		return
 	}
 	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{
+		(*KubernetesExternalSecretStoreRef_SecretStore)(nil),
+		(*KubernetesExternalSecretStoreRef_ClusterSecretStore)(nil),
+	}
+	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{
 		(*KubernetesExternalSecretDataFrom_Extract)(nil),
 		(*KubernetesExternalSecretDataFrom_Find)(nil),
 	}
@@ -952,7 +1091,7 @@ func file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_init()
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

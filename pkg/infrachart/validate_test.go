@@ -639,3 +639,34 @@ spec:
 		}
 	}
 }
+
+// A host that resolves reference tokens before anything deploys (the Planton
+// CLI and its `$secret/` references) names them, and a schema rule written
+// about the literal -- here the binary data's base64 pattern -- is set aside
+// for the token instead of failing the chart. Without the host's grammar the
+// same chart fails the rule, because the backendless deploy takes literals.
+func TestValidateDefersARuleOnAHostToken(t *testing.T) {
+	dir := writeChart(t, map[string]string{
+		"secret.yaml": `---
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesSecret
+metadata:
+  name: runner-ca
+spec:
+  name: runner-ca
+  namespace:
+    value: builds
+  opaque:
+    binaryData:
+      ca.crt: $secret/runner-ca
+`,
+	})
+	isToken := func(value string) bool { return strings.HasPrefix(value, "$secret/") }
+
+	requireError(t, mustValidate(t, dir, Options{}), "schema validation failed")
+
+	report := mustValidate(t, dir, Options{IsDeferredToken: isToken})
+	if errs := issueMessages(report, SeverityError); len(errs) > 0 {
+		t.Fatalf("a rule on a host token must be set aside, got: %v", errs)
+	}
+}

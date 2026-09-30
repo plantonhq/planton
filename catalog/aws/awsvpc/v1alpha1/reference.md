@@ -466,6 +466,10 @@ Fields on other kinds that can point at this resource:
 | AwsVpcEndpoint | `spec.vpcId` | `status.outputs.vpc_id` |
 | AwsVpcPeering | `spec.request.vpcId` | `status.outputs.vpc_id` |
 | AwsVpcPeering | `spec.request.peerVpcId` | `status.outputs.vpc_id` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.cidr_block` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `status.outputs.cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `status.outputs.cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `status.outputs.cidr_block` |
 
 ## See Also
 

@@ -172,7 +172,8 @@ message AwsEventBridgeScheduleTarget {
   // SageMaker pipeline, API destination, or any of the universal-
   // target API ARNs. No single kind dominates, so references here
   // carry NO default kind - in manifests, a valueFrom on this field
-  // must state its kind explicitly.
+  // must state its kind explicitly. The catalog kinds a target usually is
+  // are declared as candidates, each with its ARN output.
   //
   // Containment-exempt: the target is what the schedule INVOKES, never
   // where the schedule lives -- a schedule belongs to its schedule group.
@@ -181,7 +182,43 @@ message AwsEventBridgeScheduleTarget {
   // stands in its group with a line to what it fires.
   dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 1 [
     (buf.validate.field).required = true,
-    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsLambda
+      field_path: "status.outputs.function_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsSqsQueue
+      field_path: "status.outputs.queue_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsEcsCluster
+      field_path: "status.outputs.cluster_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsKinesisStream
+      field_path: "status.outputs.stream_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsStepFunction
+      field_path: "status.outputs.state_machine_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsEventBridgeBus
+      field_path: "status.outputs.bus_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsSagemakerPipeline
+      field_path: "status.outputs.pipeline_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsEventBridgeApiDestination
+      field_path: "status.outputs.api_destination_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsSnsTopic
+      field_path: "status.outputs.topic_arn"
+    }
   ];
 
   // The role Scheduler assumes to invoke the target. Its trust policy

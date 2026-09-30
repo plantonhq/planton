@@ -307,6 +307,14 @@ Fields that can point at another resource's outputs:
 | `spec.logging.logDestination` | AwsCloudwatchLogGroup | `status.outputs.log_group_arn` |
 | `spec.encryption.kmsKeyId` | AwsKmsKey | `status.outputs.key_arn` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.state_machine_arn` |
+
 ## See Also
 
 - [Overview](../README.md)

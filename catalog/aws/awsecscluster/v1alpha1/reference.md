@@ -1023,6 +1023,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | AwsEcsService | `spec.clusterArn` | `status.outputs.cluster_arn` |
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.cluster_arn` |
 
 ## See Also
 

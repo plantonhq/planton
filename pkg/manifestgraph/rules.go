@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/pkg/refcheck"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
-	"google.golang.org/protobuf/proto"
 )
 
 // Target is a checked reference's resolved destination: which kind and name
@@ -37,11 +36,7 @@ func (t Target) Identity(consumerEnv string) Identity {
 // unspecified. This is the kind-half of CheckRef, exported separately because
 // resolution lookups need it without the full rule evaluation.
 func EffectiveKind(use RefUse) cloudresourcekind.CloudResourceKind {
-	kind := use.Ref.GetKind()
-	if kind == cloudresourcekind.CloudResourceKind_unspecified && use.Field.Options() != nil {
-		kind, _ = proto.GetExtension(use.Field.Options(), foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
-	}
-	return kind
+	return refannotations.Of(use.Field).EffectiveKind(use.Ref.GetKind())
 }
 
 // CheckRef validates one valueFrom reference against the foreign-key
@@ -49,57 +44,63 @@ func EffectiveKind(use RefUse) cloudresourcekind.CloudResourceKind {
 // It returns the resolved target (for dependency-graph construction and
 // resolution) and any problems found.
 //
-// The rules, in order:
+// The field's composition keys are its candidate entries plus
+// (default_kind, default_kind_field_path) — see pkg/refannotations. The rules,
+// in order:
 //
 //  1. A reference must have a target kind: an explicit valueFrom.kind, or the
 //     field's default_kind annotation.
 //  2. A reference must have a field path: an explicit valueFrom.fieldPath, or
-//     — only when the target IS the field's default kind — the annotated
-//     default_kind_field_path.
-//  3. When the target is the field's default kind and the reference spells
-//     out a DIFFERENT field path than the annotation, that is an error: the
-//     annotated path is the composition key the modules are proven to accept,
-//     and overriding it is the id/name/self-link mismatch class that
-//     otherwise only surfaces at deploy time. A path that EXTENDS the
-//     annotated path is not an override: map-typed composition keys are
-//     addressed by entry key (`status.outputs.backend_pool_ids.web`), and
-//     the entry key is data the annotation cannot name.
+//     — only when the target kind has exactly one key on this field — that
+//     key. A kind the field composes from through more than one output must
+//     name which.
+//  3. An explicit path on a keyed kind must be one of that kind's keys: the
+//     key is the composition the modules are proven to accept, and choosing
+//     another output is the id/name/self-link mismatch class that otherwise
+//     only surfaces at deploy time. A path that EXTENDS a key is not an
+//     override: list elements and map entries are addressed by index or key
+//     (`status.outputs.backend_pool_ids.web`), data the annotation cannot
+//     name.
 //  4. The effective field path must resolve against the target kind's actual
 //     proto surface (stack outputs, spec, or metadata).
+//
+// The platform's Java reader applies the same rules; the case table in
+// rules_test.go is the contract both copy.
 func CheckRef(use RefUse) (Target, []string) {
 	var problems []string
+	annotations := refannotations.Of(use.Field)
 
-	var annotatedKind cloudresourcekind.CloudResourceKind
-	var annotatedPath string
-	if opts := use.Field.Options(); opts != nil {
-		annotatedKind, _ = proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
-		annotatedPath, _ = proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
-	}
-
-	targetKind := use.Ref.GetKind()
+	targetKind := annotations.EffectiveKind(use.Ref.GetKind())
 	if targetKind == cloudresourcekind.CloudResourceKind_unspecified {
-		targetKind = annotatedKind
-	}
-	if targetKind == cloudresourcekind.CloudResourceKind_unspecified {
-		problems = append(problems,
-			fmt.Sprintf("%s: valueFrom does not name a kind and the field declares no default kind — add an explicit `kind:`", use.FieldPath))
-		return Target{}, problems
-	}
-
-	effectivePath := use.Ref.GetFieldPath()
-	if effectivePath == "" {
-		if targetKind == annotatedKind && annotatedPath != "" {
-			effectivePath = annotatedPath
-		} else {
-			problems = append(problems,
-				fmt.Sprintf("%s: valueFrom targets %s but has no fieldPath, and no annotated default applies — add an explicit `fieldPath:`", use.FieldPath, targetKind))
-			return Target{Kind: targetKind, Name: use.Ref.GetName(), Env: use.Ref.GetEnv()}, problems
+		problem := fmt.Sprintf("%s: valueFrom does not name a kind and the field declares no default kind — add an explicit `kind:`", use.FieldPath)
+		if kinds := annotations.Kinds(); len(kinds) > 0 {
+			problem += fmt.Sprintf(" (the field accepts %s)", joinKinds(kinds))
 		}
-	} else if targetKind == annotatedKind && annotatedPath != "" && effectivePath != annotatedPath &&
-		!strings.HasPrefix(effectivePath, annotatedPath+".") {
+		return Target{}, append(problems, problem)
+	}
+
+	keys := annotations.KeysFor(targetKind)
+	effectivePath := use.Ref.GetFieldPath()
+	switch {
+	case effectivePath == "" && len(keys) == 1:
+		effectivePath = keys[0]
+	case effectivePath == "" && len(keys) > 1:
 		problems = append(problems,
-			fmt.Sprintf("%s: valueFrom overrides the annotated composition key for %s — the field's contract is %q but the reference names %q (id/name/self-link format mismatches only surface at deploy time; use the annotated path)",
-				use.FieldPath, targetKind, annotatedPath, effectivePath))
+			fmt.Sprintf("%s: valueFrom targets %s, which this field composes from more than one output (%s) — add an explicit `fieldPath:` naming one",
+				use.FieldPath, targetKind, strings.Join(keys, ", ")))
+		return Target{Kind: targetKind, Name: use.Ref.GetName(), Env: use.Ref.GetEnv()}, problems
+	case effectivePath == "":
+		problems = append(problems,
+			fmt.Sprintf("%s: valueFrom targets %s but has no fieldPath, and no annotated default applies — add an explicit `fieldPath:`", use.FieldPath, targetKind))
+		return Target{Kind: targetKind, Name: use.Ref.GetName(), Env: use.Ref.GetEnv()}, problems
+	case !annotations.AcceptsPath(targetKind, effectivePath):
+		contract := fmt.Sprintf("%q", keys[0])
+		if len(keys) > 1 {
+			contract = "one of " + strings.Join(quoteAll(keys), ", ")
+		}
+		problems = append(problems,
+			fmt.Sprintf("%s: valueFrom overrides the annotated composition key for %s — the field's contract is %s but the reference names %q (id/name/self-link format mismatches only surface at deploy time; use the annotated path)",
+				use.FieldPath, targetKind, contract, effectivePath))
 	}
 
 	if reason := refcheck.ResolveValueFromPath(targetKind, effectivePath); reason != "" {
@@ -108,4 +109,21 @@ func CheckRef(use RefUse) (Target, []string) {
 	}
 
 	return Target{Kind: targetKind, Name: use.Ref.GetName(), Env: use.Ref.GetEnv(), FieldPath: effectivePath}, problems
+}
+
+// joinKinds renders kinds for a sentence: "AwsS3Bucket, AwsCloudwatchLogGroup".
+func joinKinds(kinds []cloudresourcekind.CloudResourceKind) string {
+	names := make([]string, len(kinds))
+	for i, k := range kinds {
+		names[i] = k.String()
+	}
+	return strings.Join(names, ", ")
+}
+
+func quoteAll(values []string) []string {
+	quoted := make([]string, len(values))
+	for i, v := range values {
+		quoted[i] = fmt.Sprintf("%q", v)
+	}
+	return quoted
 }

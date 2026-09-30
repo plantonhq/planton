@@ -44,6 +44,19 @@ and vice versa — there is no fallback. A secret that exists only in the
 `$secret/db-password` for it fails validation with "secret not found",
 exactly like a misspelled slug. Scope is part of the address.
 
+A reference goes where the value goes, whatever shape rule the field
+carries: a base64 pattern, a CIDR format, a length. Validation judges the
+token's place, and the rule itself is applied to the value the reference
+resolves to, before anything deploys. A stored value that breaks the rule
+fails the deploy naming the field and the reference -- never printing the
+secret -- so fix the stored value (`planton secret set`), not the manifest.
+
+A provider connection's variable field (`domain: {variable: ...}` on an
+Auth0 connection, `region: {variable: ...}` on AWS) takes the same names as
+`$var/`, without the prefix: a variable's slug, or `<group>/<entry>` for an
+entry in a variable group. Connections read organization variables, so an
+`@<env>` segment is refused.
+
 Example — a sensitive field on a database user, environment-scoped:
 
 ```yaml

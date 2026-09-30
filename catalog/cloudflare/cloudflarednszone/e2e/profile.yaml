@@ -34,6 +34,9 @@ spec:
   # zone + all five records (portfolio, ids from the record_ids output) with
   # zero drift. The destroy verification also taught the harness that a
   # deleted zone answers GET zones/{id} with 400 code 1001, not 404.
+  # The portfolio's root-dot NS record (content `...googledomains.com.`, which
+  # the terraform module now sends without the dot, as the record kind's does)
+  # joined after that run; its live proof on both engines is still owed.
   status: green
   validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

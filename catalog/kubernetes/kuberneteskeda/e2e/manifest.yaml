@@ -48,9 +48,9 @@ spec:
   certificates:
     type: cert_manager
     certManagerIssuer:
-      kind: cluster_issuer
-      name:
-        value: hack-cluster-issuer
+      clusterIssuer:
+        name:
+          value: hack-cluster-issuer
   httpTimeoutMs: 5000
   priorityClassName: system-cluster-critical
   nodeSelector:

@@ -752,6 +752,7 @@ Fields on other kinds that can point at this resource:
 | DigitalOceanFirewall | `spec.inboundRules[].sourceKubernetesIds` | `status.outputs.cluster_id` |
 | DigitalOceanFirewall | `spec.outboundRules[].destinationKubernetesIds` | `status.outputs.cluster_id` |
 | DigitalOceanKubernetesNodePool | `spec.cluster` | `status.outputs.cluster_id` |
+| DigitalOceanProject | `spec.resources` | `status.outputs.urn` |
 
 ## See Also
 

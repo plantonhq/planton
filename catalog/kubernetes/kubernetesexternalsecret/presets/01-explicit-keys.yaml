@@ -6,9 +6,9 @@ spec:
   namespace:
     value: <app-namespace>
   storeRef:
-    name:
-      value: <cluster-secret-store-name>
-    kind: ClusterSecretStore # SecretStore (the default) for a namespaced store
+    clusterSecretStore: # a namespaced SecretStore in this namespace instead: secretStore
+      name:
+        value: <cluster-secret-store-name>
   refreshInterval: 1h # upstream default; rotation propagates within this window
   data:
     - secretKey: username

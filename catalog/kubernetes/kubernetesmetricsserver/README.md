@@ -103,8 +103,9 @@ The standard wiring: this component first, then every
 KubernetesHorizontalPodAutoscaler on the cluster just works — HPAs consume
 the metrics API anonymously, no reference needed. For a verified serving
 chain, deploy KubernetesCertManager and a KubernetesClusterIssuer in the same
-chart and point `tls.cert_manager_issuer.name` at the issuer's
-`status.outputs.cluster_issuer_name`.
+chart and point `tls.cert_manager_issuer.cluster_issuer.name` at the
+issuer's `status.outputs.cluster_issuer_name` (a namespaced KubernetesIssuer
+goes in `tls.cert_manager_issuer.issuer.name` instead).
 
 ---
 
