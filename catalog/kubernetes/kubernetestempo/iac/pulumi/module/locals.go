@@ -44,6 +44,11 @@ type Locals struct {
 
 	// kubectl one-liner for reaching the Tempo API from a workstation.
 	PortForwardCommand string
+
+	// The r2 arm's module-owned credentials Secret (`<name>-r2-credentials`)
+	// and its rendering; nil unless storage.r2 is declared.
+	R2CredentialsSecretName string
+	R2                      *r2Storage
 }
 
 // initializeLocals extracts and transforms spec fields into module-local
@@ -82,6 +87,10 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetestempov1alpha1.Kub
 		ReleaseName:  releaseName,
 		ChartVersion: chartVersion,
 		ServiceName:  releaseName,
+
+		R2CredentialsSecretName: releaseName + vars.R2CredentialsSecretSuffix,
+		R2:                      buildR2Storage(spec.GetStorage()),
+
 		HttpEndpoint: fmt.Sprintf("http://%s.%s.svc.cluster.local:%d",
 			releaseName, namespace, vars.HttpPort),
 		OtlpGrpcEndpoint: fmt.Sprintf("%s.%s.svc.cluster.local:%d",

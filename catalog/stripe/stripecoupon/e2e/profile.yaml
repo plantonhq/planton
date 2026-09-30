@@ -1,0 +1,15 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripecoupon
+spec:
+  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
+  # refused unless it is a test-mode key).
+  # A coupon is deleted on destroy, and the verifier proves it is gone. Every
+  # run's coupon carries the run in its name. The products scenario's
+  # prerequisite, a run-named StripeProduct, deploys first on OpenTofu.
+  # Awaiting its first live run, so no provisioner is claimed yet.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 5

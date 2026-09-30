@@ -1,0 +1,20 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripeproduct
+spec:
+  # The module manages two resource types: the product (imports by its Stripe id, prod_...) and one link per granted feature (each imports as "{product_id}/{product_feature_id}"). The link ids derive per instance from the product_feature_ids map output, keyed by the module's for_each key (the feature id), so a blind round-trip needs zero user input when state is present.
+  values:
+    - name: product_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Product catalog (the product's id, prod_..., on its page), or `GET
+        /v1/products` (the id of the entry whose name matches).
+    - name: product_feature_id
+      derivations:
+        - from_stack_output_keyed_by_address: product_feature_ids
+      where_to_find: >-
+        The id of each feature link: the `product_feature_ids` output keyed by the entitlement
+        feature's id (feat_...), or `GET /v1/products/<product id>/features` (the id of the entry
+        whose entitlement_feature.id matches). One import per granted feature.

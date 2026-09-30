@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeproduct.v1alpha1;
+
+// StripeProductStackOutputs identifies the product and the links that grant its features.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/product
+message StripeProductStackOutputs {
+  // id is the product's Stripe id (prod_...), the value a StripePrice's product references.
+  string id = 1;
+
+  // active is false once the product is archived (by destroy, by spec.active, or in the
+  // Dashboard).
+  bool active = 2;
+
+  // default_price is the price Stripe treats as the product's default (price_...), when one is
+  // set. This kind never sets it; it is observed so tools that read it see what Stripe reports.
+  string default_price = 3;
+
+  // product_feature_ids maps each granted entitlement feature's id (feat_...) to the id of the
+  // link that attaches it to this product -- the id Stripe needs to import or detach that link.
+  map<string, string> product_feature_ids = 4;
+}

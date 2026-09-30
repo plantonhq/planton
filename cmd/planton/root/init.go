@@ -22,7 +22,6 @@ import (
 	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
-	"github.com/plantonhq/planton/shared"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/proto"
 )
@@ -124,21 +123,27 @@ func initHandler(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	// Extract provisioner from manifest
-	provType, err := provisioner.ExtractFromManifest(manifestObject)
+	// The manifest's provisioner, else the kind's sole declared engine, else ask among the
+	// engines the kind runs on.
+	provType, err := provisioner.ForManifest(manifestObject)
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("Invalid provisioner in manifest: %v", err))
 		os.Exit(1)
 	}
-
-	// If provisioner not specified in manifest, prompt user
 	if provType == provisioner.ProvisionerTypeUnspecified {
 		cliprint.PrintInfo("Provisioner not specified in manifest")
-		provType, err = prompt.PromptForProvisioner()
+		allowed, err := provisioner.AllowedForManifest(manifestObject)
+		if err != nil {
+			cliprint.PrintError(fmt.Sprintf("Failed to read the engines this kind runs on: %v", err))
+			os.Exit(1)
+		}
+		provType, err = prompt.PromptForProvisioner(allowed...)
 		if err != nil {
 			cliprint.PrintError(fmt.Sprintf("Failed to get provisioner: %v", err))
 			os.Exit(1)
 		}
+	} else if note := provisioner.SoleEngineNote(manifestObject, provType); note != "" {
+		cliprint.PrintInfo(note)
 	}
 
 	cliprint.PrintSuccess(fmt.Sprintf("Using provisioner: %s", provType.String()))
@@ -155,13 +160,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 	// Handle --local-module flag: derive module directory from local planton repo
 	localModule, _ := cmd.Flags().GetBool(string(flag.LocalModule))
 	if localModule {
-		var iacProv shared.IacProvisioner
-		switch provType {
-		case provisioner.ProvisionerTypePulumi:
-			iacProv = shared.IacProvisioner_pulumi
-		case provisioner.ProvisionerTypeTofu, provisioner.ProvisionerTypeTerraform:
-			iacProv = shared.IacProvisioner_terraform
-		}
+		iacProv := provType.ModuleFamily()
 		moduleDir, err = localmodule.GetModuleDir(targetManifestPath, cmd, iacProv)
 		if err != nil {
 			if lmErr, ok := err.(*localmodule.Error); ok {

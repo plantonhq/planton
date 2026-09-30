@@ -1,0 +1,23 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeProduct
+metadata:
+  name: pro-plan
+  org: example-org
+  env: production
+spec:
+  name: Pro
+  description: For growing teams that need the API and more seats
+  unitLabel: seat
+  statementDescriptor: ACME PRO
+  taxCode: txcd_10103001
+  marketingFeatures:
+    - name: Unlimited projects
+    - name: API access
+    - name: Priority support
+  features:
+    - valueFrom:
+        kind: StripeEntitlementFeature
+        name: api-access
+    - valueFrom:
+        kind: StripeEntitlementFeature
+        name: seat-management

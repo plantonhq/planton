@@ -25,12 +25,41 @@ var vars = struct {
 	AdminPasswordKey string
 	// Service port the chart exposes (targets container 3000).
 	ServicePort int
+	// Sign-in: the module-owned Secret is `<name>` plus this suffix; its
+	// keys and the Grafana variables that read them are fixed, and the
+	// Terraform module uses the same literals (sso_secret_name and the
+	// sign-in env map in locals.tf).
+	SsoSecretSuffix             string
+	GoogleClientSecretKey       string
+	GoogleClientSecretEnv       string
+	GenericOAuthClientSecretKey string
+	GenericOAuthClientSecretEnv string
+	// Mirrors of the proto defaults for generic OAuth (the button label)
+	// and of Grafana's own default scope list.
+	DefaultGenericOAuthName string
+	DefaultOAuthScopes      []string
+	// sso_settings.configurable_providers once sign-in is declared: a
+	// value naming no provider (Grafana ignores an empty one).
+	NoConfigurableProviders string
+	// Pod annotation carrying the fingerprint of every module-owned
+	// Secret Grafana reads only at start; the same key on every catalog
+	// module that uses the pattern.
+	CredentialsChecksumAnnotation string
 }{
-	HelmChartName:       "grafana",
-	HelmChartRepo:       "https://grafana-community.github.io/helm-charts",
-	DefaultChartVersion: "12.8.0",
-	DefaultStorageSize:  "10Gi",
-	AdminUserKey:        "admin-user",
-	AdminPasswordKey:    "admin-password",
-	ServicePort:         80,
+	HelmChartName:                 "grafana",
+	HelmChartRepo:                 "https://grafana-community.github.io/helm-charts",
+	DefaultChartVersion:           "12.8.0",
+	DefaultStorageSize:            "10Gi",
+	AdminUserKey:                  "admin-user",
+	AdminPasswordKey:              "admin-password",
+	ServicePort:                   80,
+	SsoSecretSuffix:               "-sso",
+	GoogleClientSecretKey:         "google-client-secret",
+	GoogleClientSecretEnv:         "GF_AUTH_GOOGLE_CLIENT_SECRET",
+	GenericOAuthClientSecretKey:   "generic-oauth-client-secret",
+	GenericOAuthClientSecretEnv:   "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET",
+	DefaultGenericOAuthName:       "OAuth",
+	DefaultOAuthScopes:            []string{"openid", "email", "profile"},
+	NoConfigurableProviders:       "none",
+	CredentialsChecksumAnnotation: "checksum/credentials",
 }

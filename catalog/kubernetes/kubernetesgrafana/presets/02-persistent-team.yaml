@@ -30,7 +30,22 @@ spec:
           name: <stack-name>
       is_default: true
   # The public URL exposure will serve (compose a KubernetesIngress
-  # or Gateway API route over the exported service handle) — OAuth
+  # or Gateway API route over the exported service handle) — sign-in
   # redirects and links in alert notifications embed it.
   server:
     root_url: https://grafana.<your-domain>
+  # The team signs in with its Google Workspace. The OAuth client's
+  # redirect URI is <root_url>/login/google; its secret comes from
+  # Planton's secrets, never pasted. allowed_domains keeps every other
+  # Google account out, and the role path makes the named lead an Admin
+  # at every sign-in (everyone else is a Viewer). The login form stays as
+  # the break-glass way in while Google is the everyday one.
+  auth:
+    google:
+      client_id: <client-id>.apps.googleusercontent.com
+      client_secret:
+        value: $secret/grafana-google-signin-client-secret
+      allowed_domains:
+        - <your-domain>
+      hosted_domain: <your-domain>
+      role_attribute_path: "email == 'lead@<your-domain>' && 'Admin' || 'Viewer'"

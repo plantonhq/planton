@@ -76,7 +76,6 @@ go_library(
         "//pkg/refcheck",
         "//pkg/secretcoverage",
         "//pkg/setdeploy",
-        "//shared",
         "//shared/cloudresourcekind",
         "//shared/iac/pulumi",
         "//shared/iac/terraform",

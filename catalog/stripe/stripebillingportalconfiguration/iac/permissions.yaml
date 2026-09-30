@@ -1,0 +1,20 @@
+# Least-privilege permissions the IaC runner's Stripe key needs to provision, update, and
+# destroy this component with the official module. Stripe authenticates with a restricted API
+# key whose permissions are a Read or Write choice per resource on the Dashboard's restricted-key
+# form (Write includes Read); the stripe/stripe provider (0.3.0, iac/tf/provider.tf) sends it as
+# a bearer token. Resource names are the form's labels. Every group is `derived` (static analysis
+# of the module and the provider's calls, cited in notes) until a live run under a key built from
+# exactly this file upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: stripebillingportalconfiguration
+spec:
+  stripe:
+    groups:
+      - purpose: ManagePortalConfiguration
+        permissions:
+          - resource: Customer portal
+            access: write
+        provenance: derived
+        notes: The module (iac/tf/main.tf) manages stripe_billing_portal_configuration. The provider creates it with POST /v1/billing_portal/configurations, reads it with GET /v1/billing_portal/configurations/{id}, and updates and deactivates it with POST /v1/billing_portal/configurations/{id} -- there is no delete (terraform-provider-stripe internal/provider/resources/resource_stripe_billing_portal_configuration.go). Naming a payment-method configuration in features.payment_method_update sends only its id; Stripe does not document whether that also needs Payment Method Configurations read, and the live run under this file settles it.

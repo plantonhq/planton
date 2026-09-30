@@ -1,0 +1,20 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripebillingmeter
+spec:
+  # The module manages two resource types: the meter (imports by its Stripe id, mtr_...) and one alert per declared alert (each imports by its own id). The alert ids derive per instance from the alert_ids map output, keyed by the module's for_each key (the alert's title), so a blind round-trip needs zero user input when state is present.
+  values:
+    - name: billing_meter_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Billing -> Meters (the meter's id, mtr_..., on its page), or `GET
+        /v1/billing/meters`.
+    - name: billing_alert_id
+      derivations:
+        - from_stack_output_keyed_by_address: alert_ids
+      where_to_find: >-
+        The id of each alert: the `alert_ids` output keyed by the alert's title, or `GET
+        /v1/billing/alerts?meter=<meter id>` (the id of the entry whose title matches). One
+        import per alert.

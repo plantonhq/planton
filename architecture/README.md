@@ -129,7 +129,7 @@ The `planton validate` command checks these rules **before** calling any cloud A
 **Technology:** Pulumi and Terraform/OpenTofu  
 **Approach:** Provider-specific, deliberately simple
 
-Every component has **both** a Pulumi module and a Terraform module. You choose which IaC engine to use.
+Every component has **both** a Pulumi module and a Terraform module, and you choose which IaC engine to use -- unless its kind declares fewer engines (`kind_meta.provisioners`), because its provider publishes no Pulumi provider or its kinds are proven on OpenTofu alone. Such a component ships only the modules its engines run, and the CLI and the platform refuse any other engine before anything runs.
 
 **Why Both Pulumi and Terraform?**
 
@@ -332,7 +332,7 @@ YAML Manifest → Parse → Unmarshal to Proto → Validate Rules → Deploy or 
 - **Philosophy:** Idiomatic Terraform module structure
 
 **Feature Parity:**
-- Every Pulumi module has a corresponding Terraform module
+- Every Pulumi module has a corresponding Terraform module (a kind that declares fewer engines ships only the modules they run)
 - Same functionality, same defaults, same behavior
 - Users choose based on team preference
 

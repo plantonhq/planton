@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripepromotioncode
+spec:
+  # A promotion code imports by its Stripe id (promo_...), which a prior deploy reports as its id
+  # output -- not by the code customers type.
+  values:
+    - name: promotion_code_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Product catalog -> Coupons -> the coupon -> Promotion codes (the code's id, promo_...), or `GET /v1/promotion_codes?code=<code>`.

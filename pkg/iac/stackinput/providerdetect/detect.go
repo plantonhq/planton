@@ -76,6 +76,8 @@ func ProviderDisplayName(provider cloudresourcekind.CloudResourceProvider) strin
 		return "Kubernetes"
 	case cloudresourcekind.CloudResourceProvider_openfga:
 		return "OpenFGA"
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return "Stripe"
 	default:
 		return provider.String()
 	}

@@ -1,0 +1,18 @@
+# The canonical example: cards and wallets on, Link off. The lanes run
+# against the dedicated test sandbox only.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodConfiguration
+metadata:
+  name: checkout-methods
+  org: e2e-org
+  env: testing
+spec:
+  name: Planton catalog example methods
+  card:
+    preference: "on"
+  applePay:
+    preference: "on"
+  googlePay:
+    preference: "on"
+  link:
+    preference: "off"

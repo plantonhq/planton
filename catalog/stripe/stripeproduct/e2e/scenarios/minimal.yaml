@@ -1,0 +1,18 @@
+# A service product created, read back, updated in place (the description
+# carries the run), and archived on destroy.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeProduct
+metadata:
+  name: e2e-product
+  org: e2e-org
+  env: testing
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  description: e2e ${E2E_RUN_ID}
+  unitLabel: seat
+  statementDescriptor: PLANTON E2E
+  url: https://example.com/pricing
+  marketingFeatures:
+    - name: e2e marketing line
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

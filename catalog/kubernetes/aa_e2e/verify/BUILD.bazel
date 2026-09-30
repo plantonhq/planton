@@ -24,6 +24,7 @@ go_library(
         "gatewayrouting.go",
         "generic.go",
         "gharunner.go",
+        "grafana_signin.go",
         "grafanaserver.go",
         "harbor.go",
         "helm.go",
@@ -73,6 +74,7 @@ go_library(
         "preemption.go",
         "pvcdatasource.go",
         "qdrant.go",
+        "r2_objects.go",
         "rabbitmq.go",
         "raycluster.go",
         "rbac.go",
@@ -99,6 +101,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//catalog/kubernetes/kubernetesplantonoperator/v1alpha1",
+        "//pkg/cloudflare/r2",
         "//shared/options",
         "@com_github_aws_aws_sdk_go_v2//aws",
         "@com_github_aws_aws_sdk_go_v2_credentials//:credentials",

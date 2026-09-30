@@ -1,0 +1,8 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodDomain
+metadata:
+  name: checkout-domain
+  org: example-org
+  env: production
+spec:
+  domainName: pay.example.com

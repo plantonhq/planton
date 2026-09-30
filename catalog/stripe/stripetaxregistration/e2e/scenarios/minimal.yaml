@@ -1,0 +1,12 @@
+# The fewest fields: a simplified registration in India, scheduled for
+# 1 January 2100, with no expiry.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRegistration
+metadata:
+  name: e2e-tax-registration
+  org: e2e-org
+  env: testing
+spec:
+  country: IN
+  type: simplified
+  activeFrom: 4102444800

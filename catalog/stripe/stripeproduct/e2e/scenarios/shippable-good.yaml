@@ -1,0 +1,18 @@
+# A physical good: type good (sent only at create), shippable, and package
+# dimensions -- a present block whose every field is set, beside optional
+# scalars left out.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeProduct
+metadata:
+  name: e2e-product-good
+  org: e2e-org
+  env: testing
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  type: good
+  shippable: true
+  packageDimensions:
+    height: 2
+    length: 10
+    weight: 16
+    width: 8

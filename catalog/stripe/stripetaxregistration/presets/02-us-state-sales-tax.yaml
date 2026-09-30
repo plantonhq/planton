@@ -1,0 +1,11 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRegistration
+metadata:
+  name: us-tx-sales-tax
+  org: example-org
+  env: production
+spec:
+  country: US
+  type: state_sales_tax
+  state: TX
+  activeFrom: 4102444800

@@ -103,6 +103,11 @@ func ValidateProviderConfig(
 				"OpenFGA credentials required for resource '%s'. Provide credentials via provider_config in API request",
 				resourceName,
 			)
+		case cloudresourcekind.CloudResourceProvider_stripe:
+			return errors.Errorf(
+				"Stripe credentials required for resource '%s'. Provide credentials via provider_config in API request",
+				resourceName,
+			)
 		case cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified:
 			// No credentials needed for unspecified provider
 			return nil

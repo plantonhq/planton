@@ -1,0 +1,12 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripetaxrate
+spec:
+  # A tax rate imports by its Stripe id (txr_...), which a prior deploy reports as its id output.
+  values:
+    - name: tax_rate_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Product catalog -> Tax rates (the rate's id, txr_..., on its page), or `GET /v1/tax_rates`.

@@ -1,0 +1,14 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRate
+metadata:
+  name: de-vat
+  org: example-org
+  env: production
+spec:
+  displayName: VAT
+  percentage: 19
+  inclusive: false
+  country: DE
+  jurisdiction: DE
+  description: German VAT, standard rate
+  taxType: vat

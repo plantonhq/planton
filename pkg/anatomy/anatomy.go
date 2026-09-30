@@ -13,8 +13,8 @@
 //	├── cost.yaml          the component's cost profile           (required)
 //	├── controls.yaml      the component's control profile        (required)
 //	├── iac/               ONE live module set per component      (required)
-//	│   ├── pulumi/        with README.md, no Makefile            (required)
-//	│   ├── tf/            with README.md, no .gitignore          (required)
+//	│   ├── pulumi/        with README.md, no Makefile            (required*)
+//	│   ├── tf/            with README.md, no .gitignore          (required*)
 //	│   ├── permissions.yaml   runner least-privilege manifest    (required)
 //	│   ├── import-map.yaml                                       (optional)
 //	│   └── provider-parity.yaml   recorded parity judgment       (optional)
@@ -24,6 +24,11 @@
 //	└── <version>/         the versioned contract ONLY:
 //	    api.proto, spec.proto, input.proto, outputs.proto,
 //	    their .pb.go stubs, BUILD.bazel, spec_test.go, reference.md
+//
+// * Both engine modules are required unless the kind's kind_meta.provisioners
+// declares fewer engines; then the tree holds exactly the modules those engines
+// run (pulumi/ for pulumi, tf/ for tofu or terraform) and nothing else, so a
+// module for an engine the kind refuses can never ship.
 //
 // Two prefix conventions coexist deliberately: underscore dirs at the catalog
 // root (_docs/, _patterns/, _compliance/, _pricing/) hold non-component
@@ -55,6 +60,7 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/shared"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 )
 
@@ -86,6 +92,7 @@ const (
 	RuleMissingIac            = "missing-iac"
 	RuleMissingPulumi         = "missing-pulumi-module"
 	RuleMissingTf             = "missing-tf-module"
+	RuleUndeclaredEngine      = "module-for-undeclared-engine"
 	RuleMissingIacReadme      = "missing-iac-readme"
 	RuleForbiddenFile         = "forbidden-file"
 	RuleMissingPresets        = "missing-presets"
@@ -206,7 +213,7 @@ func Check(repoRoot string) ([]Violation, error) {
 				continue
 			}
 			delete(unseenKinds, kind)
-			checkComponent(repoRoot, rel, add)
+			checkComponent(repoRoot, rel, kind, add)
 		}
 	}
 
@@ -223,7 +230,7 @@ func Check(repoRoot string) ([]Violation, error) {
 	return vs, nil
 }
 
-func checkComponent(repoRoot, componentRel string, add func(rel, rule, detail string)) {
+func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudResourceKind, add func(rel, rule, detail string)) {
 	dir := filepath.Join(repoRoot, componentRel)
 	entries, _ := os.ReadDir(dir)
 
@@ -258,8 +265,9 @@ func checkComponent(repoRoot, componentRel string, add func(rel, rule, detail st
 		}
 	}
 
-	// iac/: one live module set, both engines, each with a README, no
-	// build-system or VCS residue.
+	// iac/: one live module set -- both engines, or exactly the modules the
+	// kind's declared engines run -- each with a README, no build-system or
+	// VCS residue.
 	if !names["iac"] {
 		add(componentRel, RuleMissingIac, "every component ships its module set at the root")
 	} else {
@@ -285,15 +293,30 @@ func checkComponent(repoRoot, componentRel string, add func(rel, rule, detail st
 			add(iacRel, RuleMissingPermissions,
 				"every module set declares the runner permissions it needs (iac/permissions.yaml)")
 		}
+		wanted, declared := moduleFamilies(kind)
 		for _, engine := range []string{"pulumi", "tf"} {
 			engineRel := filepath.Join(iacRel, engine)
 			engineDir := filepath.Join(repoRoot, engineRel)
-			if _, err := os.Stat(engineDir); err != nil {
+			_, statErr := os.Stat(engineDir)
+			present := statErr == nil
+			switch {
+			case !present && wanted[engine]:
 				rule := RuleMissingPulumi
 				if engine == "tf" {
 					rule = RuleMissingTf
 				}
-				add(componentRel, rule, "one live module set per component means both engines")
+				detail := "one live module set per component means both engines"
+				if declared != "" {
+					detail = kind.String() + " runs on " + declared + ", which needs iac/" + engine
+				}
+				add(componentRel, rule, detail)
+				continue
+			case present && !wanted[engine]:
+				add(engineRel, RuleUndeclaredEngine,
+					kind.String()+" runs on "+declared+" only (kind_meta.provisioners), so iac/"+engine+
+						" would ship a module for an engine the kind refuses -- delete it, or declare the engine")
+				continue
+			case !present:
 				continue
 			}
 			if _, err := os.Stat(filepath.Join(engineDir, "README.md")); err != nil {
@@ -377,4 +400,29 @@ func checkVersionDir(repoRoot, versionRel string, add func(rel, rule, detail str
 	if !names["reference.md"] {
 		add(versionRel, RuleMissingReference, "every served contract carries its generated reference page")
 	}
+}
+
+// moduleFamilies answers which module directories a kind's iac/ must hold:
+// both, for a kind that declares no provisioners; otherwise pulumi/ exactly
+// when it declares pulumi and tf/ exactly when it declares tofu or terraform
+// (one HCL module serves both). declared names the engines for messages, and
+// is empty for an undeclared kind. A declaration naming no real engine is the
+// registry tests' finding; here it reads as undeclared.
+func moduleFamilies(kind cloudresourcekind.CloudResourceKind) (wanted map[string]bool, declared string) {
+	provisioners, err := crkreflect.Provisioners(kind)
+	if err != nil || len(provisioners) == 0 {
+		return map[string]bool{"pulumi": true, "tf": true}, ""
+	}
+	wanted = map[string]bool{}
+	names := make([]string, 0, len(provisioners))
+	for _, p := range provisioners {
+		names = append(names, p.String())
+		switch p {
+		case shared.IacProvisioner_pulumi:
+			wanted["pulumi"] = true
+		case shared.IacProvisioner_tofu, shared.IacProvisioner_terraform:
+			wanted["tf"] = true
+		}
+	}
+	return wanted, strings.Join(names, " and ")
 }

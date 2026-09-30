@@ -1,0 +1,24 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodConfiguration
+metadata:
+  name: cards-only
+  org: example-org
+  env: production
+spec:
+  name: Cards only
+  card:
+    preference: "on"
+  applePay:
+    preference: "off"
+  googlePay:
+    preference: "off"
+  link:
+    preference: "off"
+  cashapp:
+    preference: "off"
+  klarna:
+    preference: "off"
+  affirm:
+    preference: "off"
+  afterpayClearpay:
+    preference: "off"

@@ -1,0 +1,18 @@
+# A product that grants an entitlement feature by reference. The harness
+# deploys a run-named StripeEntitlementFeature first on OpenTofu, the product
+# attaches it (one feature link), and destroy deletes the link and archives
+# the product before the feature is archived.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeProduct
+metadata:
+  name: e2e-product-features
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-prerequisites: StripeEntitlementFeature
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  features:
+    - valueFrom:
+        kind: StripeEntitlementFeature
+        name: e2e-feature-prereq

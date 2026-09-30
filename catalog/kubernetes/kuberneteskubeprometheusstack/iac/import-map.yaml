@@ -11,7 +11,9 @@ spec:
   # the two agree only because release name = resource name, which the
   # modules guarantee. Plus the optional anchor namespace and, when any remote-write
   # entry declares basic auth, the module-materialized
-  # `<name>-remote-write-auth` username Secret (count-indexed). The
+  # `<name>-remote-write-auth` username Secret and, when alert delivery is
+  # declared, the `<name>-alertmanager-notifications` credentials Secret
+  # (both count-indexed). The
   # monitoring.coreos.com CRDs ride the chart's crds subchart
   # (install-once, keep-on-uninstall) and travel with the release import —
   # no CRD rows.
@@ -43,6 +45,25 @@ spec:
         (keys username-<i> per entry).
     - name: secret_namespace
       tofu_resource_name: remote_write_auth
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    # ── the module-materialized alert-delivery Secret ────────────────────
+    # Deterministic name "<metadata.name>-alertmanager-notifications";
+    # count-indexed (present only when alertmanager.notifications is
+    # declared), so the scoped suffix derivation serves it.
+    - name: secret_name
+      tofu_resource_name: alertmanager_notifications
+      derivations:
+        - from_metadata_name_suffix: "-alertmanager-notifications"
+      where_to_find: >-
+        Always "<resource-name>-alertmanager-notifications" when declared —
+        `kubectl get secrets -n <namespace>` (keys
+        <receiver>-<integration>-<index>-<field>, heartbeat-bearer-token).
+    - name: secret_namespace
+      tofu_resource_name: alertmanager_notifications
       derivations:
         - from_stack_output: namespace
         - from_spec_field: namespace.value

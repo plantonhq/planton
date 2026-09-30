@@ -1,0 +1,29 @@
+# Least-privilege permissions the IaC runner's Stripe key needs to provision, update, and
+# destroy this component with the official module. Stripe authenticates with a restricted API
+# key whose permissions are a Read or Write choice per resource on the Dashboard's restricted-key
+# form (Write includes Read); the stripe/stripe provider (0.3.0, iac/tf/provider.tf) sends it as
+# a bearer token. Resource names are the form's labels. Every group is `derived` (static analysis
+# of the module and the provider's calls, cited in notes) until a live run under a key built from
+# exactly this file upgrades it to `proven` -- Stripe's refusal names the missing permission, so
+# that run also proves each label.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: stripebillingmeter
+spec:
+  stripe:
+    groups:
+      - purpose: ManageBillingMeter
+        permissions:
+          - resource: Billing Meters
+            access: write
+        provenance: derived
+        notes: The module (iac/tf/main.tf) manages stripe_billing_meter. The provider creates it with POST /v1/billing/meters, reads it with GET /v1/billing/meters/{id}, updates it with POST /v1/billing/meters/{id}, and deactivates it on destroy with POST /v1/billing/meters/{id}/deactivate (terraform-provider-stripe internal/provider/resources/resource_stripe_billing_meter.go); POST is Write, which includes the Read the refresh needs.
+      - purpose: ManageBillingAlerts
+        permissions:
+          - resource: Alerts
+            access: write
+        provenance: derived
+        condition:
+          spec_field_set: alerts
+        notes: One stripe_billing_alert per alerts entry. The provider creates it with POST /v1/billing/alerts and reads it with GET /v1/billing/alerts/{id}; it has no update (every field replaces) and its delete makes no call (terraform-provider-stripe internal/provider/resources/resource_stripe_billing_alert.go). Whether Stripe files these calls under Billing Meters or a label of their own on the restricted-key form is not documented; the least-privilege run proves the label.

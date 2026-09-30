@@ -20,6 +20,27 @@ resource "kubernetes_namespace_v1" "loki" {
   }
 }
 
+# Module-owned Secret carrying the r2 arm's key pair (keys `access-key-id`,
+# `secret-access-key`). Created BEFORE the release: Loki's credential
+# variables read it through secretKeyRef, and a pod whose referenced key is
+# missing never starts. The values arrive resolved from references; the
+# provider keeps `data` sensitive.
+resource "kubernetes_secret_v1" "r2_credentials" {
+  count = local.r2 != null ? 1 : 0
+
+  metadata {
+    name      = local.r2_secret_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.r2_secret_data
+
+  depends_on = [
+    kubernetes_namespace_v1.loki,
+  ]
+}
+
 resource "helm_release" "loki" {
   name       = local.release_name
   repository = local.helm_chart_repo
@@ -63,5 +84,6 @@ resource "helm_release" "loki" {
 
   depends_on = [
     kubernetes_namespace_v1.loki,
+    kubernetes_secret_v1.r2_credentials,
   ]
 }

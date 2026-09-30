@@ -95,9 +95,17 @@ verification.
 
 Some components need other resources installed before they can be applied -- an
 operator that owns their CRD, or the CRDs themselves. The harness deploys these
-dependencies (via Pulumi) before the component under test and tears them down in
-reverse order afterward, resolved by `ResolveDependencies`
-([dependencies.go](framework/runner/dependencies.go)) from the proto registry:
+dependencies before the component under test and tears them down in reverse
+order afterward, resolved by `ResolveDependencies`
+([dependencies.go](framework/runner/dependencies.go)) from the proto registry.
+Each dependency deploys on its own kind's engine, whatever engine the lane under
+test runs: on Pulumi when the kind has a Pulumi module (every kind that declares
+no engines), otherwise on the HCL lane in a disposable working copy of its
+`iac/tf` module with local state -- so an OpenTofu-only kind (every Stripe kind)
+can be a prerequisite. The HCL arm runs the lane's binary, so a kind that
+declares OpenTofu alone is refused under `PLANTON_E2E_TF_BINARY=terraform`, as
+its own lane is. When an HCL dependency's destroy fails, its working copy is
+kept and named in the error: it holds the only record of what is still live.
 
 Each kind declares its prerequisites in the proto registry
 (`CloudResourceKindMeta.prerequisites` in `cloud_resource_kind.proto`). The
@@ -169,8 +177,9 @@ service networking connection chain):
   scenario-scoped cloud-side names (`${E2E_SCENARIO}` beside
   `${E2E_RUN_ID}`) on the chain's VPC and range, so no scenario ever
   recreates a predecessor's name.
-- **Dependency deploys run `pulumi up --refresh`** ([pulumi.go](framework/runner/pulumi.go)).
-  Dependency stacks are keyed by run id, so every scenario in a run reuses the
+- **Pulumi dependency deploys run `pulumi up --refresh`** ([pulumi.go](framework/runner/pulumi.go)).
+  (An HCL dependency needs no refresh: it deploys fresh, in its own working
+  copy, for every scenario.) Pulumi dependency stacks are keyed by run id, so every scenario in a run reuses the
   same stack name; if an earlier scenario's teardown half-completed, stale
   state would otherwise make a later `up` a silent no-op while the actual
   cloud resource is gone.
@@ -424,7 +433,7 @@ not pinned to a real-cluster `e2e-cluster-profile` -- nothing is resident on
 a cluster the harness creates -- and a false promise fails at deploy with
 the missing resident's own error.
 
-A dependency whose `pulumi up` FAILS is still tracked for teardown: a failed
+A dependency whose deploy FAILS (`pulumi up` or `tofu apply`) is still tracked for teardown: a failed
 update may have created any number of resources before erroring, and skipping
 its destroy would orphan them -- and, because Azure-style parents refuse to
 delete while children exist, a single orphaned fixture (say, a load balancer
@@ -2805,8 +2814,9 @@ is gone minutes later, the kind is a new member of this class and its
 verifier needs the poll posture, not the modules a fix.
 
 **Backend contract:** every scenario's test context must carry the run-scoped
-Pulumi file backend URL — even Terraform scenarios, because dependency
-prerequisites always deploy via Pulumi. An empty backend URL silently falls
+Pulumi file backend URL — even Terraform scenarios, because a prerequisite
+deploys via Pulumi whenever its kind has a Pulumi module. (A provider whose
+kinds are all HCL-only, such as Stripe, prepares no backend.) An empty backend URL silently falls
 back to the machine's ambient `pulumi login`, coupling runs to developer
 state that can vanish mid-run (e.g. a stale `/tmp` backend).
 

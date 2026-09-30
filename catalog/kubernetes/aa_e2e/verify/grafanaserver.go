@@ -21,6 +21,9 @@ import (
 // referenced Secret — which also proves the credential wiring end to
 // end), and every declared datasource actually provisioned.
 //
+// The behavioral-sso scenario (recognized by name) signs in end to end
+// through a stand-in for Google's token endpoint (grafana_signin.go).
+//
 // The behavioral-persistence scenario (recognized by name) additionally
 // CREATES a dashboard through the API, deletes the pod, waits for a
 // REPLACEMENT pod (a new UID — status flapping back Ready on the dying
@@ -42,6 +45,9 @@ type GrafanaVerifier struct {
 	Datasources []string
 	// Persistence switches on the dashboard-survives-pod-loss proof.
 	Persistence bool
+	// SignIn switches on the end-to-end Google sign-in proof against a
+	// stand-in token endpoint (grafana_signin.go).
+	SignIn bool
 }
 
 func (v *GrafanaVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
@@ -179,6 +185,12 @@ func (v *GrafanaVerifier) proveApiRoundTrip(ctx context.Context, kubeconfig stri
 			}
 		}
 		fmt.Printf("  [verify] DATASOURCES: all %d declared datasources provisioned\n", len(v.Datasources))
+	}
+
+	if v.SignIn {
+		if err := v.proveSignIn(ctx, kubeconfig, base, user, password); err != nil {
+			return err
+		}
 	}
 
 	if !v.Persistence {

@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeshippingrate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripeshippingrate/v1alpha1/outputs.proto";
+import "catalog/stripe/stripeshippingrate/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeShippingRate is a component that declares a shipping option customers choose in Checkout
+// or on a payment link: a name, a fixed amount, and a delivery window.
+//
+// A rate's name, amount and delivery window never change in Stripe, so changing them replaces the
+// rate. Destroy deactivates it; Stripe keeps it.
+//
+// Use cases:
+// - Declare standard and express shipping once, the same in every environment
+// - Offer shipping in several currencies
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeShippingRate
+// metadata:
+//   name: standard-shipping
+//   org: my-organization
+// spec:
+//   displayName: Standard
+//   fixedAmount:
+//     amount: 500
+//     currency: usd
+//   deliveryEstimate:
+//     minimum:
+//       unit: business_day
+//       value: 3
+//     maximum:
+//       unit: business_day
+//       value: 5
+// ```
+message StripeShippingRate {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeShippingRate" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeShippingRate'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the option's name, amount and delivery window.
+  StripeShippingRateSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the rate as created, populated after deployment.
+  StripeShippingRateStatus status = 5;
+}
+
+// StripeShippingRateStatus represents the current state of a StripeShippingRate resource.
+// Populated by the deployment system.
+message StripeShippingRateStatus {
+  // outputs contains the stack outputs: the rate's id and whether it is active.
+  StripeShippingRateStackOutputs outputs = 1;
+}

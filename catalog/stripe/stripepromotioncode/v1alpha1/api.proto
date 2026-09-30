@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepromotioncode.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripepromotioncode/v1alpha1/outputs.proto";
+import "catalog/stripe/stripepromotioncode/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripePromotionCode is a component that declares a code customers type to redeem a
+// StripeCoupon, with its own limits.
+//
+// Changing who may redeem the code replaces it. Destroy deactivates the code; Stripe keeps it,
+// and the same code can be declared again.
+//
+// Use cases:
+// - Declare a launch code on a coupon in the same chart
+// - Limit a code to first-time customers, a minimum order, or a date
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripePromotionCode
+// metadata:
+//   name: launch25
+//   org: my-organization
+// spec:
+//   coupon:
+//     valueFrom:
+//       name: launch-25
+//   code: LAUNCH25
+//   maxRedemptions: 500
+// ```
+message StripePromotionCode {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripePromotionCode" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripePromotionCode'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the coupon, the code, and its limits.
+  StripePromotionCodeSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the code as created, populated after deployment.
+  StripePromotionCodeStatus status = 5;
+}
+
+// StripePromotionCodeStatus represents the current state of a StripePromotionCode resource.
+// Populated by the deployment system.
+message StripePromotionCodeStatus {
+  // outputs contains the stack outputs: the code's id, the code itself, and whether it is active.
+  StripePromotionCodeStackOutputs outputs = 1;
+}

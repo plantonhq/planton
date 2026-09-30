@@ -1,0 +1,20 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripetaxregistration
+spec:
+  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
+  # refused unless it is a test-mode key).
+  # Destroy only forgets a registration, and the verifier proves it is still
+  # in Stripe afterwards. Every scenario schedules its registration for
+  # 1 January 2100 (the base manifest and the US scenario also expire a day
+  # later), so nothing a run leaves collects before then. The first live
+  # run also proves three things offline plans
+  # cannot: whether the sandbox needs Stripe Tax turned on, whether Stripe
+  # accepts a second scheduled registration for the same place, and that a
+  # registration Stripe fills in with its defaults plans nothing on the next
+  # apply. Awaiting its first live run, so no provisioner is claimed yet.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 5

@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripepaymentlink
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for a payment link: every account, sandboxes included, can create them (docs.stripe.com/payment-links)."
+  notes: "The link is free; each payment made through it carries Stripe's payment fees (stripe.com/pricing). automatic_tax uses Stripe Tax, priced per transaction (stripe.com/tax/pricing), and a subscription it starts is Stripe Billing (stripe.com/billing/pricing)."

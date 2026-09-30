@@ -1,0 +1,16 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripeprice
+spec:
+  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
+  # refused unless it is a test-mode key).
+  # A price is archived on destroy, and the verifier proves it reads back
+  # inactive; every run's price carries the run in its nickname and lookup key
+  # and stays in the sandbox, archived. Its registry prerequisite, a run-named
+  # StripeProduct, deploys first on OpenTofu. Awaiting its first live run, so
+  # no provisioner is claimed yet.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 5

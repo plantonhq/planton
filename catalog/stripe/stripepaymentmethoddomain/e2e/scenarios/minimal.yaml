@@ -1,0 +1,11 @@
+# A registration created and read back. Destroy only forgets it, and the
+# verifier proves Stripe still has it; the run-named subdomain keeps the next
+# run from colliding with a domain an earlier run left registered.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodDomain
+metadata:
+  name: e2e-payment-method-domain
+  org: e2e-org
+  env: testing
+spec:
+  domainName: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}.example.com

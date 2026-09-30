@@ -28,8 +28,8 @@ const (
 // - The target OpenFgaStore resource specification
 // - The OpenFGA provider configuration (credentials for API access)
 //
-// IMPORTANT: OpenFGA only has a Terraform provider. The Pulumi module is a
-// pass-through placeholder that does not create resources.
+// IMPORTANT: OpenFGA only has a Terraform provider, so this component ships one
+// HCL module, run by OpenTofu or Terraform; Pulumi is refused for it.
 //
 // The Terraform module receives this as input and uses it to create/update
 // the OpenFGA store via the OpenFGA API.

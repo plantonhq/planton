@@ -37,6 +37,32 @@ func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string)
 	}
 }
 
+func boolPtr(b bool) *bool { return &b }
+
+func testGoogle() *KubernetesGrafanaGoogleSignIn {
+	return &KubernetesGrafanaGoogleSignIn{
+		ClientId:       "123-abc.apps.googleusercontent.com",
+		ClientSecret:   literal("$secret/grafana-google-signin-client-secret"),
+		AllowedDomains: []string{"example.com"},
+		HostedDomain:   "example.com",
+	}
+}
+
+func testGenericOAuth() *KubernetesGrafanaGenericOAuthSignIn {
+	return &KubernetesGrafanaGenericOAuthSignIn{
+		Name:         stringPtr("Okta"),
+		ClientId:     "0oa1example",
+		ClientSecret: literal("$secret/grafana-okta-client-secret"),
+		AuthUrl:      "https://id.example.com/oauth2/v1/authorize",
+		TokenUrl:     "https://id.example.com/oauth2/v1/token",
+		ApiUrl:       "https://id.example.com/oauth2/v1/userinfo",
+	}
+}
+
+func signInServer() *KubernetesGrafanaServer {
+	return &KubernetesGrafanaServer{RootUrl: "https://grafana.example.com"}
+}
+
 func testDatabase() *KubernetesGrafanaDatabase {
 	return &KubernetesGrafanaDatabase{
 		Engine:         KubernetesGrafanaDatabaseEngine_postgres,
@@ -147,6 +173,37 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 				FromAddress:           "grafana@example.com",
 				CredentialsSecretName: "smtp-credentials",
 			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("Google sign-in limited to a domain should be valid", func() {
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{Google: testGoogle()}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("Google sign-in without allowed domains but with sign-up off should be valid", func() {
+			google := testGoogle()
+			google.AllowedDomains = nil
+			google.AllowSignUp = boolPtr(false)
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{Google: google}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("generic OAuth sign-in with group gating should be valid", func() {
+			generic := testGenericOAuth()
+			generic.GroupsAttributePath = "groups"
+			generic.AllowedGroups = []string{"platform"}
+			generic.RoleAttributePath = "contains(groups[*], 'platform') && 'Admin' || 'Viewer'"
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{GenericOauth: generic}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("Google and generic OAuth side by side should be valid", func() {
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{Google: testGoogle(), GenericOauth: testGenericOAuth()}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -264,6 +321,63 @@ var _ = ginkgo.Describe("KubernetesGrafana Validation Tests", func() {
 		ginkgo.It("an admin secret without a name should fail", func() {
 			input.Spec.AdminSecret = &KubernetesGrafanaAdminSecret{}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("sign-in without server.root_url should fail, naming root_url", func() {
+			input.Spec.Auth = &KubernetesGrafanaAuth{Google: testGoogle()}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("server.root_url"))
+		})
+
+		ginkgo.It("generic OAuth sign-in with an empty root_url should fail", func() {
+			input.Spec.Server = &KubernetesGrafanaServer{}
+			input.Spec.Auth = &KubernetesGrafanaAuth{GenericOauth: testGenericOAuth()}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("Google sign-in open to sign-up with no allowed domains should fail, naming the fix", func() {
+			google := testGoogle()
+			google.AllowedDomains = nil
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{Google: google}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("allowed_domains"))
+		})
+
+		ginkgo.It("Google sign-in without a client secret should fail", func() {
+			google := testGoogle()
+			google.ClientSecret = nil
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{Google: google}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("Google sign-in without a client id should fail", func() {
+			google := testGoogle()
+			google.ClientId = ""
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{Google: google}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("generic OAuth sign-in without a token endpoint should fail", func() {
+			generic := testGenericOAuth()
+			generic.TokenUrl = ""
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{GenericOauth: generic}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("generic OAuth allowed groups without a groups path should fail, naming groups_attribute_path", func() {
+			generic := testGenericOAuth()
+			generic.AllowedGroups = []string{"platform"}
+			input.Spec.Server = signInServer()
+			input.Spec.Auth = &KubernetesGrafanaAuth{GenericOauth: generic}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("groups_attribute_path"))
 		})
 	})
 })

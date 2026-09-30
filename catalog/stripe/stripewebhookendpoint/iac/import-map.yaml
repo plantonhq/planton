@@ -1,0 +1,12 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripewebhookendpoint
+spec:
+  # An endpoint imports by its Stripe id (we_...), which a prior deploy reports as its id output. An imported endpoint carries no signing secret: Stripe returns it only at creation.
+  values:
+    - name: webhook_endpoint_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Developers -> Webhooks (the endpoint's id, we_..., on its detail page), or `GET /v1/webhook_endpoints` (the id field of the entry whose url matches).

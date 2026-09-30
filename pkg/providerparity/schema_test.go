@@ -193,16 +193,19 @@ func TestCommittedArtifacts(t *testing.T) {
 			t.Errorf("%s: only %d resources -- even the smallest real provider registers tens; the artifact is truncated", name, len(s.Resources))
 		}
 		// The provider block is part of the parity surface: every provider
-		// exposes at least a handful of configurable arguments (credentials
-		// and client tuning at minimum), so an artifact without them was
-		// distilled by a build that silently dropped the provider block --
-		// the regression this guard exists to catch.
+		// takes at least its credential there, so an artifact whose block is
+		// absent or has no configurable argument was distilled by a build that
+		// silently dropped it -- the regression this guard exists to catch.
+		// The floor is one, not "a handful": a provider can be that small
+		// (stripe/stripe takes exactly api_key and stripe_account), and the
+		// provider-config accounting judges every argument of an enrolled
+		// provider in both directions, so a count adds nothing past non-empty.
 		if s.ProviderConfig == nil {
 			t.Errorf("%s: artifact carries no provider block -- regenerate with the current distiller", name)
 			continue
 		}
-		if got := len(s.ProviderConfig.ConfigurableArgs("")); got < 5 {
-			t.Errorf("%s: provider block carries only %d configurable arguments -- even the smallest provider exposes a handful; the block was truncated", name, got)
+		if len(s.ProviderConfig.ConfigurableArgs("")) == 0 {
+			t.Errorf("%s: provider block carries no configurable argument -- the block was dropped; regenerate with the current distiller", name)
 		}
 	}
 }

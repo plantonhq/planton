@@ -41,6 +41,11 @@ type LokiVerifier struct {
 	TenantPassword string
 	// Durability switches on the log-survives-pod-loss proof.
 	Durability bool
+	// R2 switches on the object-store proof: after the push, Loki flushes
+	// its chunks and the proof lists this run's objects in the real R2
+	// test bucket (r2_objects.go) before the pod-loss proof reads the
+	// line back.
+	R2 bool
 }
 
 func (v *LokiVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
@@ -97,6 +102,14 @@ func (v *LokiVerifier) proveRoundTrip(ctx context.Context, kubeconfig, gatewaySv
 	}
 	fmt.Printf("  [verify] PUSH: proof log line %q accepted by the gateway%s\n", marker, as)
 
+	if v.R2 {
+		keys, err := v.proveChunksInR2(ctx, kubeconfig)
+		if err != nil {
+			return err
+		}
+		defer removeR2Objects(ctx, keys)
+	}
+
 	if v.Durability {
 		if err := deletePodAwaitReplacement(ctx, kubeconfig, v.Namespace,
 			"app.kubernetes.io/instance="+v.Name, 8*time.Minute); err != nil {
@@ -127,13 +140,35 @@ func (v *LokiVerifier) proveRoundTrip(ctx context.Context, kubeconfig, gatewaySv
 				verb = "DURABILITY"
 			}
 			fmt.Printf("  [verify] %s: proof log line returned by LogQL%s%s\n", verb, as,
-				map[bool]string{true: " AFTER pod replacement — logs survived on the PVC", false: ""}[v.Durability])
+				map[bool]string{true: " AFTER pod replacement — logs survived " + map[bool]string{true: "in the R2 bucket", false: "on the PVC"}[v.R2], false: ""}[v.Durability])
 			return nil
 		}
 		lastBody = body
 		time.Sleep(10 * time.Second)
 	}
 	return errors.Errorf("the proof log line was never returned by LogQL: %s", firstLines(lastBody, 3))
+}
+
+// proveChunksInR2 asks Loki to flush its in-memory chunks (POST /flush on
+// the Loki HTTP port) and requires chunk objects written by this run under
+// the single-tenant prefix `fake/` in the R2 test bucket.
+func (v *LokiVerifier) proveChunksInR2(ctx context.Context, kubeconfig string) ([]string, error) {
+	const flushPort = "13101"
+	since := time.Now()
+	cancel, err := startPortForward(ctx, kubeconfig, "svc/"+v.Name, v.Namespace, flushPort+":3100")
+	if err != nil {
+		return nil, errors.Wrap(err, "R2: starting port-forward to the loki HTTP port")
+	}
+	defer cancel()
+	if _, err := httpRoundTrip(ctx, http.MethodPost, "http://127.0.0.1:"+flushPort+"/flush", "", "", 2*time.Minute); err != nil {
+		return nil, errors.Wrap(err, "R2: asking loki to flush its chunks")
+	}
+	keys, err := awaitR2Objects(ctx, "fake/", since, 5*time.Minute)
+	if err != nil {
+		return nil, errors.Wrap(err, "R2: loki flushed but no chunk reached the bucket; check the <name>-r2-credentials Secret, the LOKI_S3_* variables and the composed endpoint")
+	}
+	fmt.Printf("  [verify] R2: loki's chunks landed in the R2 bucket (%s)\n", summarizeKeys(keys))
+	return keys, nil
 }
 
 // httpRoundTrip performs one JSON request retrying across a warm-up window;

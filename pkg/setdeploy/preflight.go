@@ -174,20 +174,26 @@ func Preflight(docs []Doc, flags Flags, probes Probes) *Plan {
 		np.KindName = kindName
 		np.Provider = crkreflect.GetProvider(node.Identity.Kind)
 
-		provType, err := provisioner.ExtractFromManifest(node.Msg)
+		// The label, else the kind's sole declared engine; a label naming an
+		// engine the kind does not run on is refused here, before anything runs.
+		provType, err := provisioner.ForManifest(node.Msg)
 		if err != nil {
 			engineCheck.Entries = append(engineCheck.Entries, Entry{
 				Severity: SeverityRefusal, Source: node.Source,
-				Message: fmt.Sprintf("invalid planton.dev/provisioner label: %v", err),
+				Message: fmt.Sprintf("planton.dev/provisioner: %v", err),
 			})
 			plan.Nodes[i] = np
 			continue
 		}
+		if label, _ := provisioner.ExtractFromManifest(node.Msg); label == provisioner.ProvisionerTypeUnspecified {
+			np.ProvisionerDefault = true
+		}
 		if provType == provisioner.ProvisionerTypeUnspecified {
 			// A set deploy is one decision, not N interviews: the engine's
-			// default provisioner applies and the report says so.
+			// default provisioner applies and the report says so. Every kind
+			// runs on OpenTofu unless it declares otherwise, and a kind that
+			// declares one engine has already resolved to it above.
 			provType = provisioner.ProvisionerTypeTofu
-			np.ProvisionerDefault = true
 		}
 		np.Provisioner = provType
 

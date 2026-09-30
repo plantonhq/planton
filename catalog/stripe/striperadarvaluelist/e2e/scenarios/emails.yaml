@@ -1,0 +1,15 @@
+# An email list: items whose values carry dots, keyed by value in the
+# module and in the item_ids output.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeRadarValueList
+metadata:
+  name: e2e-radar-value-list-emails
+  org: e2e-org
+  env: testing
+spec:
+  alias: e2e_emails_${E2E_RUN_ID_UNDERSCORE}
+  name: e2e ${E2E_RUN_ID} ${E2E_SCENARIO}
+  itemType: email
+  items:
+    - fraud@example.com
+    - chargeback.ring@example.org

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripetaxrate.v1alpha1;
+
+// StripeTaxRateStackOutputs identifies the tax rate.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/tax_rate
+message StripeTaxRateStackOutputs {
+  // id is the tax rate's Stripe id (txr_...), the value an invoice, a subscription or a Checkout
+  // session's tax rates reference. It changes when the rate is replaced.
+  string id = 1;
+
+  // active is false once the rate is deactivated (by destroy, by spec.active, or in the
+  // Dashboard).
+  bool active = 2;
+}

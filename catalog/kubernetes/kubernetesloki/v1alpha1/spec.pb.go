@@ -50,9 +50,11 @@ const (
 // STORAGE DOCTRINE (mirrors the chart's own validation): `filesystem`
 // keeps chunks on a PersistentVolume — honest ONLY for a single
 // monolithic replica; more than one replica, or any simple_scalable
-// tier, REQUIRES an object-storage backend (s3/gcs/azure). The
+// tier, REQUIRES an object-storage backend (s3/r2/gcs/azure). The
 // s3-compatible arm (endpoint + path-style) composes with an in-cluster
-// KubernetesSeaweedFs. The chart's bundled MinIO subchart is deprecated
+// KubernetesSeaweedFs; the r2 arm stores in a Cloudflare R2 bucket by
+// reference to the catalog's CloudflareR2Bucket, with nothing S3-shaped
+// declared. The chart's bundled MinIO subchart is deprecated
 // by the chart itself and is never enabled by this component.
 //
 // SCHEMA: Loki requires a `schema_config` naming the index schema and
@@ -623,6 +625,7 @@ type KubernetesLokiStorage struct {
 	//	*KubernetesLokiStorage_S3
 	//	*KubernetesLokiStorage_Gcs
 	//	*KubernetesLokiStorage_Azure
+	//	*KubernetesLokiStorage_R2
 	Backend       isKubernetesLokiStorage_Backend `protobuf_oneof:"backend"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -701,6 +704,15 @@ func (x *KubernetesLokiStorage) GetAzure() *KubernetesLokiAzureStorage {
 	return nil
 }
 
+func (x *KubernetesLokiStorage) GetR2() *KubernetesLokiR2Storage {
+	if x != nil {
+		if x, ok := x.Backend.(*KubernetesLokiStorage_R2); ok {
+			return x.R2
+		}
+	}
+	return nil
+}
+
 type isKubernetesLokiStorage_Backend interface {
 	isKubernetesLokiStorage_Backend()
 }
@@ -734,6 +746,18 @@ type KubernetesLokiStorage_Azure struct {
 	Azure *KubernetesLokiAzureStorage `protobuf:"bytes,4,opt,name=azure,proto3,oneof"`
 }
 
+type KubernetesLokiStorage_R2 struct {
+	// *
+	// Cloudflare R2, in R2's own vocabulary: the owning account, the
+	// bucket's jurisdiction, the bucket and the token's key pair, each by
+	// reference onto the catalog's CloudflareR2Bucket and
+	// CloudflareAccountApiToken. The modules compose everything S3-shaped
+	// R2 needs (the jurisdiction's endpoint host, region `auto`,
+	// path-style addressing). No egress fees, and the logs outlive the
+	// cluster that wrote them.
+	R2 *KubernetesLokiR2Storage `protobuf:"bytes,5,opt,name=r2,proto3,oneof"`
+}
+
 func (*KubernetesLokiStorage_Filesystem) isKubernetesLokiStorage_Backend() {}
 
 func (*KubernetesLokiStorage_S3) isKubernetesLokiStorage_Backend() {}
@@ -741,6 +765,8 @@ func (*KubernetesLokiStorage_S3) isKubernetesLokiStorage_Backend() {}
 func (*KubernetesLokiStorage_Gcs) isKubernetesLokiStorage_Backend() {}
 
 func (*KubernetesLokiStorage_Azure) isKubernetesLokiStorage_Backend() {}
+
+func (*KubernetesLokiStorage_R2) isKubernetesLokiStorage_Backend() {}
 
 // *
 // Filesystem storage (the single-replica dev/test arm).
@@ -898,6 +924,174 @@ func (x *KubernetesLokiS3Storage) GetCredentials() *KubernetesLokiObjectStoreCre
 }
 
 // *
+// Cloudflare R2 backend, composed from the catalog's Cloudflare kinds.
+//
+// R2 speaks S3, so Loki reaches it through its S3 client — but nothing
+// S3-shaped is declared here. The modules compose the endpoint from the
+// account and the bucket's jurisdiction
+// (`https://<account>.r2.cloudflarestorage.com`, or
+// `https://<account>.<jurisdiction>.r2.cloudflarestorage.com` for an eu,
+// fedramp or us bucket — a jurisdictional bucket is served ONLY through
+// its own host), pin the region to `auto` (the only region R2 accepts),
+// use path-style addressing, and hand Loki the key pair from their own
+// `<name>-r2-credentials` Secret. There is no keyless posture for R2 from
+// any cluster, so a credential is always declared. Chunks, index and
+// ruler state share the one bucket.
+//
+// KNOW THIS: the bucket's lifecycle expiry must be LATER than
+// `retention_period`, or objects vanish under Loki's index. R2 honours a
+// bucket's location hint only at creation, so pick it where the cluster
+// runs.
+type KubernetesLokiR2Storage struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The Cloudflare account that owns the bucket (32 hex characters). By
+	// reference to the bucket resource's `account_id` output, so the arm
+	// follows the bucket; a literal names an account outside the catalog.
+	AccountId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	// *
+	// The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+	// `fedramp`, or `us`. It selects the S3 host the modules compose, so it
+	// must match the bucket exactly; by reference to the bucket resource's
+	// `jurisdiction` output it cannot drift.
+	Jurisdiction *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=jurisdiction,proto3" json:"jurisdiction,omitempty"`
+	// *
+	// The bucket for chunks, index and ruler state (must exist; Loki does
+	// not create it). By reference to the bucket resource's `bucket_name`
+	// output.
+	Bucket *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	// *
+	// The S3 key pair R2's S3 API authenticates, written into the modules'
+	// own `<name>-r2-credentials` Secret; never plaintext in the rendered
+	// configuration.
+	Credentials   *KubernetesLokiR2Credentials `protobuf:"bytes,4,opt,name=credentials,proto3" json:"credentials,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesLokiR2Storage) Reset() {
+	*x = KubernetesLokiR2Storage{}
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesLokiR2Storage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesLokiR2Storage) ProtoMessage() {}
+
+func (x *KubernetesLokiR2Storage) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesLokiR2Storage.ProtoReflect.Descriptor instead.
+func (*KubernetesLokiR2Storage) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *KubernetesLokiR2Storage) GetAccountId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.AccountId
+	}
+	return nil
+}
+
+func (x *KubernetesLokiR2Storage) GetJurisdiction() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Jurisdiction
+	}
+	return nil
+}
+
+func (x *KubernetesLokiR2Storage) GetBucket() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Bucket
+	}
+	return nil
+}
+
+func (x *KubernetesLokiR2Storage) GetCredentials() *KubernetesLokiR2Credentials {
+	if x != nil {
+		return x.Credentials
+	}
+	return nil
+}
+
+// *
+// The key pair of an R2 API token scoped to the bucket (Object Read and
+// Write is enough).
+type KubernetesLokiR2Credentials struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The S3 access key id: the API token's id. By reference to a
+	// CloudflareAccountApiToken's `r2_access_key_id` output, or a `$secret/`
+	// reference for a token minted in the dashboard.
+	AccessKeyId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
+	// *
+	// The S3 secret access key: the SHA-256 of the API token's value.
+	// Reference-only. Loki reads it only at start, so the pods carry a
+	// checksum of the credentials Secret and a rotated key rolls them on
+	// the next apply.
+	SecretAccessKey *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *KubernetesLokiR2Credentials) Reset() {
+	*x = KubernetesLokiR2Credentials{}
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesLokiR2Credentials) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesLokiR2Credentials) ProtoMessage() {}
+
+func (x *KubernetesLokiR2Credentials) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesLokiR2Credentials.ProtoReflect.Descriptor instead.
+func (*KubernetesLokiR2Credentials) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *KubernetesLokiR2Credentials) GetAccessKeyId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.AccessKeyId
+	}
+	return nil
+}
+
+func (x *KubernetesLokiR2Credentials) GetSecretAccessKey() *v1.StringValueOrRef {
+	if x != nil {
+		return x.SecretAccessKey
+	}
+	return nil
+}
+
+// *
 // Google Cloud Storage backend.
 type KubernetesLokiGcsStorage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -920,7 +1114,7 @@ type KubernetesLokiGcsStorage struct {
 
 func (x *KubernetesLokiGcsStorage) Reset() {
 	*x = KubernetesLokiGcsStorage{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -932,7 +1126,7 @@ func (x *KubernetesLokiGcsStorage) String() string {
 func (*KubernetesLokiGcsStorage) ProtoMessage() {}
 
 func (x *KubernetesLokiGcsStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -945,7 +1139,7 @@ func (x *KubernetesLokiGcsStorage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiGcsStorage.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiGcsStorage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesLokiGcsStorage) GetBucket() string {
@@ -994,7 +1188,7 @@ type KubernetesLokiAzureStorage struct {
 
 func (x *KubernetesLokiAzureStorage) Reset() {
 	*x = KubernetesLokiAzureStorage{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1006,7 +1200,7 @@ func (x *KubernetesLokiAzureStorage) String() string {
 func (*KubernetesLokiAzureStorage) ProtoMessage() {}
 
 func (x *KubernetesLokiAzureStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1019,7 +1213,7 @@ func (x *KubernetesLokiAzureStorage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiAzureStorage.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiAzureStorage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesLokiAzureStorage) GetAccountName() string {
@@ -1066,7 +1260,7 @@ type KubernetesLokiObjectStoreCredentials struct {
 
 func (x *KubernetesLokiObjectStoreCredentials) Reset() {
 	*x = KubernetesLokiObjectStoreCredentials{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1078,7 +1272,7 @@ func (x *KubernetesLokiObjectStoreCredentials) String() string {
 func (*KubernetesLokiObjectStoreCredentials) ProtoMessage() {}
 
 func (x *KubernetesLokiObjectStoreCredentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1091,7 +1285,7 @@ func (x *KubernetesLokiObjectStoreCredentials) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use KubernetesLokiObjectStoreCredentials.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiObjectStoreCredentials) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *KubernetesLokiObjectStoreCredentials) GetAccessKeyIdSecret() *KubernetesLokiSecretKeyRef {
@@ -1125,7 +1319,7 @@ type KubernetesLokiSecretKeyRef struct {
 
 func (x *KubernetesLokiSecretKeyRef) Reset() {
 	*x = KubernetesLokiSecretKeyRef{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1137,7 +1331,7 @@ func (x *KubernetesLokiSecretKeyRef) String() string {
 func (*KubernetesLokiSecretKeyRef) ProtoMessage() {}
 
 func (x *KubernetesLokiSecretKeyRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1150,7 +1344,7 @@ func (x *KubernetesLokiSecretKeyRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiSecretKeyRef.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiSecretKeyRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *KubernetesLokiSecretKeyRef) GetName() string {
@@ -1193,7 +1387,7 @@ type KubernetesLokiLimits struct {
 
 func (x *KubernetesLokiLimits) Reset() {
 	*x = KubernetesLokiLimits{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1205,7 +1399,7 @@ func (x *KubernetesLokiLimits) String() string {
 func (*KubernetesLokiLimits) ProtoMessage() {}
 
 func (x *KubernetesLokiLimits) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1218,7 +1412,7 @@ func (x *KubernetesLokiLimits) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiLimits.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiLimits) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *KubernetesLokiLimits) GetIngestionRateMb() int32 {
@@ -1279,7 +1473,7 @@ type KubernetesLokiMultiTenancy struct {
 
 func (x *KubernetesLokiMultiTenancy) Reset() {
 	*x = KubernetesLokiMultiTenancy{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1291,7 +1485,7 @@ func (x *KubernetesLokiMultiTenancy) String() string {
 func (*KubernetesLokiMultiTenancy) ProtoMessage() {}
 
 func (x *KubernetesLokiMultiTenancy) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1304,7 +1498,7 @@ func (x *KubernetesLokiMultiTenancy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiMultiTenancy.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiMultiTenancy) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *KubernetesLokiMultiTenancy) GetEnabled() bool {
@@ -1349,7 +1543,7 @@ type KubernetesLokiTenant struct {
 
 func (x *KubernetesLokiTenant) Reset() {
 	*x = KubernetesLokiTenant{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1361,7 +1555,7 @@ func (x *KubernetesLokiTenant) String() string {
 func (*KubernetesLokiTenant) ProtoMessage() {}
 
 func (x *KubernetesLokiTenant) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1374,7 +1568,7 @@ func (x *KubernetesLokiTenant) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiTenant.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiTenant) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *KubernetesLokiTenant) GetName() string {
@@ -1412,7 +1606,7 @@ type KubernetesLokiGateway struct {
 
 func (x *KubernetesLokiGateway) Reset() {
 	*x = KubernetesLokiGateway{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1424,7 +1618,7 @@ func (x *KubernetesLokiGateway) String() string {
 func (*KubernetesLokiGateway) ProtoMessage() {}
 
 func (x *KubernetesLokiGateway) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1437,7 +1631,7 @@ func (x *KubernetesLokiGateway) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiGateway.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiGateway) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *KubernetesLokiGateway) GetEnabled() bool {
@@ -1494,7 +1688,7 @@ type KubernetesLokiCaching struct {
 
 func (x *KubernetesLokiCaching) Reset() {
 	*x = KubernetesLokiCaching{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1506,7 +1700,7 @@ func (x *KubernetesLokiCaching) String() string {
 func (*KubernetesLokiCaching) ProtoMessage() {}
 
 func (x *KubernetesLokiCaching) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1519,7 +1713,7 @@ func (x *KubernetesLokiCaching) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiCaching.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiCaching) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *KubernetesLokiCaching) GetChunksCacheEnabled() bool {
@@ -1571,7 +1765,7 @@ type KubernetesLokiRuler struct {
 
 func (x *KubernetesLokiRuler) Reset() {
 	*x = KubernetesLokiRuler{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1583,7 +1777,7 @@ func (x *KubernetesLokiRuler) String() string {
 func (*KubernetesLokiRuler) ProtoMessage() {}
 
 func (x *KubernetesLokiRuler) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1596,7 +1790,7 @@ func (x *KubernetesLokiRuler) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiRuler.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiRuler) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *KubernetesLokiRuler) GetEnabled() bool {
@@ -1632,7 +1826,7 @@ type KubernetesLokiScheduling struct {
 
 func (x *KubernetesLokiScheduling) Reset() {
 	*x = KubernetesLokiScheduling{}
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1644,7 +1838,7 @@ func (x *KubernetesLokiScheduling) String() string {
 func (*KubernetesLokiScheduling) ProtoMessage() {}
 
 func (x *KubernetesLokiScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1657,7 +1851,7 @@ func (x *KubernetesLokiScheduling) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesLokiScheduling.ProtoReflect.Descriptor instead.
 func (*KubernetesLokiScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *KubernetesLokiScheduling) GetNodeSelector() map[string]string {
@@ -1685,7 +1879,7 @@ var File_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto protoreflect.File
 
 const file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/kubernetes/kubernetesloki/v1alpha1/spec.proto\x12.dev.planton.kubernetes.kubernetesloki.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf1\x15\n" +
+	"5catalog/kubernetes/kubernetesloki/v1alpha1/spec.proto\x12.dev.planton.kubernetes.kubernetesloki.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa9\x16\n" +
 	"\x12KubernetesLokiSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -1715,9 +1909,9 @@ const file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDesc = "" +
 	"scheduling\x18\x13 \x01(\v2H.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSchedulingR\n" +
 	"scheduling\x12\x1f\n" +
 	"\vhelm_values\x18\x14 \x01(\tR\n" +
-	"helmValues:\xc5\x06\xbaH\xc1\x06\x1a\xb6\x03\n" +
-	"1spec.mode.simple_scalable.requires_object_storage\x12\xdd\x01simple_scalable mode requires an object-storage backend (s3, gcs or azure) — the write/read/backend tiers rendezvous in the object store, so filesystem storage cannot serve them (this mirrors the chart's own validation)\x1a\xa0\x01!has(this.simple_scalable) || (has(this.storage) && !has(this.storage.filesystem) && (has(this.storage.s3) || has(this.storage.gcs) || has(this.storage.azure)))\x1a\x85\x03\n" +
-	"4spec.mode.monolithic.replicas.require_object_storage\x12\xae\x01more than one monolithic replica requires an object-storage backend (s3, gcs or azure) — replicas cannot share a filesystem volume (this mirrors the chart's own validation)\x1a\x9b\x01!has(this.monolithic) || this.monolithic.replicas <= 1 || (has(this.storage) && (has(this.storage.s3) || has(this.storage.gcs) || has(this.storage.azure)))B\x06\n" +
+	"helmValues:\xfd\x06\xbaH\xf9\x06\x1a\xd2\x03\n" +
+	"1spec.mode.simple_scalable.requires_object_storage\x12\xe1\x01simple_scalable mode requires an object-storage backend (s3, r2, gcs or azure) — the write/read/backend tiers rendezvous in the object store, so filesystem storage cannot serve them (this mirrors the chart's own validation)\x1a\xb8\x01!has(this.simple_scalable) || (has(this.storage) && !has(this.storage.filesystem) && (has(this.storage.s3) || has(this.storage.r2) || has(this.storage.gcs) || has(this.storage.azure)))\x1a\xa1\x03\n" +
+	"4spec.mode.monolithic.replicas.require_object_storage\x12\xb2\x01more than one monolithic replica requires an object-storage backend (s3, r2, gcs or azure) — replicas cannot share a filesystem volume (this mirrors the chart's own validation)\x1a\xb3\x01!has(this.monolithic) || this.monolithic.replicas <= 1 || (has(this.storage) && (has(this.storage.s3) || has(this.storage.r2) || has(this.storage.gcs) || has(this.storage.azure)))B\x06\n" +
 	"\x04modeB\x10\n" +
 	"\x0e_chart_versionB\x11\n" +
 	"\x0f_canary_enabledB\x12\n" +
@@ -1741,14 +1935,15 @@ const file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0e_read_replicasB\x13\n" +
 	"\x11_backend_replicasB\f\n" +
 	"\n" +
-	"_disk_size\"\xb2\x03\n" +
+	"_disk_size\"\x8d\x04\n" +
 	"\x15KubernetesLokiStorage\x12q\n" +
 	"\n" +
 	"filesystem\x18\x01 \x01(\v2O.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiFilesystemStorageH\x00R\n" +
 	"filesystem\x12Y\n" +
 	"\x02s3\x18\x02 \x01(\v2G.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiS3StorageH\x00R\x02s3\x12\\\n" +
 	"\x03gcs\x18\x03 \x01(\v2H.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGcsStorageH\x00R\x03gcs\x12b\n" +
-	"\x05azure\x18\x04 \x01(\v2J.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorageH\x00R\x05azureB\t\n" +
+	"\x05azure\x18\x04 \x01(\v2J.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorageH\x00R\x05azure\x12Y\n" +
+	"\x02r2\x18\x05 \x01(\v2G.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2StorageH\x00R\x02r2B\t\n" +
 	"\abackend\"!\n" +
 	"\x1fKubernetesLokiFilesystemStorage\"\xce\x02\n" +
 	"\x17KubernetesLokiS3Storage\x12\x1e\n" +
@@ -1758,7 +1953,18 @@ const file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDesc = "" +
 	"\bendpoint\x18\x04 \x01(\tR\bendpoint\x12(\n" +
 	"\x10force_path_style\x18\x05 \x01(\bR\x0eforcePathStyle\x12\x1a\n" +
 	"\binsecure\x18\x06 \x01(\bR\binsecure\x12v\n" +
-	"\vcredentials\x18\a \x01(\v2T.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentialsR\vcredentials\"\xe7\x01\n" +
+	"\vcredentials\x18\a \x01(\v2T.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentialsR\vcredentials\"\x80\a\n" +
+	"\x17KubernetesLokiR2Storage\x12\x9b\x02\n" +
+	"\n" +
+	"account_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xc7\x01\xbaH\xa1\x01\xba\x01\x9a\x01\n" +
+	"!spec.storage.r2.account_id_format\x128account_id is the 32-hex-character Cloudflare account id\x1a;!has(this.value) || this.value.matches('^[0-9a-fA-F]{32}$')\xc8\x01\x01\x88\xd4a\xda6\x92\xd4a\x19status.outputs.account_idR\taccountId\x12\xd8\x02\n" +
+	"\fjurisdiction\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xff\x01\xbaH\xd7\x01\xba\x01\xd3\x01\n" +
+	"\"spec.storage.r2.jurisdiction_valid\x12Sjurisdiction must be one of \"default\", \"eu\", \"fedramp\", \"us\" (or empty for default)\x1aX!has(this.value) || this.value == '' || this.value in ['default', 'eu', 'fedramp', 'us']\x88\xd4a\xda6\x92\xd4a\x1bstatus.outputs.jurisdictionR\fjurisdiction\x12u\n" +
+	"\x06bucket\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xda6\x92\xd4a\x1astatus.outputs.bucket_nameR\x06bucket\x12u\n" +
+	"\vcredentials\x18\x04 \x01(\v2K.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2CredentialsB\x06\xbaH\x03\xc8\x01\x01R\vcredentials\"\xbf\x02\n" +
+	"\x1bKubernetesLokiR2Credentials\x12\x86\x01\n" +
+	"\raccess_key_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\xca9\x92\xd4a\x1fstatus.outputs.r2_access_key_idR\vaccessKeyId\x12\x96\x01\n" +
+	"\x11secret_access_key\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01\x88\xd4a\xca9\x92\xd4a#status.outputs.r2_secret_access_keyR\x0fsecretAccessKey\"\xe7\x01\n" +
 	"\x18KubernetesLokiGcsStorage\x12\x1e\n" +
 	"\x06bucket\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06bucket\x12!\n" +
 	"\fruler_bucket\x18\x02 \x01(\tR\vrulerBucket\x12\x87\x01\n" +
@@ -1833,7 +2039,7 @@ func file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescGZIP() []
 	return file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_goTypes = []any{
 	(*KubernetesLokiSpec)(nil),                   // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec
 	(*KubernetesLokiMonolithic)(nil),             // 1: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMonolithic
@@ -1841,56 +2047,65 @@ var file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_goTypes = []any{
 	(*KubernetesLokiStorage)(nil),                // 3: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage
 	(*KubernetesLokiFilesystemStorage)(nil),      // 4: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiFilesystemStorage
 	(*KubernetesLokiS3Storage)(nil),              // 5: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiS3Storage
-	(*KubernetesLokiGcsStorage)(nil),             // 6: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGcsStorage
-	(*KubernetesLokiAzureStorage)(nil),           // 7: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorage
-	(*KubernetesLokiObjectStoreCredentials)(nil), // 8: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials
-	(*KubernetesLokiSecretKeyRef)(nil),           // 9: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
-	(*KubernetesLokiLimits)(nil),                 // 10: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiLimits
-	(*KubernetesLokiMultiTenancy)(nil),           // 11: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMultiTenancy
-	(*KubernetesLokiTenant)(nil),                 // 12: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiTenant
-	(*KubernetesLokiGateway)(nil),                // 13: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGateway
-	(*KubernetesLokiCaching)(nil),                // 14: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiCaching
-	(*KubernetesLokiRuler)(nil),                  // 15: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiRuler
-	(*KubernetesLokiScheduling)(nil),             // 16: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling
-	nil,                                          // 17: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),                  // 18: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),        // 19: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil),        // 20: dev.planton.kubernetes.WorkloadToleration
+	(*KubernetesLokiR2Storage)(nil),              // 6: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Storage
+	(*KubernetesLokiR2Credentials)(nil),          // 7: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Credentials
+	(*KubernetesLokiGcsStorage)(nil),             // 8: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGcsStorage
+	(*KubernetesLokiAzureStorage)(nil),           // 9: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorage
+	(*KubernetesLokiObjectStoreCredentials)(nil), // 10: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials
+	(*KubernetesLokiSecretKeyRef)(nil),           // 11: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
+	(*KubernetesLokiLimits)(nil),                 // 12: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiLimits
+	(*KubernetesLokiMultiTenancy)(nil),           // 13: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMultiTenancy
+	(*KubernetesLokiTenant)(nil),                 // 14: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiTenant
+	(*KubernetesLokiGateway)(nil),                // 15: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGateway
+	(*KubernetesLokiCaching)(nil),                // 16: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiCaching
+	(*KubernetesLokiRuler)(nil),                  // 17: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiRuler
+	(*KubernetesLokiScheduling)(nil),             // 18: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling
+	nil,                                          // 19: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),                  // 20: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),        // 21: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil),        // 22: dev.planton.kubernetes.WorkloadToleration
 }
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_depIdxs = []int32{
-	18, // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 1: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.monolithic:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMonolithic
 	2,  // 2: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.simple_scalable:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSimpleScalable
 	3,  // 3: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.storage:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage
-	10, // 4: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.limits:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiLimits
-	11, // 5: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.multi_tenancy:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMultiTenancy
-	13, // 6: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.gateway:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGateway
-	14, // 7: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.caching:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiCaching
-	15, // 8: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.ruler:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiRuler
-	16, // 9: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.scheduling:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling
-	18, // 10: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMonolithic.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	19, // 11: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMonolithic.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	18, // 12: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSimpleScalable.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	19, // 13: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSimpleScalable.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	12, // 4: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.limits:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiLimits
+	13, // 5: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.multi_tenancy:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMultiTenancy
+	15, // 6: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.gateway:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGateway
+	16, // 7: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.caching:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiCaching
+	17, // 8: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.ruler:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiRuler
+	18, // 9: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec.scheduling:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling
+	20, // 10: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMonolithic.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	21, // 11: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMonolithic.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	20, // 12: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSimpleScalable.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	21, // 13: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSimpleScalable.resources:type_name -> dev.planton.kubernetes.ContainerResources
 	4,  // 14: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage.filesystem:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiFilesystemStorage
 	5,  // 15: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage.s3:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiS3Storage
-	6,  // 16: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage.gcs:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGcsStorage
-	7,  // 17: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage.azure:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorage
-	8,  // 18: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiS3Storage.credentials:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials
-	9,  // 19: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGcsStorage.service_account_key_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
-	9,  // 20: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorage.account_key_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
-	9,  // 21: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials.access_key_id_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
-	9,  // 22: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials.secret_access_key_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
-	12, // 23: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMultiTenancy.tenants:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiTenant
-	19, // 24: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGateway.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	18, // 25: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiRuler.alertmanager_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	17, // 26: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.NodeSelectorEntry
-	20, // 27: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	28, // [28:28] is the sub-list for method output_type
-	28, // [28:28] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	8,  // 16: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage.gcs:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGcsStorage
+	9,  // 17: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage.azure:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorage
+	6,  // 18: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStorage.r2:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Storage
+	10, // 19: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiS3Storage.credentials:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials
+	20, // 20: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Storage.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // 21: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Storage.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // 22: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Storage.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 23: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Storage.credentials:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Credentials
+	20, // 24: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // 25: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 26: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGcsStorage.service_account_key_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
+	11, // 27: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiAzureStorage.account_key_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
+	11, // 28: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials.access_key_id_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
+	11, // 29: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiObjectStoreCredentials.secret_access_key_secret:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSecretKeyRef
+	14, // 30: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiMultiTenancy.tenants:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiTenant
+	21, // 31: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiGateway.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	20, // 32: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiRuler.alertmanager_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	19, // 33: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.NodeSelectorEntry
+	22, // 34: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	35, // [35:35] is the sub-list for method output_type
+	35, // [35:35] is the sub-list for method input_type
+	35, // [35:35] is the sub-list for extension type_name
+	35, // [35:35] is the sub-list for extension extendee
+	0,  // [0:35] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_init() }
@@ -1909,17 +2124,18 @@ func file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_init() {
 		(*KubernetesLokiStorage_S3)(nil),
 		(*KubernetesLokiStorage_Gcs)(nil),
 		(*KubernetesLokiStorage_Azure)(nil),
+		(*KubernetesLokiStorage_R2)(nil),
 	}
-	file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesloki_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

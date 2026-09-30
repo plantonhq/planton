@@ -54,6 +54,12 @@ type Locals struct {
 
 	// kubectl one-liner for reaching the UI from a workstation.
 	PortForwardCommand string
+
+	// Name of the module-owned Secret carrying the sign-in client
+	// secrets (`<name>-sso`), and the sign-in rendering itself; nil when
+	// no provider is declared.
+	SsoSecretName string
+	SignIn        *signIn
 }
 
 // initializeLocals extracts and transforms spec fields into module-local
@@ -96,7 +102,11 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesgrafanav1alpha1.K
 		adminSecretName = existing.GetName()
 	}
 
+	ssoSecretName := releaseName + vars.SsoSecretSuffix
+
 	return &Locals{
+		SsoSecretName:   ssoSecretName,
+		SignIn:          buildSignIn(spec.GetAuth(), ssoSecretName),
 		Spec:            spec,
 		Labels:          labels,
 		Namespace:       namespace,

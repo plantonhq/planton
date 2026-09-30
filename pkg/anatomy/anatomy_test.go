@@ -149,6 +149,57 @@ func TestCheck_HermeticFixture(t *testing.T) {
 	}
 }
 
+// TestCheck_DeclaredEnginesHoldTheModuleSet proves the tree is held to a kind's
+// kind_meta.provisioners in both directions: OpenFGA kinds declare tofu and
+// terraform, so a Pulumi module is a violation and its absence is not, while an
+// undeclared kind still owes both modules.
+func TestCheck_DeclaredEnginesHoldTheModuleSet(t *testing.T) {
+	root := t.TempDir()
+	write := func(rel string) {
+		p := filepath.Join(root, rel)
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, []byte("x"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	write("catalog/openfga/openfgastore/iac/tf/README.md")
+	write("catalog/openfga/openfgastore/iac/pulumi/README.md") // -> module-for-undeclared-engine
+	write("catalog/openfga/openfgaauthorizationmodel/iac/tf/README.md")
+	write("catalog/openfga/openfgarelationshiptuple/iac/pulumi/README.md") // -> missing tf, undeclared pulumi
+	write("catalog/aws/awss3bucket/iac/tf/README.md")                      // -> missing-pulumi-module
+
+	violations, err := Check(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]bool{}
+	for _, v := range violations {
+		got[v.ID()] = true
+	}
+	for _, want := range []string{
+		"catalog/openfga/openfgastore/iac/pulumi:module-for-undeclared-engine",
+		"catalog/openfga/openfgarelationshiptuple/iac/pulumi:module-for-undeclared-engine",
+		"catalog/openfga/openfgarelationshiptuple:missing-tf-module",
+		"catalog/aws/awss3bucket:missing-pulumi-module",
+	} {
+		if !got[want] {
+			t.Errorf("expected violation %s to fire", want)
+		}
+	}
+	for _, wrong := range []string{
+		"catalog/openfga/openfgastore:missing-pulumi-module",
+		"catalog/openfga/openfgaauthorizationmodel:missing-pulumi-module",
+		"catalog/openfga/openfgaauthorizationmodel/iac/tf:module-for-undeclared-engine",
+		"catalog/aws/awss3bucket/iac/tf:module-for-undeclared-engine",
+	} {
+		if got[wrong] {
+			t.Errorf("violation %s must not fire", wrong)
+		}
+	}
+}
+
 // TestGate mirrors the secretcoverage gate semantics: new drift fails,
 // baselined drift passes, a fixed entry left in the baseline fails as stale.
 func TestGate(t *testing.T) {

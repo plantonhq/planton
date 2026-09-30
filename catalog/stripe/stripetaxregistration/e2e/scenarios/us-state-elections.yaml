@@ -1,0 +1,17 @@
+# A US state sales tax registration with a local-tax election, the deepest
+# shape the module writes, scheduled for 1 January 2100 and expiring a day
+# later.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRegistration
+metadata:
+  name: e2e-tax-registration-us
+  org: e2e-org
+  env: testing
+spec:
+  country: US
+  type: state_sales_tax
+  state: TX
+  activeFrom: 4102444800
+  expiresAt: 4102531200
+  stateSalesTaxElections:
+    - type: simplified_sellers_use_tax

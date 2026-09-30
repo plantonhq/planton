@@ -1,0 +1,24 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePrice
+metadata:
+  name: pro-monthly
+  org: example-org
+  env: production
+spec:
+  product:
+    valueFrom:
+      kind: StripeProduct
+      name: pro-plan
+  currency: usd
+  unitAmount: 4900
+  recurring:
+    interval: month
+  lookupKey: pro-monthly
+  transferLookupKey: true
+  nickname: Pro, monthly
+  taxBehavior: exclusive
+  currencyOptions:
+    eur:
+      unitAmount: 4500
+    gbp:
+      unitAmount: 3900

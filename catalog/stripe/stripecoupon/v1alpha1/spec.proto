@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripecoupon.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// StripeCouponSpec declares a discount: a percentage or a fixed amount off, once, for a number of
+// months, or forever, optionally only on some products. Customers redeem it through a
+// StripePromotionCode, or the application applies it to a subscription or Checkout session.
+//
+// A coupon's discount can never change in Stripe. Changing the amount, percentage, currency,
+// duration, months, redemption limit, redeem-by date or products REPLACES the coupon: Planton
+// deletes the old one and creates the new one, and every promotion code that references it is
+// replaced with it. Name, metadata and currency options update in place.
+//
+// One owner per object: declare a coupon here only if nothing else creates or edits it. When the
+// application's own code or the Dashboard owns the account's discounts, leave its coupons there.
+//
+// Destroy deletes the coupon. Customers who already applied it keep their discount; nobody new
+// can redeem it (Stripe's API reference, "Delete a coupon"). A coupon that cannot be read makes
+// the plan fail (the provider does not treat a missing coupon as gone); remove it from state and
+// apply again.
+//
+// The key needs "Coupons" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/billing/subscriptions/coupons
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/coupon
+message StripeCouponSpec {
+  // name is the coupon's name as customers see it on invoices and receipts. Unset, Stripe shows
+  // the coupon's id. It updates in place.
+  string name = 1;
+
+  // percent_off is the discount as a percentage, above 0 and at most 100. A coupon sets exactly
+  // one of percent_off and amount_off. Changing it REPLACES the coupon.
+  optional double percent_off = 2 [(buf.validate.field).double = {
+    gt: 0
+    lte: 100
+  }];
+
+  // amount_off is the discount in the currency's smallest unit (cents for usd), with currency.
+  // Changing it REPLACES the coupon.
+  optional int64 amount_off = 3 [(buf.validate.field).int64.gt = 0];
+
+  // currency is the three-letter ISO code of amount_off, in lowercase ("usd"). Set it with
+  // amount_off, never with percent_off. Changing it REPLACES the coupon.
+  string currency = 4 [(buf.validate.field).cel = {
+    id: "spec.currency.format"
+    message: "currency is a lowercase three-letter ISO code, such as usd"
+    expression: "this == '' || this.matches('^[a-z]{3}$')"
+  }];
+
+  // currency_options are amount_off in other currencies, keyed by lowercase currency code ("eur"),
+  // so a customer paying in theirs gets the same discount. Only with amount_off. They update in
+  // place.
+  map<string, int64> currency_options = 5 [(buf.validate.field).map = {
+    keys: {
+      string: {pattern: "^[a-z]{3}$"}
+    }
+    values: {
+      int64: {gt: 0}
+    }
+  }];
+
+  // duration is how long the discount applies to a subscription. Unset, Stripe uses once.
+  // Changing it REPLACES the coupon.
+  Duration duration = 6 [(buf.validate.field).enum.defined_only = true];
+
+  // duration_in_months is how many months a repeating coupon applies for. Set it with duration
+  // repeating, and only then. Changing it REPLACES the coupon.
+  optional int64 duration_in_months = 7 [(buf.validate.field).int64.gte = 1];
+
+  // max_redemptions is how many times the coupon can be redeemed across all customers. Unset, no
+  // limit. Changing it REPLACES the coupon.
+  optional int64 max_redemptions = 8 [(buf.validate.field).int64.gte = 1];
+
+  // redeem_by is the moment after which the coupon can no longer be redeemed, in Unix seconds
+  // (1798761599 is 2026-12-31T23:59:59Z; on Linux `date -u -d 2026-12-31T23:59:59Z +%s` computes
+  // one). A subscription that already has it keeps the discount after this time. Changing it
+  // REPLACES the coupon.
+  optional int64 redeem_by = 9 [(buf.validate.field).int64.gt = 0];
+
+  // applies_to_products limits the discount to these products (prod_...). Reference a
+  // StripeProduct. Unset, the coupon applies to everything. Changing them REPLACES the coupon.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef applies_to_products = 10 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeProduct,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).repeated.items.cel = {
+      id: "spec.applies_to_products.format"
+      message: "a product is a Stripe product id (prod_...), or a reference to a StripeProduct"
+      expression: "!has(this.value) || this.value.startsWith('prod_')"
+    }
+  ];
+
+  // metadata is a set of key-value pairs stored on the coupon. It updates in place.
+  map<string, string> metadata = 11;
+
+  option (buf.validate.message).cel = {
+    id: "spec.discount_shape"
+    message: "a coupon takes exactly one discount: percent_off, or amount_off with its currency"
+    expression: "has(this.percent_off) != has(this.amount_off)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.currency_with_amount"
+    message: "currency belongs to amount_off: set both, or neither (a percentage coupon has no currency)"
+    expression: "has(this.amount_off) == (this.currency != '')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.currency_options_shape"
+    message: "currency_options are amount_off in other currencies: they need amount_off, and the main currency is not one of them"
+    expression: "size(this.currency_options) == 0 || (has(this.amount_off) && !(this.currency in this.currency_options))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.months_with_repeating"
+    message: "duration_in_months goes with duration repeating: set both, or neither"
+    expression: "(this.duration == 2) == has(this.duration_in_months)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.applies_to_products.unique"
+    message: "each product is named once: remove the repeated product id"
+    expression: "this.applies_to_products.all(p, !has(p.value) || this.applies_to_products.filter(q, has(q.value) && q.value == p.value).size() == 1)"
+  };
+
+  // Duration is how long a coupon's discount applies to a subscription.
+  enum Duration {
+    duration_unspecified = 0;
+    // once applies to the first invoice only.
+    once = 1;
+    // repeating applies for duration_in_months.
+    repeating = 2;
+    // forever applies to every invoice.
+    forever = 3;
+  }
+}

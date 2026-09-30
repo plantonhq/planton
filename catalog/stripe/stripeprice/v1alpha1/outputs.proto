@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeprice.v1alpha1;
+
+// StripePriceStackOutputs identifies the price.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/price
+message StripePriceStackOutputs {
+  // id is the price's Stripe id (price_...), the value Checkout sessions, subscriptions, payment
+  // links and a StripeBillingPortalConfiguration's switchable prices reference. It changes when
+  // the price is replaced.
+  string id = 1;
+
+  // type is one_time or recurring, as Stripe derives it from spec.recurring.
+  string type = 2;
+
+  // active is false once the price is archived (by destroy, by spec.active, or in the Dashboard).
+  bool active = 3;
+
+  // lookup_key is the stable name the application retrieves the price by, when one is set.
+  string lookup_key = 4;
+
+  // product is the id of the product the price charges for (prod_...).
+  string product = 5;
+}

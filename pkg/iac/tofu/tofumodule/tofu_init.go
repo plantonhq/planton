@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/failure"
+	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 	"github.com/plantonhq/planton/shared/iac/terraform"
@@ -37,6 +38,18 @@ func Init(
 	jsonLogEventsChan chan string,
 	backendBody ...string,
 ) (err error) {
+	// Every OpenTofu and Terraform run starts here -- the CLI's tofu and
+	// terraform commands, apply/plan's dispatch, and the platform runner -- so
+	// this is where a kind that does not run on the chosen binary is refused
+	// before anything is written or executed.
+	engine, err := provisioner.FromString(binaryName)
+	if err != nil {
+		return errors.Wrapf(err, "unknown HCL engine binary %q", binaryName)
+	}
+	if err := provisioner.RequireForManifest(manifestObject, engine); err != nil {
+		return err
+	}
+
 	if err := tfbackend.WriteBackendFile(modulePath, backendType, backendBody...); err != nil {
 		return errors.Wrapf(err, "failed to write backend file")
 	}

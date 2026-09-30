@@ -51,6 +51,24 @@ func testS3() *KubernetesLokiStorage {
 	}
 }
 
+// testR2 returns an R2 backend wired the way a composition wires it: the
+// account and bucket by reference to a CloudflareR2Bucket, the key pair
+// from dashboard-minted secrets.
+func testR2() *KubernetesLokiStorage {
+	return &KubernetesLokiStorage{
+		Backend: &KubernetesLokiStorage_R2{
+			R2: &KubernetesLokiR2Storage{
+				AccountId: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "logs-bucket", "status.outputs.account_id"),
+				Bucket:    valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "logs-bucket", "status.outputs.bucket_name"),
+				Credentials: &KubernetesLokiR2Credentials{
+					AccessKeyId:     literal("$secret/logs-writer-access-key-id"),
+					SecretAccessKey: literal("$secret/logs-writer-secret-access-key"),
+				},
+			},
+		},
+	}
+}
+
 // bcryptHash is a syntactically valid htpasswd bcrypt hash (the chart's
 // own documented example shape).
 const bcryptHash = "$2y$10$7O40CaY1yz7fu9O24k2/u.ct/wELYHRBsn25v/7AyuQ8E8hrLqpva"
@@ -108,6 +126,35 @@ var _ = ginkgo.Describe("KubernetesLoki Validation Tests", func() {
 				},
 			}
 			input.Spec.Storage = testS3()
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 by reference should be valid", func() {
+			input.Spec.Storage = testR2()
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 with a literal account and a us jurisdiction should be valid", func() {
+			storage := testR2()
+			storage.GetR2().AccountId = literal("074755a78d8e8f77c119a90a125e8a06")
+			storage.GetR2().Jurisdiction = literal("us")
+			input.Spec.Storage = storage
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("multiple monolithic replicas on r2 should be valid (r2 counts as object storage)", func() {
+			input.Spec.Mode = &KubernetesLokiSpec_Monolithic{
+				Monolithic: &KubernetesLokiMonolithic{Replicas: int32Ptr(3)},
+			}
+			input.Spec.Storage = testR2()
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("simple_scalable on r2 should be valid (r2 counts as object storage)", func() {
+			input.Spec.Mode = &KubernetesLokiSpec_SimpleScalable{
+				SimpleScalable: &KubernetesLokiSimpleScalable{},
+			}
+			input.Spec.Storage = testR2()
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -318,6 +365,34 @@ var _ = ginkgo.Describe("KubernetesLoki Validation Tests", func() {
 			s3 := testS3()
 			s3.GetS3().Bucket = ""
 			input.Spec.Storage = s3
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 without credentials should fail", func() {
+			storage := testR2()
+			storage.GetR2().Credentials = nil
+			input.Spec.Storage = storage
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 without a bucket should fail", func() {
+			storage := testR2()
+			storage.GetR2().Bucket = nil
+			input.Spec.Storage = storage
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 with a malformed account id should fail", func() {
+			storage := testR2()
+			storage.GetR2().AccountId = literal("not-an-account")
+			input.Spec.Storage = storage
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("r2 with an unknown jurisdiction should fail", func() {
+			storage := testR2()
+			storage.GetR2().Jurisdiction = literal("apac")
+			input.Spec.Storage = storage
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 

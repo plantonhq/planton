@@ -1,0 +1,16 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodConfiguration
+metadata:
+  name: cards-and-wallets
+  org: example-org
+  env: production
+spec:
+  name: Cards and wallets
+  card:
+    preference: "on"
+  applePay:
+    preference: "on"
+  googlePay:
+    preference: "on"
+  link:
+    preference: "on"

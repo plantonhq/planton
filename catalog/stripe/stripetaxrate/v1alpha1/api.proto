@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripetaxrate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripetaxrate/v1alpha1/outputs.proto";
+import "catalog/stripe/stripetaxrate/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeTaxRate is a component that declares a manual tax rate that invoices, subscriptions,
+// Checkout sessions and payment links apply.
+//
+// A rate's percentage and inclusiveness never change in Stripe, so changing them replaces the
+// rate. Destroy deactivates it; it still applies wherever it is already used.
+//
+// Use cases:
+// - Declare the VAT and sales-tax rates an account charges, the same in every environment
+// - Keep manual rates under review like code when Stripe Tax is not in use
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeTaxRate
+// metadata:
+//   name: de-vat
+//   org: my-organization
+// spec:
+//   displayName: VAT
+//   percentage: 19
+//   inclusive: false
+//   country: DE
+//   taxType: vat
+// ```
+message StripeTaxRate {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeTaxRate" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeTaxRate'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the rate, where it applies, and how it shows on invoices.
+  StripeTaxRateSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the rate as created, populated after deployment.
+  StripeTaxRateStatus status = 5;
+}
+
+// StripeTaxRateStatus represents the current state of a StripeTaxRate resource.
+// Populated by the deployment system.
+message StripeTaxRateStatus {
+  // outputs contains the stack outputs: the rate's id and whether it is active.
+  StripeTaxRateStackOutputs outputs = 1;
+}

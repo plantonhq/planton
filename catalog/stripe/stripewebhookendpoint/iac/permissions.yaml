@@ -1,0 +1,20 @@
+# Least-privilege permissions the IaC runner's Stripe key needs to provision, update, and
+# destroy this component with the official module. Stripe authenticates with a restricted API
+# key whose permissions are a Read or Write choice per resource on the Dashboard's restricted-key
+# form (Write includes Read); the stripe/stripe provider (0.3.0, iac/tf/provider.tf) sends it as
+# a bearer token. Resource names are the form's labels. Every group is `derived` (static analysis
+# of the module and the provider's calls, cited in notes) until a live run under a key built from
+# exactly this file upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: stripewebhookendpoint
+spec:
+  stripe:
+    groups:
+      - purpose: ManageWebhookEndpoint
+        permissions:
+          - resource: Webhook Endpoints
+            access: write
+        provenance: derived
+        notes: The module (iac/tf/main.tf) manages stripe_webhook_endpoint. The provider creates it with POST /v1/webhook_endpoints, reads it with GET /v1/webhook_endpoints/{id}, updates it with POST /v1/webhook_endpoints/{id}, and destroys it with DELETE /v1/webhook_endpoints/{id} (terraform-provider-stripe internal/provider/resources/resource_stripe_webhook_endpoint.go); POST and DELETE are Write, which includes the Read the refresh needs.

@@ -36,7 +36,9 @@ per-component microservices deserves a dedicated operations posture.
 
 `filesystem` (a PersistentVolume, single monolithic replica only) or an
 object store — `s3` (including S3-compatible endpoints like an in-cluster
-`KubernetesSeaweedFs`), `gcs`, or `azure`. Credentials are always
+`KubernetesSeaweedFs`), `r2` (a Cloudflare R2 bucket by reference, with the
+key pair in the module's own `<name>-r2-credentials` Secret), `gcs`, or
+`azure`. Credentials are always
 references to existing Secrets and ride environment-variable expansion —
 they never land in the rendered Loki config. Leaving credentials empty
 uses the pod's ambient cloud identity (IRSA / GKE WI / AKS federated

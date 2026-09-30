@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripepaymentmethodconfiguration/v1alpha1/outputs.proto";
+import "catalog/stripe/stripepaymentmethodconfiguration/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripePaymentMethodConfiguration is a component that declares which payment methods checkout
+// offers, method by method: on, off, or left to Stripe.
+//
+// It creates a configuration of its own and never adopts the account's default; the application
+// names its id (status.outputs.id) when it creates a Checkout Session or PaymentIntent. Stripe
+// never deletes a configuration: destroy deactivates it, and Stripe keeps it forever.
+//
+// Use cases:
+// - Offer cards and wallets at checkout and nothing else
+// - Keep checkout and the customer portal on the same list of methods
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripePaymentMethodConfiguration
+// metadata:
+//   name: checkout-methods
+//   org: my-organization
+// spec:
+//   name: Checkout methods
+//   card:
+//     preference: "on"
+//   applePay:
+//     preference: "on"
+//   googlePay:
+//     preference: "on"
+//   link:
+//     preference: "off"
+// ```
+message StripePaymentMethodConfiguration {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripePaymentMethodConfiguration" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripePaymentMethodConfiguration'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the payment methods checkout offers.
+  StripePaymentMethodConfigurationSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the configuration as created, populated after deployment.
+  StripePaymentMethodConfigurationStatus status = 5;
+}
+
+// StripePaymentMethodConfigurationStatus represents the current state of a
+// StripePaymentMethodConfiguration resource. Populated by the deployment system.
+message StripePaymentMethodConfigurationStatus {
+  // outputs contains the stack outputs: the configuration's id and the methods it offers.
+  StripePaymentMethodConfigurationStackOutputs outputs = 1;
+}

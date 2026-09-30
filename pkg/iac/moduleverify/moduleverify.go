@@ -118,6 +118,11 @@ func Verify(in Input) (*Result, error) {
 			return nil, err
 		}
 	}
+	// A module for an engine the kind does not run on is not a module of that
+	// kind, however well it satisfies the contract otherwise.
+	if err := provisioner.Require(kind, prov); err != nil {
+		return nil, err
+	}
 
 	result := &Result{
 		KindName:    kindName,

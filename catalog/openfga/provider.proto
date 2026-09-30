@@ -6,9 +6,9 @@ import "buf/validate/validate.proto";
 
 // OpenFgaProviderConfig represents the configuration required to connect to an OpenFGA server.
 //
-// IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-// All OpenFGA components must use Terraform/Tofu as the provisioner.
-// Pulumi modules for OpenFGA resources will be empty placeholder modules.
+// OpenFGA publishes a Terraform provider and no Pulumi provider, so every OpenFGA kind runs on
+// OpenTofu or Terraform. Each kind declares those engines, and Planton refuses Pulumi for it
+// before anything runs.
 //
 // OpenFGA supports two authentication methods:
 // 1. API Token: Set api_token only (uses FGA_API_TOKEN environment variable)

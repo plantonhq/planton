@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeeventdestination.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// StripeEventDestinationSpec declares where a Stripe account sends its events through Stripe's
+// v2 event destinations: a webhook URL, an Amazon EventBridge event bus, or an Azure Event Grid
+// partner topic, with either thin events (a small notification the receiver fetches details
+// for) or snapshot events (the full object, as classic webhooks deliver it).
+//
+// When to use which: for classic snapshot webhooks to one URL, a StripeWebhookEndpoint is the
+// simpler kind; use an event destination for thin events, for events from other accounts or an
+// organization, or to deliver into AWS or Azure.
+//
+// The destination's type is the block that is set (webhook_endpoint, amazon_eventbridge or
+// azure_event_grid); the module sends Stripe the matching type.
+//
+// A webhook destination's signing secret exists only at creation. The deployment captures it
+// into status.outputs.signing_secret, where the receiving service reads it by reference; an
+// imported destination carries none. An EventBridge or Event Grid destination stays pending until
+// its partner source is associated on the cloud side: status.outputs names the source to
+// associate.
+//
+// Destroy deletes the destination. The provider cannot enable or disable a destination, so
+// status is observed only. A destination deleted outside Planton makes the next plan fail (the
+// provider does not treat a missing destination as gone); remove it from state and apply again.
+//
+// The key needs "Event Destinations" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/event-destinations
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/v2_core_event_destination
+message StripeEventDestinationSpec {
+  // name identifies the destination in the Dashboard. It updates in place.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // description says what the destination is for. It updates in place.
+  string description = 2;
+
+  // event_payload is what each event carries. Changing it REPLACES the destination.
+  EventPayload event_payload = 3 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // enabled_events are the event types delivered, in Stripe's spelling: snapshot events like
+  // "invoice.paid", thin events like "v1.billing.meter.error_report_triggered". List only the events
+  // the receiver handles. They update in place.
+  repeated string enabled_events = 4 [(buf.validate.field).repeated = {
+    min_items: 1
+    unique: true
+    items: {
+      string: {pattern: "^(\\*|[a-z0-9_]+(\\.[a-z0-9_]+)+)$"}
+    }
+  }];
+
+  // events_from is whose events are routed here: "@self" (this account), "@accounts" (accounts
+  // this account manages), "@organization_members" (accounts linked to its organization), or
+  // "@organization_members/@accounts" (the accounts those members manage). Unset, Stripe routes
+  // this account's own events. Changing it REPLACES the destination.
+  repeated string events_from = 5 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {pattern: "^@[a-z_]+(/@[a-z_]+)?$"}
+    }
+  }];
+
+  // snapshot_api_version is the Stripe API version snapshot events are rendered in
+  // ("2025-09-30.clover"). Only for event_payload snapshot; unset, the account's default version.
+  // Changing it REPLACES the destination.
+  string snapshot_api_version = 6 [(buf.validate.field).cel = {
+    id: "spec.snapshot_api_version.format"
+    message: "snapshot_api_version is a Stripe API version such as 2025-09-30.clover"
+    expression: "this == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}(\\\\.[a-z]+)?$')"
+  }];
+
+  // metadata is a set of key-value pairs stored on the destination.
+  map<string, string> metadata = 7;
+
+  // destination is where events go: exactly one of a webhook URL, an Amazon EventBridge partner
+  // event source, or an Azure Event Grid partner topic. The block set is the destination's type,
+  // so moving to another block REPLACES the destination.
+  oneof destination {
+    option (buf.validate.oneof).required = true;
+
+    // webhook_endpoint is the URL a webhook destination POSTs events to.
+    StripeEventDestinationWebhookEndpoint webhook_endpoint = 8;
+
+    // amazon_eventbridge is the AWS account and region an EventBridge destination creates its
+    // partner event source in. Changing it REPLACES the destination.
+    StripeEventDestinationAmazonEventBridge amazon_eventbridge = 9;
+
+    // azure_event_grid is the Azure subscription, resource group and region an Event Grid
+    // destination creates its partner topic in. Changing it REPLACES the destination.
+    StripeEventDestinationAzureEventGrid azure_event_grid = 10;
+  }
+
+  option (buf.validate.message).cel = {
+    id: "spec.snapshot_api_version_needs_snapshot"
+    message: "snapshot_api_version renders snapshot events: set event_payload snapshot, or remove it"
+    expression: "this.snapshot_api_version == '' || this.event_payload == 1"
+  };
+
+  // EventPayload is what each event carries.
+  enum EventPayload {
+    event_payload_unspecified = 0;
+    // snapshot carries the full object, as classic webhooks do.
+    snapshot = 1;
+    // thin carries a small notification; the receiver fetches the details it needs.
+    thin = 2;
+  }
+}
+
+// StripeEventDestinationWebhookEndpoint is a webhook destination's address.
+message StripeEventDestinationWebhookEndpoint {
+  // url is where Stripe POSTs each event. Live mode requires HTTPS. It updates in place and keeps
+  // the signing secret.
+  string url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true,
+    (buf.validate.field).cel = {
+      id: "webhook_endpoint.url.scheme"
+      message: "url is an https:// (or, in a sandbox, http://) address"
+      expression: "this.startsWith('https://') || this.startsWith('http://')"
+    }
+  ];
+}
+
+// StripeEventDestinationAmazonEventBridge is where an EventBridge destination's partner event
+// source is created.
+message StripeEventDestinationAmazonEventBridge {
+  // aws_account_id is the 12-digit AWS account the partner event source appears in.
+  string aws_account_id = 1 [(buf.validate.field).string.pattern = "^[0-9]{12}$"];
+  // aws_region is the AWS region the partner event source appears in ("us-east-1").
+  string aws_region = 2 [(buf.validate.field).string.pattern = "^[a-z]{2}(-[a-z]+)+-[0-9]+$"];
+}
+
+// StripeEventDestinationAzureEventGrid is where an Event Grid destination's partner topic is
+// created.
+message StripeEventDestinationAzureEventGrid {
+  // azure_subscription_id is the Azure subscription the partner topic appears in.
+  string azure_subscription_id = 1 [(buf.validate.field).string.uuid = true];
+  // azure_resource_group_name is the resource group the partner topic appears in.
+  string azure_resource_group_name = 2 [(buf.validate.field).required = true];
+  // azure_region is the Azure region of the partner topic ("eastus").
+  string azure_region = 3 [(buf.validate.field).required = true];
+}

@@ -223,6 +223,8 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| KubernetesLoki | `spec.storage.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
+| KubernetesLoki | `spec.storage.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 | KubernetesMongodb | `spec.backup.storages[].r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
 | KubernetesMongodb | `spec.backup.storages[].r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 | KubernetesOpenBao | `spec.backup.objectStore.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
@@ -235,6 +237,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesPostgres | `spec.bootstrap.recovery.objectStore.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 | KubernetesPostgres | `spec.backup.objectStore.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
 | KubernetesPostgres | `spec.backup.objectStore.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
+| KubernetesTempo | `spec.storage.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
+| KubernetesTempo | `spec.storage.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 
 ## See Also
 

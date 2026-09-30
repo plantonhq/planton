@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeshippingrate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/options/options.proto";
+
+// StripeShippingRateSpec declares a shipping option customers choose in Checkout or on a payment
+// link: its name, a fixed amount in one or more currencies, and how long delivery takes.
+//
+// A shipping rate's name, amount, currency, delivery estimate and tax code can never change in
+// Stripe. Changing any of them REPLACES the rate: Planton deactivates the old one and creates the
+// new one, and a StripePaymentLink that references it is replaced with it. Tax behavior, the
+// other currencies' amounts, active and metadata update in place.
+//
+// One owner per object: declare a shipping rate here only if nothing else creates or edits it.
+//
+// Stripe never deletes a shipping rate. Destroy deactivates it (active = false): new purchases
+// can't choose it, and orders already placed keep it. A rate that cannot be read makes the plan
+// fail (the provider does not treat a missing rate as gone); remove it from state and apply again.
+//
+// The key needs "Shipping Rates" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/payments/during-payment/charge-shipping
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/shipping_rate
+message StripeShippingRateSpec {
+  // display_name is the option's name as customers see it in Checkout ("Standard", "Express").
+  // Changing it REPLACES the rate.
+  string display_name = 1 [(buf.validate.field).required = true];
+
+  // fixed_amount is what the option costs, the only kind of shipping rate Stripe offers.
+  StripeShippingRateFixedAmount fixed_amount = 2 [(buf.validate.field).required = true];
+
+  // delivery_estimate is the delivery window shown to customers ("3-5 business days"). Changing
+  // it REPLACES the rate.
+  StripeShippingRateDeliveryEstimate delivery_estimate = 3;
+
+  // tax_behavior is whether the amount includes tax. Unset, the account's default applies. Once
+  // inclusive or exclusive, Stripe refuses to change it.
+  TaxBehavior tax_behavior = 4 [(buf.validate.field).enum.defined_only = true];
+
+  // tax_code is the Stripe Tax category the shipping is taxed as. Stripe's shipping tax code is
+  // txcd_92010001. Changing it REPLACES the rate.
+  string tax_code = 5 [(buf.validate.field).cel = {
+    id: "spec.tax_code.format"
+    message: "tax_code is a Stripe tax code id such as txcd_92010001"
+    expression: "this == '' || this.matches('^txcd_[0-9]{8}$')"
+  }];
+
+  // active is whether new purchases can choose the rate. Setting it false deactivates the rate
+  // without destroying the resource.
+  optional bool active = 6 [(dev.planton.shared.options.default) = "true"];
+
+  // metadata is a set of key-value pairs stored on the rate. It updates in place.
+  map<string, string> metadata = 7;
+
+  // TaxBehavior is whether an amount includes tax. The zero value is named unset because Stripe's
+  // own values include "unspecified".
+  enum TaxBehavior {
+    tax_behavior_unset = 0;
+    // exclusive adds tax on top of the amount.
+    exclusive = 1;
+    // inclusive includes tax in the amount.
+    inclusive = 2;
+    // unspecified leaves the choice open until it is set, once, to inclusive or exclusive.
+    unspecified = 3;
+  }
+}
+
+// StripeShippingRateFixedAmount is what a shipping option costs.
+message StripeShippingRateFixedAmount {
+  // amount is the charge in the currency's smallest unit (cents for usd); 0 is free shipping.
+  // Changing it REPLACES the rate.
+  int64 amount = 1 [(buf.validate.field).int64.gte = 0];
+
+  // currency is the lowercase three-letter ISO code of amount ("usd"). Changing it REPLACES the
+  // rate.
+  string currency = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]{3}$"
+  ];
+
+  // currency_options are the amount in other currencies, keyed by lowercase currency code
+  // ("eur"), so a customer paying in theirs sees their price. They update in place.
+  map<string, StripeShippingRateCurrencyOption> currency_options = 3 [(buf.validate.field).map = {
+    keys: {
+      string: {pattern: "^[a-z]{3}$"}
+    }
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "fixed_amount.currency_options_shape"
+    message: "currency_options are the other currencies: the main currency is not one of them"
+    expression: "!(this.currency in this.currency_options)"
+  };
+}
+
+// StripeShippingRateCurrencyOption is a shipping option's amount in one more currency.
+message StripeShippingRateCurrencyOption {
+  // amount is the charge in this currency's smallest unit.
+  int64 amount = 1 [(buf.validate.field).int64.gte = 0];
+
+  // tax_behavior is whether this amount includes tax.
+  TaxBehavior tax_behavior = 2 [(buf.validate.field).enum.defined_only = true];
+
+  // TaxBehavior is whether an amount includes tax. The zero value is named unset because Stripe's
+  // own values include "unspecified".
+  enum TaxBehavior {
+    tax_behavior_unset = 0;
+    exclusive = 1;
+    inclusive = 2;
+    unspecified = 3;
+  }
+}
+
+// StripeShippingRateDeliveryEstimate is a delivery window. Either bound may be left open.
+message StripeShippingRateDeliveryEstimate {
+  // minimum is the earliest delivery. Unset, no lower bound.
+  StripeShippingRateDeliveryBound minimum = 1;
+
+  // maximum is the latest delivery. Unset, no upper bound.
+  StripeShippingRateDeliveryBound maximum = 2;
+
+  option (buf.validate.message).cel = {
+    id: "delivery_estimate.some_bound"
+    message: "a delivery estimate sets minimum, maximum, or both"
+    expression: "has(this.minimum) || has(this.maximum)"
+  };
+}
+
+// StripeShippingRateDeliveryBound is one end of a delivery window.
+message StripeShippingRateDeliveryBound {
+  // unit is the unit of time.
+  Unit unit = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // value is how many units, above 0.
+  int64 value = 2 [(buf.validate.field).int64.gt = 0];
+
+  // Unit is a unit of delivery time.
+  enum Unit {
+    unit_unspecified = 0;
+    business_day = 1;
+    day = 2;
+    hour = 3;
+    week = 4;
+    month = 5;
+  }
+}

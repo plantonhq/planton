@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripebillingmeter
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for a meter or its alerts: every account, sandboxes included, can create them (docs.stripe.com/billing/subscriptions/usage-based)."
+  notes: "The meter is free, but billing what it counts is not: invoices and subscriptions on a metered price are Stripe Billing, which Stripe prices as a share of billing volume (stripe.com/billing/pricing), on top of each payment's fees."

@@ -1106,8 +1106,9 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 		RepoRoot:     repoRoot,
 		RunID:        runID,
 		T:            t,
-		// Dependencies always deploy via Pulumi — even for Terraform
-		// scenarios — so the backend URL must be set unconditionally.
+		// A prerequisite deploys on Pulumi whenever its kind has a Pulumi
+		// module, as these kinds do — even for Terraform scenarios — so the
+		// backend URL must be set unconditionally.
 		// Leaving it empty makes the dependency stacks fall back to the
 		// machine's ambient `pulumi login` backend, coupling the run to
 		// stale developer state.

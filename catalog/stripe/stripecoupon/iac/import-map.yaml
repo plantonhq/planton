@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripecoupon
+spec:
+  # A coupon imports by its Stripe id, which a prior deploy reports as its id output. Coupons made
+  # in the Dashboard or the API may carry an id the account chose.
+  values:
+    - name: coupon_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Product catalog -> Coupons (the coupon's id, on its page), or `GET /v1/coupons`.

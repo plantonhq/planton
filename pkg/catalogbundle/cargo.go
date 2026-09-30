@@ -384,6 +384,9 @@ func computePermissionsProvenance(permissions *permissionsv1.ComponentPermission
 	for _, group := range spec.GetAuth0().GetGroups() {
 		seen[group.GetProvenance()] = true
 	}
+	for _, group := range spec.GetStripe().GetGroups() {
+		seen[group.GetProvenance()] = true
+	}
 	if len(seen) == 0 {
 		return ""
 	}

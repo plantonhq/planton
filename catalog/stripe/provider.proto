@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package dev.planton.stripe;
+
+import "buf/validate/validate.proto";
+
+// StripeProviderConfig is what Planton needs to act on one Stripe account: a key, the mode that
+// key belongs to, and optionally the Connect account to act on.
+//
+// Stripe kinds run on OpenTofu only, through Stripe's own Terraform provider (stripe/stripe), which
+// reads STRIPE_API_KEY and STRIPE_ACCOUNT. That provider has no guard of its own against live mode:
+// a live key applies to the live account. The mode field is Planton's guard, checked on every
+// deploy before OpenTofu starts.
+//
+// A sandbox is its own account with its own test-mode keys, so a sandbox config is mode test. Use a
+// restricted key (rk_...) that carries write permission for exactly the resources the manifests
+// declare; an account's standard secret key (sk_...) works too, and grants everything.
+//
+// Terraform provider: https://registry.terraform.io/providers/stripe/stripe/latest/docs
+// Restricted keys: https://docs.stripe.com/keys#limit-access
+message StripeProviderConfig {
+  // The Stripe API key: a restricted key (rk_test_... or rk_live_...) or a secret key
+  // (sk_test_... or sk_live_...). Highly sensitive; treat it as a secret. Its mode segment must
+  // match mode, or the deploy is refused before anything runs.
+  // Environment variable: STRIPE_API_KEY
+  string api_key = 1 [(buf.validate.field).required = true];
+
+  // Which mode the key belongs to. Required, because it is the only thing standing between a
+  // manifest meant for a sandbox and a live account: a live-mode key in a test config, or a
+  // test-mode key in a live config, is refused on every deploy. Sandboxes are test mode.
+  StripeMode mode = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  // The Connect account to act on (acct_...), when the key belongs to a Connect platform that
+  // manages this account's objects. Leave empty to act on the key's own account.
+  // Environment variable: STRIPE_ACCOUNT
+  string stripe_account = 3;
+}
+
+// StripeMode is the Stripe mode an API key belongs to. Stripe keys carry it in their prefix:
+// sk_test_ and rk_test_ are test mode (including every sandbox key), sk_live_ and rk_live_ are live.
+enum StripeMode {
+  stripe_mode_unspecified = 0;
+  // Test mode: a sandbox, or an account's test data. Nothing moves real money.
+  test = 1;
+  // Live mode: real customers and real money.
+  live = 2;
+}

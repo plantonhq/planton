@@ -73,6 +73,9 @@ func Discover(repoRoot, provider string, opts FilterOpts) (*DiscoverResult, erro
 		if err != nil {
 			return nil, err
 		}
+		if err := checkValidatedProvisioners(componentName, cp); err != nil {
+			return nil, errors.Wrapf(err, "%s", profilePath)
+		}
 
 		if !matchesFilter(cp, opts) {
 			continue
@@ -93,6 +96,26 @@ func Discover(repoRoot, provider string, opts FilterOpts) (*DiscoverResult, erro
 	})
 
 	return &DiscoverResult{Provider: pp, Components: components}, nil
+}
+
+// checkValidatedProvisioners refuses a profile that claims an engine its kind
+// does not run on (kind_meta.provisioners): the matrix would schedule a lane
+// the CLI refuses before it starts.
+func checkValidatedProvisioners(componentName string, cp *componentv1.ComponentE2EProfile) error {
+	kind := crkreflect.KindFromString(componentName)
+	if kind == cloudresourcekind.CloudResourceKind_unspecified || cp.GetSpec() == nil {
+		return nil
+	}
+	for _, vp := range cp.GetSpec().GetValidatedProvisioners() {
+		ok, err := crkreflect.RunsOn(kind, vp)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			return errors.Errorf("validated_provisioners lists %s, but %s does not run on it (kind_meta.provisioners); remove it", vp, kind)
+		}
+	}
+	return nil
 }
 
 func matchesFilter(cp *componentv1.ComponentE2EProfile, opts FilterOpts) bool {

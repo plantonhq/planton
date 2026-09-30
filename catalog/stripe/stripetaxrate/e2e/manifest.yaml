@@ -1,0 +1,15 @@
+# The canonical example: German VAT at 19%, added on top.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRate
+metadata:
+  name: de-vat
+  org: e2e-org
+  env: testing
+spec:
+  displayName: VAT
+  percentage: 19
+  inclusive: false
+  country: DE
+  jurisdiction: DE
+  description: German VAT, standard rate
+  taxType: vat

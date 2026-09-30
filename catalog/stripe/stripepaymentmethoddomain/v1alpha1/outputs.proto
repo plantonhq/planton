@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentmethoddomain.v1alpha1;
+
+// StripePaymentMethodDomainStackOutputs identifies the registration and reports, wallet by
+// wallet, whether the buttons can appear and, when not, Stripe's reason.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_method_domain
+message StripePaymentMethodDomainStackOutputs {
+  // id is the registration's Stripe id (pmd_...).
+  string id = 1;
+
+  // enabled is whether wallets may appear on the domain.
+  bool enabled = 2;
+
+  // apple_pay_status is "active" or "inactive".
+  string apple_pay_status = 3;
+  // apple_pay_error_message is Stripe's reason Apple Pay is inactive, when it is.
+  string apple_pay_error_message = 4;
+
+  // google_pay_status is "active" or "inactive".
+  string google_pay_status = 5;
+  // google_pay_error_message is Stripe's reason Google Pay is inactive, when it is.
+  string google_pay_error_message = 6;
+
+  // link_status is "active" or "inactive".
+  string link_status = 7;
+  // link_error_message is Stripe's reason Link is inactive, when it is.
+  string link_error_message = 8;
+
+  // paypal_status is "active" or "inactive".
+  string paypal_status = 9;
+  // paypal_error_message is Stripe's reason PayPal is inactive, when it is.
+  string paypal_error_message = 10;
+
+  // amazon_pay_status is "active" or "inactive".
+  string amazon_pay_status = 11;
+  // amazon_pay_error_message is Stripe's reason Amazon Pay is inactive, when it is.
+  string amazon_pay_error_message = 12;
+
+  // klarna_status is "active" or "inactive".
+  string klarna_status = 13;
+  // klarna_error_message is Stripe's reason Klarna is inactive, when it is.
+  string klarna_error_message = 14;
+}

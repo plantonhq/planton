@@ -1,0 +1,14 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeCoupon
+metadata:
+  name: ten-off-once
+  org: example-org
+  env: production
+spec:
+  name: 10 off your first order
+  amountOff: 1000
+  currency: usd
+  currencyOptions:
+    eur: 900
+    gbp: 800
+  duration: once

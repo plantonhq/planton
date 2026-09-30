@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package dev.planton.stripe.striperadarvaluelist.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// StripeRadarValueListSpec declares a Radar list -- blocked countries, trusted customers, known
+// fraudulent emails -- and every item in it. Radar rules name the list by its alias
+// ("Block if :ip_country: in @blocked_countries"), so the list is where the values live and the
+// rule is where the decision lives.
+//
+// Items are validated against the list's item type before Stripe sees them: a country list takes
+// two-letter codes, an email list takes email addresses. Each item is its own object in Stripe:
+// adding an item creates it, removing one deletes it, and an item can never be edited, only
+// replaced. Changing item_type REPLACES the list and every item in it.
+//
+// Destroy deletes the list and its items. Stripe refuses to delete a list a Radar rule still uses,
+// and rules are not declarable here: remove the rule in the Dashboard first. A list deleted outside
+// Planton makes the next plan fail (the provider does not treat a missing list as gone); remove it
+// from state and apply again.
+//
+// The key needs "Radar" write (iac/permissions.yaml). A list costs nothing, but writing custom
+// rules that use it needs Radar for Fraud Teams, which Stripe prices per screened transaction.
+//
+// https://docs.stripe.com/radar/lists
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/radar_value_list
+message StripeRadarValueListSpec {
+  // alias is the name Radar rules reference the list by, after an @ ("blocked_countries"). It
+  // updates in place, and every rule that names the old alias must be changed with it.
+  string alias = 1 [(buf.validate.field).required = true];
+
+  // name is the list's human-readable name in the Dashboard. It updates in place.
+  string name = 2 [(buf.validate.field).required = true];
+
+  // item_type is what the list holds. Unset, Stripe uses string (any text, compared without case).
+  // Changing it REPLACES the list and every item.
+  ItemType item_type = 3 [(buf.validate.field).enum.defined_only = true];
+
+  // items are the list's values, each once. Adding an item creates it in Stripe and removing one
+  // deletes it.
+  repeated string items = 4 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {min_len: 1}
+    }
+  }];
+
+  // metadata is a set of key-value pairs stored on the list. A key removed here is removed in
+  // Stripe on the next apply; removing the whole map leaves Stripe's keys in place.
+  map<string, string> metadata = 5;
+
+  option (buf.validate.message).cel = {
+    id: "spec.items.country"
+    message: "a country list holds two-letter ISO country codes in capitals, such as US or DE"
+    expression: "this.item_type != 5 || this.items.all(i, i.matches('^[A-Z]{2}$'))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.items.email"
+    message: "an email list holds email addresses, such as fraud@example.com"
+    expression: "this.item_type != 8 || this.items.all(i, i.isEmail())"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.items.ip_address"
+    message: "an ip_address list holds IPv4 or IPv6 addresses, such as 203.0.113.7"
+    expression: "this.item_type != 9 || this.items.all(i, i.isIp())"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.items.card_bin"
+    message: "a card_bin list holds card BINs: the card number's first 6 to 8 digits"
+    expression: "this.item_type != 2 || this.items.all(i, i.matches('^[0-9]{6,8}$'))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.items.customer_id"
+    message: "a customer_id list holds Stripe customer ids (cus_...)"
+    expression: "this.item_type != 7 || this.items.all(i, i.startsWith('cus_'))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.items.account"
+    message: "an account list holds Stripe account ids (acct_...)"
+    expression: "this.item_type != 1 || this.items.all(i, i.startsWith('acct_'))"
+  };
+
+  // ItemType is what a Radar list holds.
+  enum ItemType {
+    item_type_unspecified = 0;
+    // account holds connected account ids (acct_...).
+    account = 1;
+    // card_bin holds card number prefixes.
+    card_bin = 2;
+    // card_fingerprint holds Stripe card fingerprints.
+    card_fingerprint = 3;
+    // case_sensitive_string holds text compared with case.
+    case_sensitive_string = 4;
+    // country holds two-letter ISO country codes.
+    country = 5;
+    // crypto_fingerprint holds Stripe crypto wallet fingerprints.
+    crypto_fingerprint = 6;
+    // customer_id holds customer ids (cus_...).
+    customer_id = 7;
+    // email holds email addresses.
+    email = 8;
+    // ip_address holds IP addresses.
+    ip_address = 9;
+    // sepa_debit_fingerprint holds Stripe SEPA Debit fingerprints.
+    sepa_debit_fingerprint = 10;
+    // string holds any text, compared without case (Stripe's default).
+    string = 11;
+    // us_bank_account_fingerprint holds Stripe US bank account fingerprints.
+    us_bank_account_fingerprint = 12;
+  }
+}

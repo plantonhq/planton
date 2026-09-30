@@ -1,0 +1,16 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripepaymentlink
+spec:
+  # A payment link imports by its Stripe id (plink_...), which a prior deploy reports as its id
+  # output. The module's line-item tracker (terraform_data) is never imported: the Stripe import
+  # catalog records it as having no importer, and the first apply after an import creates it
+  # without touching the link.
+  values:
+    - name: payment_link_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Payment Links (the link's id, plink_..., on its page), or `GET
+        /v1/payment_links`.

@@ -1,0 +1,14 @@
+# The canonical example: a list of countries a Radar rule blocks.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeRadarValueList
+metadata:
+  name: blocked-countries
+  org: e2e-org
+  env: testing
+spec:
+  alias: blocked_countries
+  name: Blocked countries
+  itemType: country
+  items:
+    - KP
+    - IR

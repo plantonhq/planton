@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripetaxrate
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for manual tax rates: every account, sandboxes included, can create them (docs.stripe.com/billing/taxes/tax-rates)."
+  notes: "Manual tax rates are the free alternative to Stripe Tax, which is priced per transaction (stripe.com/tax/pricing); Stripe's own fees apply to each payment, never to the rate object."

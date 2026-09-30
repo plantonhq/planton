@@ -27,6 +27,7 @@ go_library(
         "//pkg/crkreflect",
         "//pkg/failure",
         "//pkg/fileutil",
+        "//pkg/iac/provisioner",
         "//pkg/iac/stackinput",
         "//pkg/iac/stackinput/providerenvvars",
         "//pkg/iac/stackinput/stackinputproviderconfig",
@@ -49,6 +50,7 @@ go_test(
     srcs = [
         "capture_outputs_test.go",
         "cloudflareworker_isolated_plan_test.go",
+        "engine_refusal_test.go",
         "module_directory_test.go",
         "reapable_command_test.go",
         "stderr_tail_test.go",
@@ -57,6 +59,7 @@ go_test(
     embed = [":tofumodule"],
     deps = [
         "//catalog/cloudflare/cloudflareworker/v1alpha1",
+        "//catalog/openfga/openfgastore/v1alpha1",
         "//internal/manifest",
         "//pkg/fileutil",
         "//pkg/iac/stackinput",

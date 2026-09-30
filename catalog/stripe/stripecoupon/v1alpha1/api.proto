@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripecoupon.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripecoupon/v1alpha1/outputs.proto";
+import "catalog/stripe/stripecoupon/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeCoupon is a component that declares a discount: a percentage or an amount off, once, for
+// some months, or forever, optionally only on some products.
+//
+// A coupon's discount never changes in Stripe, so changing it replaces the coupon (and every
+// promotion code on it). Destroy deletes the coupon; customers who already applied it keep their
+// discount.
+//
+// Use cases:
+// - Declare a launch discount and the codes that redeem it in one chart
+// - Keep the same coupons in every environment
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeCoupon
+// metadata:
+//   name: launch-25
+//   org: my-organization
+// spec:
+//   name: Launch 25% off
+//   percentOff: 25
+//   duration: repeating
+//   durationInMonths: 3
+// ```
+message StripeCoupon {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeCoupon" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeCoupon'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the discount, how long it applies, and its limits.
+  StripeCouponSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the coupon as created, populated after deployment.
+  StripeCouponStatus status = 5;
+}
+
+// StripeCouponStatus represents the current state of a StripeCoupon resource.
+// Populated by the deployment system.
+message StripeCouponStatus {
+  // outputs contains the stack outputs: the coupon's id and whether it can still be redeemed.
+  StripeCouponStackOutputs outputs = 1;
+}
