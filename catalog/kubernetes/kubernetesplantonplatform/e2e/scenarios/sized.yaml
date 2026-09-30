@@ -1,0 +1,27 @@
+# The adopter who meets an out-of-memory kill: the minimal platform plus the
+# one quantity the platform's status tells them to raise, the control plane's
+# memory limit, and nothing else. Every other quantity stays the operator's
+# measured default -- a person raising one limit never restates the numbers
+# beside it.
+#
+# The verifier proves the whole boot (phase Ready) and then the size's path
+# from this declaration to the pod: the control-plane container runs the
+# declared 7Gi limit, and status.components.controlPlane.sizing reports it.
+# The quantity is written in the canonical form the API server keeps, since
+# the verifier compares it as written.
+#
+# The version is the oldest release the operator runs; the platform's four
+# app images at that release are anonymously pullable.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonPlatform
+metadata:
+  name: planton
+spec:
+  namespace:
+    value: planton
+  create_namespace: true
+  version: v0.0.75
+  control_plane:
+    resources:
+      limits:
+        memory: 7Gi

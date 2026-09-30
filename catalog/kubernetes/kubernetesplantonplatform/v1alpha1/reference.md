@@ -190,7 +190,7 @@ spec:
   control_plane:
     resources:
       limits:
-        memory: 6Gi
+        memory: 8Gi
     replicas: 1
   console:
     replicas: 1
@@ -2476,9 +2476,10 @@ controls nothing else (not the platform version, not the charts).
 `ContainerResources`
 
 The control plane's CPU and memory. Unset, it runs the operator's measured
-default: 250m CPU and 1Gi memory requested, a 4Gi memory limit, no
-CPU limit (a limit throttles cold starts, so the operator never sets one;
-set one if your cluster's policy requires it).
+default: 250m CPU and 1Gi memory requested, a 6Gi memory limit (the
+heaviest parallel-deploy wave measured, 4.52Gi, plus 25%), no CPU limit (a
+limit throttles cold starts, so the operator never sets one; set one if
+your cluster's policy requires it).
 The control plane is a JVM whose heap is 60% of this memory limit, so
 raising the limit raises the heap; parallel deploys are what grow it.
 Every quantity is merged on its own with the operator's default: a

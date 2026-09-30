@@ -2,8 +2,35 @@ package verify
 
 import (
 	"fmt"
+	"os"
+	"regexp"
 	"testing"
 )
+
+// The verifier's default chart is the kind's default option, and the two
+// modules carry the same pin: a module that installs another chart than the
+// one its definition names would be verified against the wrong version.
+func TestPlantonOperatorDefaultChartVersionIsTheModulesPin(t *testing.T) {
+	want := plantonOperatorDefaultChartVersion()
+	if !regexp.MustCompile(`^\d+\.\d+\.\d+$`).MatchString(want) {
+		t.Fatalf("the kind's chart_version default must be an exact version, got %q", want)
+	}
+	for path, pin := range map[string]*regexp.Regexp{
+		"../../kubernetesplantonoperator/iac/pulumi/module/vars.go": regexp.MustCompile(`DefaultChartVersion:\s+"([^"]+)"`),
+		"../../kubernetesplantonoperator/iac/tf/locals.tf":          regexp.MustCompile(`default_chart_version\s*=\s*"([^"]+)"`),
+	} {
+		src, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		m := pin.FindSubmatch(src)
+		if m == nil {
+			t.Errorf("%s: no default chart pin found; the pattern this test reads it by has moved", path)
+		} else if string(m[1]) != want {
+			t.Errorf("%s pins %s; the kind's default is %s -- move the three together", path, m[1], want)
+		}
+	}
+}
 
 // The operator's phase Error is transient (any component error for one
 // reconcile cycle, requeued and retried); only VersionSupported=False is
@@ -84,5 +111,28 @@ func TestComponentPhaseSummary(t *testing.T) {
 	}
 	if got := componentPhaseSummary(""); got != "" {
 		t.Fatalf("empty input must stay empty, got %q", got)
+	}
+}
+
+// A declared size is compared quantity by quantity, and only what was
+// declared: the operator's defaults beside it are not the manifest's to
+// check, and a quantity the pod does not carry reads as the gap it is.
+func TestSizingMismatches(t *testing.T) {
+	declared := declaredSizing(map[string]interface{}{"limits": map[string]interface{}{"memory": "7Gi"}})
+	if len(declared) != 1 || declared["limits.memory"] != "7Gi" {
+		t.Fatalf("declaredSizing flattened to %v", declared)
+	}
+	if got := sizingMismatches(declared, `{"limits":{"memory":"7Gi"},"requests":{"cpu":"250m","memory":"1Gi"}}`, "the container"); len(got) != 0 {
+		t.Errorf("a pod running the declared limit beside the default requests matches, got %v", got)
+	}
+	got := sizingMismatches(declared, `{"limits":{"memory":"6Gi"},"requests":{"cpu":"250m","memory":"1Gi"}}`, "the container")
+	if len(got) != 1 || got[0] != `the container runs limits.memory "6Gi" where the manifest declares "7Gi"` {
+		t.Errorf("the operator's default where a size was declared is the mismatch, got %v", got)
+	}
+	if got := sizingMismatches(declared, ``, "the readback"); len(got) != 1 {
+		t.Errorf("an absent readback is a mismatch, never a pass, got %v", got)
+	}
+	if declaredSizing(nil) != nil || declaredSizing(map[string]interface{}{}) != nil {
+		t.Error("a manifest that declares no size has nothing to verify")
 	}
 }

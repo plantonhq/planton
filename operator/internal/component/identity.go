@@ -231,10 +231,10 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 	if err != nil {
 		return Result{}, fmt.Errorf("checking Identity readiness: %w", err)
 	}
+	workload := DeploymentRef(resources.IdentityDeploymentName(planton.Name)).Sized(resources.SizingIdentity)
 	if !ready {
 		log.Info("Identity server not ready")
-		return id.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.IdentityDeploymentName(planton.Name)).Sized(resources.SizingIdentity),
-			"Waiting for the identity server (first boot imports the sign-in realm)"), nil
+		return id.NotReady(ctx, c, planton.Namespace, workload, "Waiting for the identity server (first boot imports the sign-in realm)"), nil
 	}
 
 	// The realm reconciler: the first-boot import above is the bootstrap;
@@ -311,14 +311,20 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 	id.persistRealmState(ctx, c, planton, recorded, record)
 
 	log.Info("Identity server ready")
+	return id.Ready(ctx, c, planton.Namespace, identityReadyMessage(planton, adminEmail, publicURL), workload), nil
+}
 
-	if adminEmail == "" {
-		if restoredFrom := identityRestoredFrom(planton); restoredFrom != "" {
-			return Result{Ready: true, Message: identityRestoredRealmReadyMessage(planton.Name, restoredFrom, publicURL)}, nil
-		}
-		return Result{Ready: true, Message: identitySetupModeReadyMessage(planton.Name, planton.Namespace, publicURL)}, nil
+// identityReadyMessage is the Ready sentence for how the sign-in realm came
+// to be: restored from an archive, waiting for its first visitor to become
+// the administrator, or with the declared administrator seeded.
+func identityReadyMessage(planton *v1.PlantonPlatform, adminEmail, publicURL string) string {
+	if adminEmail != "" {
+		return identityDeclaredAdminReadyMessage(planton.Name, publicURL)
 	}
-	return Result{Ready: true, Message: identityDeclaredAdminReadyMessage(planton.Name, publicURL)}, nil
+	if restoredFrom := identityRestoredFrom(planton); restoredFrom != "" {
+		return identityRestoredRealmReadyMessage(planton.Name, restoredFrom, publicURL)
+	}
+	return identitySetupModeReadyMessage(planton.Name, planton.Namespace, publicURL)
 }
 
 // identityRestoredFrom is the archive server this platform's database was

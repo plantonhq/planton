@@ -69,7 +69,7 @@ func TestEffective_NoOverrideIsTheDefault(t *testing.T) {
 	got := Effective(SizingControlPlane, nil)
 	assertQuantity(t, got.Requests, corev1.ResourceCPU, "250m")
 	assertQuantity(t, got.Requests, corev1.ResourceMemory, "1Gi")
-	assertQuantity(t, got.Limits, corev1.ResourceMemory, "4Gi")
+	assertQuantity(t, got.Limits, corev1.ResourceMemory, "6Gi")
 	assertQuantity(t, got.Limits, corev1.ResourceCPU, "")
 }
 
@@ -77,8 +77,8 @@ func TestEffective_NoOverrideIsTheDefault(t *testing.T) {
 // nothing else of the default (the store's "replaced whole" rule), so a person
 // raising only a memory limit silently lost the CPU and memory requests.
 func TestEffective_OneQuantityKeepsEveryOther(t *testing.T) {
-	got := Effective(SizingControlPlane, &v1.ComponentResources{Limits: quantities("memory", "6Gi")})
-	assertQuantity(t, got.Limits, corev1.ResourceMemory, "6Gi")
+	got := Effective(SizingControlPlane, &v1.ComponentResources{Limits: quantities("memory", "8Gi")})
+	assertQuantity(t, got.Limits, corev1.ResourceMemory, "8Gi")
 	assertQuantity(t, got.Requests, corev1.ResourceCPU, "250m")
 	assertQuantity(t, got.Requests, corev1.ResourceMemory, "1Gi")
 }
@@ -115,7 +115,7 @@ func TestEffectiveFor_ReadsEachComponentsOwnField(t *testing.T) {
 	}
 	assertQuantity(t, EffectiveFor(SizingTemporalHistory, spec).Limits, corev1.ResourceMemory, "3Gi")
 	assertQuantity(t, EffectiveFor(SizingTemporalFrontend, spec).Limits, corev1.ResourceMemory, "512Mi")
-	assertQuantity(t, EffectiveFor(SizingControlPlane, spec).Limits, corev1.ResourceMemory, "4Gi")
+	assertQuantity(t, EffectiveFor(SizingControlPlane, spec).Limits, corev1.ResourceMemory, "6Gi")
 }
 
 func TestEffective_AnUnregisteredPathIsADefect(t *testing.T) {

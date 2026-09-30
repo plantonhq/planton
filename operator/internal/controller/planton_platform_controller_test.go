@@ -843,6 +843,102 @@ var _ = Describe("PlantonPlatform Controller", func() {
 		})
 	})
 
+	Context("When a component serves again after an out-of-memory kill", func() {
+		// The kill a pod recovered from in a minute is the one nobody sees:
+		// the component is Ready again, so without this answer it reads
+		// Healthy and the next kill arrives as an outage. The gateway is the
+		// component a minimal spec runs; its Deployment's rollout and its pod
+		// are planted as the controllers and the kubelet would write them.
+		It("reads Ready with the kill and the field to raise, warns once, and recovers when the pod is replaced", func() {
+			nn := types.NamespacedName{Name: "recovered-kill", Namespace: namespace}
+			resource := &plantonaiv1.PlantonPlatform{
+				ObjectMeta: metav1.ObjectMeta{Name: nn.Name, Namespace: nn.Namespace},
+				Spec:       plantonaiv1.PlantonPlatformSpec{Version: "v1.0.0"},
+			}
+			Expect(k8sClient.Create(ctx, resource)).To(Succeed())
+			defer func() { _ = k8sClient.Delete(context.Background(), resource) }()
+
+			recorder := record.NewFakeRecorder(16)
+			reconciler := &PlantonPlatformReconciler{Client: k8sClient, Scheme: k8sClient.Scheme(), Recorder: recorder}
+			for range 2 {
+				_, err := reconciler.Reconcile(ctx, reconcile.Request{NamespacedName: nn})
+				Expect(err).NotTo(HaveOccurred())
+			}
+
+			var deploy appsv1.Deployment
+			deployKey := types.NamespacedName{Name: resources.GatewayDeploymentName(nn.Name), Namespace: namespace}
+			Expect(k8sClient.Get(ctx, deployKey, &deploy)).To(Succeed())
+			deploy.Status = appsv1.DeploymentStatus{
+				ObservedGeneration: deploy.Generation, Replicas: 1, UpdatedReplicas: 1, ReadyReplicas: 1, AvailableReplicas: 1,
+			}
+			Expect(k8sClient.Status().Update(ctx, &deploy)).To(Succeed())
+
+			pod := &corev1.Pod{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: resources.GatewayDeploymentName(nn.Name) + "-5c8d-k2", Namespace: namespace,
+					Labels: deploy.Spec.Selector.MatchLabels,
+				},
+				Spec: corev1.PodSpec{Containers: []corev1.Container{{Name: "gateway", Image: "envoy",
+					Resources: corev1.ResourceRequirements{Limits: corev1.ResourceList{corev1.ResourceMemory: resource_.MustParse("256Mi")}}}}},
+			}
+			Expect(k8sClient.Create(ctx, pod)).To(Succeed())
+			defer func() { _ = k8sClient.Delete(context.Background(), pod) }()
+			killedAt := metav1.NewTime(time.Date(2026, 9, 30, 14, 2, 5, 0, time.UTC))
+			pod.Status = corev1.PodStatus{
+				Phase:      corev1.PodRunning,
+				Conditions: []corev1.PodCondition{{Type: corev1.PodReady, Status: corev1.ConditionTrue}},
+				ContainerStatuses: []corev1.ContainerStatus{{
+					Name: "gateway", Image: "envoy", Ready: true, RestartCount: 1,
+					State: corev1.ContainerState{Running: &corev1.ContainerStateRunning{StartedAt: killedAt}},
+					LastTerminationState: corev1.ContainerState{Terminated: &corev1.ContainerStateTerminated{
+						Reason: "OOMKilled", ExitCode: 137, FinishedAt: killedAt}},
+				}},
+			}
+			Expect(k8sClient.Status().Update(ctx, pod)).To(Succeed())
+
+			_, err := reconciler.Reconcile(ctx, reconcile.Request{NamespacedName: nn})
+			Expect(err).NotTo(HaveOccurred())
+
+			var updated plantonaiv1.PlantonPlatform
+			Expect(k8sClient.Get(ctx, nn, &updated)).To(Succeed())
+			gw := updated.Status.Components.Gateway
+			Expect(gw).NotTo(BeNil())
+			Expect(gw.Phase).To(Equal(plantonaiv1.ComponentPhaseReady), "the gateway is serving, so it is Ready")
+			Expect(gw.Reason).To(Equal(plantonaiv1.ComponentReasonOutOfMemory), "Ready, but not Healthy: %s", gw.Message)
+			Expect(gw.Object).NotTo(BeNil())
+			Expect(gw.Object.Name).To(Equal(pod.Name))
+			Expect(gw.Message).To(ContainSubstring("memory limit of 256Mi at 2026-09-30T14:02:05Z and is serving again"))
+			Expect(gw.Message).To(ContainSubstring("raise spec.gateway.resources.limits.memory"))
+
+			// The platform's Ready condition speaks for components that are
+			// not Ready; a serving component never becomes its headline.
+			ready := findCondition(updated.Status.Conditions, plantonaiv1.ConditionReady)
+			Expect(ready).NotTo(BeNil())
+			Expect(ready.Reason).NotTo(Equal(string(plantonaiv1.ComponentReasonOutOfMemory)))
+
+			Eventually(recorder.Events, timeout, interval).Should(Receive(And(
+				ContainSubstring("Warning"), ContainSubstring("OutOfMemory"), ContainSubstring("gateway:"), ContainSubstring("serving again"))))
+
+			// A raised limit rolls the pods; the new pod never met the kill,
+			// so the gateway reads Healthy again and says it recovered.
+			Expect(k8sClient.Get(ctx, types.NamespacedName{Name: pod.Name, Namespace: namespace}, pod)).To(Succeed())
+			pod.Status.ContainerStatuses[0].RestartCount = 0
+			pod.Status.ContainerStatuses[0].LastTerminationState = corev1.ContainerState{}
+			Expect(k8sClient.Status().Update(ctx, pod)).To(Succeed())
+			// Drain the reconcile's own non-failure Events before reading the recovery.
+			for len(recorder.Events) > 0 {
+				<-recorder.Events
+			}
+
+			_, err = reconciler.Reconcile(ctx, reconcile.Request{NamespacedName: nn})
+			Expect(err).NotTo(HaveOccurred())
+			Expect(k8sClient.Get(ctx, nn, &updated)).To(Succeed())
+			Expect(updated.Status.Components.Gateway.Reason).To(Equal(plantonaiv1.ComponentReasonHealthy))
+			Eventually(recorder.Events, timeout, interval).Should(Receive(And(
+				ContainSubstring("Normal"), ContainSubstring("ComponentRecovered"), ContainSubstring("gateway:"))))
+		})
+	})
+
 })
 
 // fakeRequirementReader answers the operator requirement a release declares
