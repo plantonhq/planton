@@ -1,0 +1,33 @@
+# A graduated, licensed price in two currencies: tiers (the last up to inf),
+# a flat fee on the first tier, and a decimal unit amount, mirrored in euros.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePrice
+metadata:
+  name: e2e-price-tiers
+  org: e2e-org
+  env: testing
+spec:
+  product:
+    valueFrom:
+      kind: StripeProduct
+      name: e2e-product-prereq
+  currency: usd
+  billingScheme: tiered
+  tiersMode: graduated
+  tiers:
+    - upTo: "10"
+      flatAmount: 5000
+      unitAmount: 0
+    - upTo: inf
+      unitAmountDecimal: "450.5"
+  recurring:
+    interval: month
+  currencyOptions:
+    eur:
+      tiers:
+        - upTo: "10"
+          flatAmount: 4500
+          unitAmount: 0
+        - upTo: inf
+          unitAmount: 400
+  nickname: e2e ${E2E_RUN_ID} tiers

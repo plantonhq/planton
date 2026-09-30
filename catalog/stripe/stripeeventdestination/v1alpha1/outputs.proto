@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeeventdestination.v1alpha1;
+
+import "shared/options/options.proto";
+
+// StripeEventDestinationStackOutputs identifies the destination, carries a webhook
+// destination's signing secret, and names the cloud-side source an EventBridge or Event Grid
+// destination waits on.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/v2_core_event_destination
+message StripeEventDestinationStackOutputs {
+  // id is the destination's Stripe id (ed_...).
+  string id = 1;
+
+  // status is "enabled" or "disabled" as Stripe reports it.
+  string status = 2;
+
+  // status_disabled_reason says why a disabled destination is disabled: "user",
+  // "no_aws_event_source_exists" or "no_azure_partner_topic_exists".
+  string status_disabled_reason = 3;
+
+  // signing_secret is a webhook destination's signing secret, the one the receiving service
+  // verifies each delivery's Stripe-Signature header with. Stripe returns it only when the
+  // destination is created, so it is empty for an imported destination, and a replacement yields a
+  // new one.
+  string signing_secret = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // aws_event_source_arn is the ARN of the partner event source an EventBridge destination
+  // created.
+  string aws_event_source_arn = 5;
+
+  // aws_event_source_name is that event source's name (aws.partner/stripe.com/...), the value an
+  // EventBridge event bus associates with to start receiving events.
+  string aws_event_source_name = 6;
+
+  // aws_event_source_status is "pending" until the source is associated with an event bus, then
+  // "active".
+  string aws_event_source_status = 7;
+
+  // azure_partner_topic_name is the partner topic an Event Grid destination created.
+  string azure_partner_topic_name = 8;
+
+  // azure_partner_topic_status is "never_activated" until the partner topic is activated in
+  // Azure, then "activated".
+  string azure_partner_topic_status = 9;
+}

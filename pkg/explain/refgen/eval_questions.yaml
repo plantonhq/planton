@@ -661,3 +661,54 @@ questions:
         pattern: 'drawn as a tray inside the room its members live in'
       - catalog: _docs/reference-commons.md
         pattern: 'planton\.dev/connection'
+
+  - id: q27
+    class: wisdom
+    question: >
+      A team declares its Pro plan's monthly price as a StripePrice with
+      lookup key pro-monthly, and its checkout code finds the price by that
+      key. They want to raise the amount from 49 to 59 dollars. What do they
+      change, what happens to existing subscribers, and how does the lookup
+      key keep working?
+    answer: >
+      Change unitAmount and set transferLookupKey: true in the same apply.
+      A Stripe price's amount never changes, so the change replaces the
+      price: Planton creates the new price first, the lookup key moves to it
+      in that same call, and the old price is archived. Existing subscribers
+      keep paying 49; new checkouts get 59. Without transferLookupKey,
+      creating the new price fails while the old one still holds the key,
+      and nothing changes.
+    checks:
+      - kind: StripePrice
+        file: GUIDE.md
+        pattern: '## Changing a Price''s Amount'
+      - kind: StripePrice
+        file: GUIDE.md
+        pattern: 'the lookup key moves from the old price to the new one in that same call'
+      - kind: StripePrice
+        file: reference.md
+        pattern: '`spec\.transferLookupKey`'
+
+  - id: q28
+    class: wisdom
+    question: >
+      An application creates its Stripe products and prices from its own
+      billing code at startup. Should the team also declare those products
+      as StripeProduct resources so they appear in Planton?
+    answer: >
+      No. One owner per object: declare a product or price in Planton only
+      if nothing else creates or edits it. Two owners overwrite each other
+      on every apply, and neither notices until a customer is charged the
+      wrong amount. A catalog the application generates stays with the
+      application; declared products and prices suit a catalog reviewed
+      like code.
+    checks:
+      - kind: StripeProduct
+        file: GUIDE.md
+        pattern: '## One Owner per Object'
+      - kind: StripeProduct
+        file: GUIDE.md
+        pattern: 'two owners overwrite each other on every apply'
+      - kind: StripePrice
+        file: GUIDE.md
+        pattern: '## One Owner per Object'

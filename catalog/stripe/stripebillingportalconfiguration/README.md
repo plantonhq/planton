@@ -35,7 +35,7 @@ spec:
 |---|---|
 | `features` | What a customer may do (required): `customerUpdate`, `invoiceHistory`, `paymentMethodUpdate`, `subscriptionCancel`, `subscriptionUpdate`. Every feature is off unless enabled |
 | `features.subscriptionCancel` | `mode` (`at_period_end`, `immediately`), `prorationBehavior` (immediate cancellations only), `cancellationReason` with Stripe's fixed reasons |
-| `features.subscriptionUpdate` | `defaultAllowedUpdates` (`price`, `quantity`, `promotion_code`), `products` (up to ten, with their prices and quantity range), `prorationBehavior`, `billingCycleAnchor`, `trialUpdateBehavior`, `scheduleAtPeriodEnd` |
+| `features.subscriptionUpdate` | `defaultAllowedUpdates` (`price`, `quantity`, `promotion_code`), `products` (up to ten, each a StripeProduct reference with its StripePrice references and a quantity range), `prorationBehavior`, `billingCycleAnchor`, `trialUpdateBehavior`, `scheduleAtPeriodEnd` |
 | `features.paymentMethodUpdate.paymentMethodConfiguration` | The payment-method configuration whose methods the portal offers; reference a StripePaymentMethodConfiguration |
 | `businessProfile` | The headline and the privacy and terms links the portal shows |
 | `defaultReturnUrl` | Where the back link leads when a session names none |

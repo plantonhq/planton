@@ -1,0 +1,26 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePrice
+metadata:
+  name: api-calls-graduated
+  org: example-org
+  env: production
+spec:
+  product:
+    valueFrom:
+      kind: StripeProduct
+      name: api-calls
+  currency: usd
+  billingScheme: tiered
+  tiersMode: graduated
+  tiers:
+    - upTo: "10000"
+      unitAmount: 0
+    - upTo: "1000000"
+      unitAmountDecimal: "0.1"
+    - upTo: inf
+      unitAmountDecimal: "0.05"
+  recurring:
+    interval: month
+    usageType: metered
+    meter: mtr_REPLACE_API_CALLS
+  nickname: API calls, graduated

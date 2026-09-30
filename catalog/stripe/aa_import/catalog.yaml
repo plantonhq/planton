@@ -11,8 +11,9 @@ spec:
   # blind, plan must show zero diff) -- never by review alone.
   #
   # Every Stripe resource here imports by its plain Stripe id (the provider
-  # passes the import id through as `id`). Stripe kinds run on OpenTofu only,
-  # so no Pulumi type is declared.
+  # passes the import id through as `id`), except a product's feature link,
+  # which imports as "<product id>/<link id>". Stripe kinds run on OpenTofu
+  # only, so no Pulumi type is declared.
   resource_types:
     # --- Account and delivery ---------------------------------------------------
     # An imported webhook endpoint carries no signing secret: Stripe returns it
@@ -23,3 +24,24 @@ spec:
       id_format: "{billing_portal_configuration_id}"
     - terraform_type: stripe_payment_method_configuration
       id_format: "{payment_method_configuration_id}"
+    # An imported event destination carries no signing secret, and one of type
+    # amazon_eventbridge has no region in state (the API never returns it), so
+    # its first apply after import replaces it.
+    - terraform_type: stripe_v2_core_event_destination
+      id_format: "{event_destination_id}"
+    - terraform_type: stripe_payment_method_domain
+      id_format: "{payment_method_domain_id}"
+    - terraform_type: stripe_radar_value_list
+      id_format: "{radar_value_list_id}"
+    - terraform_type: stripe_radar_value_list_item
+      id_format: "{radar_value_list_item_id}"
+
+    # --- Catalog and pricing ----------------------------------------------------
+    - terraform_type: stripe_product
+      id_format: "{product_id}"
+    - terraform_type: stripe_product_feature
+      id_format: "{product_id}/{product_feature_id}"
+    - terraform_type: stripe_price
+      id_format: "{price_id}"
+    - terraform_type: stripe_entitlements_feature
+      id_format: "{entitlements_feature_id}"

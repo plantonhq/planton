@@ -1,0 +1,9 @@
+# The canonical example: the domain a checkout page is served from.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodDomain
+metadata:
+  name: checkout-domain
+  org: e2e-org
+  env: testing
+spec:
+  domainName: pay.example.com

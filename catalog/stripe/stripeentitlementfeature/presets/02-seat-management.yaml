@@ -1,0 +1,11 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeEntitlementFeature
+metadata:
+  name: seat-management
+  org: example-org
+  env: production
+spec:
+  lookupKey: seat-management
+  name: Seat management
+  metadata:
+    gated_route: /settings/team

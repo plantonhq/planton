@@ -258,19 +258,41 @@ message StripeBillingPortalSubscriptionUpdate {
 
 // StripeBillingPortalProduct is one product a customer may switch to, with its prices.
 message StripeBillingPortalProduct {
-  // product is the Stripe product id (prod_...).
-  string product = 1 [
+  // product is the product a customer may switch to (prod_...). Reference a StripeProduct so the
+  // portal offers exactly the plan declared beside it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef product = 1 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.prefix = "prod_"
-  ];
-  // prices are the product's prices (price_...) a customer may choose.
-  repeated string prices = 2 [(buf.validate.field).repeated = {
-    min_items: 1
-    unique: true
-    items: {
-      string: {prefix: "price_"}
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeProduct,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).cel = {
+      id: "product.product.format"
+      message: "product is a Stripe product id (prod_...), or a reference to a StripeProduct"
+      expression: "!has(this.value) || this.value.startsWith('prod_')"
     }
-  }];
+  ];
+  // prices are the product's prices a customer may choose (price_...). Reference each
+  // StripePrice. A price replaced after an amount change has a new id, and a reference follows it
+  // on the portal's next apply.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef prices = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripePrice,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).repeated = {
+      min_items: 1
+      items: {
+        cel: {
+          id: "product.prices.format"
+          message: "a price is a Stripe price id (price_...), or a reference to a StripePrice"
+          expression: "!has(this.value) || this.value.startsWith('price_')"
+        }
+      }
+    }
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "product.prices.unique"
+    message: "each price is listed once: remove the repeated price id"
+    expression: "this.prices.all(p, !has(p.value) || this.prices.filter(q, has(q.value) && q.value == p.value).size() == 1)"
+  };
   // adjustable_quantity lets a customer change the quantity of this product.
   StripeBillingPortalAdjustableQuantity adjustable_quantity = 3;
 }

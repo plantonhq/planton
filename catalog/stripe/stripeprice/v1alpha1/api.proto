@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeprice.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripeprice/v1alpha1/outputs.proto";
+import "catalog/stripe/stripeprice/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripePrice is a component that declares how much, how often and in which currencies a
+// StripeProduct is charged.
+//
+// A price's amount never changes in Stripe, so changing it replaces the price: the new one is
+// created first and the old one archived, and existing subscriptions keep the old amount. Destroy
+// archives the price; Stripe keeps it.
+//
+// Use cases:
+// - Declare a plan's monthly and yearly prices, the same in every environment
+// - Price usage per unit, in tiers, or in several currencies
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripePrice
+// metadata:
+//   name: pro-monthly
+//   org: my-organization
+// spec:
+//   product:
+//     valueFrom:
+//       name: pro-plan
+//   currency: usd
+//   unitAmount: 4900
+//   recurring:
+//     interval: month
+//   lookupKey: pro-monthly
+// ```
+message StripePrice {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripePrice" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripePrice'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the product, amount, currency and schedule.
+  StripePriceSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the price as created, populated after deployment.
+  StripePriceStatus status = 5;
+}
+
+// StripePriceStatus represents the current state of a StripePrice resource.
+// Populated by the deployment system.
+message StripePriceStatus {
+  // outputs contains the stack outputs: the price's id and type.
+  StripePriceStackOutputs outputs = 1;
+}

@@ -1,0 +1,17 @@
+# The canonical example: thin billing events to a webhook route. The lanes
+# run against the dedicated test sandbox only; Stripe does not check that the
+# URL answers when the destination is created.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeEventDestination
+metadata:
+  name: billing-thin-events
+  org: e2e-org
+  env: testing
+spec:
+  name: Billing thin events
+  eventPayload: thin
+  enabledEvents:
+    - v1.billing.meter.error_report_triggered
+    - v1.billing.meter.no_meter_found
+  webhookEndpoint:
+    url: https://example.com/stripe/thin

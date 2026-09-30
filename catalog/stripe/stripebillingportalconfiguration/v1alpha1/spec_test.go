@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -46,8 +47,8 @@ func planSwitching() *StripeBillingPortalSubscriptionUpdate {
 		},
 		ProrationBehavior: StripeBillingPortalSubscriptionUpdate_create_prorations,
 		Products: []*StripeBillingPortalProduct{{
-			Product: "prod_team",
-			Prices:  []string{"price_monthly", "price_yearly"},
+			Product: literal("prod_team"),
+			Prices:  []*foreignkeyv1.StringValueOrRef{literal("price_monthly"), literal("price_yearly")},
 			AdjustableQuantity: &StripeBillingPortalAdjustableQuantity{
 				Enabled: true, Minimum: int64Ptr(1), Maximum: int64Ptr(50),
 			},
@@ -59,6 +60,16 @@ func planSwitching() *StripeBillingPortalSubscriptionUpdate {
 }
 
 func int64Ptr(v int64) *int64 { return &v }
+
+func literal(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
+}
+
+func ref(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name},
+	}}
+}
 
 var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", func() {
 
@@ -85,9 +96,7 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 			}
 			spec.Features.PaymentMethodUpdate = &StripeBillingPortalPaymentMethodUpdate{
 				Enabled: true,
-				PaymentMethodConfiguration: &foreignkeyv1.StringValueOrRef{
-					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "pmc_123"},
-				},
+				PaymentMethodConfiguration: literal("pmc_123"),
 			}
 			spec.Features.SubscriptionCancel.CancellationReason = &StripeBillingPortalCancellationReason{
 				Enabled: true,
@@ -103,6 +112,18 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 			spec := selfServe()
 			spec.Features.SubscriptionCancel.Mode = StripeBillingPortalSubscriptionCancel_immediately
 			spec.Features.SubscriptionCancel.ProrationBehavior = StripeBillingPortalSubscriptionCancel_create_prorations
+			gomega.Expect(protovalidate.Validate(portal(spec))).To(gomega.Succeed())
+		})
+
+		ginkgo.It("accepts products and prices named by reference", func() {
+			spec := selfServe()
+			update := planSwitching()
+			update.Products[0].Product = ref(cloudresourcekind.CloudResourceKind_StripeProduct, "team-plan")
+			update.Products[0].Prices = []*foreignkeyv1.StringValueOrRef{
+				ref(cloudresourcekind.CloudResourceKind_StripePrice, "team-monthly"),
+				ref(cloudresourcekind.CloudResourceKind_StripePrice, "team-yearly"),
+			}
+			spec.Features.SubscriptionUpdate = update
 			gomega.Expect(protovalidate.Validate(portal(spec))).To(gomega.Succeed())
 		})
 
@@ -145,7 +166,7 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 			spec := selfServe()
 			update := planSwitching()
 			for len(update.Products) < 11 {
-				update.Products = append(update.Products, &StripeBillingPortalProduct{Product: "prod_x", Prices: []string{"price_x"}})
+				update.Products = append(update.Products, &StripeBillingPortalProduct{Product: literal("prod_x"), Prices: []*foreignkeyv1.StringValueOrRef{literal("price_x")}})
 			}
 			spec.Features.SubscriptionUpdate = update
 			gomega.Expect(protovalidate.Validate(portal(spec))).NotTo(gomega.Succeed())
@@ -154,14 +175,24 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 		ginkgo.It("refuses product and price ids of the wrong kind", func() {
 			spec := selfServe()
 			update := planSwitching()
-			update.Products[0].Product = "price_monthly"
+			update.Products[0].Product = literal("price_monthly")
 			spec.Features.SubscriptionUpdate = update
 			gomega.Expect(protovalidate.Validate(portal(spec))).NotTo(gomega.Succeed())
 
 			update = planSwitching()
-			update.Products[0].Prices = []string{"prod_team"}
+			update.Products[0].Prices = []*foreignkeyv1.StringValueOrRef{literal("prod_team")}
 			spec.Features.SubscriptionUpdate = update
 			gomega.Expect(protovalidate.Validate(portal(spec))).NotTo(gomega.Succeed())
+		})
+
+		ginkgo.It("refuses a price listed twice", func() {
+			spec := selfServe()
+			update := planSwitching()
+			update.Products[0].Prices = []*foreignkeyv1.StringValueOrRef{literal("price_monthly"), literal("price_monthly")}
+			spec.Features.SubscriptionUpdate = update
+			err := protovalidate.Validate(portal(spec))
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("each price is listed once"))
 		})
 
 		ginkgo.It("refuses a quantity range whose minimum exceeds its maximum", func() {

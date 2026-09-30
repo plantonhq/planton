@@ -32,18 +32,6 @@
 provider: stripe
 resources:
   # ---- Account and delivery -------------------------------------------------
-  - resource: stripe_v2_core_event_destination
-    disposition: model-planned
-    reason: "judged as a planned StripeEventDestination kind (the v2 event destination: a webhook endpoint, Amazon EventBridge or Azure Event Grid target, each with its own signing secret)"
-  - resource: stripe_payment_method_domain
-    disposition: model-planned
-    reason: "judged as a planned StripePaymentMethodDomain kind (a web domain registered for Apple Pay, Google Pay, Link and other wallet methods in embedded payment forms); destroy only removes it from state"
-  - resource: stripe_radar_value_list
-    disposition: model-planned
-    reason: "judged as a planned StripeRadarValueList kind (a named list Radar fraud rules reference), carrying its items"
-  - resource: stripe_radar_value_list_item
-    disposition: model-planned
-    reason: "judged as a planned composition into StripeRadarValueList (an item is keyed by its list, cannot be updated, and nothing else references it)"
   - resource: stripe_file
     disposition: model-planned
     reason: "judged as a planned StripeFile kind (an uploaded file other objects reference by id: a business logo, a card design image, dispute evidence); destroy only removes it from state"
@@ -52,24 +40,12 @@ resources:
     reason: "judged as a planned composition into StripeFile (a public link keyed by its file, dropped from state with it)"
 
   # ---- Catalog and pricing --------------------------------------------------
-  - resource: stripe_product
-    disposition: model-planned
-    reason: "judged as a planned StripeProduct kind (a product a customer's price list sells), carrying its entitlement features; destroy archives it"
-  - resource: stripe_product_feature
-    disposition: model-planned
-    reason: "judged as a planned composition into StripeProduct (the attachment of an entitlement feature to a product: keyed by the product, cannot be updated, referenced by nothing else)"
-  - resource: stripe_price
-    disposition: model-planned
-    reason: "judged as a planned StripePrice kind (its own kind, not a field of the product, because subscriptions, payment links, invoices and quotes reference prices by id; its amount is immutable, so a changed amount is a new price); destroy archives it"
   - resource: stripe_coupon
     disposition: model-planned
     reason: "judged as a planned StripeCoupon kind (a reusable discount: an amount or percentage off, for a duration)"
   - resource: stripe_promotion_code
     disposition: model-planned
     reason: "judged as a planned StripePromotionCode kind (a customer-facing code for a coupon, with its own active state, redemption limits and expiry; campaigns mint codes over a coupon's life); destroy deactivates it"
-  - resource: stripe_entitlements_feature
-    disposition: model-planned
-    reason: "judged as a planned StripeEntitlementFeature kind (a capability a product grants, keyed by its lookup key and referenced by products); destroy deactivates it"
   - resource: stripe_shipping_rate
     disposition: model-planned
     reason: "judged as a planned StripeShippingRate kind (a shipping option offered at checkout); destroy deactivates it"

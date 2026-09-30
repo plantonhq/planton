@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripeeventdestination
+spec:
+  # A destination imports by its Stripe id, which a prior deploy reports as its id output. An imported webhook destination carries no signing secret, and an imported EventBridge destination has no region in state, so its first apply replaces it.
+  values:
+    - name: event_destination_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Developers -> Event destinations (the destination's id on its detail
+        page), or `GET /v2/core/event_destinations`.

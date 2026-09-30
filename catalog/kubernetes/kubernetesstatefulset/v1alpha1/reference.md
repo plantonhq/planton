@@ -1992,8 +1992,14 @@ Allowed values (use exactly as shown):
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 - `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeEntitlementFeature`
 
 ### spec.container.app.env.variables[].valueFrom.env
 
@@ -2898,8 +2904,14 @@ Allowed values (use exactly as shown):
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 - `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeEntitlementFeature`
 
 ### spec.container.app.env.secrets[].valueFrom.env
 
@@ -5001,8 +5013,14 @@ Allowed values (use exactly as shown):
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 - `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeEntitlementFeature`
 
 ### spec.container.sidecars[].env.variables[].valueFrom.env
 
@@ -5907,8 +5925,14 @@ Allowed values (use exactly as shown):
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 - `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeEntitlementFeature`
 
 ### spec.container.sidecars[].env.secrets[].valueFrom.env
 
@@ -8129,8 +8153,14 @@ Allowed values (use exactly as shown):
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 - `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeEntitlementFeature`
 
 ### spec.pod.initContainers[].env.variables[].valueFrom.env
 
@@ -9035,8 +9065,14 @@ Allowed values (use exactly as shown):
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
 - `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeEntitlementFeature`
 
 ### spec.pod.initContainers[].env.secrets[].valueFrom.env
 

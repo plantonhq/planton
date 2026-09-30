@@ -1,0 +1,20 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: striperadarvaluelist
+spec:
+  # The module manages two resource types: the list (imports by its Stripe id, rsl_...) and one item per value (each imports by its own id, rsli_...). The item ids derive per instance from the item_ids map output, keyed by the module's for_each key (the value), so a blind round-trip needs zero user input when state is present.
+  values:
+    - name: radar_value_list_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Radar -> Lists (the list's id, rsl_..., on its page), or `GET
+        /v1/radar/value_lists?alias=<alias>`.
+    - name: radar_value_list_item_id
+      derivations:
+        - from_stack_output_keyed_by_address: item_ids
+      where_to_find: >-
+        The id of each item: the `item_ids` output keyed by the item's value, or `GET
+        /v1/radar/value_list_items?value_list=<list id>` (the id of the entry whose value
+        matches). One import per item.

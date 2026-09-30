@@ -28,10 +28,10 @@ how far that has progressed.
 | | |
 |---|---|
 | Provider schema (parity baseline) | `stripe@0.3.0` |
-| Kinds in the catalog | 3 |
-| Distinct provider resources consumed | 3 |
-| Spec fields authored across all kinds | 97 |
-| Module pins on `stripe` | `0.3.0` × 3 |
+| Kinds in the catalog | 9 |
+| Distinct provider resources consumed | 11 |
+| Spec fields authored across all kinds | 175 |
+| Module pins on `stripe` | `0.3.0` × 9 |
 
 The GA provider is the parity baseline. Capability that exists only in a
 secondary channel (for Google, the `google-beta` provider) enters per kind
@@ -64,12 +64,18 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.
 
-**3 of 3 kinds are at total accounting; 0 proven live.**
+**9 of 9 kinds are at total accounting; 0 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
 | StripeBillingPortalConfiguration | 7 | 4 | 3 | 0 | 0 | ✅ | — |
+| StripeEntitlementFeature | 3 | 3 | 0 | 0 | 0 | ✅ | — |
+| StripeEventDestination | 13 | 10 | 1 | 2 | 0 | ✅ | — |
 | StripePaymentMethodConfiguration | 62 | 3 | 59 | 0 | 0 | ✅ | — |
+| StripePaymentMethodDomain | 2 | 2 | 0 | 0 | 0 | ✅ | — |
+| StripePrice | 43 | 31 | 2 | 10 | 0 | ✅ | — |
+| StripeProduct | 38 | 16 | 1 | 21 | 0 | ✅ | — |
+| StripeRadarValueList | 6 | 4 | 1 | 1 | 0 | ✅ | — |
 | StripeWebhookEndpoint | 6 | 6 | 0 | 0 | 0 | ✅ | — |
 
 ## Breadth: every GA resource, one disposition
@@ -78,10 +84,10 @@ All resources of `stripe@0.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 3 | consumed by a kind's Terraform module today |
+| Modeled | 11 | consumed by a kind's Terraform module today |
 | IAM-covered | 0 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 0 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 22 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 14 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 21 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 3 | deprecated or superseded provider surface |
 | **Total** | **49** | |
@@ -91,40 +97,40 @@ All resources of `stripe@0.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (3)
+### Modeled (11)
 
 | Resource | Consuming kinds |
 |---|---|
 | `stripe_billing_portal_configuration` | consumed by StripeBillingPortalConfiguration |
+| `stripe_entitlements_feature` | consumed by StripeEntitlementFeature |
 | `stripe_payment_method_configuration` | consumed by StripePaymentMethodConfiguration |
+| `stripe_payment_method_domain` | consumed by StripePaymentMethodDomain |
+| `stripe_price` | consumed by StripePrice |
+| `stripe_product` | consumed by StripeProduct |
+| `stripe_product_feature` | consumed by StripeProduct |
+| `stripe_radar_value_list` | consumed by StripeRadarValueList |
+| `stripe_radar_value_list_item` | consumed by StripeRadarValueList |
+| `stripe_v2_core_event_destination` | consumed by StripeEventDestination |
 | `stripe_webhook_endpoint` | consumed by StripeWebhookEndpoint |
 
-### Planned (22)
+### Planned (14)
 
 | Resource | Recorded reason |
 |---|---|
 | `stripe_billing_alert` | judged as a planned composition into StripeBillingMeter (a usage threshold alert keyed by its meter, cannot be updated; removing one only removes it from state and Stripe keeps it active) |
 | `stripe_billing_meter` | judged as a planned StripeBillingMeter kind (how usage events are aggregated for usage-based prices), carrying its alerts; destroy deactivates it |
 | `stripe_coupon` | judged as a planned StripeCoupon kind (a reusable discount: an amount or percentage off, for a duration) |
-| `stripe_entitlements_feature` | judged as a planned StripeEntitlementFeature kind (a capability a product grants, keyed by its lookup key and referenced by products); destroy deactivates it |
 | `stripe_file` | judged as a planned StripeFile kind (an uploaded file other objects reference by id: a business logo, a card design image, dispute evidence); destroy only removes it from state |
 | `stripe_file_link` | judged as a planned composition into StripeFile (a public link keyed by its file, dropped from state with it) |
 | `stripe_issuing_personalization_design` | judged as a planned StripeIssuingPersonalizationDesign kind (the printed design of physical issued cards: card logo, carrier text, physical bundle); destroy only removes it from state |
 | `stripe_payment_link` | judged as a planned StripePaymentLink kind (a hosted page selling fixed prices; applying it moves no money, but it is a live URL that takes payments); destroy deactivates it |
-| `stripe_payment_method_domain` | judged as a planned StripePaymentMethodDomain kind (a web domain registered for Apple Pay, Google Pay, Link and other wallet methods in embedded payment forms); destroy only removes it from state |
-| `stripe_price` | judged as a planned StripePrice kind (its own kind, not a field of the product, because subscriptions, payment links, invoices and quotes reference prices by id; its amount is immutable, so a changed amount is a new price); destroy archives it |
-| `stripe_product` | judged as a planned StripeProduct kind (a product a customer's price list sells), carrying its entitlement features; destroy archives it |
-| `stripe_product_feature` | judged as a planned composition into StripeProduct (the attachment of an entitlement feature to a product: keyed by the product, cannot be updated, referenced by nothing else) |
 | `stripe_promotion_code` | judged as a planned StripePromotionCode kind (a customer-facing code for a coupon, with its own active state, redemption limits and expiry; campaigns mint codes over a coupon's life); destroy deactivates it |
-| `stripe_radar_value_list` | judged as a planned StripeRadarValueList kind (a named list Radar fraud rules reference), carrying its items |
-| `stripe_radar_value_list_item` | judged as a planned composition into StripeRadarValueList (an item is keyed by its list, cannot be updated, and nothing else references it) |
 | `stripe_shipping_rate` | judged as a planned StripeShippingRate kind (a shipping option offered at checkout); destroy deactivates it |
 | `stripe_tax_rate` | judged as a planned StripeTaxRate kind (a manual tax rate; its percentage and inclusiveness cannot change, so a change is a new rate); destroy deactivates it |
 | `stripe_tax_registration` | judged as a planned StripeTaxRegistration kind (where the account is registered to collect tax, for Stripe Tax); destroy only removes it from state, and Stripe keeps collecting |
 | `stripe_terminal_configuration` | judged as a planned StripeTerminalConfiguration kind (reader behavior per device model: tipping, splash screens, offline mode) |
 | `stripe_terminal_location` | judged as a planned StripeTerminalLocation kind (a physical place readers are registered to) |
 | `stripe_terminal_reader` | judged as a planned StripeTerminalReader kind (a card reader registered with a single-use registration code, so a replacement needs a new code) |
-| `stripe_v2_core_event_destination` | judged as a planned StripeEventDestination kind (the v2 event destination: a webhook endpoint, Amazon EventBridge or Azure Event Grid target, each with its own signing secret) |
 
 ### Deferred (21)
 

@@ -59,6 +59,13 @@ you must, keep the divergence minimal, ensure it does NOT change the stack outpu
 a `# PARITY-EXCEPTION:` comment here AND a matching `// PARITY-EXCEPTION:` in the Pulumi
 module stating what differs and why. An undocumented divergence is a defect.
 
+NO UNTRACKED INLINE OBJECTS: never set a provider argument that creates a second object inside
+the resource (a `*_data` block such as `default_price_data` or `product_data`). The provider
+keeps no resource for that object, so destroy leaves it live, a change to it forces a surprise
+replacement, and its drift is never detected. The object is its own kind (or a folded resource
+this module manages with its own block), composed by reference; the provider-parity manifest
+excludes the inline argument with that reason.
+
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
    ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the existing

@@ -22,10 +22,17 @@ spec:
         - quantity
       prorationBehavior: create_prorations
       products:
-        - product: prod_REPLACE_TEAM
+        - product:
+            valueFrom:
+              kind: StripeProduct
+              name: team-plan
           prices:
-            - price_REPLACE_TEAM_MONTHLY
-            - price_REPLACE_TEAM_YEARLY
+            - valueFrom:
+                kind: StripePrice
+                name: team-monthly
+            - valueFrom:
+                kind: StripePrice
+                name: team-yearly
           adjustableQuantity:
             enabled: true
             minimum: 1

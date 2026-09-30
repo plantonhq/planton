@@ -1,0 +1,18 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeProduct
+metadata:
+  name: starter-kit
+  org: example-org
+  env: production
+spec:
+  name: Starter kit
+  description: The hardware bundle every new customer receives
+  type: good
+  shippable: true
+  images:
+    - https://example.com/images/starter-kit.png
+  packageDimensions:
+    height: 4
+    length: 12
+    weight: 32
+    width: 9

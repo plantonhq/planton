@@ -7471,6 +7471,12 @@ enum CloudResourceKind {
     id_prefix: "stpwh"
     provisioners: ["tofu"]
   }];
+  StripeEventDestination = 10001 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stped"
+    provisioners: ["tofu"]
+  }];
   StripeBillingPortalConfiguration = 10002 [(kind_meta) = {
     provider: stripe
     version: "v1alpha1"
@@ -7481,6 +7487,39 @@ enum CloudResourceKind {
     provider: stripe
     version: "v1alpha1"
     id_prefix: "stppmc"
+    provisioners: ["tofu"]
+  }];
+  StripePaymentMethodDomain = 10004 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stppmd"
+    provisioners: ["tofu"]
+  }];
+  StripeRadarValueList = 10005 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stprvl"
+    provisioners: ["tofu"]
+  }];
+  StripeProduct = 10100 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpprod"
+    provisioners: ["tofu"]
+  }];
+  // A price always belongs to a product (its product field is required), so
+  // the product deploys first.
+  StripePrice = 10101 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpprice"
+    prerequisites: [StripeProduct]
+    provisioners: ["tofu"]
+  }];
+  StripeEntitlementFeature = 10104 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpef"
     provisioners: ["tofu"]
   }];
 }

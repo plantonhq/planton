@@ -10,8 +10,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-// stripeAPIBase is Stripe's REST API root. Every object a lane reads lives under it.
-const stripeAPIBase = "https://api.stripe.com/v1"
+// stripeAPIBase is Stripe's REST API host. A path names its API version first: "v1/prices/...",
+// "v2/core/event_destinations/...".
+const stripeAPIBase = "https://api.stripe.com"
+
+// stripeAPIVersion is the API version the pinned provider (stripe/stripe 0.3.0) sends on every
+// call, so the harness reads objects in the shape the module wrote them. It moves with the pin.
+const stripeAPIVersion = "2026-05-27.dahlia"
 
 // Client reads Stripe objects over the REST API with the lane's key. It never writes: the
 // modules under test create, update and destroy; the harness only observes.
@@ -22,8 +27,8 @@ type Client struct {
 	http          *http.Client
 }
 
-// NewClient returns a client for the key's account, or for the Connect account stripeAccount
-// names when it is set (sent as the Stripe-Account header, as the provider does).
+// NewClient returns a client for the key's account, or for the account stripeAccount names when
+// it is set (sent as the Stripe-Context header, as the provider does).
 func NewClient(apiKey, stripeAccount string) *Client {
 	return &Client{
 		apiKey:        apiKey,
@@ -33,7 +38,7 @@ func NewClient(apiKey, stripeAccount string) *Client {
 	}
 }
 
-// ReadResource GETs one object by its API path (e.g. "webhook_endpoints/we_123") and returns its
+// ReadResource GETs one object by its API path (e.g. "v1/webhook_endpoints/we_123") and returns its
 // JSON body and whether it exists. A 404 is an honest "does not exist"; any other failure is an
 // error carrying Stripe's own message.
 func (c *Client) ReadResource(path string) (map[string]interface{}, bool, error) {
@@ -42,8 +47,9 @@ func (c *Client) ReadResource(path string) (map[string]interface{}, bool, error)
 		return nil, false, errors.Wrapf(err, "building the request for %s", path)
 	}
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
+	req.Header.Set("Stripe-Version", stripeAPIVersion)
 	if c.stripeAccount != "" {
-		req.Header.Set("Stripe-Account", c.stripeAccount)
+		req.Header.Set("Stripe-Context", c.stripeAccount)
 	}
 
 	resp, err := c.http.Do(req)
@@ -78,7 +84,7 @@ func (c *Client) ResourceExists(path string) (bool, error) {
 // VerifyConnectivity proves the key authenticates by listing one webhook endpoint -- a read
 // every Stripe lane's key can make, whatever else it carries.
 func (c *Client) VerifyConnectivity() error {
-	if _, _, err := c.ReadResource("webhook_endpoints?limit=1"); err != nil {
+	if _, _, err := c.ReadResource("v1/webhook_endpoints?limit=1"); err != nil {
 		return errors.Wrap(err, "the Stripe key could not read the account")
 	}
 	return nil

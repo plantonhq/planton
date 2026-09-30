@@ -37,13 +37,19 @@ func TestSetup_RequiresAKey(t *testing.T) {
 
 func TestClient_ReadResource(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get("Authorization") != "Bearer rk_test_key" || r.Header.Get("Stripe-Account") != "acct_1" {
-			t.Errorf("headers: Authorization=%q Stripe-Account=%q", r.Header.Get("Authorization"), r.Header.Get("Stripe-Account"))
+		// The same account and version headers the pinned provider sends, so an object reads back
+		// in the shape the module wrote it.
+		if r.Header.Get("Authorization") != "Bearer rk_test_key" || r.Header.Get("Stripe-Context") != "acct_1" ||
+			r.Header.Get("Stripe-Version") != "2026-05-27.dahlia" || r.Header.Get("Stripe-Account") != "" {
+			t.Errorf("headers: Authorization=%q Stripe-Context=%q Stripe-Version=%q Stripe-Account=%q", r.Header.Get("Authorization"),
+				r.Header.Get("Stripe-Context"), r.Header.Get("Stripe-Version"), r.Header.Get("Stripe-Account"))
 		}
 		switch r.URL.Path {
-		case "/webhook_endpoints/we_1":
+		case "/v1/webhook_endpoints/we_1":
 			_, _ = w.Write([]byte(`{"id":"we_1","status":"enabled"}`))
-		case "/webhook_endpoints/we_gone":
+		case "/v2/core/event_destinations/ed_1":
+			_, _ = w.Write([]byte(`{"id":"ed_1","status":"enabled"}`))
+		case "/v1/webhook_endpoints/we_gone":
 			w.WriteHeader(http.StatusNotFound)
 			_, _ = w.Write([]byte(`{"error":{"message":"No such webhook endpoint"}}`))
 		default:
@@ -55,14 +61,17 @@ func TestClient_ReadResource(t *testing.T) {
 	client := NewClient("rk_test_key", "acct_1")
 	client.baseURL = server.URL
 
-	object, exists, err := client.ReadResource("webhook_endpoints/we_1")
+	object, exists, err := client.ReadResource("v1/webhook_endpoints/we_1")
 	if err != nil || !exists || object["status"] != "enabled" {
 		t.Errorf("an existing object reads back, got %v %v %v", object, exists, err)
 	}
-	if _, exists, err := client.ReadResource("webhook_endpoints/we_gone"); err != nil || exists {
+	if object, exists, err := client.ReadResource("v2/core/event_destinations/ed_1"); err != nil || !exists || object["id"] != "ed_1" {
+		t.Errorf("a v2 object reads back under its own version path, got %v %v %v", object, exists, err)
+	}
+	if _, exists, err := client.ReadResource("v1/webhook_endpoints/we_gone"); err != nil || exists {
 		t.Errorf("a 404 is an honest absence, got %v %v", exists, err)
 	}
-	if _, _, err := client.ReadResource("webhook_endpoints/we_denied"); err == nil || !strings.Contains(err.Error(), "Enabling Webhook Endpoints Read") {
+	if _, _, err := client.ReadResource("v1/webhook_endpoints/we_denied"); err == nil || !strings.Contains(err.Error(), "Enabling Webhook Endpoints Read") {
 		t.Errorf("any other failure carries Stripe's message, got %v", err)
 	}
 }

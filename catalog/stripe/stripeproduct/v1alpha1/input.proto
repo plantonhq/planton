@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeproduct.v1alpha1;
+
+import "catalog/stripe/provider.proto";
+import "catalog/stripe/stripeproduct/v1alpha1/api.proto";
+
+// StripeProductStackInput is the input to the StripeProduct IaC module.
+// It contains the target resource and the Stripe provider configuration.
+message StripeProductStackInput {
+  // target is the StripeProduct resource to be deployed.
+  StripeProduct target = 1;
+
+  // provider_config contains the Stripe key, its mode, and optionally the Connect account to act
+  // on. The key needs "Products" write, and "Entitlements" write when features are granted.
+  dev.planton.stripe.StripeProviderConfig provider_config = 2;
+}

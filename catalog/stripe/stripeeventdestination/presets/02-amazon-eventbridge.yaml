@@ -1,0 +1,17 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeEventDestination
+metadata:
+  name: billing-to-eventbridge
+  org: example-org
+  env: production
+spec:
+  name: Billing events to EventBridge
+  eventPayload: snapshot
+  enabledEvents:
+    - invoice.paid
+    - invoice.payment_failed
+    - customer.subscription.updated
+    - customer.subscription.deleted
+  amazonEventbridge:
+    awsAccountId: "123456789012"
+    awsRegion: us-east-1

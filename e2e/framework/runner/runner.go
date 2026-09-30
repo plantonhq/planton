@@ -101,7 +101,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		// The engine-scoped id is passed down so prerequisite manifests expand to
 		// the same values as the scenario under test (their tokens must line up),
 		// and so each engine's prerequisite deploys get distinct identifiers.
-		dependencyStates, err = DeployDependencies(ctx, tc.RepoRoot, tc.Provider, tc.Component, tc.ManifestPath, tc.BackendURL, expandRunID, harness)
+		dependencyStates, err = DeployDependencies(ctx, tc.T, tc.RepoRoot, tc.Provider, tc.Component, tc.ManifestPath, tc.BackendURL, expandRunID, harness)
 		pr := PhaseResult{
 			Phase:    PhaseDepsUp,
 			Duration: time.Since(depStart),

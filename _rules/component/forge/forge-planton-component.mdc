@@ -507,6 +507,13 @@ retrofitting it later means re-deriving every naming decision:
    enablement, module-wired parent linkage) -- the resource-level `internal`
    disposition. For every uncovered spec field, either fix the mapping or
    record a `specExclusions` entry (platform-level fields).
+   An argument that makes the provider create a SECOND object inline -- a
+   `*_data` block such as a product's `default_price_data` (a price) or a
+   price's `product_data` (a product), or a file's inline link -- is never
+   offered: the module would neither track, update nor destroy that object,
+   so destroy would leave it live and its drift would go unseen. Exclude it
+   with that reason, point the spec comment and the GUIDE at the kind a
+   reader declares instead, and let a reference compose the two.
 3. Re-run with `--check`; the kind must be at total accounting and OUT of
    `pkg/providerparity/baseline.yaml` (a new kind never ships pre-baselined
    debt). File presence IS enrollment -- the `lint.provider-parity` CI lane
@@ -698,7 +705,13 @@ A new kind is only exercised once it is registered in the provider harness:
   "<component>", pathFormat: "<api-path>/%s"}`); cloud-SDK providers (e.g. AWS)
   implement the three-method `Verifier` interface against the provider SDK,
   keyed on the API's own identifier for the resource and treating the provider's
-  typed not-found error as the absent signal.
+  typed not-found error as the absent signal. The destroy check asserts what the
+  provider's destroy really leaves, never plain absence: GONE for a deleted
+  object, still readable and INACTIVE for one the vendor only archives or
+  deactivates, and still PRESENT for one the provider merely forgets (its
+  destroy makes no call) -- the last proves the GUIDE's "the vendor keeps it"
+  and catches a provider that starts deleting. Stripe's `verify/verifier.go`
+  carries all three shapes.
 - `e2e/<provider>/<provider>_test.go` — add `Test<Kind>_Pulumi` / `Test<Kind>_Terraform` entrypoints. Scenarios are auto-discovered; the entry funcs are not.
 - **Test-name discovery is registry-driven.** The GitHub Actions matrix builder in
   `pkg/e2e/profile/discover.go` maps component directory names (e.g. `awslambda`) to
@@ -743,7 +756,12 @@ and verifies it with that provider's harness -- which the suite lends in its
 set up only when a scenario first needs it, and torn down with
 `runner.TeardownDependencyHarnesses`. The prerequisite deploys with that
 provider's ambient credentials, so the scenario's `e2e-required-env` names the
-arrangement it needs. Unknown kinds and self-references fail loudly. Singular AND
+arrangement it needs. Each prerequisite deploys on ITS OWN kind's engine,
+whatever the lane runs: on Pulumi when the kind has a Pulumi module, and on
+the HCL lane (its `iac/tf` module in a disposable working copy with local
+state) when the kind declares HCL engines only -- so an OpenTofu-only kind
+can be a prerequisite, and its `e2e/prerequisite.yaml` is written exactly as
+any other. Unknown kinds and self-references fail loudly. Singular AND
 repeated `StringValueOrRef` fields both resolve, refs nested inside (repeated)
 spec messages resolve too, and a repeated list can mix literals with
 references. Audit the annotation against EVERY `valueFrom` kind the scenario

@@ -1123,10 +1123,13 @@ func (x *StripeBillingPortalSubscriptionUpdate) GetScheduleAtPeriodEnd() *Stripe
 // StripeBillingPortalProduct is one product a customer may switch to, with its prices.
 type StripeBillingPortalProduct struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// product is the Stripe product id (prod_...).
-	Product string `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
-	// prices are the product's prices (price_...) a customer may choose.
-	Prices []string `protobuf:"bytes,2,rep,name=prices,proto3" json:"prices,omitempty"`
+	// product is the product a customer may switch to (prod_...). Reference a StripeProduct so the
+	// portal offers exactly the plan declared beside it.
+	Product *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
+	// prices are the product's prices a customer may choose (price_...). Reference each
+	// StripePrice. A price replaced after an amount change has a new id, and a reference follows it
+	// on the portal's next apply.
+	Prices []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=prices,proto3" json:"prices,omitempty"`
 	// adjustable_quantity lets a customer change the quantity of this product.
 	AdjustableQuantity *StripeBillingPortalAdjustableQuantity `protobuf:"bytes,3,opt,name=adjustable_quantity,json=adjustableQuantity,proto3" json:"adjustable_quantity,omitempty"`
 	unknownFields      protoimpl.UnknownFields
@@ -1163,14 +1166,14 @@ func (*StripeBillingPortalProduct) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *StripeBillingPortalProduct) GetProduct() string {
+func (x *StripeBillingPortalProduct) GetProduct() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Product
 	}
-	return ""
+	return nil
 }
 
-func (x *StripeBillingPortalProduct) GetPrices() []string {
+func (x *StripeBillingPortalProduct) GetPrices() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Prices
 	}
@@ -1548,12 +1551,14 @@ const file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_spec_proto_r
 	"!trial_update_behavior_unspecified\x10\x00\x12\x12\n" +
 	"\x0econtinue_trial\x10\x01\x12\r\n" +
 	"\tend_trial\x10\x02:\x8f\x02\xbaH\x8b\x02\x1a\x88\x02\n" +
-	"(subscription_update.price_needs_products\x12\x89\x01switching prices needs the prices to switch between: list at least one product under products, or drop price from default_allowed_updates\x1aP!this.enabled || !(1 in this.default_allowed_updates) || size(this.products) > 0\"\x8e\x02\n" +
-	"\x1aStripeBillingPortalProduct\x12)\n" +
-	"\aproduct\x18\x01 \x01(\tB\x0f\xbaH\f\xc8\x01\x01r\a:\x05prod_R\aproduct\x12.\n" +
-	"\x06prices\x18\x02 \x03(\tB\x16\xbaH\x13\x92\x01\x10\b\x01\x18\x01\"\n" +
-	"r\b:\x06price_R\x06prices\x12\x94\x01\n" +
-	"\x13adjustable_quantity\x18\x03 \x01(\v2c.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalAdjustableQuantityR\x12adjustableQuantity\"\xb9\x02\n" +
+	"(subscription_update.price_needs_products\x12\x89\x01switching prices needs the prices to switch between: list at least one product under products, or drop price from default_allowed_updates\x1aP!this.enabled || !(1 in this.default_allowed_updates) || size(this.products) > 0\"\x9c\a\n" +
+	"\x1aStripeBillingPortalProduct\x12\x8e\x02\n" +
+	"\aproduct\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xbf\x01\xbaH\xa1\x01\xba\x01\x9a\x01\n" +
+	"\x16product.product.format\x12Lproduct is a Stripe product id (prod_...), or a reference to a StripeProduct\x1a2!has(this.value) || this.value.startsWith('prod_')\xc8\x01\x01\x88\xd4a\xf4N\x92\xd4a\x11status.outputs.idR\aproduct\x12\x8f\x02\n" +
+	"\x06prices\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xc2\x01\xbaH\xa4\x01\x92\x01\xa0\x01\b\x01\"\x9b\x01\xba\x01\x97\x01\n" +
+	"\x15product.prices.format\x12Ia price is a Stripe price id (price_...), or a reference to a StripePrice\x1a3!has(this.value) || this.value.startsWith('price_')\x88\xd4a\xf5N\x92\xd4a\x11status.outputs.idR\x06prices\x12\x94\x01\n" +
+	"\x13adjustable_quantity\x18\x03 \x01(\v2c.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalAdjustableQuantityR\x12adjustableQuantity:\xc3\x01\xbaH\xbf\x01\x1a\xbc\x01\n" +
+	"\x15product.prices.unique\x127each price is listed once: remove the repeated price id\x1ajthis.prices.all(p, !has(p.value) || this.prices.filter(q, has(q.value) && q.value == p.value).size() == 1)\"\xb9\x02\n" +
 	"%StripeBillingPortalAdjustableQuantity\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12&\n" +
 	"\aminimum\x18\x02 \x01(\x03B\a\xbaH\x04\"\x02(\x00H\x00R\aminimum\x88\x01\x01\x12&\n" +
@@ -1647,14 +1652,16 @@ var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_spec_proto_dep
 	7,  // 18: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalSubscriptionUpdate.trial_update_behavior:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalSubscriptionUpdate.TrialUpdateBehavior
 	17, // 19: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalSubscriptionUpdate.products:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalProduct
 	19, // 20: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalSubscriptionUpdate.schedule_at_period_end:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleAtPeriodEnd
-	18, // 21: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalProduct.adjustable_quantity:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalAdjustableQuantity
-	20, // 22: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleAtPeriodEnd.conditions:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleCondition
-	8,  // 23: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleCondition.type:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleCondition.Type
-	24, // [24:24] is the sub-list for method output_type
-	24, // [24:24] is the sub-list for method input_type
-	24, // [24:24] is the sub-list for extension type_name
-	24, // [24:24] is the sub-list for extension extendee
-	0,  // [0:24] is the sub-list for field type_name
+	24, // 21: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalProduct.product:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	24, // 22: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalProduct.prices:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 23: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalProduct.adjustable_quantity:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalAdjustableQuantity
+	20, // 24: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleAtPeriodEnd.conditions:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleCondition
+	8,  // 25: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleCondition.type:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalScheduleCondition.Type
+	26, // [26:26] is the sub-list for method output_type
+	26, // [26:26] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_spec_proto_init() }

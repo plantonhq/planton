@@ -1,0 +1,18 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The list's own arguments match by exact name. Each item is its own
+# stripe_radar_value_list_item, which the module creates per spec.items entry.
+resources:
+  stripe_radar_value_list_item:
+    mappings:
+      - spec: spec.items
+        arg: value
+    exclusions:
+      - arg: value_list
+        reason: wired by the module from the list this kind creates -- the fold's parent linkage, never free-form user surface

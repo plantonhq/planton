@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripeprice
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for prices: every account, sandboxes included, can create them (docs.stripe.com/products-prices/overview)."
+  notes: "A price declares what a customer is charged; Stripe's own fees apply to each payment made at it (stripe.com/pricing), never to the price object."

@@ -32,7 +32,8 @@ var (
 
 // TestMain proves the key belongs to the dedicated test sandbox before any lane runs: the
 // harness's Setup refuses a live key, and a refusal exits here. Stripe kinds run on OpenTofu
-// only and no Stripe scenario deploys a prerequisite, so no Pulumi backend is prepared.
+// only, and so do their prerequisites (each deploys on its own kind's engine), so no Pulumi
+// backend is prepared.
 func TestMain(m *testing.M) {
 	var err error
 	repoRoot, err = filepath.Abs(filepath.Join("..", ".."))
@@ -79,6 +80,30 @@ func TestStripeBillingPortalConfiguration_Tofu(t *testing.T) {
 
 func TestStripePaymentMethodConfiguration_Tofu(t *testing.T) {
 	runAllScenariosForComponent(t, "stripepaymentmethodconfiguration")
+}
+
+func TestStripeEventDestination_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripeeventdestination")
+}
+
+func TestStripePaymentMethodDomain_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripepaymentmethoddomain")
+}
+
+func TestStripeRadarValueList_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "striperadarvaluelist")
+}
+
+func TestStripeProduct_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripeproduct")
+}
+
+func TestStripePrice_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripeprice")
+}
+
+func TestStripeEntitlementFeature_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripeentitlementfeature")
 }
 
 // runAllScenariosForComponent discovers and runs every E2E scenario of a Stripe component.
@@ -133,8 +158,8 @@ func runAllScenariosForComponent(t *testing.T, component string) {
 func runSingleScenario(t *testing.T, component, moduleDir string, scenario discovery.TestScenario) {
 	t.Helper()
 
-	// Scenarios needing an owner-arranged sandbox object (the portal's plan-switching scenario
-	// needs a real product and price) skip honestly where the environment does not carry it.
+	// A scenario that needs an owner-arranged sandbox object declares it with the required-env
+	// annotation, and skips honestly where the environment does not carry it.
 	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
 		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
 	} else if len(missing) > 0 {

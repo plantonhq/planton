@@ -1,5 +1,7 @@
-# Every feature on, including switching between a real product's prices,
-# which must exist in the sandbox. Skips when the two variables are unset.
+# Every feature on, including switching between a product's prices. The
+# harness deploys a run-named product and a price on it through OpenTofu
+# (the price's registry prerequisite brings the product), hands their ids to
+# the portal, and archives both after the portal is deactivated.
 apiVersion: stripe.planton.dev/v1alpha1
 kind: StripeBillingPortalConfiguration
 metadata:
@@ -7,7 +9,7 @@ metadata:
   org: e2e-org
   env: testing
   annotations:
-    planton.dev/e2e-required-env: PLANTON_E2E_STRIPE_PRODUCT_ID,PLANTON_E2E_STRIPE_PRICE_ID
+    planton.dev/e2e-prerequisites: StripePrice
 spec:
   name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
   defaultReturnUrl: https://example.com/billing
@@ -38,9 +40,14 @@ spec:
         - quantity
       prorationBehavior: create_prorations
       products:
-        - product: ${E2E_ENV:PLANTON_E2E_STRIPE_PRODUCT_ID}
+        - product:
+            valueFrom:
+              kind: StripeProduct
+              name: e2e-product-prereq
           prices:
-            - ${E2E_ENV:PLANTON_E2E_STRIPE_PRICE_ID}
+            - valueFrom:
+                kind: StripePrice
+                name: e2e-price-prereq
       scheduleAtPeriodEnd:
         conditions:
           - type: decreasing_item_amount

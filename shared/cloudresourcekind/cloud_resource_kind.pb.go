@@ -2481,8 +2481,16 @@ const (
 	// Family sub-bands: 10000 account and delivery, 10100 catalog and pricing,
 	// 10200 Terminal, 10300 Issuing.
 	CloudResourceKind_StripeWebhookEndpoint            CloudResourceKind = 10000
+	CloudResourceKind_StripeEventDestination           CloudResourceKind = 10001
 	CloudResourceKind_StripeBillingPortalConfiguration CloudResourceKind = 10002
 	CloudResourceKind_StripePaymentMethodConfiguration CloudResourceKind = 10003
+	CloudResourceKind_StripePaymentMethodDomain        CloudResourceKind = 10004
+	CloudResourceKind_StripeRadarValueList             CloudResourceKind = 10005
+	CloudResourceKind_StripeProduct                    CloudResourceKind = 10100
+	// A price always belongs to a product (its product field is required), so
+	// the product deploys first.
+	CloudResourceKind_StripePrice              CloudResourceKind = 10101
+	CloudResourceKind_StripeEntitlementFeature CloudResourceKind = 10104
 )
 
 // Enum value maps for CloudResourceKind.
@@ -3227,8 +3235,14 @@ var (
 		9001:  "OpenFgaAuthorizationModel",
 		9002:  "OpenFgaRelationshipTuple",
 		10000: "StripeWebhookEndpoint",
+		10001: "StripeEventDestination",
 		10002: "StripeBillingPortalConfiguration",
 		10003: "StripePaymentMethodConfiguration",
+		10004: "StripePaymentMethodDomain",
+		10005: "StripeRadarValueList",
+		10100: "StripeProduct",
+		10101: "StripePrice",
+		10104: "StripeEntitlementFeature",
 	}
 	CloudResourceKind_value = map[string]int32{
 		"unspecified":                                    0,
@@ -3970,8 +3984,14 @@ var (
 		"OpenFgaAuthorizationModel":                      9001,
 		"OpenFgaRelationshipTuple":                       9002,
 		"StripeWebhookEndpoint":                          10000,
+		"StripeEventDestination":                         10001,
 		"StripeBillingPortalConfiguration":               10002,
 		"StripePaymentMethodConfiguration":               10003,
+		"StripePaymentMethodDomain":                      10004,
+		"StripeRadarValueList":                           10005,
+		"StripeProduct":                                  10100,
+		"StripePrice":                                    10101,
+		"StripeEntitlementFeature":                       10104,
 	}
 )
 
@@ -4419,7 +4439,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xf8\xe4\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xda\xe7\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5233,9 +5253,15 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\fOpenFgaStore\x10\xa8F\x1a-\xa2\xf7\x04)\b\x16\x12\bv1alpha1\"\bfgastore0\x01b\x04tofub\tterraform\x12K\n" +
 	"\x19OpenFgaAuthorizationModel\x10\xa9F\x1a+\xa2\xf7\x04'\b\x16\x12\bv1alpha1\"\bfgamodelb\x04tofub\tterraform\x12J\n" +
 	"\x18OpenFgaRelationshipTuple\x10\xaaF\x1a+\xa2\xf7\x04'\b\x16\x12\bv1alpha1\"\bfgatupleb\x04tofub\tterraform\x129\n" +
-	"\x15StripeWebhookEndpoint\x10\x90N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpwhb\x04tofu\x12E\n" +
+	"\x15StripeWebhookEndpoint\x10\x90N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpwhb\x04tofu\x12:\n" +
+	"\x16StripeEventDestination\x10\x91N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpedb\x04tofu\x12E\n" +
 	" StripeBillingPortalConfiguration\x10\x92N\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stpbpcb\x04tofu\x12E\n" +
-	" StripePaymentMethodConfiguration\x10\x93N\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stppmcb\x04tofu:|\n" +
+	" StripePaymentMethodConfiguration\x10\x93N\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stppmcb\x04tofu\x12>\n" +
+	"\x19StripePaymentMethodDomain\x10\x94N\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stppmdb\x04tofu\x129\n" +
+	"\x14StripeRadarValueList\x10\x95N\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stprvlb\x04tofu\x123\n" +
+	"\rStripeProduct\x10\xf4N\x1a\x1f\xa2\xf7\x04\x1b\b\x1d\x12\bv1alpha1\"\astpprodb\x04tofu\x126\n" +
+	"\vStripePrice\x10\xf5N\x1a$\xa2\xf7\x04 \b\x1d\x12\bv1alpha1\"\bstpprice:\x02\xf4Nb\x04tofu\x12<\n" +
+	"\x18StripeEntitlementFeature\x10\xf8N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpefb\x04tofu:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.dev.planton.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xad\x02\n" +
 	"(com.dev.planton.shared.cloudresourcekindB\x16CloudResourceKindProtoP\x01Z5github.com/plantonhq/planton/shared/cloudresourcekind\xa2\x02\x04DPSC\xaa\x02$Dev.Planton.Shared.Cloudresourcekind\xca\x02$Dev\\Planton\\Shared\\Cloudresourcekind\xe2\x020Dev\\Planton\\Shared\\Cloudresourcekind\\GPBMetadata\xea\x02'Dev::Planton::Shared::Cloudresourcekindb\x06proto3"
 

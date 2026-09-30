@@ -1,0 +1,315 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeprice.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// StripePriceSpec declares how much, how often and in which currencies a StripeProduct is
+// charged: a flat amount, an amount per unit, graduated or volume tiers, or an amount the customer
+// chooses, one-time or recurring.
+//
+// A price's amount can never change in Stripe. Changing the amount, currency, product, billing
+// scheme, tiers or recurrence REPLACES the price: Planton creates the new price first, then
+// archives the old one, so existing subscriptions keep the old amount and new purchases get the
+// new one. When the application finds the price by lookup_key, set transfer_lookup_key with the
+// change so the key moves to the new price in the same call. Nickname, lookup key, metadata,
+// currency options, tax behavior and active update in place.
+//
+// One owner per object: declare a price here only if nothing else creates or edits it. When the
+// application's own code or the Dashboard owns the price list, leave its prices there.
+//
+// Stripe never deletes a price. Destroy archives it (active = false): subscriptions on it keep
+// billing, new purchases are refused. A price that cannot be read makes the plan fail (the
+// provider does not treat a missing price as gone); remove it from state and apply again.
+//
+// The provider's product_data (a product created inside the price) is not offered: that product
+// would be invisible to Planton and never archived on destroy. Name a StripeProduct instead.
+//
+// The key needs "Prices" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/products-prices/pricing-models
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/price
+message StripePriceSpec {
+  // product is the product this price charges for (prod_...). Reference a StripeProduct.
+  // Changing it REPLACES the price.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef product = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeProduct,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).cel = {
+      id: "spec.product.format"
+      message: "product is a Stripe product id (prod_...), or a reference to a StripeProduct"
+      expression: "!has(this.value) || this.value.startsWith('prod_')"
+    }
+  ];
+
+  // currency is the three-letter ISO code of the price's main currency, in lowercase ("usd").
+  // Changing it REPLACES the price.
+  string currency = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]{3}$"
+  ];
+
+  // unit_amount is the charge in the currency's smallest unit (cents for usd), per unit or flat;
+  // 0 is a free price. A per-unit price sets exactly one of unit_amount, unit_amount_decimal and
+  // custom_unit_amount. Changing it REPLACES the price.
+  optional int64 unit_amount = 3 [(buf.validate.field).int64.gte = 0];
+
+  // unit_amount_decimal is unit_amount with up to 12 decimal places, for sub-cent unit prices
+  // ("0.25" is a quarter of a cent). Changing it REPLACES the price.
+  string unit_amount_decimal = 4 [(buf.validate.field).cel = {
+    id: "spec.unit_amount_decimal.format"
+    message: "unit_amount_decimal is a non-negative decimal with at most 12 decimal places, such as 0.25"
+    expression: "this == '' || this.matches('^[0-9]+(\\\\.[0-9]{1,12})?$')"
+  }];
+
+  // billing_scheme is how the amount is computed. Unset, Stripe uses per_unit. Changing it
+  // REPLACES the price.
+  BillingScheme billing_scheme = 5 [(buf.validate.field).enum.defined_only = true];
+
+  // tiers_mode is how tiers apply; a tiered price sets it. Changing it REPLACES the price.
+  TiersMode tiers_mode = 6 [(buf.validate.field).enum.defined_only = true];
+
+  // tiers are the price's steps, lowest first; a tiered price sets them and the last one's up_to
+  // is "inf". Changing them REPLACES the price.
+  repeated StripePriceTier tiers = 7;
+
+  // custom_unit_amount lets the customer choose the amount in Checkout and Payment Links (a
+  // donation, a pay-what-you-want price). Present means enabled. Changing it REPLACES the price.
+  StripePriceCustomUnitAmount custom_unit_amount = 8;
+
+  // transform_quantity divides the quantity (or reported usage) before billing -- "per 1,000
+  // requests". It cannot be combined with tiers. Changing it REPLACES the price.
+  StripePriceTransformQuantity transform_quantity = 9;
+
+  // recurring makes the price a subscription price; unset, the price is one-time. Changing it
+  // REPLACES the price.
+  StripePriceRecurring recurring = 10;
+
+  // currency_options are the price's amounts in other currencies, keyed by lowercase currency code
+  // ("eur", "gbp"), so a customer can pay in theirs. They update in place. Stripe does not report
+  // them back, so a change made in the Dashboard is not detected, and removing a currency here
+  // does not remove it in Stripe.
+  map<string, StripePriceCurrencyOption> currency_options = 11 [(buf.validate.field).map = {
+    keys: {
+      string: {pattern: "^[a-z]{3}$"}
+    }
+  }];
+
+  // lookup_key is a stable name the application retrieves the price by ("pro-monthly"), up to
+  // 200 characters, unique among the account's prices. It updates in place.
+  string lookup_key = 12 [(buf.validate.field).string.max_len = 200];
+
+  // transfer_lookup_key moves lookup_key to this price from whichever price holds it, in the same
+  // call. Set it when a replacement price must take over the key (an amount change on a price the
+  // application finds by lookup_key); without it, creating the replacement fails while the old
+  // price still holds the key. The provider sends it on every apply while it is set.
+  bool transfer_lookup_key = 13;
+
+  // nickname is a note about the price for the account's team, hidden from customers.
+  string nickname = 14;
+
+  // tax_behavior is whether the amount includes tax. Unset, the account's default tax behavior
+  // applies. Once inclusive or exclusive, Stripe refuses to change it.
+  TaxBehavior tax_behavior = 15 [(buf.validate.field).enum.defined_only = true];
+
+  // active is whether the price can be used for new purchases. Setting it false archives the price
+  // without destroying the resource; subscriptions on it keep billing.
+  optional bool active = 16 [(dev.planton.shared.options.default) = "true"];
+
+  // metadata is a set of key-value pairs stored on the price. A key removed here is removed in
+  // Stripe on the next apply; removing the whole map leaves Stripe's keys in place.
+  map<string, string> metadata = 17;
+
+  option (buf.validate.message).cel = {
+    id: "spec.tiered_shape"
+    message: "a tiered price sets tiers_mode and tiers (the last tier's up_to is inf) and no unit_amount, unit_amount_decimal or custom_unit_amount"
+    expression: "this.billing_scheme != 2 || (this.tiers_mode != 0 && size(this.tiers) > 0 && this.tiers[size(this.tiers) - 1].up_to == 'inf' && !has(this.unit_amount) && this.unit_amount_decimal == '' && !has(this.custom_unit_amount))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.per_unit_shape"
+    message: "a per-unit price sets exactly one of unit_amount, unit_amount_decimal and custom_unit_amount, and no tiers or tiers_mode (set billing_scheme tiered for tiers)"
+    expression: "this.billing_scheme == 2 || (size(this.tiers) == 0 && this.tiers_mode == 0 && (has(this.unit_amount) ? 1 : 0) + (this.unit_amount_decimal != '' ? 1 : 0) + (has(this.custom_unit_amount) ? 1 : 0) == 1)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.transform_quantity_without_tiers"
+    message: "transform_quantity cannot be combined with tiers: use a per-unit price, or drop transform_quantity"
+    expression: "!has(this.transform_quantity) || this.billing_scheme != 2"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.currency_options_shape"
+    message: "currency_options are the other currencies: the main currency is not one of them, and each option follows the price's scheme (tiers for a tiered price, an amount for a per-unit one)"
+    expression: "!(this.currency in this.currency_options) && this.currency_options.all(k, this.billing_scheme == 2 ? size(this.currency_options[k].tiers) > 0 : size(this.currency_options[k].tiers) == 0)"
+  };
+
+  // BillingScheme is how a price's amount is computed.
+  enum BillingScheme {
+    billing_scheme_unspecified = 0;
+    // per_unit charges unit_amount per unit of quantity (or of metered usage).
+    per_unit = 1;
+    // tiered charges by tiers, per tiers_mode.
+    tiered = 2;
+  }
+
+  // TiersMode is how tiers apply.
+  enum TiersMode {
+    tiers_mode_unspecified = 0;
+    // graduated bills each unit at the tier it falls in, so the rate changes as quantity grows.
+    graduated = 1;
+    // volume bills every unit at the tier the whole quantity reaches.
+    volume = 2;
+  }
+
+  // TaxBehavior is whether a price includes tax. The zero value is named unset because Stripe's
+  // own values include "unspecified".
+  enum TaxBehavior {
+    tax_behavior_unset = 0;
+    // exclusive adds tax on top of the amount.
+    exclusive = 1;
+    // inclusive includes tax in the amount.
+    inclusive = 2;
+    // unspecified leaves the choice open until it is set, once, to inclusive or exclusive.
+    unspecified = 3;
+  }
+}
+
+// StripePriceTier is one step of a tiered price.
+message StripePriceTier {
+  // up_to is the tier's upper bound in units, or "inf" for the last tier. A tier starts one unit
+  // above the previous tier's up_to.
+  string up_to = 1 [(buf.validate.field).cel = {
+    id: "tier.up_to.format"
+    message: "up_to is a whole number of units, or inf for the last tier"
+    expression: "this.matches('^(inf|[1-9][0-9]*)$')"
+  }];
+  // flat_amount is charged once for the whole tier, in the currency's smallest unit.
+  optional int64 flat_amount = 2 [(buf.validate.field).int64.gte = 0];
+  // flat_amount_decimal is flat_amount as a decimal string.
+  string flat_amount_decimal = 3;
+  // unit_amount is charged per unit in the tier, in the currency's smallest unit.
+  optional int64 unit_amount = 4 [(buf.validate.field).int64.gte = 0];
+  // unit_amount_decimal is unit_amount with up to 12 decimal places.
+  string unit_amount_decimal = 5;
+
+  option (buf.validate.message).cel = {
+    id: "tier.amount"
+    message: "a tier charges something: set flat_amount or unit_amount (or a decimal form), at most one form of each"
+    expression: "(has(this.flat_amount) || this.flat_amount_decimal != '' || has(this.unit_amount) || this.unit_amount_decimal != '') && !(has(this.flat_amount) && this.flat_amount_decimal != '') && !(has(this.unit_amount) && this.unit_amount_decimal != '')"
+  };
+}
+
+// StripePriceCustomUnitAmount lets the customer choose the amount. Its presence enables it.
+message StripePriceCustomUnitAmount {
+  // minimum is the smallest amount the customer may enter, at least Stripe's minimum charge.
+  optional int64 minimum = 1 [(buf.validate.field).int64.gte = 0];
+  // maximum is the largest amount the customer may enter.
+  optional int64 maximum = 2 [(buf.validate.field).int64.gte = 0];
+  // preset is the amount the field starts at.
+  optional int64 preset = 3 [(buf.validate.field).int64.gte = 0];
+
+  option (buf.validate.message).cel = {
+    id: "custom_unit_amount.range"
+    message: "custom_unit_amount keeps minimum <= preset <= maximum"
+    expression: "(!has(this.minimum) || !has(this.maximum) || this.minimum <= this.maximum) && (!has(this.preset) || ((!has(this.minimum) || this.minimum <= this.preset) && (!has(this.maximum) || this.preset <= this.maximum)))"
+  };
+}
+
+// StripePriceTransformQuantity divides the quantity before billing.
+message StripePriceTransformQuantity {
+  // divide_by is the number the quantity (or usage) is divided by.
+  int64 divide_by = 1 [(buf.validate.field).int64.gt = 0];
+  // round is how the division's remainder is rounded.
+  Round round = 2 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // Round is how a divided quantity is rounded.
+  enum Round {
+    round_unspecified = 0;
+    // up bills the partial unit as a whole one.
+    up = 1;
+    // down drops the partial unit.
+    down = 2;
+  }
+}
+
+// StripePriceRecurring makes a price bill on a schedule.
+message StripePriceRecurring {
+  // interval is the billing period's unit.
+  Interval interval = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+  // interval_count is how many intervals make one billing period ("month" and 3 bills
+  // quarterly), up to three years. Unset, 1.
+  optional int64 interval_count = 2 [(buf.validate.field).int64.gte = 1];
+  // usage_type is how the quantity per period is found. Unset, Stripe uses licensed.
+  UsageType usage_type = 3 [(buf.validate.field).enum.defined_only = true];
+  // meter is the billing meter (mtr_...) that tracks a metered price's usage.
+  string meter = 4 [(buf.validate.field).cel = {
+    id: "recurring.meter.format"
+    message: "meter is a Stripe billing meter id (mtr_...)"
+    expression: "this == '' || this.startsWith('mtr_')"
+  }];
+  // trial_period_days is the trial a subscription gets when it is created with trial_from_plan.
+  optional int64 trial_period_days = 5 [(buf.validate.field).int64.gte = 0];
+
+  option (buf.validate.message).cel = {
+    id: "recurring.interval_at_most_three_years"
+    message: "a billing period is at most three years (3 years, 36 months, 156 weeks or 1095 days)"
+    expression: "!has(this.interval_count) || this.interval_count <= (this.interval == 4 ? 3 : this.interval == 3 ? 36 : this.interval == 2 ? 156 : 1095)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "recurring.meter_needs_metered"
+    message: "a meter tracks usage, so it needs usage_type metered"
+    expression: "this.meter == '' || this.usage_type == 2"
+  };
+
+  // Interval is a billing period's unit.
+  enum Interval {
+    interval_unspecified = 0;
+    day = 1;
+    week = 2;
+    month = 3;
+    year = 4;
+  }
+
+  // UsageType is how a recurring price finds its quantity.
+  enum UsageType {
+    usage_type_unspecified = 0;
+    // licensed bills the quantity set on the subscription.
+    licensed = 1;
+    // metered bills the usage reported during the period.
+    metered = 2;
+  }
+}
+
+// StripePriceCurrencyOption is a price's amount in one more currency.
+message StripePriceCurrencyOption {
+  // unit_amount is the charge in this currency's smallest unit.
+  optional int64 unit_amount = 1 [(buf.validate.field).int64.gte = 0];
+  // unit_amount_decimal is unit_amount with up to 12 decimal places.
+  string unit_amount_decimal = 2;
+  // tax_behavior is whether this amount includes tax.
+  TaxBehavior tax_behavior = 3 [(buf.validate.field).enum.defined_only = true];
+  // tiers are this currency's steps, for a tiered price.
+  repeated StripePriceTier tiers = 4;
+  // custom_unit_amount lets the customer choose the amount in this currency.
+  StripePriceCustomUnitAmount custom_unit_amount = 5;
+
+  // TaxBehavior is whether an amount includes tax. The zero value is named unset because
+  // Stripe's own values include "unspecified".
+  enum TaxBehavior {
+    tax_behavior_unset = 0;
+    exclusive = 1;
+    inclusive = 2;
+    unspecified = 3;
+  }
+}

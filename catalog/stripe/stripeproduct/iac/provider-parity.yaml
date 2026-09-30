@@ -1,0 +1,23 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The product's own arguments match by exact name. Its inline default price is
+# not offered, and each granted feature is its own stripe_product_feature,
+# which the module creates per spec.features entry.
+resources:
+  stripe_product:
+    exclusions:
+      - arg: default_price_data
+        reason: creates a second object (a price) inside the product that the module could neither track, update nor archive -- destroy would leave it active and its drift would go unseen; prices are StripePrice resources that name this product
+  stripe_product_feature:
+    mappings:
+      - spec: spec.features
+        arg: entitlement_feature
+    exclusions:
+      - arg: product
+        reason: wired by the module from the product this kind creates -- the fold's parent linkage, never free-form user surface

@@ -1,0 +1,13 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeRadarValueList
+metadata:
+  name: trusted-customers
+  org: example-org
+  env: production
+spec:
+  alias: trusted_customers
+  name: Trusted customers
+  itemType: customer_id
+  items:
+    - cus_REPLACE_FIRST
+    - cus_REPLACE_SECOND

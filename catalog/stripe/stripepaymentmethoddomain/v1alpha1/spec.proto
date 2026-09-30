@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentmethoddomain.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/options/options.proto";
+
+// StripePaymentMethodDomainSpec registers a domain where the account's own checkout pages may
+// show wallet buttons -- Apple Pay, Google Pay, Link, PayPal, Amazon Pay, Klarna -- through Stripe
+// Elements or embedded Checkout. Stripe validates the domain for each wallet; status.outputs
+// reports each wallet's state with Stripe's own error message, so a wallet that stays inactive
+// says why (Apple Pay, for one, needs Stripe's association file served from the domain).
+//
+// Stripe keeps a registered domain: destroy only forgets it. The domain stays registered, and
+// enabled, in Stripe after Planton deletes the resource. To turn the wallets off, set enabled
+// false and apply, then delete. A domain removed outside Planton makes the next plan fail (the
+// provider does not treat a missing domain as gone); remove it from state and apply again.
+//
+// The key needs "Payment Method Domains" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/payments/payment-methods/pmd-registration
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_method_domain
+message StripePaymentMethodDomainSpec {
+  // domain_name is the hostname the wallet buttons appear on ("pay.example.com"), without a
+  // scheme or path. Changing it REPLACES the registration: the new domain is registered and the old
+  // one is forgotten, still registered in Stripe.
+  string domain_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.hostname = true
+  ];
+
+  // enabled is whether wallets may appear on the domain. It updates in place. Set it false and
+  // apply before deleting the resource, because deleting leaves the domain enabled in Stripe.
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
+}

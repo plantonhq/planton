@@ -49,5 +49,6 @@ An account holds many portal configurations, and one is its default: the one Str
 
 - **Prorations need an immediate cancellation**: `prorationBehavior` `always_invoice` or `create_prorations` settles unused time, which only `mode: immediately` leaves. The spec refuses the combination.
 - **Price changes need prices**: allowing `price` in `defaultAllowedUpdates` without listing `products` leaves nothing to switch to. The spec refuses it.
-- **Product and price ids are the account's own**: a test-mode `price_...` does not exist in live mode. Each environment lists its own ids.
+- **Product and price ids are the account's own**: a test-mode `price_...` does not exist in live mode. Reference the environment's own Stripe Product and Stripe Price resources rather than pasting ids, and each environment's portal names its own.
+- **A replaced price leaves the portal pointing at the archived one until the portal applies again**: a price whose amount changed has a new id. A reference picks it up on the portal's next apply; a pasted id never does.
 - **A configuration that cannot be read fails the plan**: the provider has no handling for it. Remove it from state and apply again for a new one.

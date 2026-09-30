@@ -85,8 +85,8 @@ spec:
 | `spec.features.subscriptionUpdate.billingCycleAnchor` | `enum` |  |  |  |
 | `spec.features.subscriptionUpdate.trialUpdateBehavior` | `enum` |  |  |  |
 | `spec.features.subscriptionUpdate.products` | `[]StripeBillingPortalProduct` |  |  |  |
-| `spec.features.subscriptionUpdate.products[].product` | `string` | yes |  |  |
-| `spec.features.subscriptionUpdate.products[].prices` | `[]string` | yes |  |  |
+| `spec.features.subscriptionUpdate.products[].product` | `string \| valueFrom` | yes |  | StripeProduct (`status.outputs.id`) |
+| `spec.features.subscriptionUpdate.products[].prices` | `[]string \| valueFrom` | yes |  | StripePrice (`status.outputs.id`) |
 | `spec.features.subscriptionUpdate.products[].adjustableQuantity` | `StripeBillingPortalAdjustableQuantity` |  |  |  |
 | `spec.features.subscriptionUpdate.products[].adjustableQuantity.enabled` | `bool` |  |  |  |
 | `spec.features.subscriptionUpdate.products[].adjustableQuantity.minimum` | `int64` |  |  |  |
@@ -346,22 +346,31 @@ products are the products, and their prices, a customer may switch between. Stri
 to ten.
 
 - rule: {"repeated":{"maxItems":"10"}}
+- rule: each price is listed once: remove the repeated price id
 
 ### spec.features.subscriptionUpdate.products[].product
 
-`string` · required
+`string | valueFrom` · required
 
-product is the Stripe product id (prod_...).
+product is the product a customer may switch to (prod_...). Reference a StripeProduct so the
+portal offers exactly the plan declared beside it.
 
-- rule: {"required":true,"string":{"prefix":"prod_"}}
+- references: StripeProduct (`status.outputs.id`)
+- rule: product is a Stripe product id (prod_...), or a reference to a StripeProduct
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: StripeProduct, name: <that resource's name>, fieldPath: status.outputs.id}} -- a bare string does not parse
 
 ### spec.features.subscriptionUpdate.products[].prices
 
-`[]string` · required
+`[]string | valueFrom` · required
 
-prices are the product's prices (price_...) a customer may choose.
+prices are the product's prices a customer may choose (price_...). Reference each
+StripePrice. A price replaced after an amount change has a new id, and a reference follows it
+on the portal's next apply.
 
-- rule: {"repeated":{"minItems":"1","unique":true,"items":{"string":{"prefix":"price_"}}}}
+- references: StripePrice (`status.outputs.id`)
+- rule: {"repeated":{"minItems":"1","items":{"cel":[{"id":"product.prices.format","message":"a price is a Stripe price id (price_...), or a reference to a StripePrice","expression":"!has(this.value) || this.value.startsWith('price_')"}]}}}
+- rule: write as {value: <literal>} or {valueFrom: {kind: StripePrice, name: <that resource's name>, fieldPath: status.outputs.id}} -- a bare string does not parse
 
 ### spec.features.subscriptionUpdate.products[].adjustableQuantity
 
@@ -504,6 +513,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.features.paymentMethodUpdate.paymentMethodConfiguration` | StripePaymentMethodConfiguration | `status.outputs.id` |
+| `spec.features.subscriptionUpdate.products[].product` | StripeProduct | `status.outputs.id` |
+| `spec.features.subscriptionUpdate.products[].prices` | StripePrice | `status.outputs.id` |
 
 ## See Also
 

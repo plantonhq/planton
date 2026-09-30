@@ -11,9 +11,10 @@
 // prerequisite machinery resolves them. One arm, deliberately: the ground
 // truth's cloud-resource identities come from each member's IaC state, and
 // a single state format keeps the answer key uniform. (The E2E harness's
-// own prerequisite machinery deploys dependencies via Pulumi; it is NOT
-// reused here for exactly that reason -- and because a suite member is a
-// first-class evaluation subject, never just scaffolding.)
+// own prerequisite machinery deploys each dependency on its kind's engine,
+// Pulumi for most; it is NOT reused here for exactly that reason -- and
+// because a suite member is a first-class evaluation subject, never just
+// scaffolding.)
 package mappingeval
 
 import (

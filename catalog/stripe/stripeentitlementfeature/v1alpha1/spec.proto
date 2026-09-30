@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeentitlementfeature.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// StripeEntitlementFeatureSpec declares one capability a customer can be entitled to in Stripe
+// Entitlements -- "api-access", "sso", "priority-support". A StripeProduct grants it by listing the
+// feature under its features; Stripe then reports which features each subscribed customer holds
+// (their active entitlements), so the application checks a feature's lookup key instead of
+// hard-coding product or price ids.
+//
+// Stripe never deletes a feature. Destroy archives it (active = false) and Stripe keeps it,
+// archived, forever: an archived feature cannot be attached to new products and drops out of the
+// features list. This kind has no way to reactivate an archived feature -- the provider never
+// sends active -- so a feature archived in the Dashboard stays archived after the next apply. A
+// feature that cannot be read makes the plan fail (the provider does not treat a missing feature
+// as gone); remove it from state and apply again.
+//
+// The key needs "Entitlements" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/billing/entitlements
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/entitlements_feature
+message StripeEntitlementFeatureSpec {
+  // lookup_key is the feature's stable name, the one the application checks a customer's active
+  // entitlements for ("api-access"). Up to 80 characters. Changing it REPLACES the feature: the old
+  // one is archived, a new one is created, and every product that granted the old feature must
+  // grant the new one (a product that references this resource does so on its next apply).
+  string lookup_key = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 80
+  ];
+
+  // name is the feature's label for the account's team, shown in the Dashboard. It is not meant
+  // for customers. Changing it updates the feature in place.
+  string name = 2 [(buf.validate.field).required = true];
+
+  // metadata is a set of key-value pairs stored on the feature. A key removed here is removed in
+  // Stripe on the next apply; removing the whole map leaves Stripe's keys in place.
+  map<string, string> metadata = 3;
+}

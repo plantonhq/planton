@@ -7,10 +7,10 @@ spec:
   # refused unless it is a test-mode key). Stripe never deletes a
   # configuration, so destroy deactivates it and the verifier proves it reads
   # back inactive; every run's configuration carries the run in its name and
-  # stays in the sandbox. The plan-switching scenario needs a product and
-  # price in the sandbox (PLANTON_E2E_STRIPE_PRODUCT_ID,
-  # PLANTON_E2E_STRIPE_PRICE_ID) and skips without them. Awaiting its first
-  # live run, so no provisioner is claimed yet.
+  # stays in the sandbox. The plan-switching scenario deploys a run-named
+  # StripeProduct and StripePrice as prerequisites on OpenTofu and archives
+  # them afterwards. Awaiting its first live run, so no provisioner is
+  # claimed yet.
   tier: 1
   status: pending_proof
   validated_provisioners: []

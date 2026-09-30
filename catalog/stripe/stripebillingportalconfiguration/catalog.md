@@ -22,7 +22,7 @@ The account's default configuration is never adopted or changed.
 ### Stripe Account
 
 - **The connection's restricted key** needs **Customer portal: Write** (Stripe Dashboard: Developers, API keys, the key's permissions).
-- **Products and prices** to switch between, if you enable plan changes.
+- **Products and prices** to switch between, if you enable plan changes: declare them as Stripe Product and Stripe Price resources and reference them, or name existing ids.
 
 ## Deploy
 
@@ -77,13 +77,30 @@ spec:
 
 The InfraPipeline deploys the payment-method configuration first, then this portal.
 
+Wire the plans a customer may switch between the same way, so a price replaced after an amount change reaches the portal on its next apply:
+
+```yaml
+spec:
+  features:
+    subscriptionUpdate:
+      products:
+        - product:
+            valueFrom:
+              kind: StripeProduct
+              name: team-plan
+          prices:
+            - valueFrom:
+                kind: StripePrice
+                name: team-monthly
+```
+
 ## Key Configuration
 
 These are the decisions that matter. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
 **Cancel when the paid period ends** -- `subscriptionCancel.mode: at_period_end` keeps what the customer paid for; `immediately` needs a `prorationBehavior` decision.
 
-**Plans to switch between** -- `subscriptionUpdate.products` lists each product and the prices a customer may choose; allowing `price` changes needs at least one.
+**Plans to switch between** -- `subscriptionUpdate.products` lists each product and the prices a customer may choose; allowing `price` changes needs at least one. Reference the Stripe Product and Stripe Price resources, so a price replaced after an amount change reaches the portal on its next apply.
 
 **The same methods as checkout** -- reference a Stripe Payment Method Configuration in `paymentMethodUpdate`.
 
@@ -96,6 +113,8 @@ These are the decisions that matter. Explore the full field reference in the [AP
 | Field | Kind | Output |
 |-------|------|--------|
 | `features.paymentMethodUpdate.paymentMethodConfiguration` | Stripe Payment Method Configuration | `status.outputs.id` |
+| `features.subscriptionUpdate.products[].product` | Stripe Product | `status.outputs.id` |
+| `features.subscriptionUpdate.products[].prices[]` | Stripe Price | `status.outputs.id` |
 
 ### What This Component Provides
 
@@ -120,3 +139,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 - [**Stripe Payment Method Configuration**](/cloud-catalog/stripe-payment-method-configuration) -- the methods a customer may add in the portal.
 - [**Stripe Webhook Endpoint**](/cloud-catalog/stripe-webhook-endpoint) -- where the subscription changes customers make here arrive as events.
+- [**Stripe Product**](/cloud-catalog/stripe-product) and [**Stripe Price**](/cloud-catalog/stripe-price) -- the plans and prices a customer may switch between.

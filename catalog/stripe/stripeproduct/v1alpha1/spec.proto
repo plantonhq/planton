@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeproduct.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// StripeProductSpec declares one thing an account sells -- a plan, a seat, a physical good -- as
+// Checkout, Payment Links, subscriptions and pricing tables show it, and the entitlement features
+// buying it grants. Its prices are separate resources: each StripePrice names this product.
+//
+// One owner per object: declare a product here only if nothing else creates or edits it. When the
+// application's own code or the Dashboard owns the price list, leave its products and prices
+// there -- two owners overwrite each other on every apply.
+//
+// Stripe never deletes a product this kind created. Destroy archives it (active = false): it can
+// no longer be bought, and existing subscriptions keep billing. A setting removed from the
+// manifest is not reset in Stripe -- the provider sends only values that are set -- so change a
+// setting to a new value rather than deleting it. A product that cannot be read makes the plan
+// fail (the provider does not treat a missing product as gone); remove it from state and apply
+// again.
+//
+// The provider's default_price_data (a price created inside the product) is not offered: that
+// price would be invisible to Planton, never archived on destroy, and its drift never detected.
+// Declare a StripePrice that names this product instead.
+//
+// The key needs "Products" write, and "Entitlements" write when features are granted
+// (iac/permissions.yaml).
+//
+// https://docs.stripe.com/products-prices/overview
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/product
+message StripeProductSpec {
+  // name is the product's name as customers see it in Checkout, invoices, receipts and the
+  // customer portal.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // description is the product's long-form explanation, shown to customers.
+  string description = 2;
+
+  // active is whether the product can be bought. Setting it false archives the product without
+  // destroying the resource: existing subscriptions keep billing, new purchases are refused.
+  optional bool active = 3 [(dev.planton.shared.options.default) = "true"];
+
+  // type is what the product is. Unset, Stripe creates a service. Changing it REPLACES the
+  // product: the old one is archived, a new one is created, and every price must move to the new
+  // one (a StripePrice that references this resource is replaced with it).
+  Type type = 4 [(buf.validate.field).enum.defined_only = true];
+
+  // images are up to 8 public image URLs shown to customers.
+  repeated string images = 5 [(buf.validate.field).repeated = {
+    max_items: 8
+    unique: true
+    items: {
+      string: {uri: true}
+    }
+  }];
+
+  // marketing_features are up to 15 lines shown under the product in Stripe pricing tables.
+  // They are display text only; the capabilities a purchase grants are features.
+  repeated StripeProductMarketingFeature marketing_features = 6 [(buf.validate.field).repeated.max_items = 15];
+
+  // package_dimensions are the product's shipping dimensions, for physical goods.
+  StripeProductPackageDimensions package_dimensions = 7;
+
+  // shippable is whether the product is shipped (a physical good).
+  optional bool shippable = 8;
+
+  // statement_descriptor is the text on the customer's card statement for subscription payments
+  // of this product: up to 22 characters, at least one letter, none of < > \ " ', shown in
+  // capitals with non-ASCII characters stripped. Only a service may carry one.
+  string statement_descriptor = 9 [(buf.validate.field).cel = {
+    id: "spec.statement_descriptor.format"
+    message: "statement_descriptor is up to 22 characters, contains at least one letter, and has none of < > \\ \" '"
+    expression: "this == '' || (size(this) <= 22 && this.matches('[A-Za-z]') && !this.matches('[<>\\\\\\\\\"\\']'))"
+  }];
+
+  // tax_code is the Stripe Tax category the product is taxed as (txcd_..., for example
+  // txcd_10103001 for software as a service). Unset, the account's preset tax code applies.
+  string tax_code = 10 [(buf.validate.field).cel = {
+    id: "spec.tax_code.format"
+    message: "tax_code is a Stripe tax code id such as txcd_10103001"
+    expression: "this == '' || this.matches('^txcd_[0-9]{8}$')"
+  }];
+
+  // unit_label names what a quantity counts ("seat", "GB"), shown on receipts, invoices,
+  // Checkout and the customer portal. Only a service may carry one.
+  string unit_label = 11;
+
+  // url is a public web page for the product.
+  string url = 12 [(buf.validate.field).cel = {
+    id: "spec.url.format"
+    message: "url is an https:// or http:// address"
+    expression: "this == '' || this.startsWith('https://') || this.startsWith('http://')"
+  }];
+
+  // metadata is a set of key-value pairs stored on the product. A key removed here is removed in
+  // Stripe on the next apply; removing the whole map leaves Stripe's keys in place.
+  map<string, string> metadata = 13;
+
+  // features are the entitlement features buying this product grants (feat_...). Reference a
+  // StripeEntitlementFeature. Each one is attached as its own link in Stripe: adding a feature
+  // attaches it, removing one detaches it (the link is deleted), and a subscribed customer's
+  // active entitlements follow. An archived feature cannot be attached.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef features = 14 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeEntitlementFeature,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (buf.validate.field).repeated.items.cel = {
+      id: "spec.features.format"
+      message: "a feature is an entitlement feature id (feat_...), or a reference to a StripeEntitlementFeature"
+      expression: "!has(this.value) || this.value.startsWith('feat_')"
+    }
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "spec.features.unique"
+    message: "each feature is granted once: remove the repeated feature id"
+    expression: "this.features.all(f, !has(f.value) || this.features.filter(g, has(g.value) && g.value == f.value).size() == 1)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.service_only_fields"
+    message: "statement_descriptor and unit_label apply only to a service: remove them, or leave type unset (a service)"
+    expression: "this.type != 1 || (this.statement_descriptor == '' && this.unit_label == '')"
+  };
+
+  // Type is what a product is.
+  enum Type {
+    type_unspecified = 0;
+    // good is a physical or digital good, for Orders.
+    good = 1;
+    // service is sold through subscriptions, Checkout and Payment Links (Stripe's default).
+    service = 2;
+  }
+}
+
+// StripeProductMarketingFeature is one line shown under a product in a pricing table.
+message StripeProductMarketingFeature {
+  // name is the line's text, up to 80 characters.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 80
+  ];
+}
+
+// StripeProductPackageDimensions are a physical product's shipping dimensions.
+message StripeProductPackageDimensions {
+  // height in inches.
+  double height = 1 [(buf.validate.field).double.gt = 0];
+  // length in inches.
+  double length = 2 [(buf.validate.field).double.gt = 0];
+  // weight in ounces.
+  double weight = 3 [(buf.validate.field).double.gt = 0];
+  // width in inches.
+  double width = 4 [(buf.validate.field).double.gt = 0];
+}

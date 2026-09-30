@@ -59,6 +59,7 @@ go_library(
 go_test(
     name = "runner_test",
     srcs = [
+        "dependencies_engine_test.go",
         "dependencies_test.go",
         "failuremode_test.go",
         "fixture_integrity_test.go",
@@ -82,6 +83,7 @@ go_test(
         "//e2e/framework/provider",
         "//internal/manifest",
         "//shared/cloudresourcekind",
+        "@com_github_gruntwork_io_terratest//modules/terraform",
         "@com_github_pkg_errors//:errors",
         "@io_k8s_sigs_yaml//:yaml",
     ],
