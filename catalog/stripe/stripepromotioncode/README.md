@@ -55,3 +55,7 @@ spec:
 | `id` | The promotion code's Stripe id (`promo_...`) |
 | `code` | What customers type: the declared code, or the one Stripe generated |
 | `active` | `false` once deactivated |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

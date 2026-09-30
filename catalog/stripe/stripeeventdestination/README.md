@@ -57,3 +57,7 @@ spec:
 | `signing_secret` | A webhook destination's signing secret (sensitive) |
 | `aws_event_source_arn`, `aws_event_source_name`, `aws_event_source_status` | The EventBridge partner source |
 | `azure_partner_topic_name`, `azure_partner_topic_status` | The Event Grid partner topic |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

@@ -51,3 +51,7 @@ spec:
 |---|---|
 | `id` | The registration's Stripe id (`taxreg_...`); it changes when the registration is replaced |
 | `status` | `scheduled`, `active` or `expired` |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

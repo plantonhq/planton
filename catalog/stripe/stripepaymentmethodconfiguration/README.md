@@ -52,3 +52,7 @@ spec:
 | `isDefault` | Whether it is the account's default |
 | `active` | Whether payments may use it |
 | `availablePaymentMethods` | The methods Stripe reports available |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

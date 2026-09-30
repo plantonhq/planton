@@ -42,3 +42,7 @@ spec:
 | `id` | The registration's Stripe id (`pmd_...`) |
 | `enabled` | Whether wallets may appear |
 | `<wallet>_status`, `<wallet>_error_message` | For `apple_pay`, `google_pay`, `link`, `paypal`, `amazon_pay`, `klarna`: `active` or `inactive`, and Stripe's reason |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

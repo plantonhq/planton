@@ -65,3 +65,7 @@ spec:
 | `active` | `false` once archived |
 | `lookup_key` | The stable name, when set |
 | `product` | The product's id |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

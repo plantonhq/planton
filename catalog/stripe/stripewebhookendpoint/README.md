@@ -52,3 +52,7 @@ spec:
 | `status` | `enabled` or `disabled`, as Stripe reports it |
 | `url` | The address events are delivered to |
 | `application` | The Connect application that created the endpoint, when one did |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

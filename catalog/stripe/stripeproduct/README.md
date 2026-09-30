@@ -63,3 +63,7 @@ spec:
 | `active` | `false` once archived |
 | `default_price` | The price Stripe treats as the default, when one is set (never set by this kind) |
 | `product_feature_ids` | Each granted feature's id mapped to the id of the link that attaches it |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

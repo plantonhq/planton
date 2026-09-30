@@ -51,3 +51,7 @@ spec:
 |---|---|
 | `id` | The tax rate's Stripe id (`txr_...`); it changes when the rate is replaced |
 | `active` | `false` once deactivated |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

@@ -54,3 +54,7 @@ spec:
 | `event_name` | The event name your application sends |
 | `status` | `active`, or `inactive` once deactivated |
 | `alert_ids` | Each alert's title mapped to its Stripe id |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

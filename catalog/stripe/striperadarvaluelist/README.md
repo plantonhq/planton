@@ -50,3 +50,7 @@ spec:
 | `id` | The list's Stripe id (`rsl_...`) |
 | `alias` | The name rules reference |
 | `item_ids` | Each item's value mapped to its Stripe id (`rsli_...`) |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

@@ -58,3 +58,7 @@ spec:
 | `isDefault` | Whether it is the account's default |
 | `active` | Whether portal sessions may use it |
 | `loginPageUrl` | The shareable sign-in URL, when enabled |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

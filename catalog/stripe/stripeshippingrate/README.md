@@ -57,3 +57,7 @@ spec:
 |---|---|
 | `id` | The shipping rate's Stripe id (`shr_...`); it changes when the rate is replaced |
 | `active` | `false` once deactivated |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

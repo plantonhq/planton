@@ -63,3 +63,7 @@ spec:
 | `id` | The payment link's Stripe id (`plink_...`); it changes when the link is replaced |
 | `url` | The page's public address; it changes when the link is replaced |
 | `active` | `false` once deactivated |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

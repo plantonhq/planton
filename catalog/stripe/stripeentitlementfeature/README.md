@@ -44,3 +44,7 @@ spec:
 | `id` | The feature's Stripe id (`feat_...`), what a product's `features` reference |
 | `lookup_key` | The stable name, as your application checks it |
 | `active` | `false` once archived |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

@@ -49,3 +49,7 @@ spec:
 |---|---|
 | `id` | The coupon's Stripe id; it changes when the coupon is replaced |
 | `valid` | Whether new customers can still redeem it |
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).
