@@ -14,7 +14,7 @@ import (
 // first-class AwsSubnet nodes this module never modifies.
 func subnetGroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*docdb.SubnetGroup, error) {
 	spec := locals.AwsDocumentDb.Spec
-	if spec.DbSubnetGroupName.GetValue() != "" || len(spec.SubnetIds) == 0 {
+	if spec.DbSubnetGroupName != "" || len(spec.SubnetIds) == 0 {
 		return nil, nil
 	}
 

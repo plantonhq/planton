@@ -63,7 +63,7 @@ type AwsNeptuneClusterSpec struct {
 	// Name of an existing Neptune subnet group to place the cluster in,
 	// instead of providing subnet_ids. Changing the subnet group replaces
 	// the cluster.
-	NeptuneSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=neptune_subnet_group_name,json=neptuneSubnetGroupName,proto3" json:"neptune_subnet_group_name,omitempty"`
+	NeptuneSubnetGroupName string `protobuf:"bytes,3,opt,name=neptune_subnet_group_name,json=neptuneSubnetGroupName,proto3" json:"neptune_subnet_group_name,omitempty"`
 	// Security groups attached to the cluster. Empty uses the VPC's
 	// default security group (the AWS default). Reference AwsSecurityGroup
 	// security_group_id outputs or pass literal SG IDs -- database ingress
@@ -262,11 +262,11 @@ func (x *AwsNeptuneClusterSpec) GetSubnetIds() []*v1.StringValueOrRef {
 	return nil
 }
 
-func (x *AwsNeptuneClusterSpec) GetNeptuneSubnetGroupName() *v1.StringValueOrRef {
+func (x *AwsNeptuneClusterSpec) GetNeptuneSubnetGroupName() string {
 	if x != nil {
 		return x.NeptuneSubnetGroupName
 	}
-	return nil
+	return ""
 }
 
 func (x *AwsNeptuneClusterSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
@@ -817,12 +817,12 @@ var File_catalog_aws_awsneptunecluster_v1alpha1_spec_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsneptunecluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsneptunecluster/v1alpha1/spec.proto\x12*dev.planton.aws.awsneptunecluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa70\n" +
+	"1catalog/aws/awsneptunecluster/v1alpha1/spec.proto\x12*dev.planton.aws.awsneptunecluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf4/\n" +
 	"\x15AwsNeptuneClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12m\n" +
-	"\x19neptune_subnet_group_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x16neptuneSubnetGroupName\x12\x8b\x01\n" +
+	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x129\n" +
+	"\x19neptune_subnet_group_name\x18\x03 \x01(\tR\x16neptuneSubnetGroupName\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xf7\a\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x127\n" +
 	"\x12availability_zones\x18\x05 \x03(\tB\b\xbaH\x05\x92\x01\x02\x10\x03R\x11availabilityZones\x12\x1f\n" +
 	"\x04port\x18\x06 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x00R\x04port\x12%\n" +
@@ -855,8 +855,8 @@ const file_catalog_aws_awsneptunecluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x11apply_immediately\x18\x1d \x01(\bR\x10applyImmediately\x12=\n" +
 	"\x1ballow_major_version_upgrade\x18\x1e \x01(\bR\x18allowMajorVersionUpgrade\x12v\n" +
 	"\x10custom_endpoints\x18\x1f \x03(\v2K.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterCustomEndpointR\x0fcustomEndpoints\x12w\n" +
-	"\x13instance_parameters\x18  \x03(\v2F.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterParameterR\x12instanceParameters:\x98\x1a\xbaH\x94\x1a\x1a\xb1\x01\n" +
-	"\x10subnets_or_group\x12Wprovide at least two subnet_ids (distinct AZs) or an existing neptune_subnet_group_name\x1aD(this.subnet_ids.size() >= 2) || has(this.neptune_subnet_group_name)\x1a\xec\x02\n" +
+	"\x13instance_parameters\x18  \x03(\v2F.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterParameterR\x12instanceParameters:\x99\x1a\xbaH\x95\x1a\x1a\xb2\x01\n" +
+	"\x10subnets_or_group\x12Wprovide at least two subnet_ids (distinct AZs) or an existing neptune_subnet_group_name\x1aE(this.subnet_ids.size() >= 2) || this.neptune_subnet_group_name != ''\x1a\xec\x02\n" +
 	"\"instances_required_unless_headless\x12\xb3\x01instances is required -- a cluster with no instances cannot serve queries; only snapshot restores, replicas, and global-cluster members may start headless and attach compute later\x1a\x8f\x01this.instances.size() > 0 || this.snapshot_identifier != '' || this.replication_source_identifier != '' || this.global_cluster_identifier != ''\x1a\x83\x02\n" +
 	",final_snapshot_id_required_when_not_skipping\x12\x8a\x01final_snapshot_identifier is required when skip_final_snapshot is false -- AWS refuses to delete the cluster without a final snapshot name\x1aFthis.skip_final_snapshot ? true : this.final_snapshot_identifier != ''\x1a\xcc\x01\n" +
 	"\x11log_exports_valid\x12menabled_cloudwatch_logs_exports must contain only 'audit' or 'slowquery' -- the two log types Neptune exports\x1aHthis.enabled_cloudwatch_logs_exports.all(x, x in ['audit', 'slowquery'])\x1a\x96\x02\n" +
@@ -919,21 +919,20 @@ var file_catalog_aws_awsneptunecluster_v1alpha1_spec_proto_goTypes = []any{
 	(*v1.StringValueOrRef)(nil),                  // 5: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_aws_awsneptunecluster_v1alpha1_spec_proto_depIdxs = []int32{
-	5,  // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 1: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.neptune_subnet_group_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 2: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 3: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.instances:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterInstance
-	2,  // 4: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.serverless_v2_scaling:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterServerlessV2Scaling
-	5,  // 5: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 6: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.iam_roles:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 7: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.parameters:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterParameter
-	4,  // 8: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.custom_endpoints:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterCustomEndpoint
-	3,  // 9: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.instance_parameters:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterParameter
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	5, // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5, // 1: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1, // 2: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.instances:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterInstance
+	2, // 3: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.serverless_v2_scaling:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterServerlessV2Scaling
+	5, // 4: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5, // 5: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.iam_roles:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3, // 6: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.parameters:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterParameter
+	4, // 7: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.custom_endpoints:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterCustomEndpoint
+	3, // 8: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec.instance_parameters:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterParameter
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsneptunecluster_v1alpha1_spec_proto_init() }

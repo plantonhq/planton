@@ -54,14 +54,23 @@ message AzureMonitorScheduledQueryAlertSpec {
 
   // The resource the query runs against -- a Log Analytics Workspace (the
   // common case, and the default reference) or an Application Insights
-  // resource (override with an explicit valueFrom kind + fieldPath).
+  // resource (a valueFrom naming that kind; both are declared candidates,
+  // so each one's resource ID output fills in).
   // Azure allows exactly one scope per rule.
   //
   // **ForceNew**: Changing this destroys and recreates the rule.
   dev.planton.shared.foreignkey.v1.StringValueOrRef scope = 4 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = AzureLogAnalyticsWorkspace,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.workspace_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.workspace_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureLogAnalyticsWorkspace
+      field_path: "status.outputs.workspace_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureApplicationInsights
+      field_path: "status.outputs.application_insights_id"
+    }
   ];
 
   // The display name shown in the portal and notifications. When empty,

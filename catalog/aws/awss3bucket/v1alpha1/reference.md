@@ -1751,6 +1751,7 @@ Fields on other kinds that can point at this resource:
 | AwsBedrockInvocationLogging | `spec.s3.bucketName` | `status.outputs.bucket_id` |
 | AwsBedrockKnowledgeBase | `spec.dataSources[].s3.bucketArn` | `status.outputs.bucket_arn` |
 | AwsCloudTrail | `spec.s3BucketName` | `status.outputs.bucket_id` |
+| AwsCloudwatchLogDelivery | `spec.vended.destinations[].destinationResourceArn` | `status.outputs.bucket_arn` |
 | AwsCloudwatchSynthetics | `spec.canary.artifactBucket` | `status.outputs.bucket_id` |
 | AwsCloudwatchSynthetics | `spec.canary.code.s3Bucket` | `status.outputs.bucket_id` |
 | AwsCodeBuildProject | `spec.artifacts.location` | `status.outputs.bucket_id` |
@@ -1792,6 +1793,7 @@ Fields on other kinds that can point at this resource:
 | AwsSagemakerPipeline | `spec.definitionS3Location.bucket` | `status.outputs.bucket_id` |
 | AwsSsmAssociation | `spec.outputLocation.s3BucketName` | `status.outputs.bucket_id` |
 | AwsSsmMaintenanceWindow | `spec.tasks[].invocation.runCommand.outputS3Bucket` | `status.outputs.bucket_id` |
+| AwsWafWebAcl | `spec.logging.destinationArn` | `status.outputs.bucket_arn` |
 
 ## See Also
 

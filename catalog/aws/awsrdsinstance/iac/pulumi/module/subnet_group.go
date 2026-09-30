@@ -14,7 +14,7 @@ import (
 // first-class AwsSubnet nodes this module never modifies.
 func subnetGroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*rds.SubnetGroup, error) {
 	spec := locals.AwsRdsInstance.Spec
-	if spec.DbSubnetGroupName.GetValue() != "" || len(spec.SubnetIds) == 0 {
+	if spec.DbSubnetGroupName != "" || len(spec.SubnetIds) == 0 {
 		return nil, nil
 	}
 

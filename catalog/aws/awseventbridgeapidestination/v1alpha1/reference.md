@@ -598,6 +598,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | AwsEventBridgeApiDestination | `spec.destination.connectionArn` | `status.outputs.connection_arn` |
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.api_destination_arn` |
 
 ## See Also
 

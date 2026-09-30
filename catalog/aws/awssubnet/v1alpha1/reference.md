@@ -453,6 +453,10 @@ Fields on other kinds that can point at this resource:
 | AwsVpcEndpoint | `spec.routeTableIds` | `status.outputs.route_table_id` |
 | AwsVpcEndpoint | `spec.subnetIds` | `status.outputs.subnet_id` |
 | AwsVpcEndpoint | `spec.subnetConfigurations[].subnetId` | `status.outputs.subnet_id` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.cidr_block` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `status.outputs.cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `status.outputs.cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `status.outputs.cidr_block` |
 
 ## See Also
 

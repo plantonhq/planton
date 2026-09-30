@@ -5106,7 +5106,8 @@ type AwsWafWebAclLoggingConfig struct {
 	// "You can associate one logging destination to a web ACL" — is one).
 	//
 	// No default_kind is set because the destination can be any of three
-	// different resource types.
+	// different resource types; the three are declared as candidates, each
+	// with its ARN output.
 	DestinationArn *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=destination_arn,json=destinationArn,proto3" json:"destination_arn,omitempty"`
 	// HTTP header names to redact from logs (each 1-64 characters). Redacted
 	// headers appear as "REDACTED" in log entries instead of their actual
@@ -5772,9 +5773,9 @@ const file_catalog_aws_awswafwebacl_v1alpha1_spec_proto_rawDesc = "" +
 	"\acontent\x18\x02 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x01\x18\x80PR\acontent\x12)\n" +
 	"\fcontent_type\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vcontentType:\xa8\x01\xbaH\xa4\x01\x1a\xa1\x01\n" +
-	"\x12content_type_valid\x12Econtent_type must be 'TEXT_PLAIN', 'TEXT_HTML', or 'APPLICATION_JSON'\x1aDthis.content_type in ['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON']\"\xa1\x03\n" +
-	"\x19AwsWafWebAclLoggingConfig\x12c\n" +
-	"\x0fdestination_arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x0edestinationArn\x12B\n" +
+	"\x12content_type_valid\x12Econtent_type must be 'TEXT_PLAIN', 'TEXT_HTML', or 'APPLICATION_JSON'\x1aDthis.content_type in ['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON']\"\x94\x04\n" +
+	"\x19AwsWafWebAclLoggingConfig\x12\xd5\x01\n" +
+	"\x0fdestination_arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBx\xbaH\x03\xc8\x01\x01\xa2\xd4a!\b\xd6\b\x12\x1cstatus.outputs.log_group_arn\xa2\xd4a\x1e\b\xf5\a\x12\x19status.outputs.bucket_arn\xa2\xd4a'\b\xa5\b\x12\"status.outputs.delivery_stream_arnR\x0edestinationArn\x12B\n" +
 	"\x15redacted_header_names\x18\x02 \x03(\tB\x0e\xbaH\v\x92\x01\b\"\x06r\x04\x10\x01\x18@R\x13redactedHeaderNames\x12&\n" +
 	"\x0fredact_uri_path\x18\x03 \x01(\bR\rredactUriPath\x12.\n" +
 	"\x13redact_query_string\x18\x04 \x01(\bR\x11redactQueryString\x12#\n" +

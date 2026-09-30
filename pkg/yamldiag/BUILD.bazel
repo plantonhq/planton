@@ -10,10 +10,9 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/explain",
+        "//pkg/refannotations",
         "//shared/cloudresourcekind",
-        "//shared/foreignkey/v1:foreignkey",
         "@in_gopkg_yaml_v3//:yaml_v3",
-        "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )

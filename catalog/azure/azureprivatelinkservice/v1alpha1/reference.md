@@ -294,6 +294,14 @@ Fields that can point at another resource's outputs:
 | `spec.natIpConfigurations[].subnetId` | AzureSubnet | `status.outputs.subnet_id` |
 | `spec.loadBalancerFrontendIpConfigurationIds` | AzureLoadBalancer | `status.outputs.frontend_ip_configuration_ids` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| AzureFrontDoorOrigin | `spec.privateLink.privateLinkTargetId` | `status.outputs.private_link_service_id` |
+
 ## See Also
 
 - [Overview](../README.md)

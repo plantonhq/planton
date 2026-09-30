@@ -24,9 +24,10 @@ spec:
           port: "53"
     - to:
         - ip_block:
-            cidr: 0.0.0.0/0
+            cidr:
+              value: 0.0.0.0/0
             except:
-              - 169.254.169.254/32
+              - value: 169.254.169.254/32
       ports:
         - protocol: TCP
           port: "443"

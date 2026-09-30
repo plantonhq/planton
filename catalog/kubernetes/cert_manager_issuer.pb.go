@@ -2489,6 +2489,191 @@ func (x *CertManagerVaultKubernetesAuth) GetAudiences() []string {
 	return nil
 }
 
+// CertManagerIssuerRef names an existing cert-manager issuer that signs a
+// component's own certificates (a webhook's or an API server's serving
+// certificate), by grain: a namespaced Issuer, which must live in the
+// component's installation namespace, or a cluster-scoped ClusterIssuer. The
+// grain is the arm, so every reader -- the reference picker, the dependency
+// graph, the modules -- knows which issuer kind a literal name or a
+// reference means.
+type CertManagerIssuerRef struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to IssuerType:
+	//
+	//	*CertManagerIssuerRef_Issuer
+	//	*CertManagerIssuerRef_ClusterIssuer
+	IssuerType    isCertManagerIssuerRef_IssuerType `protobuf_oneof:"issuer_type"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CertManagerIssuerRef) Reset() {
+	*x = CertManagerIssuerRef{}
+	mi := &file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CertManagerIssuerRef) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CertManagerIssuerRef) ProtoMessage() {}
+
+func (x *CertManagerIssuerRef) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CertManagerIssuerRef.ProtoReflect.Descriptor instead.
+func (*CertManagerIssuerRef) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_cert_manager_issuer_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *CertManagerIssuerRef) GetIssuerType() isCertManagerIssuerRef_IssuerType {
+	if x != nil {
+		return x.IssuerType
+	}
+	return nil
+}
+
+func (x *CertManagerIssuerRef) GetIssuer() *CertManagerNamespacedIssuerRef {
+	if x != nil {
+		if x, ok := x.IssuerType.(*CertManagerIssuerRef_Issuer); ok {
+			return x.Issuer
+		}
+	}
+	return nil
+}
+
+func (x *CertManagerIssuerRef) GetClusterIssuer() *CertManagerClusterIssuerRef {
+	if x != nil {
+		if x, ok := x.IssuerType.(*CertManagerIssuerRef_ClusterIssuer); ok {
+			return x.ClusterIssuer
+		}
+	}
+	return nil
+}
+
+type isCertManagerIssuerRef_IssuerType interface {
+	isCertManagerIssuerRef_IssuerType()
+}
+
+type CertManagerIssuerRef_Issuer struct {
+	// A namespaced Issuer in the installation namespace, by name.
+	Issuer *CertManagerNamespacedIssuerRef `protobuf:"bytes,1,opt,name=issuer,proto3,oneof"`
+}
+
+type CertManagerIssuerRef_ClusterIssuer struct {
+	// A cluster-scoped ClusterIssuer, by name.
+	ClusterIssuer *CertManagerClusterIssuerRef `protobuf:"bytes,2,opt,name=cluster_issuer,json=clusterIssuer,proto3,oneof"`
+}
+
+func (*CertManagerIssuerRef_Issuer) isCertManagerIssuerRef_IssuerType() {}
+
+func (*CertManagerIssuerRef_ClusterIssuer) isCertManagerIssuerRef_IssuerType() {}
+
+// Reference to a namespace-scoped cert-manager Issuer.
+type CertManagerNamespacedIssuerRef struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Issuer name. Accepts a literal name or a reference to a KubernetesIssuer
+	// resource.
+	Name          *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CertManagerNamespacedIssuerRef) Reset() {
+	*x = CertManagerNamespacedIssuerRef{}
+	mi := &file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CertManagerNamespacedIssuerRef) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CertManagerNamespacedIssuerRef) ProtoMessage() {}
+
+func (x *CertManagerNamespacedIssuerRef) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CertManagerNamespacedIssuerRef.ProtoReflect.Descriptor instead.
+func (*CertManagerNamespacedIssuerRef) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_cert_manager_issuer_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *CertManagerNamespacedIssuerRef) GetName() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Name
+	}
+	return nil
+}
+
+// Reference to a cluster-scoped cert-manager ClusterIssuer.
+type CertManagerClusterIssuerRef struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ClusterIssuer name. Accepts a literal name or a reference to a
+	// KubernetesClusterIssuer resource.
+	Name          *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CertManagerClusterIssuerRef) Reset() {
+	*x = CertManagerClusterIssuerRef{}
+	mi := &file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CertManagerClusterIssuerRef) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CertManagerClusterIssuerRef) ProtoMessage() {}
+
+func (x *CertManagerClusterIssuerRef) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CertManagerClusterIssuerRef.ProtoReflect.Descriptor instead.
+func (*CertManagerClusterIssuerRef) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_cert_manager_issuer_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *CertManagerClusterIssuerRef) GetName() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Name
+	}
+	return nil
+}
+
 var File_catalog_kubernetes_cert_manager_issuer_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_cert_manager_issuer_proto_rawDesc = "" +
@@ -2700,7 +2885,16 @@ const file_catalog_kubernetes_cert_manager_issuer_proto_rawDesc = "" +
 	"kubernetesH\x00R\tmountPath\x88\x01\x01\x12\x82\x01\n" +
 	"\x14service_account_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xab\x1f\x92\xd4a\rmetadata.nameR\x12serviceAccountName\x12\x1c\n" +
 	"\taudiences\x18\x04 \x03(\tR\taudiencesB\r\n" +
-	"\v_mount_pathB\xdf\x01\n" +
+	"\v_mount_path\"\xd3\x03\n" +
+	"\x14CertManagerIssuerRef\x12P\n" +
+	"\x06issuer\x18\x01 \x01(\v26.dev.planton.kubernetes.CertManagerNamespacedIssuerRefH\x00R\x06issuer\x12\\\n" +
+	"\x0ecluster_issuer\x18\x02 \x01(\v23.dev.planton.kubernetes.CertManagerClusterIssuerRefH\x00R\rclusterIssuer:\xfb\x01\xbaH\xf7\x01\x1a\xf4\x01\n" +
+	"\x17issuer_ref.one_required\x12\x91\x01An issuer is required -- choose 'issuer' (a namespaced Issuer in the installation namespace) or 'cluster_issuer' (a cluster-scoped ClusterIssuer)\x1aE[has(this.issuer), has(this.cluster_issuer)].filter(x, x).size() == 1B\r\n" +
+	"\vissuer_type\"\x93\x01\n" +
+	"\x1eCertManagerNamespacedIssuerRef\x12q\n" +
+	"\x04name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xc0\x1f\x92\xd4a\x1astatus.outputs.issuer_nameR\x04name\"\x98\x01\n" +
+	"\x1bCertManagerClusterIssuerRef\x12y\n" +
+	"\x04name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\xbf\x1f\x92\xd4a\"status.outputs.cluster_issuer_nameR\x04nameB\xdf\x01\n" +
 	"\x1acom.dev.planton.kubernetesB\x16CertManagerIssuerProtoP\x01Z/github.com/plantonhq/planton/catalog/kubernetes\xa2\x02\x03DPK\xaa\x02\x16Dev.Planton.Kubernetes\xca\x02\x16Dev\\Planton\\Kubernetes\xe2\x02\"Dev\\Planton\\Kubernetes\\GPBMetadata\xea\x02\x18Dev::Planton::Kubernetesb\x06proto3"
 
 var (
@@ -2715,7 +2909,7 @@ func file_catalog_kubernetes_cert_manager_issuer_proto_rawDescGZIP() []byte {
 	return file_catalog_kubernetes_cert_manager_issuer_proto_rawDescData
 }
 
-var file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
+var file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
 var file_catalog_kubernetes_cert_manager_issuer_proto_goTypes = []any{
 	(*CertManagerIssuerConfig)(nil),               // 0: dev.planton.kubernetes.CertManagerIssuerConfig
 	(*CertManagerAcmeConfig)(nil),                 // 1: dev.planton.kubernetes.CertManagerAcmeConfig
@@ -2747,9 +2941,12 @@ var file_catalog_kubernetes_cert_manager_issuer_proto_goTypes = []any{
 	(*CertManagerVaultTokenAuth)(nil),             // 27: dev.planton.kubernetes.CertManagerVaultTokenAuth
 	(*CertManagerVaultAppRoleAuth)(nil),           // 28: dev.planton.kubernetes.CertManagerVaultAppRoleAuth
 	(*CertManagerVaultKubernetesAuth)(nil),        // 29: dev.planton.kubernetes.CertManagerVaultKubernetesAuth
-	nil,                                           // 30: dev.planton.kubernetes.CertManagerAcmeSolverSelector.MatchLabelsEntry
-	nil,                                           // 31: dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver.LabelsEntry
-	(*v1.StringValueOrRef)(nil),                   // 32: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*CertManagerIssuerRef)(nil),                  // 30: dev.planton.kubernetes.CertManagerIssuerRef
+	(*CertManagerNamespacedIssuerRef)(nil),        // 31: dev.planton.kubernetes.CertManagerNamespacedIssuerRef
+	(*CertManagerClusterIssuerRef)(nil),           // 32: dev.planton.kubernetes.CertManagerClusterIssuerRef
+	nil,                                           // 33: dev.planton.kubernetes.CertManagerAcmeSolverSelector.MatchLabelsEntry
+	nil,                                           // 34: dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver.LabelsEntry
+	(*v1.StringValueOrRef)(nil),                   // 35: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_kubernetes_cert_manager_issuer_proto_depIdxs = []int32{
 	1,  // 0: dev.planton.kubernetes.CertManagerIssuerConfig.acme:type_name -> dev.planton.kubernetes.CertManagerAcmeConfig
@@ -2761,11 +2958,11 @@ var file_catalog_kubernetes_cert_manager_issuer_proto_depIdxs = []int32{
 	4,  // 6: dev.planton.kubernetes.CertManagerAcmeSolver.selector:type_name -> dev.planton.kubernetes.CertManagerAcmeSolverSelector
 	5,  // 7: dev.planton.kubernetes.CertManagerAcmeSolver.http01:type_name -> dev.planton.kubernetes.CertManagerAcmeHttp01Solver
 	9,  // 8: dev.planton.kubernetes.CertManagerAcmeSolver.dns01:type_name -> dev.planton.kubernetes.CertManagerAcmeDns01Solver
-	30, // 9: dev.planton.kubernetes.CertManagerAcmeSolverSelector.match_labels:type_name -> dev.planton.kubernetes.CertManagerAcmeSolverSelector.MatchLabelsEntry
+	33, // 9: dev.planton.kubernetes.CertManagerAcmeSolverSelector.match_labels:type_name -> dev.planton.kubernetes.CertManagerAcmeSolverSelector.MatchLabelsEntry
 	6,  // 10: dev.planton.kubernetes.CertManagerAcmeHttp01Solver.ingress:type_name -> dev.planton.kubernetes.CertManagerAcmeHttp01IngressSolver
 	7,  // 11: dev.planton.kubernetes.CertManagerAcmeHttp01Solver.gateway_http_route:type_name -> dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver
 	8,  // 12: dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver.parent_refs:type_name -> dev.planton.kubernetes.CertManagerGatewayParentRef
-	31, // 13: dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver.labels:type_name -> dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver.LabelsEntry
+	34, // 13: dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver.labels:type_name -> dev.planton.kubernetes.CertManagerAcmeHttp01GatewaySolver.LabelsEntry
 	10, // 14: dev.planton.kubernetes.CertManagerAcmeDns01Solver.cloudflare:type_name -> dev.planton.kubernetes.CertManagerDns01Cloudflare
 	13, // 15: dev.planton.kubernetes.CertManagerAcmeDns01Solver.route53:type_name -> dev.planton.kubernetes.CertManagerDns01Route53
 	16, // 16: dev.planton.kubernetes.CertManagerAcmeDns01Solver.azure_dns:type_name -> dev.planton.kubernetes.CertManagerDns01AzureDns
@@ -2779,18 +2976,22 @@ var file_catalog_kubernetes_cert_manager_issuer_proto_depIdxs = []int32{
 	12, // 24: dev.planton.kubernetes.CertManagerDns01Cloudflare.api_key:type_name -> dev.planton.kubernetes.CertManagerCloudflareApiKey
 	14, // 25: dev.planton.kubernetes.CertManagerDns01Route53.static_credentials:type_name -> dev.planton.kubernetes.CertManagerRoute53StaticCredentials
 	15, // 26: dev.planton.kubernetes.CertManagerDns01Route53.service_account:type_name -> dev.planton.kubernetes.CertManagerRoute53ServiceAccountAuth
-	32, // 27: dev.planton.kubernetes.CertManagerRoute53ServiceAccountAuth.service_account_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 27: dev.planton.kubernetes.CertManagerRoute53ServiceAccountAuth.service_account_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	17, // 28: dev.planton.kubernetes.CertManagerDns01AzureDns.managed_identity:type_name -> dev.planton.kubernetes.CertManagerAzureManagedIdentity
-	32, // 29: dev.planton.kubernetes.CertManagerCaConfig.ca_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 29: dev.planton.kubernetes.CertManagerCaConfig.ca_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	27, // 30: dev.planton.kubernetes.CertManagerVaultConfig.token_auth:type_name -> dev.planton.kubernetes.CertManagerVaultTokenAuth
 	28, // 31: dev.planton.kubernetes.CertManagerVaultConfig.app_role_auth:type_name -> dev.planton.kubernetes.CertManagerVaultAppRoleAuth
 	29, // 32: dev.planton.kubernetes.CertManagerVaultConfig.kubernetes_auth:type_name -> dev.planton.kubernetes.CertManagerVaultKubernetesAuth
-	32, // 33: dev.planton.kubernetes.CertManagerVaultKubernetesAuth.service_account_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	34, // [34:34] is the sub-list for method output_type
-	34, // [34:34] is the sub-list for method input_type
-	34, // [34:34] is the sub-list for extension type_name
-	34, // [34:34] is the sub-list for extension extendee
-	0,  // [0:34] is the sub-list for field type_name
+	35, // 33: dev.planton.kubernetes.CertManagerVaultKubernetesAuth.service_account_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	31, // 34: dev.planton.kubernetes.CertManagerIssuerRef.issuer:type_name -> dev.planton.kubernetes.CertManagerNamespacedIssuerRef
+	32, // 35: dev.planton.kubernetes.CertManagerIssuerRef.cluster_issuer:type_name -> dev.planton.kubernetes.CertManagerClusterIssuerRef
+	35, // 36: dev.planton.kubernetes.CertManagerNamespacedIssuerRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 37: dev.planton.kubernetes.CertManagerClusterIssuerRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	38, // [38:38] is the sub-list for method output_type
+	38, // [38:38] is the sub-list for method input_type
+	38, // [38:38] is the sub-list for extension type_name
+	38, // [38:38] is the sub-list for extension extendee
+	0,  // [0:38] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_cert_manager_issuer_proto_init() }
@@ -2837,13 +3038,17 @@ func file_catalog_kubernetes_cert_manager_issuer_proto_init() {
 		(*CertManagerVaultConfig_KubernetesAuth)(nil),
 	}
 	file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[29].OneofWrappers = []any{}
+	file_catalog_kubernetes_cert_manager_issuer_proto_msgTypes[30].OneofWrappers = []any{
+		(*CertManagerIssuerRef_Issuer)(nil),
+		(*CertManagerIssuerRef_ClusterIssuer)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_cert_manager_issuer_proto_rawDesc), len(file_catalog_kubernetes_cert_manager_issuer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   32,
+			NumMessages:   35,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

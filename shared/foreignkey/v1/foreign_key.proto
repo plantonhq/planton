@@ -30,6 +30,46 @@ extend google.protobuf.FieldOptions {
   // referenced container. It has no effect on references to non-container
   // kinds (harmless, but don't author it there — it would only mislead).
   bool containment_exempt = 200003;
+
+  // The kinds this reference can point at, each with the output it composes
+  // from -- for a field whose value can legitimately come from more than one
+  // kind (an access log destination that is an S3 bucket, a log group or a
+  // Firehose stream; an address range that is a VPC's, a subnet's or a
+  // cluster's). Author one entry per kind and composition key:
+  //
+  //   (dev.planton.shared.foreignkey.v1.candidate) = {kind: AwsS3Bucket, field_path: "status.outputs.bucket_arn"},
+  //   (dev.planton.shared.foreignkey.v1.candidate) = {kind: AwsCloudwatchLogGroup, field_path: "status.outputs.log_group_arn"},
+  //
+  // A kind may appear more than once when it exposes more than one output the
+  // field accepts (a subnetwork's primary range and its secondary ranges).
+  // Together with default_kind (when present) these entries are the field's
+  // composition keys, and every reader applies the same rules:
+  //
+  //   - a valueFrom that names a kind with exactly one key defaults its
+  //     field_path to that key;
+  //   - an explicit field_path on a candidate kind must equal one of that
+  //     kind's keys or extend it (a list index or a map key: a path that
+  //     extends `status.outputs.secondary_ranges` with `.1.ip_cidr_range`);
+  //   - a kind outside the list is still accepted with an explicit field_path,
+  //     exactly as a kind other than default_kind is;
+  //   - when a field declares both, default_kind is one of the candidates, with
+  //     the same path (default_kind stays the kind a bare literal is read as).
+  //
+  // Consoles offer exactly these kinds in the reference picker, and agents'
+  // tools describe the field by them. A field that can point at any kind (any
+  // Azure resource's id) declares neither and names its kind per manifest.
+  repeated ReferenceCandidate candidate = 200004;
+}
+
+// ReferenceCandidate is one kind a reference field accepts and the output
+// (the composition key) it composes from. See the `candidate` option.
+message ReferenceCandidate {
+  // The kind the reference can point at.
+  dev.planton.shared.cloudresourcekind.CloudResourceKind kind = 1;
+  // The output path on that kind the field composes from, in valueFrom's
+  // field_path grammar (`status.outputs.<field>`, or a spec path such as
+  // `spec.name`).
+  string field_path = 2;
 }
 
 // ValueFromRef describes a reference to another resource field (kind, env, name, field_path).

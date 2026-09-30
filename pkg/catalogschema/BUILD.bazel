@@ -12,6 +12,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/crkreflect",
+        "//pkg/refannotations",
         "//shared/cloudresourcekind",
         "//shared/foreignkey/v1:foreignkey",
         "//shared/options",

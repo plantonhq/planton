@@ -2708,6 +2708,14 @@ Fields that can point at another resource's outputs:
 | `spec.keyVaultReferenceIdentityId` | AzureUserAssignedIdentity | `status.outputs.identity_id` |
 | `spec.storageMounts[].accessKey` | AzureStorageAccount | `status.outputs.primary_access_key` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| AzureFrontDoorOrigin | `spec.privateLink.privateLinkTargetId` | `status.outputs.web_app_id` |
+
 ## See Also
 
 - [Overview](../README.md)

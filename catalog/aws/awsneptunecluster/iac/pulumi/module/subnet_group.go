@@ -14,7 +14,7 @@ import (
 // subnets are first-class AwsSubnet nodes this module never modifies.
 func subnetGroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*neptune.SubnetGroup, error) {
 	spec := locals.AwsNeptuneCluster.Spec
-	if spec.NeptuneSubnetGroupName.GetValue() != "" || len(spec.SubnetIds) == 0 {
+	if spec.NeptuneSubnetGroupName != "" || len(spec.SubnetIds) == 0 {
 		return nil, nil
 	}
 

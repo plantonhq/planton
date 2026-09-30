@@ -87,9 +87,10 @@ spec:
           port: "53"
     - to:
         - ip_block:
-            cidr: 0.0.0.0/0
+            cidr:
+              value: 0.0.0.0/0
             except:
-              - 169.254.169.254/32
+              - value: 169.254.169.254/32
       ports:
         - protocol: TCP
           port: "30000"
@@ -129,8 +130,8 @@ spec:
 | `spec.ingressRules[].from[].namespaceSelector.matchExpressions[].values` | `[]string` |  |  |  |
 | `spec.ingressRules[].from[].namespaceSelector.matchAll` | `bool` |  |  |  |
 | `spec.ingressRules[].from[].ipBlock` | `KubernetesNetworkPolicyIpBlock` |  |  |  |
-| `spec.ingressRules[].from[].ipBlock.cidr` | `string` | yes |  |  |
-| `spec.ingressRules[].from[].ipBlock.except` | `[]string` |  |  |  |
+| `spec.ingressRules[].from[].ipBlock.cidr` | `string \| valueFrom` | yes |  | GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`) |
+| `spec.ingressRules[].from[].ipBlock.except` | `[]string \| valueFrom` |  |  | GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`) |
 | `spec.ingressRules[].ports` | `[]KubernetesNetworkPolicyPort` |  |  |  |
 | `spec.ingressRules[].ports[].protocol` | `enum` |  |  |  |
 | `spec.ingressRules[].ports[].port` | `string` |  |  |  |
@@ -152,8 +153,8 @@ spec:
 | `spec.egressRules[].to[].namespaceSelector.matchExpressions[].values` | `[]string` |  |  |  |
 | `spec.egressRules[].to[].namespaceSelector.matchAll` | `bool` |  |  |  |
 | `spec.egressRules[].to[].ipBlock` | `KubernetesNetworkPolicyIpBlock` |  |  |  |
-| `spec.egressRules[].to[].ipBlock.cidr` | `string` | yes |  |  |
-| `spec.egressRules[].to[].ipBlock.except` | `[]string` |  |  |  |
+| `spec.egressRules[].to[].ipBlock.cidr` | `string \| valueFrom` | yes |  | GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`) |
+| `spec.egressRules[].to[].ipBlock.except` | `[]string \| valueFrom` |  |  | GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`) |
 | `spec.egressRules[].ports` | `[]KubernetesNetworkPolicyPort` |  |  |  |
 | `spec.egressRules[].ports[].protocol` | `enum` |  |  |  |
 | `spec.egressRules[].ports[].port` | `string` |  |  |  |
@@ -435,23 +436,28 @@ selectors, never CIDRs.
 
 ### spec.ingressRules[].from[].ipBlock.cidr
 
-`string` · required
+`string | valueFrom` · required
 
 The allowed CIDR, e.g. "10.100.0.0/16" or "2001:db8::/64". "0.0.0.0/0"
 allows all IPv4 — pair it with `except` to allow "everything but".
 
+- references: GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`)
 - rule: cidr must be a valid CIDR (e.g. "10.100.0.0/16", "2001:db8::/64")
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.ingressRules[].from[].ipBlock.except
 
-`[]string`
+`[]string | valueFrom`
 
 CIDRs carved OUT of the allow — each must be a sub-range of `cidr` (the API
 rejects out-of-range exceptions). E.g. allow "0.0.0.0/0" except
-"169.254.169.254/32" (the cloud metadata endpoint).
+"169.254.169.254/32" (the cloud metadata endpoint), or except the
+cluster's own pod, service and node ranges by reference.
 
-- rule: {"repeated":{"items":{"cel":[{"id":"except.format","message":"each except entry must be a valid CIDR inside the allowed cidr range","expression":"this.isIpPrefix()"}]}}}
+- references: GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`)
+- rule: {"repeated":{"items":{"cel":[{"id":"except.format","message":"each except entry must be a valid CIDR inside the allowed cidr range","expression":"!has(this.value) || this.value.isIpPrefix()"}]}}}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.ingressRules[].ports
 
@@ -656,23 +662,28 @@ selectors, never CIDRs.
 
 ### spec.egressRules[].to[].ipBlock.cidr
 
-`string` · required
+`string | valueFrom` · required
 
 The allowed CIDR, e.g. "10.100.0.0/16" or "2001:db8::/64". "0.0.0.0/0"
 allows all IPv4 — pair it with `except` to allow "everything but".
 
+- references: GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`)
 - rule: cidr must be a valid CIDR (e.g. "10.100.0.0/16", "2001:db8::/64")
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.egressRules[].to[].ipBlock.except
 
-`[]string`
+`[]string | valueFrom`
 
 CIDRs carved OUT of the allow — each must be a sub-range of `cidr` (the API
 rejects out-of-range exceptions). E.g. allow "0.0.0.0/0" except
-"169.254.169.254/32" (the cloud metadata endpoint).
+"169.254.169.254/32" (the cloud metadata endpoint), or except the
+cluster's own pod, service and node ranges by reference.
 
-- rule: {"repeated":{"items":{"cel":[{"id":"except.format","message":"each except entry must be a valid CIDR inside the allowed cidr range","expression":"this.isIpPrefix()"}]}}}
+- references: GcpSubnetwork (`status.outputs.ip_cidr_range`), GcpSubnetwork (`status.outputs.secondary_ranges`), GcpGkeCluster (`spec.ip_allocation.cluster_ipv4_cidr_block`), GcpGkeCluster (`spec.ip_allocation.services_ipv4_cidr_block`), GcpGkeCluster (`spec.private_cluster.master_ipv4_cidr_block`), AwsVpc (`status.outputs.cidr_block`), AwsSubnet (`status.outputs.cidr_block`), AwsEksCluster (`spec.service_ipv4_cidr`), AzureVirtualNetwork (`status.outputs.address_spaces`), AzureSubnet (`status.outputs.address_prefixes`), AzureAksCluster (`spec.network_profile.pod_cidr`), AzureAksCluster (`spec.network_profile.service_cidr`)
+- rule: {"repeated":{"items":{"cel":[{"id":"except.format","message":"each except entry must be a valid CIDR inside the allowed cidr range","expression":"!has(this.value) || this.value.isIpPrefix()"}]}}}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.egressRules[].ports
 
@@ -744,6 +755,54 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | GcpSubnetwork | `status.outputs.ip_cidr_range` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | GcpSubnetwork | `status.outputs.secondary_ranges` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | GcpGkeCluster | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | GcpGkeCluster | `spec.ip_allocation.services_ipv4_cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | GcpGkeCluster | `spec.private_cluster.master_ipv4_cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | AwsVpc | `status.outputs.cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | AwsSubnet | `status.outputs.cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | AwsEksCluster | `spec.service_ipv4_cidr` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | AzureVirtualNetwork | `status.outputs.address_spaces` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | AzureSubnet | `status.outputs.address_prefixes` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | AzureAksCluster | `spec.network_profile.pod_cidr` |
+| `spec.ingressRules[].from[].ipBlock.cidr` | AzureAksCluster | `spec.network_profile.service_cidr` |
+| `spec.ingressRules[].from[].ipBlock.except` | GcpSubnetwork | `status.outputs.ip_cidr_range` |
+| `spec.ingressRules[].from[].ipBlock.except` | GcpSubnetwork | `status.outputs.secondary_ranges` |
+| `spec.ingressRules[].from[].ipBlock.except` | GcpGkeCluster | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.except` | GcpGkeCluster | `spec.ip_allocation.services_ipv4_cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.except` | GcpGkeCluster | `spec.private_cluster.master_ipv4_cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.except` | AwsVpc | `status.outputs.cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.except` | AwsSubnet | `status.outputs.cidr_block` |
+| `spec.ingressRules[].from[].ipBlock.except` | AwsEksCluster | `spec.service_ipv4_cidr` |
+| `spec.ingressRules[].from[].ipBlock.except` | AzureVirtualNetwork | `status.outputs.address_spaces` |
+| `spec.ingressRules[].from[].ipBlock.except` | AzureSubnet | `status.outputs.address_prefixes` |
+| `spec.ingressRules[].from[].ipBlock.except` | AzureAksCluster | `spec.network_profile.pod_cidr` |
+| `spec.ingressRules[].from[].ipBlock.except` | AzureAksCluster | `spec.network_profile.service_cidr` |
+| `spec.egressRules[].to[].ipBlock.cidr` | GcpSubnetwork | `status.outputs.ip_cidr_range` |
+| `spec.egressRules[].to[].ipBlock.cidr` | GcpSubnetwork | `status.outputs.secondary_ranges` |
+| `spec.egressRules[].to[].ipBlock.cidr` | GcpGkeCluster | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| `spec.egressRules[].to[].ipBlock.cidr` | GcpGkeCluster | `spec.ip_allocation.services_ipv4_cidr_block` |
+| `spec.egressRules[].to[].ipBlock.cidr` | GcpGkeCluster | `spec.private_cluster.master_ipv4_cidr_block` |
+| `spec.egressRules[].to[].ipBlock.cidr` | AwsVpc | `status.outputs.cidr_block` |
+| `spec.egressRules[].to[].ipBlock.cidr` | AwsSubnet | `status.outputs.cidr_block` |
+| `spec.egressRules[].to[].ipBlock.cidr` | AwsEksCluster | `spec.service_ipv4_cidr` |
+| `spec.egressRules[].to[].ipBlock.cidr` | AzureVirtualNetwork | `status.outputs.address_spaces` |
+| `spec.egressRules[].to[].ipBlock.cidr` | AzureSubnet | `status.outputs.address_prefixes` |
+| `spec.egressRules[].to[].ipBlock.cidr` | AzureAksCluster | `spec.network_profile.pod_cidr` |
+| `spec.egressRules[].to[].ipBlock.cidr` | AzureAksCluster | `spec.network_profile.service_cidr` |
+| `spec.egressRules[].to[].ipBlock.except` | GcpSubnetwork | `status.outputs.ip_cidr_range` |
+| `spec.egressRules[].to[].ipBlock.except` | GcpSubnetwork | `status.outputs.secondary_ranges` |
+| `spec.egressRules[].to[].ipBlock.except` | GcpGkeCluster | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| `spec.egressRules[].to[].ipBlock.except` | GcpGkeCluster | `spec.ip_allocation.services_ipv4_cidr_block` |
+| `spec.egressRules[].to[].ipBlock.except` | GcpGkeCluster | `spec.private_cluster.master_ipv4_cidr_block` |
+| `spec.egressRules[].to[].ipBlock.except` | AwsVpc | `status.outputs.cidr_block` |
+| `spec.egressRules[].to[].ipBlock.except` | AwsSubnet | `status.outputs.cidr_block` |
+| `spec.egressRules[].to[].ipBlock.except` | AwsEksCluster | `spec.service_ipv4_cidr` |
+| `spec.egressRules[].to[].ipBlock.except` | AzureVirtualNetwork | `status.outputs.address_spaces` |
+| `spec.egressRules[].to[].ipBlock.except` | AzureSubnet | `status.outputs.address_prefixes` |
+| `spec.egressRules[].to[].ipBlock.except` | AzureAksCluster | `spec.network_profile.pod_cidr` |
+| `spec.egressRules[].to[].ipBlock.except` | AzureAksCluster | `spec.network_profile.service_cidr` |
 
 ## See Also
 

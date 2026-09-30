@@ -50,7 +50,8 @@ spec:
   # "sites" for App Service).
   privateLink:
     location: eastus
-    privateLinkTargetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/myapp
+    privateLinkTargetId:
+      value: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/myapp
     targetType: SITES
     requestMessage: Front Door origin connection for myapp
 ```
@@ -71,7 +72,7 @@ spec:
 | `spec.enabled` | `bool` |  | `true` |  |
 | `spec.privateLink` | `AzureFrontDoorOriginPrivateLink` |  |  |  |
 | `spec.privateLink.location` | `string` | yes |  |  |
-| `spec.privateLink.privateLinkTargetId` | `string` | yes |  |  |
+| `spec.privateLink.privateLinkTargetId` | `string \| valueFrom` | yes |  | AzureLinuxWebApp (`status.outputs.web_app_id`), AzureFunctionApp (`status.outputs.function_app_id`), AzureFunctionAppFlexConsumption (`status.outputs.function_app_id`), AzureStorageAccount (`status.outputs.storage_account_id`), AzureContainerAppEnvironment (`status.outputs.environment_id`), AzureApplicationGateway (`status.outputs.application_gateway_id`), AzurePrivateLinkService (`status.outputs.private_link_service_id`) |
 | `spec.privateLink.targetType` | `enum` |  |  |  |
 | `spec.privateLink.requestMessage` | `string` |  | `Access request for CDN FrontDoor Private Link Origin` |  |
 
@@ -210,7 +211,7 @@ resource's owner must approve the pending private-endpoint
 connection (portal: the resource's Networking > Private endpoint
 connections blade) before traffic flows.
 
-- rule: target_type is required unless private_link_target_id is a Private Link Service (Azure needs the sub-resource to attach to)
+- rule: target_type is required unless private_link_target_id is a Private Link Service (a /privateLinkServices/ ID or an AzurePrivateLinkService reference) -- Azure needs the sub-resource to attach to
 
 ### spec.privateLink.location
 
@@ -225,17 +226,23 @@ regional even though Front Door is global). Examples: "eastus",
 
 ### spec.privateLink.privateLinkTargetId
 
-`string` · required
+`string | valueFrom` · required
 
 The ARM ID of the resource Front Door connects to privately -- an
-App Service site, a storage account, a Container Apps environment,
-or a Private Link Service fronting an internal load balancer. Kept
-as a plain ARM ID (not a typed reference) because the target spans
-many kinds; paste the ID or reference the target's id output with an
-explicit valueFrom kind.
+App Service site or function app, a storage account, a Container Apps
+environment, an Application Gateway, or a Private Link Service
+fronting an internal load balancer. A literal ARM ID, or a reference
+to the target's resource ID output: the catalog kinds a target can be
+are declared as candidates. Set target_type to the sub-resource the
+target exposes (every target but a Private Link Service needs one).
 
+Containment-exempt: Front Door reaches the target privately; the
+origin does not live inside it.
+
+- references: AzureLinuxWebApp (`status.outputs.web_app_id`), AzureFunctionApp (`status.outputs.function_app_id`), AzureFunctionAppFlexConsumption (`status.outputs.function_app_id`), AzureStorageAccount (`status.outputs.storage_account_id`), AzureContainerAppEnvironment (`status.outputs.environment_id`), AzureApplicationGateway (`status.outputs.application_gateway_id`), AzurePrivateLinkService (`status.outputs.private_link_service_id`)
 - rule: private_link_target_id must be an ARM resource ID (starting with /subscriptions/)
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.privateLink.targetType
 
@@ -290,6 +297,13 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.originGroupId` | AzureFrontDoorOriginGroup | `status.outputs.origin_group_id` |
+| `spec.privateLink.privateLinkTargetId` | AzureLinuxWebApp | `status.outputs.web_app_id` |
+| `spec.privateLink.privateLinkTargetId` | AzureFunctionApp | `status.outputs.function_app_id` |
+| `spec.privateLink.privateLinkTargetId` | AzureFunctionAppFlexConsumption | `status.outputs.function_app_id` |
+| `spec.privateLink.privateLinkTargetId` | AzureStorageAccount | `status.outputs.storage_account_id` |
+| `spec.privateLink.privateLinkTargetId` | AzureContainerAppEnvironment | `status.outputs.environment_id` |
+| `spec.privateLink.privateLinkTargetId` | AzureApplicationGateway | `status.outputs.application_gateway_id` |
+| `spec.privateLink.privateLinkTargetId` | AzurePrivateLinkService | `status.outputs.private_link_service_id` |
 
 ## Referenced By
 

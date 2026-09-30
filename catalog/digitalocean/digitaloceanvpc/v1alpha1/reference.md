@@ -122,6 +122,7 @@ Fields on other kinds that can point at this resource:
 | DigitalOceanDropletAutoscalePool | `spec.dropletTemplate.vpc` | `status.outputs.vpc_id` |
 | DigitalOceanKubernetesCluster | `spec.vpc` | `status.outputs.vpc_id` |
 | DigitalOceanLoadBalancer | `spec.vpc` | `status.outputs.vpc_id` |
+| DigitalOceanProject | `spec.resources` | `status.outputs.urn` |
 | DigitalOceanVpcPeering | `spec.vpc1` | `status.outputs.vpc_id` |
 | DigitalOceanVpcPeering | `spec.vpc2` | `status.outputs.vpc_id` |
 

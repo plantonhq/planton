@@ -3,6 +3,7 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1;
 
 import "buf/validate/validate.proto";
+import "catalog/kubernetes/cert_manager_issuer.proto";
 import "catalog/kubernetes/kubernetes.proto";
 import "catalog/kubernetes/workload_pod.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
@@ -244,8 +245,14 @@ message KubernetesMetricsServerTls {
    * cert-manager issuer that signs the serving certificate (type
    * cert_manager). Empty = the chart creates its own self-signed
    * Issuer + root Certificate chain in the installation namespace.
+   *
+   * The grain is the arm: `issuer` (a namespaced Issuer in the installation
+   * namespace) or `cluster_issuer` (a cluster-scoped ClusterIssuer).
    */
-  KubernetesMetricsServerTlsCertManagerIssuer cert_manager_issuer = 2;
+  dev.planton.kubernetes.CertManagerIssuerRef cert_manager_issuer = 4;
+
+  // The issuer reference's earlier shape (a grain selector beside one name).
+  reserved 2;
 
   /**
    * Name of the existing kubernetes.io/tls Secret (type existing_secret).
@@ -270,37 +277,6 @@ message KubernetesMetricsServerTls {
     message: "existing_secret_name is only used with tls type existing_secret — set type accordingly or remove the secret reference"
     expression: "!has(this.existing_secret_name) || this.type == 3"
   };
-}
-
-/**
- * cert-manager issuer reference kind vocabulary.
- */
-enum KubernetesMetricsServerIssuerKind {
-  // Namespaced Issuer in the installation namespace.
-  issuer = 0;
-  // Cluster-scoped ClusterIssuer.
-  cluster_issuer = 1;
-}
-
-/**
- * Existing cert-manager issuer reference.
- */
-message KubernetesMetricsServerTlsCertManagerIssuer {
-  /**
-   * Issuer grain: a namespaced Issuer (must live in the installation
-   * namespace) or a cluster-scoped ClusterIssuer.
-   */
-  optional KubernetesMetricsServerIssuerKind kind = 1 [(dev.planton.shared.options.default) = "issuer"];
-
-  /**
-   * Name of the Issuer / ClusterIssuer that signs the serving
-   * certificate. References the matching Planton kind's output by default.
-   */
-  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 2 [
-    (buf.validate.field).required = true,
-    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesIssuer,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.issuer_name"
-  ];
 }
 
 /**

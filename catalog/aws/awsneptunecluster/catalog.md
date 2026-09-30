@@ -8,7 +8,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Neptune Cluster** -- the shared-storage brain: endpoints, backups, encryption, and engine lifecycle. The cluster identifier comes from `metadata.name`
 - **Neptune Instances** -- one provider resource per `instances[]` entry, keyed by name: one writer (the lowest promotion tier) plus any readers. Adding or removing a reader is an in-place update, never a cluster replacement
-- **Neptune Subnet Group** -- created from the provided `subnetIds` (at least two subnets in distinct Availability Zones); skipped when an existing `neptuneSubnetGroupName` is referenced instead
+- **Neptune Subnet Group** -- created from the provided `subnetIds` (at least two subnets in distinct Availability Zones); skipped when an existing `neptuneSubnetGroupName` is named instead
 - **Cluster Parameter Group** -- created only when inline `parameters` are configured (mutually exclusive with `neptuneClusterParameterGroupName`); requires a pinned `engineVersion`, since the group's family derives from it
 - **Instance Parameter Group** -- created only when inline `instanceParameters` are configured; the instance-level twin, applied to every folded instance that does not bring its own group
 - **Custom Cluster Endpoints** -- one per `customEndpoints[]` entry: stable DNS names over a chosen subset of the cluster's instances

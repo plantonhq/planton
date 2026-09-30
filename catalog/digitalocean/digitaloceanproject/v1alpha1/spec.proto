@@ -79,11 +79,46 @@ message DigitalOceanProjectSpec {
   // Use a literal URN, or reference the producing resource's urn stack
   // output with an explicit valueFrom.kind -- the list is polymorphic
   // across kinds (droplets, load balancers, buckets, domains, ...), so no
-  // single default kind applies and each reference names its own.
+  // single default kind applies and each reference names its own. The
+  // catalog kinds that publish a urn are declared as candidates below; any
+  // other member (a domain, an unmanaged resource) enters as a literal URN.
   // A resource can belong to exactly one project: listing it here moves it
   // from wherever it was, and removing it from the list moves it back to
   // the account's default project (nothing is ever destroyed by membership
   // changes). When the list is left empty entirely, membership is not
   // managed and out-of-band assignments are left untouched.
-  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef resources = 6;
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef resources = 6 [
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanDroplet
+      field_path: "status.outputs.urn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanLoadBalancer
+      field_path: "status.outputs.urn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanKubernetesCluster
+      field_path: "status.outputs.urn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanVolume
+      field_path: "status.outputs.urn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanBucket
+      field_path: "status.outputs.urn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanDnsZone
+      field_path: "status.outputs.urn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanVpc
+      field_path: "status.outputs.urn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: DigitalOceanReservedIp
+      field_path: "status.outputs.urn"
+    }
+  ];
 }

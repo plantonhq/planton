@@ -396,6 +396,7 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | DigitalOceanBucket | `spec.logging.targetBucket` | `status.outputs.bucket_id` |
 | DigitalOceanCdn | `spec.origin` | `status.outputs.bucket_domain_name` |
+| DigitalOceanProject | `spec.resources` | `status.outputs.urn` |
 | DigitalOceanSpacesKey | `spec.grants[].bucket` | `status.outputs.bucket_id` |
 
 ## See Also

@@ -83,10 +83,12 @@ locals {
       null
     )
     certManager = local.tls_type == "cert_manager" && try(var.spec.tls.cert_manager_issuer, null) != null ? {
+      # The arm is the grain: cluster_issuer renders a ClusterIssuer, issuer
+      # a namespaced Issuer.
       existingIssuer = {
         enabled = true
-        kind    = try(var.spec.tls.cert_manager_issuer.kind, "issuer") == "cluster_issuer" ? "ClusterIssuer" : "Issuer"
-        name    = var.spec.tls.cert_manager_issuer.name
+        kind    = try(var.spec.tls.cert_manager_issuer.cluster_issuer.name, null) != null ? "ClusterIssuer" : "Issuer"
+        name    = try(var.spec.tls.cert_manager_issuer.cluster_issuer.name, var.spec.tls.cert_manager_issuer.issuer.name)
       }
     } : null
     existingSecret = local.tls_type == "existing_secret" ? {

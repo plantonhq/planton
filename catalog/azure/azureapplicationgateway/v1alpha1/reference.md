@@ -2276,6 +2276,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | AzureAksCluster | `spec.ingressApplicationGateway.gatewayId` | `status.outputs.application_gateway_id` |
+| AzureFrontDoorOrigin | `spec.privateLink.privateLinkTargetId` | `status.outputs.application_gateway_id` |
 | AzureNetworkInterface | `spec.ipConfigurations[].applicationGatewayBackendAddressPoolIds` | `status.outputs.backend_address_pool_ids` |
 | AzureVirtualMachineScaleSet | `spec.networkInterfaces[].ipConfigurations[].applicationGatewayBackendAddressPoolIds` | `status.outputs.backend_address_pool_ids` |
 

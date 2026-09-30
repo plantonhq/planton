@@ -101,12 +101,8 @@ func renderFieldTree(b *strings.Builder, f Field, depth int, expandEnumDocs bool
 	if f.RecommendedDefault != "" {
 		writeIndented(b, "default: "+f.RecommendedDefault, body)
 	}
-	if f.RefKind != "" || f.RefFieldPath != "" {
-		ref := "references: " + f.RefKind
-		if f.RefFieldPath != "" {
-			ref += " (" + f.RefFieldPath + ")"
-		}
-		writeIndented(b, ref, body)
+	if targets := f.referenceSummary(""); targets != "" {
+		writeIndented(b, "references: "+targets, body)
 	}
 	if len(f.Enum) > 0 {
 		switch {

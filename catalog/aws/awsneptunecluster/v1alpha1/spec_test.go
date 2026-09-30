@@ -81,9 +81,7 @@ var _ = ginkgo.Describe("AwsNeptuneClusterSpec Custom Validation Tests", func() 
 		ginkgo.It("accepts an existing subnet group instead of subnet ids", func() {
 			input := validCluster()
 			input.Spec.SubnetIds = nil
-			input.Spec.NeptuneSubnetGroupName = &foreignkeyv1.StringValueOrRef{
-				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "existing-group"},
-			}
+			input.Spec.NeptuneSubnetGroupName = "existing-group"
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).To(gomega.BeNil())
 		})

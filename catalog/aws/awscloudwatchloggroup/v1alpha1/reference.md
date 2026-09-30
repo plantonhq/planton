@@ -1359,6 +1359,7 @@ Fields on other kinds that can point at this resource:
 | AwsClientVpn | `spec.connectionLog.cloudwatchLogGroup` | `status.outputs.log_group_name` |
 | AwsCloudTrail | `spec.cloudwatchLogs.logGroupArn` | `status.outputs.log_group_arn` |
 | AwsCloudwatchLogAnomalyDetector | `spec.logGroupArns` | `status.outputs.log_group_arn` |
+| AwsCloudwatchLogDelivery | `spec.vended.destinations[].destinationResourceArn` | `status.outputs.log_group_arn` |
 | AwsCloudwatchLogResourcePolicy | `spec.resourceArn` | `status.outputs.log_group_arn` |
 | AwsCodeBuildProject | `spec.logsConfig.cloudwatchLogs.groupName` | `status.outputs.log_group_name` |
 | AwsCognitoUserPool | `spec.logConfigurations[].cloudwatchLogGroupArn` | `status.outputs.log_group_arn` |
@@ -1377,6 +1378,7 @@ Fields on other kinds that can point at this resource:
 | AwsRoute53ResolverQueryLog | `spec.destinationArn` | `status.outputs.log_group_arn` |
 | AwsRoute53Zone | `spec.queryLogging.cloudwatchLogGroupArn` | `status.outputs.log_group_arn` |
 | AwsStepFunction | `spec.logging.logDestination` | `status.outputs.log_group_arn` |
+| AwsWafWebAcl | `spec.logging.destinationArn` | `status.outputs.log_group_arn` |
 
 ## See Also
 

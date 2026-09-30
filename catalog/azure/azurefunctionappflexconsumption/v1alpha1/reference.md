@@ -2115,6 +2115,14 @@ Fields that can point at another resource's outputs:
 | `spec.virtualNetworkSubnetId` | AzureSubnet | `status.outputs.subnet_id` |
 | `spec.identity.identityIds` | AzureUserAssignedIdentity | `status.outputs.identity_id` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| AzureFrontDoorOrigin | `spec.privateLink.privateLinkTargetId` | `status.outputs.function_app_id` |
+
 ## See Also
 
 - [Overview](../README.md)

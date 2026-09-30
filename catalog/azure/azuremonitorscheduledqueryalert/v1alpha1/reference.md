@@ -96,7 +96,7 @@ spec:
 | `spec.region` | `string` | yes |  |  |
 | `spec.resourceGroup` | `string \| valueFrom` | yes |  | AzureResourceGroup (`status.outputs.resource_group_name`) |
 | `spec.alertName` | `string` | yes |  |  |
-| `spec.scope` | `string \| valueFrom` | yes |  | AzureLogAnalyticsWorkspace (`status.outputs.workspace_id`) |
+| `spec.scope` | `string \| valueFrom` | yes |  | AzureLogAnalyticsWorkspace (`status.outputs.workspace_id`), AzureApplicationInsights (`status.outputs.application_insights_id`) |
 | `spec.displayName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.enabled` | `bool` |  | `true` |  |
@@ -171,12 +171,13 @@ The name of the alert rule, unique within the resource group.
 
 The resource the query runs against -- a Log Analytics Workspace (the
 common case, and the default reference) or an Application Insights
-resource (override with an explicit valueFrom kind + fieldPath).
+resource (a valueFrom naming that kind; both are declared candidates,
+so each one's resource ID output fills in).
 Azure allows exactly one scope per rule.
 
 **ForceNew**: Changing this destroys and recreates the rule.
 
-- references: AzureLogAnalyticsWorkspace (`status.outputs.workspace_id`)
+- references: AzureLogAnalyticsWorkspace (`status.outputs.workspace_id`), AzureApplicationInsights (`status.outputs.application_insights_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureLogAnalyticsWorkspace, name: <that resource's name>, fieldPath: status.outputs.workspace_id}} -- a bare string does not parse
 
@@ -534,6 +535,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.resourceGroup` | AzureResourceGroup | `status.outputs.resource_group_name` |
 | `spec.scope` | AzureLogAnalyticsWorkspace | `status.outputs.workspace_id` |
+| `spec.scope` | AzureApplicationInsights | `status.outputs.application_insights_id` |
 | `spec.identity.userAssignedIdentityIds` | AzureUserAssignedIdentity | `status.outputs.identity_id` |
 | `spec.action.actionGroupIds` | AzureMonitorActionGroup | `status.outputs.action_group_id` |
 

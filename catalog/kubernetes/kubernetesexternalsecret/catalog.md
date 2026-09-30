@@ -42,8 +42,9 @@ spec:
   namespace:
     value: team-a
   storeRef:
-    name:
-      value: team-a-vault
+    secretStore:
+      name:
+        value: team-a-vault
   data:
     - secretKey: username
       remoteRef:
@@ -73,11 +74,11 @@ spec:
       name: team-a-namespace
       fieldPath: spec.name
   storeRef:
-    name:
-      valueFrom:
-        kind: KubernetesSecretStore
-        name: team-a-vault
-        fieldPath: status.outputs.store_name
+    secretStore:
+      name:
+        valueFrom:
+          name: team-a-vault
+          fieldPath: status.outputs.store_name
 ```
 
 The InfraPipeline deploys the namespace and the store first, then declares the sync against the resolved store name.
@@ -88,7 +89,7 @@ These are the most important decisions when configuring the sync. Explore the fu
 
 **Explicit entries vs bulk pulls** -- a `data` entry names exactly one backend key (or one property within it) and one Secret key: reviewable, impossible to over-sync — prefer it for application credentials. A `dataFrom` pull extracts ALL properties of one structured entry, or finds every entry matching a name pattern/tags: for JSON documents of related credentials and fleet patterns. When both produce the same key, the explicit entry wins.
 
-**The store kind must match** -- `storeRef.kind` is SecretStore (namespaced, the default) or ClusterSecretStore. Reference the store resource to inherit its `store_name` output and draw the dependency edge — a mismatched kind fails at reconcile with store-not-found.
+**The store's grain is the arm you choose** -- `storeRef.secretStore` names a namespaced SecretStore in this secret's namespace, `storeRef.clusterSecretStore` a cluster-scoped ClusterSecretStore. Each arm references its own kind (KubernetesSecretStore or KubernetesClusterSecretStore), so a reference inherits the store's `store_name` output and draws the dependency edge to the right store.
 
 **Key rewrites** -- pulls can reshape their key names in order (`^prod/app/(.*)$` → `$1` strips the path prefix). Names only; values are never touched.
 
@@ -107,7 +108,8 @@ These are the most important decisions when configuring the sync. Explore the fu
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
-| **KubernetesSecretStore** (or KubernetesClusterSecretStore via `storeRef.kind`) | `storeRef.name` | `status.outputs.store_name` |
+| **KubernetesSecretStore** | `storeRef.secretStore.name` | `status.outputs.store_name` |
+| **KubernetesClusterSecretStore** | `storeRef.clusterSecretStore.name` | `status.outputs.store_name` |
 
 ### What This Component Provides
 

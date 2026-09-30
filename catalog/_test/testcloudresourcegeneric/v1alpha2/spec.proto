@@ -75,6 +75,28 @@ message TestCloudResourceGenericSpec {
   // edge when it resolves nesting, so the contract holds even when no
   // production kind happens to carry the shape.
   dev.planton.shared.foreignkey.v1.StringValueOrRef kindless_access_ref = 19 [(dev.planton.shared.foreignkey.v1.containment_exempt) = true];
+
+  // A reference that can point at more than one kind: a default kind with
+  // one key, and a second kind with two keys (so a valueFrom naming it must
+  // say which output). Durable fixture for the composition-key rules every
+  // reader applies (pkg/refannotations, the manifest graph's rules, the
+  // registry-wide reference gate, and the platform's twins).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef candidate_ref = 20 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = TestCloudResourceGeneric,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: TestCloudResourceGeneric
+      field_path: "status.outputs.id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: TestCloudResourceKubernetes
+      field_path: "status.outputs.external_hostname"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: TestCloudResourceKubernetes
+      field_path: "status.outputs.internal_hostname"
+    }
+  ];
 }
 
 // TestGenericStep is the structured replacement for v1alpha1's plain command

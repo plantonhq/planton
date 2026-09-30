@@ -105,7 +105,7 @@ spec:
 Three reference patterns appear in this manifest:
 
 - **`account_id.value`**: A literal string. The AWS account ID is not sensitive and does not change across environments, so a direct value is appropriate.
-- **`region.variable`**: A variable reference. The platform resolves the slug `default-aws-region` to the value you stored in Step 2 (`us-west-2`). This is useful when multiple connections or resources share the same region.
+- **`region.variable`**: A variable reference. The platform resolves the slug `default-aws-region` to the value you stored in Step 2 (`us-west-2`). This is useful when multiple connections or resources share the same region. A variable field can also name one entry of a [variable group](/docs/variables/variable-groups) as `<group>/<entry>` (for example `region: {variable: aws-defaults/region}`), the same names a service reads as `$var/aws-defaults/region`, so a fact both a connection and your services use is declared once.
 - **`access_key_id.secret` / `secret_access_key.secret`**: Secret references. The platform resolves these slugs to the encrypted values you stored in Step 1. The actual credentials never appear in the YAML.
 
 ## Step 4: Apply and Verify
@@ -116,7 +116,7 @@ Apply the manifest:
 planton apply -f aws-connection.yaml
 ```
 
-Planton validates that the referenced secrets and variables exist in your organization's secrets manager, resolves them, and creates the connection.
+Planton creates the connection. It resolves the referenced secrets and variables each time the connection is used, and the connection's Verify check names any reference that does not resolve.
 
 Verify the connection:
 

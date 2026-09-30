@@ -45,12 +45,10 @@ spec:
     # metrics server ↔ webhooks) instead of operator-self-generated certs.
     type: cert_manager
     certManagerIssuer:
-      kind: cluster_issuer
-      name:
-        valueFrom:
-          kind: KubernetesClusterIssuer
-          name: platform-ca
-          fieldPath: status.outputs.cluster_issuer_name
+      clusterIssuer:
+        name:
+          valueFrom:
+            name: platform-ca
   prometheus:
     enabled: true # operator + metrics-server /metrics (scaler latencies, trigger errors)
     # Requires the Prometheus operator CRDs on the cluster — the release

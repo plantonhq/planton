@@ -42,7 +42,7 @@ message AwsRedshiftClusterSpec {
   // Name of an existing Redshift subnet group to place the cluster in,
   // instead of providing subnet_ids. Changing the subnet group replaces
   // the cluster.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_subnet_group_name = 3;
+  string cluster_subnet_group_name = 3;
 
   // Security groups attached to the cluster (the cluster's
   // vpc_security_group_ids). Empty uses the VPC's default security
@@ -339,7 +339,7 @@ message AwsRedshiftClusterSpec {
   option (buf.validate.message).cel = {
     id: "subnets_or_group"
     message: "provide at least two subnet_ids (distinct AZs) or an existing cluster_subnet_group_name"
-    expression: "(this.subnet_ids.size() >= 2) || has(this.cluster_subnet_group_name)"
+    expression: "(this.subnet_ids.size() >= 2) || this.cluster_subnet_group_name != ''"
   };
 
   option (buf.validate.message).cel = {

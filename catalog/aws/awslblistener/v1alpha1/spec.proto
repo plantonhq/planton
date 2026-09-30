@@ -32,13 +32,22 @@ message AwsLbListenerSpec {
   string region = 1 [(buf.validate.field).string.min_len = 1];
 
   // The load balancer this listener attaches to. Defaults to referencing an
-  // AwsAlb's ARN; attach to an AwsNlb (or an external load balancer) with an
-  // explicit valueFrom or a literal ARN. Immutable: changing the load
+  // AwsAlb's ARN; attach to an AwsNlb with a valueFrom naming that kind (both
+  // are declared candidates, so the ARN output fills in), or to an external
+  // load balancer with a literal ARN. Immutable: changing the load
   // balancer replaces the listener.
   dev.planton.shared.foreignkey.v1.StringValueOrRef load_balancer_arn = 2 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = AwsAlb,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.load_balancer_arn"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.load_balancer_arn",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsAlb
+      field_path: "status.outputs.load_balancer_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsNlb
+      field_path: "status.outputs.load_balancer_arn"
+    }
   ];
 
   // Port the listener accepts traffic on, 1-65535. The classic pairs are 80

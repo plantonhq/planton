@@ -1027,8 +1027,8 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | KubernetesCertificate | `spec.issuerRef.issuer.name` | `status.outputs.issuer_name` |
-| KubernetesKeda | `spec.certificates.certManagerIssuer.name` | `status.outputs.issuer_name` |
-| KubernetesMetricsServer | `spec.tls.certManagerIssuer.name` | `status.outputs.issuer_name` |
+| KubernetesKeda | `spec.certificates.certManagerIssuer.issuer.name` | `status.outputs.issuer_name` |
+| KubernetesMetricsServer | `spec.tls.certManagerIssuer.issuer.name` | `status.outputs.issuer_name` |
 
 ## See Also
 

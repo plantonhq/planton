@@ -79,8 +79,8 @@ func redshiftCluster(
 	// AWS-picked AZ placement unless explicitly pinned.
 	if createdSubnetGroup != nil {
 		args.ClusterSubnetGroupName = createdSubnetGroup.Name
-	} else if spec.ClusterSubnetGroupName.GetValue() != "" {
-		args.ClusterSubnetGroupName = pulumi.String(spec.ClusterSubnetGroupName.GetValue())
+	} else if spec.ClusterSubnetGroupName != "" {
+		args.ClusterSubnetGroupName = pulumi.String(spec.ClusterSubnetGroupName)
 	}
 
 	if len(spec.SecurityGroupIds) > 0 {

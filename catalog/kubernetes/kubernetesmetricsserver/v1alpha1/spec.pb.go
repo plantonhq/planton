@@ -87,56 +87,6 @@ func (KubernetesMetricsServerTlsType) EnumDescriptor() ([]byte, []int) {
 }
 
 // *
-// cert-manager issuer reference kind vocabulary.
-type KubernetesMetricsServerIssuerKind int32
-
-const (
-	// Namespaced Issuer in the installation namespace.
-	KubernetesMetricsServerIssuerKind_issuer KubernetesMetricsServerIssuerKind = 0
-	// Cluster-scoped ClusterIssuer.
-	KubernetesMetricsServerIssuerKind_cluster_issuer KubernetesMetricsServerIssuerKind = 1
-)
-
-// Enum value maps for KubernetesMetricsServerIssuerKind.
-var (
-	KubernetesMetricsServerIssuerKind_name = map[int32]string{
-		0: "issuer",
-		1: "cluster_issuer",
-	}
-	KubernetesMetricsServerIssuerKind_value = map[string]int32{
-		"issuer":         0,
-		"cluster_issuer": 1,
-	}
-)
-
-func (x KubernetesMetricsServerIssuerKind) Enum() *KubernetesMetricsServerIssuerKind {
-	p := new(KubernetesMetricsServerIssuerKind)
-	*p = x
-	return p
-}
-
-func (x KubernetesMetricsServerIssuerKind) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (KubernetesMetricsServerIssuerKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_enumTypes[1].Descriptor()
-}
-
-func (KubernetesMetricsServerIssuerKind) Type() protoreflect.EnumType {
-	return &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_enumTypes[1]
-}
-
-func (x KubernetesMetricsServerIssuerKind) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use KubernetesMetricsServerIssuerKind.Descriptor instead.
-func (KubernetesMetricsServerIssuerKind) EnumDescriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
-}
-
-// *
 // **KubernetesMetricsServerSpec** installs metrics-server — the cluster's
 // resource-metrics pipeline — from the official Helm chart (`metrics-server`
 // at https://kubernetes-sigs.github.io/metrics-server/). It scrapes each
@@ -510,7 +460,10 @@ type KubernetesMetricsServerTls struct {
 	// cert-manager issuer that signs the serving certificate (type
 	// cert_manager). Empty = the chart creates its own self-signed
 	// Issuer + root Certificate chain in the installation namespace.
-	CertManagerIssuer *KubernetesMetricsServerTlsCertManagerIssuer `protobuf:"bytes,2,opt,name=cert_manager_issuer,json=certManagerIssuer,proto3" json:"cert_manager_issuer,omitempty"`
+	//
+	// The grain is the arm: `issuer` (a namespaced Issuer in the installation
+	// namespace) or `cluster_issuer` (a cluster-scoped ClusterIssuer).
+	CertManagerIssuer *kubernetes.CertManagerIssuerRef `protobuf:"bytes,4,opt,name=cert_manager_issuer,json=certManagerIssuer,proto3" json:"cert_manager_issuer,omitempty"`
 	// *
 	// Name of the existing kubernetes.io/tls Secret (type existing_secret).
 	ExistingSecretName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=existing_secret_name,json=existingSecretName,proto3" json:"existing_secret_name,omitempty"`
@@ -555,7 +508,7 @@ func (x *KubernetesMetricsServerTls) GetType() KubernetesMetricsServerTlsType {
 	return KubernetesMetricsServerTlsType_self_signed
 }
 
-func (x *KubernetesMetricsServerTls) GetCertManagerIssuer() *KubernetesMetricsServerTlsCertManagerIssuer {
+func (x *KubernetesMetricsServerTls) GetCertManagerIssuer() *kubernetes.CertManagerIssuerRef {
 	if x != nil {
 		return x.CertManagerIssuer
 	}
@@ -565,66 +518,6 @@ func (x *KubernetesMetricsServerTls) GetCertManagerIssuer() *KubernetesMetricsSe
 func (x *KubernetesMetricsServerTls) GetExistingSecretName() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ExistingSecretName
-	}
-	return nil
-}
-
-// *
-// Existing cert-manager issuer reference.
-type KubernetesMetricsServerTlsCertManagerIssuer struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// Issuer grain: a namespaced Issuer (must live in the installation
-	// namespace) or a cluster-scoped ClusterIssuer.
-	Kind *KubernetesMetricsServerIssuerKind `protobuf:"varint,1,opt,name=kind,proto3,enum=dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerIssuerKind,oneof" json:"kind,omitempty"`
-	// *
-	// Name of the Issuer / ClusterIssuer that signs the serving
-	// certificate. References the matching Planton kind's output by default.
-	Name          *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesMetricsServerTlsCertManagerIssuer) Reset() {
-	*x = KubernetesMetricsServerTlsCertManagerIssuer{}
-	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesMetricsServerTlsCertManagerIssuer) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesMetricsServerTlsCertManagerIssuer) ProtoMessage() {}
-
-func (x *KubernetesMetricsServerTlsCertManagerIssuer) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesMetricsServerTlsCertManagerIssuer.ProtoReflect.Descriptor instead.
-func (*KubernetesMetricsServerTlsCertManagerIssuer) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *KubernetesMetricsServerTlsCertManagerIssuer) GetKind() KubernetesMetricsServerIssuerKind {
-	if x != nil && x.Kind != nil {
-		return *x.Kind
-	}
-	return KubernetesMetricsServerIssuerKind_issuer
-}
-
-func (x *KubernetesMetricsServerTlsCertManagerIssuer) GetName() *v1.StringValueOrRef {
-	if x != nil {
-		return x.Name
 	}
 	return nil
 }
@@ -655,7 +548,7 @@ type KubernetesMetricsServerPrometheus struct {
 
 func (x *KubernetesMetricsServerPrometheus) Reset() {
 	*x = KubernetesMetricsServerPrometheus{}
-	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -667,7 +560,7 @@ func (x *KubernetesMetricsServerPrometheus) String() string {
 func (*KubernetesMetricsServerPrometheus) ProtoMessage() {}
 
 func (x *KubernetesMetricsServerPrometheus) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -680,7 +573,7 @@ func (x *KubernetesMetricsServerPrometheus) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesMetricsServerPrometheus.ProtoReflect.Descriptor instead.
 func (*KubernetesMetricsServerPrometheus) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *KubernetesMetricsServerPrometheus) GetEnabled() bool {
@@ -729,7 +622,7 @@ type KubernetesMetricsServerImage struct {
 
 func (x *KubernetesMetricsServerImage) Reset() {
 	*x = KubernetesMetricsServerImage{}
-	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -741,7 +634,7 @@ func (x *KubernetesMetricsServerImage) String() string {
 func (*KubernetesMetricsServerImage) ProtoMessage() {}
 
 func (x *KubernetesMetricsServerImage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -754,7 +647,7 @@ func (x *KubernetesMetricsServerImage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesMetricsServerImage.ProtoReflect.Descriptor instead.
 func (*KubernetesMetricsServerImage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesMetricsServerImage) GetRepository() string {
@@ -775,7 +668,7 @@ var File_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto protoref
 
 const file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesmetricsserver/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x88\x0e\n" +
+	">catalog/kubernetes/kubernetesmetricsserver/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a,catalog/kubernetes/cert_manager_issuer.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x88\x0e\n" +
 	"\x1bKubernetesMetricsServerSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -814,20 +707,15 @@ const file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDes
 	"\x18insecure_skip_tls_verify\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x15insecureSkipTlsVerify\x88\x01\x01\x12\x1b\n" +
 	"\tca_bundle\x18\x03 \x01(\tR\bcaBundleB\t\n" +
 	"\a_createB\x1b\n" +
-	"\x19_insecure_skip_tls_verify\"\xb3\b\n" +
+	"\x19_insecure_skip_tls_verify\"\x80\b\n" +
 	"\x1aKubernetesMetricsServerTls\x12\x81\x01\n" +
-	"\x04type\x18\x01 \x01(\x0e2W.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsTypeB\x0f\x8a\xa6\x1d\vself_signedH\x00R\x04type\x88\x01\x01\x12\x94\x01\n" +
-	"\x13cert_manager_issuer\x18\x02 \x01(\v2d.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsCertManagerIssuerR\x11certManagerIssuer\x12|\n" +
+	"\x04type\x18\x01 \x01(\x0e2W.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsTypeB\x0f\x8a\xa6\x1d\vself_signedH\x00R\x04type\x88\x01\x01\x12\\\n" +
+	"\x13cert_manager_issuer\x18\x04 \x01(\v2,.dev.planton.kubernetes.CertManagerIssuerRefR\x11certManagerIssuer\x12|\n" +
 	"\x14existing_secret_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xa7\x1f\x92\xd4a\rmetadata.nameR\x12existingSecretName:\xf2\x04\xbaH\xee\x04\x1a\xc1\x01\n" +
 	"&spec.tls.existing_secret_requires_name\x12etls type existing_secret requires existing_secret_name — the Secret holding the serving certificate\x1a0this.type != 3 || has(this.existing_secret_name)\x1a\xc9\x01\n" +
 	"*spec.tls.issuer_requires_cert_manager_type\x12icert_manager_issuer is only used with tls type cert_manager — set type accordingly or remove the issuer\x1a0!has(this.cert_manager_issuer) || this.type == 2\x1a\xdb\x01\n" +
 	"-spec.tls.secret_requires_existing_secret_type\x12wexisting_secret_name is only used with tls type existing_secret — set type accordingly or remove the secret reference\x1a1!has(this.existing_secret_name) || this.type == 3B\a\n" +
-	"\x05_type\"\xaa\x02\n" +
-	"+KubernetesMetricsServerTlsCertManagerIssuer\x12\x7f\n" +
-	"\x04kind\x18\x01 \x01(\x0e2Z.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerIssuerKindB\n" +
-	"\x8a\xa6\x1d\x06issuerH\x00R\x04kind\x88\x01\x01\x12q\n" +
-	"\x04name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xc0\x1f\x92\xd4a\x1astatus.outputs.issuer_nameR\x04nameB\a\n" +
-	"\x05_kind\"\x96\x05\n" +
+	"\x05_typeJ\x04\b\x02\x10\x03\"\x96\x05\n" +
 	"!KubernetesMetricsServerPrometheus\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12'\n" +
 	"\x0fservice_monitor\x18\x02 \x01(\bR\x0eserviceMonitor\x12E\n" +
@@ -847,11 +735,7 @@ const file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDes
 	"\vself_signed\x10\x00\x12\b\n" +
 	"\x04helm\x10\x01\x12\x10\n" +
 	"\fcert_manager\x10\x02\x12\x13\n" +
-	"\x0fexisting_secret\x10\x03*C\n" +
-	"!KubernetesMetricsServerIssuerKind\x12\n" +
-	"\n" +
-	"\x06issuer\x10\x00\x12\x12\n" +
-	"\x0ecluster_issuer\x10\x01B\xbb\x03\n" +
+	"\x0fexisting_secret\x10\x03B\xbb\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1B\tSpecProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesmetricsserver/v1alpha1;kubernetesmetricsserverv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesmetricsserver.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesmetricsserver\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesmetricsserver\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesmetricsserver::V1alpha1b\x06proto3"
 
 var (
@@ -866,43 +750,40 @@ func file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDesc
 	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_goTypes = []any{
-	(KubernetesMetricsServerTlsType)(0),                 // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsType
-	(KubernetesMetricsServerIssuerKind)(0),              // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerIssuerKind
-	(*KubernetesMetricsServerSpec)(nil),                 // 2: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec
-	(*KubernetesMetricsServerApiService)(nil),           // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerApiService
-	(*KubernetesMetricsServerTls)(nil),                  // 4: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls
-	(*KubernetesMetricsServerTlsCertManagerIssuer)(nil), // 5: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsCertManagerIssuer
-	(*KubernetesMetricsServerPrometheus)(nil),           // 6: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus
-	(*KubernetesMetricsServerImage)(nil),                // 7: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerImage
-	nil,                                                 // 8: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.NodeSelectorEntry
-	nil,                                                 // 9: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus.ServiceMonitorLabelsEntry
-	(*v1.StringValueOrRef)(nil),                         // 10: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),               // 11: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil),               // 12: dev.planton.kubernetes.WorkloadToleration
+	(KubernetesMetricsServerTlsType)(0),       // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsType
+	(*KubernetesMetricsServerSpec)(nil),       // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec
+	(*KubernetesMetricsServerApiService)(nil), // 2: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerApiService
+	(*KubernetesMetricsServerTls)(nil),        // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls
+	(*KubernetesMetricsServerPrometheus)(nil), // 4: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus
+	(*KubernetesMetricsServerImage)(nil),      // 5: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerImage
+	nil,                                       // 6: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.NodeSelectorEntry
+	nil,                                       // 7: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus.ServiceMonitorLabelsEntry
+	(*v1.StringValueOrRef)(nil),               // 8: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),     // 9: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil),     // 10: dev.planton.kubernetes.WorkloadToleration
+	(*kubernetes.CertManagerIssuerRef)(nil),   // 11: dev.planton.kubernetes.CertManagerIssuerRef
 }
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_depIdxs = []int32{
-	10, // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.api_service:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerApiService
-	4,  // 2: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.tls:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls
-	11, // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	8,  // 4: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.node_selector:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.NodeSelectorEntry
-	12, // 5: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	6,  // 6: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.prometheus:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus
-	7,  // 7: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.image:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerImage
+	8,  // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 1: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.api_service:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerApiService
+	3,  // 2: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.tls:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls
+	9,  // 3: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	6,  // 4: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.node_selector:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.NodeSelectorEntry
+	10, // 5: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	4,  // 6: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.prometheus:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus
+	5,  // 7: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerSpec.image:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerImage
 	0,  // 8: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls.type:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsType
-	5,  // 9: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls.cert_manager_issuer:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsCertManagerIssuer
-	10, // 10: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 11: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsCertManagerIssuer.kind:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerIssuerKind
-	10, // 12: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTlsCertManagerIssuer.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 13: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus.service_monitor_labels:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus.ServiceMonitorLabelsEntry
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	11, // 9: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls.cert_manager_issuer:type_name -> dev.planton.kubernetes.CertManagerIssuerRef
+	8,  // 10: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerTls.existing_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 11: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus.service_monitor_labels:type_name -> dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerPrometheus.ServiceMonitorLabelsEntry
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_init() }
@@ -914,14 +795,13 @@ func file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_init() 
 	file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_spec_proto_rawDesc)),
-			NumEnums:      2,
-			NumMessages:   8,
+			NumEnums:      1,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

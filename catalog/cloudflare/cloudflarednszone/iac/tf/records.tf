@@ -80,7 +80,15 @@ resource "cloudflare_dns_record" "records" {
   ttl = each.value.ttl > 0 ? each.value.ttl : 1
 
   # Simple record types carry their value in content; structured types use data.
-  content = each.value.content != "" ? each.value.content : null
+  # Cloudflare stores a name-valued record's content without the root dot, and
+  # this provider compares the stored value to the configured one verbatim, so
+  # an NS, CNAME, MX or PTR content ending in a dot (the everyday spelling of
+  # another zone's nameserver output) would plan an update on every run. The
+  # dot is dropped here, as the record kind's module does; the Pulumi provider
+  # reconciles it itself.
+  content = each.value.content == "" ? null : (
+    contains(["CNAME", "NS", "MX", "PTR"], upper(each.value.type)) ? trimsuffix(each.value.content, ".") : each.value.content
+  )
   data    = local.record_data[each.key]
 
   # proxied is only applicable to A, AAAA, and CNAME records

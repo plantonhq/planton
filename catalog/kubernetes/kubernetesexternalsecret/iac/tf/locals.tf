@@ -128,10 +128,12 @@ locals {
   # ---- the CR spec ----------------------------------------------------------
   external_secret_spec = {
     for k, v in {
+      # The arm is the grain: a cluster store renders its kind, a namespaced
+      # store renders only its name (SecretStore is the CRD's default).
       secretStoreRef = {
         for rk, rv in {
-          name = var.spec.store_ref.name
-          kind = try(var.spec.store_ref.kind, null)
+          name = try(var.spec.store_ref.cluster_secret_store.name, var.spec.store_ref.secret_store.name)
+          kind = try(var.spec.store_ref.cluster_secret_store.name, null) != null ? "ClusterSecretStore" : null
         } : rk => rv if rv != null
       }
       refreshInterval = try(var.spec.refresh_interval, null)

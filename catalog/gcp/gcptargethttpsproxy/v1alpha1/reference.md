@@ -82,7 +82,7 @@ spec:
 | `spec.proxyName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.urlMap` | `string \| valueFrom` | yes |  | GcpUrlMap (`status.outputs.self_link`) |
-| `spec.sslCertificates` | `[]string \| valueFrom` |  |  | GcpManagedSslCertificate (`status.outputs.self_link`) |
+| `spec.sslCertificates` | `[]string \| valueFrom` |  |  | GcpManagedSslCertificate (`status.outputs.self_link`), GcpSslCertificate (`status.outputs.self_link`) |
 | `spec.certificateManagerCertificates` | `[]string \| valueFrom` |  |  | GcpCertManagerCert (`status.outputs.certificate_name`) |
 | `spec.certificateMap` | `string` |  |  |  |
 | `spec.sslPolicy` | `string \| valueFrom` |  |  | GcpSslPolicy (`status.outputs.self_link`) |
@@ -148,7 +148,8 @@ routing table causes no downtime.
 
 Compute Engine SSL certificates presented to clients (1-15). Reference
 GcpManagedSslCertificate resources (the default kind), self-managed
-GcpSslCertificate resources via an explicit valueFrom.kind, or provide
+GcpSslCertificate resources via an explicit valueFrom.kind (both are
+declared candidates, so the self_link output fills in), or provide
 SSL certificate self-links directly — both certificate kinds share one
 API collection and attach identically. The load balancer picks the
 certificate matching the client's SNI hostname.
@@ -159,7 +160,7 @@ the list in place (setSslCertificates), which is how zero-downtime
 certificate rotation works — attach the replacement before detaching the
 old one.
 
-- references: GcpManagedSslCertificate (`status.outputs.self_link`)
+- references: GcpManagedSslCertificate (`status.outputs.self_link`), GcpSslCertificate (`status.outputs.self_link`)
 - rule: {"repeated":{"maxItems":"15"}}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpManagedSslCertificate, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
@@ -312,6 +313,7 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.urlMap` | GcpUrlMap | `status.outputs.self_link` |
 | `spec.sslCertificates` | GcpManagedSslCertificate | `status.outputs.self_link` |
+| `spec.sslCertificates` | GcpSslCertificate | `status.outputs.self_link` |
 | `spec.certificateManagerCertificates` | GcpCertManagerCert | `status.outputs.certificate_name` |
 | `spec.sslPolicy` | GcpSslPolicy | `status.outputs.self_link` |
 

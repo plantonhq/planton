@@ -212,13 +212,10 @@ func certificatesMap(c *kuberneteskedav1alpha1.KubernetesKedaCertificates) map[s
 	// With no issuer reference the chart generates its own self-signed
 	// CA + Issuer chain — leave the issuer block absent.
 	if issuer := c.GetCertManagerIssuer(); issuer != nil {
-		kind := "Issuer"
-		if issuer.GetKind() == kuberneteskedav1alpha1.KubernetesKedaIssuerKind_cluster_issuer {
-			kind = "ClusterIssuer"
-		}
+		kind, name := issuer.CRDKind()
 		certManager["issuer"] = map[string]interface{}{
 			"generate": false,
-			"name":     issuer.GetName().GetValue(),
+			"name":     name,
 			"kind":     kind,
 			"group":    "cert-manager.io",
 		}
