@@ -1959,7 +1959,7 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
-- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
 - `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
@@ -1971,7 +1971,8 @@ Allowed values (use exactly as shown):
 - `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
 - `StripeEntitlementFeature`
 - `StripeShippingRate`
-- `StripeTaxRate` -- Tax rate, tax registration and terminal reader share the initials "tr", so the tax rate takes Stripe's own id prefix (txr_).
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
 - `StripeBillingMeter`
 - `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
@@ -2877,7 +2878,7 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
-- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
 - `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
@@ -2889,7 +2890,8 @@ Allowed values (use exactly as shown):
 - `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
 - `StripeEntitlementFeature`
 - `StripeShippingRate`
-- `StripeTaxRate` -- Tax rate, tax registration and terminal reader share the initials "tr", so the tax rate takes Stripe's own id prefix (txr_).
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
 - `StripeBillingMeter`
 - `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
@@ -4994,7 +4996,7 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
-- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
 - `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
@@ -5006,7 +5008,8 @@ Allowed values (use exactly as shown):
 - `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
 - `StripeEntitlementFeature`
 - `StripeShippingRate`
-- `StripeTaxRate` -- Tax rate, tax registration and terminal reader share the initials "tr", so the tax rate takes Stripe's own id prefix (txr_).
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
 - `StripeBillingMeter`
 - `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
@@ -5912,7 +5915,7 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
-- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
 - `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
@@ -5924,7 +5927,8 @@ Allowed values (use exactly as shown):
 - `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
 - `StripeEntitlementFeature`
 - `StripeShippingRate`
-- `StripeTaxRate` -- Tax rate, tax registration and terminal reader share the initials "tr", so the tax rate takes Stripe's own id prefix (txr_).
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
 - `StripeBillingMeter`
 - `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
@@ -8145,7 +8149,7 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
-- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
 - `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
@@ -8157,7 +8161,8 @@ Allowed values (use exactly as shown):
 - `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
 - `StripeEntitlementFeature`
 - `StripeShippingRate`
-- `StripeTaxRate` -- Tax rate, tax registration and terminal reader share the initials "tr", so the tax rate takes Stripe's own id prefix (txr_).
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
 - `StripeBillingMeter`
 - `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
@@ -9063,7 +9068,7 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
-- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
 - `StripeEventDestination`
 - `StripeBillingPortalConfiguration`
 - `StripePaymentMethodConfiguration`
@@ -9075,7 +9080,8 @@ Allowed values (use exactly as shown):
 - `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
 - `StripeEntitlementFeature`
 - `StripeShippingRate`
-- `StripeTaxRate` -- Tax rate, tax registration and terminal reader share the initials "tr", so the tax rate takes Stripe's own id prefix (txr_).
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
 - `StripeBillingMeter`
 - `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 

@@ -2478,8 +2478,7 @@ const (
 	// Stripe publishes a Terraform provider and no Pulumi provider, and its
 	// kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL
 	// module, and every other engine refused before anything runs.
-	// Family sub-bands: 10000 account and delivery, 10100 catalog and pricing,
-	// 10200 Terminal, 10300 Issuing.
+	// Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
 	CloudResourceKind_StripeWebhookEndpoint            CloudResourceKind = 10000
 	CloudResourceKind_StripeEventDestination           CloudResourceKind = 10001
 	CloudResourceKind_StripeBillingPortalConfiguration CloudResourceKind = 10002
@@ -2496,10 +2495,11 @@ const (
 	CloudResourceKind_StripePromotionCode      CloudResourceKind = 10103
 	CloudResourceKind_StripeEntitlementFeature CloudResourceKind = 10104
 	CloudResourceKind_StripeShippingRate       CloudResourceKind = 10105
-	// Tax rate, tax registration and terminal reader share the initials "tr",
-	// so the tax rate takes Stripe's own id prefix (txr_).
-	CloudResourceKind_StripeTaxRate      CloudResourceKind = 10106
-	CloudResourceKind_StripeBillingMeter CloudResourceKind = 10108
+	// Tax rate and tax registration share the initials "tr", so each takes
+	// Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+	CloudResourceKind_StripeTaxRate         CloudResourceKind = 10106
+	CloudResourceKind_StripeTaxRegistration CloudResourceKind = 10107
+	CloudResourceKind_StripeBillingMeter    CloudResourceKind = 10108
 	// A payment link always sells at least one price (line_items is required),
 	// so the price deploys first.
 	CloudResourceKind_StripePaymentLink CloudResourceKind = 10109
@@ -3259,6 +3259,7 @@ var (
 		10104: "StripeEntitlementFeature",
 		10105: "StripeShippingRate",
 		10106: "StripeTaxRate",
+		10107: "StripeTaxRegistration",
 		10108: "StripeBillingMeter",
 		10109: "StripePaymentLink",
 	}
@@ -4014,6 +4015,7 @@ var (
 		"StripeEntitlementFeature":                       10104,
 		"StripeShippingRate":                             10105,
 		"StripeTaxRate":                                  10106,
+		"StripeTaxRegistration":                          10107,
 		"StripeBillingMeter":                             10108,
 		"StripePaymentLink":                              10109,
 	}
@@ -4463,7 +4465,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xaa\xea\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xe7\xea\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5289,7 +5291,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x13StripePromotionCode\x10\xf7N\x1a!\xa2\xf7\x04\x1d\b\x1d\x12\bv1alpha1\"\x05stppc:\x02\xf6Nb\x04tofu\x12<\n" +
 	"\x18StripeEntitlementFeature\x10\xf8N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpefb\x04tofu\x126\n" +
 	"\x12StripeShippingRate\x10\xf9N\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpsrb\x04tofu\x122\n" +
-	"\rStripeTaxRate\x10\xfaN\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stptxrb\x04tofu\x126\n" +
+	"\rStripeTaxRate\x10\xfaN\x1a\x1e\xa2\xf7\x04\x1a\b\x1d\x12\bv1alpha1\"\x06stptxrb\x04tofu\x12;\n" +
+	"\x15StripeTaxRegistration\x10\xfbN\x1a\x1f\xa2\xf7\x04\x1b\b\x1d\x12\bv1alpha1\"\astptxrgb\x04tofu\x126\n" +
 	"\x12StripeBillingMeter\x10\xfcN\x1a\x1d\xa2\xf7\x04\x19\b\x1d\x12\bv1alpha1\"\x05stpbmb\x04tofu\x129\n" +
 	"\x11StripePaymentLink\x10\xfdN\x1a!\xa2\xf7\x04\x1d\b\x1d\x12\bv1alpha1\"\x05stppl:\x02\xf5Nb\x04tofu:|\n" +
 	"\tkind_meta\x12!.google.protobuf.EnumValueOptions\x18\xf4N \x01(\v2;.dev.planton.shared.cloudresourcekind.CloudResourceKindMetaR\bkindMetaB\xad\x02\n" +

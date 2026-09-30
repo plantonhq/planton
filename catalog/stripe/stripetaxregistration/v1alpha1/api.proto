@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripetaxregistration.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripetaxregistration/v1alpha1/outputs.proto";
+import "catalog/stripe/stripetaxregistration/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeTaxRegistration is a component that declares one place the account is registered to
+// collect tax with Stripe Tax.
+//
+// From its start date, Stripe Tax collects tax there on every payment that uses automatic tax.
+// Stripe never deletes a registration: destroy only forgets it, and setting expires_at is how
+// collection stops. Only the two dates update in place; any other change creates a new
+// registration while the old one keeps collecting.
+//
+// Use cases:
+// - Keep the account's tax registrations on file, reviewed like code, the same in every environment
+// - Schedule a registration that starts when a new threshold is crossed, and expire one that ends
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeTaxRegistration
+// metadata:
+//   name: de-oss
+//   org: my-organization
+// spec:
+//   country: DE
+//   type: oss_union
+//   activeFrom: 4102444800  # your start, now or later, in Unix seconds
+// ```
+message StripeTaxRegistration {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeTaxRegistration" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeTaxRegistration'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains where the account is registered, the kind of registration, and its dates.
+  StripeTaxRegistrationSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the registration as created, populated after deployment.
+  StripeTaxRegistrationStatus status = 5;
+}
+
+// StripeTaxRegistrationStatus represents the current state of a StripeTaxRegistration resource.
+// Populated by the deployment system.
+message StripeTaxRegistrationStatus {
+  // outputs contains the stack outputs: the registration's id and its status.
+  StripeTaxRegistrationStackOutputs outputs = 1;
+}

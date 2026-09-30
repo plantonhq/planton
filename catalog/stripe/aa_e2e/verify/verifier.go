@@ -232,6 +232,7 @@ var verifiers = map[string]Verifier{
 	"stripepromotioncode":      &deactivatedVerifier{component: "stripepromotioncode", path: "v1/promotion_codes"},
 	"stripeshippingrate":       &deactivatedVerifier{component: "stripeshippingrate", path: "v1/shipping_rates"},
 	"stripetaxrate":            &deactivatedVerifier{component: "stripetaxrate", path: "v1/tax_rates"},
+	"stripetaxregistration":    &forgottenVerifier{component: "stripetaxregistration", path: "v1/tax/registrations"},
 	"stripepaymentlink":        &deactivatedVerifier{component: "stripepaymentlink", path: "v1/payment_links"},
 	"stripebillingmeter": &withChildren{
 		Verifier:  &deactivatedVerifier{component: "stripebillingmeter", path: "v1/billing/meters", byStatus: true},

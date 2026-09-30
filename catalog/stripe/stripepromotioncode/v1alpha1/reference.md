@@ -48,7 +48,7 @@ spec:
     value: Z4OV52SU
   code: LAUNCH25
   maxRedemptions: 500
-  expiresAt: 1798761599
+  expiresAt: 4102444800
   restrictions:
     firstTimeTransaction: true
   metadata:

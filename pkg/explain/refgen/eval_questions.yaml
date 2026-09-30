@@ -766,3 +766,31 @@ questions:
       - kind: StripePrice
         file: reference.md
         pattern: 'a metered price bills what a meter counts'
+
+  - id: q31
+    class: wisdom
+    question: >
+      A company declared its German One-Stop Shop registration as a
+      StripeTaxRegistration with type oss_union. It now moves its OSS
+      registration to the non-union scheme, and later deregisters entirely.
+      What should its manifests do at each step, and what does deleting the
+      resource do in Stripe?
+    answer: >
+      Only the two dates update in place; changing the type replaces the
+      registration, and the old one is forgotten while it keeps collecting.
+      So the change is two steps: set expiresAt on the oss_union registration
+      and apply, then declare the oss_non_union registration as its own
+      resource with a start date that is now or later. To deregister, set
+      expiresAt and apply; deleting the resource only removes it from
+      Planton's state, and Stripe keeps collecting until the expiry passes.
+      Removing expiresAt from the manifest later does not clear it.
+    checks:
+      - kind: StripeTaxRegistration
+        file: GUIDE.md
+        pattern: '## Changing a Registration'
+      - kind: StripeTaxRegistration
+        file: GUIDE.md
+        pattern: 'Removing `expiresAt` does not clear it'
+      - kind: StripeTaxRegistration
+        file: reference.md
+        pattern: '`spec\.expiresAt`'

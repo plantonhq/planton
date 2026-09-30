@@ -28,10 +28,10 @@ how far that has progressed.
 | | |
 |---|---|
 | Provider schema (parity baseline) | `stripe@0.3.0` |
-| Kinds in the catalog | 15 |
-| Distinct provider resources consumed | 19 |
-| Spec fields authored across all kinds | 313 |
-| Module pins on `stripe` | `0.3.0` × 15 |
+| Kinds in the catalog | 16 |
+| Distinct provider resources consumed | 20 |
+| Spec fields authored across all kinds | 323 |
+| Module pins on `stripe` | `0.3.0` × 16 |
 
 The GA provider is the parity baseline. Capability that exists only in a
 secondary channel (for Google, the `google-beta` provider) enters per kind
@@ -64,7 +64,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.
 
-**15 of 15 kinds are at total accounting; 0 proven live.**
+**16 of 16 kinds are at total accounting; 0 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -82,6 +82,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | StripeRadarValueList | 6 | 4 | 1 | 1 | 0 | ✅ | — |
 | StripeShippingRate | 15 | 13 | 0 | 2 | 0 | ✅ | — |
 | StripeTaxRate | 10 | 10 | 0 | 0 | 0 | ✅ | — |
+| StripeTaxRegistration | 4 | 3 | 1 | 0 | 0 | ✅ | — |
 | StripeWebhookEndpoint | 6 | 6 | 0 | 0 | 0 | ✅ | — |
 
 ## Breadth: every GA resource, one disposition
@@ -90,11 +91,11 @@ All resources of `stripe@0.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 18 | consumed by a kind's Terraform module today |
+| Modeled | 19 | consumed by a kind's Terraform module today |
 | IAM-covered | 0 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 0 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 7 | judged to be covered by a planned kind or planned composition, not built yet |
-| Deferred | 21 | deliberately not offered, each with the recorded reason |
+| Planned | 0 | judged to be covered by a planned kind or planned composition, not built yet |
+| Deferred | 27 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 3 | deprecated or superseded provider surface |
 | **Total** | **49** | |
 
@@ -103,7 +104,7 @@ All resources of `stripe@0.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (18)
+### Modeled (19)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -123,22 +124,11 @@ rather than trusted.
 | `stripe_radar_value_list_item` | consumed by StripeRadarValueList |
 | `stripe_shipping_rate` | consumed by StripeShippingRate |
 | `stripe_tax_rate` | consumed by StripeTaxRate |
+| `stripe_tax_registration` | consumed by StripeTaxRegistration |
 | `stripe_v2_core_event_destination` | consumed by StripeEventDestination |
 | `stripe_webhook_endpoint` | consumed by StripeWebhookEndpoint |
 
-### Planned (7)
-
-| Resource | Recorded reason |
-|---|---|
-| `stripe_file` | judged as a planned StripeFile kind (an uploaded file other objects reference by id: a business logo, a card design image, dispute evidence); destroy only removes it from state |
-| `stripe_file_link` | judged as a planned composition into StripeFile (a public link keyed by its file, dropped from state with it) |
-| `stripe_issuing_personalization_design` | judged as a planned StripeIssuingPersonalizationDesign kind (the printed design of physical issued cards: card logo, carrier text, physical bundle); destroy only removes it from state |
-| `stripe_tax_registration` | judged as a planned StripeTaxRegistration kind (where the account is registered to collect tax, for Stripe Tax); destroy only removes it from state, and Stripe keeps collecting |
-| `stripe_terminal_configuration` | judged as a planned StripeTerminalConfiguration kind (reader behavior per device model: tipping, splash screens, offline mode) |
-| `stripe_terminal_location` | judged as a planned StripeTerminalLocation kind (a physical place readers are registered to) |
-| `stripe_terminal_reader` | judged as a planned StripeTerminalReader kind (a card reader registered with a single-use registration code, so a replacement needs a new code) |
-
-### Deferred (21)
+### Deferred (27)
 
 | Resource | Recorded reason |
 |---|---|
@@ -148,11 +138,14 @@ rather than trusted.
 | `stripe_credit_note` | can refund money on apply, and destroy voids nothing; a record of business, not declared configuration |
 | `stripe_customer` | a customer is a record of business the account's own flows create and own, not declared configuration |
 | `stripe_customer_balance_transaction` | a ledger credit or debit applied to a customer's next invoice, and destroy reverses nothing; an event, not declared state |
+| `stripe_file` | an uploaded file is an input other objects name by id, never a setting declared for its own sake, and the provider uploads it from a path on the machine running the engine; destroy only removes it from state |
+| `stripe_file_link` | a public link to an uploaded file, which is not offered |
 | `stripe_invoice` | a bill to a customer that Stripe can finalize and collect automatically; a record of business, not declared configuration |
 | `stripe_invoice_item` | adds a charge to a customer's next invoice; a record of business, not declared configuration |
 | `stripe_issuing_card` | an issued card that can spend once active, and destroy only removes it from state while the card stays live; money movement, not declared configuration |
 | `stripe_issuing_cardholder` | a person or company authorized to spend on issued cards, and destroy only removes it from state; a record of business, not declared configuration |
 | `stripe_issuing_dispute` | a dispute over a card transaction, and destroy only removes it from state; a record of business, not declared configuration |
+| `stripe_issuing_personalization_design` | the printed design of issued cards needs an approved Issuing program, and its card logo needs a file of purpose issuing_logo that the provider's file upload cannot create; destroy only removes it from state |
 | `stripe_payment_intent` | with confirm set, applying it takes payment, and destroy neither cancels nor refunds it; a record of business, not declared configuration |
 | `stripe_payment_method` | a customer's payment instrument, and destroy does not detach it; a record of business, not declared configuration |
 | `stripe_person` | an identity record (with personal data) of a Connect account's representative or owner; a record of business, not declared configuration |
@@ -162,6 +155,9 @@ rather than trusted.
 | `stripe_subscription_item` | part of a subscription, which is not offered; changing one changes what a customer is billed |
 | `stripe_subscription_schedule` | future billing changes for a customer, and destroy only removes it from state while the schedule keeps running; a record of business |
 | `stripe_tax_id` | part of a customer record, which is not offered |
+| `stripe_terminal_configuration` | in-store reader behavior (tipping, splash screens, offline mode, Wi-Fi); it serves only physical checkout fleets, and its images and certificates are uploaded files, which are not offered either |
+| `stripe_terminal_location` | a store's address that in-person readers register to; it serves only businesses with physical checkout, which configure their shop fleet in the Dashboard or their own point-of-sale software |
+| `stripe_terminal_reader` | enrolls a physical card reader with a code the device shows once and the provider never stores, so the declaration can never be applied again or recreated without a person at the reader; hardware enrollment, not declared configuration |
 | `stripe_treasury_financial_account` | an account that holds money, and destroy does not close it; money movement, not declared configuration |
 
 ### Excluded as deprecated (3)

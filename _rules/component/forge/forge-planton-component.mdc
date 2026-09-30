@@ -340,7 +340,10 @@ The following 21 rules execute in order. Each rule is atomic and can be run indi
 10. **008-e2e-manifest** - Generate the component-root e2e/manifest.yaml (the kind's
     complete, protovalidate-valid example manifest -- embedded as the reference page's
     Example block AND deployed by the E2E framework, which treats its presence as the
-    testability marker)
+    testability marker). Because it round-trips into its typed message, no run token can
+    stand in a number field there; a date the vendor requires in the future is a literal
+    far enough ahead that no lane goes stale. Stripe's convention is 1 January 2100
+    (`4102444800`), with any expiry a day later, in the manifest and its scenarios alike.
 
 ### Phase 5: Pulumi Implementation (Rules 009-011)
 

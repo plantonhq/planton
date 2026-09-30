@@ -32,7 +32,7 @@ Planton declares the rate you give it. Whether that rate is right for a customer
 ## Judgment
 ## One Owner per Object
 
-Declare a tax rate here only if nothing else creates or edits it. When Stripe Tax calculates your tax, you need no manual rates at all; when your application creates rates per customer, they belong to your application.
+Declare a tax rate here only if nothing else creates or edits it. When Stripe Tax calculates your tax, you need no manual rates at all: declare where you are registered to collect with Stripe Tax Registration instead. When your application creates rates per customer, they belong to your application.
 
 ## Changing a Tax Rate
 

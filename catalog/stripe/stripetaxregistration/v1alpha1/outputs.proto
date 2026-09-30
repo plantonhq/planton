@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripetaxregistration.v1alpha1;
+
+// StripeTaxRegistrationStackOutputs identifies the tax registration and says whether it is
+// collecting.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/tax_registration
+message StripeTaxRegistrationStackOutputs {
+  // id is the registration's Stripe id (taxreg_...). It changes when the registration is replaced.
+  string id = 1;
+
+  // status is Stripe's reading of the dates: scheduled (active_from is still ahead), active, or
+  // expired (expires_at has passed).
+  string status = 2;
+}

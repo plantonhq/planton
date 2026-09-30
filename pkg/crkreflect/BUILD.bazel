@@ -781,6 +781,7 @@ go_library(
         "//catalog/stripe/striperadarvaluelist/v1alpha1",
         "//catalog/stripe/stripeshippingrate/v1alpha1",
         "//catalog/stripe/stripetaxrate/v1alpha1",
+        "//catalog/stripe/stripetaxregistration/v1alpha1",
         "//catalog/stripe/stripewebhookendpoint/v1alpha1",
         "//pkg/apis/gvk",
         "//shared",

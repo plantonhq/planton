@@ -53,6 +53,11 @@ spec:
       id_format: "{shipping_rate_id}"
     - terraform_type: stripe_tax_rate
       id_format: "{tax_rate_id}"
+    # A registration imports by its own id; the provider's delete only
+    # forgets it, so a round trip leaves the imported registration in Stripe
+    # either way.
+    - terraform_type: stripe_tax_registration
+      id_format: "{tax_registration_id}"
     - terraform_type: stripe_billing_meter
       id_format: "{billing_meter_id}"
     # An alert imports by its own id; the provider's delete only forgets it,

@@ -7463,8 +7463,7 @@ enum CloudResourceKind {
   // Stripe publishes a Terraform provider and no Pulumi provider, and its
   // kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL
   // module, and every other engine refused before anything runs.
-  // Family sub-bands: 10000 account and delivery, 10100 catalog and pricing,
-  // 10200 Terminal, 10300 Issuing.
+  // Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
   StripeWebhookEndpoint = 10000 [(kind_meta) = {
     provider: stripe
     version: "v1alpha1"
@@ -7543,12 +7542,18 @@ enum CloudResourceKind {
     id_prefix: "stpsr"
     provisioners: ["tofu"]
   }];
-  // Tax rate, tax registration and terminal reader share the initials "tr",
-  // so the tax rate takes Stripe's own id prefix (txr_).
+  // Tax rate and tax registration share the initials "tr", so each takes
+  // Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
   StripeTaxRate = 10106 [(kind_meta) = {
     provider: stripe
     version: "v1alpha1"
     id_prefix: "stptxr"
+    provisioners: ["tofu"]
+  }];
+  StripeTaxRegistration = 10107 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stptxrg"
     provisioners: ["tofu"]
   }];
   StripeBillingMeter = 10108 [(kind_meta) = {

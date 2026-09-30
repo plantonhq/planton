@@ -760,6 +760,7 @@ import (
 	striperadarvaluelistv1alpha1 "github.com/plantonhq/planton/catalog/stripe/striperadarvaluelist/v1alpha1"
 	stripeshippingratev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeshippingrate/v1alpha1"
 	stripetaxratev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripetaxrate/v1alpha1"
+	stripetaxregistrationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripetaxregistration/v1alpha1"
 	stripewebhookendpointv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripewebhookendpoint/v1alpha1"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
@@ -1554,6 +1555,7 @@ var ProviderStripeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_StripeRadarValueList:             &striperadarvaluelistv1alpha1.StripeRadarValueList{},
 	cloudresourcekind.CloudResourceKind_StripeShippingRate:               &stripeshippingratev1alpha1.StripeShippingRate{},
 	cloudresourcekind.CloudResourceKind_StripeTaxRate:                    &stripetaxratev1alpha1.StripeTaxRate{},
+	cloudresourcekind.CloudResourceKind_StripeTaxRegistration:            &stripetaxregistrationv1alpha1.StripeTaxRegistration{},
 	cloudresourcekind.CloudResourceKind_StripeWebhookEndpoint:            &stripewebhookendpointv1alpha1.StripeWebhookEndpoint{},
 }
 

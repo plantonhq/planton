@@ -122,6 +122,10 @@ func TestStripeTaxRate_Tofu(t *testing.T) {
 	runAllScenariosForComponent(t, "stripetaxrate")
 }
 
+func TestStripeTaxRegistration_Tofu(t *testing.T) {
+	runAllScenariosForComponent(t, "stripetaxregistration")
+}
+
 func TestStripeBillingMeter_Tofu(t *testing.T) {
 	runAllScenariosForComponent(t, "stripebillingmeter")
 }
