@@ -1,0 +1,27 @@
+# The second act of minimal: a new amount. A price's amount never changes, so
+# the price is replaced: the new one is created first and takes the lookup key
+# (transferLookupKey), then the old one is archived and Stripe keeps it for the
+# subscriptions that use it.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePrice
+metadata:
+  name: e2e-price
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: replaced
+spec:
+  product:
+    valueFrom:
+      kind: StripeProduct
+      name: e2e-product-prereq
+  currency: usd
+  unitAmount: 1200
+  transferLookupKey: true
+  recurring:
+    interval: month
+  lookupKey: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  nickname: e2e ${E2E_RUN_ID}
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

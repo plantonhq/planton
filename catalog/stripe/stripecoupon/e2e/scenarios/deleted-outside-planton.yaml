@@ -1,0 +1,16 @@
+# A coupon deleted in the Dashboard, behind Planton's back. The provider has no
+# handling for an object it cannot read, so the next plan fails; the GUIDE's
+# recovery forgets it from state and applies, which creates a new one.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeCoupon
+metadata:
+  name: e2e-coupon-oob
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-out-of-band-delete: forget:stripe_coupon.this
+spec:
+  name: e2e ${E2E_RUN_ID} oob
+  percentOff: 15
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

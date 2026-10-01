@@ -3,13 +3,11 @@ kind: ComponentE2EProfile
 metadata:
   name: stripepromotioncode
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key).
-  # A promotion code is deactivated on destroy, and the verifier proves it
-  # reads back inactive; every run's code carries the run and scenario and
-  # stays in the sandbox, deactivated. Its registry prerequisite, a run-named
-  # StripeCoupon, deploys first on OpenTofu and is deleted after. Awaiting its
-  # first live run, so no provisioner is claimed yet.
+  # Held at pending_proof. The minimal scenario passes live on OpenTofu on
+  # a StripeCoupon deployed first. The restricted scenario cannot pass on the
+  # pinned provider: Stripe returns a code's minimums in other currencies only
+  # when a read expands them, and the provider's create then rejects its own
+  # result.
   tier: 1
   status: pending_proof
   validated_provisioners: []

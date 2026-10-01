@@ -11,6 +11,7 @@ go_library(
     deps = [
         "//catalog/stripe/aa_e2e/verify",
         "//e2e/framework/provider",
+        "//e2e/framework/runner",
         "//pkg/iac/provider/stripe/stripekey",
         "@com_github_pkg_errors//:errors",
     ],
@@ -18,6 +19,10 @@ go_library(
 
 go_test(
     name = "aa_e2e_test",
-    srcs = ["harness_test.go"],
+    srcs = [
+        "harness_test.go",
+        "lifecycle_test.go",
+    ],
     embed = [":aa_e2e"],
+    deps = ["//e2e/framework/provider"],
 )

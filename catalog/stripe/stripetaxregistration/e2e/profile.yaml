@@ -3,18 +3,14 @@ kind: ComponentE2EProfile
 metadata:
   name: stripetaxregistration
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key).
-  # Destroy only forgets a registration, and the verifier proves it is still
-  # in Stripe afterwards. Every scenario schedules its registration for
-  # 1 January 2100 (the base manifest and the US scenario also expire a day
-  # later), so nothing a run leaves collects before then. The first live
-  # run also proves three things offline plans
-  # cannot: whether the sandbox needs Stripe Tax turned on, whether Stripe
-  # accepts a second scheduled registration for the same place, and that a
-  # registration Stripe fills in with its defaults plans nothing on the next
-  # apply. Awaiting its first live run, so no provisioner is claimed yet.
+  # Proven live on OpenTofu against the test sandbox (its tax settings carry a
+  # head office, which Stripe requires before any registration): India and
+  # Texas registrations dated from the lane's clock, blind import, an expiry
+  # changed in place, and destroy forgetting the registration. Stripe holds one
+  # registration per place until it has ended, so each lane's registration ends
+  # seconds after it starts and the next run finds the place free.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

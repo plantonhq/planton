@@ -18,8 +18,9 @@ const stripeAPIBase = "https://api.stripe.com"
 // call, so the harness reads objects in the shape the module wrote them. It moves with the pin.
 const stripeAPIVersion = "2026-05-27.dahlia"
 
-// Client reads Stripe objects over the REST API with the lane's key. It never writes: the
-// modules under test create, update and destroy; the harness only observes.
+// Client reads Stripe objects over the REST API with the lane's key. The modules under test
+// create, update and destroy; the harness observes. Its one write, DeleteResource, exists for the
+// out-of-band act, which deletes an object the way a person in the Dashboard would.
 type Client struct {
 	apiKey        string
 	stripeAccount string
@@ -39,18 +40,15 @@ func NewClient(apiKey, stripeAccount string) *Client {
 }
 
 // ReadResource GETs one object by its API path (e.g. "v1/webhook_endpoints/we_123") and returns its
-// JSON body and whether it exists. A 404 is an honest "does not exist"; any other failure is an
-// error carrying Stripe's own message.
+// JSON body and whether it exists. A 404, or the deleted-object stub some objects answer with
+// instead, is an honest "does not exist"; any other failure is an error carrying Stripe's own
+// message.
 func (c *Client) ReadResource(path string) (map[string]interface{}, bool, error) {
 	req, err := http.NewRequest(http.MethodGet, c.baseURL+"/"+path, nil)
 	if err != nil {
 		return nil, false, errors.Wrapf(err, "building the request for %s", path)
 	}
-	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-	req.Header.Set("Stripe-Version", stripeAPIVersion)
-	if c.stripeAccount != "" {
-		req.Header.Set("Stripe-Context", c.stripeAccount)
-	}
+	c.setHeaders(req)
 
 	resp, err := c.http.Do(req)
 	if err != nil {
@@ -72,7 +70,43 @@ func (c *Client) ReadResource(path string) (map[string]interface{}, bool, error)
 	if err := json.Unmarshal(body, &object); err != nil {
 		return nil, false, errors.Wrapf(err, "decoding the response for %s", path)
 	}
+	// Some deleted objects never answer 404: a product's feature link reads back as a 200 stub
+	// {"id", "object", "deleted": true} once it is deleted (verified live). The stub is Stripe
+	// saying the object is gone, so it is reported exactly like a 404.
+	if deleted, _ := object["deleted"].(bool); deleted {
+		return nil, false, nil
+	}
 	return object, true, nil
+}
+
+// DeleteResource DELETEs one object by its API path, as a person deleting it in the Dashboard
+// would. Stripe answers a successful delete with 200; anything else is an error carrying Stripe's
+// message.
+func (c *Client) DeleteResource(path string) error {
+	req, err := http.NewRequest(http.MethodDelete, c.baseURL+"/"+path, nil)
+	if err != nil {
+		return errors.Wrapf(err, "building the request for %s", path)
+	}
+	c.setHeaders(req)
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return errors.Wrapf(err, "DELETE %s", path)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return errors.Errorf("DELETE %s answered %d: %s", path, resp.StatusCode, stripeErrorMessage(body))
+	}
+	return nil
+}
+
+// setHeaders sends the key, the pinned API version and the account context, as the provider does.
+func (c *Client) setHeaders(req *http.Request) {
+	req.Header.Set("Authorization", "Bearer "+c.apiKey)
+	req.Header.Set("Stripe-Version", stripeAPIVersion)
+	if c.stripeAccount != "" {
+		req.Header.Set("Stripe-Context", c.stripeAccount)
+	}
 }
 
 // ResourceExists reports whether the object at path exists.

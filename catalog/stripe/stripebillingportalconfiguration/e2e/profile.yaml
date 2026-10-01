@@ -3,14 +3,12 @@ kind: ComponentE2EProfile
 metadata:
   name: stripebillingportalconfiguration
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key). Stripe never deletes a
-  # configuration, so destroy deactivates it and the verifier proves it reads
-  # back inactive; every run's configuration carries the run in its name and
-  # stays in the sandbox. The plan-switching scenario deploys a run-named
-  # StripeProduct and StripePrice as prerequisites on OpenTofu and archives
-  # them afterwards. Awaiting its first live run, so no provisioner is
-  # claimed yet.
+  # Held at pending_proof. The minimal scenario passes live on OpenTofu.
+  # The plan-switching scenario cannot pass on the pinned provider: Stripe
+  # returns a configuration's switchable products only when a read expands
+  # them, the provider never does, and its create then rejects its own result.
+  # The sandbox's default configuration is one the first lane created; Stripe
+  # refuses to deactivate a default, so it stays active.
   tier: 1
   status: pending_proof
   validated_provisioners: []

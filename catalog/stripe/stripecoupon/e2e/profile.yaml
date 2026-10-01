@@ -3,13 +3,13 @@ kind: ComponentE2EProfile
 metadata:
   name: stripecoupon
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key).
-  # A coupon is deleted on destroy, and the verifier proves it is gone. Every
-  # run's coupon carries the run in its name. The products scenario's
-  # prerequisite, a run-named StripeProduct, deploys first on OpenTofu.
-  # Awaiting its first live run, so no provisioner is claimed yet.
+  # Proven live on OpenTofu against the test sandbox: percent, multi-currency
+  # and product-restricted coupons, blind import with the products tracker
+  # re-created, an in-place rename, a currency change that replaces the coupon,
+  # a delete in the Dashboard recovered by forgetting it, and destroy deleting
+  # it.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

@@ -29,7 +29,7 @@ import "shared/metadata.proto";
 // spec:
 //   country: DE
 //   type: oss_union
-//   activeFrom: 4102444800  # your start, now or later, in Unix seconds
+//   activeFrom: 1830297600  # your start: now or later, at most five years ahead, in Unix seconds
 // ```
 message StripeTaxRegistration {
   // api_version is the version of the Stripe API resource.

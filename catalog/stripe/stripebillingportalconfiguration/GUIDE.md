@@ -44,6 +44,7 @@ An account holds many portal configurations, and one is its default: the one Str
 - **Destroy deactivates**: Stripe has no delete for a configuration. Destroy sets `active: false`, Stripe keeps the configuration forever, and a session that names it is refused.
 - **A removed setting stays in Stripe**: the provider sends only values that are set, so deleting a feature from the manifest leaves it as it was. Set `enabled: false` instead. The same holds for every optional field.
 - **Deactivated outside Planton**: the next apply reactivates it, since `active` defaults to `true`.
+- **The account's first configuration becomes its default, and the default can't be deactivated**: in an account (or sandbox) that has no portal configuration yet, Stripe makes the first one it is given the default, and destroy then fails with Stripe's "You cannot set `active: false` on your default PortalConfiguration". An account that already has a default (every account whose customers have opened a portal) never makes this kind's configuration the default. In a fresh account the first configuration stays the default: its destroy keeps failing, and the way out is `tofu state rm stripe_billing_portal_configuration.this`, which leaves it active in Stripe as the account's default.
 
 ## Traps
 

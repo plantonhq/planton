@@ -48,7 +48,7 @@ const (
 //
 //	country: DE
 //	type: oss_union
-//	activeFrom: 4102444800  # your start, now or later, in Unix seconds
+//	activeFrom: 1830297600  # your start: now or later, at most five years ahead, in Unix seconds
 //
 // ```
 type StripeTaxRegistration struct {

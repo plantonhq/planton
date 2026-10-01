@@ -61,7 +61,8 @@ message StripePromotionCodeSpec {
 
   // expires_at is the moment after which the code can no longer be redeemed, in Unix seconds
   // (1798761599 is 2026-12-31T23:59:59Z; on Linux `date -u -d 2026-12-31T23:59:59Z +%s` computes
-  // one). It can't be later than the coupon's redeem_by. Changing it REPLACES the code.
+  // one). It can't be later than the coupon's redeem_by, and Stripe refuses one more than five
+  // years ahead. Changing it REPLACES the code.
   optional int64 expires_at = 5 [(buf.validate.field).int64.gt = 0];
 
   // max_redemptions is how many times the code can be redeemed. It can't exceed the coupon's

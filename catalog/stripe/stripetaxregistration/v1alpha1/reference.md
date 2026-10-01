@@ -37,9 +37,10 @@ https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/tax_
 ## Example
 
 ```yaml
-# The canonical example: the EU One-Stop Shop, declared in Germany. Stripe
-# accepts only a future start, and nothing deletes a registration, so the
-# registration is scheduled for 1 January 2100 and expires a day later.
+# The canonical example: the EU One-Stop Shop, declared in Germany, starting
+# 1 January 2028 and expiring a day later. Stripe accepts a start from now to
+# five years ahead, and nothing deletes a registration; the live scenarios
+# take their dates from the run's clock.
 apiVersion: stripe.planton.dev/v1alpha1
 kind: StripeTaxRegistration
 metadata:
@@ -49,8 +50,8 @@ metadata:
 spec:
   country: DE
   type: oss_union
-  activeFrom: 4102444800
-  expiresAt: 4102531200
+  activeFrom: 1830297600
+  expiresAt: 1830384000
 ```
 
 ## Spec Fields
@@ -119,9 +120,9 @@ Allowed values (use exactly as shown):
 
 active_from is when the registration starts, in Unix seconds (1767225600 is
 2026-01-01T00:00:00Z; on Linux `date -u -d 2026-01-01T00:00:00Z +%s` computes one). Stripe
-accepts only now or a future time when the registration is created, so recreating a
-registration in a new account means moving a start date that has passed forward; an imported
-registration keeps Stripe's own value. It updates in place.
+accepts only now or a future time no more than five years ahead when the registration is
+created, so recreating a registration in a new account means moving a start date that has
+passed forward; an imported registration keeps Stripe's own value. It updates in place.
 
 - rule: {"int64":{"gt":"0"}}
 
@@ -130,7 +131,8 @@ registration keeps Stripe's own value. It updates in place.
 `int64` · optional (explicit presence)
 
 expires_at is when the registration stops, in Unix seconds, and the only way to stop Stripe
-collecting in that place. Unset, the registration never expires. It updates in place, but
+collecting in that place. Stripe refuses one more than five years ahead. Unset, the
+registration never expires. It updates in place, but
 removing it from the manifest does not clear it in Stripe: the stored date stays, and a new
 date is the only change.
 

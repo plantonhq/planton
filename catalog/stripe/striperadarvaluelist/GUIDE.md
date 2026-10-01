@@ -37,6 +37,7 @@ Radar rules are written in the Dashboard and name a list as `@alias` -- "Block i
 ## What Changes and Destroy Do
 
 - **Items are their own objects**: adding a value creates an item, removing one deletes it. An item is never edited, only replaced.
+- **Stripe lowers the case of string, email and country values**: `KP` is stored as `kp` and `Fraud@Example.COM` as `fraud@example.com`, so Radar matches them without case. The module sends them already lowered, and `item_ids` stays keyed by the value as you wrote it. Values that differ only by case are one item and are refused. A `case_sensitive_string` list, and lists of ids, fingerprints, card BINs or IP addresses, keep the case you send.
 - **`itemType` replaces everything**: the list and every item are recreated.
 - **Destroy deletes the list and its items**: Stripe refuses while a Radar rule still uses the list. Remove or edit the rule in the Dashboard first.
 
@@ -51,4 +52,4 @@ Import the list by its id (`rsl_...`) and each item by its own id (`rsli_...`); 
 ## Traps
 
 - **Large lists are many objects**: each item is one resource in the module, so a list of thousands plans and applies slowly.
-- **A list that cannot be read fails the plan**: the provider does not treat a missing list as gone. Recover with `tofu state rm stripe_radar_value_list.this` and an apply, which creates a new one.
+- **A list that cannot be read fails the plan**: the provider does not treat a missing list as gone. A list deleted in the Dashboard takes its items with it, so recover by forgetting both, `tofu state rm stripe_radar_value_list.this stripe_radar_value_list_item.this`, then apply, which creates a new list with every item. Forgetting the list alone leaves the items in state, and the apply fails reading them.

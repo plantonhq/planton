@@ -1,6 +1,7 @@
-# The canonical example: the EU One-Stop Shop, declared in Germany. Stripe
-# accepts only a future start, and nothing deletes a registration, so the
-# registration is scheduled for 1 January 2100 and expires a day later.
+# The canonical example: the EU One-Stop Shop, declared in Germany, starting
+# 1 January 2028 and expiring a day later. Stripe accepts a start from now to
+# five years ahead, and nothing deletes a registration; the live scenarios
+# take their dates from the run's clock.
 apiVersion: stripe.planton.dev/v1alpha1
 kind: StripeTaxRegistration
 metadata:
@@ -10,5 +11,5 @@ metadata:
 spec:
   country: DE
   type: oss_union
-  activeFrom: 4102444800
-  expiresAt: 4102531200
+  activeFrom: 1830297600
+  expiresAt: 1830384000

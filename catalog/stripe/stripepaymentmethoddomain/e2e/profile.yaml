@@ -3,13 +3,11 @@ kind: ComponentE2EProfile
 metadata:
   name: stripepaymentmethoddomain
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key).
-  # Destroy only forgets a registration, and the verifier proves the domain is
-  # still in Stripe afterwards. Every run registers a run-named subdomain, so
-  # a forgotten domain never collides with the next run. Awaiting its first
-  # live run, so no provisioner is claimed yet.
+  # Proven live on OpenTofu against the test sandbox: run-named example.com
+  # subdomains register (per-wallet status is not verified), import blind, and
+  # are forgotten on destroy, so each stays in the sandbox under its own name.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

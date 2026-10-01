@@ -48,7 +48,7 @@ spec:
     value: Z4OV52SU
   code: LAUNCH25
   maxRedemptions: 500
-  expiresAt: 4102444800
+  expiresAt: 1830297600  # 1 January 2028; Stripe refuses an expiry more than five years ahead
   restrictions:
     firstTimeTransaction: true
   metadata:
@@ -119,7 +119,8 @@ it REPLACES the code.
 
 expires_at is the moment after which the code can no longer be redeemed, in Unix seconds
 (1798761599 is 2026-12-31T23:59:59Z; on Linux `date -u -d 2026-12-31T23:59:59Z +%s` computes
-one). It can't be later than the coupon's redeem_by. Changing it REPLACES the code.
+one). It can't be later than the coupon's redeem_by, and Stripe refuses one more than five
+years ahead. Changing it REPLACES the code.
 
 - rule: {"int64":{"gt":"0"}}
 

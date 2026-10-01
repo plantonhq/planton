@@ -17,12 +17,17 @@ locals {
   # The spec's default is active; the provider needs the value only to archive.
   active = try(var.spec.active, null) == null ? true : var.spec.active
 
+  # A tier with a flat fee and a per-unit amount of zero is the same tier as the flat fee alone,
+  # and only the flat-fee-alone form survives an import: the provider reads such a tier back
+  # without its zero, and since a tier forces a replacement, the first plan after an import would
+  # replace the price (verified live). So a zero per-unit amount is never sent beside a flat fee.
+  # A free tier (zero per unit, no flat fee) is sent as written and imports cleanly.
   tiers = [
     for t in try(var.spec.tiers, []) : {
       up_to               = t.up_to
       flat_amount         = try(t.flat_amount, null)
       flat_amount_decimal = try(t.flat_amount_decimal, "") != "" ? t.flat_amount_decimal : null
-      unit_amount         = try(t.unit_amount, null)
+      unit_amount         = (try(t.flat_amount, null) != null || try(t.flat_amount_decimal, "") != "") && try(t.unit_amount, null) == 0 ? null : try(t.unit_amount, null)
       unit_amount_decimal = try(t.unit_amount_decimal, "") != "" ? t.unit_amount_decimal : null
     }
   ]
@@ -55,7 +60,7 @@ locals {
           up_to               = t.up_to
           flat_amount         = try(t.flat_amount, null)
           flat_amount_decimal = try(t.flat_amount_decimal, "") != "" ? t.flat_amount_decimal : null
-          unit_amount         = try(t.unit_amount, null)
+          unit_amount         = (try(t.flat_amount, null) != null || try(t.flat_amount_decimal, "") != "") && try(t.unit_amount, null) == 0 ? null : try(t.unit_amount, null)
           unit_amount_decimal = try(t.unit_amount_decimal, "") != "" ? t.unit_amount_decimal : null
         }
       ]

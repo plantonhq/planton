@@ -341,9 +341,17 @@ The following 21 rules execute in order. Each rule is atomic and can be run indi
     complete, protovalidate-valid example manifest -- embedded as the reference page's
     Example block AND deployed by the E2E framework, which treats its presence as the
     testability marker). Because it round-trips into its typed message, no run token can
-    stand in a number field there; a date the vendor requires in the future is a literal
-    far enough ahead that no lane goes stale. Stripe's convention is 1 January 2100
-    (`4102444800`), with any expiry a day later, in the manifest and its scenarios alike.
+    stand in a number field there, so a date the vendor requires in the future is a
+    near-future literal the vendor accepts, with an inline note saying what range it takes.
+    A scenario under `e2e/scenarios/` is expanded before it is parsed, so its dates come
+    from the lane's clock instead: `${E2E_UNIX_TIME_PLUS:<offset>}` (days then a duration,
+    like `30d` or `1m10s`) is the lane's start plus the offset, the same instant in every
+    manifest one lane expands. A vendor that bounds how far ahead a date may sit makes every
+    literal go stale (Stripe refuses a promotion code's expiry or a tax registration's
+    start more than five years out). An object that outlives destroy, and that the vendor
+    holds one of per place, must be left ended by its lane: Stripe keeps one tax
+    registration per country or state until it has ended, so the scenarios start a minute
+    after the lane and expire seconds later.
 
 ### Phase 5: Pulumi Implementation (Rules 009-011)
 

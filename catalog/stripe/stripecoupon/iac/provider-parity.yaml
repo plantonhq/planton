@@ -10,6 +10,12 @@
 # references (applies_to_products), which the module writes into the
 # provider's applies_to block, and models the other currencies as a map keyed
 # by currency, which the module writes into each entry's key.
+#
+# The tracker is OpenTofu's built-in terraform_data: Stripe never returns
+# applies_to or currency_options to the provider's read, and refuses a changed
+# amount for an existing currency, so the coupon ignores both after create and
+# the tracker replaces the coupon when either changes. It has no provider
+# surface.
 resources:
   stripe_coupon:
     mappings:
@@ -20,3 +26,5 @@ resources:
     exclusions:
       - arg: currency_options.key
         reason: the currency is the key of the spec's currency_options map, which the module writes into each entry's key -- not a field of its own
+  terraform_data:
+    internal: the module's tracker (OpenTofu's built-in store) -- it holds the products the coupon applies to and its amounts in other currencies, which Stripe never returns to the provider's read, so a change to either replaces the coupon while an imported coupon is left untouched; it has no provider surface

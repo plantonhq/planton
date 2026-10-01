@@ -49,6 +49,8 @@ func TestClient_ReadResource(t *testing.T) {
 			_, _ = w.Write([]byte(`{"id":"we_1","status":"enabled"}`))
 		case "/v2/core/event_destinations/ed_1":
 			_, _ = w.Write([]byte(`{"id":"ed_1","status":"enabled"}`))
+		case "/v1/products/prod_1/features/prodft_deleted":
+			_, _ = w.Write([]byte(`{"id":"prodft_deleted","object":"product_feature","deleted":true}`))
 		case "/v1/webhook_endpoints/we_gone":
 			w.WriteHeader(http.StatusNotFound)
 			_, _ = w.Write([]byte(`{"error":{"message":"No such webhook endpoint"}}`))
@@ -71,6 +73,9 @@ func TestClient_ReadResource(t *testing.T) {
 	if _, exists, err := client.ReadResource("v1/webhook_endpoints/we_gone"); err != nil || exists {
 		t.Errorf("a 404 is an honest absence, got %v %v", exists, err)
 	}
+	if _, exists, err := client.ReadResource("v1/products/prod_1/features/prodft_deleted"); err != nil || exists {
+		t.Errorf("a deleted-object stub is an honest absence, got %v %v", exists, err)
+	}
 	if _, _, err := client.ReadResource("v1/webhook_endpoints/we_denied"); err == nil || !strings.Contains(err.Error(), "Enabling Webhook Endpoints Read") {
 		t.Errorf("any other failure carries Stripe's message, got %v", err)
 	}
@@ -86,8 +91,8 @@ func TestHarness_VerifiesFoldedChildren(t *testing.T) {
 			_, _ = w.Write([]byte(`{"id":"prod_1","active":` + map[bool]string{false: "true", true: "false"}[featureLinkGone] + `}`))
 		case "/v1/products/prod_1/features/prodft_1":
 			if featureLinkGone {
-				w.WriteHeader(http.StatusNotFound)
-				_, _ = w.Write([]byte(`{"error":{"message":"No such product feature"}}`))
+				// What Stripe answers for a deleted feature link (verified live): a 200 stub, not 404.
+				_, _ = w.Write([]byte(`{"id":"prodft_1","object":"product_feature","deleted":true}`))
 				return
 			}
 			_, _ = w.Write([]byte(`{"id":"prodft_1"}`))

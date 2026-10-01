@@ -12,7 +12,7 @@ spec:
     value: Z4OV52SU
   code: LAUNCH25
   maxRedemptions: 500
-  expiresAt: 4102444800
+  expiresAt: 1830297600  # 1 January 2028; Stripe refuses an expiry more than five years ahead
   restrictions:
     firstTimeTransaction: true
   metadata:

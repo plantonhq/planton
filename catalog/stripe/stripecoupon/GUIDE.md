@@ -42,7 +42,9 @@ Stripe never changes a coupon's discount, currency, duration, months, redemption
 2. Planton creates the new coupon, with a new id.
 3. Every StripePromotionCode that references the coupon is replaced on the same apply, so its code keeps working on the new coupon.
 
-A coupon's `name`, `metadata` and `currencyOptions` change in place.
+A coupon's `name` and `metadata` change in place. Changing `currencyOptions` replaces it too: Stripe refuses a new amount for a currency the coupon already has.
+
+Stripe also never hands a coupon's products or its amounts in other currencies back to the provider's read. The module keeps both in a small tracker beside the coupon, so a change to either still replaces it, and an imported coupon keeps its id: the first apply after an import creates the tracker and leaves the coupon untouched.
 
 ## What Destroy Does
 

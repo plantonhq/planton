@@ -4,6 +4,8 @@ package aa_e2e
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"sync"
@@ -11,6 +13,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/stripe/aa_e2e/verify"
 	"github.com/plantonhq/planton/e2e/framework/provider"
+	"github.com/plantonhq/planton/e2e/framework/runner"
 	"github.com/plantonhq/planton/pkg/iac/provider/stripe/stripekey"
 )
 
@@ -30,16 +33,23 @@ const (
 type Harness struct {
 	client *Client
 
-	// mu guards deployedIDs and deployedChildren, written by VerifyDeployed and read by
-	// VerifyDestroyed.
+	// mu guards the deployed maps, written by VerifyDeployed and read by VerifyDestroyed, the
+	// upgrade's judgment and the out-of-band act.
 	mu               sync.Mutex
 	deployedIDs      map[string]string            // manifest path + component -> Stripe id
 	deployedChildren map[string]map[string]string // manifest path + component -> child key -> Stripe id
+	// deployedSecrets holds a SHA-256 of each signing secret, never the secret, so a recreated or
+	// replaced object can be shown to have come with a new one.
+	deployedSecrets map[string]string // manifest path + component -> hex digest
 }
 
 // NewHarness creates a Stripe harness; credentials are read in Setup.
 func NewHarness() *Harness {
-	return &Harness{deployedIDs: make(map[string]string), deployedChildren: make(map[string]map[string]string)}
+	return &Harness{
+		deployedIDs:      make(map[string]string),
+		deployedChildren: make(map[string]map[string]string),
+		deployedSecrets:  make(map[string]string),
+	}
 }
 
 // Setup refuses any key that is not a test-mode key, before the first API call, then proves the
@@ -88,19 +98,135 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 		}
 	}
 
+	// A second act declared in place may follow the import round trip, whose state carries no
+	// signing secret (Stripe returns it only at creation), so only an object this deploy created
+	// must report one.
+	firstAct, _ := ctx.Value(provider.FirstActManifestPathKey{}).(string)
+	createdHere := firstAct == "" || upgradeExpectation(ctx) != provider.UpgradeInPlace
+	secretDigest, err := secretDigestOf(component, v, outputs, createdHere)
+	if err != nil {
+		return err
+	}
+
 	key := componentKey(ctx, component)
 	h.mu.Lock()
+	previousID, previousSecret := h.deployedIDs[key], h.deployedSecrets[key]
 	h.deployedIDs[key] = id
 	h.deployedChildren[key] = children
+	h.deployedSecrets[key] = secretDigest
 	h.mu.Unlock()
 
 	if err := v.VerifyExists(h.client, id); err != nil {
 		return err
 	}
 	if folds {
-		return cv.VerifyChildrenExist(h.client, id, children)
+		if err := cv.VerifyChildrenExist(h.client, id, children); err != nil {
+			return err
+		}
+	}
+	// The same manifest deployed again with a new object is a recreation (the out-of-band act's
+	// recovery): a signing secret must be new with it.
+	if previousID != "" && previousID != id && secretDigest != "" && secretDigest == previousSecret {
+		return errors.Errorf("%s: %s was recreated as %s but reports the old object's signing secret", component, previousID, id)
+	}
+	if firstAct != "" {
+		return h.verifyUpgrade(ctx, v, component, firstAct, id, secretDigest)
 	}
 	return nil
+}
+
+// upgradeExpectation reads the second act's declared expectation from the manifest on the
+// context ("" when there is none, which verifyUpgrade refuses).
+func upgradeExpectation(ctx context.Context) string {
+	secondAct, _ := ctx.Value(provider.ManifestPathKey{}).(string)
+	expectation, _ := runner.ManifestAnnotation(secondAct, provider.ExpectUpgradeAnnotation)
+	return expectation
+}
+
+// verifyUpgrade judges a second act against the first: the second manifest declares whether the
+// upgrade kept the object (in-place) or replaced it, and only Stripe's ids can tell. A replaced
+// object must meet its kind's delete truth -- an old price archived, an old endpoint gone, an old
+// tax registration still collecting -- and a signing secret changes with the object and only
+// with it. A second act that declares nothing is refused, never passed unjudged.
+func (h *Harness) verifyUpgrade(ctx context.Context, v verify.Verifier, component, firstAct, id, secretDigest string) error {
+	expectation := upgradeExpectation(ctx)
+	firstKey := firstAct + "::" + component
+	h.mu.Lock()
+	firstID, firstSecret := h.deployedIDs[firstKey], h.deployedSecrets[firstKey]
+	h.mu.Unlock()
+	if firstID == "" {
+		return errors.Errorf("%s: no id stored for the first act (%s)", component, firstAct)
+	}
+
+	switch expectation {
+	case provider.UpgradeInPlace:
+		if id != firstID {
+			return errors.Errorf("%s: the upgrade is declared %s, but Stripe now holds %s where the first act created %s: the change replaced it",
+				component, provider.UpgradeInPlace, id, firstID)
+		}
+		// An empty secret here is the imported state's (the round trip ran before this act).
+		if secretDigest != "" && secretDigest != firstSecret {
+			return errors.Errorf("%s: the object was updated in place, but its signing secret changed", component)
+		}
+		return nil
+	case provider.UpgradeReplaced:
+		if id == firstID {
+			return errors.Errorf("%s: the upgrade is declared %s, but %s kept its id: the change was applied in place", component, provider.UpgradeReplaced, id)
+		}
+		if secretDigest != "" && secretDigest == firstSecret {
+			return errors.Errorf("%s: %s replaced %s but reports the old object's signing secret", component, id, firstID)
+		}
+		return errors.Wrapf(v.VerifyDestroyed(h.client, firstID), "%s: the object the upgrade replaced (%s)", component, firstID)
+	default:
+		return errors.Errorf("%s: the second act must declare %s: %s or %s (got %q)",
+			component, provider.ExpectUpgradeAnnotation, provider.UpgradeInPlace, provider.UpgradeReplaced, expectation)
+	}
+}
+
+// DeleteOutOfBand deletes the deployed object through Stripe's API, the way a person in the
+// Dashboard would, for the out-of-band act. Only a kind Stripe deletes outright qualifies.
+func (h *Harness) DeleteOutOfBand(ctx context.Context, tc *provider.ComponentTestContext) error {
+	v, err := verify.GetVerifier(tc.Component)
+	if err != nil {
+		return err
+	}
+	d, ok := v.(verify.OutOfBandDeletable)
+	if !ok {
+		return errors.Errorf("%s: Stripe keeps this object after its destroy (deactivated or forgotten), so the out-of-band act does not apply", tc.Component)
+	}
+	key := componentKey(ctx, tc.Component)
+	h.mu.Lock()
+	id := h.deployedIDs[key]
+	h.mu.Unlock()
+	if id == "" {
+		return errors.Errorf("no stored id for %s -- VerifyDeployed may not have run", tc.Component)
+	}
+	if err := d.DeleteOutOfBand(h.client, id); err != nil {
+		return err
+	}
+	fmt.Printf("  [stripe] deleted %s outside Planton\n", id)
+	return nil
+}
+
+// secretDigestOf checks a kind's signing secret, when it reports one, and returns its SHA-256 in
+// hex ("" when there is none). A secret is required only of an object this deploy created
+// (createdHere); any reported secret must be one. The secret itself never leaves this function.
+func secretDigestOf(component string, v verify.Verifier, outputs map[string]interface{}, createdHere bool) (string, error) {
+	sv, ok := v.(verify.SecretVerifier)
+	if !ok || sv.SecretOutput() == "" {
+		return "", nil
+	}
+	secret, _ := outputs[sv.SecretOutput()].(string)
+	if secret != "" || createdHere {
+		if err := verify.CheckSecretShape(component, sv, secret); err != nil {
+			return "", err
+		}
+	}
+	if secret == "" {
+		return "", nil
+	}
+	sum := sha256.Sum256([]byte(secret))
+	return hex.EncodeToString(sum[:]), nil
 }
 
 // VerifyDestroyed checks what destroy left, which differs by kind: a deleted endpoint is gone,

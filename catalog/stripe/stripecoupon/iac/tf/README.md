@@ -4,7 +4,8 @@ OpenTofu module that declares one Stripe coupon. Stripe kinds run on OpenTofu on
 
 ## What It Creates
 
-- `stripe_coupon` -- the coupon. Only `name`, `metadata` and `currency_options` update in place; any other change replaces it (the old coupon is deleted, the new one created). Destroy deletes it; customers who already applied it keep their discount.
+- `stripe_coupon` -- the coupon. Only `name` and `metadata` update in place; any other change replaces it (the old coupon is deleted, the new one created). Destroy deletes it; customers who already applied it keep their discount.
+- `terraform_data.replace_triggers` -- holds the products the coupon applies to and its amounts in other currencies, which Stripe never returns to the provider's read. The coupon ignores both after create, and a change to either replaces it through this tracker, so an imported coupon is adopted untouched.
 
 ## Prerequisites
 
