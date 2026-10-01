@@ -104,6 +104,43 @@ spec:
 
 With `enabled: true` alone, the operator derives a magic-DNS hostname from your ingress controller's published address — a working URL with zero DNS setup, unique to the platform's name and namespace. The desktop app offers this whole journey as a guided experience: pick a cluster from your kubeconfig, preflight it, choose the front door, and watch the install converge — driving the exact same chart underneath.
 
+## Runners outside the cluster
+
+Every install runs one runner inside its own cluster, and that runner is enough when everything you deploy to is reachable from there. Turn on remote runners when some work has to run somewhere else: a laptop that can reach a private network, or a runner inside another cloud account or site.
+
+A remote runner speaks native gRPC, which only a Gateway API front door carries. Attach the platform to a Gateway your cluster already runs (Istio, Envoy Gateway, Cilium, or a cloud Gateway) and turn the capability on:
+
+```yaml
+spec:
+  ingress:
+    enabled: true
+    hostname: planton.example.com
+    gatewayRef: {name: public, namespace: gateway-system}
+  remoteRunners:
+    enabled: true
+```
+
+**What this opens.** Nothing of the deploy queue, which never leaves the cluster. The control plane answers a remote runner's work calls on the queue's behalf. It checks the runner's own key on every call and admits it only to its own queues, the work dispatched to it, and the tasks it polled. Any other caller, and any other call, is refused with a sentence saying why.
+
+**How a runner joins.** Create a runner token once (Organization Settings, then Runner Tokens, or `planton runner token create <token-name>`), then start the runner pointed at your front door:
+
+```bash
+helm install laptop-runner oci://ghcr.io/plantonhq/charts/planton-runner \
+  --namespace planton-runner --create-namespace \
+  --set enrollment.token=prt_... \
+  --set enrollment.endpoint=planton.example.com:443
+```
+
+The runner enrolls itself and appears in your organization's Runners list the moment it joins. The token only admits runners; each runner gets its own identity, revocable on its own ([how enrollment works](/docs/runner/deployment)).
+
+**When a runner is refused.** With remote runners off, a runner that tries to join from outside is told:
+
+> this instance advertises no endpoint a remote runner could poll for work, so it cannot admit one -- ask the instance operator to enable remote runners
+
+With remote runners on but the platform served through an Ingress or the built-in port-forward gateway, the capability stays closed, and the platform's ingress status says why:
+
+> Remote runners are not served through this front door: a runner speaks native gRPC, which only a Gateway API front door carries. Attach the platform to a Gateway (ingress.gatewayRef) to open it, or leave remoteRunners off.
+
 ## Several Plantons, one cluster
 
 Platforms are namespaced, and one operator serves the whole cluster — it watches every namespace. Teams can run separate Planton platforms side by side (staging and production, or one per team), each fully confined to its own namespace:
