@@ -1,0 +1,336 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdeploypolicy.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDeployPolicySpec declares a Cloud Deploy deploy policy
+// (`google_clouddeploy_deploy_policy`): rollout restrictions -- freeze
+// windows -- that block chosen actions on chosen delivery pipelines and
+// targets during chosen times.
+//
+// A policy is how a team says "no production deploys on Friday
+// afternoons" or "nothing ships over the year-end freeze". Its selectors
+// pick the pipelines and targets it governs (by ID, by "*" for all in
+// the location, or by labels); its rules say which actions are blocked,
+// for whom, and when. One policy can govern many pipelines, and one
+// pipeline can fall under many policies, so the policy is its own block
+// rather than part of a pipeline.
+//
+// A blocked action fails with a policy violation unless whoever runs it
+// overrides the policy by name (which needs the
+// clouddeploy.deployPolicies.override permission) -- the override is the
+// emergency door, the policy is the default.
+//
+// Important behavioral notes:
+//
+//   - The policy lives in the same project and location as the pipelines
+//     and targets it governs; selectors never reach across locations.
+//   - location and deploy_policy_id are create-time decisions; everything
+//     else, including rules and selectors, updates in place.
+//   - suspended keeps the policy without enforcing it -- the way to lift a
+//     freeze early without deleting its definition.
+message GcpDeployPolicySpec {
+  option (buf.validate.message).cel = {
+    id: "spec.unique_rule_ids"
+    expression: "this.rules.filter(r, has(r.rollout_restriction)).map(r, r.rollout_restriction.id).unique()"
+    message: "rollout_restriction.id must be unique within the policy"
+  };
+
+  // The project the policy lives in -- the project of the pipelines and
+  // targets it governs: a literal project ID or a GcpProject reference.
+  // Empty means the provider's default project. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The region the policy lives in, e.g. "us-central1" -- the region of
+  // the pipelines and targets it governs. Required. Immutable.
+  string location = 2 [(buf.validate.field).required = true];
+
+  // The policy's ID, unique in the project and location: 1-63 lowercase
+  // letters, digits, and hyphens, starting with a letter and not ending
+  // with a hyphen. Defaults to metadata.name. Immutable.
+  string deploy_policy_id = 3 [(buf.validate.field).cel = {
+    id: "deploy_policy_id.format"
+    message: "deploy_policy_id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+  }];
+
+  // A description of the policy, up to 255 characters -- say what the
+  // freeze is for and who to ask for an override.
+  string description = 4 [(buf.validate.field).string.max_len = 255];
+
+  // Labels on the policy resource. The platform attribution labels are
+  // added on top and win on key conflicts. These label the policy itself;
+  // to select pipelines or targets by label, use selectors[].
+  map<string, string> labels = 5;
+
+  // Annotations on the policy (user metadata Cloud Deploy never reads).
+  // Only the keys declared here are managed.
+  map<string, string> annotations = 6;
+
+  // True keeps the policy but stops enforcing it: actions it would block
+  // go through. Use it to lift a freeze early without deleting it.
+  bool suspended = 7;
+
+  // What the policy restricts. At least one rule; a blocked action is one
+  // that any rule matches.
+  repeated GcpDeployPolicyRule rules = 8 [(buf.validate.field).repeated.min_items = 1];
+
+  // Which pipelines and targets the policy applies to. At least one
+  // selector; the policy applies when ANY selector matches, and within a
+  // selector EVERY attribute given must match (its delivery_pipeline and
+  // its target, by ID and by labels).
+  repeated GcpDeployPolicySelector selectors = 9 [(buf.validate.field).repeated.min_items = 1];
+
+  // What destroy does:
+  //   "" / "DELETE" -- the policy is deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the policy leaves management and stays in Google
+  string deletion_policy = 10 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// One rule of the policy.
+message GcpDeployPolicyRule {
+  // A rollout restriction: which actions are blocked, for whom, and when.
+  // It is the only kind of rule Cloud Deploy defines, so set it on every
+  // rule -- a rule without one restricts nothing.
+  GcpDeployPolicyRolloutRestriction rollout_restriction = 1;
+}
+
+// Which actions are blocked, for whom, and when.
+message GcpDeployPolicyRolloutRestriction {
+  // The restriction's ID, unique in the policy and shown in the violation
+  // message: 1-63 lowercase letters, digits, and hyphens, starting with a
+  // letter and not ending with a hyphen. Required.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "rollout_restriction.id.format"
+      message: "rollout_restriction.id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // The rollout actions blocked. Empty blocks every action:
+  //   "ADVANCE"          -- advancing a rollout to its next phase
+  //   "APPROVE"          -- approving a rollout
+  //   "CANCEL"           -- cancelling a rollout
+  //   "CREATE"           -- creating a rollout (a deploy or a promotion)
+  //   "IGNORE_JOB"       -- ignoring a failed job
+  //   "RETRY_JOB"        -- retrying a failed job
+  //   "ROLLBACK"         -- rolling a target back
+  //   "TERMINATE_JOBRUN" -- terminating a running job
+  repeated string actions = 2 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {
+        in: [
+          "ADVANCE",
+          "APPROVE",
+          "CANCEL",
+          "CREATE",
+          "IGNORE_JOB",
+          "RETRY_JOB",
+          "ROLLBACK",
+          "TERMINATE_JOBRUN"
+        ]
+      }
+    }
+  }];
+
+  // Who is blocked. Empty blocks both:
+  //   "USER"              -- a person or a script calling Cloud Deploy
+  //   "DEPLOY_AUTOMATION" -- the pipeline's own automations (promotions,
+  //                          advances, repairs)
+  repeated string invokers = 3 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {
+        in: [
+          "USER",
+          "DEPLOY_AUTOMATION"
+        ]
+      }
+    }
+  }];
+
+  // When the actions are blocked. Required.
+  GcpDeployPolicyTimeWindows time_windows = 4 [(buf.validate.field).required = true];
+}
+
+// The times a restriction is in force, in one time zone. The restriction
+// applies during any of its windows.
+message GcpDeployPolicyTimeWindows {
+  // The IANA time zone every window is read in, e.g. "America/New_York"
+  // or "Europe/Berlin". Required.
+  string time_zone = 1 [(buf.validate.field).required = true];
+
+  // Dated windows that happen once, e.g. a year-end freeze from December
+  // 20 at 17:00 to January 3 at 09:00.
+  repeated GcpDeployPolicyOneTimeWindow one_time_windows = 2;
+
+  // Windows that recur every week, e.g. every Friday from 15:00 to 24:00,
+  // or all of Saturday and Sunday.
+  repeated GcpDeployPolicyWeeklyWindow weekly_windows = 3;
+}
+
+// A window that happens once, from a start date and time to an end date
+// and time.
+message GcpDeployPolicyOneTimeWindow {
+  // The first day of the window. Required.
+  GcpDeployPolicyDate start_date = 1 [(buf.validate.field).required = true];
+
+  // The time on start_date the window opens (inclusive); 00:00 is the
+  // beginning of the day. Required.
+  GcpDeployPolicyTimeOfDay start_time = 2 [(buf.validate.field).required = true];
+
+  // The last day of the window. Required.
+  GcpDeployPolicyDate end_date = 3 [(buf.validate.field).required = true];
+
+  // The time on end_date the window closes (exclusive); 24:00 is the end
+  // of the day. Required.
+  GcpDeployPolicyTimeOfDay end_time = 4 [(buf.validate.field).required = true];
+}
+
+// A window that recurs every week.
+message GcpDeployPolicyWeeklyWindow {
+  option (buf.validate.message).cel = {
+    id: "weekly_window.start_and_end_together"
+    expression: "has(this.start_time) == has(this.end_time)"
+    message: "a weekly window sets both start_time and end_time, or neither (neither blocks the whole day)"
+  };
+
+  // The days the window recurs on: MONDAY, TUESDAY, WEDNESDAY, THURSDAY,
+  // FRIDAY, SATURDAY, SUNDAY. Empty means every day.
+  repeated string days_of_week = 1 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {
+        in: [
+          "MONDAY",
+          "TUESDAY",
+          "WEDNESDAY",
+          "THURSDAY",
+          "FRIDAY",
+          "SATURDAY",
+          "SUNDAY"
+        ]
+      }
+    }
+  }];
+
+  // The time each day the window opens (inclusive); 00:00 is the
+  // beginning of the day. Set together with end_time; leave both unset to
+  // block the whole of each day.
+  GcpDeployPolicyTimeOfDay start_time = 2;
+
+  // The time each day the window closes (exclusive); 24:00 is midnight at
+  // the end of the day. Set together with start_time.
+  GcpDeployPolicyTimeOfDay end_time = 3;
+}
+
+// A calendar date (Google's google.type.Date).
+message GcpDeployPolicyDate {
+  // The year, 1-9999.
+  int32 year = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 9999
+  }];
+
+  // The month, 1-12.
+  int32 month = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 12
+  }];
+
+  // The day of the month, 1-31 and valid for the month.
+  int32 day = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 31
+  }];
+}
+
+// A time of day (Google's google.type.TimeOfDay). Unset parts are zero, so
+// {hours: 17} is 17:00:00.
+message GcpDeployPolicyTimeOfDay {
+  // Hours, 0-23; 24 is accepted for the end of the day.
+  int32 hours = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 24
+  }];
+
+  // Minutes, 0-59.
+  int32 minutes = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 59
+  }];
+
+  // Seconds, 0-59 (60 where a leap second is allowed).
+  int32 seconds = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 60
+  }];
+
+  // Fractions of a second in nanoseconds, 0-999999999.
+  int32 nanos = 4 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 999999999
+  }];
+}
+
+// Which pipelines and targets one selector matches. Every attribute given
+// must match; an attribute left out matches anything.
+message GcpDeployPolicySelector {
+  // The delivery pipelines this selector matches.
+  GcpDeployPolicyDeliveryPipelineSelector delivery_pipeline = 1;
+
+  // The targets this selector matches.
+  GcpDeployPolicyTargetSelector target = 2;
+}
+
+// Delivery pipelines matched by ID, by labels, or both.
+message GcpDeployPolicyDeliveryPipelineSelector {
+  // The pipeline's ID (the last segment of its name, in the policy's
+  // project and location): a GcpDeliveryPipeline reference, a literal ID,
+  // or "*" for every pipeline in the location. Empty matches by labels
+  // alone.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeliveryPipeline,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.delivery_pipeline_id",
+    (buf.validate.field).cel = {
+      id: "delivery_pipeline.id.format"
+      message: "delivery_pipeline.id must be a pipeline ID (lowercase letters, digits, hyphens) or \"*\""
+      expression: "!has(this.value) || this.value == '*' || this.value.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // Labels a pipeline must carry, all of them, to match.
+  map<string, string> labels = 2;
+}
+
+// Targets matched by ID, by labels, or both.
+message GcpDeployPolicyTargetSelector {
+  // The target's ID (the last segment of its name, in the policy's
+  // project and location): a GcpDeployTarget reference, a literal ID, or
+  // "*" for every target in the location. Empty matches by labels alone.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeployTarget,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.target_id",
+    (buf.validate.field).cel = {
+      id: "target.id.format"
+      message: "target.id must be a target ID (lowercase letters, digits, hyphens) or \"*\""
+      expression: "!has(this.value) || this.value == '*' || this.value.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // Labels a target must carry, all of them, to match.
+  map<string, string> labels = 2;
+}

@@ -166,8 +166,12 @@ variable "spec" {
       # Cloud Build settings for the source build.
       build_spec = optional(object({
         # The Cloud Build private worker pool the build runs in, as
-        # projects/{project}/locations/{location}/workerPools/{pool}. A literal
-        # today: the catalog's Cloud Build blocks arrive with their own family.
+        # projects/{project}/locations/{location}/workerPools/{pool}: a
+        # GcpCloudBuildWorkerPool reference (its name output), or the literal
+        # name. Use one when the build must reach a private network (a private
+        # package index, an internal artifact store). Empty runs the build on
+        # Google's default pool.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         worker_pool = optional(string, "")
       }))
 

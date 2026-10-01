@@ -1,0 +1,26 @@
+# GcpCloudBuildWorkerPool scenario: a private pool with no network block
+# and a small machine type, in the harness project. Free: a pool bills only
+# for build minutes, and no build runs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildWorkerPool
+metadata:
+  name: planton-oss-e2e-gcpcbwp-default
+  id: planton-oss-e2e-gcpcbwp-default
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudbuildworkerpool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  workerPoolId: planton-e2e-cbwp-${E2E_RUN_ID}
+  displayName: Planton E2E pool
+  annotations:
+    purpose: e2e
+  workerConfig:
+    machineType: e2-standard-2
+    diskSizeGb: 100

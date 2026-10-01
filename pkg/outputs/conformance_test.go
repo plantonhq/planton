@@ -4625,6 +4625,104 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "self_link", "family", "disk_size_gb"},
 		},
 		{
+			// GcpCloudBuildWorkerPool: the pool name triggers and Cloud
+			// Deploy targets run their builds on.
+			name: "GcpCloudBuildWorkerPool",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildWorkerPool,
+			rawOutputs: map[string]interface{}{
+				"name":           "projects/acme-ci/locations/us-central1/workerPools/private-builds",
+				"worker_pool_id": "private-builds",
+				"state":          "RUNNING",
+				"uid":            "4f3e2d1c-0b9a-8f7e-6d5c-4b3a2f1e0d9c",
+			},
+			mustPopulate: []string{"name", "worker_pool_id", "state", "uid"},
+		},
+		{
+			// GcpCloudBuildConnection: the connection name repositories
+			// link through, and how far its installation has come.
+			name: "GcpCloudBuildConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildConnection,
+			rawOutputs: map[string]interface{}{
+				"name":                    "projects/acme-ci/locations/us-central1/connections/acme-github",
+				"connection_id":           "acme-github",
+				"installation_stage":      "COMPLETE",
+				"installation_action_uri": "",
+			},
+			mustPopulate: []string{"name", "connection_id", "installation_stage"},
+		},
+		{
+			// GcpCloudBuildRepository: the repository name triggers and
+			// custom target types build from.
+			name: "GcpCloudBuildRepository",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/acme-ci/locations/us-central1/connections/acme-github/repositories/orders",
+				"repository_id": "orders",
+				"remote_uri":    "https://github.com/acme/orders.git",
+			},
+			mustPopulate: []string{"name", "repository_id", "remote_uri"},
+		},
+		{
+			// GcpCloudBuildTrigger: Google's generated trigger ID, the
+			// trigger's name, and its full resource ID (global triggers
+			// carry no locations segment).
+			name: "GcpCloudBuildTrigger",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildTrigger,
+			rawOutputs: map[string]interface{}{
+				"id":         "projects/acme-ci/locations/us-central1/triggers/0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b",
+				"trigger_id": "0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b",
+				"name":       "orders-main",
+			},
+			mustPopulate: []string{"id", "trigger_id", "name"},
+		},
+		{
+			// GcpDeployTarget: the bare target ID pipeline stages and
+			// policies select by, and the full name.
+			name: "GcpDeployTarget",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeployTarget,
+			rawOutputs: map[string]interface{}{
+				"name":      "projects/acme-delivery/locations/us-central1/targets/prod",
+				"target_id": "prod",
+				"uid":       "a1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
+			},
+			mustPopulate: []string{"name", "target_id", "uid"},
+		},
+		{
+			// GcpDeliveryPipeline: the pipeline ID deploy policies select
+			// by, and the full name.
+			name: "GcpDeliveryPipeline",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeliveryPipeline,
+			rawOutputs: map[string]interface{}{
+				"name":                 "projects/acme-delivery/locations/us-central1/deliveryPipelines/orders",
+				"delivery_pipeline_id": "orders",
+				"uid":                  "d4e5f6a7-b8c9-4d0e-9f1a-3b4c5d6e7f80",
+			},
+			mustPopulate: []string{"name", "delivery_pipeline_id", "uid"},
+		},
+		{
+			// GcpDeployPolicy: the policy's full name, ID, and uid.
+			name: "GcpDeployPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeployPolicy,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/acme-delivery/locations/us-central1/deployPolicies/weekend-freeze",
+				"deploy_policy_id": "weekend-freeze",
+				"uid":              "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+			},
+			mustPopulate: []string{"name", "deploy_policy_id", "uid"},
+		},
+		{
+			// GcpDeployCustomTargetType: the full name custom targets
+			// reference.
+			name: "GcpDeployCustomTargetType",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeployCustomTargetType,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/acme-delivery/locations/us-central1/customTargetTypes/vertex-endpoint",
+				"custom_target_type_id": "vertex-endpoint",
+				"uid":                   "c3d4e5f6-a7b8-4c9d-8e0f-2a3b4c5d6e7f",
+			},
+			mustPopulate: []string{"name", "custom_target_type_id", "uid"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

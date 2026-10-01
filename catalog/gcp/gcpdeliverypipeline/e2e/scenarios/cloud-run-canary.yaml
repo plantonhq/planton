@@ -1,0 +1,52 @@
+# GcpDeliveryPipeline scenario: a single Cloud Run stage on the canary
+# strategy -- 25% then 50% with automatic traffic control and verify on
+# each phase -- plus predeploy and postdeploy actions. Free: no release is
+# created, so no canary ever runs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeliveryPipeline
+metadata:
+  name: planton-oss-e2e-gcpcdpip-canary
+  id: planton-oss-e2e-gcpcdpip-canary
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeliverypipeline
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-prod.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  deliveryPipelineId: planton-e2e-cdpip-canary-${E2E_RUN_ID}
+  description: Ephemeral canary delivery pipeline created by the Planton E2E harness; safe to delete
+  suspended: true
+  serialPipeline:
+    stages:
+      - targetId:
+          valueFrom:
+            kind: GcpDeployTarget
+            name: planton-oss-e2e-gcpcdpip-target-prod
+            fieldPath: status.outputs.target_id
+        strategy:
+          canary:
+            runtimeConfig:
+              cloudRun:
+                automaticTrafficControl: true
+                canaryRevisionTags:
+                  - canary
+                stableRevisionTags:
+                  - stable
+            canaryDeployment:
+              percentages:
+                - 25
+                - 50
+              verify: true
+              predeploy:
+                actions:
+                  - migrate-db
+              postdeploy:
+                actions:
+                  - notify
+  deletionPolicy: DELETE

@@ -1,0 +1,28 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpdeploypolicy
+spec:
+  gcp:
+    groups:
+      - purpose: EnableCloudDeployApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling clouddeploy.googleapis.com on the policy's project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageDeployPolicy
+        permissions:
+          - clouddeploy.deployPolicies.create
+          - clouddeploy.deployPolicies.get
+          - clouddeploy.deployPolicies.update
+          - clouddeploy.deployPolicies.delete
+          - clouddeploy.operations.get
+        provenance: derived
+        notes: Covers google_clouddeploy_deploy_policy (Pulumi clouddeploy.DeployPolicy) -- create, read on every refresh, in-place PATCH updates, and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Create, update, and delete return long-running operations the provider polls with clouddeploy.operations.get. roles/clouddeploy.admin contains every permission listed.

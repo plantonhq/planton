@@ -1054,6 +1054,16 @@ Fields that can point at another resource's outputs:
 | `spec.notificationChannels` | GcpMonitoringNotificationChannel | `status.outputs.channel_name` |
 | `spec.alertStrategy.notificationChannelStrategy[].notificationChannelNames` | GcpMonitoringNotificationChannel | `status.outputs.channel_name` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpDeliveryPipeline | `spec.serialPipeline.stages[].strategy.standard.analysis.googleCloud.alertPolicyChecks[].alertPolicies` | `status.outputs.policy_name` |
+| GcpDeliveryPipeline | `spec.serialPipeline.stages[].strategy.canary.canaryDeployment.analysis.googleCloud.alertPolicyChecks[].alertPolicies` | `status.outputs.policy_name` |
+| GcpDeliveryPipeline | `spec.serialPipeline.stages[].strategy.canary.customCanaryDeployment.phaseConfigs[].analysis.googleCloud.alertPolicyChecks[].alertPolicies` | `status.outputs.policy_name` |
+
 ## See Also
 
 - [Overview](../README.md)

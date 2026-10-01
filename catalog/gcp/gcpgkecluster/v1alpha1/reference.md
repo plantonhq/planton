@@ -2561,6 +2561,10 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpDataprocCluster | `spec.virtualClusterConfig.kubernetesClusterConfig.gkeClusterConfig.gkeClusterTarget` | `status.outputs.cluster_id` |
+| GcpDeployTarget | `spec.gke.cluster` | `status.outputs.cluster_id` |
+| GcpDeployTarget | `spec.anthosCluster.membership` | `status.outputs.fleet_membership` |
+| GcpDeployTarget | `spec.associatedEntities[].gkeClusters[].cluster` | `status.outputs.cluster_id` |
+| GcpDeployTarget | `spec.associatedEntities[].anthosClusters[].membership` | `status.outputs.fleet_membership` |
 | GcpDnsZone | `spec.privateVisibilityConfig.gkeClusters[].gkeClusterName` | `status.outputs.cluster_id` |
 | GcpEventarcTrigger | `spec.destination.gke.cluster` | `status.outputs.name` |
 | GcpGkeFleetFeature | `spec.multiclusteringress.configMembership` | `status.outputs.fleet_membership` |

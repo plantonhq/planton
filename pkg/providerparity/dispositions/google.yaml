@@ -530,33 +530,6 @@ resources:
   - resource: google_cloudbuild_bitbucket_server_config
     disposition: excluded-deprecated
     reason: "first-generation Bitbucket Server integration, superseded by Cloud Build v2 connections"
-  - resource: google_cloudbuild_trigger
-    disposition: model-planned
-    reason: "planned GcpCloudBuildTrigger kind (Cloud Build triggers)"
-  - resource: google_cloudbuild_worker_pool
-    disposition: model-planned
-    reason: "planned composition into the planned GcpCloudBuildTrigger kind (private worker pools)"
-  - resource: google_cloudbuildv2_connection
-    disposition: model-planned
-    reason: "planned GcpCloudBuildConnection kind (Cloud Build repository connections)"
-  - resource: google_cloudbuildv2_repository
-    disposition: model-planned
-    reason: "planned GcpCloudBuildRepository kind (Cloud Build repositories)"
-  - resource: google_clouddeploy_automation
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDeliveryPipeline kind (automations)"
-  - resource: google_clouddeploy_custom_target_type
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDeliveryPipeline kind (custom target types)"
-  - resource: google_clouddeploy_delivery_pipeline
-    disposition: model-planned
-    reason: "planned GcpDeliveryPipeline kind (Cloud Deploy delivery pipelines)"
-  - resource: google_clouddeploy_deploy_policy
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDeliveryPipeline kind (deploy policies)"
-  - resource: google_clouddeploy_target
-    disposition: model-planned
-    reason: "planned GcpDeployTarget kind (Cloud Deploy targets)"
   - resource: google_clouddomains_registration
     disposition: deferred
     reason: "domain registration through IaC is rare; deferred"
@@ -946,16 +919,16 @@ resources:
     reason: "Deployment Manager is legacy and sunsetting; competing IaC deployment engines are out of scope by design"
   - resource: google_developer_connect_account_connector
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate kind: a Developer Connect account connector (per-user OAuth access to a code host for Developer Connect and Gemini Code Assist); no Cloud Build counterpart, built when demand appears"
   - resource: google_developer_connect_connection
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate kind: Developer Connect's own code-host connection (GitHub, GitLab, Bitbucket, and generic HTTP hosts), parallel to GcpCloudBuildConnection; built when demand appears"
   - resource: google_developer_connect_git_repository_link
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate companion kind of a Developer Connect connection (a linked repository, the GcpCloudBuildRepository analogue); GcpCloudBuildTrigger.developer_connect_event_config takes a link by name until it exists"
   - resource: google_developer_connect_insights_config
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate kind: Developer Connect insights (delivery metadata linking builds and runtimes back to repositories); no Cloud Build counterpart, built when demand appears"
   - resource: google_dialogflow_agent
     disposition: excluded-deprecated
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"

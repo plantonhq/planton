@@ -1,0 +1,76 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpdeploypolicy
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The policy is configuration; it stores no customer data of its own.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No customer data is stored by the policy to encrypt with a customer key.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The policy terminates no connections; management calls ride the TLS-only Cloud Deploy API endpoint.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A deploy policy has no address of its own; access is through the Cloud Deploy API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The policy serves no traffic.
+    - control_id: rbac
+      status: configurable
+      field_path: rules
+      evidence:
+        type: spec_default
+        reference: The policy is itself an access control on releases -- its rules block chosen rollout actions for users and automations in chosen windows, and only principals holding clouddeploy.deployPolicies.override can bypass it.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: No workload runs as this block.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Policy changes are Cloud Deploy admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally, and a policy override is recorded on the rollout it lets through.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The policy emits no metrics of its own; violations surface on the blocked rollout.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The policy holds configuration only; it is recreated from its manifest.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The policy is a regional Cloud Deploy API resource Google operates; there is no placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: deletion_policy PREVENT makes destroy fail; suspended lifts enforcement without deleting the policy.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud Deploy is fully Google-operated.

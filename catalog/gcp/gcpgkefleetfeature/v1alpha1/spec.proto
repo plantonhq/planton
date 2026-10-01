@@ -285,11 +285,17 @@ message GcpGkeFleetFeatureGkeUpgradeOverride {
 message GcpGkeFleetFeatureGkeUpgrade {
   // The upgrade's name, e.g. "k8s_control_plane" or "k8s_node". At most 99
   // characters. Required.
-  string name = 1 [(buf.validate.field).string = {min_len: 1, max_len: 99}];
+  string name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 99
+  }];
 
   // The upgrade's version, e.g. "1.31.1-gke.1146000". At most 99
   // characters. Required.
-  string version = 2 [(buf.validate.field).string = {min_len: 1, max_len: 99}];
+  string version = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 99
+  }];
 }
 
 // Custom roles for team scopes.
@@ -683,7 +689,10 @@ message GcpGkeFleetFeaturePolicyControllerMonitoring {
     unique: true
     items: {
       string: {
-        in: ["PROMETHEUS", "CLOUD_MONITORING"]
+        in: [
+          "PROMETHEUS",
+          "CLOUD_MONITORING"
+        ]
       }
     }
   }];

@@ -1,0 +1,4 @@
+name: gcpcloudbuildconnection-pulumi-project
+runtime:
+  name: go
+description: Planton GcpCloudBuildConnection Pulumi module

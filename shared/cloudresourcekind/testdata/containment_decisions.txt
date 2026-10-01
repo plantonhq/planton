@@ -408,6 +408,10 @@ contained dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapSpec.proje
 contained dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositorySpec.parent_connection -> GcpCloudBuildConnection
+contained dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1.GcpCloudBuildWorkerPoolSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.subnetwork -> GcpSubnetwork
@@ -450,6 +454,10 @@ contained dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.pro
 contained dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpdatastreamprivateconnection.v1alpha1.GcpDatastreamPrivateConnectionSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpdeploycustomtargettype.v1alpha1.GcpDeployCustomTargetTypeSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpdeploypolicy.v1alpha1.GcpDeployPolicySpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.project -> GcpProject
@@ -934,6 +942,7 @@ exempt    dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservation
 exempt    dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationAssignee.project_id -> GcpProject
 exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.projects -> GcpProject
 exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.resource_ancestors -> GcpFolder
+exempt    dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1.GcpCloudBuildWorkerPoolNetworkConfig.peered_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.subnetwork -> GcpSubnetwork
 exempt    dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunNetworkInterface.network -> GcpVpcNetwork
@@ -957,6 +966,8 @@ exempt    dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamC
 exempt    dev.planton.gcp.gcpdatastreamprivateconnection.v1alpha1.GcpDatastreamPrivateConnectionVpcPeeringConfig.vpc -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSingleTargetDataset.dataset_id -> GcpBigQueryDataset
 exempt    dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSourceHierarchyDatasets.project_id -> GcpProject
+exempt    dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetAssociatedGkeCluster.cluster -> GcpGkeCluster
+exempt    dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetGke.cluster -> GcpGkeCluster
 exempt    dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.network_url -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZonePeeringConfig.target_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZonePrivateVisibilityGkeCluster.gke_cluster_name -> GcpGkeCluster

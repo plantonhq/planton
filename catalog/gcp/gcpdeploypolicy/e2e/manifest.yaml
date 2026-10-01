@@ -1,0 +1,63 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployPolicy
+metadata:
+  name: prod-freeze
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  deployPolicyId: prod-freeze
+  description: No production rollouts on weekends or over the year-end freeze
+  labels:
+    team: release-eng
+  annotations:
+    owner: release-eng
+  rules:
+    - rolloutRestriction:
+        id: weekend-freeze
+        actions:
+          - CREATE
+          - APPROVE
+        invokers:
+          - USER
+          - DEPLOY_AUTOMATION
+        timeWindows:
+          timeZone: America/New_York
+          weeklyWindows:
+            - daysOfWeek:
+                - SATURDAY
+                - SUNDAY
+            - daysOfWeek:
+                - FRIDAY
+              startTime:
+                hours: 15
+                minutes: 30
+              endTime:
+                hours: 24
+    - rolloutRestriction:
+        id: year-end
+        timeWindows:
+          timeZone: America/New_York
+          oneTimeWindows:
+            - startDate:
+                year: 2026
+                month: 12
+                day: 20
+              startTime:
+                hours: 17
+              endDate:
+                year: 2027
+                month: 1
+                day: 3
+              endTime:
+                hours: 9
+  selectors:
+    - deliveryPipeline:
+        id:
+          value: web
+      target:
+        id:
+          value: web-prod
+    - target:
+        labels:
+          env: prod

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildconnection.v1alpha1;
+
+// GcpCloudBuildConnectionStackOutputs carries the connection's identity
+// and how far its installation has come.
+message GcpCloudBuildConnectionStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/connections/{connection_id}.
+  // The value a GcpCloudBuildRepository's parent_connection takes.
+  string name = 1;
+  // The connection's ID.
+  string connection_id = 2;
+  // The current installation step: PENDING_CREATE_APP, PENDING_USER_OAUTH,
+  // PENDING_INSTALL_APP, or COMPLETE.
+  string installation_stage = 3;
+  // The link a person follows to finish the installation (for GitHub,
+  // installing Cloud Build's GitHub App); empty once complete.
+  string installation_action_uri = 4;
+}

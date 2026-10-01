@@ -1,0 +1,4 @@
+name: gcpcloudbuildtrigger-pulumi-project
+runtime:
+  name: go
+description: Planton GcpCloudBuildTrigger Pulumi module

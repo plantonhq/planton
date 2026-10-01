@@ -23,9 +23,8 @@ spec:
           - aiplatform.notebookRuntimeTemplates.get
           - aiplatform.notebookRuntimeTemplates.update
           - aiplatform.notebookRuntimeTemplates.delete
-          - aiplatform.operations.get
         provenance: derived
-        notes: Covers google_colab_runtime_template (Pulumi colab.RuntimeTemplate) -- created and deleted through long-running operations the provider polls, patched for the display name, the key, and the software config. roles/aiplatform.admin contains all five.
+        notes: Covers google_colab_runtime_template (Pulumi colab.RuntimeTemplate) -- created and deleted through long-running operations the provider polls, patched for the display name, the key, and the software config. roles/aiplatform.admin contains all of them. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
       - purpose: UsePrivateNetwork
         permissions:
           - compute.subnetworks.use

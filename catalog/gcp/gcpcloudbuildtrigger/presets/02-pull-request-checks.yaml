@@ -1,0 +1,23 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildTrigger
+metadata:
+  name: orders-pr-checks
+spec:
+  location: us-central1
+  description: Check every pull request against main
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: orders-builder
+      fieldPath: status.outputs.name
+  repositoryEventConfig:
+    repository:
+      valueFrom:
+        kind: GcpCloudBuildRepository
+        name: orders
+        fieldPath: status.outputs.name
+    pullRequest:
+      branch: ^main$
+      commentControl: COMMENTS_ENABLED_FOR_EXTERNAL_CONTRIBUTORS_ONLY
+  includeBuildLogs: INCLUDE_BUILD_LOGS_WITH_STATUS
+  filename: cloudbuild.pr.yaml

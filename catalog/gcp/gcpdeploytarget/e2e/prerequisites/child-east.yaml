@@ -1,0 +1,24 @@
+# Child Cloud Run target for the multi-target scenario, deploying into
+# us-east1 of the harness project; the multi-target references its
+# target_id. Same project and region (us-central1) as the multi-target,
+# as Google requires.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-child-east
+  id: planton-oss-e2e-gcpcdtgt-child-east
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeploytarget
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  targetId: e2e-child-east-${E2E_RUN_ID}
+  description: Ephemeral child target for a multi-target E2E scenario; safe to delete
+  run:
+    location: projects/${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}/locations/us-east1

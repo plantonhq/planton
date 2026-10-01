@@ -2178,6 +2178,23 @@ const (
 	// A Compute Engine custom image: the golden boot image VMs, instance
 	// templates, and disks start from, rolled forward through image families.
 	CloudResourceKind_GcpComputeImage CloudResourceKind = 3244
+	// GcpCloudBuildConnection is the container a code host's repositories
+	// live in: the connection to GitHub, GitLab, or Bitbucket is the room,
+	// and each linked repository is what is placed inside it.
+	CloudResourceKind_GcpCloudBuildConnection CloudResourceKind = 3245
+	// A repository is created under its connection and cannot exist without
+	// it.
+	CloudResourceKind_GcpCloudBuildRepository CloudResourceKind = 3246
+	// A Cloud Build trigger: what starts a build (a code event, a Pub/Sub
+	// message, a webhook, or a manual run) and what the build does.
+	CloudResourceKind_GcpCloudBuildTrigger CloudResourceKind = 3247
+	// A Cloud Deploy delivery pipeline: the ordered stages a release is
+	// promoted through, with the automations that drive it.
+	CloudResourceKind_GcpDeliveryPipeline CloudResourceKind = 3248
+	// A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster,
+	// a Cloud Run location, a fleet cluster, several targets at once, or a
+	// custom target).
+	CloudResourceKind_GcpDeployTarget CloudResourceKind = 3249
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -2191,6 +2208,17 @@ const (
 	CloudResourceKind_GcpFirebaseAndroidApp CloudResourceKind = 3251
 	CloudResourceKind_GcpFirebaseAppleApp   CloudResourceKind = 3252
 	CloudResourceKind_GcpFirebaseWebApp     CloudResourceKind = 3253
+	// 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud
+	// Deploy resources many pipelines share)
+	// A private Cloud Build worker pool: build machines many triggers and
+	// Cloud Deploy targets share, optionally on a private network.
+	CloudResourceKind_GcpCloudBuildWorkerPool CloudResourceKind = 3260
+	// A Cloud Deploy deploy policy: rollout restrictions (freeze windows)
+	// that apply to every pipeline and target its selectors match.
+	CloudResourceKind_GcpDeployPolicy CloudResourceKind = 3261
+	// A Cloud Deploy custom target type: how to render and deploy to a
+	// target Google does not deploy natively; many targets share one.
+	CloudResourceKind_GcpDeployCustomTargetType CloudResourceKind = 3262
 	// 4000–4999: Kubernetes resources, organized in family sub-bands
 	// (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
 	// analytics & ML; 4190–4199 reserved for growth)
@@ -3336,10 +3364,18 @@ var (
 		3242:  "GcpGkeFleetScope",
 		3243:  "GcpGkeFleetMembership",
 		3244:  "GcpComputeImage",
+		3245:  "GcpCloudBuildConnection",
+		3246:  "GcpCloudBuildRepository",
+		3247:  "GcpCloudBuildTrigger",
+		3248:  "GcpDeliveryPipeline",
+		3249:  "GcpDeployTarget",
 		3250:  "GcpFirebaseProject",
 		3251:  "GcpFirebaseAndroidApp",
 		3252:  "GcpFirebaseAppleApp",
 		3253:  "GcpFirebaseWebApp",
+		3260:  "GcpCloudBuildWorkerPool",
+		3261:  "GcpDeployPolicy",
+		3262:  "GcpDeployCustomTargetType",
 		4000:  "KubernetesNamespace",
 		4001:  "KubernetesDeployment",
 		4002:  "KubernetesStatefulSet",
@@ -4162,10 +4198,18 @@ var (
 		"GcpGkeFleetScope":                               3242,
 		"GcpGkeFleetMembership":                          3243,
 		"GcpComputeImage":                                3244,
+		"GcpCloudBuildConnection":                        3245,
+		"GcpCloudBuildRepository":                        3246,
+		"GcpCloudBuildTrigger":                           3247,
+		"GcpDeliveryPipeline":                            3248,
+		"GcpDeployTarget":                                3249,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
 		"GcpFirebaseWebApp":                              3253,
+		"GcpCloudBuildWorkerPool":                        3260,
+		"GcpDeployPolicy":                                3261,
+		"GcpDeployCustomTargetType":                      3262,
 		"KubernetesNamespace":                            4000,
 		"KubernetesDeployment":                           4001,
 		"KubernetesStatefulSet":                          4002,
@@ -4870,7 +4914,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\u074b\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xb5\x8f\x03\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5486,11 +5530,19 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x12GcpGkeFleetFeature\x10\xa9\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflft:\x02\xa8\x19P\xad\x02\x127\n" +
 	"\x10GcpGkeFleetScope\x10\xaa\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflsc:\x02\xa8\x19P\xad\x02\x12<\n" +
 	"\x15GcpGkeFleetMembership\x10\xab\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflmb:\x02\xa8\x19P\xad\x02\x121\n" +
-	"\x0fGcpComputeImage\x10\xac\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpimgP\xac\x02\x128\n" +
+	"\x0fGcpComputeImage\x10\xac\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpimgP\xac\x02\x12=\n" +
+	"\x17GcpCloudBuildConnection\x10\xad\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpcbcon0\x01P\xb6\x02\x12?\n" +
+	"\x17GcpCloudBuildRepository\x10\xae\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpcbrep:\x02\xad\x19P\xb6\x02\x128\n" +
+	"\x14GcpCloudBuildTrigger\x10\xaf\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcbtrgP\xb6\x02\x127\n" +
+	"\x13GcpDeliveryPipeline\x10\xb0\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdpipP\xb6\x02\x123\n" +
+	"\x0fGcpDeployTarget\x10\xb1\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdtgtP\xb6\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +
-	"\x11GcpFirebaseWebApp\x10\xb5\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbweb:\x02\xb2\x19P\xb9\x02\x126\n" +
+	"\x11GcpFirebaseWebApp\x10\xb5\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbweb:\x02\xb2\x19P\xb9\x02\x12:\n" +
+	"\x17GcpCloudBuildWorkerPool\x10\xbc\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcbwpP\xb6\x02\x123\n" +
+	"\x0fGcpDeployPolicy\x10\xbd\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdpolP\xb6\x02\x12=\n" +
+	"\x19GcpDeployCustomTargetType\x10\xbe\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdcttP\xb6\x02\x126\n" +
 	"\x13KubernetesNamespace\x10\xa0\x1f\x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\x05k8sns0\x01P\x90\x03\x128\n" +
 	"\x14KubernetesDeployment\x10\xa1\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8sdpl(\x01P\x90\x03\x129\n" +
 	"\x15KubernetesStatefulSet\x10\xa2\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8ssts(\x01P\x90\x03\x124\n" +

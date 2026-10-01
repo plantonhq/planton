@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdeploytarget.v1alpha1;
+
+// GcpDeployTargetStackOutputs carries the target's identity: the ID a
+// delivery pipeline's stages, a multi-target, a deploy policy, and an
+// automation name it by.
+message GcpDeployTargetStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/targets/{target_id}.
+  string name = 1;
+  // The target's ID -- what GcpDeliveryPipeline stages and multi-targets
+  // reference.
+  string target_id = 2;
+  // Google's unique identifier for the target.
+  string uid = 3;
+}

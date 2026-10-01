@@ -1,0 +1,31 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildTrigger
+metadata:
+  name: image-scan-on-push
+spec:
+  description: Run a build for every Artifact Registry push event
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: image-scanner
+      fieldPath: status.outputs.name
+  pubsubConfig:
+    topic:
+      valueFrom:
+        kind: GcpPubSubTopic
+        name: gcr
+        fieldPath: status.outputs.topic_id
+  substitutions:
+    _IMAGE: $(body.message.data.tag)
+    _ACTION: $(body.message.data.action)
+  filter: _ACTION == "INSERT"
+  build:
+    steps:
+      - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+        entrypoint: bash
+        args:
+          - -c
+          - echo "Scanning $_IMAGE"
+    timeout: 600s
+    options:
+      logging: CLOUD_LOGGING_ONLY

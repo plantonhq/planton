@@ -21,11 +21,9 @@ spec:
         notes: "Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these."
       - purpose: AssociateHierarchicalFirewallPolicy
         permissions:
-          - compute.firewallPolicies.addAssociation
-          - compute.firewallPolicies.removeAssociation
           - compute.organizations.setFirewallPolicy
         provenance: derived
-        notes: "Covers google_compute_firewall_policy_association (Pulumi compute.FirewallPolicyAssociation): addAssociation on create, removeAssociation on destroy, and setFirewallPolicy on every organization or folder the policy is attached to (Google checks it on the attachment target). roles/compute.orgFirewallPolicyAdmin on the organization contains all three; a folder-scoped grant must cover both the policy's parent and every association target."
+        notes: "Covers google_compute_firewall_policy_association (Pulumi compute.FirewallPolicyAssociation): the addAssociation and removeAssociation calls authorize as firewallPolicies.use on the policy (listed above) and setFirewallPolicy on every organization or folder the policy is attached to (Google checks it on the attachment target) -- GCP defines no firewallPolicies.addAssociation or removeAssociation permission. roles/compute.orgFirewallPolicyAdmin on the organization contains them; a folder-scoped grant must cover both the policy's parent and every association target."
       - purpose: ResolveReferencedResources
         permissions:
           - resourcemanager.folders.get

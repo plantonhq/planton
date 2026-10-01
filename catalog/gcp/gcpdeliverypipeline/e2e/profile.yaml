@@ -1,0 +1,26 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpdeliverypipeline
+spec:
+  # Awaiting the live proof lane. The scenarios create pipelines over two
+  # Cloud Run target fixtures and an automation service-account fixture in
+  # the harness project: free to hold, because no release is created, so no
+  # pipeline is active and no job runs. Offline bar met: both modules build
+  # and validate, offline plans for the reference manifest and every
+  # scenario are clean on the pinned provider, and the accounting is total
+  # (pipeline and folded automation). Live facts the proof lane confirms:
+  # (1) the pipeline creates and re-plans clean on both engines, including
+  # the canary stage's Cloud Run runtime config; (2) every automation in the
+  # list creates against the pipeline, keyed by automation_id, and re-plans
+  # clean with the target selector's computed labels unset; (3) an in-place
+  # stage or rule change updates without replacing the pipeline; (4)
+  # destroy removes the automations and the pipeline (the provider deletes
+  # with force=true; the verifier accepts 404). The GKE gateway-mesh and
+  # service-networking canary arms, container verify tasks, and analysis
+  # checks are proven offline only (they need a GKE cluster, a Gateway API
+  # route, or alert policies).
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

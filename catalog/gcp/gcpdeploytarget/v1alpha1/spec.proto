@@ -1,0 +1,502 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdeploytarget.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDeployTargetSpec declares a Cloud Deploy target
+// (`google_clouddeploy_target`): one place a delivery pipeline's stage
+// deploys a release to, together with how Cloud Deploy runs the render
+// and deploy work for it.
+//
+// A target is exactly one of five kinds:
+//
+//   - gke            -- a GKE cluster, by its full cluster name;
+//   - anthos_cluster -- a cluster registered to a fleet (GKE Enterprise),
+//                       by its fleet membership;
+//   - run            -- a Cloud Run region in a project;
+//   - multi_target   -- a group of other targets in this project and
+//                       region, deployed together in parallel;
+//   - custom_target  -- a GcpDeployCustomTargetType, for anything Cloud
+//                       Deploy does not deploy natively.
+//
+// A delivery pipeline names its targets by ID in its stages
+// (GcpDeliveryPipeline.serial_pipeline.stages[].target_id, a reference to
+// this kind's target_id output). The pipeline and its targets must live in
+// the same project and region.
+//
+// Every render, deploy, verify, and hook job runs as a Cloud Build build.
+// With no execution_configs, Cloud Deploy uses Cloud Build's default pool,
+// the project's default compute service account
+// ({PROJECT_NUMBER}-compute@developer.gserviceaccount.com), and a default
+// bucket in the target's region. Declare execution_configs to choose the
+// service account, the artifact bucket, a private worker pool, or a
+// timeout per kind of job.
+//
+// Important behavioral notes:
+//
+//   - location and target_id are create-time decisions: changing one
+//     replaces the target. The other fields update in place.
+//   - The execution service account needs roles/clouddeploy.jobRunner on
+//     the project and whatever the deployment itself touches (for Cloud
+//     Run, roles/run.developer and roles/iam.serviceAccountUser on the
+//     service's runtime service account; for GKE, roles/container.developer).
+//   - Destroy deletes the target. Releases and rollouts that already
+//     reference it keep their history; a pipeline stage that still names
+//     it can no longer deploy.
+message GcpDeployTargetSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_target_type"
+    expression: "(has(this.gke) ? 1 : 0) + (has(this.anthos_cluster) ? 1 : 0) + (has(this.run) ? 1 : 0) + (has(this.multi_target) ? 1 : 0) + (has(this.custom_target) ? 1 : 0) == 1"
+    message: "set exactly one of gke, anthos_cluster, run, multi_target, or custom_target"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_entity_ids"
+    expression: "this.associated_entities.map(e, e.entity_id).unique()"
+    message: "entity_id must be unique within associated_entities"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.usage_in_one_execution_config"
+    expression: "['RENDER', 'DEPLOY', 'VERIFY', 'PREDEPLOY', 'POSTDEPLOY'].all(u, this.execution_configs.filter(c, u in c.usages).size() <= 1)"
+    message: "each usage may appear in only one execution configuration"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.execution_configs_cover_render_and_deploy"
+    expression: "size(this.execution_configs) == 0 || (this.execution_configs.exists(c, 'RENDER' in c.usages) && this.execution_configs.exists(c, 'DEPLOY' in c.usages))"
+    message: "when execution_configs are set, they must include the RENDER and DEPLOY usages"
+  };
+
+  // The project the target lives in: a literal project ID or a GcpProject
+  // reference. Empty means the provider's default project. The delivery
+  // pipelines that deploy to it must be in the same project. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The region the target lives in, e.g. "us-central1" -- the region of
+  // the delivery pipelines that deploy to it. It need not be the region
+  // the workload runs in (a run target names its own region). Required.
+  // Immutable.
+  string location = 2 [(buf.validate.field).required = true];
+
+  // The target's ID, unique in the project and region: a lowercase letter,
+  // then up to 62 lowercase letters, digits, or hyphens, not ending with a
+  // hyphen (Google's rule). Pipeline stages name the target by this ID.
+  // Defaults to metadata.name. Immutable.
+  string target_id = 3 [(buf.validate.field).cel = {
+    id: "target_id.format"
+    message: "target_id must be a lowercase letter followed by up to 62 lowercase letters, digits, or hyphens, not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+  }];
+
+  // A description shown in the console, up to 255 characters.
+  string description = 4 [(buf.validate.field).string.max_len = 255];
+
+  // Labels on the target. Cloud Deploy also reads them: a deploy policy
+  // or an automation can select targets by label. Keys and values are
+  // lowercase letters, digits, underscores, and dashes, at most 64 labels.
+  // The platform attribution labels are added on top and win on key
+  // conflicts.
+  map<string, string> labels = 5;
+
+  // Annotations on the target (AIP-128 key/value metadata Cloud Deploy
+  // never reads). Only the keys declared here are managed.
+  map<string, string> annotations = 6;
+
+  // Require an approval before any rollout to this target proceeds: a
+  // principal with clouddeploy.rollouts.approve (roles/clouddeploy.approver)
+  // approves or rejects each one. The usual gate in front of production.
+  bool require_approval = 7;
+
+  // Deploy parameters for every rollout to this target: key/value pairs
+  // substituted into the rendered manifests wherever a
+  // "# from-param: ${key}" marker names the key. Pipeline stages and
+  // releases can declare parameters too.
+  map<string, string> deploy_parameters = 8;
+
+  // Deploy to a GKE cluster. Exactly one target type.
+  GcpDeployTargetGke gke = 9;
+
+  // Deploy to a cluster registered to a fleet, through its membership
+  // (GKE Enterprise, including attached and on-premises clusters). Exactly
+  // one target type.
+  GcpDeployTargetAnthosCluster anthos_cluster = 10;
+
+  // Deploy Cloud Run services or jobs into a region. Exactly one target
+  // type.
+  GcpDeployTargetRun run = 11;
+
+  // Deploy to several other targets at once, in parallel. Exactly one
+  // target type.
+  GcpDeployTargetMultiTarget multi_target = 12;
+
+  // Deploy with a custom target type: your own render and deploy
+  // containers or Skaffold modules, for platforms Cloud Deploy does not
+  // deploy natively. Exactly one target type.
+  GcpDeployTargetCustomTarget custom_target = 13;
+
+  // Clusters other than the deployment target that some features deploy
+  // to, each under an entity ID. The Gateway API canary, for example, can
+  // deploy its HTTPRoute to a separate config cluster named here. Keyed by
+  // entity_id.
+  repeated GcpDeployTargetAssociatedEntity associated_entities = 14;
+
+  // How Cloud Deploy runs this target's jobs, one configuration per group
+  // of usages. Each usage (RENDER, DEPLOY, VERIFY, PREDEPLOY, POSTDEPLOY)
+  // may appear in only one configuration, and when any are declared,
+  // RENDER and DEPLOY must both be covered. With none, every job runs on
+  // Cloud Build's default pool with the project's default compute service
+  // account.
+  repeated GcpDeployTargetExecutionConfig execution_configs = 15;
+
+  // What destroy does:
+  //   "" / "DELETE" -- the target is deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the target leaves management and stays in Google
+  string deletion_policy = 16 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// A GKE cluster target.
+message GcpDeployTargetGke {
+  option (buf.validate.message).cel = {
+    id: "gke.not_dns_endpoint_and_internal_ip"
+    expression: "!(this.dns_endpoint && this.internal_ip)"
+    message: "dns_endpoint and internal_ip cannot both be true"
+  };
+
+  // The cluster, by full name
+  // (projects/{project}/locations/{location}/clusters/{name}): a
+  // GcpGkeCluster reference (its cluster_id output) or the literal name.
+  // The cluster may be in another project; the execution service account
+  // then needs access there.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id",
+    (buf.validate.field).cel = {
+      id: "gke.cluster.format"
+      message: "cluster must be a full cluster name: projects/{project}/locations/{location}/clusters/{name}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/clusters/[^/]+$')"
+    }
+  ];
+
+  // Reach the control plane on its private IP address. Only for clusters
+  // with a private endpoint; the default address is already private for a
+  // cluster whose endpoint is private-only. Cloud Build must then run on a
+  // private pool with a route to that network (execution_configs).
+  // Cannot be combined with dns_endpoint.
+  bool internal_ip = 2;
+
+  // Reach the control plane through its DNS-based endpoint. Cannot be
+  // combined with internal_ip.
+  bool dns_endpoint = 3;
+
+  // An HTTP proxy Cloud Deploy reaches the Kubernetes API server through
+  // (the kubeconfig proxy-url), e.g. "http://10.0.0.5:3128".
+  string proxy_url = 4;
+}
+
+// A fleet-registered cluster target.
+message GcpDeployTargetAnthosCluster {
+  // The cluster's fleet membership, by full name
+  // (projects/{project}/locations/{location}/memberships/{id}): a
+  // GcpGkeFleetMembership reference (its name output), a GcpGkeCluster
+  // reference (its fleet_membership output, for a cluster that joined
+  // through fleet_project), or the literal name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef membership = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleetMembership,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeFleetMembership
+      field_path: "status.outputs.name"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "status.outputs.fleet_membership"
+    },
+    (buf.validate.field).cel = {
+      id: "anthos_cluster.membership.format"
+      message: "membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/memberships/[^/]+$')"
+    }
+  ];
+}
+
+// A Cloud Run target.
+message GcpDeployTargetRun {
+  // Where the Cloud Run services or jobs are deployed, as
+  // projects/{project}/locations/{region}, e.g.
+  // "projects/my-app-prod/locations/us-central1". The project may differ
+  // from the target's own (a pipeline in a CI project deploying into
+  // per-environment projects). Required.
+  string location = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "run.location.format"
+      message: "run.location must be projects/{project}/locations/{location}"
+      expression: "this.matches('^projects/[^/]+/locations/[^/]+$')"
+    }
+  ];
+}
+
+// A group of targets deployed together.
+message GcpDeployTargetMultiTarget {
+  // The child targets, by ID: GcpDeployTarget references (their target_id
+  // output) or literal IDs. Each must be in this target's project and
+  // region. A rollout to the multi-target deploys to every child in
+  // parallel. At least one.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef target_ids = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeployTarget,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.target_id",
+    (buf.validate.field).cel = {
+      id: "multi_target.target_ids.format"
+      message: "each target ID must be a bare target ID (a lowercase letter followed by lowercase letters, digits, or hyphens), not a full resource name"
+      expression: "this.all(t, !has(t.value) || t.value.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$'))"
+    }
+  ];
+}
+
+// A custom target.
+message GcpDeployTargetCustomTarget {
+  // The custom target type, by full name
+  // (projects/{project}/locations/{location}/customTargetTypes/{id}): a
+  // GcpDeployCustomTargetType reference (its name output) or the literal
+  // name. Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef custom_target_type = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeployCustomTargetType,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "custom_target.custom_target_type.format"
+      message: "custom_target_type must be a full name: projects/{project}/locations/{location}/customTargetTypes/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/customTargetTypes/[^/]+$')"
+    }
+  ];
+}
+
+// Clusters associated with the target under one entity ID.
+message GcpDeployTargetAssociatedEntity {
+  // The entity's ID, the key features use to find these clusters: a
+  // lowercase letter, then up to 62 lowercase letters, digits, or hyphens,
+  // not ending with a hyphen (Google's rule). Required.
+  string entity_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "associated_entity.entity_id.format"
+      message: "entity_id must be a lowercase letter followed by up to 62 lowercase letters, digits, or hyphens, not ending with a hyphen"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // GKE clusters for this entity.
+  repeated GcpDeployTargetAssociatedGkeCluster gke_clusters = 2;
+
+  // Fleet-registered clusters for this entity.
+  repeated GcpDeployTargetAssociatedAnthosCluster anthos_clusters = 3;
+}
+
+// A GKE cluster associated with the target.
+message GcpDeployTargetAssociatedGkeCluster {
+  // The cluster, by full name
+  // (projects/{project}/locations/{location}/clusters/{name}): a
+  // GcpGkeCluster reference (its cluster_id output) or the literal name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id",
+    (buf.validate.field).cel = {
+      id: "associated_gke_cluster.cluster.format"
+      message: "cluster must be a full cluster name: projects/{project}/locations/{location}/clusters/{name}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/clusters/[^/]+$')"
+    }
+  ];
+
+  // Reach the control plane on its private IP address. Only for clusters
+  // with a private endpoint.
+  bool internal_ip = 2;
+
+  // An HTTP proxy Cloud Deploy reaches the Kubernetes API server through.
+  string proxy_url = 3;
+}
+
+// A fleet-registered cluster associated with the target.
+message GcpDeployTargetAssociatedAnthosCluster {
+  // The cluster's fleet membership, by full name
+  // (projects/{project}/locations/{location}/memberships/{id}): a
+  // GcpGkeFleetMembership reference (its name output), a GcpGkeCluster
+  // reference (its fleet_membership output), or the literal name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef membership = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleetMembership,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeFleetMembership
+      field_path: "status.outputs.name"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "status.outputs.fleet_membership"
+    },
+    (buf.validate.field).cel = {
+      id: "associated_anthos_cluster.membership.format"
+      message: "membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/memberships/[^/]+$')"
+    }
+  ];
+}
+
+// How Cloud Deploy runs one group of this target's jobs.
+message GcpDeployTargetExecutionConfig {
+  option (buf.validate.message).cel = {
+    id: "execution_config.one_pool"
+    expression: "!(has(this.default_pool) && has(this.private_pool))"
+    message: "set at most one of default_pool or private_pool"
+  };
+
+  // The jobs this configuration applies to, each at most once across all
+  // of the target's configurations:
+  //   "RENDER"     -- rendering manifests for a release
+  //   "DEPLOY"     -- deploying, and the deployment hooks
+  //   "VERIFY"     -- deployment verification
+  //   "PREDEPLOY"  -- predeploy jobs
+  //   "POSTDEPLOY" -- postdeploy jobs
+  // Required.
+  repeated string usages = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).cel = {
+      id: "execution_config.usages.valid"
+      message: "usages must be RENDER, DEPLOY, VERIFY, PREDEPLOY, or POSTDEPLOY, each listed once"
+      expression: "this.all(u, u in ['RENDER', 'DEPLOY', 'VERIFY', 'PREDEPLOY', 'POSTDEPLOY']) && this.unique()"
+    }
+  ];
+
+  // The Cloud Build private pool the jobs run on: a GcpCloudBuildWorkerPool
+  // reference (its name output) or a literal
+  // projects/{project}/locations/{location}/workerPools/{id}. Empty means
+  // Cloud Build's default pool. A private pool is how jobs reach a GKE
+  // cluster's private endpoint. The top-level worker_pool,
+  // service_account, and artifact_storage and the default_pool and
+  // private_pool blocks express the same choice; use one form.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef worker_pool = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildWorkerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "execution_config.worker_pool.format"
+      message: "worker_pool must be a full name: projects/{project}/locations/{location}/workerPools/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$')"
+    }
+  ];
+
+  // The service account the jobs run as, by email: a GcpServiceAccount
+  // reference or a literal. Empty means the project's default compute
+  // service account. It needs roles/clouddeploy.jobRunner, and the caller
+  // creating releases needs roles/iam.serviceAccountUser on it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // Where the jobs store their outputs (rendered manifests, logs): a
+  // bucket ("gs://my-bucket") or a path in one ("gs://my-bucket/deploy"),
+  // a GcpGcsBucket reference (its gs:// url output) or a literal. Empty
+  // means a default bucket Cloud Deploy creates in the target's region.
+  // The service account needs write access to it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef artifact_storage = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.url",
+    (buf.validate.field).cel = {
+      id: "execution_config.artifact_storage.format"
+      message: "artifact_storage must be a gs:// bucket or path"
+      expression: "!has(this.value) || this.value.matches('^gs://[^/]+(/.*)?$')"
+    }
+  ];
+
+  // How long one job may run, in seconds with an "s" suffix, between 10
+  // minutes and 24 hours ("600s" to "86400s"). Empty means one hour.
+  string execution_timeout = 5 [(buf.validate.field).cel = {
+    id: "execution_config.execution_timeout.format"
+    message: "execution_timeout must be a duration in seconds such as 3600s"
+    expression: "this == '' || this.matches('^[0-9]+(\\\\.[0-9]{1,9})?s$')"
+  }];
+
+  // Turn on verbose logging in the jobs' builds, for debugging.
+  bool verbose = 6;
+
+  // Use Cloud Build's default pool, with its own service account and
+  // artifact storage (the block form of the top-level fields). Mutually
+  // exclusive with private_pool.
+  GcpDeployTargetDefaultPool default_pool = 7;
+
+  // Use a Cloud Build private pool, with its own service account and
+  // artifact storage (the block form of the top-level fields). Mutually
+  // exclusive with default_pool.
+  GcpDeployTargetPrivatePool private_pool = 8;
+}
+
+// Execution on Cloud Build's default pool.
+message GcpDeployTargetDefaultPool {
+  // The service account the jobs run as, by email: a GcpServiceAccount
+  // reference or a literal. Empty means the project's default compute
+  // service account.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // Where the jobs store their outputs: a gs:// bucket or path, a
+  // GcpGcsBucket reference (its url output) or a literal. Empty means a
+  // default bucket in the target's region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef artifact_storage = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.url",
+    (buf.validate.field).cel = {
+      id: "default_pool.artifact_storage.format"
+      message: "artifact_storage must be a gs:// bucket or path"
+      expression: "!has(this.value) || this.value.matches('^gs://[^/]+(/.*)?$')"
+    }
+  ];
+}
+
+// Execution on a Cloud Build private pool.
+message GcpDeployTargetPrivatePool {
+  // The private pool: a GcpCloudBuildWorkerPool reference (its name
+  // output) or a literal
+  // projects/{project}/locations/{location}/workerPools/{id}. Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef worker_pool = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildWorkerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "private_pool.worker_pool.format"
+      message: "worker_pool must be a full name: projects/{project}/locations/{location}/workerPools/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$')"
+    }
+  ];
+
+  // The service account the jobs run as, by email: a GcpServiceAccount
+  // reference or a literal. Empty means the project's default compute
+  // service account.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // Where the jobs store their outputs: a gs:// bucket or path, a
+  // GcpGcsBucket reference (its url output) or a literal. Empty means a
+  // default bucket in the target's region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef artifact_storage = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.url",
+    (buf.validate.field).cel = {
+      id: "private_pool.artifact_storage.format"
+      message: "artifact_storage must be a gs:// bucket or path"
+      expression: "!has(this.value) || this.value.matches('^gs://[^/]+(/.*)?$')"
+    }
+  ];
+}

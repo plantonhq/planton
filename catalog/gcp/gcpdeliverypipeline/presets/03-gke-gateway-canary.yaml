@@ -1,0 +1,38 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeliveryPipeline
+metadata:
+  name: api-canary
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: API on GKE with a phased canary through a Gateway API route
+  serialPipeline:
+    stages:
+      - targetId:
+          value: gke-staging
+        strategy:
+          standard:
+            verify: true
+      - targetId:
+          value: gke-prod
+        strategy:
+          canary:
+            runtimeConfig:
+              kubernetes:
+                gatewayServiceMesh:
+                  httpRoute: api-route
+                  service: api
+                  deployment: api
+                  routeUpdateWaitTime: 60s
+                  stableCutbackDuration: 300s
+            customCanaryDeployment:
+              phaseConfigs:
+                - phaseId: canary-10
+                  percentage: 10
+                  verify: true
+                - phaseId: canary-50
+                  percentage: 50
+                  verify: true
+                - phaseId: stable
+                  percentage: 100

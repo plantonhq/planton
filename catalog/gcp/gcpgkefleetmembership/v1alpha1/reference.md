@@ -168,6 +168,8 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpDeployTarget | `spec.anthosCluster.membership` | `status.outputs.name` |
+| GcpDeployTarget | `spec.associatedEntities[].anthosClusters[].membership` | `status.outputs.name` |
 | GcpGkeFleetFeature | `spec.multiclusteringress.configMembership` | `status.outputs.name` |
 | GcpGkeFleetFeature | `spec.membershipConfigs[].membership` | `status.outputs.name` |
 | GcpGkeFleetScope | `spec.membershipBindings[].membership` | `status.outputs.name` |

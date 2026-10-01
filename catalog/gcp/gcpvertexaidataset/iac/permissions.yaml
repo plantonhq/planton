@@ -23,6 +23,5 @@ spec:
           - aiplatform.datasets.get
           - aiplatform.datasets.update
           - aiplatform.datasets.delete
-          - aiplatform.operations.get
         provenance: derived
-        notes: Covers google_vertex_ai_dataset (Pulumi vertex.AiDataset) -- created and deleted through long-running operations the provider polls, patched for display name and labels, read on every refresh. roles/aiplatform.admin contains all five.
+        notes: Covers google_vertex_ai_dataset (Pulumi vertex.AiDataset) -- created and deleted through long-running operations the provider polls, patched for display name and labels, read on every refresh. roles/aiplatform.admin contains all of them. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.

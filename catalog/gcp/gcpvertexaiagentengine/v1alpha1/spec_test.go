@@ -93,7 +93,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 				ImageUri: "us-central1-docker.pkg.dev/ai-project/agents/support:1.4.0",
 				Port:     proto.Int32(8080),
 			},
-			BuildSpec: &GcpVertexAiAgentEngineBuildSpec{WorkerPool: "projects/ai-project/locations/us-central1/workerPools/private"},
+			BuildSpec: &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("projects/ai-project/locations/us-central1/workerPools/private")},
 			DeploymentSpec: &GcpVertexAiAgentEngineDeploymentSpec{
 				Env:                  []*GcpVertexAiAgentEngineEnvVar{{Name: "LOG_LEVEL", Value: "info"}},
 				SecretEnv:            []*GcpVertexAiAgentEngineSecretEnvVar{{Name: "OPENAI_KEY", SecretRef: &GcpVertexAiAgentEngineSecretRef{Secret: nameRef("openai-key"), Version: "latest"}}},
@@ -236,6 +236,16 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		msg.Spec.Spec.ServiceAccount = nil
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.Spec.IdentityType = "WORKLOAD"
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should take the build worker pool as a reference or a full literal name", func() {
+		msg := minimal()
+		msg.Spec.Spec.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: nameRef("private-builds")}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.Spec.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("projects/ai-project/locations/us-central1/workerPools/private")}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.Spec.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("private")}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 

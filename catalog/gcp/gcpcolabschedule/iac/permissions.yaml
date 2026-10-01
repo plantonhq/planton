@@ -27,12 +27,11 @@ spec:
         notes: Covers google_colab_schedule (Pulumi colab.Schedule) -- created, patched for the timing fields and the pipeline request, read on every refresh, deleted.
       - purpose: PauseAndResumeSchedule
         permissions:
-          - aiplatform.schedules.pause
-          - aiplatform.schedules.resume
+          - aiplatform.schedules.update
         provenance: derived
         condition:
           spec_field_set: desired_state
-        notes: The client-side desired_state control calls pause or resume to match on every apply.
+        notes: The client-side desired_state control calls pause or resume to match on every apply. GCP defines no aiplatform.schedules.pause or .resume permission (roles/aiplatform.colabEnterpriseAdmin carries schedules create, get, list, update, and delete), so both calls authorize as aiplatform.schedules.update.
       - purpose: ActAsNotebookRunIdentity
         permissions:
           - iam.serviceAccounts.actAs

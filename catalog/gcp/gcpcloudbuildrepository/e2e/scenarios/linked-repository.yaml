@@ -1,0 +1,28 @@
+# GcpCloudBuildRepository scenario: one repository linked through the
+# connection fixture. Owner-arranged: the GitHub installation and token
+# (for the fixture) and a test repository that installation can see.
+# Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildRepository
+metadata:
+  name: planton-oss-e2e-gcpcbrep-linked
+  id: planton-oss-e2e-gcpcbrep-linked
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudbuildrepository
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID,PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION,PLANTON_E2E_GCP_GITHUB_REPO_URI
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcloudbuildrepository/e2e/prerequisites/connection.yaml"
+  tags:
+    - planton-e2e
+spec:
+  parentConnection:
+    valueFrom:
+      kind: GcpCloudBuildConnection
+      name: planton-oss-e2e-gcpcbrep-connection
+      fieldPath: status.outputs.name
+  repositoryId: planton-e2e-${E2E_RUN_ID}
+  remoteUri: ${E2E_ENV:PLANTON_E2E_GCP_GITHUB_REPO_URI}

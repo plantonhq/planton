@@ -538,6 +538,10 @@ import (
 	gcpcertmanagercertv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagercert/v1alpha1"
 	gcpcertmanagerdnsauthorizationv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1"
 	gcpcloudarmorpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/v1alpha1"
+	gcpcloudbuildconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildconnection/v1alpha1"
+	gcpcloudbuildrepositoryv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildrepository/v1alpha1"
+	gcpcloudbuildtriggerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildtrigger/v1alpha1"
+	gcpcloudbuildworkerpoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildworkerpool/v1alpha1"
 	gcpcloudcomposerenvironmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposerenvironment/v1alpha1"
 	gcpcloudcomposeruserworkloadsconfigmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadsconfigmap/v1alpha1"
 	gcpcloudcomposeruserworkloadssecretv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1"
@@ -564,6 +568,10 @@ import (
 	gcpdatastreamconnectionprofilev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdatastreamconnectionprofile/v1alpha1"
 	gcpdatastreamprivateconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdatastreamprivateconnection/v1alpha1"
 	gcpdatastreamstreamv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdatastreamstream/v1alpha1"
+	gcpdeliverypipelinev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeliverypipeline/v1alpha1"
+	gcpdeploycustomtargettypev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeploycustomtargettype/v1alpha1"
+	gcpdeploypolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeploypolicy/v1alpha1"
+	gcpdeploytargetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeploytarget/v1alpha1"
 	gcpdialogflowcxagentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdialogflowcxagent/v1alpha1"
 	gcpdialogflowcxsecuritysettingsv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1"
 	gcpdnsrecordv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnsrecord/v1alpha1"
@@ -1394,6 +1402,10 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpCertManagerDnsAuthorization:         &gcpcertmanagerdnsauthorizationv1alpha1.GcpCertManagerDnsAuthorization{},
 	cloudresourcekind.CloudResourceKind_GcpCertificateMap:                      &gcpcertificatemapv1alpha1.GcpCertificateMap{},
 	cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy:                    &gcpcloudarmorpolicyv1alpha1.GcpCloudArmorPolicy{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildConnection:                &gcpcloudbuildconnectionv1alpha1.GcpCloudBuildConnection{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository:                &gcpcloudbuildrepositoryv1alpha1.GcpCloudBuildRepository{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildTrigger:                   &gcpcloudbuildtriggerv1alpha1.GcpCloudBuildTrigger{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildWorkerPool:                &gcpcloudbuildworkerpoolv1alpha1.GcpCloudBuildWorkerPool{},
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerEnvironment:            &gcpcloudcomposerenvironmentv1alpha1.GcpCloudComposerEnvironment{},
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsConfigMap: &gcpcloudcomposeruserworkloadsconfigmapv1alpha1.GcpCloudComposerUserWorkloadsConfigMap{},
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsSecret:    &gcpcloudcomposeruserworkloadssecretv1alpha1.GcpCloudComposerUserWorkloadsSecret{},
@@ -1420,6 +1432,10 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpDatastreamConnectionProfile:         &gcpdatastreamconnectionprofilev1alpha1.GcpDatastreamConnectionProfile{},
 	cloudresourcekind.CloudResourceKind_GcpDatastreamPrivateConnection:         &gcpdatastreamprivateconnectionv1alpha1.GcpDatastreamPrivateConnection{},
 	cloudresourcekind.CloudResourceKind_GcpDatastreamStream:                    &gcpdatastreamstreamv1alpha1.GcpDatastreamStream{},
+	cloudresourcekind.CloudResourceKind_GcpDeliveryPipeline:                    &gcpdeliverypipelinev1alpha1.GcpDeliveryPipeline{},
+	cloudresourcekind.CloudResourceKind_GcpDeployCustomTargetType:              &gcpdeploycustomtargettypev1alpha1.GcpDeployCustomTargetType{},
+	cloudresourcekind.CloudResourceKind_GcpDeployPolicy:                        &gcpdeploypolicyv1alpha1.GcpDeployPolicy{},
+	cloudresourcekind.CloudResourceKind_GcpDeployTarget:                        &gcpdeploytargetv1alpha1.GcpDeployTarget{},
 	cloudresourcekind.CloudResourceKind_GcpDialogflowCxAgent:                   &gcpdialogflowcxagentv1alpha1.GcpDialogflowCxAgent{},
 	cloudresourcekind.CloudResourceKind_GcpDialogflowCxSecuritySettings:        &gcpdialogflowcxsecuritysettingsv1alpha1.GcpDialogflowCxSecuritySettings{},
 	cloudresourcekind.CloudResourceKind_GcpDnsRecord:                           &gcpdnsrecordv1alpha1.GcpDnsRecord{},

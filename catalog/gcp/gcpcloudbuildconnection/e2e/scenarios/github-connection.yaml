@@ -1,0 +1,30 @@
+# GcpCloudBuildConnection scenario: a github.com connection through Cloud
+# Build's GitHub App, in the harness project. Owner-arranged: the app's
+# installation ID on a test organization and the OAuth token's secret
+# version (the Cloud Build service agent already granted secretAccessor on
+# it). Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildConnection
+metadata:
+  name: planton-oss-e2e-gcpcbcon-github
+  id: planton-oss-e2e-gcpcbcon-github
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudbuildconnection
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID,PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionId: planton-e2e-github-${E2E_RUN_ID}
+  annotations:
+    purpose: e2e
+  githubConfig:
+    appInstallationId: ${E2E_ENV:PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID}
+    authorizerCredential:
+      oauthTokenSecretVersion:
+        value: ${E2E_ENV:PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION}

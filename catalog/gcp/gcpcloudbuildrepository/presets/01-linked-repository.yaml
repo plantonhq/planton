@@ -1,0 +1,11 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildRepository
+metadata:
+  name: orders
+spec:
+  parentConnection:
+    valueFrom:
+      kind: GcpCloudBuildConnection
+      name: acme-github
+      fieldPath: status.outputs.name
+  remoteUri: https://github.com/acme/orders.git

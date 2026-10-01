@@ -23,9 +23,8 @@ spec:
           - aiplatform.featureOnlineStores.get
           - aiplatform.featureOnlineStores.update
           - aiplatform.featureOnlineStores.delete
-          - aiplatform.operations.get
         provenance: derived
-        notes: Covers google_vertex_ai_feature_online_store (Pulumi vertex.AiFeatureOnlineStore) -- created and deleted through long-running operations the provider polls, patched for Bigtable scaling, the dedicated endpoint, the key, and labels, read on every refresh.
+        notes: Covers google_vertex_ai_feature_online_store (Pulumi vertex.AiFeatureOnlineStore) -- created and deleted through long-running operations the provider polls, patched for Bigtable scaling, the dedicated endpoint, the key, and labels, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
       - purpose: ManageFeatureViews
         permissions:
           - aiplatform.featureViews.create

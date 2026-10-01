@@ -137,9 +137,9 @@ func buildSpec(s *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpecConfi
 		}
 		args.PackageSpec = pkg
 	}
-	if b := s.BuildSpec; b != nil && b.WorkerPool != "" {
+	if workerPool := s.GetBuildSpec().GetWorkerPool().GetValue(); workerPool != "" {
 		args.BuildSpec = &vertex.AiReasoningEngineSpecBuildSpecArgs{
-			WorkerPool: pulumi.String(b.WorkerPool),
+			WorkerPool: pulumi.String(workerPool),
 		}
 	}
 	if d := s.DeploymentSpec; d != nil {

@@ -34,6 +34,9 @@ import (
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
 	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	certificatemanager "google.golang.org/api/certificatemanager/v1"
+	cloudbuild "google.golang.org/api/cloudbuild/v1"
+	cloudbuildv2 "google.golang.org/api/cloudbuild/v2"
+	clouddeploy "google.golang.org/api/clouddeploy/v1"
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
 	cloudidentity "google.golang.org/api/cloudidentity/v1"
 	cloudkms "google.golang.org/api/cloudkms/v1"
@@ -327,6 +330,22 @@ func (h *Harness) Setup(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create gkehub client")
 	}
+	// Cloud Build serves triggers and worker pools on v1 and repository
+	// connections and their repositories on v2; Cloud Deploy serves
+	// pipelines, automations, targets, deploy policies, and custom target
+	// types.
+	cloudBuildService, err := cloudbuild.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudbuild client")
+	}
+	cloudBuildV2Service, err := cloudbuildv2.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudbuild v2 client")
+	}
+	cloudDeployService, err := clouddeploy.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create clouddeploy client")
+	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
 	// client is not in the pinned google.golang.org/api line (Vertex AI,
 	// Discovery Engine, Model Armor, Document AI, Cloud TPU, Memorystore for
@@ -389,6 +408,9 @@ func (h *Harness) Setup(ctx context.Context) error {
 		BillingBudgets:       billingBudgetsService,
 		CloudIdentity:        cloudIdentityService,
 		GkeHub:               gkeHubService,
+		CloudBuild:           cloudBuildService,
+		CloudBuildV2:         cloudBuildV2Service,
+		CloudDeploy:          cloudDeployService,
 		RestClient:           restClient,
 	}
 	return nil

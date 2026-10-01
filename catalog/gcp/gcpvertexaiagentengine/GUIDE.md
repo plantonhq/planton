@@ -65,7 +65,9 @@ are named as full publisher-model paths in the agent's location.
 `audioTranscription` payload of an example-conversation part exist in
 Google's provider but not in the pinned Pulumi SDK. Both engines hold
 them out so a manifest means the same thing everywhere; they join when
-the SDK catches up. `buildSpec.workerPool` is modeled.
+the SDK catches up. `buildSpec.workerPool` is modeled: reference a
+`GcpCloudBuildWorkerPool` when the source build must reach a private
+network, such as an internal package index.
 
 ## Destroy
 

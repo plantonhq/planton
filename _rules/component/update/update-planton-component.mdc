@@ -1199,7 +1199,10 @@ After all updates, **execute validation commands in sequence**:
    may move a control from not_applicable to configurable, and added/removed
    module resources change the derived permission statements (update the notes
    citing the terraform resource types). Validate with
-   `go test ./pkg/finops/... ./pkg/compliance/... ./pkg/iac/permissions/...`.
+   `go test ./pkg/finops/... ./pkg/compliance/... ./pkg/iac/permissions/... ./pkg/iac/actioninventory/`
+   (the last proves every permission name exists in the provider's inventory
+   snapshot; a new service prefix needs `make generate-action-inventory
+   ARMS=<provider>` in the same change).
 6. **If the Terraform module's resource set changed and the component ships import
    recipes** (`iac/import-map.yaml`): update the provider catalog
    (`aa_import/catalog.yaml`) and the component map for the added/removed resource

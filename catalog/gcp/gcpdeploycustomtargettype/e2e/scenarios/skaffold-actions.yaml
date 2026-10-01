@@ -1,0 +1,35 @@
+# GcpDeployCustomTargetType scenario: an action-based type that includes a
+# Skaffold module from a public Git repository and one from a Cloud
+# Storage path, in the harness project. Cloud Deploy is expected to fetch
+# neither source until a rollout (the profile lists it as a live fact to
+# confirm), so the Cloud Storage path is a placeholder. Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployCustomTargetType
+metadata:
+  name: planton-oss-e2e-gcpcdctt-actions
+  id: planton-oss-e2e-gcpcdctt-actions
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeploycustomtargettype
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  customTargetTypeId: planton-e2e-cdctt-actions-${E2E_RUN_ID}
+  customActions:
+    renderAction: e2e-render
+    deployAction: e2e-deploy
+    includeSkaffoldModules:
+      - configs:
+          - e2e-actions
+        git:
+          repo: https://github.com/GoogleCloudPlatform/cloud-deploy-samples.git
+          path: custom-targets/util/skaffold.yaml
+          ref: main
+      - googleCloudStorage:
+          source: gs://planton-e2e-placeholder/skaffold/*
+          path: skaffold.yaml

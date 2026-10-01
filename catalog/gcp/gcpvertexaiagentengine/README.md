@@ -72,7 +72,7 @@ planton apply -f agent-engine.yaml
 | `spec.containerSpec` | `object` | none | `imageUri`, `port`. Mutually exclusive with `sourceCodeSpec`. |
 | `spec.sourceCodeSpec` | `object` | none | Exactly one source (`inlineSource.sourceArchive`, `developerConnectSource.config`, `agentConfigSource.adkConfig`) and exactly one build (`pythonSpec { version, entrypointModule, entrypointObject, requirementsFile }` or `imageSpec { buildArgs }`). |
 | `spec.packageSpec` | `object` | none | The legacy pickled-object package: `pickleObjectGcsUri`, `dependencyFilesGcsUri`, `requirementsGcsUri`, `pythonVersion`. |
-| `spec.buildSpec.workerPool` | `string` | none | A Cloud Build private worker pool for the source build. |
+| `spec.buildSpec.workerPool` | `StringValueOrRef` | none | A Cloud Build private worker pool for the source build: a `GcpCloudBuildWorkerPool` reference (its `name` output) or the full `projects/{p}/locations/{l}/workerPools/{pool}` name. |
 | `spec.deploymentSpec` | `object` | Google's defaults | `env[]`, `secretEnv[]` (`GcpSecretManagerSecret` references), `minInstances` (0-10), `maxInstances` (1-1000), `containerConcurrency`, `resourceLimits { cpu, memory }`, `pscInterfaceConfig { networkAttachment, dnsPeeringConfigs[] }`, `agentGatewayConfig { clientToAgentConfig, agentToAnywhereConfig }`. |
 | `contextSpec.memoryBankConfig` | `object` | none | `generationConfig { model, generationTriggerConfig.generationRule }`, `similaritySearchConfig.embeddingModel`, `ttlConfig`, `disableMemoryRevisions`, `structuredMemoryConfigs[]`, `customizationConfigs[]` (scope keys, topics, worked examples, consolidation, generation flags). |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |

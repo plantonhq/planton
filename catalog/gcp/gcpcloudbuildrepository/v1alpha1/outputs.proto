@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildrepository.v1alpha1;
+
+// GcpCloudBuildRepositoryStackOutputs carries the repository link's
+// identity.
+message GcpCloudBuildRepositoryStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/connections/{connection}/repositories/{repository_id}.
+  // The value a trigger's repository fields and a custom target type's
+  // Cloud Build repository take.
+  string name = 1;
+  // The repository's ID in Cloud Build.
+  string repository_id = 2;
+  // The repository's HTTPS clone URI on the code host.
+  string remote_uri = 3;
+}

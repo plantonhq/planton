@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildrepository.v1alpha1;
+
+import "catalog/gcp/gcpcloudbuildrepository/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-cloud-build-repository stack-input
+message GcpCloudBuildRepositoryStackInput {
+  //target cloud-resource
+  GcpCloudBuildRepository target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

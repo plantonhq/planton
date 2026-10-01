@@ -6057,6 +6057,50 @@ enum CloudResourceKind {
     id_prefix: "gcpimg"
     service_group: gcp_compute
   }];
+  // GcpCloudBuildConnection is the container a code host's repositories
+  // live in: the connection to GitHub, GitLab, or Bitbucket is the room,
+  // and each linked repository is what is placed inside it.
+  GcpCloudBuildConnection = 3245 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbcon"
+    container_kind: true
+    service_group: gcp_developer_tools
+  }];
+  // A repository is created under its connection and cannot exist without
+  // it.
+  GcpCloudBuildRepository = 3246 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbrep"
+    prerequisites: [GcpCloudBuildConnection]
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Build trigger: what starts a build (a code event, a Pub/Sub
+  // message, a webhook, or a manual run) and what the build does.
+  GcpCloudBuildTrigger = 3247 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbtrg"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy delivery pipeline: the ordered stages a release is
+  // promoted through, with the automations that drive it.
+  GcpDeliveryPipeline = 3248 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdpip"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster,
+  // a Cloud Run location, a fleet cluster, several targets at once, or a
+  // custom target).
+  GcpDeployTarget = 3249 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdtgt"
+    service_group: gcp_developer_tools
+  }];
 
   // 3250–3259: GCP Firebase (project enablement, app registrations, and
   // the Firebase-adjacent products that follow)
@@ -6094,6 +6138,33 @@ enum CloudResourceKind {
     id_prefix: "gcpfbweb"
     prerequisites: [GcpFirebaseProject]
     service_group: gcp_firebase
+  }];
+
+  // 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud
+  // Deploy resources many pipelines share)
+  // A private Cloud Build worker pool: build machines many triggers and
+  // Cloud Deploy targets share, optionally on a private network.
+  GcpCloudBuildWorkerPool = 3260 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbwp"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy deploy policy: rollout restrictions (freeze windows)
+  // that apply to every pipeline and target its selectors match.
+  GcpDeployPolicy = 3261 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdpol"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy custom target type: how to render and deploy to a
+  // target Google does not deploy natively; many targets share one.
+  GcpDeployCustomTargetType = 3262 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdctt"
+    service_group: gcp_developer_tools
   }];
 
   // 4000–4999: Kubernetes resources, organized in family sub-bands

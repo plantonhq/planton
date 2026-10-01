@@ -1,0 +1,25 @@
+# Consumer-scoped GcpCloudBuildConnection install profile for the gcpcbrep
+# scenario: a github.com connection on the owner-arranged test
+# installation, in the harness project.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildConnection
+metadata:
+  name: planton-oss-e2e-gcpcbrep-connection
+  id: planton-oss-e2e-gcpcbrep-connection
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudbuildconnection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionId: planton-e2e-gcpcbrep-${E2E_RUN_ID}
+  githubConfig:
+    appInstallationId: ${E2E_ENV:PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID}
+    authorizerCredential:
+      oauthTokenSecretVersion:
+        value: ${E2E_ENV:PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION}

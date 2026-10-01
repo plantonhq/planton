@@ -1,0 +1,324 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildconnection.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpCloudBuildConnectionSpec declares a Cloud Build repository connection
+// (`google_cloudbuildv2_connection`): Cloud Build's authorized link to a
+// code host -- github.com, a GitHub Enterprise server, gitlab.com or a
+// GitLab Enterprise server, Bitbucket Cloud, or a Bitbucket Data Center
+// server.
+//
+// A connection is the container its repositories live in: each
+// GcpCloudBuildRepository is created under one connection, and triggers,
+// Cloud Deploy custom target types, and other Google services then build
+// from those repositories.
+//
+// Credentials never appear in the spec. Every token, private key, and
+// webhook secret is a Secret Manager secret VERSION, named here as
+// projects/{project}/secrets/{secret}/versions/{version} -- a
+// GcpSecretManagerSecret reference (its latest_version_name output) or a
+// literal. Google's Cloud Build service agent
+// (service-{PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com)
+// reads them, so grant it roles/secretmanager.secretAccessor on each secret
+// (GcpSecretManagerSecret.iam_members) before the connection is created.
+//
+// GitHub connections finish in a browser: Cloud Build's GitHub App must be
+// installed on the account or organization, and the installation's ID set
+// in github_config.app_installation_id. Until then the connection reports
+// the next step in its installation_stage and installation_action_uri
+// outputs.
+//
+// Important behavioral notes:
+//
+//   - location and connection_id are create-time decisions.
+//   - Set at most one code-host block; the block you choose decides how
+//     Cloud Build authenticates and receives webhooks.
+//   - GitLab and both Bitbucket blocks treat webhook_secret_secret_version
+//     as immutable (changing it replaces the connection); GitHub
+//     Enterprise updates it in place.
+//   - Destroy deletes the connection; its repositories must be removed
+//     first (a chart orders them by the reference).
+message GcpCloudBuildConnectionSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.one_code_host"
+    expression: "(has(this.github_config) ? 1 : 0) + (has(this.github_enterprise_config) ? 1 : 0) + (has(this.gitlab_config) ? 1 : 0) + (has(this.bitbucket_cloud_config) ? 1 : 0) + (has(this.bitbucket_data_center_config) ? 1 : 0) <= 1"
+    message: "set at most one of github_config, github_enterprise_config, gitlab_config, bitbucket_cloud_config, or bitbucket_data_center_config"
+  };
+
+  // The project the connection lives in: a literal project ID or a
+  // GcpProject reference. Empty means the provider's default project.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The region the connection lives in, e.g. "us-central1". Its
+  // repositories, and the triggers that build from them, use the same
+  // region. Required. Immutable.
+  string location = 2 [(buf.validate.field).required = true];
+
+  // The connection's ID, unique in the project and region: letters,
+  // digits, and any of -._~%!$&'()*+,;=@ (Google's rule). Defaults to
+  // metadata.name. Immutable.
+  string connection_id = 3 [(buf.validate.field).cel = {
+    id: "connection_id.format"
+    message: "connection_id may contain only letters, digits, and -._~%!$&'()*+,;=@"
+    expression: "this == '' || this.matches(\"^[-a-zA-Z0-9._~%!$&'()*+,;=@]+$\")"
+  }];
+
+  // Annotations on the connection (AIP-128 key/value metadata; a
+  // connection has no labels). Only the keys declared here are managed.
+  map<string, string> annotations = 4;
+
+  // Turn the connection off: repository API calls and webhook processing
+  // for every repository in it stop until it is turned back on.
+  bool disabled = 5;
+
+  // A connection to github.com through Cloud Build's GitHub App.
+  GcpCloudBuildConnectionGithubConfig github_config = 6;
+
+  // A connection to a GitHub Enterprise server through a GitHub App
+  // created on that server.
+  GcpCloudBuildConnectionGithubEnterpriseConfig github_enterprise_config = 7;
+
+  // A connection to gitlab.com or a GitLab Enterprise server.
+  GcpCloudBuildConnectionGitlabConfig gitlab_config = 8;
+
+  // A connection to a Bitbucket Cloud workspace.
+  GcpCloudBuildConnectionBitbucketCloudConfig bitbucket_cloud_config = 9;
+
+  // A connection to a Bitbucket Data Center server.
+  GcpCloudBuildConnectionBitbucketDataCenterConfig bitbucket_data_center_config = 10;
+
+  // What destroy does:
+  //   "" / "DELETE" -- the connection is deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the connection leaves management and stays in Google
+  string deletion_policy = 11 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// A github.com connection.
+message GcpCloudBuildConnectionGithubConfig {
+  // The installation ID of Cloud Build's GitHub App on the GitHub account
+  // or organization (from the app's settings URL after installing it).
+  // 0 leaves the connection waiting for the installation.
+  int64 app_installation_id = 1 [(buf.validate.field).int64.gte = 0];
+
+  // The OAuth credential of the GitHub account that authorized Cloud
+  // Build's GitHub App -- a robot account is recommended over a person.
+  GcpCloudBuildConnectionOauthCredential authorizer_credential = 2;
+}
+
+// The OAuth token of the account that authorized Cloud Build's GitHub App.
+message GcpCloudBuildConnectionOauthCredential {
+  // The Secret Manager secret version holding the OAuth token, as
+  // projects/{project}/secrets/{secret}/versions/{version}: a
+  // GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal version name
+  // ("versions/latest" follows rotation). The token must be tied to Cloud
+  // Build's GitHub App.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef oauth_token_secret_version = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "oauth_token_secret_version.format"
+      message: "oauth_token_secret_version must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+}
+
+// A GitHub Enterprise connection, through a GitHub App created on the
+// server (manually or from Cloud Build's app manifest).
+message GcpCloudBuildConnectionGithubEnterpriseConfig {
+  // The server's URI, e.g. "https://github.example.com". Required.
+  string host_uri = 1 [(buf.validate.field).required = true];
+
+  // The GitHub App's ID.
+  int64 app_id = 2 [(buf.validate.field).int64.gte = 0];
+
+  // The GitHub App's installation ID on the organization.
+  int64 app_installation_id = 3 [(buf.validate.field).int64.gte = 0];
+
+  // The GitHub App's URL-friendly name.
+  string app_slug = 4;
+
+  // The Secret Manager secret version holding the GitHub App's private key
+  // (projects/{project}/secrets/{secret}/versions/{version}): a
+  // GcpSecretManagerSecret reference or a literal version name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef private_key_secret_version = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "private_key_secret_version.format"
+      message: "private_key_secret_version must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+
+  // The Secret Manager secret version holding the GitHub App's webhook
+  // secret: a GcpSecretManagerSecret reference or a literal version name.
+  // Updates in place.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef webhook_secret_secret_version = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "webhook_secret_secret_version.format"
+      message: "webhook_secret_secret_version must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+
+  // The PEM CA certificate Cloud Build trusts when calling the server, for
+  // a server with a private certificate authority.
+  string ssl_ca = 7;
+
+  // Reach an on-premises server privately through Service Directory
+  // instead of over the internet.
+  GcpCloudBuildConnectionServiceDirectoryConfig service_directory_config = 8;
+}
+
+// A gitlab.com or GitLab Enterprise connection.
+message GcpCloudBuildConnectionGitlabConfig {
+  // The GitLab server's URI. Empty means https://gitlab.com.
+  string host_uri = 1;
+
+  // A personal access token with the "api" scope, which Cloud Build uses
+  // to create webhooks and read repositories. Required.
+  GcpCloudBuildConnectionUserTokenCredential authorizer_credential = 2 [(buf.validate.field).required = true];
+
+  // A personal access token with at least the "read_api" scope, which
+  // Cloud Build uses for read-only calls. Required.
+  GcpCloudBuildConnectionUserTokenCredential read_authorizer_credential = 3 [(buf.validate.field).required = true];
+
+  // The Secret Manager secret version holding the webhook secret of the
+  // GitLab project: a GcpSecretManagerSecret reference or a literal version
+  // name. Required. Immutable (a change replaces the connection).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef webhook_secret_secret_version = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "webhook_secret_secret_version.format"
+      message: "webhook_secret_secret_version must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+
+  // The PEM CA certificate Cloud Build trusts when calling a GitLab
+  // Enterprise server with a private certificate authority.
+  string ssl_ca = 5;
+
+  // Reach an on-premises GitLab Enterprise server privately through
+  // Service Directory instead of over the internet.
+  GcpCloudBuildConnectionServiceDirectoryConfig service_directory_config = 6;
+}
+
+// A Bitbucket Cloud connection.
+message GcpCloudBuildConnectionBitbucketCloudConfig {
+  // The Bitbucket Cloud workspace ID to connect. Required.
+  string workspace = 1 [(buf.validate.field).required = true];
+
+  // A workspace, project, or repository access token with the "webhook",
+  // "repository", "repository:admin", and "pullrequest" scopes (a system
+  // account is recommended). Required.
+  GcpCloudBuildConnectionUserTokenCredential authorizer_credential = 2 [(buf.validate.field).required = true];
+
+  // An access token with "repository" access, for read-only calls.
+  // Required.
+  GcpCloudBuildConnectionUserTokenCredential read_authorizer_credential = 3 [(buf.validate.field).required = true];
+
+  // The Secret Manager secret version holding the webhook secret Cloud
+  // Build verifies webhook events with: a GcpSecretManagerSecret reference
+  // or a literal version name. Required. Immutable (a change replaces the
+  // connection).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef webhook_secret_secret_version = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "webhook_secret_secret_version.format"
+      message: "webhook_secret_secret_version must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+}
+
+// A Bitbucket Data Center connection.
+message GcpCloudBuildConnectionBitbucketDataCenterConfig {
+  // The Bitbucket Data Center server's URI. Required.
+  string host_uri = 1 [(buf.validate.field).required = true];
+
+  // An HTTP access token with the "REPO_ADMIN" scope. Required.
+  GcpCloudBuildConnectionUserTokenCredential authorizer_credential = 2 [(buf.validate.field).required = true];
+
+  // An HTTP access token with "REPO_READ" access, for read-only calls.
+  // Required.
+  GcpCloudBuildConnectionUserTokenCredential read_authorizer_credential = 3 [(buf.validate.field).required = true];
+
+  // The Secret Manager secret version holding the webhook secret: a
+  // GcpSecretManagerSecret reference or a literal version name. Required.
+  // Immutable (a change replaces the connection).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef webhook_secret_secret_version = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "webhook_secret_secret_version.format"
+      message: "webhook_secret_secret_version must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+
+  // The PEM CA certificate Cloud Build trusts when calling the server.
+  string ssl_ca = 5;
+
+  // Reach an on-premises server privately through Service Directory
+  // instead of over the internet.
+  GcpCloudBuildConnectionServiceDirectoryConfig service_directory_config = 6;
+}
+
+// A personal, workspace, project, or repository access token kept in
+// Secret Manager. GitLab and both Bitbucket hosts use this shape for their
+// read-write and read-only credentials.
+message GcpCloudBuildConnectionUserTokenCredential {
+  // The Secret Manager secret version holding the token, as
+  // projects/{project}/secrets/{secret}/versions/{version}: a
+  // GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal version name
+  // ("versions/latest" follows rotation). Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef user_token_secret_version = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "user_token_secret_version.format"
+      message: "user_token_secret_version must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+}
+
+// Private connectivity to an on-premises code host through Service
+// Directory.
+message GcpCloudBuildConnectionServiceDirectoryConfig {
+  // The Service Directory service, as
+  // projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.
+  // Required.
+  string service = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "service.format"
+      message: "service must be projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}"
+      expression: "this.matches('^projects/[^/]+/locations/[^/]+/namespaces/[^/]+/services/[^/]+$')"
+    }
+  ];
+}

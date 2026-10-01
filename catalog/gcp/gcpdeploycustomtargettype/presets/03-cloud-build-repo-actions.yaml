@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployCustomTargetType
+metadata:
+  name: platform-deployer
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: Deploys to the internal platform through custom actions in a linked repository
+  customActions:
+    deployAction: platform-deploy
+    includeSkaffoldModules:
+      - googleCloudBuildRepo:
+          repository:
+            valueFrom:
+              kind: GcpCloudBuildRepository
+              name: deploy-actions
+              fieldPath: status.outputs.name
+          path: platform/skaffold.yaml
+          ref: main

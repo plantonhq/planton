@@ -1,0 +1,23 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpdeliverypipeline
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: serial_pipeline
+      sku_meter: active delivery pipelines
+      pricing_unit: pipeline-months
+      impact: Cloud Deploy bills each active delivery pipeline per month (Cloud Deploy pricing page), with the first active pipeline per billing account free; a pipeline that receives no releases is not active and bills nothing. The stages and their strategies do not change the rate.
+    - field_path: serial_pipeline.stages
+      sku_meter: Cloud Build build minutes
+      pricing_unit: build-minutes
+      impact: Every rollout runs render, deploy, and any verify, predeploy, postdeploy, and analysis jobs as Cloud Build executions, billed as Cloud Build minutes in the targets' execution environments -- more stages, canary phases, and jobs mean more billed minutes per release.
+  estimate_exclusions:
+    - whether the pipeline is active in a month follows how often releases are created, which the spec does not declare
+    - Cloud Build minutes follow how many releases and rollouts run and how long each job takes
+    - the workloads deployed to the targets (Cloud Run services, GKE clusters) bill through their own components
+  notes: "Automations add no charge of their own; the promotions and repairs they trigger create rollouts whose jobs bill as Cloud Build minutes (Cloud Deploy pricing page, read 2026-10-01)."

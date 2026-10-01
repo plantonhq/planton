@@ -22,6 +22,9 @@ import (
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
 	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	certificatemanager "google.golang.org/api/certificatemanager/v1"
+	cloudbuild "google.golang.org/api/cloudbuild/v1"
+	cloudbuildv2 "google.golang.org/api/cloudbuild/v2"
+	clouddeploy "google.golang.org/api/clouddeploy/v1"
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
 	cloudidentity "google.golang.org/api/cloudidentity/v1"
 	cloudkms "google.golang.org/api/cloudkms/v1"
@@ -120,6 +123,14 @@ type Services struct {
 	// with their namespaces and role bindings, memberships, and membership
 	// bindings.
 	GkeHub *gkehub.Service
+	// CloudBuild is the Cloud Build API v1 (triggers and worker pools);
+	// CloudBuildV2 its v2 surface (repository connections and the
+	// repositories linked through them); CloudDeploy the Cloud Deploy API
+	// (delivery pipelines with their automations, targets, deploy policies,
+	// and custom target types).
+	CloudBuild   *cloudbuild.Service
+	CloudBuildV2 *cloudbuildv2.Service
+	CloudDeploy  *clouddeploy.Service
 
 	// RestClient is an ADC-authenticated HTTP client for GCP services whose
 	// typed Go client is not yet in the pinned google.golang.org/api line
@@ -328,6 +339,14 @@ var verifiers = map[string]Verifier{
 	"gcpgkefleetfeature":                     &gkeFleetFeatureVerifier{},
 	"gcpgkefleetscope":                       &gkeFleetScopeVerifier{},
 	"gcpgkefleetmembership":                  &gkeFleetMembershipVerifier{},
+	"gcpcloudbuildworkerpool":                &cloudBuildWorkerPoolVerifier{},
+	"gcpcloudbuildconnection":                &cloudBuildConnectionVerifier{},
+	"gcpcloudbuildrepository":                &cloudBuildRepositoryVerifier{},
+	"gcpcloudbuildtrigger":                   &cloudBuildTriggerVerifier{},
+	"gcpdeliverypipeline":                    &cloudDeployDeliveryPipelineVerifier{},
+	"gcpdeploytarget":                        &cloudDeployTargetVerifier{},
+	"gcpdeploypolicy":                        &cloudDeployPolicyVerifier{},
+	"gcpdeploycustomtargettype":              &cloudDeployCustomTargetTypeVerifier{},
 	"gcpcomputeimage":                        &computeImageVerifier{},
 }
 

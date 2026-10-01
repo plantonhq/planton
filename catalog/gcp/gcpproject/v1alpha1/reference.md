@@ -229,6 +229,9 @@ Fields on other kinds that can point at this resource:
 | GcpCertManagerDnsAuthorization | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertificateMap | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudArmorPolicy | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudBuildConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudBuildTrigger | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudBuildWorkerPool | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudComposerEnvironment | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudComposerUserWorkloadsConfigMap | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudComposerUserWorkloadsSecret | `spec.projectId` | `status.outputs.project_id` |
@@ -256,6 +259,10 @@ Fields on other kinds that can point at this resource:
 | GcpDatastreamPrivateConnection | `spec.projectId` | `status.outputs.project_id` |
 | GcpDatastreamStream | `spec.projectId` | `status.outputs.project_id` |
 | GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.sourceHierarchyDatasets.projectId` | `status.outputs.project_id` |
+| GcpDeliveryPipeline | `spec.projectId` | `status.outputs.project_id` |
+| GcpDeployCustomTargetType | `spec.projectId` | `status.outputs.project_id` |
+| GcpDeployPolicy | `spec.projectId` | `status.outputs.project_id` |
+| GcpDeployTarget | `spec.projectId` | `status.outputs.project_id` |
 | GcpDialogflowCxAgent | `spec.projectId` | `status.outputs.project_id` |
 | GcpDialogflowCxSecuritySettings | `spec.projectId` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.projectId` | `status.outputs.project_id` |

@@ -21,6 +21,7 @@ spec:
         notes: "Covers google_folder (Pulumi organizations.Folder) -- the modules' only resource. create on first apply; get on every refresh and import; update when display_name changes; move when the parent changes (the provider calls folders.move, an in-place operation); delete on destroy under deletion_policy DELETE (a soft delete; ABANDON and PREVENT call no delete API, and the client-side deletion_protection guard fails the destroy before any call). Granted on the PARENT organization or folder -- folder permissions are never project-scoped. roles/resourcemanager.folderAdmin contains all five; folderCreator plus folderEditor is the narrower pair."
       - purpose: BindCreateTimeTags
         permissions:
-          - resourcemanager.tagValues.use
+          - resourcemanager.tagValueBindings.create
+          - resourcemanager.hierarchyNodes.createTagBinding
         provenance: derived
-        notes: "Needed only when spec.tags is set: Google checks the caller may USE each tag value bound at create time. roles/resourcemanager.tagUser on the tag value (or its key) carries it. Omit this group for folders without create-time tags."
+        notes: "Needed only when spec.tags is set: Google checks resourcemanager.tagValueBindings.create on each tag value bound at create time and resourcemanager.hierarchyNodes.createTagBinding on the folder being tagged. roles/resourcemanager.tagUser on the tag value (or its key) carries the first; folder administrators carry the second. Omit this group for folders without create-time tags."

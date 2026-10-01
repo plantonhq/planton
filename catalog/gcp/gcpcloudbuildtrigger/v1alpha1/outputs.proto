@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1;
+
+// GcpCloudBuildTriggerStackOutputs carries the trigger's identity.
+message GcpCloudBuildTriggerStackOutputs {
+  // The trigger's full resource ID:
+  // projects/{project}/locations/{location}/triggers/{trigger_id} for a
+  // regional trigger, projects/{project}/triggers/{trigger_id} for a
+  // global one (the form Google's legacy global API addresses).
+  string id = 1;
+  // Google's generated unique ID for the trigger -- what
+  // `gcloud builds triggers run` and the triggers.run API take.
+  string trigger_id = 2;
+  // The trigger's name (spec.trigger_name, or metadata.name by default).
+  string name = 3;
+}

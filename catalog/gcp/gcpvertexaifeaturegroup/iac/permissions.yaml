@@ -23,9 +23,8 @@ spec:
           - aiplatform.featureGroups.get
           - aiplatform.featureGroups.update
           - aiplatform.featureGroups.delete
-          - aiplatform.operations.get
         provenance: derived
-        notes: Covers google_vertex_ai_feature_group (Pulumi vertex.AiFeatureGroup) -- created and deleted through long-running operations the provider polls, patched for description, labels, and entity ID columns, read on every refresh.
+        notes: Covers google_vertex_ai_feature_group (Pulumi vertex.AiFeatureGroup) -- created and deleted through long-running operations the provider polls, patched for description, labels, and entity ID columns, read on every refresh. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
       - purpose: ManageFeatures
         permissions:
           - aiplatform.features.create

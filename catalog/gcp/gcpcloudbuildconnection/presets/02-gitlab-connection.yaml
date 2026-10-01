@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildConnection
+metadata:
+  name: acme-gitlab
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  gitlabConfig:
+    hostUri: https://gitlab.example.com
+    authorizerCredential:
+      userTokenSecretVersion:
+        valueFrom:
+          kind: GcpSecretManagerSecret
+          name: gitlab-api-token
+    readAuthorizerCredential:
+      userTokenSecretVersion:
+        valueFrom:
+          kind: GcpSecretManagerSecret
+          name: gitlab-read-token
+    webhookSecretSecretVersion:
+      valueFrom:
+        kind: GcpSecretManagerSecret
+        name: gitlab-webhook-secret

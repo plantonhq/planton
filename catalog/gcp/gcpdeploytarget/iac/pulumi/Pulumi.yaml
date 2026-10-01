@@ -1,0 +1,4 @@
+name: gcpdeploytarget-pulumi-project
+runtime:
+  name: go
+description: Planton GcpDeployTarget Pulumi module

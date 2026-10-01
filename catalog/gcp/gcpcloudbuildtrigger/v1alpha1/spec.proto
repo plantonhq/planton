@@ -1,0 +1,982 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpCloudBuildTriggerSpec declares a Cloud Build trigger
+// (`google_cloudbuild_trigger`): the rule that starts a build when an
+// event arrives, and the build it starts.
+//
+// A trigger answers two questions.
+//
+// When does it fire? Set at most one event source (none makes a manual
+// trigger, run from the console, `gcloud builds triggers run`, or the
+// API):
+//
+//   - repository_event_config -- pushes or pull requests on a repository
+//     linked through a Cloud Build connection (GcpCloudBuildRepository);
+//     the current way to build from GitHub, GitLab, and Bitbucket;
+//   - github -- pushes or pull requests through the first-generation
+//     Cloud Build GitHub App (or a GitHub Enterprise config);
+//   - bitbucket_server_trigger_config -- pushes or pull requests through a
+//     first-generation Bitbucket Server config;
+//   - developer_connect_event_config -- pushes or pull requests on a
+//     Developer Connect git repository link;
+//   - trigger_template -- pushes to a Cloud Source Repository;
+//   - pubsub_config -- a message on a Pub/Sub topic (Artifact Registry,
+//     Cloud Storage, and Cloud Scheduler all publish there);
+//   - webhook_config -- an HTTP POST to the trigger's webhook URL.
+//
+// Google states github and trigger_template are mutually exclusive; the
+// spec refuses that pair. Pub/Sub, webhook, and manual triggers have no
+// commit of their own: source_to_build names the repository and ref they
+// check out.
+//
+// What does it build? Exactly one build configuration:
+//
+//   - build -- the build declared inline (steps, images, options);
+//   - filename -- a cloudbuild.yaml path in the triggering repository
+//     (for repository, GitHub, Bitbucket Server, and Cloud Source
+//     Repository events);
+//   - git_file_source -- a cloudbuild.yaml path in a named repository
+//     (what Pub/Sub, webhook, and manual triggers use).
+//
+// Important behavioral notes:
+//
+//   - location (default "global") is a create-time decision; everything
+//     else, including trigger_name, updates in place.
+//   - A trigger whose builds use a regional repository or a private pool
+//     must be in that region.
+//   - Builds run as service_account; leave it empty for the project's
+//     default Cloud Build service account. A user-specified account needs
+//     the build's log destination set (build.logs_bucket, or
+//     build.options.logging CLOUD_LOGGING_ONLY or NONE).
+//   - Destroy deletes the trigger; builds it already started keep running
+//     and their history stays.
+message GcpCloudBuildTriggerSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_build_config"
+    expression: "(has(this.build) ? 1 : 0) + (this.filename != '' ? 1 : 0) + (has(this.git_file_source) ? 1 : 0) == 1"
+    message: "set exactly one of build, filename, or git_file_source"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.github_or_trigger_template"
+    expression: "!(has(this.github) && has(this.trigger_template))"
+    message: "github and trigger_template are mutually exclusive"
+  };
+
+  // The project the trigger lives in: a literal project ID or a GcpProject
+  // reference. Empty means the provider's default project. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Cloud Build location the trigger lives in: "global" (the default
+  // when empty) or a region such as "us-central1". A trigger on a
+  // repository linked through a regional connection, or whose builds use
+  // a private pool, must be in that region. Immutable.
+  string location = 2;
+
+  // The trigger's name, unique in the project: 1-64 letters, digits, and
+  // dashes, starting and ending with a letter or digit (Google's rule).
+  // Defaults to metadata.name. Renames in place.
+  string trigger_name = 3 [(buf.validate.field).cel = {
+    id: "trigger_name.format"
+    message: "trigger_name must be 1-64 letters, digits, or dashes, starting and ending with a letter or digit"
+    expression: "this == '' || this.matches('^[a-zA-Z0-9]([-a-zA-Z0-9]{0,62}[a-zA-Z0-9])?$')"
+  }];
+
+  // A human-readable description of the trigger.
+  string description = 4;
+
+  // Turn the trigger off: it never starts a build until turned back on.
+  bool disabled = 5;
+
+  // Tags on the trigger, for filtering in the console and API. (Triggers
+  // have no labels.)
+  repeated string tags = 6;
+
+  // User substitutions every build the trigger starts receives, referenced
+  // in the build as $_NAME or ${_NAME}. Keys start with an underscore and
+  // use only uppercase letters, digits, and underscores (Google's rule),
+  // e.g. "_DEPLOY_ENV".
+  map<string, string> substitutions = 7 [(buf.validate.field).cel = {
+    id: "substitutions.keys"
+    message: "substitution keys must match ^_[A-Z0-9_]+$ (for example _DEPLOY_ENV)"
+    expression: "this.all(k, k.matches('^_[A-Z0-9_]+$'))"
+  }];
+
+  // The service account builds run as, and that Google uses for every
+  // user-controlled operation on the trigger, as
+  // projects/{project}/serviceAccounts/{email}: a GcpServiceAccount
+  // reference (its name output) or a literal. Empty means the project's
+  // default Cloud Build service account. The deploying identity needs
+  // iam.serviceAccounts.actAs on it; the account needs
+  // roles/logging.logWriter (and whatever the build itself touches), and
+  // the build must set its log destination (build.logs_bucket, or
+  // build.options.logging CLOUD_LOGGING_ONLY or NONE).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "service_account.format"
+      message: "service_account must be projects/{project}/serviceAccounts/{email}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/serviceAccounts/[^/]+$')"
+    }
+  ];
+
+  // Require a person with the Cloud Build Approver role to approve each
+  // build before it runs.
+  GcpCloudBuildTriggerApprovalConfig approval_config = 9;
+
+  // Fire on pushes or pull requests of a repository linked through a Cloud
+  // Build connection (GcpCloudBuildRepository).
+  GcpCloudBuildTriggerRepositoryEventConfig repository_event_config = 10;
+
+  // Fire on GitHub pushes or pull requests through the first-generation
+  // Cloud Build GitHub App or a GitHub Enterprise config. Mutually
+  // exclusive with trigger_template.
+  GcpCloudBuildTriggerGithub github = 11;
+
+  // Fire on Bitbucket Server pushes or pull requests through a
+  // first-generation Bitbucket Server config.
+  GcpCloudBuildTriggerBitbucketServerTriggerConfig bitbucket_server_trigger_config = 12;
+
+  // Fire on pushes or pull requests of a Developer Connect git repository
+  // link.
+  GcpCloudBuildTriggerDeveloperConnectEventConfig developer_connect_event_config = 13;
+
+  // Fire on pushes to a Cloud Source Repository. Mutually exclusive with
+  // github.
+  GcpCloudBuildTriggerTriggerTemplate trigger_template = 14;
+
+  // Fire on each message published to a Pub/Sub topic. Cloud Build creates
+  // and owns the push subscription.
+  GcpCloudBuildTriggerPubsubConfig pubsub_config = 15;
+
+  // Fire on each HTTP POST to the trigger's webhook URL, authenticated by
+  // a secret key.
+  GcpCloudBuildTriggerWebhookConfig webhook_config = 16;
+
+  // The repository and ref a Pub/Sub, webhook, or manual trigger checks
+  // out (triggers that respond to repository events build the commit that
+  // caused the event and ignore this).
+  GcpCloudBuildTriggerSourceToBuild source_to_build = 17;
+
+  // A Common Expression Language filter on the incoming event; the trigger
+  // fires only when it evaluates true. Used with Pub/Sub and webhook
+  // triggers, over the substitutions they bind from the payload, e.g.
+  // "_ACTION == 'INSERT'".
+  string filter = 18;
+
+  // File globs (Go filepath.Match plus "**") of changes to ignore: a
+  // commit whose changed files all match is not built. Repository-event
+  // triggers only.
+  repeated string ignored_files = 19;
+
+  // File globs of changes that matter: when set, a commit is built only if
+  // at least one changed file (not ignored) matches. Repository-event
+  // triggers only.
+  repeated string included_files = 20;
+
+  // Show the build log link on the GitHub check run when the build
+  // finishes: "INCLUDE_BUILD_LOGS_WITH_STATUS". Google accepts it only on
+  // GitHub triggers (github, or repository_event_config on a GitHub
+  // repository) and refuses it with INVALID_ARGUMENT otherwise. Empty
+  // leaves logs off GitHub.
+  string include_build_logs = 21 [(buf.validate.field).cel = {
+    id: "include_build_logs.valid"
+    message: "include_build_logs must be INCLUDE_BUILD_LOGS_UNSPECIFIED or INCLUDE_BUILD_LOGS_WITH_STATUS"
+    expression: "this == '' || this in ['INCLUDE_BUILD_LOGS_UNSPECIFIED', 'INCLUDE_BUILD_LOGS_WITH_STATUS']"
+  }];
+
+  // The build, declared inline. Exactly one of build, filename, or
+  // git_file_source.
+  GcpCloudBuildTriggerBuild build = 22;
+
+  // The path, from the repository root, of the build configuration file
+  // (e.g. "cloudbuild.yaml") in the triggering repository. For
+  // repository_event_config, github, bitbucket_server_trigger_config,
+  // developer_connect_event_config, and trigger_template triggers; Pub/Sub,
+  // webhook, and manual triggers use git_file_source. Exactly one of
+  // build, filename, or git_file_source.
+  string filename = 23;
+
+  // The build configuration file read from a named repository and
+  // revision -- what Pub/Sub, webhook, and manual triggers use. Exactly
+  // one of build, filename, or git_file_source.
+  GcpCloudBuildTriggerGitFileSource git_file_source = 24;
+
+  // What destroy does:
+  //   "" / "DELETE" -- the trigger is deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the trigger leaves management and stays in Google
+  string deletion_policy = 25 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// Manual approval before each build runs.
+message GcpCloudBuildTriggerApprovalConfig {
+  // Builds wait in a pending state until someone with the Cloud Build
+  // Approver role (roles/cloudbuild.builds.approver) approves them.
+  bool approval_required = 1;
+}
+
+// Which pull requests start a build. Shared by every repository event
+// source.
+message GcpCloudBuildTriggerPullRequestFilter {
+  // An RE2 regular expression of the pull request's BASE branch, e.g.
+  // "^main$". Required on github and bitbucket_server_trigger_config.
+  string branch = 1;
+
+  // Whether a build waits for a "/gcbrun" comment:
+  //   "COMMENTS_DISABLED" -- every pull request builds
+  //   "COMMENTS_ENABLED"  -- builds start only on a "/gcbrun" comment
+  //                          from an owner or collaborator
+  //   "COMMENTS_ENABLED_FOR_EXTERNAL_CONTRIBUTORS_ONLY" -- collaborators'
+  //                          pull requests build; others wait for the
+  //                          comment
+  // Empty leaves Google's default (COMMENTS_DISABLED).
+  string comment_control = 2 [(buf.validate.field).cel = {
+    id: "comment_control.valid"
+    message: "comment_control must be COMMENTS_DISABLED, COMMENTS_ENABLED, or COMMENTS_ENABLED_FOR_EXTERNAL_CONTRIBUTORS_ONLY"
+    expression: "this == '' || this in ['COMMENTS_DISABLED', 'COMMENTS_ENABLED', 'COMMENTS_ENABLED_FOR_EXTERNAL_CONTRIBUTORS_ONLY']"
+  }];
+
+  // Build pull requests whose base branch does NOT match branch.
+  bool invert_regex = 3;
+}
+
+// Which pushes start a build: exactly one of branch or tag. Shared by
+// every repository event source.
+message GcpCloudBuildTriggerPushFilter {
+  option (buf.validate.message).cel = {
+    id: "push.exactly_one_ref"
+    expression: "(this.branch != '' ? 1 : 0) + (this.tag != '' ? 1 : 0) == 1"
+    message: "a push filter matches exactly one of branch or tag"
+  };
+
+  // An RE2 regular expression of the pushed branch, e.g. "^main$" or
+  // "^release/.*". Exactly one of branch or tag.
+  string branch = 1;
+
+  // An RE2 regular expression of the pushed tag, e.g. "^v[0-9]+\\.". Exactly
+  // one of branch or tag.
+  string tag = 2;
+
+  // Build pushes whose ref does NOT match.
+  bool invert_regex = 3;
+}
+
+// Pushes or pull requests on a repository linked through a Cloud Build
+// connection.
+message GcpCloudBuildTriggerRepositoryEventConfig {
+  option (buf.validate.message).cel = {
+    id: "repository_event_config.exactly_one_filter"
+    expression: "has(this.pull_request) != has(this.push)"
+    message: "repository_event_config takes exactly one of pull_request or push"
+  };
+
+  // The linked repository, as
+  // projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}:
+  // a GcpCloudBuildRepository reference (its name output) or a literal.
+  // The trigger must be in the repository's region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef repository = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildRepository,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "repository.format"
+      message: "repository must be projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/connections/[^/]+/repositories/[^/]+$')"
+    }
+  ];
+
+  // Build pull requests. Exactly one of pull_request or push.
+  GcpCloudBuildTriggerPullRequestFilter pull_request = 2;
+
+  // Build pushes. Exactly one of pull_request or push.
+  GcpCloudBuildTriggerPushFilter push = 3;
+}
+
+// GitHub events through the first-generation Cloud Build GitHub App.
+message GcpCloudBuildTriggerGithub {
+  option (buf.validate.message).cel = {
+    id: "github.exactly_one_filter"
+    expression: "has(this.pull_request) != has(this.push)"
+    message: "github takes exactly one of pull_request or push"
+  };
+  option (buf.validate.message).cel = {
+    id: "github.pull_request_branch"
+    expression: "!has(this.pull_request) || this.pull_request.branch != ''"
+    message: "github.pull_request.branch is required"
+  };
+
+  // The repository's owner: the user or organization, e.g.
+  // "googlecloudplatform" for github.com/googlecloudplatform/cloud-builders.
+  string owner = 1;
+
+  // The repository's name, e.g. "cloud-builders".
+  string name = 2;
+
+  // The GitHub Enterprise config the installation uses, as
+  // projects/{project}/locations/{location}/githubEnterpriseConfigs/{id}.
+  // Empty means github.com.
+  string enterprise_config_resource_name = 3;
+
+  // Build pull requests (branch is required). Exactly one of pull_request
+  // or push.
+  GcpCloudBuildTriggerPullRequestFilter pull_request = 4;
+
+  // Build pushes. Exactly one of pull_request or push.
+  GcpCloudBuildTriggerPushFilter push = 5;
+}
+
+// Bitbucket Server events through a first-generation Bitbucket Server
+// config.
+message GcpCloudBuildTriggerBitbucketServerTriggerConfig {
+  option (buf.validate.message).cel = {
+    id: "bitbucket_server_trigger_config.exactly_one_filter"
+    expression: "has(this.pull_request) != has(this.push)"
+    message: "bitbucket_server_trigger_config takes exactly one of pull_request or push"
+  };
+  option (buf.validate.message).cel = {
+    id: "bitbucket_server_trigger_config.pull_request_branch"
+    expression: "!has(this.pull_request) || this.pull_request.branch != ''"
+    message: "bitbucket_server_trigger_config.pull_request.branch is required"
+  };
+
+  // The Bitbucket Server config the trigger uses, as
+  // projects/{project}/locations/{location}/bitbucketServerConfigs/{id}.
+  // Required.
+  string bitbucket_server_config_resource = 1 [(buf.validate.field).required = true];
+
+  // The key of the Bitbucket project the repository is in, e.g. "TEST" for
+  // https://mybitbucket.server/projects/TEST/repos/test-repo. Required.
+  string project_key = 2 [(buf.validate.field).required = true];
+
+  // The repository's slug (its URL form), e.g. "test-repo". Required.
+  string repo_slug = 3 [(buf.validate.field).required = true];
+
+  // Build pull requests (branch is required). Exactly one of pull_request
+  // or push.
+  GcpCloudBuildTriggerPullRequestFilter pull_request = 4;
+
+  // Build pushes. Exactly one of pull_request or push.
+  GcpCloudBuildTriggerPushFilter push = 5;
+}
+
+// Developer Connect git repository link events.
+message GcpCloudBuildTriggerDeveloperConnectEventConfig {
+  option (buf.validate.message).cel = {
+    id: "developer_connect_event_config.exactly_one_filter"
+    expression: "has(this.pull_request) != has(this.push)"
+    message: "developer_connect_event_config takes exactly one of pull_request or push"
+  };
+
+  // The Developer Connect git repository link, as
+  // projects/{project}/locations/{location}/connections/{connection}/gitRepositoryLinks/{link}.
+  // Required.
+  string git_repository_link = 1 [(buf.validate.field).required = true];
+
+  // Build pull requests. Exactly one of pull_request or push.
+  GcpCloudBuildTriggerPullRequestFilter pull_request = 2;
+
+  // Build pushes. Exactly one of pull_request or push.
+  GcpCloudBuildTriggerPushFilter push = 3;
+}
+
+// Pushes to a Cloud Source Repository.
+message GcpCloudBuildTriggerTriggerTemplate {
+  option (buf.validate.message).cel = {
+    id: "trigger_template.exactly_one_revision"
+    expression: "(this.branch_name != '' ? 1 : 0) + (this.tag_name != '' ? 1 : 0) + (this.commit_sha != '' ? 1 : 0) == 1"
+    message: "trigger_template takes exactly one of branch_name, tag_name, or commit_sha"
+  };
+
+  // The project that owns the repository. Empty means the trigger's
+  // project.
+  string project_id = 1;
+
+  // The Cloud Source Repository's name. Empty means "default".
+  string repo_name = 2;
+
+  // The directory, relative to the repository root, builds run in.
+  string dir = 3;
+
+  // An RE2 regular expression of the branches to build. Exactly one of
+  // branch_name, tag_name, or commit_sha.
+  string branch_name = 4;
+
+  // An RE2 regular expression of the tags to build. Exactly one of
+  // branch_name, tag_name, or commit_sha.
+  string tag_name = 5;
+
+  // An explicit commit SHA to build. Exactly one of branch_name,
+  // tag_name, or commit_sha.
+  string commit_sha = 6;
+
+  // Build revisions that do NOT match the branch or tag expression.
+  bool invert_regex = 7;
+}
+
+// A Pub/Sub topic whose messages start builds.
+message GcpCloudBuildTriggerPubsubConfig {
+  // The topic, as projects/{project}/topics/{topic}: a GcpPubSubTopic
+  // reference (its topic_id output) or a literal. Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef topic = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id",
+    (buf.validate.field).cel = {
+      id: "topic.format"
+      message: "topic must be projects/{project}/topics/{topic}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/topics/[^/]+$')"
+    }
+  ];
+
+  // The service account email the push subscription authenticates as: a
+  // GcpServiceAccount reference (its email output) or a literal. Empty
+  // lets Google choose.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_email = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+}
+
+// A webhook URL whose requests start builds.
+message GcpCloudBuildTriggerWebhookConfig {
+  // The Secret Manager secret version holding the webhook's key, as
+  // projects/{project}/secrets/{secret}/versions/{version}: a
+  // GcpSecretManagerSecret reference (its latest_version_name output) or a
+  // literal. Callers pass the key as the URL's "secret" parameter. Google's
+  // Cloud Build service agent
+  // (service-{PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com)
+  // reads it, so grant that agent roles/secretmanager.secretAccessor on
+  // the secret (GcpSecretManagerSecret.iam_members). Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the webhook secret itself never appears in the spec",
+    (buf.validate.field).cel = {
+      id: "webhook_secret.format"
+      message: "webhook_config.secret must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+}
+
+// The repository and ref a Pub/Sub, webhook, or manual trigger builds.
+message GcpCloudBuildTriggerSourceToBuild {
+  option (buf.validate.message).cel = {
+    id: "source_to_build.exactly_one_repository"
+    expression: "((has(this.repository) && (has(this.repository.value) || has(this.repository.value_from))) ? 1 : 0) + (this.uri != '' ? 1 : 0) == 1"
+    message: "source_to_build takes exactly one of repository or uri"
+  };
+
+  // A repository linked through a Cloud Build connection, as
+  // projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}:
+  // a GcpCloudBuildRepository reference (its name output) or a literal.
+  // Exactly one of repository or uri.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef repository = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildRepository,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "source_to_build_repository.format"
+      message: "source_to_build.repository must be projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/connections/[^/]+/repositories/[^/]+$')"
+    }
+  ];
+
+  // The repository's URI, e.g. "https://github.com/acme/orders" (for the
+  // first-generation GitHub App, Bitbucket Server, or a Cloud Source
+  // Repository). Exactly one of repository or uri.
+  string uri = 2;
+
+  // The branch or tag to build, as a full ref: "refs/heads/main" or
+  // "refs/tags/v1.0.0". Required.
+  string ref = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "ref.format"
+      message: "ref must start with refs/ (for example refs/heads/main)"
+      expression: "this.startsWith('refs/')"
+    }
+  ];
+
+  // The kind of repository: "GITHUB", "BITBUCKET_SERVER",
+  // "CLOUD_SOURCE_REPOSITORIES", or "UNKNOWN" (the values the provider
+  // accepts; a connected GitLab or Bitbucket Cloud repository is still
+  // named through repository). Required.
+  string repo_type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "source_to_build_repo_type.valid"
+      message: "repo_type must be UNKNOWN, CLOUD_SOURCE_REPOSITORIES, GITHUB, or BITBUCKET_SERVER"
+      expression: "this in ['UNKNOWN', 'CLOUD_SOURCE_REPOSITORIES', 'GITHUB', 'BITBUCKET_SERVER']"
+    }
+  ];
+
+  // The GitHub Enterprise config the repository is reached through, as
+  // projects/{project}/locations/{location}/githubEnterpriseConfigs/{id}.
+  string github_enterprise_config = 5;
+
+  // The Bitbucket Server config the repository is reached through, as
+  // projects/{project}/locations/{location}/bitbucketServerConfigs/{id}.
+  string bitbucket_server_config = 6;
+}
+
+// A build configuration file in a named repository.
+message GcpCloudBuildTriggerGitFileSource {
+  option (buf.validate.message).cel = {
+    id: "git_file_source.at_most_one_repository"
+    expression: "((has(this.repository) && (has(this.repository.value) || has(this.repository.value_from))) ? 1 : 0) + (this.uri != '' ? 1 : 0) <= 1"
+    message: "git_file_source takes at most one of repository or uri"
+  };
+
+  // The file's path from the repository root, e.g. "cloudbuild.yaml".
+  // Required.
+  string path = 1 [(buf.validate.field).required = true];
+
+  // The kind of repository: "GITHUB", "BITBUCKET_SERVER",
+  // "CLOUD_SOURCE_REPOSITORIES", or "UNKNOWN". Required.
+  string repo_type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "git_file_source_repo_type.valid"
+      message: "repo_type must be UNKNOWN, CLOUD_SOURCE_REPOSITORIES, GITHUB, or BITBUCKET_SERVER"
+      expression: "this in ['UNKNOWN', 'CLOUD_SOURCE_REPOSITORIES', 'GITHUB', 'BITBUCKET_SERVER']"
+    }
+  ];
+
+  // A repository linked through a Cloud Build connection: a
+  // GcpCloudBuildRepository reference (its name output) or a literal
+  // projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}.
+  // At most one of repository or uri; with neither, the file is read from
+  // the repository the event came from.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef repository = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildRepository,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "git_file_source_repository.format"
+      message: "git_file_source.repository must be projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/connections/[^/]+/repositories/[^/]+$')"
+    }
+  ];
+
+  // The repository's URI, e.g. "https://github.com/acme/orders". At most
+  // one of repository or uri.
+  string uri = 4;
+
+  // The branch, tag, ref, or SHA to read the file at (git revision
+  // syntax), e.g. "refs/heads/main". Empty means the revision that
+  // triggered the build.
+  string revision = 5;
+
+  // The GitHub Enterprise config the repository is reached through, as
+  // projects/{project}/locations/{location}/githubEnterpriseConfigs/{id}.
+  string github_enterprise_config = 6;
+
+  // The Bitbucket Server config the repository is reached through, as
+  // projects/{project}/locations/{location}/bitbucketServerConfigs/{id}.
+  string bitbucket_server_config = 7;
+}
+
+// An inline build: Google's Build resource, the same shape as a
+// cloudbuild.yaml file.
+message GcpCloudBuildTriggerBuild {
+  // The build's steps, run in order (or as wait_for allows). At least one.
+  // The sum of the steps' timeouts may not exceed the build's timeout.
+  repeated GcpCloudBuildTriggerBuildStep steps = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // How long the build may run, in seconds with an "s" suffix, e.g.
+  // "1200s". Empty means 600s. Must be at least the sum of the steps'
+  // timeouts.
+  string timeout = 2;
+
+  // How long the build may wait in the queue before it expires, e.g.
+  // "3600s". Empty means no limit.
+  string queue_ttl = 3;
+
+  // Images pushed after every step succeeds, e.g.
+  // "us-docker.pkg.dev/my-project/apps/orders:$SHORT_SHA". Their digests
+  // land in the build's results.
+  repeated string images = 4;
+
+  // The Cloud Storage location build logs are written to, as
+  // gs://{bucket} or gs://{bucket}/{path}: a GcpGcsBucket reference (its
+  // url output) or a literal. Google writes {logs_bucket}/log-{build_id}.txt.
+  // Empty means Cloud Build's default logs bucket. A build running as a
+  // user-specified service account needs this or options.logging set.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef logs_bucket = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.url"
+  ];
+
+  // Build-level substitutions, merged with the trigger's.
+  map<string, string> substitutions = 6;
+
+  // Tags on each build, for filtering the build history. (Not Docker tags.)
+  repeated string tags = 7;
+
+  // Non-image artifacts uploaded after every step succeeds.
+  GcpCloudBuildTriggerBuildArtifacts artifacts = 8;
+
+  // Machine, disk, logging, and private-pool options.
+  GcpCloudBuildTriggerBuildOptions options = 9;
+
+  // An explicit source for the build. Usually empty: a triggered build
+  // builds the source of its trigger.
+  GcpCloudBuildTriggerBuildSource source = 10;
+
+  // Secret Manager secrets exposed to the steps as environment variables
+  // (listed in a step's secret_env).
+  GcpCloudBuildTriggerBuildAvailableSecrets available_secrets = 11;
+
+  // Cloud KMS-encrypted values exposed to the steps as environment
+  // variables (listed in a step's secret_env). Prefer available_secrets.
+  repeated GcpCloudBuildTriggerBuildSecret secrets = 12;
+}
+
+// One build step: a container run in the build's workspace.
+message GcpCloudBuildTriggerBuildStep {
+  option (buf.validate.message).cel = {
+    id: "step.script_excludes_entrypoint_and_args"
+    expression: "this.script == '' || (this.entrypoint == '' && size(this.args) == 0)"
+    message: "a step with script cannot also set entrypoint or args"
+  };
+
+  // The image the step runs, e.g. "gcr.io/cloud-builders/docker",
+  // "gcr.io/google.com/cloudsdktool/cloud-sdk", or "ubuntu". Required.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The step's ID, for other steps' wait_for.
+  string id = 2;
+
+  // Arguments to the image's entrypoint (or, with no entrypoint, the
+  // command and its arguments). Not with script.
+  repeated string args = 3;
+
+  // An entrypoint replacing the image's own. Not with script.
+  string entrypoint = 4;
+
+  // A shell script run in the step, instead of entrypoint and args.
+  string script = 5;
+
+  // The working directory, relative to the build's workspace (an absolute
+  // path is outside it and not kept between steps unless it is a volume).
+  string dir = 6;
+
+  // Environment variables, each "KEY=VALUE".
+  repeated string env = 7;
+
+  // Names of secret environment variables the step receives, each defined
+  // in the build's available_secrets.secret_manager (env) or secrets
+  // (secret_env keys).
+  repeated string secret_env = 8 [(dev.planton.shared.options.sensitive_exempt_reason) = "environment variable NAMES only -- their values come from build.secrets (KMS ciphertext) or available_secrets (Secret Manager versions), never the spec"];
+
+  // The IDs of the steps this one waits for. Empty waits for every
+  // earlier step; ["-"] starts it at once.
+  repeated string wait_for = 9;
+
+  // How long the step may run, e.g. "300s". Empty means until the build
+  // times out.
+  string timeout = 10;
+
+  // Let the step fail without failing the build.
+  bool allow_failure = 11;
+
+  // Let the step fail without failing the build only with one of these
+  // exit codes (takes precedence over allow_failure).
+  repeated int32 allow_exit_codes = 12;
+
+  // Volumes mounted into the step. A named volume must be used by at
+  // least two steps.
+  repeated GcpCloudBuildTriggerBuildStepVolume volumes = 13;
+}
+
+// A volume mounted into one step.
+message GcpCloudBuildTriggerBuildStepVolume {
+  // The volume's name (a valid Docker volume name, unique in the step).
+  // Required.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // The absolute path the volume mounts at. Required.
+  string path = 2 [(buf.validate.field).required = true];
+}
+
+// Non-image artifacts uploaded after every step succeeds.
+message GcpCloudBuildTriggerBuildArtifacts {
+  // Images pushed after every step succeeds (the same as the build's
+  // images).
+  repeated string images = 1;
+
+  // Workspace files uploaded to Cloud Storage.
+  GcpCloudBuildTriggerBuildArtifactsObjects objects = 2;
+
+  // Maven artifacts uploaded to Artifact Registry.
+  repeated GcpCloudBuildTriggerBuildArtifactsMavenArtifact maven_artifacts = 3;
+
+  // npm packages uploaded to Artifact Registry.
+  repeated GcpCloudBuildTriggerBuildArtifactsNpmPackage npm_packages = 4;
+
+  // Python packages uploaded to Artifact Registry.
+  repeated GcpCloudBuildTriggerBuildArtifactsPythonPackage python_packages = 5;
+}
+
+// Workspace files uploaded to Cloud Storage.
+message GcpCloudBuildTriggerBuildArtifactsObjects {
+  // The destination, as gs://{bucket}/{path}/.
+  string location = 1;
+
+  // Globs of workspace files to upload.
+  repeated string paths = 2;
+}
+
+// One Maven artifact uploaded to Artifact Registry.
+message GcpCloudBuildTriggerBuildArtifactsMavenArtifact {
+  // The repository, as https://{region}-maven.pkg.dev/{project}/{repository}.
+  string repository = 1;
+
+  // The artifact's path in the workspace, e.g.
+  // "my-app/target/my-app-1.0.SNAPSHOT.jar".
+  string path = 2;
+
+  // The Maven artifactId.
+  string artifact_id = 3;
+
+  // The Maven groupId.
+  string group_id = 4;
+
+  // The Maven version.
+  string version = 5;
+}
+
+// One npm package uploaded to Artifact Registry.
+message GcpCloudBuildTriggerBuildArtifactsNpmPackage {
+  // The repository, as https://{region}-npm.pkg.dev/{project}/{repository}.
+  string repository = 1;
+
+  // The directory holding the package's package.json.
+  string package_path = 2;
+}
+
+// Python packages uploaded to Artifact Registry.
+message GcpCloudBuildTriggerBuildArtifactsPythonPackage {
+  // The repository, as https://{region}-python.pkg.dev/{project}/{repository}.
+  string repository = 1;
+
+  // Globs of the files to upload, usually "dist/*".
+  repeated string paths = 2;
+}
+
+// Build options. Dynamic substitutions are always on and the substitution
+// option is always ALLOW_LOOSE for triggered builds, so neither is offered.
+message GcpCloudBuildTriggerBuildOptions {
+  option (buf.validate.message).cel = {
+    id: "options.source_provenance_hash.valid"
+    expression: "this.source_provenance_hash.all(h, h in ['NONE', 'SHA256', 'MD5'])"
+    message: "source_provenance_hash entries must be NONE, SHA256, or MD5"
+  };
+
+  // The machine type builds run on in Google's default pool: "E2_MEDIUM",
+  // "E2_HIGHCPU_8", "E2_HIGHCPU_32", "N1_HIGHCPU_8", or "N1_HIGHCPU_32".
+  // Empty means the standard machine. A private pool's machine is set on
+  // the pool.
+  string machine_type = 1;
+
+  // The minimum disk size in GB for the build's VM (some of it is used by
+  // the system). 0 means the standard size.
+  int64 disk_size_gb = 2 [(buf.validate.field).int64.gte = 0];
+
+  // A private pool the builds run on, as
+  // projects/{project}/locations/{location}/workerPools/{pool}: a
+  // GcpCloudBuildWorkerPool reference (its name output) or a literal. The
+  // trigger must be in the pool's region. Google's API marks this field
+  // (BuildOptions.workerPool) deprecated in favor of options.pool.name,
+  // which the provider does not expose; a filename or git_file_source
+  // build sets options.pool.name in its cloudbuild.yaml instead.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef worker_pool = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildWorkerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // Where build logs go:
+  //   "CLOUD_LOGGING_ONLY" -- Cloud Logging only
+  //   "GCS_ONLY"           -- the logs bucket only
+  //   "LEGACY"             -- both (the old default)
+  //   "STACKDRIVER_ONLY"   -- Cloud Logging only (older name)
+  //   "NONE"               -- nowhere
+  //   "LOGGING_UNSPECIFIED"-- Google's default
+  // A build running as a user-specified service account needs
+  // CLOUD_LOGGING_ONLY, NONE, or a logs_bucket.
+  string logging = 4 [(buf.validate.field).cel = {
+    id: "logging.valid"
+    message: "logging must be LOGGING_UNSPECIFIED, LEGACY, GCS_ONLY, STACKDRIVER_ONLY, CLOUD_LOGGING_ONLY, or NONE"
+    expression: "this == '' || this in ['LOGGING_UNSPECIFIED', 'LEGACY', 'GCS_ONLY', 'STACKDRIVER_ONLY', 'CLOUD_LOGGING_ONLY', 'NONE']"
+  }];
+
+  // Whether logs stream to the Cloud Storage bucket while the build runs:
+  // "STREAM_ON", "STREAM_OFF", or "STREAM_DEFAULT".
+  string log_streaming_option = 5 [(buf.validate.field).cel = {
+    id: "log_streaming_option.valid"
+    message: "log_streaming_option must be STREAM_DEFAULT, STREAM_ON, or STREAM_OFF"
+    expression: "this == '' || this in ['STREAM_DEFAULT', 'STREAM_ON', 'STREAM_OFF']"
+  }];
+
+  // Request verifiable build provenance: "VERIFIED" or "NOT_VERIFIED".
+  string requested_verify_option = 6 [(buf.validate.field).cel = {
+    id: "requested_verify_option.valid"
+    message: "requested_verify_option must be NOT_VERIFIED or VERIFIED"
+    expression: "this == '' || this in ['NOT_VERIFIED', 'VERIFIED']"
+  }];
+
+  // Hashes of the source recorded in the build's provenance: "SHA256",
+  // "MD5", or "NONE".
+  repeated string source_provenance_hash = 7;
+
+  // Environment variables for every step, each "KEY=VALUE"; a step's own
+  // env wins on a collision.
+  repeated string env = 8;
+
+  // Names of secret environment variables every step receives, each
+  // defined in the build's secrets.
+  repeated string secret_env = 9 [(dev.planton.shared.options.sensitive_exempt_reason) = "environment variable NAMES only -- their values come from build.secrets (KMS ciphertext) or available_secrets (Secret Manager versions), never the spec"];
+
+  // Volumes mounted into every step (names and paths may not collide with
+  // a step's own volumes). Not valid on a one-step build.
+  repeated GcpCloudBuildTriggerBuildOptionsVolume volumes = 10;
+}
+
+// A volume mounted into every step.
+message GcpCloudBuildTriggerBuildOptionsVolume {
+  // The volume's name (a valid Docker volume name).
+  string name = 1;
+
+  // The absolute path the volume mounts at.
+  string path = 2;
+}
+
+// An explicit build source: exactly one of repo_source or storage_source.
+message GcpCloudBuildTriggerBuildSource {
+  option (buf.validate.message).cel = {
+    id: "source.exactly_one"
+    expression: "has(this.repo_source) != has(this.storage_source)"
+    message: "source takes exactly one of repo_source or storage_source"
+  };
+
+  // A Cloud Source Repository revision.
+  GcpCloudBuildTriggerBuildSourceRepoSource repo_source = 1;
+
+  // A gzipped tarball in Cloud Storage.
+  GcpCloudBuildTriggerBuildSourceStorageSource storage_source = 2;
+}
+
+// A Cloud Source Repository revision.
+message GcpCloudBuildTriggerBuildSourceRepoSource {
+  option (buf.validate.message).cel = {
+    id: "repo_source.exactly_one_revision"
+    expression: "(this.branch_name != '' ? 1 : 0) + (this.tag_name != '' ? 1 : 0) + (this.commit_sha != '' ? 1 : 0) == 1"
+    message: "repo_source takes exactly one of branch_name, tag_name, or commit_sha"
+  };
+
+  // The project that owns the repository. Empty means the build's
+  // project.
+  string project_id = 1;
+
+  // The repository's name. Required.
+  string repo_name = 2 [(buf.validate.field).required = true];
+
+  // The directory, relative to the repository root, the build runs in.
+  string dir = 3;
+
+  // An RE2 regular expression of the branch to build. Exactly one of
+  // branch_name, tag_name, or commit_sha.
+  string branch_name = 4;
+
+  // An RE2 regular expression of the tag to build. Exactly one of
+  // branch_name, tag_name, or commit_sha.
+  string tag_name = 5;
+
+  // An explicit commit SHA. Exactly one of branch_name, tag_name, or
+  // commit_sha.
+  string commit_sha = 6;
+
+  // Build revisions that do NOT match the branch or tag expression.
+  bool invert_regex = 7;
+
+  // Substitutions for a triggered build of this source.
+  map<string, string> substitutions = 8;
+}
+
+// A gzipped tarball in Cloud Storage.
+message GcpCloudBuildTriggerBuildSourceStorageSource {
+  // The bucket's name. Required.
+  string bucket = 1 [(buf.validate.field).required = true];
+
+  // The object's name: a .tar.gz of the source. Required.
+  string object = 2 [(buf.validate.field).required = true];
+
+  // The object's generation. Empty means the latest.
+  string generation = 3;
+}
+
+// Secret Manager secrets exposed to the steps.
+message GcpCloudBuildTriggerBuildAvailableSecrets {
+  // One entry per secret environment variable. At least one.
+  repeated GcpCloudBuildTriggerBuildSecretManagerSecret secret_manager = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// One Secret Manager secret version bound to an environment variable.
+message GcpCloudBuildTriggerBuildSecretManagerSecret {
+  // The environment variable's name; list it in each step's secret_env
+  // that reads it. Unique across the build's secrets. Required.
+  string env = 1 [(buf.validate.field).required = true];
+
+  // The secret version, as
+  // projects/{project}/secrets/{secret}/versions/{version}: a
+  // GcpSecretManagerSecret reference (its latest_version_name output) or a
+  // literal ("versions/latest" follows rotation). The build's service
+  // account needs roles/secretmanager.secretAccessor on the secret.
+  // Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef version_name = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "version_name.format"
+      message: "version_name must be projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
+}
+
+// Cloud KMS-encrypted values exposed to the steps.
+message GcpCloudBuildTriggerBuildSecret {
+  // The key that decrypts the values, as
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}:
+  // a GcpKmsKey reference (its key_id output) or a literal. The build's
+  // service account needs roles/cloudkms.cryptoKeyDecrypter on it.
+  // Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (buf.validate.field).cel = {
+      id: "kms_key_name.format"
+      message: "kms_key_name must be projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/keyRings/[^/]+/cryptoKeys/[^/]+$')"
+    }
+  ];
+
+  // Environment variable name to its base64 ciphertext, encrypted with
+  // kms_key_name (at most 64 KB each, 100 across the build).
+  map<string, string> secret_env = 2 [(dev.planton.shared.options.sensitive_exempt_reason) = "KMS ciphertext only -- the plaintext never appears in the spec; only kms_key_name decrypts it"];
+}

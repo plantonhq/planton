@@ -1,0 +1,106 @@
+# GcpDeliveryPipeline scenario: two automations on one pipeline, keyed by
+# automation_id -- a timed promotion out of dev, and canary advances plus
+# a retry-then-rollback repair on a canary prod stage. Proves the folded
+# automations create, re-plan clean, and destroy with the pipeline. Free:
+# no release is created, so no automation ever fires.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeliveryPipeline
+metadata:
+  name: planton-oss-e2e-gcpcdpip-automations
+  id: planton-oss-e2e-gcpcdpip-automations
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeliverypipeline
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-dev.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-prod.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/service-account.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  deliveryPipelineId: planton-e2e-cdpip-auto-${E2E_RUN_ID}
+  description: Ephemeral delivery pipeline with automations created by the Planton E2E harness; safe to delete
+  serialPipeline:
+    stages:
+      - targetId:
+          valueFrom:
+            kind: GcpDeployTarget
+            name: planton-oss-e2e-gcpcdpip-target-dev
+            fieldPath: status.outputs.target_id
+        strategy:
+          standard:
+            verify: false
+      - targetId:
+          valueFrom:
+            kind: GcpDeployTarget
+            name: planton-oss-e2e-gcpcdpip-target-prod
+            fieldPath: status.outputs.target_id
+        strategy:
+          canary:
+            runtimeConfig:
+              cloudRun:
+                automaticTrafficControl: true
+            canaryDeployment:
+              percentages:
+                - 50
+              verify: false
+  automations:
+    - automationId: nightly-promote
+      description: Promote dev's latest release every weekday evening
+      serviceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: planton-oss-e2e-gcpcdpip-automation
+          fieldPath: status.outputs.email
+      selector:
+        targets:
+          - id:
+              valueFrom:
+                kind: GcpDeployTarget
+                name: planton-oss-e2e-gcpcdpip-target-dev
+                fieldPath: status.outputs.target_id
+      rules:
+        - timedPromoteReleaseRule:
+            id: nightly-promote
+            schedule: "0 18 * * 1-5"
+            timeZone: America/New_York
+            destinationTargetId:
+              value: "@next"
+    - automationId: prod-canary
+      description: Advance the canary and repair failed rollouts
+      suspended: true
+      annotations:
+        owner: planton-e2e
+      serviceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: planton-oss-e2e-gcpcdpip-automation
+          fieldPath: status.outputs.email
+      selector:
+        targets:
+          - id:
+              valueFrom:
+                kind: GcpDeployTarget
+                name: planton-oss-e2e-gcpcdpip-target-prod
+                fieldPath: status.outputs.target_id
+      rules:
+        - advanceRolloutRule:
+            id: advance-canary
+            sourcePhases:
+              - canary-50
+            wait: 900s
+        - repairRolloutRule:
+            id: repair-canary
+            jobs:
+              - deploy
+              - verify
+            repairPhases:
+              - retry:
+                  attempts: "2"
+                  wait: 60s
+                  backoffMode: BACKOFF_MODE_LINEAR
+              - rollback:
+                  disableRollbackIfRolloutPending: true
+  deletionPolicy: DELETE

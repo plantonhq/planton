@@ -1784,10 +1784,18 @@ Allowed values (use exactly as shown):
 - `GcpGkeFleetScope`
 - `GcpGkeFleetMembership`
 - `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -2773,10 +2781,18 @@ Allowed values (use exactly as shown):
 - `GcpGkeFleetScope`
 - `GcpGkeFleetMembership`
 - `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -4961,10 +4977,18 @@ Allowed values (use exactly as shown):
 - `GcpGkeFleetScope`
 - `GcpGkeFleetMembership`
 - `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -5950,10 +5974,18 @@ Allowed values (use exactly as shown):
 - `GcpGkeFleetScope`
 - `GcpGkeFleetMembership`
 - `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -8254,10 +8286,18 @@ Allowed values (use exactly as shown):
 - `GcpGkeFleetScope`
 - `GcpGkeFleetMembership`
 - `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -9243,10 +9283,18 @@ Allowed values (use exactly as shown):
 - `GcpGkeFleetScope`
 - `GcpGkeFleetMembership`
 - `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`

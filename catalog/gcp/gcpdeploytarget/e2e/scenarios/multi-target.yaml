@@ -1,0 +1,32 @@
+# GcpDeployTarget scenario: a multi-target over two Cloud Run target
+# fixtures, referenced through their target_id outputs. Free: no release
+# is created.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-multi
+  id: planton-oss-e2e-gcpcdtgt-multi
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeploytarget
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeploytarget/e2e/prerequisites/child-east.yaml,catalog/gcp/gcpdeploytarget/e2e/prerequisites/child-west.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  targetId: e2e-multi-${E2E_RUN_ID}
+  description: Ephemeral multi-target created by the Planton E2E harness; safe to delete
+  multiTarget:
+    targetIds:
+      - valueFrom:
+          kind: GcpDeployTarget
+          name: planton-oss-e2e-gcpcdtgt-child-east
+          fieldPath: status.outputs.target_id
+      - valueFrom:
+          kind: GcpDeployTarget
+          name: planton-oss-e2e-gcpcdtgt-child-west
+          fieldPath: status.outputs.target_id

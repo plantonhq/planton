@@ -1058,6 +1058,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpBackendBucket | `spec.bucketName` | `status.outputs.bucket_id` |
+| GcpCloudBuildTrigger | `spec.build.logsBucket` | `status.outputs.url` |
 | GcpCloudComposerEnvironment | `spec.storageBucket` | `status.outputs.bucket_id` |
 | GcpCloudFunction | `spec.buildConfig.source.storageSource.bucket` | `status.outputs.bucket_id` |
 | GcpCloudRun | `spec.volumes[].gcs.bucket` | `status.outputs.bucket_id` |
@@ -1069,6 +1070,9 @@ Fields on other kinds that can point at this resource:
 | GcpDataprocCluster | `spec.virtualClusterConfig.stagingBucket` | `status.outputs.bucket_id` |
 | GcpDatastreamConnectionProfile | `spec.gcsProfile.bucket` | `status.outputs.bucket_name` |
 | GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.blmtConfig.bucket` | `status.outputs.bucket_name` |
+| GcpDeployTarget | `spec.executionConfigs[].artifactStorage` | `status.outputs.url` |
+| GcpDeployTarget | `spec.executionConfigs[].defaultPool.artifactStorage` | `status.outputs.url` |
+| GcpDeployTarget | `spec.executionConfigs[].privatePool.artifactStorage` | `status.outputs.url` |
 | GcpDialogflowCxSecuritySettings | `spec.audioExportSettings.gcsBucket` | `status.outputs.bucket_name` |
 | GcpGcsBucket | `spec.logging.logBucket` | `status.outputs.bucket_id` |
 | GcpLoggingSink | `spec.destination.gcsBucket` | `status.outputs.bucket_id` |

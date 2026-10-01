@@ -1,0 +1,79 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpdeploytarget
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The target is configuration; rendered manifests and logs live in the artifact bucket, whose encryption is the GcpGcsBucket block's posture.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No customer data is stored by the target to encrypt with a customer key; the artifact bucket carries its own key settings.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The target terminates no connections; management calls ride Google's TLS-only Cloud Deploy API endpoint.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A target has no address of its own; access is through the Cloud Deploy API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The target serves no traffic.
+    - control_id: rbac
+      status: configurable
+      field_path: require_approval
+      evidence:
+        type: spec_default
+        reference: require_approval true makes every rollout to the target wait for a principal holding clouddeploy.rollouts.approve (roles/clouddeploy.approver), separating who releases from who approves production.
+    - control_id: workload-identity
+      status: configurable
+      field_path: execution_configs
+      evidence:
+        type: spec_default
+        reference: execution_configs[].service_account names a dedicated service account for render and deploy jobs instead of the project default compute account.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Target changes are Cloud Deploy admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The target emits no metrics of its own; rollouts and job runs log to Cloud Logging.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The target holds configuration only; it is recreated from its manifest.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The target is a regional Cloud Deploy API resource Google operates; there is no placement to choose within the region.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: deletion_policy PREVENT makes destroy fail.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud Deploy is fully Google-operated.

@@ -645,9 +645,12 @@ func (x *GcpVertexAiAgentEnginePackageSpec) GetPythonVersion() string {
 type GcpVertexAiAgentEngineBuildSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloud Build private worker pool the build runs in, as
-	// projects/{project}/locations/{location}/workerPools/{pool}. A literal
-	// today: the catalog's Cloud Build blocks arrive with their own family.
-	WorkerPool    string `protobuf:"bytes,1,opt,name=worker_pool,json=workerPool,proto3" json:"worker_pool,omitempty"`
+	// projects/{project}/locations/{location}/workerPools/{pool}: a
+	// GcpCloudBuildWorkerPool reference (its name output), or the literal
+	// name. Use one when the build must reach a private network (a private
+	// package index, an internal artifact store). Empty runs the build on
+	// Google's default pool.
+	WorkerPool    *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=worker_pool,json=workerPool,proto3" json:"worker_pool,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -682,11 +685,11 @@ func (*GcpVertexAiAgentEngineBuildSpec) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *GcpVertexAiAgentEngineBuildSpec) GetWorkerPool() string {
+func (x *GcpVertexAiAgentEngineBuildSpec) GetWorkerPool() *v1.StringValueOrRef {
 	if x != nil {
 		return x.WorkerPool
 	}
-	return ""
+	return nil
 }
 
 // GcpVertexAiAgentEngineEnvVar is one literal environment variable on the
@@ -3314,9 +3317,10 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"2\b^gs://.+R\x15dependencyFilesGcsUri\x12D\n" +
 	"\x14requirements_gcs_uri\x18\x03 \x01(\tB\x12\xbaH\x0f\xd8\x01\x01r\n" +
 	"2\b^gs://.+R\x12requirementsGcsUri\x12Q\n" +
-	"\x0epython_version\x18\x04 \x01(\tB*\xbaH'\xd8\x01\x01r\"R\x033.8R\x033.9R\x043.10R\x043.11R\x043.12R\x043.13R\rpythonVersion\"\x80\x01\n" +
-	"\x1fGcpVertexAiAgentEngineBuildSpec\x12]\n" +
-	"\vworker_pool\x18\x01 \x01(\tB<\xbaH9\xd8\x01\x01r422^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$R\n" +
+	"\x0epython_version\x18\x04 \x01(\tB*\xbaH'\xd8\x01\x01r\"R\x033.8R\x033.9R\x043.10R\x043.11R\x043.12R\x043.13R\rpythonVersion\"\xf9\x02\n" +
+	"\x1fGcpVertexAiAgentEngineBuildSpec\x12\xd5\x02\n" +
+	"\vworker_pool\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xff\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
+	"\x12worker_pool.format\x12gworker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}\x1a\\!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$')\x88\xd4a\xbc\x19\x92\xd4a\x13status.outputs.nameR\n" +
 	"workerPool\"v\n" +
 	"\x1cGcpVertexAiAgentEngineEnvVar\x128\n" +
 	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12\x1c\n" +
@@ -3601,62 +3605,63 @@ var file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_depIdxs = []int3
 	5,  // 6: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSourceCodeSpec.agent_config_source:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentConfigSource
 	6,  // 7: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSourceCodeSpec.python_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePythonSpec
 	7,  // 8: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSourceCodeSpec.image_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineImageSpec
-	53, // 9: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretRef.secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	12, // 10: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretEnvVar.secret_ref:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretRef
-	53, // 11: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig.target_project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	53, // 12: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig.target_network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	14, // 13: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePscInterfaceConfig.dns_peering_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig
-	16, // 14: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig.client_to_agent_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTarget
-	16, // 15: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig.agent_to_anywhere_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTarget
-	11, // 16: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.env:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineEnvVar
-	13, // 17: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.secret_env:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretEnvVar
-	51, // 18: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.resource_limits:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.ResourceLimitsEntry
-	15, // 19: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.psc_interface_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePscInterfaceConfig
-	17, // 20: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.agent_gateway_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig
-	53, // 21: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 22: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.container_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContainerSpec
-	8,  // 23: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.source_code_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSourceCodeSpec
-	9,  // 24: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.package_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePackageSpec
-	10, // 25: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.build_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpec
-	18, // 26: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.deployment_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec
-	20, // 27: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationTriggerConfig.generation_rule:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationRule
-	21, // 28: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationConfig.generation_trigger_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationTriggerConfig
-	24, // 29: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineTtlConfig.granular_ttl_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGranularTtlConfig
-	26, // 30: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineStructuredMemoryConfig.schema_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSchemaConfig
-	28, // 31: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryTopic.custom_memory_topic:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomMemoryTopic
-	29, // 32: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryTopic.managed_memory_topic:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineManagedMemoryTopic
-	31, // 33: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.inline_data:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineInlineData
-	32, // 34: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.file_data:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineFileData
-	33, // 35: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.function_call:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineFunctionCall
-	34, // 36: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.function_response:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineFunctionResponse
-	35, // 37: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.executable_code:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineExecutableCode
-	36, // 38: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.code_execution_result:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCodeExecutionResult
-	37, // 39: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.video_metadata:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineVideoMetadata
-	38, // 40: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContent.parts:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart
-	39, // 41: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationEvent.content:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContent
-	40, // 42: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationSource.events:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationEvent
-	42, // 43: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGeneratedMemory.topics:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGeneratedMemoryTopic
-	41, // 44: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerateMemoriesExample.conversation_source:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationSource
-	43, // 45: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerateMemoriesExample.generated_memories:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGeneratedMemory
-	30, // 46: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig.memory_topics:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryTopic
-	44, // 47: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig.generate_memories_examples:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerateMemoriesExample
-	45, // 48: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig.consolidation_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConsolidationConfig
-	22, // 49: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.generation_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationConfig
-	23, // 50: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.similarity_search_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSimilaritySearchConfig
-	25, // 51: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.ttl_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineTtlConfig
-	27, // 52: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.structured_memory_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineStructuredMemoryConfig
-	46, // 53: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.customization_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig
-	47, // 54: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpec.memory_bank_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig
-	53, // 55: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 56: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.labels:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.LabelsEntry
-	53, // 57: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	19, // 58: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig
-	48, // 59: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.context_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpec
-	60, // [60:60] is the sub-list for method output_type
-	60, // [60:60] is the sub-list for method input_type
-	60, // [60:60] is the sub-list for extension type_name
-	60, // [60:60] is the sub-list for extension extendee
-	0,  // [0:60] is the sub-list for field type_name
+	53, // 9: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpec.worker_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	53, // 10: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretRef.secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	12, // 11: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretEnvVar.secret_ref:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretRef
+	53, // 12: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig.target_project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	53, // 13: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig.target_network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 14: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePscInterfaceConfig.dns_peering_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig
+	16, // 15: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig.client_to_agent_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTarget
+	16, // 16: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig.agent_to_anywhere_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTarget
+	11, // 17: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.env:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineEnvVar
+	13, // 18: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.secret_env:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretEnvVar
+	51, // 19: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.resource_limits:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.ResourceLimitsEntry
+	15, // 20: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.psc_interface_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePscInterfaceConfig
+	17, // 21: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.agent_gateway_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig
+	53, // 22: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 23: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.container_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContainerSpec
+	8,  // 24: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.source_code_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSourceCodeSpec
+	9,  // 25: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.package_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePackageSpec
+	10, // 26: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.build_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpec
+	18, // 27: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.deployment_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec
+	20, // 28: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationTriggerConfig.generation_rule:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationRule
+	21, // 29: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationConfig.generation_trigger_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationTriggerConfig
+	24, // 30: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineTtlConfig.granular_ttl_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGranularTtlConfig
+	26, // 31: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineStructuredMemoryConfig.schema_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSchemaConfig
+	28, // 32: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryTopic.custom_memory_topic:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomMemoryTopic
+	29, // 33: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryTopic.managed_memory_topic:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineManagedMemoryTopic
+	31, // 34: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.inline_data:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineInlineData
+	32, // 35: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.file_data:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineFileData
+	33, // 36: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.function_call:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineFunctionCall
+	34, // 37: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.function_response:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineFunctionResponse
+	35, // 38: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.executable_code:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineExecutableCode
+	36, // 39: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.code_execution_result:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCodeExecutionResult
+	37, // 40: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart.video_metadata:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineVideoMetadata
+	38, // 41: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContent.parts:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContentPart
+	39, // 42: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationEvent.content:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContent
+	40, // 43: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationSource.events:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationEvent
+	42, // 44: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGeneratedMemory.topics:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGeneratedMemoryTopic
+	41, // 45: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerateMemoriesExample.conversation_source:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConversationSource
+	43, // 46: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerateMemoriesExample.generated_memories:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGeneratedMemory
+	30, // 47: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig.memory_topics:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryTopic
+	44, // 48: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig.generate_memories_examples:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerateMemoriesExample
+	45, // 49: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig.consolidation_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineConsolidationConfig
+	22, // 50: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.generation_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationConfig
+	23, // 51: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.similarity_search_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSimilaritySearchConfig
+	25, // 52: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.ttl_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineTtlConfig
+	27, // 53: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.structured_memory_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineStructuredMemoryConfig
+	46, // 54: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig.customization_configs:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfig
+	47, // 55: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpec.memory_bank_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfig
+	53, // 56: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	52, // 57: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.labels:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.LabelsEntry
+	53, // 58: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	19, // 59: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig
+	48, // 60: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.context_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpec
+	61, // [61:61] is the sub-list for method output_type
+	61, // [61:61] is the sub-list for method input_type
+	61, // [61:61] is the sub-list for extension type_name
+	61, // [61:61] is the sub-list for extension extendee
+	0,  // [0:61] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_init() }

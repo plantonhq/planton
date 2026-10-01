@@ -21,11 +21,9 @@ spec:
         permissions:
           - aiplatform.persistentResources.create
           - aiplatform.persistentResources.get
-          - aiplatform.persistentResources.update
           - aiplatform.persistentResources.delete
-          - aiplatform.operations.get
         provenance: derived
-        notes: Covers google_vertex_ai_persistent_resource (Pulumi vertex.AiPersistentResource) -- created and deleted through long-running operations the provider polls, patched for display name, labels, and replica counts, read on every refresh. roles/aiplatform.admin contains all five.
+        notes: Covers google_vertex_ai_persistent_resource (Pulumi vertex.AiPersistentResource) -- created and deleted through long-running operations the provider polls, patched for display name, labels, and replica counts, read on every refresh. roles/aiplatform.admin contains all of them. GCP defines no aiplatform.persistentResources.update permission (roles/aiplatform.admin carries create, get, list, and delete only), so the in-place PATCH authorizes under a permission this list already holds; the live capture lane names which. GCP defines no aiplatform.operations.get permission (IAM's testable-permissions inventory carries only aiplatform.operations.list); polling the long-running operations needs nothing beyond these.
       - purpose: ResolveNetworkProjectNumber
         permissions:
           - resourcemanager.projects.get

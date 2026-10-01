@@ -307,6 +307,7 @@ Fields on other kinds that can point at this resource:
 | GcpBigQueryTable | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigtableInstance | `spec.clusters[].kmsKeyName` | `status.outputs.key_id` |
 | GcpBinaryAuthorizationAttestor | `spec.attestationAuthorityNote.publicKeys[].pkixPublicKey.kmsKeyVersion` | `status.outputs.initial_version_name` |
+| GcpCloudBuildTrigger | `spec.build.secrets[].kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudComposerEnvironment | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudFunction | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudRun | `spec.encryptionKey` | `status.outputs.key_id` |

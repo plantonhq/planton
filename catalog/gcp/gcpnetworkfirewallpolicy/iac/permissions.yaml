@@ -19,21 +19,24 @@ spec:
         notes: "Covers google_project_service (Pulumi projects.Service) for compute.googleapis.com -- enable on first apply, get on every refresh. disable_on_destroy is false, so no disable permission is ever exercised."
       - purpose: ManageNetworkFirewallPolicy
         permissions:
-          - compute.networkFirewallPolicies.create
-          - compute.networkFirewallPolicies.get
-          - compute.networkFirewallPolicies.update
-          - compute.networkFirewallPolicies.delete
-          - compute.networkFirewallPolicies.use
+          - compute.firewallPolicies.create
+          - compute.regionFirewallPolicies.create
+          - compute.firewallPolicies.get
+          - compute.regionFirewallPolicies.get
+          - compute.firewallPolicies.update
+          - compute.regionFirewallPolicies.update
+          - compute.firewallPolicies.delete
+          - compute.regionFirewallPolicies.delete
+          - compute.firewallPolicies.use
+          - compute.regionFirewallPolicies.use
         provenance: derived
-        notes: "Covers the policy and its rules on BOTH families -- google_compute_network_firewall_policy / google_compute_region_network_firewall_policy (Pulumi compute.NetworkFirewallPolicy / RegionNetworkFirewallPolicy) and their _rule resources, whose addRule, patchRule, removeRule, and getRule calls are networkFirewallPolicies.update/get on the policy (Google uses one permission family for global and regional). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). roles/compute.securityAdmin contains all of these."
+        notes: "Covers the policy and its rules on BOTH families -- google_compute_network_firewall_policy / google_compute_region_network_firewall_policy (Pulumi compute.NetworkFirewallPolicy / RegionNetworkFirewallPolicy) and their _rule resources, whose addRule, patchRule, removeRule, and getRule calls are update/get on the policy. Global network policies authorize against compute.firewallPolicies -- the family hierarchical policies use -- and regional ones against compute.regionFirewallPolicies; GCP defines no networkFirewallPolicies permission. create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). roles/compute.securityAdmin contains all of these."
       - purpose: AssociateNetworkFirewallPolicy
         permissions:
-          - compute.networkFirewallPolicies.addAssociation
-          - compute.networkFirewallPolicies.removeAssociation
           - compute.networks.setFirewallPolicy
           - compute.networks.get
         provenance: derived
-        notes: "Covers the _association resources on both families (Pulumi compute.NetworkFirewallPolicyAssociation / RegionNetworkFirewallPolicyAssociation): addAssociation on create, removeAssociation on destroy, setFirewallPolicy on the attached network (Google checks it on the attachment target), and networks.get to resolve the network. roles/compute.securityAdmin and roles/compute.networkAdmin both contain them."
+        notes: "Covers the _association resources on both families (Pulumi compute.NetworkFirewallPolicyAssociation / RegionNetworkFirewallPolicyAssociation): the addAssociation and removeAssociation calls authorize as firewallPolicies.use or regionFirewallPolicies.use on the policy (listed above) plus setFirewallPolicy on the attached network -- GCP defines no addAssociation or removeAssociation permission -- (Google checks it on the attachment target), and networks.get to resolve the network. roles/compute.securityAdmin and roles/compute.networkAdmin both contain them."
       - purpose: ReadReferencedForwardingRules
         permissions:
           - compute.forwardingRules.get

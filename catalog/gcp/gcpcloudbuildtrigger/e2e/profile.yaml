@@ -1,0 +1,31 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpcloudbuildtrigger
+spec:
+  # Awaiting the live proof lane. The scenarios create triggers in the
+  # harness project over consumer-scoped fixtures: a service account with
+  # roles/logging.logWriter, a Pub/Sub topic, a regional worker pool, and
+  # (for the webhook scenario) a secret with an initial version. No build
+  # runs, so the lane is free. Offline bar met: both modules build and
+  # validate, offline plans for the reference manifest, every scenario, and
+  # the filename and repository-event arms are clean on the pinned
+  # provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) a Pub/Sub trigger with an inline build and a
+  # user-specified service account creates and re-plans clean on both
+  # engines (build.timeout's provider default and Google's computed
+  # approval_config read back without drift); (2) a regional trigger
+  # accepts a worker pool's full name in the deprecated
+  # build.options.worker_pool field; (3) a webhook trigger accepts the
+  # secret version once the Cloud Build service agent holds
+  # secretAccessor (that scenario needs the owner-arranged
+  # PLANTON_E2E_GCP_PROJECT_NUMBER to name the agent, and skips without
+  # it); (4) the id output reads back through the regional and the global
+  # API forms; (5) destroy removes each trigger before its fixtures (the
+  # verifier accepts 404). Repository-event, GitHub, Bitbucket Server, and
+  # Developer Connect triggers need owner-arranged code-host installations
+  # and are proven offline.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

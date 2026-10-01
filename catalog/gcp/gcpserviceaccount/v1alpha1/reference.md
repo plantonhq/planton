@@ -315,6 +315,8 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | GcpApiKey | `spec.serviceAccountEmail` | `status.outputs.email` |
 | GcpArtifactRegistryRepo | `spec.iamMembers[].member` | `status.outputs.member` |
+| GcpCloudBuildTrigger | `spec.serviceAccount` | `status.outputs.name` |
+| GcpCloudBuildTrigger | `spec.pubsubConfig.serviceAccountEmail` | `status.outputs.email` |
 | GcpCloudComposerEnvironment | `spec.nodeConfig.serviceAccount` | `status.outputs.email` |
 | GcpCloudFunction | `spec.buildConfig.serviceAccount` | `status.outputs.name` |
 | GcpCloudFunction | `spec.serviceConfig.serviceAccountEmail` | `status.outputs.email` |
@@ -333,6 +335,10 @@ Fields on other kinds that can point at this resource:
 | GcpComputeInstance | `spec.serviceAccount.email` | `status.outputs.email` |
 | GcpComputeMig | `spec.template.serviceAccount.email` | `status.outputs.email` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.serviceAccount` | `status.outputs.email` |
+| GcpDeliveryPipeline | `spec.automations[].serviceAccount` | `status.outputs.email` |
+| GcpDeployTarget | `spec.executionConfigs[].serviceAccount` | `status.outputs.email` |
+| GcpDeployTarget | `spec.executionConfigs[].defaultPool.serviceAccount` | `status.outputs.email` |
+| GcpDeployTarget | `spec.executionConfigs[].privatePool.serviceAccount` | `status.outputs.email` |
 | GcpDialogflowCxAgent | `spec.webhooks[].genericWebService.serviceAccount` | `status.outputs.email` |
 | GcpDialogflowCxAgent | `spec.webhooks[].serviceDirectory.genericWebService.serviceAccount` | `status.outputs.email` |
 | GcpEventarcMessageBus | `spec.pipelines[].authentication.googleOidc.serviceAccount` | `status.outputs.email` |

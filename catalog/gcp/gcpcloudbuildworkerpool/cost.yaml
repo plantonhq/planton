@@ -1,0 +1,22 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcloudbuildworkerpool
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: worker_config.machine_type
+      sku_meter: private pool build time
+      pricing_unit: build-minutes
+      impact: Builds on a private pool bill per build minute at the per-minute rate of the pool's machine type (Cloud Build pricing page) -- a larger or high-CPU machine bills a higher rate for each minute it runs a build, so the machine type is the rate and the build workload is the quantity. An idle pool bills nothing.
+    - field_path: worker_config.disk_size_gb
+      sku_meter: private pool build time
+      pricing_unit: build-minutes
+      impact: The worker disk is part of the pool's machine shape; a larger disk does not add a separate meter on the Cloud Build pricing page, but it is what heavy image builds need to avoid out-of-space failures that waste billed minutes.
+  estimate_exclusions:
+    - build minutes follow how many builds run on the pool and how long each takes, which the spec does not declare
+    - egress from builds, and any Cloud NAT a peered or PSC pool routes through, bill on the network components
+  notes: "A private pool has no standing charge: creating and holding it is free, and every charge is build minutes on its machine type while a build runs (Cloud Build pricing page, read 2026-10-01). The VPC network it peers with or the network attachment it uses bill through their own blocks."

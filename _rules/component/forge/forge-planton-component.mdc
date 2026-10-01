@@ -593,8 +593,14 @@ them and the `lint.catalog-data` lane holds their content to schema:
 
 `catalog/aws/awsalb` and `catalog/aws/awsdynamodb` are the reference
 examples. Validate with `go test ./pkg/finops/... ./pkg/compliance/...
-./pkg/iac/permissions/...` -- file presence is enrollment, so the sidecars
-are gated from this commit on.
+./pkg/iac/permissions/... ./pkg/iac/actioninventory/` -- file presence is
+enrollment, so the sidecars are gated from this commit on. The last package
+proves every permission name exists in the provider's own inventory
+snapshot; a permission under a service prefix the snapshot does not yet
+cover fails it until `make generate-action-inventory ARMS=<provider>`
+refreshes the snapshot in the same change. A name the refreshed snapshot
+still lacks is invented: find the permission the provider actually checks
+(its predefined roles list them), never keep the guess.
 
 ### Phase 8: Final Validation (Rules 016-017)
 

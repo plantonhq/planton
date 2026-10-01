@@ -1,0 +1,74 @@
+# GcpDeliveryPipeline scenario: the canonical shape -- a two-stage pipeline
+# over two Cloud Run target fixtures, plus one automation that promotes
+# from the first stage, running as a service-account fixture. Free: no
+# release is created, so the pipeline is never active and nothing runs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeliveryPipeline
+metadata:
+  name: planton-oss-e2e-gcpcdpip-promote
+  id: planton-oss-e2e-gcpcdpip-promote
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeliverypipeline
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-dev.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-prod.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/service-account.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  deliveryPipelineId: planton-e2e-cdpip-promote-${E2E_RUN_ID}
+  description: Ephemeral delivery pipeline created by the Planton E2E harness; safe to delete
+  labels:
+    purpose: e2e
+  annotations:
+    owner: planton-e2e
+  serialPipeline:
+    stages:
+      - targetId:
+          valueFrom:
+            kind: GcpDeployTarget
+            name: planton-oss-e2e-gcpcdpip-target-dev
+            fieldPath: status.outputs.target_id
+        profiles:
+          - dev
+        strategy:
+          standard:
+            verify: false
+      - targetId:
+          valueFrom:
+            kind: GcpDeployTarget
+            name: planton-oss-e2e-gcpcdpip-target-prod
+            fieldPath: status.outputs.target_id
+        strategy:
+          standard:
+            verify: false
+        deployParameters:
+          - values:
+              min-instances: "0"
+  automations:
+    - automationId: promote-to-prod
+      description: Promote releases that succeed on dev
+      labels:
+        purpose: e2e
+      serviceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: planton-oss-e2e-gcpcdpip-automation
+          fieldPath: status.outputs.email
+      selector:
+        targets:
+          - id:
+              valueFrom:
+                kind: GcpDeployTarget
+                name: planton-oss-e2e-gcpcdpip-target-dev
+                fieldPath: status.outputs.target_id
+      rules:
+        - promoteReleaseRule:
+            id: promote-to-prod
+            wait: 600s
+            destinationTargetId:
+              value: "@next"
+  deletionPolicy: DELETE

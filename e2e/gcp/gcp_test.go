@@ -1810,3 +1810,67 @@ func TestGcpComputeImage_Pulumi(t *testing.T) {
 func TestGcpComputeImage_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpcomputeimage", "terraform")
 }
+
+func TestGcpCloudBuildConnection_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildconnection", "pulumi")
+}
+
+func TestGcpCloudBuildConnection_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildconnection", "terraform")
+}
+
+func TestGcpCloudBuildRepository_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildrepository", "pulumi")
+}
+
+func TestGcpCloudBuildRepository_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildrepository", "terraform")
+}
+
+func TestGcpCloudBuildTrigger_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildtrigger", "pulumi")
+}
+
+func TestGcpCloudBuildTrigger_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildtrigger", "terraform")
+}
+
+func TestGcpCloudBuildWorkerPool_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildworkerpool", "pulumi")
+}
+
+func TestGcpCloudBuildWorkerPool_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudbuildworkerpool", "terraform")
+}
+
+func TestGcpDeliveryPipeline_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeliverypipeline", "pulumi")
+}
+
+func TestGcpDeliveryPipeline_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeliverypipeline", "terraform")
+}
+
+func TestGcpDeployTarget_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeploytarget", "pulumi")
+}
+
+func TestGcpDeployTarget_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeploytarget", "terraform")
+}
+
+func TestGcpDeployPolicy_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeploypolicy", "pulumi")
+}
+
+func TestGcpDeployPolicy_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeploypolicy", "terraform")
+}
+
+func TestGcpDeployCustomTargetType_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeploycustomtargettype", "pulumi")
+}
+
+func TestGcpDeployCustomTargetType_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdeploycustomtargettype", "terraform")
+}

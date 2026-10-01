@@ -1,0 +1,22 @@
+# Execution service account for the execution-configs scenario,
+# referenced through its email output. It holds no roles: no job runs. The
+# cloud-side account id carries ${E2E_RUN_ID} (account ids are reserved
+# briefly after deletion); metadata.name stays fixed for FK resolution.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccount
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-deployer
+  id: planton-oss-e2e-gcpcdtgt-deployer
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpserviceaccount
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  serviceAccountId: e2e-cdtgt-${E2E_RUN_ID}
+  displayName: Planton OSS E2E Cloud Deploy execution identity
+  description: Ephemeral Cloud Deploy execution identity deployed as an E2E prerequisite; safe to delete

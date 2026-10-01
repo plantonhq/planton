@@ -102,7 +102,7 @@ spec:
 | `spec.spec.packageSpec.requirementsGcsUri` | `string` |  |  |  |
 | `spec.spec.packageSpec.pythonVersion` | `string` |  |  |  |
 | `spec.spec.buildSpec` | `GcpVertexAiAgentEngineBuildSpec` |  |  |  |
-| `spec.spec.buildSpec.workerPool` | `string` |  |  |  |
+| `spec.spec.buildSpec.workerPool` | `string \| valueFrom` |  |  | GcpCloudBuildWorkerPool (`status.outputs.name`) |
 | `spec.spec.deploymentSpec` | `GcpVertexAiAgentEngineDeploymentSpec` |  |  |  |
 | `spec.spec.deploymentSpec.env` | `[]GcpVertexAiAgentEngineEnvVar` |  |  |  |
 | `spec.spec.deploymentSpec.env[].name` | `string` | yes |  |  |
@@ -527,13 +527,18 @@ Cloud Build settings for the source build.
 
 ### spec.spec.buildSpec.workerPool
 
-`string`
+`string | valueFrom`
 
 The Cloud Build private worker pool the build runs in, as
-projects/{project}/locations/{location}/workerPools/{pool}. A literal
-today: the catalog's Cloud Build blocks arrive with their own family.
+projects/{project}/locations/{location}/workerPools/{pool}: a
+GcpCloudBuildWorkerPool reference (its name output), or the literal
+name. Use one when the build must reach a private network (a private
+package index, an internal artifact store). Empty runs the build on
+Google's default pool.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$"}}
+- references: GcpCloudBuildWorkerPool (`status.outputs.name`)
+- rule: worker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpCloudBuildWorkerPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.spec.deploymentSpec
 
@@ -1294,6 +1299,7 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.spec.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
+| `spec.spec.buildSpec.workerPool` | GcpCloudBuildWorkerPool | `status.outputs.name` |
 | `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | GcpSecretManagerSecret | `status.outputs.secret_id` |
 | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | GcpProject | `status.outputs.project_id` |
 | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | GcpVpcNetwork | `status.outputs.network_name` |

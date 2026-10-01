@@ -1,0 +1,22 @@
+# Consumer-scoped GcpPubSubTopic install profile for the gcpcbtrg
+# scenarios: the topic the Pub/Sub triggers subscribe to. Nothing
+# publishes, so no build runs. The cloud-side topic name is run-scoped;
+# metadata.name stays fixed for FK resolution.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopic
+metadata:
+  name: planton-oss-e2e-gcpcbtrg-topic
+  id: planton-oss-e2e-gcpcbtrg-topic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcppubsubtopic
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  topicName: e2e-cbtrg-${E2E_RUN_ID}
+  messageRetentionDuration: "3600s"
+  deletionPolicy: DELETE

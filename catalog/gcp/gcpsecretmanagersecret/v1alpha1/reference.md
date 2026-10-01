@@ -581,6 +581,20 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpCloudBuildConnection | `spec.githubConfig.authorizerCredential.oauthTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.githubEnterpriseConfig.privateKeySecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.githubEnterpriseConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.gitlabConfig.authorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.gitlabConfig.readAuthorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.gitlabConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketCloudConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketDataCenterConfig.authorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketDataCenterConfig.readAuthorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketDataCenterConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildTrigger | `spec.webhookConfig.secret` | `status.outputs.latest_version_name` |
+| GcpCloudBuildTrigger | `spec.build.availableSecrets.secretManager[].versionName` | `status.outputs.latest_version_name` |
 | GcpDatastreamConnectionProfile | `spec.mysqlProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
 | GcpDatastreamConnectionProfile | `spec.postgresqlProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
 | GcpDatastreamConnectionProfile | `spec.oracleProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |

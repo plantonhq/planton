@@ -1,0 +1,26 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployPolicy
+metadata:
+  name: prod-weekend-freeze
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: No production rollouts on weekends; ask the on-call lead for an override
+  rules:
+    - rolloutRestriction:
+        id: weekend-freeze
+        actions:
+          - CREATE
+          - APPROVE
+          - ADVANCE
+        timeWindows:
+          timeZone: America/New_York
+          weeklyWindows:
+            - daysOfWeek:
+                - SATURDAY
+                - SUNDAY
+  selectors:
+    - target:
+        labels:
+          env: prod

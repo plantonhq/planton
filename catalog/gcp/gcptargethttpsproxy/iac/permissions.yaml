@@ -39,7 +39,6 @@ spec:
           - compute.regionTargetHttpsProxies.update
           - compute.regionTargetHttpsProxies.setUrlMap
           - compute.regionTargetHttpsProxies.setSslCertificates
-          - compute.regionTargetHttpsProxies.setSslPolicy
           - compute.regionOperations.get
         provenance: derived
         notes: Covers google_compute_region_target_https_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpsProxies family (no certificate-map or QUIC RPCs exist there) and return region operations the provider polls. Referenced regional certificates and SSL policies authorize with compute.regionSslCertificates.get and compute.regionSslPolicies.use on the referenced resources.

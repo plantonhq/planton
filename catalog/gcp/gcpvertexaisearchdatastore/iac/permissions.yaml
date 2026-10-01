@@ -43,7 +43,7 @@ spec:
       - purpose: ManageSitemaps
         permissions:
           - discoveryengine.sitemaps.create
-          - discoveryengine.sitemaps.get
+          - discoveryengine.sitemaps.fetch
           - discoveryengine.sitemaps.delete
         provenance: derived
-        notes: Covers google_discovery_engine_sitemap (Pulumi discoveryengine.Sitemap), one per spec.sitemap_uris[] entry on an advanced site search store -- create, read/refresh, destroy.
+        notes: Covers google_discovery_engine_sitemap (Pulumi discoveryengine.Sitemap), one per spec.sitemap_uris[] entry on an advanced site search store -- create, read/refresh (the sitemaps.fetch method; GCP defines no sitemaps.get), destroy.

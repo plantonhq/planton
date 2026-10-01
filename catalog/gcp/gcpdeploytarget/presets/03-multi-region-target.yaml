@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: prod-global
+spec:
+  projectId:
+    value: acme-delivery
+  location: us-central1
+  description: Production in every region, deployed together
+  requireApproval: true
+  multiTarget:
+    targetIds:
+      - valueFrom:
+          kind: GcpDeployTarget
+          name: prod-us-central1
+          fieldPath: status.outputs.target_id
+      - valueFrom:
+          kind: GcpDeployTarget
+          name: prod-europe-west1
+          fieldPath: status.outputs.target_id
