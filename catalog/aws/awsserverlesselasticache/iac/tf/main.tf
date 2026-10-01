@@ -22,9 +22,9 @@ resource "aws_elasticache_serverless_cache" "this" {
   kms_key_id = local.kms_key_id
 
   # Snapshots (Redis/Valkey only — CEL guards prevent Memcached usage)
-  daily_snapshot_time       = local.daily_snapshot_time
-  snapshot_retention_limit  = local.snapshot_retention_limit > 0 ? local.snapshot_retention_limit : null
-  snapshot_arns_to_restore  = length(local.snapshot_arns_to_restore) > 0 ? local.snapshot_arns_to_restore : null
+  daily_snapshot_time      = local.daily_snapshot_time
+  snapshot_retention_limit = local.snapshot_retention_limit > 0 ? local.snapshot_retention_limit : null
+  snapshot_arns_to_restore = length(local.snapshot_arns_to_restore) > 0 ? local.snapshot_arns_to_restore : null
 
   # Authentication (Redis/Valkey only — CEL guards prevent Memcached usage)
   user_group_id = local.user_group_id

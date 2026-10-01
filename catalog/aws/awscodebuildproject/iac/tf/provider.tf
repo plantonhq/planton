@@ -10,10 +10,10 @@ terraform {
       # means the constraint never understates what any module's newest
       # argument needs. Only the sweep moves this line — never a single kind.
       #
- # Feature floor 6.54.0: the environment's host_kernel lands there (the
- # project's auto_retry_limit 6.16.0, the webhook's
- # pull_request_build_policy 6.13.0, the environment's docker_server
- # 6.2.0, and everything else are below the floor).
+      # Feature floor 6.54.0: the environment's host_kernel lands there (the
+      # project's auto_retry_limit 6.16.0, the webhook's
+      # pull_request_build_policy 6.13.0, the environment's docker_server
+      # 6.2.0, and everything else are below the floor).
       source  = "hashicorp/aws"
       version = "~> 6.58"
     }

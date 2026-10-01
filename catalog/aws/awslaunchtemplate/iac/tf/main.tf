@@ -65,9 +65,9 @@ resource "aws_launch_template" "this" {
       burstable_performance     = instance_requirements.value.burstable_performance != "" ? instance_requirements.value.burstable_performance : null
       require_hibernate_support = instance_requirements.value.require_hibernate_support ? true : null
 
-      spot_max_price_percentage_over_lowest_price                    = instance_requirements.value.spot_max_price_percentage_over_lowest_price > 0 ? instance_requirements.value.spot_max_price_percentage_over_lowest_price : null
-      max_spot_price_as_percentage_of_optimal_on_demand_price        = instance_requirements.value.max_spot_price_as_percentage_of_optimal_on_demand_price > 0 ? instance_requirements.value.max_spot_price_as_percentage_of_optimal_on_demand_price : null
-      on_demand_max_price_percentage_over_lowest_price               = instance_requirements.value.on_demand_max_price_percentage_over_lowest_price > 0 ? instance_requirements.value.on_demand_max_price_percentage_over_lowest_price : null
+      spot_max_price_percentage_over_lowest_price             = instance_requirements.value.spot_max_price_percentage_over_lowest_price > 0 ? instance_requirements.value.spot_max_price_percentage_over_lowest_price : null
+      max_spot_price_as_percentage_of_optimal_on_demand_price = instance_requirements.value.max_spot_price_as_percentage_of_optimal_on_demand_price > 0 ? instance_requirements.value.max_spot_price_as_percentage_of_optimal_on_demand_price : null
+      on_demand_max_price_percentage_over_lowest_price        = instance_requirements.value.on_demand_max_price_percentage_over_lowest_price > 0 ? instance_requirements.value.on_demand_max_price_percentage_over_lowest_price : null
 
       local_storage       = instance_requirements.value.local_storage != "" ? instance_requirements.value.local_storage : null
       local_storage_types = length(instance_requirements.value.local_storage_types) > 0 ? instance_requirements.value.local_storage_types : null

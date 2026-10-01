@@ -2833,6 +2833,40 @@ with Application Default Credentials.
 E2E_GCP_PROJECT=planton-e2e go test -tags=e2e -timeout=120m -v ./e2e/gcp/...
 ```
 
+**Owner-arranged tokens: what a GCP lane needs beyond the test project.**
+The harness exports two tokens itself at `Setup`:
+`PLANTON_E2E_GCP_PROJECT_ID` (the resolved test project, for the few kinds
+that must name their project in the spec) and `PLANTON_E2E_GCS_AGENT_EMAIL`
+(the project's Cloud Storage service agent). Every other
+`${E2E_ENV:PLANTON_E2E_...}` token in a GCP scenario names something an
+operator arranges outside the harness -- a second project, an organization,
+a billing account, a third-party installation -- and the scenario declares
+it in its `planton.dev/e2e-required-env` annotation (comma-separated). A
+lane whose environment lacks a declared token SKIPS with the token named
+(`runner.ScenarioMissingRequiredEnv`), an honest deferral; the same lane
+runs live wherever the operator exports it. A token a scenario uses but
+does not declare fails expansion loudly instead of skipping, so a scenario
+declares every owner-arranged token it reads. Prerequisite fixtures deployed
+inside such a scenario inherit its declaration.
+
+| Token | What the operator arranges | Kinds whose scenarios read it |
+|---|---|---|
+| `PLANTON_E2E_GCP_PROJECT_NUMBER` | the test project's number (the webhook trigger grants Cloud Build's service agent by number) | `GcpCloudBuildTrigger` |
+| `PLANTON_E2E_GCP_SECOND_PROJECT_ID` | a second project the identity administers (fleets, shared VPC service projects, a Binary Authorization policy that must never be the harness project's own) | `GcpGkeFleet`, `GcpGkeFleetFeature`, `GcpGkeFleetMembership`, `GcpGkeFleetScope`, `GcpSharedVpcServiceProject`, `GcpBinaryAuthorizationPolicy` |
+| `PLANTON_E2E_GCP_ORGANIZATION_ID` | an organization where the identity holds the organization-level roles the kind names | `GcpFolder`, `GcpOrgPolicyCustomConstraint`, `GcpHierarchicalFirewallPolicy`, `GcpProject` |
+| `PLANTON_E2E_GCP_SCC_PROJECT_ID` | a project with Security Command Center activated | `GcpSccNotificationConfig`, `GcpSccMuteConfig`, `GcpSccBigQueryExport` |
+| `PLANTON_E2E_GCP_BILLING_ACCOUNT_ID` | a billing account where the identity holds `roles/billing.costsManager` | `GcpBillingBudget` |
+| `PLANTON_E2E_GCP_CLOUD_IDENTITY_CUSTOMER_ID` | a Cloud Identity customer where the identity is a Groups Admin | `GcpCloudIdentityGroup` |
+| `PLANTON_E2E_VERIFIED_DOMAIN` | a domain verified for the identity (group email addresses, Cloud Run domain mappings) | `GcpCloudIdentityGroup`, `GcpCloudRunDomainMapping` |
+| `PLANTON_E2E_GCP_COLAB_RUNTIME_USER` | the email a Colab Enterprise runtime is assigned to | `GcpColabRuntime` |
+| `PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID` | the Cloud Build GitHub App installed on a test organization or account | `GcpCloudBuildConnection`, `GcpCloudBuildRepository` |
+| `PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION` | a Secret Manager secret version holding that account's OAuth token, readable by the Cloud Build service agent | `GcpCloudBuildConnection`, `GcpCloudBuildRepository` |
+| `PLANTON_E2E_GCP_GITHUB_REPO_URI` | a repository the installation can read | `GcpCloudBuildRepository` |
+| `PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC` | a VPC with an existing private services access peering (the routes-config form edits a peering Google created) | `GcpVpcPeering` |
+| `PLANTON_E2E_GCP_VPN_PEER_IP_0`, `PLANTON_E2E_GCP_VPN_PEER_IP_1` | the two public interface addresses of an external VPN device | `GcpHaVpnConnection` |
+
+Each kind's `e2e/profile.yaml` says which of its lanes need these and why.
+
 **ADC preflight must assert a NON-EMPTY token, not just exit code 0:** with a
 stale-but-present ADC file, `gcloud auth application-default print-access-token`
 can exit 0 while printing an EMPTY token (observed live on a credential file

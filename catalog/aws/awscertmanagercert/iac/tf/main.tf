@@ -26,8 +26,8 @@ resource "aws_acm_certificate" "this" {
   # Imported arm: the PEM material. The private key is sensitive spec
   # input and never appears in outputs; re-importing new material before
   # expiry updates in place and keeps the ARN stable for consumers.
-  certificate_body  = local.is_imported ? var.spec.imported.certificate_body : null
-  private_key       = local.is_imported ? var.spec.imported.private_key : null
+  certificate_body = local.is_imported ? var.spec.imported.certificate_body : null
+  private_key      = local.is_imported ? var.spec.imported.private_key : null
   # HCL && is not short-circuiting -- never dereference imported when the
   # arm is absent (the session-008 class).
   certificate_chain = local.is_imported ? (try(var.spec.imported.certificate_chain, "") != "" ? var.spec.imported.certificate_chain : null) : null
@@ -52,7 +52,7 @@ resource "aws_acm_certificate" "this" {
     for_each = var.spec.options != null ? [var.spec.options] : []
     content {
       certificate_transparency_logging_preference = options.value.certificate_transparency_logging_preference != "" ? options.value.certificate_transparency_logging_preference : null
-      export                                       = options.value.export != "" ? options.value.export : null
+      export                                      = options.value.export != "" ? options.value.export : null
     }
   }
 

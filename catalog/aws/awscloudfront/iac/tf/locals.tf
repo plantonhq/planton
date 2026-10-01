@@ -34,7 +34,7 @@ locals {
 
   # Viewer certificate arms. Absent block (or neither arm set) serves the
   # default *.cloudfront.net certificate; CEL blocks aliases in that shape.
-  viewer_cert         = var.spec.viewer_certificate
+  viewer_cert = var.spec.viewer_certificate
   has_custom_viewer_cert = (
     try(var.spec.viewer_certificate.acm_certificate_arn, "") != "" ||
     try(var.spec.viewer_certificate.iam_certificate_id, "") != ""

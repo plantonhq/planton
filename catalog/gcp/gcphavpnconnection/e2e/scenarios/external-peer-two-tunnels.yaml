@@ -21,7 +21,7 @@ metadata:
     e2e-component: gcphavpnconnection
   annotations:
     planton.dev/e2e: "true"
-    planton.dev/e2e-required-env: PLANTON_E2E_GCP_VPN_PEER_IP_0
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_VPN_PEER_IP_0,PLANTON_E2E_GCP_VPN_PEER_IP_1
   tags:
     - planton-e2e
 spec:
