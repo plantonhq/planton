@@ -7,6 +7,7 @@
 package gcpredisinstancev1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -180,14 +181,14 @@ var File_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpredisinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpredisinstance/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpredisinstance.v1alpha1\"\xc8\x03\n" +
+	"3catalog/gcp/gcpredisinstance/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpredisinstance.v1alpha1\x1a\x1cshared/options/options.proto\"\xce\x03\n" +
 	"\x1cGcpRedisInstanceStackOutputs\x12\x12\n" +
 	"\x04host\x18\x01 \x01(\tR\x04host\x12\x12\n" +
 	"\x04port\x18\x02 \x01(\x05R\x04port\x12#\n" +
 	"\rread_endpoint\x18\x03 \x01(\tR\freadEndpoint\x12,\n" +
 	"\x12read_endpoint_port\x18\x04 \x01(\x05R\x10readEndpointPort\x12.\n" +
-	"\x13current_location_id\x18\x05 \x01(\tR\x11currentLocationId\x12\x1f\n" +
-	"\vauth_string\x18\x06 \x01(\tR\n" +
+	"\x13current_location_id\x18\x05 \x01(\tR\x11currentLocationId\x12%\n" +
+	"\vauth_string\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"authString\x12&\n" +
 	"\x0fserver_ca_certs\x18\a \x03(\tR\rserverCaCerts\x128\n" +
 	"\x18persistence_iam_identity\x18\b \x01(\tR\x16persistenceIamIdentity\x12=\n" +

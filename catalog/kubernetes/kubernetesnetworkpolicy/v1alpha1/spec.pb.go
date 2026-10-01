@@ -505,17 +505,26 @@ func (x *KubernetesNetworkPolicyPeer) GetIpBlock() *KubernetesNetworkPolicyIpBlo
 
 // *
 // **KubernetesNetworkPolicyIpBlock** is a CIDR allow with exceptions.
+//
+// Each range is a literal CIDR or a reference to the resource that owns it:
+// a VPC's or subnet's range, a GKE subnetwork's primary or secondary (pods,
+// services) range, a cluster's service or pod range. A reference keeps an
+// allowlist true to the network it guards -- an egress policy that excludes
+// the cluster's own ranges never repeats addresses the network chart already
+// declares. The CIDR rule checks a literal here, and a referenced value where
+// it is resolved, before anything deploys.
 type KubernetesNetworkPolicyIpBlock struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The allowed CIDR, e.g. "10.100.0.0/16" or "2001:db8::/64". "0.0.0.0/0"
 	// allows all IPv4 — pair it with `except` to allow "everything but".
-	Cidr string `protobuf:"bytes,1,opt,name=cidr,proto3" json:"cidr,omitempty"`
+	Cidr *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=cidr,proto3" json:"cidr,omitempty"`
 	// *
 	// CIDRs carved OUT of the allow — each must be a sub-range of `cidr` (the API
 	// rejects out-of-range exceptions). E.g. allow "0.0.0.0/0" except
-	// "169.254.169.254/32" (the cloud metadata endpoint).
-	Except        []string `protobuf:"bytes,2,rep,name=except,proto3" json:"except,omitempty"`
+	// "169.254.169.254/32" (the cloud metadata endpoint), or except the
+	// cluster's own pod, service and node ranges by reference.
+	Except        []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=except,proto3" json:"except,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -550,14 +559,14 @@ func (*KubernetesNetworkPolicyIpBlock) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *KubernetesNetworkPolicyIpBlock) GetCidr() string {
+func (x *KubernetesNetworkPolicyIpBlock) GetCidr() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Cidr
 	}
-	return ""
+	return nil
 }
 
-func (x *KubernetesNetworkPolicyIpBlock) GetExcept() []string {
+func (x *KubernetesNetworkPolicyIpBlock) GetExcept() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Except
 	}
@@ -831,12 +840,12 @@ const file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_rawDes
 	"\x12namespace_selector\x18\x02 \x01(\v2].dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelectorR\x11namespaceSelector\x12r\n" +
 	"\bip_block\x18\x03 \x01(\v2W.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlockR\aipBlock:\x98\x03\xbaH\x94\x03\x1a\xdd\x01\n" +
 	"\x1bip_block_mutually_exclusive\x12kip_block cannot be combined with pod_selector or namespace_selector in the same peer — use separate peers\x1aQ!has(this.ip_block) || (!has(this.pod_selector) && !has(this.namespace_selector))\x1a\xb1\x01\n" +
-	"\x0epeer_not_empty\x12Qa peer must specify at least one of pod_selector, namespace_selector, or ip_block\x1aLhas(this.pod_selector) || has(this.namespace_selector) || has(this.ip_block)\"\xb1\x02\n" +
-	"\x1eKubernetesNetworkPolicyIpBlock\x12\x80\x01\n" +
-	"\x04cidr\x18\x01 \x01(\tBl\xbaHi\xba\x01c\n" +
-	"\vcidr.format\x12Acidr must be a valid CIDR (e.g. \"10.100.0.0/16\", \"2001:db8::/64\")\x1a\x11this.isIpPrefix()\xc8\x01\x01R\x04cidr\x12\x8b\x01\n" +
-	"\x06except\x18\x02 \x03(\tBs\xbaHp\x92\x01m\"k\xba\x01h\n" +
-	"\rexcept.format\x12Deach except entry must be a valid CIDR inside the allowed cidr range\x1a\x11this.isIpPrefix()R\x06except\"\x85\n" +
+	"\x0epeer_not_empty\x12Qa peer must specify at least one of pod_selector, namespace_selector, or ip_block\x1aLhas(this.pod_selector) || has(this.namespace_selector) || has(this.ip_block)\"\xae\v\n" +
+	"\x1eKubernetesNetworkPolicyIpBlock\x12\xbd\x05\n" +
+	"\x04cidr\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf4\x04\xbaH\x83\x01\xba\x01}\n" +
+	"\vcidr.format\x12Acidr must be a valid CIDR (e.g. \"10.100.0.0/16\", \"2001:db8::/64\")\x1a+!has(this.value) || this.value.isIpPrefix()\xc8\x01\x01\x98\xd4a\x01\xa2\xd4a!\b\xc3\x17\x12\x1cstatus.outputs.ip_cidr_range\xa2\xd4a$\b\xc3\x17\x12\x1fstatus.outputs.secondary_ranges\xa2\xd4a/\b\xbf\x17\x12*spec.ip_allocation.cluster_ipv4_cidr_block\xa2\xd4a0\b\xbf\x17\x12+spec.ip_allocation.services_ipv4_cidr_block\xa2\xd4a0\b\xbf\x17\x12+spec.private_cluster.master_ipv4_cidr_block\xa2\xd4a\x1e\b\xf8\a\x12\x19status.outputs.cidr_block\xa2\xd4a\x1e\b\xbc\b\x12\x19status.outputs.cidr_block\xa2\xd4a\x1b\b\xef\a\x12\x16spec.service_ipv4_cidr\xa2\xd4a\"\b\xd6\x0f\x12\x1dstatus.outputs.address_spaces\xa2\xd4a$\b\xdb\x0f\x12\x1fstatus.outputs.address_prefixes\xa2\xd4a\"\b\xd1\x0f\x12\x1dspec.network_profile.pod_cidr\xa2\xd4a&\b\xd1\x0f\x12!spec.network_profile.service_cidrR\x04cidr\x12\xcb\x05\n" +
+	"\x06except\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xfe\x04\xbaH\x8d\x01\x92\x01\x89\x01\"\x86\x01\xba\x01\x82\x01\n" +
+	"\rexcept.format\x12Deach except entry must be a valid CIDR inside the allowed cidr range\x1a+!has(this.value) || this.value.isIpPrefix()\x98\xd4a\x01\xa2\xd4a!\b\xc3\x17\x12\x1cstatus.outputs.ip_cidr_range\xa2\xd4a$\b\xc3\x17\x12\x1fstatus.outputs.secondary_ranges\xa2\xd4a/\b\xbf\x17\x12*spec.ip_allocation.cluster_ipv4_cidr_block\xa2\xd4a0\b\xbf\x17\x12+spec.ip_allocation.services_ipv4_cidr_block\xa2\xd4a0\b\xbf\x17\x12+spec.private_cluster.master_ipv4_cidr_block\xa2\xd4a\x1e\b\xf8\a\x12\x19status.outputs.cidr_block\xa2\xd4a\x1e\b\xbc\b\x12\x19status.outputs.cidr_block\xa2\xd4a\x1b\b\xef\a\x12\x16spec.service_ipv4_cidr\xa2\xd4a\"\b\xd6\x0f\x12\x1dstatus.outputs.address_spaces\xa2\xd4a$\b\xdb\x0f\x12\x1fstatus.outputs.address_prefixes\xa2\xd4a\"\b\xd1\x0f\x12\x1dspec.network_profile.pod_cidr\xa2\xd4a&\b\xd1\x0f\x12!spec.network_profile.service_cidrR\x06except\"\x85\n" +
 	"\n" +
 	"\x1bKubernetesNetworkPolicyPort\x12\x9f\x01\n" +
 	"\bprotocol\x18\x01 \x01(\x0e2t.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPort.KubernetesNetworkPolicyProtocolB\b\xbaH\x05\x82\x01\x02\x10\x01H\x00R\bprotocol\x88\x01\x01\x12\xa8\x02\n" +
@@ -916,14 +925,16 @@ var file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_depIdxs 
 	8,  // 11: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPeer.pod_selector:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector
 	8,  // 12: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPeer.namespace_selector:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector
 	6,  // 13: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPeer.ip_block:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlock
-	1,  // 14: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPort.protocol:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPort.KubernetesNetworkPolicyProtocol
-	12, // 15: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.match_labels:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.MatchLabelsEntry
-	9,  // 16: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.match_expressions:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelectorRequirement
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	13, // 14: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlock.cidr:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	13, // 15: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlock.except:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 16: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPort.protocol:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyPort.KubernetesNetworkPolicyProtocol
+	12, // 17: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.match_labels:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.MatchLabelsEntry
+	9,  // 18: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.match_expressions:type_name -> dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelectorRequirement
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_init() }

@@ -32,20 +32,12 @@
 #   (FK) AzureVirtualMachine.admin_password -- the wizard now renders the
 #        dual-mode "managed secret | reference AzureKeyVault" picker.
 #
-# The fields below ARE real secrets, deliberately deferred (not yet annotated) for
-# one of two reasons, each to be closed in a follow-up:
-#   (C)  Service env-var secret maps. Governed by the env-resolution path and the
-#        still-open reference-only (allow_literals) decision; annotating here would
-#        pre-empt that decision (PO-13).
-#   (D)  Secret-holder kinds (e.g. KubernetesSecret) whose purpose is to
-#        materialize a secret. Reference-only is the right end state but a
-#        fundamental UX shift; needs its own design slice.
+# No real secret is deferred: environment-variable secrets (a workload's
+# env.secrets) and secret-holder kinds (KubernetesSecret) are annotated, so on the
+# platform they take only a managed secret reference. A new gap here is a field
+# that shipped unannotated -- annotate it, or exempt it with its reason.
 # ─────────────────────────────────────────────────────────────────────────────
-gaps:
-  # (C) service env-var secret maps
-  # (D) secret-holder kinds
-  - KubernetesSecret:spec.basic_auth.password
-  - KubernetesSecret:spec.ssh_auth.ssh_private_key
+gaps: []
 violations: []
   # Sensitive fields still carrying a value-content rule are listed here by
   # `Kind:spec.path`. The list is empty: the Azure, GCP, and Cloudflare instances

@@ -6,8 +6,17 @@ locals {
 
   # Optional template references resolve to literal ids before the module
   # runs; empty means unset.
-  vpc_uuid   = try(var.spec.droplet_template.vpc, "") != "" ? var.spec.droplet_template.vpc : null
-  project_id = try(var.spec.droplet_template.project_id, "") != "" ? var.spec.droplet_template.project_id : null
+  configured_vpc_uuid = try(var.spec.droplet_template.vpc, "") != "" ? var.spec.droplet_template.vpc : null
+  project_id          = try(var.spec.droplet_template.project_id, "") != "" ? var.spec.droplet_template.project_id : null
+
+  # The VPC is always sent explicitly. When the spec leaves it unset,
+  # DigitalOcean places members in the region's default VPC and reports that
+  # UUID back on every read; the provider's `vpc_uuid` is Optional but not
+  # Computed, so an unset value beside a populated read-back would re-plan
+  # on every apply (measured live: an unset vpc_uuid read back as the
+  # default-<region> VPC). Sending the API's own default makes the manifest
+  # and the cloud agree. The Pulumi module resolves it the same way.
+  vpc_uuid = coalesce(local.configured_vpc_uuid, one(data.digitalocean_vpc.region_default[*].id))
 
   # Standard Planton labels rendered as DigitalOcean "key:value" tags —
   # the exact set and key spelling the Pulumi module applies, so both

@@ -7,6 +7,7 @@
 package digitaloceandatabaseclusterv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -202,27 +203,27 @@ var File_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_outputs_proto
 
 const file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/outputs.proto\x12=dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1\"\xf6\x03\n" +
+	"Gcatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/outputs.proto\x12=dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1\x1a\x1cshared/options/options.proto\"\x94\x04\n" +
 	"'DigitalOceanDatabaseClusterStackOutputs\x12\x1d\n" +
 	"\n" +
-	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12%\n" +
-	"\x0econnection_uri\x18\x02 \x01(\tR\rconnectionUri\x12\x12\n" +
+	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12+\n" +
+	"\x0econnection_uri\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\rconnectionUri\x12\x12\n" +
 	"\x04host\x18\x03 \x01(\tR\x04host\x12\x12\n" +
 	"\x04port\x18\x04 \x01(\rR\x04port\x12#\n" +
-	"\rdatabase_user\x18\x05 \x01(\tR\fdatabaseUser\x12+\n" +
-	"\x11database_password\x18\x06 \x01(\tR\x10databasePassword\x12!\n" +
-	"\fprivate_host\x18\a \x01(\tR\vprivateHost\x12\x1f\n" +
-	"\vprivate_uri\x18\b \x01(\tR\n" +
+	"\rdatabase_user\x18\x05 \x01(\tR\fdatabaseUser\x121\n" +
+	"\x11database_password\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10databasePassword\x12!\n" +
+	"\fprivate_host\x18\a \x01(\tR\vprivateHost\x12%\n" +
+	"\vprivate_uri\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"privateUri\x12#\n" +
 	"\rdatabase_name\x18\t \x01(\tR\fdatabaseName\x12\x17\n" +
 	"\aui_host\x18\n" +
 	" \x01(\tR\x06uiHost\x12\x17\n" +
-	"\aui_port\x18\v \x01(\rR\x06uiPort\x12\x15\n" +
-	"\x06ui_uri\x18\f \x01(\tR\x05uiUri\x12\x1f\n" +
+	"\aui_port\x18\v \x01(\rR\x06uiPort\x12\x1b\n" +
+	"\x06ui_uri\x18\f \x01(\tB\x04\xa0\xa6\x1d\x01R\x05uiUri\x12\x1f\n" +
 	"\vui_database\x18\r \x01(\tR\n" +
 	"uiDatabase\x12\x17\n" +
-	"\aui_user\x18\x0e \x01(\tR\x06uiUser\x12\x1f\n" +
-	"\vui_password\x18\x0f \x01(\tR\n" +
+	"\aui_user\x18\x0e \x01(\tR\x06uiUser\x12%\n" +
+	"\vui_password\x18\x0f \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"uiPasswordB\xe6\x03\n" +
 	"Acom.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1B\fOutputsProtoP\x01Zzgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabasecluster/v1alpha1;digitaloceandatabaseclusterv1alpha1\xa2\x02\x04DPDD\xaa\x02=Dev.Planton.Digitalocean.Digitaloceandatabasecluster.V1alpha1\xca\x02=Dev\\Planton\\Digitalocean\\Digitaloceandatabasecluster\\V1alpha1\xe2\x02IDev\\Planton\\Digitalocean\\Digitaloceandatabasecluster\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Digitalocean::Digitaloceandatabasecluster::V1alpha1b\x06proto3"
 

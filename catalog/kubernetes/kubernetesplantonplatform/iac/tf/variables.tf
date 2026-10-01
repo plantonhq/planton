@@ -31,6 +31,16 @@ variable "spec" {
     }))
     database = optional(object({
       postgresql = optional(object({
+        resources = optional(object({
+          requests = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+          limits = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+        }))
         replicas           = optional(number)
         storage_size       = optional(string, "")
         storage_class_name = optional(string, "")
@@ -109,6 +119,17 @@ variable "spec" {
         }))
       }))
       redis = optional(object({
+        resources = optional(object({
+          requests = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+          limits = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+        }))
+        max_memory         = optional(string, "")
         storage_size       = optional(string, "")
         storage_class_name = optional(string, "")
       }))
@@ -136,9 +157,29 @@ variable "spec" {
       reachability = optional(string, "")
     }))
     gateway = optional(object({
+      resources = optional(object({
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
       local_port = optional(number)
     }))
     identity = optional(object({
+      resources = optional(object({
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
       realm       = optional(string)
       admin_email = optional(string, "")
     }))
@@ -162,6 +203,16 @@ variable "spec" {
       }))
     }))
     runner = optional(object({
+      resources = optional(object({
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
       enabled                       = optional(bool)
       storage_size                  = optional(string, "")
       storage_class_name            = optional(string, "")
@@ -217,6 +268,16 @@ variable "spec" {
       }))
     }))
     vault = optional(object({
+      resources = optional(object({
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
       enabled = optional(bool)
       # Exactly one seal arm (the spec's CEL holds it). The GCP arm's
       # project, key_ring, crypto_key, and workload_identity_service_account
@@ -256,9 +317,81 @@ variable "spec" {
     }))
     components = optional(object({
       graph = optional(object({
+        resources = optional(object({
+          requests = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+          limits = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+        }))
         enabled            = optional(bool, false)
         storage_size       = optional(string, "")
         storage_class_name = optional(string, "")
+      }))
+    }))
+    temporal = optional(object({
+      frontend = optional(object({
+        resources = optional(object({
+          requests = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+          limits = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+        }))
+      }))
+      history = optional(object({
+        resources = optional(object({
+          requests = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+          limits = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+        }))
+      }))
+      matching = optional(object({
+        resources = optional(object({
+          requests = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+          limits = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+        }))
+      }))
+      worker = optional(object({
+        resources = optional(object({
+          requests = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+          limits = optional(object({
+            cpu    = optional(string, "")
+            memory = optional(string, "")
+          }))
+        }))
+      }))
+    }))
+    openfga = optional(object({
+      resources = optional(object({
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
       }))
     }))
     prerequisites = optional(object({
@@ -267,6 +400,16 @@ variable "spec" {
       postgres_backup_plugin = optional(string)
     }))
     control_plane = optional(object({
+      resources = optional(object({
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
       image = optional(object({
         repository = optional(string, "")
         tag        = optional(string, "")
@@ -279,6 +422,16 @@ variable "spec" {
       iac_modules_version = optional(string, "")
     }))
     console = optional(object({
+      resources = optional(object({
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
       image = optional(object({
         repository = optional(string, "")
         tag        = optional(string, "")

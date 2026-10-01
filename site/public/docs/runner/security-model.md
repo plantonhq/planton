@@ -158,6 +158,10 @@ This dual-layer enforcement means:
 - A runner cannot claim a different identity by modifying its configuration — the identity is bound to the certificate and the service account, both of which are signed and verified server-side.
 - Revoking a runner's credentials (any re-enrollment, or an operator's enrollment reset) immediately prevents both the old certificate and API key from being accepted, even if the runner is still running with old credentials.
 
+## Infrastructure State Is Encrypted
+
+Every state file a runner writes is encrypted under the key its state backend names, with the engine's own encryption: OpenTofu encrypts the whole state and plan files, and Pulumi encrypts every secret value. The runner receives the key for one job and one organization at a time, and refuses to read state it cannot open rather than reading it as empty. On Planton-hosted runners, the key for Planton-managed storage is derived for your organization alone from a master key that only those runners hold: they take it out of their environment when they start, so no job, and no code a job runs, ever sees it. See [State Encryption](/docs/connections/state-encryption).
+
 ## What the Runner Cannot Do
 
 The runner's capabilities are bounded by the credentials it has access to and the operations the platform supports:

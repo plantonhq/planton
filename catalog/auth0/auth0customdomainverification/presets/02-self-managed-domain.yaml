@@ -1,0 +1,16 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomainVerification
+metadata:
+  name: proxied-domain-verification
+  org: example-org
+  env: production
+  relationships:
+    - kind: CloudflareDnsRecord
+      name: proxied-domain-txt
+      type: depends_on
+spec:
+  customDomainId:
+    valueFrom:
+      kind: Auth0CustomDomain
+      name: proxied-domain
+      fieldPath: status.outputs.id

@@ -12,6 +12,7 @@ go_library(
     deps = [
         "//catalog/aws/awsroute53dnsrecord/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
+        "//shared/foreignkey/v1:foreignkey",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/route53",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",

@@ -7,6 +7,7 @@
 package awscognitouserpoolclientv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -99,10 +100,10 @@ var File_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awscognitouserpoolclient_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awscognitouserpoolclient/v1alpha1/outputs.proto\x121dev.planton.aws.awscognitouserpoolclient.v1alpha1\"\x8a\x01\n" +
+	";catalog/aws/awscognitouserpoolclient/v1alpha1/outputs.proto\x121dev.planton.aws.awscognitouserpoolclient.v1alpha1\x1a\x1cshared/options/options.proto\"\x90\x01\n" +
 	"$AwsCognitoUserPoolClientStackOutputs\x12\x1b\n" +
-	"\tclient_id\x18\x01 \x01(\tR\bclientId\x12#\n" +
-	"\rclient_secret\x18\x02 \x01(\tR\fclientSecret\x12 \n" +
+	"\tclient_id\x18\x01 \x01(\tR\bclientId\x12)\n" +
+	"\rclient_secret\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12 \n" +
 	"\fuser_pool_id\x18\x03 \x01(\tR\n" +
 	"userPoolIdB\x9b\x03\n" +
 	"5com.dev.planton.aws.awscognitouserpoolclient.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/aws/awscognitouserpoolclient/v1alpha1;awscognitouserpoolclientv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Aws.Awscognitouserpoolclient.V1alpha1\xca\x021Dev\\Planton\\Aws\\Awscognitouserpoolclient\\V1alpha1\xe2\x02=Dev\\Planton\\Aws\\Awscognitouserpoolclient\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Aws::Awscognitouserpoolclient::V1alpha1b\x06proto3"

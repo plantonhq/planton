@@ -57,7 +57,7 @@ type AwsDocumentDbSpec struct {
 	// Name of an existing DB subnet group to place the cluster in, instead
 	// of providing subnet_ids. Changing the subnet group replaces the
 	// cluster.
-	DbSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
+	DbSubnetGroupName string `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
 	// Security groups attached to the cluster. Empty uses the VPC's
 	// default security group (the AWS default). Reference AwsSecurityGroup
 	// security_group_id outputs or pass literal SG IDs -- database ingress
@@ -236,11 +236,11 @@ func (x *AwsDocumentDbSpec) GetSubnetIds() []*v1.StringValueOrRef {
 	return nil
 }
 
-func (x *AwsDocumentDbSpec) GetDbSubnetGroupName() *v1.StringValueOrRef {
+func (x *AwsDocumentDbSpec) GetDbSubnetGroupName() string {
 	if x != nil {
 		return x.DbSubnetGroupName
 	}
-	return nil
+	return ""
 }
 
 func (x *AwsDocumentDbSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
@@ -816,12 +816,12 @@ var File_catalog_aws_awsdocumentdb_v1alpha1_spec_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsdocumentdb_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsdocumentdb/v1alpha1/spec.proto\x12&dev.planton.aws.awsdocumentdb.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x97+\n" +
+	"-catalog/aws/awsdocumentdb/v1alpha1/spec.proto\x12&dev.planton.aws.awsdocumentdb.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe4*\n" +
 	"\x11AwsDocumentDbSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12c\n" +
-	"\x14db_subnet_group_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x11dbSubnetGroupName\x12\x8b\x01\n" +
+	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12/\n" +
+	"\x14db_subnet_group_name\x18\x03 \x01(\tR\x11dbSubnetGroupName\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xf7\a\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12-\n" +
 	"\x12availability_zones\x18\x05 \x03(\tR\x11availabilityZones\x12!\n" +
 	"\fnetwork_type\x18\x06 \x01(\tR\vnetworkType\x12\x12\n" +
@@ -852,8 +852,8 @@ const file_catalog_aws_awsdocumentdb_v1alpha1_spec_proto_rawDesc = "" +
 	"parameters\x18\x1c \x03(\v2>.dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbParameterR\n" +
 	"parameters\x12+\n" +
 	"\x11apply_immediately\x18\x1d \x01(\bR\x10applyImmediately\x12=\n" +
-	"\x1ballow_major_version_upgrade\x18\x1e \x01(\bR\x18allowMajorVersionUpgrade:\xd5\x18\xbaH\xd1\x18\x1a\xa7\x01\n" +
-	"\x10subnets_or_group\x12Rprovide at least two subnet_ids (distinct AZs) or an existing db_subnet_group_name\x1a?(this.subnet_ids.size() >= 2) || has(this.db_subnet_group_name)\x1a\xbf\x01\n" +
+	"\x1ballow_major_version_upgrade\x18\x1e \x01(\bR\x18allowMajorVersionUpgrade:\xd6\x18\xbaH\xd2\x18\x1a\xa8\x01\n" +
+	"\x10subnets_or_group\x12Rprovide at least two subnet_ids (distinct AZs) or an existing db_subnet_group_name\x1a@(this.subnet_ids.size() >= 2) || this.db_subnet_group_name != ''\x1a\xbf\x01\n" +
 	"\n" +
 	"port_range\x12tport must be between 1150 and 65535 when set -- DocumentDB rejects ports below 1150; 0 keeps the AWS default (27017)\x1a;this.port == 0 || (this.port >= 1150 && this.port <= 65535)\x1a\xc2\x01\n" +
 	"\x14password_xor_managed\x12dmaster_password cannot be set when manage_master_user_password is true -- pick one password strategy\x1aDthis.manage_master_user_password ? this.master_password == '' : true\x1a\xed\x02\n" +
@@ -925,19 +925,18 @@ var file_catalog_aws_awsdocumentdb_v1alpha1_spec_proto_goTypes = []any{
 }
 var file_catalog_aws_awsdocumentdb_v1alpha1_spec_proto_depIdxs = []int32{
 	5, // 0: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // 1: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.db_subnet_group_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // 2: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1, // 3: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.instances:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbInstance
-	2, // 4: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.serverless_v2_scaling:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbServerlessV2Scaling
-	5, // 5: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3, // 6: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.restore_to_point_in_time:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbRestoreToPointInTime
-	4, // 7: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.parameters:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbParameter
-	5, // 8: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbInstance.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	5, // 1: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1, // 2: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.instances:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbInstance
+	2, // 3: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.serverless_v2_scaling:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbServerlessV2Scaling
+	5, // 4: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3, // 5: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.restore_to_point_in_time:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbRestoreToPointInTime
+	4, // 6: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbSpec.parameters:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbParameter
+	5, // 7: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbInstance.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsdocumentdb_v1alpha1_spec_proto_init() }

@@ -1,0 +1,20 @@
+# The email provider a template sends through, installed by the harness from
+# the registry's prerequisites edge (Auth0 refuses custom templates on a
+# tenant without one). This consumer-scoped install profile sends through
+# Resend over SMTP from the lane's verified sending domain -- the same
+# domain the template's from address uses, read from the same environment,
+# so the sender the template names is one the provider may send for. The
+# API key enters by env reference, never a literal.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailProvider
+metadata:
+  name: e2e-email-provider
+  org: e2e-org
+  env: testing
+spec:
+  defaultFromAddress: Planton E2E <e2e@${E2E_ENV:PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN}>
+  smtp:
+    host: smtp.resend.com
+    port: 587
+    user: resend
+    password: ${E2E_ENV:PLANTON_E2E_AUTH0_RESEND_API_KEY}

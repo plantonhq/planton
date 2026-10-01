@@ -8,7 +8,7 @@ output "zone_id" {
   value       = digitalocean_domain.dns_zone.id
 }
 
-output "name_servers" {
+output "nameservers" {
   description = "DigitalOcean's authoritative name servers (a fixed platform-wide set the API does not return per zone); set these at the registrar to delegate"
   value = [
     "ns1.digitalocean.com",
@@ -20,4 +20,9 @@ output "name_servers" {
 output "urn" {
   description = "The uniform resource name of the domain (e.g. do:domain:example.com)"
   value       = digitalocean_domain.dns_zone.urn
+}
+
+output "record_ids" {
+  description = "Numeric ids of the inline records, keyed by the module's for_each key (<record name>-<record index>-<value index>) -- the handles the API addresses each record by and state import takes as the second half of {domain},{record_id}"
+  value       = { for k, record in digitalocean_record.dns_records : k => record.id }
 }

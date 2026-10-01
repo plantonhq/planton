@@ -1,0 +1,219 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripetaxregistration.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// StripeTaxRegistrationSpec declares one place the account is registered to collect tax with
+// Stripe Tax -- VAT in Germany under the EU's One-Stop Shop, sales tax in Texas -- so the account's
+// registrations live in files, the same in every environment.
+//
+// Applying it tells Stripe the account is registered there: from active_from, Stripe Tax
+// calculates and collects tax in that place on every payment that uses automatic tax. Stripe Tax
+// itself (turning it on, the origin address, the default tax code) is the account's setting in the
+// Dashboard, outside this kind.
+//
+// Stripe never deletes a registration. Destroy only removes it from Planton's state: the provider
+// makes no call, and Stripe keeps collecting. To stop collecting, set expires_at and apply, then
+// destroy.
+//
+// Only active_from and expires_at update in place. Changing the country, type, place-of-supply
+// scheme, province, state, jurisdiction or elections REPLACES the registration: Planton creates a
+// new one and forgets the old one, which stays active in Stripe. To change a registration, set
+// expires_at on the old one and declare the new one as its own resource.
+//
+// A registration that cannot be read makes the plan fail (the provider does not treat a missing
+// registration as gone); remove it from state and apply again.
+//
+// The key needs "Tax Registrations" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/tax/registering
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/tax_registration
+message StripeTaxRegistrationSpec {
+  // country is the two-letter ISO country code of the registration, in capitals ("DE", "US").
+  // Changing it REPLACES the registration.
+  string country = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.country.format"
+      message: "country is a two-letter ISO country code in capitals, such as DE"
+      expression: "this.matches('^[A-Z]{2}$')"
+    }
+  ];
+
+  // type is the kind of registration, and the country decides which types exist:
+  // - an EU member state: standard (registered in that country), oss_union or oss_non_union (the
+  //   One-Stop Shop, declared in the country the account registered it in), or ioss (the Import
+  //   One-Stop Shop);
+  // - Canada: standard (GST/HST), province_standard (a province's own tax, with province) or
+  //   simplified;
+  // - the United States: state_sales_tax, state_communications_tax or state_retail_delivery_fee
+  //   (with state), or local_amusement_tax or local_lease_tax (with state and jurisdiction);
+  // - every other supported country takes exactly one: standard or simplified, as Stripe lists it.
+  // Changing it REPLACES the registration.
+  Type type = 2 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // active_from is when the registration starts, in Unix seconds (1767225600 is
+  // 2026-01-01T00:00:00Z; on Linux `date -u -d 2026-01-01T00:00:00Z +%s` computes one). Stripe
+  // accepts only now or a future time no more than five years ahead when the registration is
+  // created, so recreating a registration in a new account means moving a start date that has
+  // passed forward; an imported registration keeps Stripe's own value. It updates in place.
+  int64 active_from = 3 [(buf.validate.field).int64.gt = 0];
+
+  // expires_at is when the registration stops, in Unix seconds, and the only way to stop Stripe
+  // collecting in that place. Stripe refuses one more than five years ahead. Unset, the
+  // registration never expires. It updates in place, but
+  // removing it from the manifest does not clear it in Stripe: the stored date stays, and a new
+  // date is the only change.
+  optional int64 expires_at = 4 [(buf.validate.field).int64.gt = 0];
+
+  // place_of_supply_scheme refines a standard registration in a country that has one: standard,
+  // inbound_goods (goods imported into the country), or, in the EU only, small_seller. Unset,
+  // Stripe applies its default. Changing it REPLACES the registration.
+  StripeTaxRegistrationPlaceOfSupplyScheme place_of_supply_scheme = 5 [(buf.validate.field).enum.defined_only = true];
+
+  // province is the two-letter Canadian province code of a province_standard registration ("QC").
+  // Changing it REPLACES the registration.
+  string province = 6 [(buf.validate.field).cel = {
+    id: "spec.province.format"
+    message: "province is a two-letter Canadian province code in capitals, such as QC"
+    expression: "this == '' || this.matches('^[A-Z]{2}$')"
+  }];
+
+  // state is the two-letter US state code of a United States registration ("TX"), required there.
+  // Changing it REPLACES the registration.
+  string state = 7 [(buf.validate.field).cel = {
+    id: "spec.state.format"
+    message: "state is a two-letter US state code in capitals, such as TX"
+    expression: "this == '' || this.matches('^[A-Z]{2}$')"
+  }];
+
+  // jurisdiction is the FIPS code of the local jurisdiction of a local_amusement_tax or
+  // local_lease_tax registration, required for those two types. Changing it REPLACES the
+  // registration.
+  string jurisdiction = 8;
+
+  // state_sales_tax_elections are the local-tax elections of a state_sales_tax registration, for
+  // states that offer them. Changing them REPLACES the registration.
+  repeated StripeTaxRegistrationStateSalesTaxElection state_sales_tax_elections = 9;
+
+  // The country sets below are the pinned provider's own (stripe/stripe 0.3.0), one set per shape
+  // of Stripe's country options; a provider version move re-reads them.
+  option (buf.validate.message).cel = {
+    id: "spec.country.supported"
+    message: "country is not one Stripe Tax registers in: the pinned provider accepts registrations in 101 countries, listed in this kind's GUIDE"
+    expression: "this.country in ['AE', 'AL', 'AM', 'AO', 'AT', 'AU', 'AW', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BJ', 'BS', 'BY', 'CA', 'CD', 'CH', 'CL', 'CM', 'CO', 'CR', 'CV', 'CY', 'CZ', 'DE', 'DK', 'EC', 'EE', 'EG', 'ES', 'ET', 'FI', 'FR', 'GB', 'GE', 'GN', 'GR', 'HR', 'HU', 'ID', 'IE', 'IN', 'IS', 'IT', 'JP', 'KE', 'KG', 'KH', 'KR', 'KZ', 'LA', 'LK', 'LT', 'LU', 'LV', 'MA', 'MD', 'ME', 'MK', 'MR', 'MT', 'MX', 'MY', 'NG', 'NL', 'NO', 'NP', 'NZ', 'OM', 'PE', 'PH', 'PL', 'PT', 'RO', 'RS', 'RU', 'SA', 'SE', 'SG', 'SI', 'SK', 'SN', 'SR', 'TH', 'TJ', 'TR', 'TW', 'TZ', 'UA', 'UG', 'US', 'UY', 'UZ', 'VN', 'ZA', 'ZM', 'ZW']"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.type.eu"
+    message: "an EU registration's type is standard, oss_union, oss_non_union or ioss"
+    expression: "!(this.country in ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']) || this.type in [1, 3, 4, 5]"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.type.standard_only"
+    message: "a registration in this country is standard: Stripe offers no other type there"
+    expression: "!(this.country in ['AE', 'AL', 'AO', 'AU', 'AW', 'BA', 'BB', 'BD', 'BF', 'BH', 'BS', 'CD', 'CH', 'ET', 'GB', 'GN', 'IS', 'JP', 'ME', 'MK', 'MR', 'NO', 'NZ', 'OM', 'RS', 'SG', 'SR', 'UY', 'ZA', 'ZW']) || this.type == 1"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.type.simplified_only"
+    message: "a registration in this country is simplified: Stripe offers no other type there"
+    expression: "!(this.country in ['AM', 'AZ', 'BJ', 'BY', 'CL', 'CM', 'CO', 'CR', 'CV', 'EC', 'EG', 'GE', 'ID', 'IN', 'KE', 'KG', 'KH', 'KR', 'KZ', 'LA', 'LK', 'MA', 'MD', 'MX', 'MY', 'NG', 'NP', 'PE', 'PH', 'RU', 'SA', 'SN', 'TH', 'TJ', 'TR', 'TW', 'TZ', 'UA', 'UG', 'UZ', 'VN', 'ZM']) || this.type == 2"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.type.ca"
+    message: "a Canadian registration's type is standard, province_standard or simplified"
+    expression: "this.country != 'CA' || this.type in [1, 2, 6]"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.type.us"
+    message: "a US registration's type is state_sales_tax, local_amusement_tax, local_lease_tax, state_communications_tax or state_retail_delivery_fee"
+    expression: "this.country != 'US' || this.type in [7, 8, 9, 10, 11]"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.place_of_supply_scheme.where"
+    message: "place_of_supply_scheme refines a standard registration in a country that has one: the EU, AE, AL, AO, AU, AW, BA, BB, BD, BF, BH, BS, CD, CH, ET, GB, GN, IS, JP, ME, MK, MR, NO, NZ, OM, RS, SG, SR, UY, ZA or ZW"
+    expression: "this.place_of_supply_scheme == 0 || (this.type == 1 && this.country in ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'AE', 'AL', 'AO', 'AU', 'AW', 'BA', 'BB', 'BD', 'BF', 'BH', 'BS', 'CD', 'CH', 'ET', 'GB', 'GN', 'IS', 'JP', 'ME', 'MK', 'MR', 'NO', 'NZ', 'OM', 'RS', 'SG', 'SR', 'UY', 'ZA', 'ZW'])"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.place_of_supply_scheme.small_seller_eu"
+    message: "place_of_supply_scheme small_seller exists only for EU registrations"
+    expression: "this.place_of_supply_scheme != 2 || this.country in ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK']"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.province.province_standard"
+    message: "a province_standard registration names its province, and only it takes one"
+    expression: "(this.type == 6) == (this.province != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.state.us"
+    message: "a US registration names its state, and only a US registration takes one"
+    expression: "(this.country == 'US') == (this.state != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.jurisdiction.local_tax"
+    message: "a local_amusement_tax or local_lease_tax registration names its jurisdiction's FIPS code, and only those two take one"
+    expression: "(this.type in [8, 9]) == (this.jurisdiction != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.state_sales_tax_elections.state_sales_tax"
+    message: "state_sales_tax_elections belong to a state_sales_tax registration only"
+    expression: "size(this.state_sales_tax_elections) == 0 || this.type == 7"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.expires_at.after_active_from"
+    message: "expires_at is later than active_from"
+    expression: "!has(this.expires_at) || this.expires_at > this.active_from"
+  };
+
+  // Type is the kind of registration. The values are Stripe's own strings, and the country
+  // decides which ones it takes (see type).
+  enum Type {
+    type_unspecified = 0;
+    standard = 1;
+    simplified = 2;
+    ioss = 3;
+    oss_union = 4;
+    oss_non_union = 5;
+    province_standard = 6;
+    state_sales_tax = 7;
+    local_amusement_tax = 8;
+    local_lease_tax = 9;
+    state_communications_tax = 10;
+    state_retail_delivery_fee = 11;
+  }
+}
+
+// StripeTaxRegistrationStateSalesTaxElection is one local-tax election of a US state sales tax
+// registration.
+message StripeTaxRegistrationStateSalesTaxElection {
+  // type is the election: local_use_tax, simplified_sellers_use_tax or single_local_use_tax.
+  ElectionType type = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // jurisdiction is the FIPS code of the local jurisdiction the election applies to, where the
+  // election is local.
+  string jurisdiction = 2;
+
+  // ElectionType is the kind of election. The values are Stripe's own strings.
+  enum ElectionType {
+    election_type_unspecified = 0;
+    local_use_tax = 1;
+    simplified_sellers_use_tax = 2;
+    single_local_use_tax = 3;
+  }
+}
+
+// StripeTaxRegistrationPlaceOfSupplyScheme refines a standard registration. It is declared at
+// package scope because its standard value would collide with Type's standard inside the spec.
+// The values are Stripe's own strings.
+enum StripeTaxRegistrationPlaceOfSupplyScheme {
+  stripe_tax_registration_place_of_supply_scheme_unspecified = 0;
+  standard = 1;
+  small_seller = 2;
+  inbound_goods = 3;
+}

@@ -7,6 +7,7 @@
 package azurestorageaccountv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -364,7 +365,7 @@ var File_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurestorageaccount/v1alpha1/outputs.proto\x12.dev.planton.azure.azurestorageaccount.v1alpha1\"\xd1\v\n" +
+	"8catalog/azure/azurestorageaccount/v1alpha1/outputs.proto\x12.dev.planton.azure.azurestorageaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xf5\v\n" +
 	"\x1fAzureStorageAccountStackOutputs\x12,\n" +
 	"\x12storage_account_id\x18\x01 \x01(\tR\x10storageAccountId\x120\n" +
 	"\x14storage_account_name\x18\x02 \x01(\tR\x12storageAccountName\x12.\n" +
@@ -383,13 +384,13 @@ const file_catalog_azure_azurestorageaccount_v1alpha1_outputs_proto_rawDesc = ""
 	"\x18secondary_table_endpoint\x18\x0e \x01(\tR\x16secondaryTableEndpoint\x126\n" +
 	"\x17secondary_file_endpoint\x18\x0f \x01(\tR\x15secondaryFileEndpoint\x124\n" +
 	"\x16secondary_dfs_endpoint\x18\x10 \x01(\tR\x14secondaryDfsEndpoint\x124\n" +
-	"\x16secondary_web_endpoint\x18\x11 \x01(\tR\x14secondaryWebEndpoint\x12,\n" +
-	"\x12primary_access_key\x18\x12 \x01(\tR\x10primaryAccessKey\x120\n" +
-	"\x14secondary_access_key\x18\x13 \x01(\tR\x12secondaryAccessKey\x12:\n" +
-	"\x19primary_connection_string\x18\x14 \x01(\tR\x17primaryConnectionString\x12>\n" +
-	"\x1bsecondary_connection_string\x18\x15 \x01(\tR\x19secondaryConnectionString\x12C\n" +
-	"\x1eprimary_blob_connection_string\x18\x16 \x01(\tR\x1bprimaryBlobConnectionString\x12G\n" +
-	" secondary_blob_connection_string\x18\x17 \x01(\tR\x1dsecondaryBlobConnectionString\x122\n" +
+	"\x16secondary_web_endpoint\x18\x11 \x01(\tR\x14secondaryWebEndpoint\x122\n" +
+	"\x12primary_access_key\x18\x12 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10primaryAccessKey\x126\n" +
+	"\x14secondary_access_key\x18\x13 \x01(\tB\x04\xa0\xa6\x1d\x01R\x12secondaryAccessKey\x12@\n" +
+	"\x19primary_connection_string\x18\x14 \x01(\tB\x04\xa0\xa6\x1d\x01R\x17primaryConnectionString\x12D\n" +
+	"\x1bsecondary_connection_string\x18\x15 \x01(\tB\x04\xa0\xa6\x1d\x01R\x19secondaryConnectionString\x12I\n" +
+	"\x1eprimary_blob_connection_string\x18\x16 \x01(\tB\x04\xa0\xa6\x1d\x01R\x1bprimaryBlobConnectionString\x12M\n" +
+	" secondary_blob_connection_string\x18\x17 \x01(\tB\x04\xa0\xa6\x1d\x01R\x1dsecondaryBlobConnectionString\x122\n" +
 	"\x15identity_principal_id\x18\x18 \x01(\tR\x13identityPrincipalId\x12&\n" +
 	"\x0fblob_service_id\x18\x19 \x01(\tR\rblobServiceId\x12&\n" +
 	"\x0ffile_service_id\x18\x1a \x01(\tR\rfileServiceId\x12(\n" +

@@ -1849,11 +1849,11 @@ const file_catalog_kubernetes_kubernetessolr_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0f_reclaim_policy\"?\n" +
 	"\x1eKubernetesSolrEphemeralStorage\x12\x1d\n" +
 	"\n" +
-	"size_limit\x18\x01 \x01(\tR\tsizeLimit\"\xd1\x04\n" +
+	"size_limit\x18\x01 \x01(\tR\tsizeLimit\"\xde\x04\n" +
 	"\x16KubernetesSolrSecurity\x12\xa6\x01\n" +
 	"\x13authentication_type\x18\x01 \x01(\tBp\xbaHm\xba\x01j\n" +
-	"&spec.security.authentication_type_enum\x12!authentication_type must be basic\x1a\x1dthis == '' || this == 'basic'H\x00R\x12authenticationType\x88\x01\x01\x12\xc0\x01\n" +
-	"\x11basic_auth_secret\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB`\xaa\xa6\x1dFName of an existing Kubernetes Secret (reference), not secret material\x88\xd4a\xa7\x1f\x92\xd4a\rmetadata.nameR\x0fbasicAuthSecret\x12.\n" +
+	"&spec.security.authentication_type_enum\x12!authentication_type must be basic\x1a\x1dthis == '' || this == 'basic'H\x00R\x12authenticationType\x88\x01\x01\x12\xcd\x01\n" +
+	"\x11basic_auth_secret\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBm\xaa\xa6\x1dFName of an existing Kubernetes Secret (reference), not secret material\x88\xd4a\xa7\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\x0fbasicAuthSecret\x12.\n" +
 	"\x13probes_require_auth\x18\x03 \x01(\bR\x11probesRequireAuth\x12\x82\x01\n" +
 	"\x17bootstrap_security_json\x18\x04 \x01(\v2J.dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrSecretKeyRefR\x15bootstrapSecurityJsonB\x16\n" +
 	"\x14_authentication_type\"R\n" +

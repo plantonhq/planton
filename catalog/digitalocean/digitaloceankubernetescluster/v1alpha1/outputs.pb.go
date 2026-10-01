@@ -7,6 +7,7 @@
 package digitaloceankubernetesclusterv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -39,8 +40,13 @@ type DigitalOceanKubernetesClusterStackOutputs struct {
 	// The uniform resource name of the cluster ("do:kubernetes:<cluster_id>"),
 	// used when attaching the cluster to a DigitalOcean project.
 	Urn string `protobuf:"bytes,4,opt,name=urn,proto3" json:"urn,omitempty"`
-	// The public IPv4 address of the cluster's control plane. Empty on
-	// highly-available clusters, which have no single control-plane IP.
+	// The public IPv4 address of the cluster's control plane, when DigitalOcean
+	// reports one. Clusters created today report NONE: the API server sits
+	// behind DigitalOcean's own front end and is reachable only by the
+	// api_server_endpoint hostname (measured on a single-replica 1.35 cluster,
+	// not just on HA clusters). Both provisioners export the value verbatim,
+	// so expect an empty string; anything that needs the control plane's
+	// address -- allowlists, health probes -- should use api_server_endpoint.
 	Ipv4Address string `protobuf:"bytes,5,opt,name=ipv4_address,json=ipv4Address,proto3" json:"ipv4_address,omitempty"`
 	// The unique identifier (UUID) of the cluster's inline default node pool.
 	DefaultNodePoolId string `protobuf:"bytes,6,opt,name=default_node_pool_id,json=defaultNodePoolId,proto3" json:"default_node_pool_id,omitempty"`
@@ -142,12 +148,12 @@ var File_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_pro
 
 const file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\"\xce\x02\n" +
+	"Icatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\x1a\x1cshared/options/options.proto\"\xd4\x02\n" +
 	")DigitalOceanKubernetesClusterStackOutputs\x12\x1d\n" +
 	"\n" +
-	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1e\n" +
+	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12$\n" +
 	"\n" +
-	"kubeconfig\x18\x02 \x01(\tR\n" +
+	"kubeconfig\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"kubeconfig\x12.\n" +
 	"\x13api_server_endpoint\x18\x03 \x01(\tR\x11apiServerEndpoint\x12\x10\n" +
 	"\x03urn\x18\x04 \x01(\tR\x03urn\x12!\n" +

@@ -24,6 +24,64 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// ReferenceCandidate is one kind a reference field accepts and the output
+// (the composition key) it composes from. See the `candidate` option.
+type ReferenceCandidate struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The kind the reference can point at.
+	Kind cloudresourcekind.CloudResourceKind `protobuf:"varint,1,opt,name=kind,proto3,enum=dev.planton.shared.cloudresourcekind.CloudResourceKind" json:"kind,omitempty"`
+	// The output path on that kind the field composes from, in valueFrom's
+	// field_path grammar (`status.outputs.<field>`, or a spec path such as
+	// `spec.name`).
+	FieldPath     string `protobuf:"bytes,2,opt,name=field_path,json=fieldPath,proto3" json:"field_path,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReferenceCandidate) Reset() {
+	*x = ReferenceCandidate{}
+	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReferenceCandidate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReferenceCandidate) ProtoMessage() {}
+
+func (x *ReferenceCandidate) ProtoReflect() protoreflect.Message {
+	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReferenceCandidate.ProtoReflect.Descriptor instead.
+func (*ReferenceCandidate) Descriptor() ([]byte, []int) {
+	return file_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *ReferenceCandidate) GetKind() cloudresourcekind.CloudResourceKind {
+	if x != nil {
+		return x.Kind
+	}
+	return cloudresourcekind.CloudResourceKind(0)
+}
+
+func (x *ReferenceCandidate) GetFieldPath() string {
+	if x != nil {
+		return x.FieldPath
+	}
+	return ""
+}
+
 // ValueFromRef describes a reference to another resource field (kind, env, name, field_path).
 type ValueFromRef struct {
 	state         protoimpl.MessageState              `protogen:"open.v1"`
@@ -37,7 +95,7 @@ type ValueFromRef struct {
 
 func (x *ValueFromRef) Reset() {
 	*x = ValueFromRef{}
-	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[0]
+	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -49,7 +107,7 @@ func (x *ValueFromRef) String() string {
 func (*ValueFromRef) ProtoMessage() {}
 
 func (x *ValueFromRef) ProtoReflect() protoreflect.Message {
-	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[0]
+	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -62,7 +120,7 @@ func (x *ValueFromRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValueFromRef.ProtoReflect.Descriptor instead.
 func (*ValueFromRef) Descriptor() ([]byte, []int) {
-	return file_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP(), []int{0}
+	return file_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ValueFromRef) GetKind() cloudresourcekind.CloudResourceKind {
@@ -118,7 +176,7 @@ type StringValueOrRef struct {
 
 func (x *StringValueOrRef) Reset() {
 	*x = StringValueOrRef{}
-	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[1]
+	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -130,7 +188,7 @@ func (x *StringValueOrRef) String() string {
 func (*StringValueOrRef) ProtoMessage() {}
 
 func (x *StringValueOrRef) ProtoReflect() protoreflect.Message {
-	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[1]
+	mi := &file_shared_foreignkey_v1_foreign_key_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -143,7 +201,7 @@ func (x *StringValueOrRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StringValueOrRef.ProtoReflect.Descriptor instead.
 func (*StringValueOrRef) Descriptor() ([]byte, []int) {
-	return file_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP(), []int{1}
+	return file_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *StringValueOrRef) GetLiteralOrRef() isStringValueOrRef_LiteralOrRef {
@@ -214,6 +272,14 @@ var file_shared_foreignkey_v1_foreign_key_proto_extTypes = []protoimpl.Extension
 		Tag:           "varint,200003,opt,name=containment_exempt",
 		Filename:      "shared/foreignkey/v1/foreign_key.proto",
 	},
+	{
+		ExtendedType:  (*descriptorpb.FieldOptions)(nil),
+		ExtensionType: ([]*ReferenceCandidate)(nil),
+		Field:         200004,
+		Name:          "dev.planton.shared.foreignkey.v1.candidate",
+		Tag:           "bytes,200004,rep,name=candidate",
+		Filename:      "shared/foreignkey/v1/foreign_key.proto",
+	},
 }
 
 // Extension fields to descriptorpb.FieldOptions.
@@ -243,13 +309,47 @@ var (
 	//
 	// optional bool containment_exempt = 200003;
 	E_ContainmentExempt = &file_shared_foreignkey_v1_foreign_key_proto_extTypes[2]
+	// The kinds this reference can point at, each with the output it composes
+	// from -- for a field whose value can legitimately come from more than one
+	// kind (an access log destination that is an S3 bucket, a log group or a
+	// Firehose stream; an address range that is a VPC's, a subnet's or a
+	// cluster's). Author one entry per kind and composition key:
+	//
+	//	(dev.planton.shared.foreignkey.v1.candidate) = {kind: AwsS3Bucket, field_path: "status.outputs.bucket_arn"},
+	//	(dev.planton.shared.foreignkey.v1.candidate) = {kind: AwsCloudwatchLogGroup, field_path: "status.outputs.log_group_arn"},
+	//
+	// A kind may appear more than once when it exposes more than one output the
+	// field accepts (a subnetwork's primary range and its secondary ranges).
+	// Together with default_kind (when present) these entries are the field's
+	// composition keys, and every reader applies the same rules:
+	//
+	//   - a valueFrom that names a kind with exactly one key defaults its
+	//     field_path to that key;
+	//   - an explicit field_path on a candidate kind must equal one of that
+	//     kind's keys or extend it (a list index or a map key: a path that
+	//     extends `status.outputs.secondary_ranges` with `.1.ip_cidr_range`);
+	//   - a kind outside the list is still accepted with an explicit field_path,
+	//     exactly as a kind other than default_kind is;
+	//   - when a field declares both, default_kind is one of the candidates, with
+	//     the same path (default_kind stays the kind a bare literal is read as).
+	//
+	// Consoles offer exactly these kinds in the reference picker, and agents'
+	// tools describe the field by them. A field that can point at any kind (any
+	// Azure resource's id) declares neither and names its kind per manifest.
+	//
+	// repeated dev.planton.shared.foreignkey.v1.ReferenceCandidate candidate = 200004;
+	E_Candidate = &file_shared_foreignkey_v1_foreign_key_proto_extTypes[3]
 )
 
 var File_shared_foreignkey_v1_foreign_key_proto protoreflect.FileDescriptor
 
 const file_shared_foreignkey_v1_foreign_key_proto_rawDesc = "" +
 	"\n" +
-	"&shared/foreignkey/v1/foreign_key.proto\x12 dev.planton.shared.foreignkey.v1\x1a\x1bbuf/validate/validate.proto\x1a google/protobuf/descriptor.proto\x1a2shared/cloudresourcekind/cloud_resource_kind.proto\"\xa8\x01\n" +
+	"&shared/foreignkey/v1/foreign_key.proto\x12 dev.planton.shared.foreignkey.v1\x1a\x1bbuf/validate/validate.proto\x1a google/protobuf/descriptor.proto\x1a2shared/cloudresourcekind/cloud_resource_kind.proto\"\x80\x01\n" +
+	"\x12ReferenceCandidate\x12K\n" +
+	"\x04kind\x18\x01 \x01(\x0e27.dev.planton.shared.cloudresourcekind.CloudResourceKindR\x04kind\x12\x1d\n" +
+	"\n" +
+	"field_path\x18\x02 \x01(\tR\tfieldPath\"\xa8\x01\n" +
 	"\fValueFromRef\x12K\n" +
 	"\x04kind\x18\x01 \x01(\x0e27.dev.planton.shared.cloudresourcekind.CloudResourceKindR\x04kind\x12\x10\n" +
 	"\x03env\x18\x02 \x01(\tR\x03env\x12\x1a\n" +
@@ -264,7 +364,8 @@ const file_shared_foreignkey_v1_foreign_key_proto_rawDesc = "" +
 	"\x0eliteral_or_ref:{\n" +
 	"\fdefault_kind\x12\x1d.google.protobuf.FieldOptions\x18\xc1\x9a\f \x01(\x0e27.dev.planton.shared.cloudresourcekind.CloudResourceKindR\vdefaultKind:V\n" +
 	"\x17default_kind_field_path\x12\x1d.google.protobuf.FieldOptions\x18\u009a\f \x01(\tR\x14defaultKindFieldPath:N\n" +
-	"\x12containment_exempt\x12\x1d.google.protobuf.FieldOptions\x18Ú\f \x01(\bR\x11containmentExemptB\x9c\x02\n" +
+	"\x12containment_exempt\x12\x1d.google.protobuf.FieldOptions\x18Ú\f \x01(\bR\x11containmentExempt:s\n" +
+	"\tcandidate\x12\x1d.google.protobuf.FieldOptions\x18Ě\f \x03(\v24.dev.planton.shared.foreignkey.v1.ReferenceCandidateR\tcandidateB\x9c\x02\n" +
 	"$com.dev.planton.shared.foreignkey.v1B\x0fForeignKeyProtoP\x01Z>github.com/plantonhq/planton/shared/foreignkey/v1;foreignkeyv1\xa2\x02\x04DPSF\xaa\x02 Dev.Planton.Shared.Foreignkey.V1\xca\x02 Dev\\Planton\\Shared\\Foreignkey\\V1\xe2\x02,Dev\\Planton\\Shared\\Foreignkey\\V1\\GPBMetadata\xea\x02$Dev::Planton::Shared::Foreignkey::V1b\x06proto3"
 
 var (
@@ -279,25 +380,29 @@ func file_shared_foreignkey_v1_foreign_key_proto_rawDescGZIP() []byte {
 	return file_shared_foreignkey_v1_foreign_key_proto_rawDescData
 }
 
-var file_shared_foreignkey_v1_foreign_key_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_shared_foreignkey_v1_foreign_key_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_shared_foreignkey_v1_foreign_key_proto_goTypes = []any{
-	(*ValueFromRef)(nil),                     // 0: dev.planton.shared.foreignkey.v1.ValueFromRef
-	(*StringValueOrRef)(nil),                 // 1: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(cloudresourcekind.CloudResourceKind)(0), // 2: dev.planton.shared.cloudresourcekind.CloudResourceKind
-	(*descriptorpb.FieldOptions)(nil),        // 3: google.protobuf.FieldOptions
+	(*ReferenceCandidate)(nil),               // 0: dev.planton.shared.foreignkey.v1.ReferenceCandidate
+	(*ValueFromRef)(nil),                     // 1: dev.planton.shared.foreignkey.v1.ValueFromRef
+	(*StringValueOrRef)(nil),                 // 2: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(cloudresourcekind.CloudResourceKind)(0), // 3: dev.planton.shared.cloudresourcekind.CloudResourceKind
+	(*descriptorpb.FieldOptions)(nil),        // 4: google.protobuf.FieldOptions
 }
 var file_shared_foreignkey_v1_foreign_key_proto_depIdxs = []int32{
-	2, // 0: dev.planton.shared.foreignkey.v1.ValueFromRef.kind:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKind
-	0, // 1: dev.planton.shared.foreignkey.v1.StringValueOrRef.value_from:type_name -> dev.planton.shared.foreignkey.v1.ValueFromRef
-	3, // 2: dev.planton.shared.foreignkey.v1.default_kind:extendee -> google.protobuf.FieldOptions
-	3, // 3: dev.planton.shared.foreignkey.v1.default_kind_field_path:extendee -> google.protobuf.FieldOptions
-	3, // 4: dev.planton.shared.foreignkey.v1.containment_exempt:extendee -> google.protobuf.FieldOptions
-	2, // 5: dev.planton.shared.foreignkey.v1.default_kind:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKind
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	5, // [5:6] is the sub-list for extension type_name
-	2, // [2:5] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	3, // 0: dev.planton.shared.foreignkey.v1.ReferenceCandidate.kind:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKind
+	3, // 1: dev.planton.shared.foreignkey.v1.ValueFromRef.kind:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKind
+	1, // 2: dev.planton.shared.foreignkey.v1.StringValueOrRef.value_from:type_name -> dev.planton.shared.foreignkey.v1.ValueFromRef
+	4, // 3: dev.planton.shared.foreignkey.v1.default_kind:extendee -> google.protobuf.FieldOptions
+	4, // 4: dev.planton.shared.foreignkey.v1.default_kind_field_path:extendee -> google.protobuf.FieldOptions
+	4, // 5: dev.planton.shared.foreignkey.v1.containment_exempt:extendee -> google.protobuf.FieldOptions
+	4, // 6: dev.planton.shared.foreignkey.v1.candidate:extendee -> google.protobuf.FieldOptions
+	3, // 7: dev.planton.shared.foreignkey.v1.default_kind:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKind
+	0, // 8: dev.planton.shared.foreignkey.v1.candidate:type_name -> dev.planton.shared.foreignkey.v1.ReferenceCandidate
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	7, // [7:9] is the sub-list for extension type_name
+	3, // [3:7] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_shared_foreignkey_v1_foreign_key_proto_init() }
@@ -305,7 +410,7 @@ func file_shared_foreignkey_v1_foreign_key_proto_init() {
 	if File_shared_foreignkey_v1_foreign_key_proto != nil {
 		return
 	}
-	file_shared_foreignkey_v1_foreign_key_proto_msgTypes[1].OneofWrappers = []any{
+	file_shared_foreignkey_v1_foreign_key_proto_msgTypes[2].OneofWrappers = []any{
 		(*StringValueOrRef_Value)(nil),
 		(*StringValueOrRef_ValueFrom)(nil),
 	}
@@ -315,8 +420,8 @@ func file_shared_foreignkey_v1_foreign_key_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_foreignkey_v1_foreign_key_proto_rawDesc), len(file_shared_foreignkey_v1_foreign_key_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
-			NumExtensions: 3,
+			NumMessages:   3,
+			NumExtensions: 4,
 			NumServices:   0,
 		},
 		GoTypes:           file_shared_foreignkey_v1_foreign_key_proto_goTypes,

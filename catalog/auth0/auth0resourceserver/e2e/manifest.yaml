@@ -1,5 +1,10 @@
 # Auth0 Resource Server Test Manifest
-# This file is used for testing the Auth0ResourceServer component
+# The component's full surface, for the offline plan and preview proofs: it
+# declares settings that need the Enterprise plan with the Highly Regulated
+# Identity add-on (token encryption, consent_policy) and Early Access
+# features (anonymous sessions, Online Refresh Tokens, authorization
+# policies), so a live apply needs a tenant that has them. The live lanes
+# run e2e/scenarios/.
 #
 # Prerequisites:
 # 1. Set the following environment variables:
@@ -8,10 +13,10 @@
 #    - AUTH0_CLIENT_SECRET: M2M application client secret
 #
 # 2. The M2M application must have these scopes:
-#    - create:resource_servers
-#    - read:resource_servers
-#    - update:resource_servers
-#    - delete:resource_servers
+#    - create:resource_servers, read:resource_servers,
+#      update:resource_servers, delete:resource_servers
+#    - create:client_grants, read:client_grants,
+#      update:client_grants, delete:client_grants
 
 apiVersion: auth0.planton.dev/v1alpha1
 kind: Auth0ResourceServer
@@ -29,15 +34,19 @@ spec:
   name: Test API
 
   # Token configuration
-  signing_alg: RS256
-  token_lifetime: 86400         # 24 hours
-  token_lifetime_for_web: 7200  # 2 hours
+  signingAlg: RS256
+  tokenLifetime: 86400         # 24 hours
+  tokenLifetimeForWeb: 7200    # 2 hours
+  tokenLifetimeForAnonymousAccessTokens: 86400
 
   # Access control
-  allow_offline_access: true
-  skip_consent_for_verifiable_first_party_clients: true
-  enforce_policies: true
-  token_dialect: access_token_authz
+  allowOfflineAccess: true
+  allowOnlineAccess: false
+  allowOnlineAccessWithEphemeralSessions: false
+  skipConsentForVerifiableFirstPartyClients: true
+  enforcePolicies: true
+  tokenDialect: access_token_authz
+  consentPolicy: transactional-authorization-with-mfa
 
   # API Scopes/Permissions
   scopes:
@@ -49,3 +58,62 @@ spec:
       description: Delete items
     - name: admin:all
       description: Full administrative access
+
+  # Anonymous-session claims
+  accessToken:
+    claimsMapping:
+      customClaims:
+        - name: country
+          expression: anonymous_session.metadata.country
+
+  # Rich Authorization Request types
+  authorizationDetails:
+    - type: payment
+    - type: money_transfer
+
+  authorizationPolicy:
+    policyId: pol_e2e_policy
+
+  # Sender-constrained tokens (DPoP), required for public applications
+  proofOfPossession:
+    mechanism: dpop
+    required: true
+    requiredFor: public_clients
+
+  # The access policy
+  subjectTypeAuthorization:
+    user:
+      policy: require_client_grant
+    client:
+      policy: require_client_grant
+    anonymousUser:
+      policy: deny_all
+
+  # Encrypted tokens, to the API's public key
+  tokenEncryption:
+    format: compact-nested-jwe
+    encryptionKey:
+      name: e2e-encryption-key
+      algorithm: RSA-OAEP-256
+      pem: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4DWiwKitrj8kcow8SnCl
+        UaHCLbmvHNh82rL4Et597I83qObJOVU8WhiZL5NnOVGoLxVE4db49xZpjQZMqhre
+        kEVsnKdRA858/XV9etkP6mbB5KP/ALB292iKHzQnF/cMtjctmhI310lJFWkBa7nW
+        pz6V4TFbWJ7lATodIZJoHAV8fzuoaz07e8nzDYvnRYfbroi5gD724lBrDWzDxv0W
+        BYc+KS0rNglZU9AsrHFDicaoPDsxsep3yd+nWefMf7ww+ZFpYi7pTJyxxMFVPuQV
+        rAY2kGbZqF8EFRdW+pUs3aLUGlKrOtkuGuv96+h3VqGZ8TjnGzjwZm4BlaoWutPP
+        NwIDAQAB
+        -----END PUBLIC KEY-----
+
+  # Default grants every third-party application gets
+  thirdPartyClientDefaultGrants:
+    - subjectType: user
+      scopes:
+        - read:items
+        - write:items
+      authorizationDetailsTypes:
+        - payment
+    - subjectType: client
+      allowAllScopes: true
+      organizationUsage: allow

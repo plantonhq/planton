@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"sort"
 	"strings"
 	"testing"
 
@@ -79,7 +80,9 @@ var (
 	//
 	// Cloudflare, DigitalOcean, and Auth0 left this map when their arms
 	// landed: their manifests declare token permission groups / scopes as
-	// first-class sections, held to the providers' own inventories.
+	// first-class sections, held to the providers' own inventories. Stripe
+	// never joined it: a restricted key has a per-resource vocabulary, so
+	// its manifests declare a stripe section too.
 	tokenScopedProviders = map[string]bool{
 		"openfga": true,
 	}
@@ -150,10 +153,398 @@ func TestPermissionsConformance(t *testing.T) {
 				checkCloudflare(t, spec.GetCloudflare())
 				checkDigitalOcean(t, spec.GetDigitalOcean())
 				checkAuth0(t, spec.GetAuth0())
+				checkStripe(t, spec.GetStripe())
 				checkConditions(t, component, spec)
 			})
 		}
 	}
+}
+
+// imageDeployingGcpComponents deploy a container image their deploying identity must be able to
+// read: Google's Cloud Run deploy checks the deployer's own Artifact Registry access to the
+// image, separately from the service agent that pulls it when a revision starts.
+var imageDeployingGcpComponents = []string{"gcpcloudrun", "gcpcloudrunjob"}
+
+const artifactRegistryDownload = "artifactregistry.repositories.downloadArtifacts"
+
+// A customer who grants exactly what a manifest declares must be able to deploy with it. The
+// structural gate above cannot see an absent grant, so the one Google's deploy contract requires
+// of every image-deploying component is pinned here by name.
+func TestImageDeployingComponentsDeclareRegistryRead(t *testing.T) {
+	root := repoRoot(t)
+	if _, err := os.Stat(filepath.Join(root, "catalog")); err != nil {
+		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
+	}
+	for _, component := range imageDeployingGcpComponents {
+		manifest, err := Load(root, "gcp", component)
+		if err != nil {
+			t.Fatalf("%s permissions manifest: %v", component, err)
+		}
+		declared := false
+		for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
+			for _, permission := range group.GetPermissions() {
+				declared = declared || permission == artifactRegistryDownload
+			}
+		}
+		if !declared {
+			t.Errorf("%s deploys a container image but its manifest grants no %s -- a customer who grants "+
+				"exactly this manifest is refused at deploy when the image lives in Artifact Registry",
+				component, artifactRegistryDownload)
+		}
+	}
+}
+
+// skipAwaitSetOutsideTheCall are the components that put pulumi.com/skipAwait on a kind where the
+// gate cannot see it at the constructor call -- the annotation map is built elsewhere in the
+// module and passed in. Each entry stays true only while the module still carries the
+// annotation; a module that drops it fails the gate here instead of keeping an exemption it no
+// longer earns.
+var skipAwaitSetOutsideTheCall = map[string]string{
+	// locals.go: a claim under a WaitForFirstConsumer class is Pending until a pod uses it.
+	"kubernetespersistentvolumeclaim": "kubernetes:core/v1:PersistentVolumeClaim",
+}
+
+// yamlPartitionsOutsideSkipAwait are the components that split their YAML by kind across several
+// yaml constructors and put the skipAwait transformation on all but the ones holding only these
+// resources (manifest_documents.go in each module: the Namespace and the CRDs apply on their own,
+// the operator's workloads under skipAwait). Neither listed kind has a readiness wait, so honouring
+// the transformation for every other kind is exact. Each entry stays true only while the module
+// still applies the transformation to some constructor and not to all of them.
+var yamlPartitionsOutsideSkipAwait = map[string][]string{
+	"kuberneteskeycloakoperator": {"namespaces", "customresourcedefinitions"},
+	"kubernetestektonoperator":   {"namespaces", "customresourcedefinitions"},
+}
+
+// A customer who grants exactly what a manifest declares must be able to deploy and destroy with
+// the Pulumi module, not only with OpenTofu. Pulumi's Kubernetes provider waits after every
+// create, update and delete, and every wait reads the cluster through informers that never start
+// when their list is forbidden -- the deploy then hangs with no error rather than failing
+// (pulumikubernetes.go says where, line by line). So for every Kubernetes object a component's
+// Pulumi module constructs, its manifest must grant what the provider reads while it waits for
+// that object: get on the object, list and watch on its kind for the delete wait, and the
+// readiness wait's reads (pods, replicasets, endpoints, events, ...) unless the object carries
+// pulumi.com/skipAwait.
+//
+// A yaml ConfigFile or ConfigGroup (or a Helm v3 Chart) registers every document as an ordinary
+// resource of its kind, which the provider awaits and deletes like a typed object, but the kinds
+// live in the YAML, not the source. For a module that uses one, every kind the manifest grants
+// create on is held as a created object, honouring a skipAwait or RetainOnDelete transformation
+// the module applies to all of them. CRDs the keptcrds helper applies are held the same way, their
+// delete wait only where the manifest lets the module delete them (it retains them otherwise).
+//
+// Out of this gate, by construction: a Helm release -- Helm's own wait, bounded by the release's
+// timeout, reads what it reads. The component's other objects, the namespace beside the release
+// above all, are still held here. A component with no manifest publishes no role, so there is
+// nothing to hold.
+func TestPulumiKubernetesModulesDeclareWhatTheProviderReadsWhileItWaits(t *testing.T) {
+	root := repoRoot(t)
+	if _, err := os.Stat(filepath.Join(root, "catalog")); err != nil {
+		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
+	}
+	discovered, err := Discover(root)
+	if err != nil {
+		t.Fatalf("discovering permissions manifests: %v", err)
+	}
+	for _, component := range discovered["kubernetes"] {
+		moduleDir := filepath.Join(root, "catalog", "kubernetes", component, "iac", "pulumi")
+		if _, err := os.Stat(moduleDir); err != nil {
+			continue
+		}
+		scan, err := scanPulumiModule(root, moduleDir)
+		if err != nil {
+			t.Fatalf("%s: reading the Pulumi module: %v", component, err)
+		}
+		for _, problem := range scan.problems {
+			t.Errorf("%s: %s", component, problem)
+		}
+		manifest, err := Load(root, "kubernetes", component)
+		if err != nil {
+			t.Fatalf("%s permissions manifest: %v", component, err)
+		}
+		rules := manifest.GetSpec().GetKubernetes().GetRules()
+
+		if exempted, ok := skipAwaitSetOutsideTheCall[component]; ok {
+			constructs := false
+			for _, object := range scan.objects {
+				constructs = constructs || (object.kind != nil && object.kind.Token == exempted)
+			}
+			if !scan.setsSkipAwait || !constructs {
+				t.Errorf("%s is exempted from %s's readiness reads for setting pulumi.com/skipAwait, but its module no longer "+
+					"creates that kind with the annotation set to \"true\" -- remove the exemption so the gate holds the readiness reads again", component, exempted)
+			}
+		}
+		if _, ok := yamlPartitionsOutsideSkipAwait[component]; ok {
+			some, all := false, len(scan.yamlCalls) > 0
+			for _, call := range scan.yamlCalls {
+				some, all = some || call.skipAwait, all && call.skipAwait
+			}
+			if !some || all {
+				t.Errorf("%s is listed in yamlPartitionsOutsideSkipAwait, but its yaml constructors no longer split skipAwait that way -- update or remove the entry", component)
+			}
+		}
+
+		requirements, uncreatable := pulumiWaitRequirements(component, scan, rules)
+		missing := append([]string{}, uncreatable...)
+		for _, g := range waitGaps(rules, requirements) {
+			reasons := make([]string, 0, len(g.needs))
+			for _, need := range g.needs {
+				reasons = append(reasons, need.sentence())
+			}
+			missing = append(missing, fmt.Sprintf("%s: grant %s -- %s", g.key(), strings.Join(g.verbs, ", "), strings.Join(reasons, "; ")))
+		}
+		if len(missing) > 0 {
+			sort.Strings(missing)
+			t.Errorf("%s: a customer who grants exactly this manifest hangs the Pulumi module -- pulumi-kubernetes %s reads, while it waits, what the manifest does not grant:\n  %s",
+				component, PulumiKubernetesProviderVersion, strings.Join(missing, "\n  "))
+		}
+	}
+}
+
+// waitNeed is one read the provider makes for one object the module creates.
+type waitNeed struct {
+	read  KubernetesRead
+	phase string // "delete", "await" or "refresh"
+	what  string // the object's token, a custom resource's kind, or a yaml child's resource
+	where string // the constructor call, relative to the module directory
+	via   string // the yaml constructor or helper that applies it, when not a constructor
+}
+
+func (n waitNeed) sentence() string {
+	if n.via != "" {
+		n.what = fmt.Sprintf("%s applied by the %s", n.what, n.via)
+	}
+	switch n.phase {
+	case "delete":
+		return fmt.Sprintf("destroying the %s created at %s waits on an informer of its own kind (%s)", n.what, n.where, n.read.Source)
+	case "await":
+		return fmt.Sprintf("the %s created at %s is awaited (%s)", n.what, n.where, n.read.Source)
+	}
+	return fmt.Sprintf("refreshing the %s created at %s reads it back (%s)", n.what, n.where, n.read.Source)
+}
+
+// pulumiWaitRequirements is every read the provider makes while it waits for the objects a
+// module creates. uncreatable names the custom resources the manifest does not even let the
+// module create -- the gate cannot say which scope their reads need, and the create is refused
+// first anyway.
+func pulumiWaitRequirements(component string, scan *moduleScan, rules []*permissionsv1.KubernetesRule) (needs []waitNeed, uncreatable []string) {
+	objects := append([]createdObject{}, scan.objects...)
+	objects = append(objects, yamlChildren(component, scan, rules)...)
+	crdRow, _ := PulumiKubernetesKindByResource("apiextensions.k8s.io", "customresourcedefinitions")
+	deletesCRDs := len(uncoveredVerbs(rules, KubernetesRead{KubernetesResource: crdRow.Self, Verbs: []string{"delete"}})) == 0
+	for _, where := range scan.keptCRDs {
+		row := crdRow
+		objects = append(objects, createdObject{where: where, via: "keptcrds.Apply", kind: &row, retainDelete: !deletesCRDs})
+	}
+	for _, object := range objects {
+		self, what := KubernetesResource{}, ""
+		var awaitReads []KubernetesRead
+		skipsDelete := false
+		switch {
+		case object.kind != nil:
+			self, what, awaitReads, skipsDelete = object.kind.Self, object.kind.Token, object.kind.AwaitReads, object.kind.SkipAwaitSkipsDeleteWait
+		case object.self != nil:
+			self, what = *object.self, object.self.Resource
+		default:
+			resource := resourcePlural(object.crKind)
+			clusterScoped, granted := createScope(rules, object.crGroup, resource)
+			if !granted {
+				uncreatable = append(uncreatable, fmt.Sprintf("%s/%s: the module creates a %s (%s) but no rule grants create on %s/%s -- "+
+					"if the definition's plural is not %q, name the resource the definition declares",
+					object.crGroup, resource, object.crKind, object.where, object.crGroup, resource, resource))
+				continue
+			}
+			self, what = KubernetesResource{APIGroup: object.crGroup, Resource: resource, ClusterScoped: clusterScoped}, object.crKind
+		}
+		skipAwait := object.skipAwait || skipAwaitSetOutsideTheCall[component] == what
+		need := func(read KubernetesRead, phase string) {
+			needs = append(needs, waitNeed{read: read, phase: phase, what: what, where: object.where, via: object.via})
+		}
+		if !object.retainDelete && !(skipAwait && skipsDelete) {
+			need(DeletionReads(self), "delete")
+		} else {
+			need(KubernetesRead{KubernetesResource: self, Verbs: []string{"get"}, Source: "await.go:376-383 Read"}, "refresh")
+		}
+		if !skipAwait {
+			for _, read := range awaitReads {
+				need(read, "await")
+			}
+			if object.waitFor {
+				for _, read := range WaitForReads(self) {
+					need(read, "await")
+				}
+			}
+		}
+	}
+	return needs, uncreatable
+}
+
+// yamlChildren is every object a module's yaml constructors may apply: each kind the manifest
+// grants create on. Subresources and the review APIs are requests, not objects, and a wildcard
+// names no kind to hold.
+func yamlChildren(component string, scan *moduleScan, rules []*permissionsv1.KubernetesRule) []createdObject {
+	if len(scan.yamlCalls) == 0 {
+		return nil
+	}
+	allSkip, someSkip, allRetain := true, false, true
+	var sites, vias []string
+	for _, call := range scan.yamlCalls {
+		allSkip, someSkip, allRetain = allSkip && call.skipAwait, someSkip || call.skipAwait, allRetain && call.retain
+		sites = append(sites, call.where)
+		if !contains(vias, call.via) {
+			vias = append(vias, call.via)
+		}
+	}
+	outsideSkip := yamlPartitionsOutsideSkipAwait[component]
+	seen := map[KubernetesResource]bool{}
+	var objects []createdObject
+	for _, rule := range rules {
+		if !contains(rule.GetVerbs(), "create") {
+			continue
+		}
+		for _, group := range rule.GetApiGroups() {
+			for _, resource := range rule.GetResources() {
+				if group == "*" || resource == "*" || strings.Contains(resource, "/") || strings.HasSuffix(resource, "reviews") {
+					continue
+				}
+				object := createdObject{
+					where:        strings.Join(sites, ", "),
+					via:          strings.Join(vias, " and "),
+					skipAwait:    allSkip || (someSkip && outsideSkip != nil && !contains(outsideSkip, resource)),
+					retainDelete: allRetain,
+				}
+				if row, ok := PulumiKubernetesKindByResource(group, resource); ok {
+					if seen[row.Self] {
+						continue
+					}
+					seen[row.Self] = true
+					object.kind = &row
+				} else {
+					self := KubernetesResource{APIGroup: group, Resource: resource, ClusterScoped: rule.GetClusterScoped()}
+					if seen[self] {
+						continue
+					}
+					seen[self] = true
+					object.self = &self
+				}
+				objects = append(objects, object)
+			}
+		}
+	}
+	return objects
+}
+
+// waitGap is one resource the manifest under-grants, with every need that asks for it -- a
+// reader sees each missing grant once, with every object that needs it.
+type waitGap struct {
+	resource KubernetesResource
+	verbs    []string
+	needs    []waitNeed
+}
+
+func (g waitGap) key() string {
+	scope := "in the object's namespace"
+	if g.resource.ClusterScoped {
+		scope = "cluster-wide"
+	}
+	return fmt.Sprintf("%s/%s %s", groupLabel(g.resource.APIGroup), g.resource.Resource, scope)
+}
+
+// waitGaps folds the needs the rules do not cover into one gap per resource, in a stable order.
+func waitGaps(rules []*permissionsv1.KubernetesRule, needs []waitNeed) []waitGap {
+	byResource := map[KubernetesResource]*waitGap{}
+	verbs := map[KubernetesResource]map[string]bool{}
+	var order []KubernetesResource
+	for _, need := range needs {
+		uncovered := uncoveredVerbs(rules, need.read)
+		if len(uncovered) == 0 {
+			continue
+		}
+		resource := need.read.KubernetesResource
+		if byResource[resource] == nil {
+			byResource[resource] = &waitGap{resource: resource}
+			verbs[resource] = map[string]bool{}
+			order = append(order, resource)
+		}
+		for _, verb := range uncovered {
+			verbs[resource][verb] = true
+		}
+		byResource[resource].needs = append(byResource[resource].needs, need)
+	}
+	gaps := make([]waitGap, 0, len(order))
+	for _, resource := range order {
+		gap := byResource[resource]
+		gap.verbs = sortedKeys(verbs[resource], verbOrder)
+		gaps = append(gaps, *gap)
+	}
+	sort.Slice(gaps, func(i, j int) bool { return gaps[i].key() < gaps[j].key() })
+	return gaps
+}
+
+// uncoveredVerbs returns the read's verbs no rule grants on its resource. A cluster-scoped rule
+// covers a namespaced read; a namespaced rule never covers a cluster-wide one.
+func uncoveredVerbs(rules []*permissionsv1.KubernetesRule, read KubernetesRead) []string {
+	var gaps []string
+	for _, verb := range read.Verbs {
+		covered := false
+		for _, rule := range rules {
+			if (rule.GetClusterScoped() || !read.ClusterScoped) &&
+				contains(rule.GetApiGroups(), read.APIGroup) && contains(rule.GetResources(), read.Resource) && contains(rule.GetVerbs(), verb) {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			gaps = append(gaps, verb)
+		}
+	}
+	return gaps
+}
+
+// createScope is the scope of the rule that lets the module create a custom resource -- the
+// manifest's own statement of whether the kind is cluster-scoped.
+func createScope(rules []*permissionsv1.KubernetesRule, group, resource string) (clusterScoped, granted bool) {
+	for _, rule := range rules {
+		if contains(rule.GetApiGroups(), group) && contains(rule.GetResources(), resource) && contains(rule.GetVerbs(), "create") {
+			granted = true
+			clusterScoped = clusterScoped || rule.GetClusterScoped()
+		}
+	}
+	return clusterScoped, granted
+}
+
+// contains reports want among values, where RBAC's "*" matches anything.
+func contains(values []string, want string) bool {
+	for _, value := range values {
+		if value == want || value == "*" {
+			return true
+		}
+	}
+	return false
+}
+
+func groupLabel(group string) string {
+	if group == "" {
+		return "core"
+	}
+	return group
+}
+
+// verbOrder lists verbs the way the manifests do.
+var verbOrder = map[string]int{"get": 0, "list": 1, "watch": 2}
+
+// sortedKeys returns a set's members, by rank where one is given and then alphabetically.
+func sortedKeys(set map[string]bool, rank map[string]int) []string {
+	keys := make([]string, 0, len(set))
+	for key := range set {
+		keys = append(keys, key)
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		if rank != nil && rank[keys[i]] != rank[keys[j]] {
+			return rank[keys[i]] < rank[keys[j]]
+		}
+		return keys[i] < keys[j]
+	})
+	return keys
 }
 
 func checkProvenance(t *testing.T, where string, provenance permissionsv1.Provenance, notes string) {
@@ -372,9 +763,62 @@ func checkAuth0(t *testing.T, auth0 *permissionsv1.Auth0Permissions) {
 	}
 }
 
-// repoRoot walks up from this test file to the directory containing go.mod.
+// stripeResourcePattern is a restricted-key form label: a capitalized first
+// word, then words in either case ("Webhook Endpoints", "Customer portal"),
+// never a snake_case identifier or an endpoint path.
+var stripeResourcePattern = regexp.MustCompile(`^[A-Z][A-Za-z]*( [A-Za-z]+)*$`)
+
+// checkStripe holds a Stripe section to its structure. Stripe publishes no
+// inventory of restricted-key resources, so there is nothing to check the
+// names against beyond their spelling; a live run under a key built from the
+// entries proves them (see StripePermissions).
+func checkStripe(t *testing.T, stripe *permissionsv1.StripePermissions) {
+	t.Helper()
+	if stripe == nil {
+		return
+	}
+	if len(stripe.GetGroups()) == 0 {
+		t.Error("stripe section is present but declares no groups")
+	}
+	purposes := map[string]bool{}
+	for _, group := range stripe.GetGroups() {
+		purpose := group.GetPurpose()
+		if strings.TrimSpace(purpose) == "" {
+			t.Error("stripe group with empty purpose")
+		}
+		if purposes[purpose] {
+			t.Errorf("stripe: duplicate purpose %q -- a reader tells groups apart by purpose, so one purpose is one group", purpose)
+		}
+		purposes[purpose] = true
+		if len(group.GetPermissions()) == 0 {
+			t.Errorf("stripe %s: no permissions", purpose)
+		}
+		resources := map[string]bool{}
+		for _, permission := range group.GetPermissions() {
+			resource := permission.GetResource()
+			if !stripeResourcePattern.MatchString(resource) {
+				t.Errorf("stripe %s: resource %q is not a restricted-key form label (e.g. \"Webhook Endpoints\")", purpose, resource)
+			}
+			if resources[resource] {
+				t.Errorf("stripe %s: resource %q listed twice -- the form has one row per resource", purpose, resource)
+			}
+			resources[resource] = true
+			if access := permission.GetAccess(); access != "read" && access != "write" {
+				t.Errorf("stripe %s: %s access %q is not \"read\" or \"write\" (leave a resource out for none)", purpose, resource, access)
+			}
+		}
+		checkProvenance(t, "stripe "+purpose, group.GetProvenance(), group.GetNotes())
+	}
+}
+
+// repoRoot walks up from this test file to the directory containing go.mod. Under Bazel the
+// catalog tree is not part of the test's inputs, so the repo-reading gates skip there (the same
+// posture as the sibling repo-reading gates) and run under go test and the catalog-data lane.
 func repoRoot(t *testing.T) string {
 	t.Helper()
+	if os.Getenv("TEST_WORKSPACE") != "" {
+		t.Skip("repo-reading test; skipped under Bazel")
+	}
 	_, thisFile, _, ok := runtime.Caller(0)
 	if !ok {
 		t.Fatal("runtime.Caller failed")
@@ -474,4 +918,43 @@ func specFieldExists(message protoreflect.MessageDescriptor, path string) error 
 		}
 	}
 	return nil
+}
+
+const (
+	serviceUsageEnable = "serviceusage.services.enable"
+	serviceUsageList   = "serviceusage.services.list"
+)
+
+// Google's provider enables an API (google_project_service) by first listing the services the
+// project already has enabled, and reads one back the same way on every refresh -- so a group that
+// grants the enable without the list is refused at the first deploy, before anything is created
+// ("Permission denied to list services for consumer container"). The structural gate above cannot
+// see an absent grant, so the pairing is pinned here for every GCP manifest.
+func TestApiEnablingGroupsDeclareServiceList(t *testing.T) {
+	root := repoRoot(t)
+	if _, err := os.Stat(filepath.Join(root, "catalog")); err != nil {
+		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
+	}
+	discovered, err := Discover(root)
+	if err != nil {
+		t.Fatalf("discovering permissions manifests: %v", err)
+	}
+	for _, component := range discovered["gcp"] {
+		manifest, err := Load(root, "gcp", component)
+		if err != nil {
+			t.Fatalf("%s permissions manifest: %v", component, err)
+		}
+		for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
+			enables, lists := false, false
+			for _, permission := range group.GetPermissions() {
+				enables = enables || permission == serviceUsageEnable
+				lists = lists || permission == serviceUsageList
+			}
+			if enables && !lists {
+				t.Errorf("%s group %q grants %s but no %s -- Google's provider lists the project's enabled services "+
+					"before it enables one, so a customer who grants exactly this manifest is refused at the first deploy",
+					component, group.GetPurpose(), serviceUsageEnable, serviceUsageList)
+			}
+		}
+	}
 }

@@ -23,7 +23,7 @@ This preset creates an Azure App Service Plan with the Consumption (Y1) SKU — 
 | --- | --- | --- |
 | `<azure-region>` | Azure region (e.g., "eastus", "westeurope") | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<plan-name>` | Name for the App Service Plan (1-60 chars; ForceNew) | Choose a descriptive name |
+| `my-consumption-plan` (`servicePlanName`) | Name for the App Service Plan (1-60 chars; ForceNew) | Choose a descriptive name |
 
 ## Related Presets
 

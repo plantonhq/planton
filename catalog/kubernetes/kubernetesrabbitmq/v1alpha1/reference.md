@@ -170,7 +170,7 @@ spec:
 | `spec.configuration.erlangInetConfig` | `string` |  |  |  |
 | `spec.tls` | `KubernetesRabbitMqTls` |  |  |  |
 | `spec.tls.secretName` | `string \| valueFrom` | yes |  | KubernetesCertificate (`status.outputs.secret_name`) |
-| `spec.tls.caSecretName` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.tls.caSecretName` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.tls.disableNonTlsListeners` | `bool` |  |  |  |
 | `spec.tolerations` | `[]WorkloadToleration` |  |  |  |
 | `spec.tolerations[].key` | `string` |  |  |  |
@@ -476,8 +476,8 @@ Name of a Secret (key ca.crt) in the cluster's namespace holding
 the certificate authority for MUTUAL TLS — set it to require
 client certificates. Empty = server-side TLS only.
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.tls.disableNonTlsListeners
 
@@ -675,7 +675,7 @@ Fields that can point at another resource's outputs:
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 | `spec.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.tls.secretName` | KubernetesCertificate | `status.outputs.secret_name` |
-| `spec.tls.caSecretName` | KubernetesSecret | `metadata.name` |
+| `spec.tls.caSecretName` | KubernetesSecret | `status.outputs.secret_name` |
 
 ## See Also
 

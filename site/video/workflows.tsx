@@ -5,6 +5,8 @@ import { WORKFLOWS, WORKFLOW_COPY, type WorkflowId } from '../src/data/workflow-
 import { WorkflowScene } from '../src/components/marketing/workflows/WorkflowScene';
 import { duration, FPS, sample } from '../src/components/marketing/workflows/timeline';
 import { workflowDarkTokens } from '../src/theme/workflows';
+import { HomepageOverview } from './Overview';
+import { OVERVIEW_VIDEO } from '../src/data/homepage-video';
 
 /** Export-only adapter. Frame time enters the same scene used on the website;
  * Remotion and its renderer are never imported by the Next application. */
@@ -110,6 +112,7 @@ function HeroVideo() {
 function Root() {
   return (
     <>
+      <Composition id={OVERVIEW_VIDEO.id} component={HomepageOverview} durationInFrames={OVERVIEW_VIDEO.duration * OVERVIEW_VIDEO.fps} fps={OVERVIEW_VIDEO.fps} width={1920} height={1080} />
       <Composition
         id="hero"
         component={HeroVideo}

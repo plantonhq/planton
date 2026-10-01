@@ -1,0 +1,23 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0ResourceServer
+metadata:
+  name: rbac-api
+  org: example-org
+  env: production
+spec:
+  identifier: https://api.example.com/v2
+  name: Example RBAC API
+  signingAlg: RS256
+  tokenLifetime: 3600
+  skipConsentForVerifiableFirstPartyClients: true
+  # Evaluate role and permission assignments at login, and put the
+  # permissions in the token.
+  enforcePolicies: true
+  tokenDialect: access_token_authz
+  scopes:
+    - name: read:users
+      description: Read user profiles
+    - name: write:users
+      description: Create and update users
+    - name: delete:users
+      description: Delete users

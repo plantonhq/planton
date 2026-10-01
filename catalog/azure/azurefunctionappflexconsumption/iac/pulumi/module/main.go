@@ -196,7 +196,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefunctionappflexconsumptionv
 	ctx.Export(OpDefaultHostname, functionApp.DefaultHostname)
 	ctx.Export(OpOutboundIpAddresses, functionApp.OutboundIpAddressLists)
 	ctx.Export(OpPossibleOutboundIpAddresses, functionApp.PossibleOutboundIpAddressLists)
-	ctx.Export(OpCustomDomainVerificationId, functionApp.CustomDomainVerificationId)
+	ctx.Export(OpCustomDomainVerificationId, pulumi.Unsecret(functionApp.CustomDomainVerificationId))
 	ctx.Export(OpKind, functionApp.Kind)
 
 	// The identity outputs populate only when a system-assigned identity
@@ -216,11 +216,10 @@ func Resources(ctx *pulumi.Context, stackInput *azurefunctionappflexconsumptionv
 	}).(pulumi.StringOutput))
 
 	// The site-level publishing credential -- grants deploy access while
-	// basic-auth publishing is enabled; treat the password like an admin
-	// password. Both halves are exported as explicit secrets (the name is
-	// half of a working credential), matching the outputs proto's
-	// sensitive annotations.
-	ctx.Export(OpSiteCredentialName, pulumi.ToSecret(functionApp.SiteCredentials.ApplyT(func(creds []appservice.AppFlexConsumptionSiteCredential) string {
+	// basic-auth publishing is enabled. The provider marks the whole
+	// credential block secret; the name is a username, so it is unwrapped,
+	// and the password is exported as a secret.
+	ctx.Export(OpSiteCredentialName, pulumi.Unsecret(functionApp.SiteCredentials.ApplyT(func(creds []appservice.AppFlexConsumptionSiteCredential) string {
 		if len(creds) > 0 && creds[0].Name != nil {
 			return *creds[0].Name
 		}

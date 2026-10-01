@@ -97,7 +97,7 @@ These are the most important decisions when configuring an origin. Explore the f
 
 **Enabled** -- `enabled: false` drains the origin (health probes stop, load balancing skips it) without deleting it -- the maintenance and cutover switch.
 
-**Private Link** -- keeps origin traffic off the public internet so the backend can disable public access entirely. Requires the target's own region in `location` (private-link connections are regional even though Front Door is global), an ARM ID starting with `/subscriptions/` in `privateLinkTargetId`, and a `targetType` for every target except a Private Link Service (whose ARM ID is itself the attachment point). After deploy, the target's owner must approve the pending private-endpoint connection before traffic flows.
+**Private Link** -- keeps origin traffic off the public internet so the backend can disable public access entirely. Requires the target's own region in `location` (private-link connections are regional even though Front Door is global), the target in `privateLinkTargetId` -- a literal ARM ID starting with `/subscriptions/`, or a reference to a Linux web app, function app, storage account, Container Apps environment, Application Gateway or Private Link Service in the same environment -- and a `targetType` for every target except a Private Link Service (whose ARM ID is itself the attachment point). After deploy, the target's owner must approve the pending private-endpoint connection before traffic flows.
 
 **ForceNew fields** -- `originGroupId` and `originName` both fix the origin's ARM identity at creation; changing either replaces the origin.
 

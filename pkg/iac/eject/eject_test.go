@@ -239,6 +239,23 @@ func TestEject_RefusesNonEmptyOutputDir(t *testing.T) {
 	}
 }
 
+func TestEject_RefusesAnEngineTheKindDoesNotRunOn(t *testing.T) {
+	fakeSource(t, map[string]string{"main.go": "package main"}, true)
+
+	outputDir := filepath.Join(t.TempDir(), "out")
+	_, err := Eject(Input{
+		KindName:    "OpenFgaStore",
+		Provisioner: provisioner.ProvisionerTypePulumi,
+		OutputDir:   outputDir,
+	})
+	if err == nil || !strings.Contains(err.Error(), "OpenFgaStore runs on OpenTofu or Terraform only, so Pulumi cannot deploy it") {
+		t.Fatalf("expected the kind's engine refusal, got: %v", err)
+	}
+	if _, statErr := os.Stat(outputDir); statErr == nil {
+		t.Error("a refused eject must not create its output directory")
+	}
+}
+
 func TestEject_UnknownKindFailsPlainly(t *testing.T) {
 	_, err := Eject(Input{
 		KindName:    "NoSuchKind",

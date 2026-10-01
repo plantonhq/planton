@@ -4,6 +4,7 @@ go_library(
     name = "presetvalidity",
     srcs = [
         "baseline.go",
+        "placeholders.go",
         "presetvalidity.go",
     ],
     importpath = "github.com/plantonhq/planton/pkg/presetvalidity",

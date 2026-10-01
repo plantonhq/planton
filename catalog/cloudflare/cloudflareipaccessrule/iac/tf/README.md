@@ -7,7 +7,6 @@ Terraform IaC module for one IP Access rule -- an allow, block, or challenge dec
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareIpAccessRuleSpec
-locals.tf     — Resource naming and labels
 main.tf       — cloudflare_access_rule
 outputs.tf    — rule_id, zone_id, account_id
 ```

@@ -3,15 +3,18 @@ kind: ComponentImportMap
 metadata:
   name: digitaloceandatabasekafkaschema
 spec:
-  # Import is EXCLUDED from live round-trips: the provider's importer is
-  # broken at the current pin -- it restores only cluster_id (setting the
-  # resource id to the bare cluster id, not the canonical
-  # "{cluster_id}/schema-registry/{subject}" form Create produces) and
-  # NEVER restores subject_name, so the post-import read addresses an
-  # empty subject and cannot round-trip. Recorded as excluded in
-  # aa_import/catalog.yaml (the docker_credentials precedent); this map
-  # exists for conformance and re-evaluates if a future provider pin fixes
-  # the importer. The values below are what a FIXED importer would need.
+  # The provider's importer is broken at the current pin -- it restores only
+  # cluster_id (setting the resource id to the bare cluster id, not the
+  # canonical "{cluster_id}/schema-registry/{subject}" form Create produces)
+  # and NEVER restores subject_name, so the post-import read addresses an
+  # empty subject and cannot round-trip. aa_import/catalog.yaml declares the
+  # type `not_importable_upstream_reason` (the docker_credentials precedent),
+  # so the live round-trip skips the import and the reconcile-apply
+  # re-registers the subject -- a registry-side no-op when the definition
+  # matches (an identical re-register returns the same schema id and
+  # version; measured 2026-09-17). This map exists for conformance and
+  # re-evaluates if a future provider pin fixes the importer. The values
+  # below are what a FIXED importer would need.
   values:
     - name: cluster_id
       derivations:

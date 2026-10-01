@@ -40,7 +40,7 @@ peering.
 | --- | --- | --- |
 | `<local-vnet-resource-name>` | Planton metadata name of the network this peering is written on | Your network stack |
 | `<remote-vnet-resource-name>` | Planton metadata name of the far network | Your network stack |
-| `<peering-name>` | Peering name within the local network | Your naming convention |
+| `shared-to-app` (`name`) | Peering name within the local network | Your naming convention |
 | `<local-subnet-name>` | Subnet name on the local network to include | `AzureSubnet.spec.name` on the local side |
 | `<remote-subnet-name>` | Subnet name on the remote network to include | `AzureSubnet.spec.name` on the remote side |
 

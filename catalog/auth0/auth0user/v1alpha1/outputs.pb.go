@@ -7,6 +7,7 @@
 package auth0userv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -153,7 +154,7 @@ var File_catalog_auth0_auth0user_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_auth0_auth0user_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/auth0/auth0user/v1alpha1/outputs.proto\x12$dev.planton.auth0.auth0user.v1alpha1\"\xf1\x01\n" +
+	".catalog/auth0/auth0user/v1alpha1/outputs.proto\x12$dev.planton.auth0.auth0user.v1alpha1\x1a\x1cshared/options/options.proto\"\xf7\x01\n" +
 	"\x15Auth0UserStackOutputs\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
@@ -161,8 +162,8 @@ const file_catalog_auth0_auth0user_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
 	"\bnickname\x18\x05 \x01(\tR\bnickname\x12\x18\n" +
 	"\apicture\x18\x06 \x01(\tR\apicture\x12'\n" +
-	"\x0fconnection_name\x18\a \x01(\tR\x0econnectionName\x12\x1a\n" +
-	"\bpassword\x18\b \x01(\tR\bpasswordB\xbe\x02\n" +
+	"\x0fconnection_name\x18\a \x01(\tR\x0econnectionName\x12 \n" +
+	"\bpassword\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\bpasswordB\xbe\x02\n" +
 	"(com.dev.planton.auth0.auth0user.v1alpha1B\fOutputsProtoP\x01ZOgithub.com/plantonhq/planton/catalog/auth0/auth0user/v1alpha1;auth0userv1alpha1\xa2\x02\x04DPAA\xaa\x02$Dev.Planton.Auth0.Auth0user.V1alpha1\xca\x02$Dev\\Planton\\Auth0\\Auth0user\\V1alpha1\xe2\x020Dev\\Planton\\Auth0\\Auth0user\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Auth0::Auth0user::V1alpha1b\x06proto3"
 
 var (

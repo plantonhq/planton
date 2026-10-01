@@ -5,8 +5,12 @@
 # Functions resource; both engines create digitalocean_app.
 #
 # Runtime, memory, timeout, entrypoint, and schedules live in the
-# repo's project.yml inside sourceDirectory. Putting those knobs on
-# this spec would silently do nothing.
+# repo's project.yml. App Platform reads it from sourceDirectory, or
+# from the repository root when sourceDirectory is unset (this sample).
+# Putting those knobs on this spec would silently do nothing.
+#
+# appName is the App Platform app's own name: 2-32 characters, starts
+# with a letter, unique across every app in the DigitalOcean account.
 #
 # Usage:
 #   planton apply -f manifest.yaml
@@ -16,9 +20,9 @@ kind: DigitalOceanFunction
 metadata:
   name: hello
 spec:
+  appName: hello-fn
   functionName: hello
-  region: nyc3
+  region: nyc
   git:
     repoCloneUrl: https://github.com/digitalocean/sample-functions-nodejs-helloworld.git
     branch: master
-  sourceDirectory: packages

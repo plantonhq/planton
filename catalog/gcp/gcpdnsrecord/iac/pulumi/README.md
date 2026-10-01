@@ -33,7 +33,7 @@ spec:
   type: A
   name: www.example.com.
   values:
-    - 192.0.2.1
+    - value: 192.0.2.1
   ttlSeconds: 300
 EOF
 )

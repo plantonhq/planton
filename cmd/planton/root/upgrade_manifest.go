@@ -29,7 +29,7 @@ validated before it is printed.`,
 	planton upgrade-manifest manifest.yaml
 
 	# Write the converted manifest to a file
-	planton upgrade-manifest manifest.yaml -o upgraded.yaml
+	planton upgrade-manifest manifest.yaml --output upgraded.yaml
 	`,
 	Args: cobra.MaximumNArgs(1),
 	Run:  upgradeManifestHandler,
@@ -39,7 +39,10 @@ var upgradeManifestOutput string
 
 func init() {
 	iacflags.AddManifestSourceFlags(UpgradeManifest)
-	UpgradeManifest.Flags().StringVarP(&upgradeManifestOutput, "output", "o", "", "write the converted manifest to this file instead of stdout")
+	// No -o shorthand: an embedding host (the Planton Platform CLI) owns -o as
+	// its global --output-format, and a second -o panics when cobra merges the
+	// flag sets.
+	UpgradeManifest.Flags().StringVar(&upgradeManifestOutput, "output", "", "write the converted manifest to this file instead of stdout")
 }
 
 func upgradeManifestHandler(cmd *cobra.Command, args []string) {

@@ -126,12 +126,15 @@ message AzureDnsRecordSpec {
   // zone's name servers (e.g. "team" NS records pointing at the
   // team.example.com zone's assigned servers). The zone's own apex NS
   // records are Azure-managed -- do not declare them. Set exactly one
-  // payload field on this spec.
-  repeated string ns = 13 [(buf.validate.field).repeated.items.string.min_len = 1];
+  // payload field on this spec. Each entry can be a literal or a reference
+  // to the child zone's name-server output, so the delegation follows the
+  // zone through a recreate.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef ns = 13;
 
   // Pointer hostnames for reverse DNS (IP-to-name, in in-addr.arpa /
-  // ip6.arpa zones). Set exactly one payload field on this spec.
-  repeated string ptr = 14 [(buf.validate.field).repeated.items.string.min_len = 1];
+  // ip6.arpa zones). Set exactly one payload field on this spec. Each entry
+  // can be a literal or a reference to another resource's hostname output.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef ptr = 14;
 
   // The record type is whichever payload is present -- requiring exactly
   // one keeps a record from being declared with two types (Azure stores
@@ -146,8 +149,14 @@ message AzureDnsRecordSpec {
 // IPv4 address record: literal addresses XOR an Azure-resource alias.
 message AzureDnsARecord {
   // The IPv4 addresses this name answers with. Multiple addresses
-  // round-robin. Mutually exclusive with target_resource_id.
-  repeated string addresses = 1 [(buf.validate.field).repeated.items.string.ipv4 = true];
+  // round-robin. Mutually exclusive with target_resource_id. Each entry can
+  // be a literal or a reference to another resource's address output (a
+  // public IP, a load balancer's frontend).
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef addresses = 1 [(buf.validate.field).cel = {
+    id: "azure_dns_a_record_addresses_ipv4"
+    message: "each literal address is an IPv4 address"
+    expression: "this.all(v, !has(v.value) || v.value.isIp(4))"
+  }];
 
   // Alias target: the ARM ID of an Azure resource whose IPv4 address
   // this record should track automatically (a Public IP, a Traffic
@@ -168,8 +177,13 @@ message AzureDnsARecord {
 message AzureDnsAaaaRecord {
   // The IPv6 addresses this name answers with (e.g. "2001:db8::1" --
   // Azure normalizes the compressed form). Multiple addresses
-  // round-robin. Mutually exclusive with target_resource_id.
-  repeated string addresses = 1 [(buf.validate.field).repeated.items.string.ipv6 = true];
+  // round-robin. Mutually exclusive with target_resource_id. Each entry can
+  // be a literal or a reference to another resource's address output.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef addresses = 1 [(buf.validate.field).cel = {
+    id: "azure_dns_aaaa_record_addresses_ipv6"
+    message: "each literal address is an IPv6 address"
+    expression: "this.all(v, !has(v.value) || v.value.isIp(6))"
+  }];
 
   // Alias target: the ARM ID of an Azure resource whose IPv6 address this
   // record should track automatically. Reference the resource's ARM-id
@@ -224,10 +238,15 @@ message AzureDnsMxEntry {
   ];
 
   // The mail server hostname (e.g. "mail.example.com" or
-  // "aspmx.l.google.com").
-  string exchange = 2 [
+  // "aspmx.l.google.com"), a literal or a reference to another resource's
+  // hostname output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef exchange = 2 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.max_len = 253
+    (buf.validate.field).cel = {
+      id: "azure_dns_mx_exchange_max_len"
+      message: "a literal hostname is at most 253 characters"
+      expression: "!has(this.value) || this.value.size() <= 253"
+    }
   ];
 }
 
@@ -264,10 +283,15 @@ message AzureDnsSrvEntry {
   ];
 
   // The hostname providing the service (e.g. "sip.example.com"). Must be
-  // a hostname with its own A/AAAA record, never an IP address.
-  string target = 4 [
+  // a hostname with its own A/AAAA record, never an IP address. A literal or
+  // a reference to another resource's hostname output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 4 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.max_len = 253
+    (buf.validate.field).cel = {
+      id: "azure_dns_srv_target_max_len"
+      message: "a literal hostname is at most 253 characters"
+      expression: "!has(this.value) || this.value.size() <= 253"
+    }
   ];
 }
 

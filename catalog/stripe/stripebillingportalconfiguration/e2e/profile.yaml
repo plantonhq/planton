@@ -1,0 +1,17 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripebillingportalconfiguration
+spec:
+  # Proven live on OpenTofu against the dedicated Stripe test sandbox: the
+  # minimal and every-feature scenarios, blind import, cancellation reasons
+  # changed in place, and destroy deactivating the configuration. Letting
+  # customers change a subscription is refused by validation: Stripe requires
+  # switchable products whenever that feature is on, and the pinned provider
+  # can't hold them. The sandbox's default configuration is one the first lane
+  # created; Stripe refuses to deactivate a default, so it stays active.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - tofu
+  timeout_minutes: 5

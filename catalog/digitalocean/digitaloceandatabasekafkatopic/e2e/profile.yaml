@@ -3,25 +3,41 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabasekafkatopic
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios, both on the shared Kafka manifest-path
-  # fixture (the registry prerequisite installs a PostgreSQL cluster, so
-  # each lane deploys TWO clusters -- the prerequisite plus the Kafka
-  # fixture): `minimal` proves the lifecycle and identity outputs on API
-  # defaults; `configured` proves partitions/replication and the config
-  # block's leaf classes (enum walls, signed -1 retention, unsigned
-  # tunables, the float ratio, min_insync_replicas).
-  # SERIALIZATION: the Kafka fixture is shared BY NAME with the
-  # DigitalOceanDatabaseKafkaSchema kind's lanes -- the two kinds' lanes
-  # must run serially, never in parallel. Kafka is the program's most
-  # expensive fixture class (3-node minimum, ~10 min, ~$0.20/hour).
-  # Watch items for the proof lane: partition growth and config edits are
-  # in-place updates the six-phase runner cannot exercise (no update
-  # phase); partition_count is never read back by the provider (import
-  # tolerance, verified at design time).
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trips (Terraform lane).
+  # Terraform proven 2026-09-17; Pulumi proven 2026-09-18 at bridge v4.79.1
+  # (embedding provider v2.100.1): `minimal` DEPLOY 1m09s, `configured`
+  # DEPLOY 36 s, IDEMPOTENCY PASS on both (8-14 s), DESTROY 13-14 s, the
+  # topic 404s within two seconds -- every phase first run, zero re-runs.
+  # Terraform (provider v2.101.0 under the ~> 2.99 float): `minimal` and
+  # `configured` DEPLOY in 15-32 s, IDEMPOTENCY PASS on the refreshed plan,
+  # DESTROY ~4 s, the topic 404s within two seconds; both round-trips
+  # re-imported blind by "{cluster_id},{topic_name}" tolerating exactly the
+  # declared config-only `partition_count` (the provider's Read echoes the
+  # prior state value, which is empty after an import, so the plan reads
+  # `0 -> 3`; the reconcile-apply's equal-count update is an API no-op).
+  # The declared write-normalized `config.min_insync_replicas` tolerance
+  # never fired: the provider DOES read it back from the server (`minimal`
+  # read 1, `configured` read the 2 it sent), so the catalog note records
+  # the measurement.
+  # The Pulumi lane's history is a pin lesson, not a module one: at bridge
+  # v4.53.0 (embedding provider v2.67.0) every Pulumi create panicked
+  # inside the bridged provider (nil pointer, resource_database_kafka_topic
+  # .go:318) because DigitalOcean now creates topics asynchronously and
+  # answers `accepted` with NO topic body, which that old Create
+  # dereferenced. Upstream fixed it in v2.99.1 (PR #1563); the first bridge
+  # carrying it is v4.78.1, and the tree's pin moved to v4.79.1. Nothing in
+  # a module can avoid a panic inside the provider's Create -- map the
+  # bridge to its embedded upstream (the bridge's `upstream` submodule
+  # commit at the tag) before blaming the module.
+  # Both scenarios ride the shared Basic-plan Kafka fixture (`db-s-2vcpu-4gb`
+  # x 3 -- the smallest Kafka-eligible size) plus the PostgreSQL registry
+  # prerequisite (~5 min). The fixture's create time VARIES: 11-12 min on
+  # most runs, 25 min once (DEPENDENCIES-UP 25m26s) -- the 45-minute lane
+  # timeout is sized for that tail; do not run two Kafka lanes at once.
+  # Deferred arms (no runner update phase): partition growth and config
+  # edits are in-place upstream.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 45

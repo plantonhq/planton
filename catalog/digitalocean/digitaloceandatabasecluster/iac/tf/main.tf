@@ -70,4 +70,14 @@ resource "digitalocean_database_cluster" "cluster" {
   # User tags plus the standard Planton labels (identical set in both
   # provisioners).
   tags = local.tags
+
+  # Fail loud on DigitalOcean's combined-tags budget before anything
+  # renders (see local.tags_combined_budget; twin of the Pulumi module's
+  # error).
+  lifecycle {
+    precondition {
+      condition     = length(local.tags_combined) <= local.tags_combined_budget
+      error_message = "DigitalOcean caps a database cluster's combined tags (joined by commas) at ${local.tags_combined_budget} characters; this cluster's ${length(local.tags)} tags join to ${length(local.tags_combined)} characters. Shorten metadata.name or metadata.id, or remove entries from spec.tags -- the Planton label tags alone use ${local.planton_tags_length} characters here."
+    }
+  }
 }

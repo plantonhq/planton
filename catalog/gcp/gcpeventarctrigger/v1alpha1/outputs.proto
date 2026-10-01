@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpeventarctrigger.v1alpha1;
 
+import "shared/options/options.proto";
+
 // Outputs produced after provisioning an Eventarc trigger.
 message GcpEventarcTriggerStackOutputs {
   // The trigger name as it exists in GCP.
@@ -11,7 +13,7 @@ message GcpEventarcTriggerStackOutputs {
   // partner needs to complete the channel handshake (hand it to the
   // partner's console/API; the channel stays PENDING until then). Empty
   // for non-partner triggers. Sensitive — treat like a credential.
-  string partner_channel_activation_token = 2;
+  string partner_channel_activation_token = 2 [(dev.planton.shared.options.sensitive) = true];
 
   // The full trigger resource name
   // (projects/{project}/locations/{location}/triggers/{name}) — the

@@ -81,6 +81,9 @@ variable "spec" {
         # Static values (RRDATA) answered for this entry.
         # If the zone has DNSSEC enabled, an entry may set only one of values or
         # health_checked_targets; otherwise both may be combined.
+        # Each entry can be a literal or a reference to another resource's
+        # output, as the record's own values can.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         values = optional(list(string), [])
 
         # Load-balancer targets health-checked for this entry (A/AAAA records
@@ -138,6 +141,9 @@ variable "spec" {
         location = string
 
         # Static values (RRDATA) answered for this location.
+        # Each entry can be a literal or a reference to another resource's
+        # output, as the record's own values can.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         values = optional(list(string), [])
 
         # Load-balancer targets health-checked for this location (A/AAAA records
@@ -248,6 +254,9 @@ variable "spec" {
           location = string
 
           # Static values (RRDATA) answered for this location.
+          # Each entry can be a literal or a reference to another resource's
+          # output, as the record's own values can.
+          # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           values = optional(list(string), [])
 
           # Load-balancer targets health-checked for this location (A/AAAA records

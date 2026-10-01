@@ -46,6 +46,50 @@ Rules:
 Fields typed `string | valueFrom` in the schema report accept either a plain
 string or the `valueFrom` block above.
 
+### Which kinds a field accepts
+
+The schema report and the component reference page list, for each such
+field, the kinds it composes from and the output each one gives
+(`references: AwsS3Bucket (status.outputs.bucket_arn), AwsCloudwatchLogGroup
+(status.outputs.log_group_arn), ...`). Read them there:
+
+- A field with one listed kind is its default: `kind:` and `fieldPath:` may
+  be left out.
+- A field with several listed kinds needs `kind:`; `fieldPath:` may be left
+  out when that kind is listed once, and must name one of its outputs when it
+  is listed more than once (a GCP subnetwork's primary range or one of its
+  secondary ranges: `status.outputs.secondary_ranges.0.ip_cidr_range` --
+  appending a list index or map key to a listed output is fine).
+- Naming a listed kind with a different output is refused: the listed output
+  is the one the component is proven to consume (an ARN, not a name).
+- A kind the field does not list still works with an explicit `kind:` and
+  `fieldPath:` when the value fits.
+
+A reference whose grain matters is split into named arms rather than a
+selector: an External Secret's store is `storeRef.secretStore.name` or
+`storeRef.clusterSecretStore.name`; a cert-manager issuer is
+`...issuer.name` or `...clusterIssuer.name`. Pick the arm, and its kind is
+implied.
+
+### A secret output (a credential the producer generates)
+
+Some outputs are secrets the producer creates: an Auth0 client's
+`client_secret`, an AWS IAM user's `secret_access_key`, a registry's
+`admin_password`. The component's reference page marks them `(sensitive)`
+in its Outputs table. On Planton such an output never holds the value: the
+deploy stores it in the organization's secret store and the output holds a
+reference (`$secret/@<env>/<kind>-outputs-<name>/<output>`), which the
+runner resolves wherever another resource reads it. So:
+
+- Wire it with `valueFrom` like any output, but only into a SENSITIVE field
+  (a workload's `env.secrets[]`, a `(sensitive)` spec field). A `valueFrom`
+  of a secret output in a plain field (`env.variables`) is refused before
+  anything is created, naming the field.
+- Never ask the user to copy the value into a `$secret` by hand; the
+  platform already keeps it there.
+- Deleting the producer is refused while a resource still reads its secret,
+  naming the reader; destroy or re-point the reader first.
+
 ### Nested valueFrom
 
 Some fields nest the reference one level deeper (e.g. route targets):
@@ -107,8 +151,9 @@ name that infrastructure produces, run this check in order:
    producer's `metadata.name` expression (see the naming nuance below).
 3. **The org's existing estate** — the producer was deployed by an earlier
    chart or by hand: ground it with the CLI (`planton search
-   by-resource-kind <Kind>`, `planton get <kind> <name>`, `planton infra
-   project list`) and reference the real deployed name.
+   cloud-resources --all-envs`, whose KIND column names each deployed
+   resource's kind; `planton get <kind> <name>`; `planton infra project
+   list`) and reference the real deployed name.
 4. **Only when all three come up empty** is a param honest — and even then,
    prefer a param that names the RESOURCE (`vpc_name`) feeding a `valueFrom`
    expression over a param that carries a raw id the user must go find.
@@ -123,8 +168,10 @@ name that infrastructure produces, run this check in order:
   both sides renders identically — the shared chart's
   `"{{ values.env }}-cluster"` is exactly what the app chart's reference
   renders to. Reference names are slug-normalized the same way resource
-  names are (a zone named `example.com` is matched as `example-com`), so
-  reference the name as authored and let the platform normalize.
+  names are: every run of characters that is not a lowercase letter or digit
+  becomes one hyphen, dots and underscores included (a zone named
+  `example.com` is matched as `example-com`, a name `db_main` as `db-main`),
+  so reference the name as authored and let the platform normalize.
 - **`env` reaches across environments.** A reference resolves in the
   deploying environment by default; set `env` explicitly to consume a
   producer that lives in another environment (a shared cluster in `shared`
@@ -210,18 +257,22 @@ expression on both sides). Choosing between the two mechanisms:
 A relationship never substitutes for `valueFrom` when a spec field needs the
 actual value.
 
-## metadata.group — layout hint
+## metadata.group — the author's concern, drawn as a tray
 
-`metadata.group` (e.g. `network`, `compute`, `kubernetes`) groups resources
-in the UI and in build reports. It does not affect deploy order. The fleet
-uses consistent group names per concern — follow the same convention in new
-charts.
+`metadata.group` is a slash path naming a concern (`infrastructure/networking`,
+`platform/certificates`). It draws as a tray inside the room its members live
+in and never affects deploy order. The platform already draws accounts,
+networks, and clusters, so a group never restates them; a tray of one is not
+drawn. When to use it and how it composes: `diagrams.md`.
+
+Relationship types change the picture too: only `runs_on` can place a resource
+inside its target; the others draw a line (`diagrams.md`).
 
 ## Common wiring mistakes
 
 | Mistake | Fix |
 |---------|-----|
-| Hardcoded AWS account ID or VPC ID | valueFrom to the creating resource |
+| Hardcoded VPC ID, or any ID a resource in the boundary creates | valueFrom to the creating resource. An ID nothing in the boundary creates -- the AWS account, Google Cloud project, or Azure subscription a connection opens -- stays a literal or a param |
 | A param collecting another resource's output (`vpc_id`, `gateway_host`) | The references-before-params check above — wire it, in-chart or cross-chart |
 | Mismatched name between producer and consumer | Same template expression on both sides |
 | Wrong output leaf (`vpc_id` vs `vpcId`) | Schema report (fleet grep only when a fleet is in your boundary) |

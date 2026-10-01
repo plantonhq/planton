@@ -18,9 +18,9 @@ One sharp edge on adoption (measured live): the rule create REJECTS duplicates -
 
 The asymmetry runs the other way too: Cloudflare's CREATE response omits the site's `ruleset` object entirely (measured live -- it exists only on the GET), so the modules perform a read-after-create to wire the folded rules and the `ruleset_id`/`site_token`/`snippet` outputs. That is why the Read permission above is not optional even for a deploy-only workflow.
 
-## The site token is public by nature, and still worth protecting
+## The site token is public by nature
 
-The beacon runs in visitors' browsers, so the token inevitably ships inside your pages -- it is not a secret in the way an API key is. These outputs still mark `site_token` and `snippet` sensitive, because that keeps them out of plan logs and CI output where they would sit next to real credentials and get treated as noise. Nothing breaks if the token is seen; the marking is hygiene, not a control.
+The beacon runs in visitors' browsers, so the token inevitably ships inside your pages -- it is not a secret in the way an API key is. The `site_token` and `snippet` outputs are therefore plain values, not secrets. Nothing breaks if the token is seen.
 
 ## Rules exist only on zone-linked sites
 

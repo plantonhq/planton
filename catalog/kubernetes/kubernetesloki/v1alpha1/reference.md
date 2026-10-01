@@ -32,9 +32,11 @@ operations posture, and mode migrations are operational verbs.
 STORAGE DOCTRINE (mirrors the chart's own validation): `filesystem`
 keeps chunks on a PersistentVolume — honest ONLY for a single
 monolithic replica; more than one replica, or any simple_scalable
-tier, REQUIRES an object-storage backend (s3/gcs/azure). The
+tier, REQUIRES an object-storage backend (s3/r2/gcs/azure). The
 s3-compatible arm (endpoint + path-style) composes with an in-cluster
-KubernetesSeaweedFs. The chart's bundled MinIO subchart is deprecated
+KubernetesSeaweedFs; the r2 arm stores in a Cloudflare R2 bucket by
+reference to the catalog's CloudflareR2Bucket, with nothing S3-shaped
+declared. The chart's bundled MinIO subchart is deprecated
 by the chart itself and is never enabled by this component.
 
 SCHEMA: Loki requires a `schema_config` naming the index schema and
@@ -221,6 +223,13 @@ spec:
 | `spec.storage.azure.accountKeySecret` | `KubernetesLokiSecretKeyRef` |  |  |  |
 | `spec.storage.azure.accountKeySecret.name` | `string` | yes |  |  |
 | `spec.storage.azure.accountKeySecret.key` | `string` | yes |  |  |
+| `spec.storage.r2` | `KubernetesLokiR2Storage` |  |  |  |
+| `spec.storage.r2.accountId` | `string \| valueFrom` | yes |  | CloudflareR2Bucket (`status.outputs.account_id`) |
+| `spec.storage.r2.jurisdiction` | `string \| valueFrom` |  |  | CloudflareR2Bucket (`status.outputs.jurisdiction`) |
+| `spec.storage.r2.bucket` | `string \| valueFrom` | yes |  | CloudflareR2Bucket (`status.outputs.bucket_name`) |
+| `spec.storage.r2.credentials` | `KubernetesLokiR2Credentials` | yes |  |  |
+| `spec.storage.r2.credentials.accessKeyId` | `string \| valueFrom` | yes |  | CloudflareAccountApiToken (`status.outputs.r2_access_key_id`) |
+| `spec.storage.r2.credentials.secretAccessKey` | `string \| valueFrom` (sensitive) | yes |  | CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`) |
 | `spec.schemaFromDate` | `string` |  |  |  |
 | `spec.retentionPeriod` | `string` |  |  |  |
 | `spec.limits` | `KubernetesLokiLimits` |  |  |  |
@@ -702,6 +711,91 @@ Key within the Secret.
 
 - rule: {"required":true}
 
+### spec.storage.r2
+
+`KubernetesLokiR2Storage`
+
+Cloudflare R2, in R2's own vocabulary: the owning account, the
+bucket's jurisdiction, the bucket and the token's key pair, each by
+reference onto the catalog's CloudflareR2Bucket and
+CloudflareAccountApiToken. The modules compose everything S3-shaped
+R2 needs (the jurisdiction's endpoint host, region `auto`,
+path-style addressing). No egress fees, and the logs outlive the
+cluster that wrote them.
+
+### spec.storage.r2.accountId
+
+`string | valueFrom` · required
+
+The Cloudflare account that owns the bucket (32 hex characters). By
+reference to the bucket resource's `account_id` output, so the arm
+follows the bucket; a literal names an account outside the catalog.
+
+- references: CloudflareR2Bucket (`status.outputs.account_id`)
+- rule: account_id is the 32-hex-character Cloudflare account id
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.account_id}} -- a bare string does not parse
+
+### spec.storage.r2.jurisdiction
+
+`string | valueFrom`
+
+The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+`fedramp`, or `us`. It selects the S3 host the modules compose, so it
+must match the bucket exactly; by reference to the bucket resource's
+`jurisdiction` output it cannot drift.
+
+- references: CloudflareR2Bucket (`status.outputs.jurisdiction`)
+- rule: jurisdiction must be one of "default", "eu", "fedramp", "us" (or empty for default)
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.jurisdiction}} -- a bare string does not parse
+
+### spec.storage.r2.bucket
+
+`string | valueFrom` · required
+
+The bucket for chunks, index and ruler state (must exist; Loki does
+not create it). By reference to the bucket resource's `bucket_name`
+output.
+
+- references: CloudflareR2Bucket (`status.outputs.bucket_name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.bucket_name}} -- a bare string does not parse
+
+### spec.storage.r2.credentials
+
+`KubernetesLokiR2Credentials` · required
+
+The S3 key pair R2's S3 API authenticates, written into the modules'
+own `<name>-r2-credentials` Secret; never plaintext in the rendered
+configuration.
+
+- rule: {"required":true}
+
+### spec.storage.r2.credentials.accessKeyId
+
+`string | valueFrom` · required
+
+The S3 access key id: the API token's id. By reference to a
+CloudflareAccountApiToken's `r2_access_key_id` output, or a `$secret/`
+reference for a token minted in the dashboard.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_access_key_id`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_access_key_id}} -- a bare string does not parse
+
+### spec.storage.r2.credentials.secretAccessKey
+
+`string | valueFrom` · required · sensitive
+
+The S3 secret access key: the SHA-256 of the API token's value.
+Reference-only. Loki reads it only at start, so the pods carry a
+checksum of the credentials Secret and a rotated key rolls them on
+the next apply.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_secret_access_key}} -- a bare string does not parse
+
 ### spec.schemaFromDate
 
 `string`
@@ -1109,8 +1203,8 @@ rendered config.
 
 ## Validation Rules
 
-- `spec.mode.simple_scalable.requires_object_storage`: simple_scalable mode requires an object-storage backend (s3, gcs or azure) — the write/read/backend tiers rendezvous in the object store, so filesystem storage cannot serve them (this mirrors the chart's own validation)
-- `spec.mode.monolithic.replicas.require_object_storage`: more than one monolithic replica requires an object-storage backend (s3, gcs or azure) — replicas cannot share a filesystem volume (this mirrors the chart's own validation)
+- `spec.mode.simple_scalable.requires_object_storage`: simple_scalable mode requires an object-storage backend (s3, r2, gcs or azure) — the write/read/backend tiers rendezvous in the object store, so filesystem storage cannot serve them (this mirrors the chart's own validation)
+- `spec.mode.monolithic.replicas.require_object_storage`: more than one monolithic replica requires an object-storage backend (s3, r2, gcs or azure) — replicas cannot share a filesystem volume (this mirrors the chart's own validation)
 
 ## Outputs
 
@@ -1135,6 +1229,11 @@ Fields that can point at another resource's outputs:
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 | `spec.monolithic.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.simpleScalable.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.storage.r2.accountId` | CloudflareR2Bucket | `status.outputs.account_id` |
+| `spec.storage.r2.jurisdiction` | CloudflareR2Bucket | `status.outputs.jurisdiction` |
+| `spec.storage.r2.bucket` | CloudflareR2Bucket | `status.outputs.bucket_name` |
+| `spec.storage.r2.credentials.accessKeyId` | CloudflareAccountApiToken | `status.outputs.r2_access_key_id` |
+| `spec.storage.r2.credentials.secretAccessKey` | CloudflareAccountApiToken | `status.outputs.r2_secret_access_key` |
 | `spec.ruler.alertmanagerUrl` | KubernetesKubePrometheusStack | `status.outputs.alertmanager_endpoint` |
 
 ## See Also

@@ -1,0 +1,19 @@
+# An endpoint created, read back, updated in place (the description carries
+# the run), and deleted on destroy. The URL never has to answer: Stripe does
+# not probe it at creation.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeWebhookEndpoint
+metadata:
+  name: e2e-webhook-endpoint
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml
+spec:
+  url: https://example.com/stripe/e2e-${E2E_RUN_ID}
+  description: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  enabledEvents:
+    - checkout.session.completed
+    - invoice.paid
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

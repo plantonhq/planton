@@ -35,6 +35,9 @@ spec:
   cluster:
     value: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
   userName: orders-service
+  # PostgreSQL users declare an empty settings block (DigitalOcean stores a
+  # settings object for every PostgreSQL user); MySQL users leave it out.
+  settings: {}
 ---
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseUser
@@ -107,10 +110,23 @@ in place through a password-preserving auth reset.
 `DigitalOceanDatabaseUserSettings`
 
 (Optional) Engine-specific access control for this user (Kafka topic
-ACLs and OpenSearch index ACLs). DigitalOcean returns these only in the
-create response -- reads never include them -- so what is configured here
-is the source of truth; the live ACL state is not observable afterward.
-ACL changes apply in place.
+ACLs and OpenSearch index ACLs). Both provisioners record these only
+from the create response and never refresh them from the API, so what
+is configured here is the source of truth; the live ACL state is not
+observable through Planton afterward. ACL changes apply in place.
+
+SET IT BY ENGINE (measured 2026-09-17). PostgreSQL: declare
+`settings: {}` even with no ACLs -- every PostgreSQL user comes back
+with a settings object (`pg_allow_replication: false`) that the
+provisioners store at create, and a manifest without the block plans
+its removal on the first re-plan (a one-time server-side no-op, but a
+change). MySQL: leave it unset -- a MySQL user never carries a settings
+object and the API refuses a settings update on a MySQL cluster
+(`422 operation is not supported for this cluster type`), so even
+`settings: {}` would fail every apply after the first. Kafka and
+OpenSearch: declare the ACLs. The provisioners send the block exactly
+when this field is present; they cannot infer the engine from a cluster
+UUID, so the manifest carries that knowledge.
 
 ### spec.settings.kafkaAcls
 
@@ -161,16 +177,16 @@ Permission on the index.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseUser, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseUser, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.cluster_id` | `string` | UUID of the database cluster the user belongs to. |
 | `status.outputs.user_name` | `string` | Name of the database user (its API identity within the cluster). |
 | `status.outputs.role` | `string` | Role DigitalOcean assigned to the user (normally "normal"; the cluster's built-in default user is "primary"). |
-| `status.outputs.password` | `string` | Server-generated password for the user. Secret. MongoDB clusters return it only at creation time. |
-| `status.outputs.access_cert` | `string` | Kafka clusters only: PEM access certificate for mutual-TLS authentication. Secret. Empty on other engines. |
-| `status.outputs.access_key` | `string` | Kafka clusters only: PEM access key paired with access_cert. Secret. Empty on other engines. |
+| `status.outputs.password` | `string` (sensitive) | Server-generated password for the user. Secret. MongoDB clusters return it only at creation time. |
+| `status.outputs.access_cert` | `string` | Kafka clusters only: PEM access certificate for mutual-TLS authentication -- the public half; the private key is access_key. Empty on other engines. |
+| `status.outputs.access_key` | `string` (sensitive) | Kafka clusters only: PEM access key paired with access_cert. Secret. Empty on other engines. |
 
 ## References
 

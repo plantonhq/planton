@@ -400,19 +400,19 @@ and Microsoft Cost Management groups by them.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureEventHubNamespace, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureEventHubNamespace, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.namespace_id` | `string` | The Azure Resource Manager ID of the namespace. Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{name} The parent reference for every Event Hubs child kind, the scope for namespace-wide data-plane RBAC, and the private-endpoint target (subresource name: "namespace"). |
 | `status.outputs.namespace_name` | `string` | The namespace name -- what SDKs, connection strings, and the Kafka bootstrap address identify the namespace by. The AMQP/Kafka host is {namespace_name}.servicebus.windows.net (Event Hubs shares the Service Bus DNS zone). |
 | `status.outputs.identity_principal_id` | `string` | The system-assigned identity's principal (object) ID -- grant this identity access on other resources (e.g. Storage for capture, Key Vault for CMK). Empty unless the identity block includes SYSTEM_ASSIGNED. |
-| `status.outputs.default_primary_connection_string` | `string` | The root SAS rule's primary connection string (full manage rights on the namespace). Secret-bearing: it embeds the primary key. Format: Endpoint=sb://{name}.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey={key} |
-| `status.outputs.default_secondary_connection_string` | `string` | The root SAS rule's secondary connection string -- the rotation partner: move clients here, regenerate the primary, move back. |
-| `status.outputs.default_primary_key` | `string` | The root SAS rule's primary key, for SDKs that take the key and key name separately or mint their own SAS tokens. |
-| `status.outputs.default_secondary_key` | `string` | The root SAS rule's secondary key -- the rotation partner. |
-| `status.outputs.default_primary_connection_string_alias` | `string` | The root SAS rule's primary connection string addressing the geo-DR alias hostname instead of the namespace hostname. Only meaningful when the namespace carries an AzureEventHubDisasterRecoveryConfig pairing; empty otherwise. Clients configured with the alias keep working across a failover. |
-| `status.outputs.default_secondary_connection_string_alias` | `string` | The secondary alias connection string -- the rotation partner. |
+| `status.outputs.default_primary_connection_string` | `string` (sensitive) | The root SAS rule's primary connection string (full manage rights on the namespace). Secret-bearing: it embeds the primary key. Format: Endpoint=sb://{name}.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey={key} |
+| `status.outputs.default_secondary_connection_string` | `string` (sensitive) | The root SAS rule's secondary connection string -- the rotation partner: move clients here, regenerate the primary, move back. |
+| `status.outputs.default_primary_key` | `string` (sensitive) | The root SAS rule's primary key, for SDKs that take the key and key name separately or mint their own SAS tokens. |
+| `status.outputs.default_secondary_key` | `string` (sensitive) | The root SAS rule's secondary key -- the rotation partner. |
+| `status.outputs.default_primary_connection_string_alias` | `string` (sensitive) | The root SAS rule's primary connection string addressing the geo-DR alias hostname instead of the namespace hostname. Only meaningful when the namespace carries an AzureEventHubDisasterRecoveryConfig pairing; empty otherwise. Clients configured with the alias keep working across a failover. |
+| `status.outputs.default_secondary_connection_string_alias` | `string` (sensitive) | The secondary alias connection string -- the rotation partner. |
 
 ## References
 

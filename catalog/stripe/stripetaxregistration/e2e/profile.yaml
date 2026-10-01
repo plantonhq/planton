@@ -1,0 +1,16 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripetaxregistration
+spec:
+  # Proven live on OpenTofu against the test sandbox (its tax settings carry a
+  # head office, which Stripe requires before any registration): India and
+  # Texas registrations dated from the lane's clock, blind import, an expiry
+  # changed in place, and destroy forgetting the registration. Stripe holds one
+  # registration per place until it has ended, so each lane's registration ends
+  # seconds after it starts and the next run finds the place free.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - tofu
+  timeout_minutes: 5

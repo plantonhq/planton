@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1;
+
+// StripePaymentMethodConfigurationStackOutputs identifies the configuration a payment names and
+// what it actually offers.
+//
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_method_configuration
+message StripePaymentMethodConfigurationStackOutputs {
+  // id is the configuration's Stripe id (pmc_...), the value an application passes as
+  // `payment_method_configuration` when it creates a Checkout Session or PaymentIntent.
+  string id = 1;
+
+  // is_default is whether this is the account's default configuration. A configuration this kind
+  // creates is not the default unless someone makes it so in the Dashboard.
+  bool is_default = 2;
+
+  // active is whether payments may use the configuration.
+  bool active = 3;
+
+  // available_payment_methods are the methods Stripe reports available: set on and with the
+  // method's capability active on the account. A method set on but missing here needs its
+  // capability turned on in the Dashboard. Stripe does not report availability for cards.
+  repeated string available_payment_methods = 4;
+}

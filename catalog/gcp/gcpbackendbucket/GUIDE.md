@@ -28,7 +28,8 @@ GCP caps keys at 3 per bucket precisely so one can rotate while another
 stays live: add the new key, re-sign URLs with it, then remove the old.
 Each key is immutable — changing a `keyValue` replaces that key resource,
 which is the rotation semantics signed URLs need. The key material is
-secret in both engines' state; it never appears in outputs. Remember the
+secret in Pulumi state and sensitive in OpenTofu's (whose state file is
+encrypted whole when given a key); it never appears in outputs. Remember the
 CDN also needs `roles/storage.objectViewer` on the origin bucket for
 signed serving of private objects.
 

@@ -6,8 +6,9 @@ spec:
   # The module manages two resource types: the domain (imports by NAME --
   # DigitalOcean addresses domains by name, exported as zone_name) and the
   # inline records (each imports as "{domain},{record_id}"). The domain part
-  # derives from the same output; the numeric record ids are per-record and
-  # not exported (a zone manages many), so they must be looked up.
+  # derives from the same output; the numeric record ids derive per instance
+  # from the record_ids map output, keyed by the module's for_each key, so a
+  # blind round-trip needs zero user input when state is present.
   values:
     - name: domain_name
       derivations:
@@ -21,7 +22,10 @@ spec:
       where_to_find: >-
         The zone's own domain name -- identical to the zone_name output.
     - name: record_id
+      derivations:
+        - from_stack_output_keyed_by_address: record_ids
       where_to_find: >-
-        The numeric id of each inline record: `doctl compute domain records
-        list <domain>` (the ID column) -- the control panel does not display
-        record ids. One import per managed record.
+        The numeric id of each inline record: the `record_ids` output keyed
+        by "<record name>-<record index>-<value index>", or `doctl compute
+        domain records list <domain>` (the ID column) -- the control panel
+        does not display record ids. One import per managed record.

@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripewebhookendpoint.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripewebhookendpoint/v1alpha1/outputs.proto";
+import "catalog/stripe/stripewebhookendpoint/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeWebhookEndpoint is a component that declares where a Stripe account delivers its events:
+// the URL, the event types, and the signing secret the receiving service verifies deliveries
+// with.
+//
+// The secret exists only at creation, so the deployment captures it into status.outputs.secret
+// for the receiving service to read by reference; an imported endpoint has none. Destroy deletes
+// the endpoint.
+//
+// Use cases:
+// - Deliver payment and billing events to your application's webhook route
+// - Hand the signing secret to that service without copying it from the Dashboard
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeWebhookEndpoint
+// metadata:
+//   name: billing-events
+//   org: my-organization
+// spec:
+//   url: https://app.example.com/stripe
+//   enabledEvents:
+//     - checkout.session.completed
+//     - invoice.paid
+//     - charge.refunded
+// ```
+message StripeWebhookEndpoint {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeWebhookEndpoint" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeWebhookEndpoint'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the endpoint's address and the events it receives.
+  StripeWebhookEndpointSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the endpoint as created, populated after deployment.
+  StripeWebhookEndpointStatus status = 5;
+}
+
+// StripeWebhookEndpointStatus represents the current state of a StripeWebhookEndpoint resource.
+// Populated by the deployment system.
+message StripeWebhookEndpointStatus {
+  // outputs contains the stack outputs: the endpoint's id and signing secret.
+  StripeWebhookEndpointStackOutputs outputs = 1;
+}

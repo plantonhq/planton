@@ -1,0 +1,17 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0branding
+spec:
+  # A tenant has ONE branding, and applying this component changes every
+  # login page of the tenant: the lanes run only on a dedicated test tenant
+  # whose login pages nobody uses (AUTH0_DOMAIN / AUTH0_CLIENT_ID /
+  # AUTH0_CLIENT_SECRET, the credential holding the branding scopes of
+  # iac/permissions.yaml), one lane at a time. The page-template setting also
+  # needs a verified custom domain, which no scenario here declares.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 5

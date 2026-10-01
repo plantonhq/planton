@@ -54,7 +54,6 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-cluster-id"},
 						},
 						Size:      "s-4vcpu-8gb",
-						NodeCount: 3,
 						AutoScale: true,
 						MinNodes:  3,
 						MaxNodes:  10,
@@ -128,7 +127,6 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-cluster-id"},
 						},
 						Size:      "s-4vcpu-8gb",
-						NodeCount: 5,
 						AutoScale: true,
 						MinNodes:  3,
 						MaxNodes:  10,
@@ -213,7 +211,6 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-cluster-id"},
 						},
 						Size:      "s-2vcpu-4gb",
-						NodeCount: 2,
 						AutoScale: true,
 						MinNodes:  2,
 						MaxNodes:  2,
@@ -283,7 +280,30 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should return a validation error when node_count is zero", func() {
+			ginkgo.It("should return a validation error when node_count is set together with auto_scale", func() {
+				input := &DigitalOceanKubernetesNodePool{
+					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
+					Kind:       "DigitalOceanKubernetesNodePool",
+					Metadata: &shared.CloudResourceMetadata{
+						Name: "test-pool",
+					},
+					Spec: &DigitalOceanKubernetesNodePoolSpec{
+						NodePoolName: "test-pool",
+						Cluster: &foreignkeyv1.StringValueOrRef{
+							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-cluster-id"},
+						},
+						Size:      "s-2vcpu-4gb",
+						NodeCount: 2,
+						AutoScale: true,
+						MinNodes:  1,
+						MaxNodes:  3,
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+			})
+
+			ginkgo.It("should return a validation error when node_count is zero on a fixed pool", func() {
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
@@ -397,7 +417,6 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-cluster-id"},
 						},
 						Size:      "s-2vcpu-4gb",
-						NodeCount: 3,
 						AutoScale: true,
 						MaxNodes:  5,
 					},
@@ -419,7 +438,6 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "test-cluster-id"},
 						},
 						Size:      "s-2vcpu-4gb",
-						NodeCount: 3,
 						AutoScale: true,
 						MinNodes:  5,
 						MaxNodes:  2,

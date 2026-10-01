@@ -238,6 +238,7 @@ Fields on other kinds that can point at this resource:
 | AwsBedrockAgentCoreMemory | `spec.kinesisDelivery.dataStreamArn` | `status.outputs.stream_arn` |
 | AwsCloudwatchLogDelivery | `spec.crossAccountDestination.targetArn` | `status.outputs.stream_arn` |
 | AwsDynamodb | `spec.kinesisStreamingDestination.streamArn` | `status.outputs.stream_arn` |
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.stream_arn` |
 | AwsKinesisFirehose | `spec.kinesisStreamSource.streamArn` | `status.outputs.stream_arn` |
 | AwsKinesisStreamConsumer | `spec.streamArn` | `status.outputs.stream_arn` |
 

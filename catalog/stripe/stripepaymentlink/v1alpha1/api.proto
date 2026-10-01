@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepaymentlink.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripepaymentlink/v1alpha1/outputs.proto";
+import "catalog/stripe/stripepaymentlink/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripePaymentLink is a component that declares a Stripe-hosted payment page at a public
+// address, selling declared prices.
+//
+// The link takes payments from the moment it is applied. A link can never change which prices it
+// sells, so changing them replaces the link: the new one is created first, with a new address,
+// and the old one deactivated. Destroy deactivates the link; Stripe keeps it.
+//
+// Use cases:
+// - Sell a plan from a static site, with the page's address read by reference
+// - Declare a one-time purchase page next to its product and price
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripePaymentLink
+// metadata:
+//   name: pro-monthly-link
+//   org: my-organization
+// spec:
+//   lineItems:
+//     - price:
+//         valueFrom:
+//           name: pro-monthly
+//       quantity: 1
+//   allowPromotionCodes: true
+// ```
+message StripePaymentLink {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripePaymentLink" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripePaymentLink'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the prices sold, what the page collects, and what follows payment.
+  StripePaymentLinkSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the link as created, populated after deployment.
+  StripePaymentLinkStatus status = 5;
+}
+
+// StripePaymentLinkStatus represents the current state of a StripePaymentLink resource.
+// Populated by the deployment system.
+message StripePaymentLinkStatus {
+  // outputs contains the stack outputs: the link's id, public address, and whether it is active.
+  StripePaymentLinkStackOutputs outputs = 1;
+}

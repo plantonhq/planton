@@ -1,0 +1,11 @@
+# A registration with wallets turned off: enabled false, the state to apply
+# before deleting when the wallets must stop showing.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodDomain
+metadata:
+  name: e2e-payment-method-domain-disabled
+  org: e2e-org
+  env: testing
+spec:
+  domainName: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}.example.com
+  enabled: false

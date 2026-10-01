@@ -65,8 +65,8 @@ func Resources(ctx *pulumi.Context, stackInput *azureapplicationinsightsv1alpha1
 	// app-hosting kinds reference.
 	ctx.Export(OpApplicationInsightsId, createdInsights.ID())
 	ctx.Export(OpApplicationInsightsName, createdInsights.Name)
-	ctx.Export(OpInstrumentationKey, createdInsights.InstrumentationKey)
-	ctx.Export(OpConnectionString, createdInsights.ConnectionString)
+	ctx.Export(OpInstrumentationKey, pulumi.Unsecret(createdInsights.InstrumentationKey))
+	ctx.Export(OpConnectionString, pulumi.Unsecret(createdInsights.ConnectionString))
 	ctx.Export(OpAppId, createdInsights.AppId)
 
 	return nil

@@ -1,0 +1,11 @@
+# The canonical example: one capability a plan grants, checked by the
+# application through its lookup key.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeEntitlementFeature
+metadata:
+  name: api-access
+  org: e2e-org
+  env: testing
+spec:
+  lookupKey: api-access
+  name: API access

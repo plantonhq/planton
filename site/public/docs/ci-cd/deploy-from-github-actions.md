@@ -17,7 +17,7 @@ The mode is inferred from the inputs: set `org` and `audience` and you are conne
 
 ## Why this works with no backend
 
-Your repository's `_kustomize/` tree declares the service's resources per environment — a Cloud Run service and its Redis, an ECS task and its queue — as plain manifests wired together with `valueFrom` references. The CLI derives the deploy order from those references, verifies everything up front (schema, references, state backend reachability, cloud credentials, module availability — one report, before anything is handed to an IaC engine), then deploys each resource through the same open-source modules the platform uses, feeding each resource's outputs into the next one's references. State lives in your own bucket. Credentials come from GitHub's own OIDC exchange with your cloud. Nothing Planton-hosted participates.
+Your repository's `_kustomize/` tree declares the service's resources per environment — a Cloud Run service and its Redis, an ECS task and its queue — as plain manifests wired together with `valueFrom` references. The CLI derives the deploy order from those references, verifies everything up front (schema, references, state backend reachability, cloud credentials, module availability — one report, before anything is handed to an IaC engine), then deploys each resource through the same open-source modules the platform uses, feeding each resource's outputs into the next one's references. State lives in your own bucket, and encrypting it is your engine's own setting: give OpenTofu an encryption configuration (`TF_ENCRYPTION`) and Pulumi a real passphrase (`PULUMI_CONFIG_PASSPHRASE`) or another secrets provider as job secrets, so the bucket holds ciphertext. Credentials come from GitHub's own OIDC exchange with your cloud. Nothing Planton-hosted participates.
 
 ## Ten minutes to the first deploy
 
@@ -64,7 +64,7 @@ jobs:
 
 ## Switching to a Planton backend later
 
-The same action serves the whole journey. When you want pipelines, approval gates, deployment history, and rollout verification, add `org`, `audience`, and `service` to the same step and drop the state env — the backend holds state, and `image` stays exactly as it is. The [action's README](https://github.com/plantonhq/planton/tree/main/actions/deploy) carries the full input table, the keyless trust setup for connected mode, and the switch table in both directions.
+The same action serves the whole journey. When you want pipelines, approval gates, deployment history, and rollout verification, add `org`, `audience`, and `service` to the same step and drop the state env — the backend holds state, and `image` stays exactly as it is. Connected mode needs one trust, made once: [Trusted Workflows](/docs/ci-cd/trusted-workflows) walks it in the console and hands back the whole workflow, filled in. The [action's README](https://github.com/plantonhq/planton/tree/main/actions/deploy) carries the full input table, the keyless trust setup for connected mode, and the switch table in both directions.
 
 ## Details worth knowing
 

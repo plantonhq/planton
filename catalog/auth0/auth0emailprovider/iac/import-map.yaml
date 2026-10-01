@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0emailprovider
+spec:
+  # A tenant has one email provider, and the provider reads it without an id
+  # (GET /api/v2/emails/provider), so any string imports it; this map uses a
+  # fixed one. Auth0 never returns a credential: after an import the first
+  # apply sends the spec's credentials again.
+  values:
+    - name: email_provider_import_id
+      derivations:
+        - literal: email-provider

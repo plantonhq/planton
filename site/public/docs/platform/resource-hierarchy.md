@@ -39,7 +39,7 @@ The top-level container, typically representing a company or team.
 
 **Key facts:**
 - Created once when you first set up the platform
-- Has a unique slug across the platform (e.g., `acme-corp`)
+- Has a unique slug across the platform (e.g., `acme-corp`) that starts with a letter and is 2 to 15 characters
 - The person who creates it becomes the organization owner
 - Can have multiple administrators
 
@@ -54,7 +54,7 @@ Logical groupings that separate resources by deployment stage or purpose.
 
 **Key facts:**
 - Created within an organization
-- Names must be lowercase alphanumeric with hyphens
+- Slugs follow the one slug rule (see [Slugs](#slugs) below)
 - Each environment has its own credential authorizations — a connection must be explicitly authorized for an environment before it can be used there
 - Resources in one environment cannot directly access resources in another
 
@@ -76,6 +76,16 @@ The actual infrastructure and applications.
 - Every resource belongs to exactly one environment
 - Resources have unique identifiers within their environment
 - Cloud Resources are provisioned by Stack Jobs; Services are deployed by Pipelines
+
+## Slugs
+
+Every organization, environment and resource has a name and a slug. The name is free text for people ("Acme Corp", a DNS zone named `example.com`). The slug is the handle: it appears in references like `$secret/<slug>` and `valueFrom`, in URLs, in CLI commands, and in the names Planton creates in your cloud.
+
+A slug is lowercase letters and digits joined by single hyphens, like my-app-2.
+
+No dots, no underscores, no leading, trailing or doubled hyphens. That is the one alphabet every system a slug is written into accepts: DNS labels and hostnames, secret store names (Azure Key Vault allows only letters, digits and hyphens), cloud labels and tags, and the dot-separated identities Planton builds from a slug (a Pulumi stack is `<env>.<Kind>.<slug>`).
+
+When you give only a name, Planton derives the slug from it: accents are dropped and every other run of characters that is not a letter or digit becomes one hyphen. "Café Résumé" becomes `cafe-resume`, `example.com` becomes `example-com`, and `DB_PASSWORD` becomes `db-password`. A slug you write yourself must already follow the rule; one that does not is refused with the sentence above.
 
 ## Context Selection
 

@@ -23,21 +23,24 @@ const (
 
 // DigitalOceanKubernetesNodePoolStackOutputs captures the outputs after
 // provisioning a DigitalOcean Kubernetes node pool.
+//
+// The pool's member nodes are deliberately NOT outputs: DOKS replaces them
+// by design -- the autoscaler adds and removes nodes, cluster upgrades and
+// auto-repair recycle them -- so a node or Droplet id captured at apply
+// time is wrong the next time the pool changes shape, and a firewall wired
+// to such a list silently misses every node added later. Droplet-scoped
+// resources address the pool's machines through the pool's `tags`, which
+// DigitalOcean applies to every current and future node; the live node set
+// is read from the API by whoever needs it (the E2E verifier asserts node
+// health that way).
 type DigitalOceanKubernetesNodePoolStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier (UUID) of the created node pool.
 	NodePoolId string `protobuf:"bytes,1,opt,name=node_pool_id,json=nodePoolId,proto3" json:"node_pool_id,omitempty"`
-	// The DOKS node object UUIDs of the pool's current members (the node ids
-	// the Kubernetes API reports, not the backing Droplet ids).
-	NodeIds []string `protobuf:"bytes,2,rep,name=node_ids,json=nodeIds,proto3" json:"node_ids,omitempty"`
 	// The UUID of the cluster that owns this pool. The API addresses the pool
 	// as /v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}, so
 	// consumers need both ids to reach it.
-	ClusterId string `protobuf:"bytes,3,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
-	// The integer ids (as strings) of the Droplets backing the pool's nodes,
-	// for wiring Droplet-scoped resources (e.g. firewalls) to the pool's
-	// machines.
-	DropletIds    []string `protobuf:"bytes,4,rep,name=droplet_ids,json=dropletIds,proto3" json:"droplet_ids,omitempty"`
+	ClusterId     string `protobuf:"bytes,3,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -79,13 +82,6 @@ func (x *DigitalOceanKubernetesNodePoolStackOutputs) GetNodePoolId() string {
 	return ""
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackOutputs) GetNodeIds() []string {
-	if x != nil {
-		return x.NodeIds
-	}
-	return nil
-}
-
 func (x *DigitalOceanKubernetesNodePoolStackOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
@@ -93,26 +89,16 @@ func (x *DigitalOceanKubernetesNodePoolStackOutputs) GetClusterId() string {
 	return ""
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackOutputs) GetDropletIds() []string {
-	if x != nil {
-		return x.DropletIds
-	}
-	return nil
-}
-
 var File_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\"\xa9\x01\n" +
+	"Jcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\"\x90\x01\n" +
 	"*DigitalOceanKubernetesNodePoolStackOutputs\x12 \n" +
 	"\fnode_pool_id\x18\x01 \x01(\tR\n" +
-	"nodePoolId\x12\x19\n" +
-	"\bnode_ids\x18\x02 \x03(\tR\anodeIds\x12\x1d\n" +
+	"nodePoolId\x12\x1d\n" +
 	"\n" +
-	"cluster_id\x18\x03 \x01(\tR\tclusterId\x12\x1f\n" +
-	"\vdroplet_ids\x18\x04 \x03(\tR\n" +
-	"dropletIdsB\xfc\x03\n" +
+	"cluster_id\x18\x03 \x01(\tR\tclusterIdJ\x04\b\x02\x10\x03J\x04\b\x04\x10\x05R\bnode_idsR\vdroplet_idsB\xfc\x03\n" +
 	"Dcom.dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1B\fOutputsProtoP\x01Z\x80\x01github.com/plantonhq/planton/catalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1;digitaloceankubernetesnodepoolv1alpha1\xa2\x02\x04DPDD\xaa\x02@Dev.Planton.Digitalocean.Digitaloceankubernetesnodepool.V1alpha1\xca\x02@Dev\\Planton\\Digitalocean\\Digitaloceankubernetesnodepool\\V1alpha1\xe2\x02LDev\\Planton\\Digitalocean\\Digitaloceankubernetesnodepool\\V1alpha1\\GPBMetadata\xea\x02DDev::Planton::Digitalocean::Digitaloceankubernetesnodepool::V1alpha1b\x06proto3"
 
 var (

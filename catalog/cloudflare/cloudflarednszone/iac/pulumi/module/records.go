@@ -38,9 +38,10 @@ func records(
 			Ttl:    pulumi.Float64(ttl),
 		}
 
-		// Simple record types carry their value in content; structured types use data.
-		if record.Content != "" {
-			recordArgs.Content = pulumi.String(record.Content)
+		// Simple record types carry their value in content -- a literal, or a
+		// reference already resolved to its value -- and structured types use data.
+		if content := record.Content.GetValue(); content != "" {
+			recordArgs.Content = pulumi.String(content)
 		}
 		if data := buildRecordData(record); data != nil {
 			recordArgs.Data = data
@@ -149,7 +150,7 @@ func buildRecordData(record *cloudflarednszonev1alpha1.CloudflareDnsZoneRecord) 
 		d := record.GetHttps()
 		return cloudflare.DnsRecordDataArgs{
 			Priority: f64(d.Priority),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 			Value:    pulumi.String(d.Value),
 		}
 	case record.GetLoc() != nil:
@@ -192,7 +193,7 @@ func buildRecordData(record *cloudflarednszonev1alpha1.CloudflareDnsZoneRecord) 
 			Priority: f64(d.Priority),
 			Weight:   f64(d.Weight),
 			Port:     f64(d.Port),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 		}
 	case record.GetSshfp() != nil:
 		d := record.GetSshfp()
@@ -205,7 +206,7 @@ func buildRecordData(record *cloudflarednszonev1alpha1.CloudflareDnsZoneRecord) 
 		d := record.GetSvcb()
 		return cloudflare.DnsRecordDataArgs{
 			Priority: f64(d.Priority),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 			Value:    pulumi.String(d.Value),
 		}
 	case record.GetTlsa() != nil:
@@ -221,7 +222,7 @@ func buildRecordData(record *cloudflarednszonev1alpha1.CloudflareDnsZoneRecord) 
 		return cloudflare.DnsRecordDataArgs{
 			Priority: f64(d.Priority),
 			Weight:   f64(d.Weight),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 		}
 	}
 	return nil

@@ -176,6 +176,14 @@ Fields that can point at another resource's outputs:
 | `spec.roleArn` | AwsIamRole | `status.outputs.role_arn` |
 | `spec.definitionS3Location.bucket` | AwsS3Bucket | `status.outputs.bucket_id` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.pipeline_arn` |
+
 ## See Also
 
 - [Overview](../README.md)

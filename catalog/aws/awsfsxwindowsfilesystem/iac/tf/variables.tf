@@ -158,7 +158,9 @@ variable "spec" {
       # credentials for domain join. Mutually exclusive with `username`/`password`.
       #
       # The secret must contain a JSON object with "username" and "password" keys.
-      # This is the recommended approach for production deployments.
+      # This is the recommended approach for production deployments. A valueFrom
+      # defaults to an AwsSecretsManagerSecret and reads its
+      # status.outputs.secret_arn.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       domain_join_service_account_secret_arn = optional(string, "")
 

@@ -1,0 +1,39 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0resourceserver
+spec:
+  values:
+    # The API imports by the identifier Auth0 assigned it (a 24-character
+    # hex id, not the audience), which a prior deploy reports as its id
+    # output.
+    - name: resource_server_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Auth0 dashboard -> Applications -> APIs -> the API (the Id on its
+        Settings tab), or `GET /api/v2/resource-servers` on the Management
+        API (the id field of the entry whose identifier is the API's
+        audience).
+    # The scopes import by the API's audience, read from the spec.
+    - name: resource_server_identifier
+      derivations:
+        - from_spec_field: identifier
+      where_to_find: >-
+        The API's identifier (audience), spec.identifier -- Auth0 dashboard
+        -> Applications -> APIs (the Identifier column).
+    # Each default grant for third-party applications imports by the id
+    # Auth0 assigned it (cgr_...), derived blind from the
+    # third_party_client_default_grant_ids output map, keyed exactly like
+    # the module's for_each entries (the subject type).
+    - name: client_grant_id
+      derivations:
+        - from_stack_output_keyed_by_address: third_party_client_default_grant_ids
+      where_to_find: >-
+        `GET /api/v2/client-grants?audience=<identifier>` on the Management
+        API lists the API's grants; a default grant is the entry with
+        default_for third_party_clients and no client_id, and its
+        subject_type (user or client) names the entry it belongs to.
+        Auth0 dashboard -> Applications -> APIs -> the API -> Settings ->
+        Default Permissions for Third-Party Applications shows the same
+        grants.

@@ -337,7 +337,7 @@ resource "kubernetes_stateful_set_v1" "this" {
           for_each = local.init_containers
           content {
             name              = init_container.value.name
-            image             = "${init_container.value.image.repo}:${init_container.value.image.tag}"
+            image             = join("", [init_container.value.image.repo, init_container.value.image.tag != "" ? ":${init_container.value.image.tag}" : "", init_container.value.image.digest != "" ? "@${init_container.value.image.digest}" : ""])
             image_pull_policy = try(init_container.value.image_pull_policy, "") != "" ? init_container.value.image_pull_policy : null
             command           = length(try(init_container.value.command, [])) > 0 ? init_container.value.command : null
             args              = length(try(init_container.value.args, [])) > 0 ? init_container.value.args : null
@@ -434,7 +434,7 @@ resource "kubernetes_stateful_set_v1" "this" {
           for_each = local.all_containers
           content {
             name              = container.value.name
-            image             = "${container.value.image.repo}:${container.value.image.tag}"
+            image             = join("", [container.value.image.repo, container.value.image.tag != "" ? ":${container.value.image.tag}" : "", container.value.image.digest != "" ? "@${container.value.image.digest}" : ""])
             image_pull_policy = try(container.value.image_pull_policy, "") != "" ? container.value.image_pull_policy : null
             command           = length(try(container.value.command, [])) > 0 ? container.value.command : null
             args              = length(try(container.value.args, [])) > 0 ? container.value.args : null

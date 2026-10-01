@@ -1,0 +1,19 @@
+# The canonical example: LAUNCH25 for first-time customers, 500 redemptions
+# at most. The coupon is a literal id here so the manifest plans on its own;
+# a real manifest references its StripeCoupon (see the scenarios).
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePromotionCode
+metadata:
+  name: launch25
+  org: e2e-org
+  env: testing
+spec:
+  coupon:
+    value: Z4OV52SU
+  code: LAUNCH25
+  maxRedemptions: 500
+  expiresAt: 1830297600  # 1 January 2028; Stripe refuses an expiry more than five years ahead
+  restrictions:
+    firstTimeTransaction: true
+  metadata:
+    campaign: launch

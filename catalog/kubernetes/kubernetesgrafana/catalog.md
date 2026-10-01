@@ -94,9 +94,11 @@ These are the most important decisions when configuring a Grafana instance. Expl
 
 **Plugins install at startup, by ID** — list plugin IDs in `plugins`, optionally with a version (`"grafana-oncall-app 1.3.0"`). Know this: Grafana 13 moved the once-core `elasticsearch` and `cloudwatch` datasource plugins out of the core image — declaring a datasource of those types means listing the plugin here too. The modules enable the chart's bundled-plugin shadowing so installs succeed on the read-only image directory.
 
-**Exposure composes from first-class kinds** — the Service stays ClusterIP by design; no exposure fields exist on this spec. Compose an HTTP route (Gateway API kinds) over the exported `service` handle, and set `server.rootUrl` to the public URL when you do — OAuth redirect URLs, alert links and rendered images embed it.
+**Exposure composes from first-class kinds** — the Service stays ClusterIP by design; no exposure fields exist on this spec. Compose an HTTP route (Gateway API kinds) over the exported `service` handle, and set `server.rootUrl` to the public URL when you do — sign-in redirect URLs, alert links and rendered images embed it.
 
-**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (LDAP/OAuth providers in grafana.ini, the image renderer, alerting provisioning, extra sidecars), with Helm `-f` semantics. Never put secrets in it: the chart refuses to render secrets into its config ConfigMap, and every typed credential rides Secrets and environment expansion instead.
+**Sign-in through Google or any OAuth provider** — `auth.google` puts Grafana behind a Google Workspace, `auth.generic_oauth` behind Okta, Microsoft Entra ID, Keycloak or any OpenID Connect provider. The client secret is picked from Planton's secrets, never pasted, and never reaches Grafana's configuration file. A Google sign-in that would let any Google account create a user is refused until `allowedDomains` names your domain. Once sign-in is declared, Grafana's own authentication screen can no longer change it.
+
+**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (LDAP in grafana.ini, the image renderer, alerting provisioning, extra sidecars), with Helm `-f` semantics. Never put secrets in it: the chart refuses to render secrets into its config ConfigMap, and every typed credential rides Secrets and environment expansion instead.
 
 ## Outputs and Dependencies
 

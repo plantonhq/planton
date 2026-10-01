@@ -36,7 +36,7 @@ breaker, and scaled on CPU between 2 and 10 tasks.
 | `<aws-region>` | AWS region code | Your deployment region |
 | `<cluster-resource-name>` | Name of the AwsEcsCluster resource | Your cluster manifest's `metadata.name` |
 | `<task-definition-resource-name>` | Name of the AwsEcsTaskDefinition resource | Your task-definition manifest's `metadata.name` |
-| `<private-subnet-a/b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
 | `<security-group-resource-name>` | Name of the AwsSecurityGroup resource | Your security-group manifest's `metadata.name` |
 | `<target-group-resource-name>` | Name of the AwsLbTargetGroup resource | Your target-group manifest's `metadata.name` |
 

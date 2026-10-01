@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0client.v1alpha1;
 
+import "shared/options/options.proto";
+
 // Auth0ClientStackOutputs contains the outputs from an Auth0 Client deployment.
 // These outputs provide essential identifiers and credentials for integrating
 // the application with your services and Auth0 features.
@@ -24,7 +26,7 @@ message Auth0ClientStackOutputs {
   // Used for authenticating the application in confidential client flows.
   // IMPORTANT: Keep this secret secure and never expose in client-side code.
   // Only available for regular_web and non_interactive application types.
-  string client_secret = 3;
+  string client_secret = 3 [(dev.planton.shared.options.sensitive) = true];
 
   // name is the name of the application.
   // Derived from metadata.name in the Auth0Client resource.

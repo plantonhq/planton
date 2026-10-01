@@ -198,7 +198,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurelinuxwebappv1alpha1.AzureLi
 		}
 		return strings.Split(joined, ",")
 	}).(pulumi.StringArrayOutput))
-	ctx.Export(OpCustomDomainVerificationId, webApp.CustomDomainVerificationId)
+	ctx.Export(OpCustomDomainVerificationId, pulumi.Unsecret(webApp.CustomDomainVerificationId))
 	ctx.Export(OpKind, webApp.Kind)
 	ctx.Export(OpHostingEnvironmentId, webApp.HostingEnvironmentId)
 
@@ -219,21 +219,22 @@ func Resources(ctx *pulumi.Context, stackInput *azurelinuxwebappv1alpha1.AzureLi
 	}).(pulumi.StringOutput))
 
 	// The site-level publishing credential -- grants deploy access while
-	// basic-auth publishing is enabled; treat the password like an admin
-	// password.
-	ctx.Export(OpSiteCredentialName, webApp.SiteCredentials.ApplyT(func(creds []appservice.LinuxWebAppSiteCredential) string {
+	// basic-auth publishing is enabled. The provider marks the whole
+	// credential block secret; the name is a username, so it is unwrapped,
+	// and the password is exported as a secret.
+	ctx.Export(OpSiteCredentialName, pulumi.Unsecret(webApp.SiteCredentials.ApplyT(func(creds []appservice.LinuxWebAppSiteCredential) string {
 		if len(creds) > 0 && creds[0].Name != nil {
 			return *creds[0].Name
 		}
 		return ""
-	}).(pulumi.StringOutput))
+	}).(pulumi.StringOutput)))
 
-	ctx.Export(OpSiteCredentialPassword, webApp.SiteCredentials.ApplyT(func(creds []appservice.LinuxWebAppSiteCredential) string {
+	ctx.Export(OpSiteCredentialPassword, pulumi.ToSecret(webApp.SiteCredentials.ApplyT(func(creds []appservice.LinuxWebAppSiteCredential) string {
 		if len(creds) > 0 && creds[0].Password != nil {
 			return *creds[0].Password
 		}
 		return ""
-	}).(pulumi.StringOutput))
+	}).(pulumi.StringOutput)))
 
 	return nil
 }

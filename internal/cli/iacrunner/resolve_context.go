@@ -15,7 +15,6 @@ import (
 	"github.com/plantonhq/planton/pkg/iac/stackinput/providerdetect"
 	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
-	"github.com/plantonhq/planton/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -105,19 +104,24 @@ func ResolveContext(cmd *cobra.Command) (*Context, error) {
 	}
 	ctx.ManifestObject = manifestObject
 
-	// Extract provisioner from manifest
-	provType, err := provisioner.ExtractFromManifest(manifestObject)
+	// The manifest's provisioner, else the kind's sole declared engine, else ask among the
+	// engines the kind runs on.
+	provType, err := provisioner.ForManifest(manifestObject)
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid provisioner in manifest")
 	}
-
-	// If provisioner not specified in manifest, prompt user
 	if provType == provisioner.ProvisionerTypeUnspecified {
 		cliprint.PrintInfo("Provisioner not specified in manifest")
-		provType, err = prompt.PromptForProvisioner()
+		allowed, err := provisioner.AllowedForManifest(manifestObject)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to read the engines this kind runs on")
+		}
+		provType, err = prompt.PromptForProvisioner(allowed...)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get provisioner")
 		}
+	} else if note := provisioner.SoleEngineNote(manifestObject, provType); note != "" {
+		cliprint.PrintInfo(note)
 	}
 	ctx.ProvisionerType = provType
 
@@ -136,13 +140,7 @@ func ResolveContext(cmd *cobra.Command) (*Context, error) {
 	// Handle --local-module flag: derive module directory from local planton repo
 	localModule, _ := cmd.Flags().GetBool(string(flag.LocalModule))
 	if localModule {
-		var iacProv shared.IacProvisioner
-		switch provType {
-		case provisioner.ProvisionerTypePulumi:
-			iacProv = shared.IacProvisioner_pulumi
-		case provisioner.ProvisionerTypeTofu, provisioner.ProvisionerTypeTerraform:
-			iacProv = shared.IacProvisioner_terraform
-		}
+		iacProv := provType.ModuleFamily()
 		derivedModuleDir, err := localmodule.GetModuleDir(ctx.ManifestPath, cmd, iacProv)
 		if err != nil {
 			if lmErr, ok := err.(*localmodule.Error); ok {

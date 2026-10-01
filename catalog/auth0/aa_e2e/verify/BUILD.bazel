@@ -2,7 +2,11 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "verify",
-    srcs = ["verifier.go"],
+    srcs = [
+        "settings.go",
+        "signin.go",
+        "verifier.go",
+    ],
     importpath = "github.com/plantonhq/planton/catalog/auth0/aa_e2e/verify",
     visibility = ["//visibility:public"],
     deps = ["@com_github_pkg_errors//:errors"],
@@ -10,6 +14,9 @@ go_library(
 
 go_test(
     name = "verify_test",
-    srcs = ["verifier_test.go"],
+    srcs = [
+        "signin_test.go",
+        "verifier_test.go",
+    ],
     embed = [":verify"],
 )

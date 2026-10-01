@@ -7,6 +7,15 @@
 # this scenario (EC P-256, CN=planton-e2e.invalid, never used by any real
 # system). It is not a secret worth protecting -- its only job is to be
 # syntactically valid PEM the DigitalOcean API accepts.
+#
+# The blind import round-trip is skipped by annotation: the PEM trio is
+# write-only (the API never returns it, the provider stores hashes) AND
+# ForceNew, so a blind import leaves all three empty, the config re-supplies
+# them, and the only plan is a replace -- which the round-trip oracle rightly
+# refuses, and which ignore_changes must never paper over because rotating
+# certificate material is SUPPOSED to replace the certificate. The kind's
+# import map stays offline-validated until a PEM-free scenario (Let's
+# Encrypt, once a domain is delegated) can prove it live.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanCertificate
 metadata:
@@ -19,10 +28,15 @@ metadata:
     e2e-component: digitaloceancertificate
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-import-roundtrip-skip: >-
+      leaf_certificate, private_key, and certificate_chain are write-only
+      and ForceNew -- a blind import cannot restore them and the only
+      reconcile is a replace; the adoption consequence is documented on the
+      kind's GUIDE and the import catalog row.
   tags:
     - planton-e2e
 spec:
-  certificateName: planton-e2e-custom-cert
+  certificateName: planton-e2e-custom-cert-${E2E_RUN_ID}
   custom:
     leafCertificate: |
       -----BEGIN CERTIFICATE-----

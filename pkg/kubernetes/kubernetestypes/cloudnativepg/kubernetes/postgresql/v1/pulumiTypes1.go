@@ -7,11 +7,8806 @@ import (
 	"context"
 	"reflect"
 
+	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/utilities"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 var _ = utilities.GetEnvOrDefault
+
+// AvailableArchitecture represents the state of a cluster's architecture
+type ClusterStatusAvailableArchitecturesPatch struct {
+	// GoArch is the name of the executable architecture
+	GoArch *string `pulumi:"goArch"`
+	// Hash is the hash of the executable
+	Hash *string `pulumi:"hash"`
+}
+
+// ClusterStatusAvailableArchitecturesPatchInput is an input type that accepts ClusterStatusAvailableArchitecturesPatchArgs and ClusterStatusAvailableArchitecturesPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusAvailableArchitecturesPatchInput` via:
+//
+//	ClusterStatusAvailableArchitecturesPatchArgs{...}
+type ClusterStatusAvailableArchitecturesPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusAvailableArchitecturesPatchOutput() ClusterStatusAvailableArchitecturesPatchOutput
+	ToClusterStatusAvailableArchitecturesPatchOutputWithContext(context.Context) ClusterStatusAvailableArchitecturesPatchOutput
+}
+
+// AvailableArchitecture represents the state of a cluster's architecture
+type ClusterStatusAvailableArchitecturesPatchArgs struct {
+	// GoArch is the name of the executable architecture
+	GoArch pulumi.StringPtrInput `pulumi:"goArch"`
+	// Hash is the hash of the executable
+	Hash pulumi.StringPtrInput `pulumi:"hash"`
+}
+
+func (ClusterStatusAvailableArchitecturesPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusAvailableArchitecturesPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusAvailableArchitecturesPatchArgs) ToClusterStatusAvailableArchitecturesPatchOutput() ClusterStatusAvailableArchitecturesPatchOutput {
+	return i.ToClusterStatusAvailableArchitecturesPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusAvailableArchitecturesPatchArgs) ToClusterStatusAvailableArchitecturesPatchOutputWithContext(ctx context.Context) ClusterStatusAvailableArchitecturesPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusAvailableArchitecturesPatchOutput)
+}
+
+// ClusterStatusAvailableArchitecturesPatchArrayInput is an input type that accepts ClusterStatusAvailableArchitecturesPatchArray and ClusterStatusAvailableArchitecturesPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusAvailableArchitecturesPatchArrayInput` via:
+//
+//	ClusterStatusAvailableArchitecturesPatchArray{ ClusterStatusAvailableArchitecturesPatchArgs{...} }
+type ClusterStatusAvailableArchitecturesPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusAvailableArchitecturesPatchArrayOutput() ClusterStatusAvailableArchitecturesPatchArrayOutput
+	ToClusterStatusAvailableArchitecturesPatchArrayOutputWithContext(context.Context) ClusterStatusAvailableArchitecturesPatchArrayOutput
+}
+
+type ClusterStatusAvailableArchitecturesPatchArray []ClusterStatusAvailableArchitecturesPatchInput
+
+func (ClusterStatusAvailableArchitecturesPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusAvailableArchitecturesPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusAvailableArchitecturesPatchArray) ToClusterStatusAvailableArchitecturesPatchArrayOutput() ClusterStatusAvailableArchitecturesPatchArrayOutput {
+	return i.ToClusterStatusAvailableArchitecturesPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusAvailableArchitecturesPatchArray) ToClusterStatusAvailableArchitecturesPatchArrayOutputWithContext(ctx context.Context) ClusterStatusAvailableArchitecturesPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusAvailableArchitecturesPatchArrayOutput)
+}
+
+// AvailableArchitecture represents the state of a cluster's architecture
+type ClusterStatusAvailableArchitecturesPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusAvailableArchitecturesPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusAvailableArchitecturesPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusAvailableArchitecturesPatchOutput) ToClusterStatusAvailableArchitecturesPatchOutput() ClusterStatusAvailableArchitecturesPatchOutput {
+	return o
+}
+
+func (o ClusterStatusAvailableArchitecturesPatchOutput) ToClusterStatusAvailableArchitecturesPatchOutputWithContext(ctx context.Context) ClusterStatusAvailableArchitecturesPatchOutput {
+	return o
+}
+
+// GoArch is the name of the executable architecture
+func (o ClusterStatusAvailableArchitecturesPatchOutput) GoArch() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusAvailableArchitecturesPatch) *string { return v.GoArch }).(pulumi.StringPtrOutput)
+}
+
+// Hash is the hash of the executable
+func (o ClusterStatusAvailableArchitecturesPatchOutput) Hash() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusAvailableArchitecturesPatch) *string { return v.Hash }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusAvailableArchitecturesPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusAvailableArchitecturesPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusAvailableArchitecturesPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusAvailableArchitecturesPatchArrayOutput) ToClusterStatusAvailableArchitecturesPatchArrayOutput() ClusterStatusAvailableArchitecturesPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusAvailableArchitecturesPatchArrayOutput) ToClusterStatusAvailableArchitecturesPatchArrayOutputWithContext(ctx context.Context) ClusterStatusAvailableArchitecturesPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusAvailableArchitecturesPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusAvailableArchitecturesPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusAvailableArchitecturesPatch {
+		return vs[0].([]ClusterStatusAvailableArchitecturesPatch)[vs[1].(int)]
+	}).(ClusterStatusAvailableArchitecturesPatchOutput)
+}
+
+// The configuration for the CA and related certificates, initialized with defaults.
+type ClusterStatusCertificates struct {
+	// The secret containing the Client CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate all the client certificates.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the client certificates,
+	//   used as `ssl_ca_file` of all the instances.<br />
+	// - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+	//   this can be omitted.<br />
+	ClientCASecret *string `pulumi:"clientCASecret"`
+	// Expiration dates for all certificates.
+	Expirations map[string]string `pulumi:"expirations"`
+	// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+	// the `streaming_replica` user.
+	// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+	// created using the provided CA.
+	ReplicationTLSSecret *string `pulumi:"replicationTLSSecret"`
+	// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+	ServerAltDNSNames []string `pulumi:"serverAltDNSNames"`
+	// The secret containing the Server CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the server certificate,
+	//   used as `sslrootcert` in client connection strings.<br />
+	// - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+	//   this can be omitted.<br />
+	ServerCASecret *string `pulumi:"serverCASecret"`
+	// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+	// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+	// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+	// created using the provided CA.
+	ServerTLSSecret *string `pulumi:"serverTLSSecret"`
+}
+
+// ClusterStatusCertificatesInput is an input type that accepts ClusterStatusCertificatesArgs and ClusterStatusCertificatesOutput values.
+// You can construct a concrete instance of `ClusterStatusCertificatesInput` via:
+//
+//	ClusterStatusCertificatesArgs{...}
+type ClusterStatusCertificatesInput interface {
+	pulumi.Input
+
+	ToClusterStatusCertificatesOutput() ClusterStatusCertificatesOutput
+	ToClusterStatusCertificatesOutputWithContext(context.Context) ClusterStatusCertificatesOutput
+}
+
+// The configuration for the CA and related certificates, initialized with defaults.
+type ClusterStatusCertificatesArgs struct {
+	// The secret containing the Client CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate all the client certificates.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the client certificates,
+	//   used as `ssl_ca_file` of all the instances.<br />
+	// - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+	//   this can be omitted.<br />
+	ClientCASecret pulumi.StringPtrInput `pulumi:"clientCASecret"`
+	// Expiration dates for all certificates.
+	Expirations pulumi.StringMapInput `pulumi:"expirations"`
+	// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+	// the `streaming_replica` user.
+	// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+	// created using the provided CA.
+	ReplicationTLSSecret pulumi.StringPtrInput `pulumi:"replicationTLSSecret"`
+	// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+	ServerAltDNSNames pulumi.StringArrayInput `pulumi:"serverAltDNSNames"`
+	// The secret containing the Server CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the server certificate,
+	//   used as `sslrootcert` in client connection strings.<br />
+	// - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+	//   this can be omitted.<br />
+	ServerCASecret pulumi.StringPtrInput `pulumi:"serverCASecret"`
+	// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+	// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+	// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+	// created using the provided CA.
+	ServerTLSSecret pulumi.StringPtrInput `pulumi:"serverTLSSecret"`
+}
+
+func (ClusterStatusCertificatesArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusCertificates)(nil)).Elem()
+}
+
+func (i ClusterStatusCertificatesArgs) ToClusterStatusCertificatesOutput() ClusterStatusCertificatesOutput {
+	return i.ToClusterStatusCertificatesOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusCertificatesArgs) ToClusterStatusCertificatesOutputWithContext(ctx context.Context) ClusterStatusCertificatesOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusCertificatesOutput)
+}
+
+func (i ClusterStatusCertificatesArgs) ToClusterStatusCertificatesPtrOutput() ClusterStatusCertificatesPtrOutput {
+	return i.ToClusterStatusCertificatesPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusCertificatesArgs) ToClusterStatusCertificatesPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusCertificatesOutput).ToClusterStatusCertificatesPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusCertificatesPtrInput is an input type that accepts ClusterStatusCertificatesArgs, ClusterStatusCertificatesPtr and ClusterStatusCertificatesPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusCertificatesPtrInput` via:
+//
+//	        ClusterStatusCertificatesArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusCertificatesPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusCertificatesPtrOutput() ClusterStatusCertificatesPtrOutput
+	ToClusterStatusCertificatesPtrOutputWithContext(context.Context) ClusterStatusCertificatesPtrOutput
+}
+
+type clusterStatusCertificatesPtrType ClusterStatusCertificatesArgs
+
+func ClusterStatusCertificatesPtr(v *ClusterStatusCertificatesArgs) ClusterStatusCertificatesPtrInput {
+	return (*clusterStatusCertificatesPtrType)(v)
+}
+
+func (*clusterStatusCertificatesPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusCertificates)(nil)).Elem()
+}
+
+func (i *clusterStatusCertificatesPtrType) ToClusterStatusCertificatesPtrOutput() ClusterStatusCertificatesPtrOutput {
+	return i.ToClusterStatusCertificatesPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusCertificatesPtrType) ToClusterStatusCertificatesPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusCertificatesPtrOutput)
+}
+
+// The configuration for the CA and related certificates, initialized with defaults.
+type ClusterStatusCertificatesOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusCertificatesOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusCertificates)(nil)).Elem()
+}
+
+func (o ClusterStatusCertificatesOutput) ToClusterStatusCertificatesOutput() ClusterStatusCertificatesOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesOutput) ToClusterStatusCertificatesOutputWithContext(ctx context.Context) ClusterStatusCertificatesOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesOutput) ToClusterStatusCertificatesPtrOutput() ClusterStatusCertificatesPtrOutput {
+	return o.ToClusterStatusCertificatesPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusCertificatesOutput) ToClusterStatusCertificatesPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusCertificates) *ClusterStatusCertificates {
+		return &v
+	}).(ClusterStatusCertificatesPtrOutput)
+}
+
+// The secret containing the Client CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate all the client certificates.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the client certificates,
+//     used as `ssl_ca_file` of all the instances.<br />
+//   - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesOutput) ClientCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificates) *string { return v.ClientCASecret }).(pulumi.StringPtrOutput)
+}
+
+// Expiration dates for all certificates.
+func (o ClusterStatusCertificatesOutput) Expirations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusCertificates) map[string]string { return v.Expirations }).(pulumi.StringMapOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+// the `streaming_replica` user.
+// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesOutput) ReplicationTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificates) *string { return v.ReplicationTLSSecret }).(pulumi.StringPtrOutput)
+}
+
+// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+func (o ClusterStatusCertificatesOutput) ServerAltDNSNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusCertificates) []string { return v.ServerAltDNSNames }).(pulumi.StringArrayOutput)
+}
+
+// The secret containing the Server CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the server certificate,
+//     used as `sslrootcert` in client connection strings.<br />
+//   - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesOutput) ServerCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificates) *string { return v.ServerCASecret }).(pulumi.StringPtrOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesOutput) ServerTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificates) *string { return v.ServerTLSSecret }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusCertificatesPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusCertificatesPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusCertificates)(nil)).Elem()
+}
+
+func (o ClusterStatusCertificatesPtrOutput) ToClusterStatusCertificatesPtrOutput() ClusterStatusCertificatesPtrOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesPtrOutput) ToClusterStatusCertificatesPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPtrOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesPtrOutput) Elem() ClusterStatusCertificatesOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificates) ClusterStatusCertificates {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusCertificates
+		return ret
+	}).(ClusterStatusCertificatesOutput)
+}
+
+// The secret containing the Client CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate all the client certificates.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the client certificates,
+//     used as `ssl_ca_file` of all the instances.<br />
+//   - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesPtrOutput) ClientCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificates) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ClientCASecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// Expiration dates for all certificates.
+func (o ClusterStatusCertificatesPtrOutput) Expirations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificates) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Expirations
+	}).(pulumi.StringMapOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+// the `streaming_replica` user.
+// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesPtrOutput) ReplicationTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificates) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ReplicationTLSSecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+func (o ClusterStatusCertificatesPtrOutput) ServerAltDNSNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificates) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerAltDNSNames
+	}).(pulumi.StringArrayOutput)
+}
+
+// The secret containing the Server CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the server certificate,
+//     used as `sslrootcert` in client connection strings.<br />
+//   - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesPtrOutput) ServerCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificates) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerCASecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesPtrOutput) ServerTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificates) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerTLSSecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// The configuration for the CA and related certificates, initialized with defaults.
+type ClusterStatusCertificatesPatch struct {
+	// The secret containing the Client CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate all the client certificates.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the client certificates,
+	//   used as `ssl_ca_file` of all the instances.<br />
+	// - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+	//   this can be omitted.<br />
+	ClientCASecret *string `pulumi:"clientCASecret"`
+	// Expiration dates for all certificates.
+	Expirations map[string]string `pulumi:"expirations"`
+	// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+	// the `streaming_replica` user.
+	// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+	// created using the provided CA.
+	ReplicationTLSSecret *string `pulumi:"replicationTLSSecret"`
+	// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+	ServerAltDNSNames []string `pulumi:"serverAltDNSNames"`
+	// The secret containing the Server CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the server certificate,
+	//   used as `sslrootcert` in client connection strings.<br />
+	// - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+	//   this can be omitted.<br />
+	ServerCASecret *string `pulumi:"serverCASecret"`
+	// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+	// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+	// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+	// created using the provided CA.
+	ServerTLSSecret *string `pulumi:"serverTLSSecret"`
+}
+
+// ClusterStatusCertificatesPatchInput is an input type that accepts ClusterStatusCertificatesPatchArgs and ClusterStatusCertificatesPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusCertificatesPatchInput` via:
+//
+//	ClusterStatusCertificatesPatchArgs{...}
+type ClusterStatusCertificatesPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusCertificatesPatchOutput() ClusterStatusCertificatesPatchOutput
+	ToClusterStatusCertificatesPatchOutputWithContext(context.Context) ClusterStatusCertificatesPatchOutput
+}
+
+// The configuration for the CA and related certificates, initialized with defaults.
+type ClusterStatusCertificatesPatchArgs struct {
+	// The secret containing the Client CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate all the client certificates.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the client certificates,
+	//   used as `ssl_ca_file` of all the instances.<br />
+	// - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+	//   this can be omitted.<br />
+	ClientCASecret pulumi.StringPtrInput `pulumi:"clientCASecret"`
+	// Expiration dates for all certificates.
+	Expirations pulumi.StringMapInput `pulumi:"expirations"`
+	// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+	// the `streaming_replica` user.
+	// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+	// created using the provided CA.
+	ReplicationTLSSecret pulumi.StringPtrInput `pulumi:"replicationTLSSecret"`
+	// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+	ServerAltDNSNames pulumi.StringArrayInput `pulumi:"serverAltDNSNames"`
+	// The secret containing the Server CA certificate. If not defined, a new secret will be created
+	// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+	// <br />
+	// Contains:<br />
+	// <br />
+	// - `ca.crt`: CA that should be used to validate the server certificate,
+	//   used as `sslrootcert` in client connection strings.<br />
+	// - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+	//   this can be omitted.<br />
+	ServerCASecret pulumi.StringPtrInput `pulumi:"serverCASecret"`
+	// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+	// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+	// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+	// created using the provided CA.
+	ServerTLSSecret pulumi.StringPtrInput `pulumi:"serverTLSSecret"`
+}
+
+func (ClusterStatusCertificatesPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusCertificatesPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusCertificatesPatchArgs) ToClusterStatusCertificatesPatchOutput() ClusterStatusCertificatesPatchOutput {
+	return i.ToClusterStatusCertificatesPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusCertificatesPatchArgs) ToClusterStatusCertificatesPatchOutputWithContext(ctx context.Context) ClusterStatusCertificatesPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusCertificatesPatchOutput)
+}
+
+func (i ClusterStatusCertificatesPatchArgs) ToClusterStatusCertificatesPatchPtrOutput() ClusterStatusCertificatesPatchPtrOutput {
+	return i.ToClusterStatusCertificatesPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusCertificatesPatchArgs) ToClusterStatusCertificatesPatchPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusCertificatesPatchOutput).ToClusterStatusCertificatesPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusCertificatesPatchPtrInput is an input type that accepts ClusterStatusCertificatesPatchArgs, ClusterStatusCertificatesPatchPtr and ClusterStatusCertificatesPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusCertificatesPatchPtrInput` via:
+//
+//	        ClusterStatusCertificatesPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusCertificatesPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusCertificatesPatchPtrOutput() ClusterStatusCertificatesPatchPtrOutput
+	ToClusterStatusCertificatesPatchPtrOutputWithContext(context.Context) ClusterStatusCertificatesPatchPtrOutput
+}
+
+type clusterStatusCertificatesPatchPtrType ClusterStatusCertificatesPatchArgs
+
+func ClusterStatusCertificatesPatchPtr(v *ClusterStatusCertificatesPatchArgs) ClusterStatusCertificatesPatchPtrInput {
+	return (*clusterStatusCertificatesPatchPtrType)(v)
+}
+
+func (*clusterStatusCertificatesPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusCertificatesPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusCertificatesPatchPtrType) ToClusterStatusCertificatesPatchPtrOutput() ClusterStatusCertificatesPatchPtrOutput {
+	return i.ToClusterStatusCertificatesPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusCertificatesPatchPtrType) ToClusterStatusCertificatesPatchPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusCertificatesPatchPtrOutput)
+}
+
+// The configuration for the CA and related certificates, initialized with defaults.
+type ClusterStatusCertificatesPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusCertificatesPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusCertificatesPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusCertificatesPatchOutput) ToClusterStatusCertificatesPatchOutput() ClusterStatusCertificatesPatchOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesPatchOutput) ToClusterStatusCertificatesPatchOutputWithContext(ctx context.Context) ClusterStatusCertificatesPatchOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesPatchOutput) ToClusterStatusCertificatesPatchPtrOutput() ClusterStatusCertificatesPatchPtrOutput {
+	return o.ToClusterStatusCertificatesPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusCertificatesPatchOutput) ToClusterStatusCertificatesPatchPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusCertificatesPatch) *ClusterStatusCertificatesPatch {
+		return &v
+	}).(ClusterStatusCertificatesPatchPtrOutput)
+}
+
+// The secret containing the Client CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate all the client certificates.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the client certificates,
+//     used as `ssl_ca_file` of all the instances.<br />
+//   - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesPatchOutput) ClientCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificatesPatch) *string { return v.ClientCASecret }).(pulumi.StringPtrOutput)
+}
+
+// Expiration dates for all certificates.
+func (o ClusterStatusCertificatesPatchOutput) Expirations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusCertificatesPatch) map[string]string { return v.Expirations }).(pulumi.StringMapOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+// the `streaming_replica` user.
+// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesPatchOutput) ReplicationTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificatesPatch) *string { return v.ReplicationTLSSecret }).(pulumi.StringPtrOutput)
+}
+
+// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+func (o ClusterStatusCertificatesPatchOutput) ServerAltDNSNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusCertificatesPatch) []string { return v.ServerAltDNSNames }).(pulumi.StringArrayOutput)
+}
+
+// The secret containing the Server CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the server certificate,
+//     used as `sslrootcert` in client connection strings.<br />
+//   - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesPatchOutput) ServerCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificatesPatch) *string { return v.ServerCASecret }).(pulumi.StringPtrOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesPatchOutput) ServerTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusCertificatesPatch) *string { return v.ServerTLSSecret }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusCertificatesPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusCertificatesPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusCertificatesPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusCertificatesPatchPtrOutput) ToClusterStatusCertificatesPatchPtrOutput() ClusterStatusCertificatesPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesPatchPtrOutput) ToClusterStatusCertificatesPatchPtrOutputWithContext(ctx context.Context) ClusterStatusCertificatesPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusCertificatesPatchPtrOutput) Elem() ClusterStatusCertificatesPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificatesPatch) ClusterStatusCertificatesPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusCertificatesPatch
+		return ret
+	}).(ClusterStatusCertificatesPatchOutput)
+}
+
+// The secret containing the Client CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate all the client certificates.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the client certificates,
+//     used as `ssl_ca_file` of all the instances.<br />
+//   - `ca.key`: key used to generate client certificates, if ReplicationTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesPatchPtrOutput) ClientCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificatesPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ClientCASecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// Expiration dates for all certificates.
+func (o ClusterStatusCertificatesPatchPtrOutput) Expirations() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificatesPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Expirations
+	}).(pulumi.StringMapOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the client certificate to authenticate as
+// the `streaming_replica` user.
+// If not defined, ClientCASecret must provide also `ca.key`, and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesPatchPtrOutput) ReplicationTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificatesPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ReplicationTLSSecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// The list of the server alternative DNS names to be added to the generated server TLS certificates, when required.
+func (o ClusterStatusCertificatesPatchPtrOutput) ServerAltDNSNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificatesPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerAltDNSNames
+	}).(pulumi.StringArrayOutput)
+}
+
+// The secret containing the Server CA certificate. If not defined, a new secret will be created
+// with a self-signed CA and will be used to generate the TLS certificate ServerTLSSecret.<br />
+// <br />
+// Contains:<br />
+// <br />
+//   - `ca.crt`: CA that should be used to validate the server certificate,
+//     used as `sslrootcert` in client connection strings.<br />
+//   - `ca.key`: key used to generate Server SSL certs, if ServerTLSSecret is provided,
+//     this can be omitted.<br />
+func (o ClusterStatusCertificatesPatchPtrOutput) ServerCASecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificatesPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerCASecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// The secret of type kubernetes.io/tls containing the server TLS certificate and key that will be set as
+// `ssl_cert_file` and `ssl_key_file` so that clients can connect to postgres securely.
+// If not defined, ServerCASecret must provide also `ca.key` and a new secret will be
+// created using the provided CA.
+func (o ClusterStatusCertificatesPatchPtrOutput) ServerTLSSecret() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusCertificatesPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerTLSSecret
+	}).(pulumi.StringPtrOutput)
+}
+
+// Condition contains details for one aspect of the current state of this API Resource.
+type ClusterStatusConditions struct {
+	// lastTransitionTime is the last time the condition transitioned from one status to another.
+	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+	LastTransitionTime *string `pulumi:"lastTransitionTime"`
+	// message is a human readable message indicating details about the transition.
+	// This may be an empty string.
+	Message *string `pulumi:"message"`
+	// observedGeneration represents the .metadata.generation that the condition was set based upon.
+	// For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+	// with respect to the current state of the instance.
+	ObservedGeneration *int `pulumi:"observedGeneration"`
+	// reason contains a programmatic identifier indicating the reason for the condition's last transition.
+	// Producers of specific condition types may define expected values and meanings for this field,
+	// and whether the values are considered a guaranteed API.
+	// The value should be a CamelCase string.
+	// This field may not be empty.
+	Reason *string `pulumi:"reason"`
+	// status of the condition, one of True, False, Unknown.
+	Status *string `pulumi:"status"`
+	// type of condition in CamelCase or in foo.example.com/CamelCase.
+	Type *string `pulumi:"type"`
+}
+
+// ClusterStatusConditionsInput is an input type that accepts ClusterStatusConditionsArgs and ClusterStatusConditionsOutput values.
+// You can construct a concrete instance of `ClusterStatusConditionsInput` via:
+//
+//	ClusterStatusConditionsArgs{...}
+type ClusterStatusConditionsInput interface {
+	pulumi.Input
+
+	ToClusterStatusConditionsOutput() ClusterStatusConditionsOutput
+	ToClusterStatusConditionsOutputWithContext(context.Context) ClusterStatusConditionsOutput
+}
+
+// Condition contains details for one aspect of the current state of this API Resource.
+type ClusterStatusConditionsArgs struct {
+	// lastTransitionTime is the last time the condition transitioned from one status to another.
+	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+	LastTransitionTime pulumi.StringPtrInput `pulumi:"lastTransitionTime"`
+	// message is a human readable message indicating details about the transition.
+	// This may be an empty string.
+	Message pulumi.StringPtrInput `pulumi:"message"`
+	// observedGeneration represents the .metadata.generation that the condition was set based upon.
+	// For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+	// with respect to the current state of the instance.
+	ObservedGeneration pulumi.IntPtrInput `pulumi:"observedGeneration"`
+	// reason contains a programmatic identifier indicating the reason for the condition's last transition.
+	// Producers of specific condition types may define expected values and meanings for this field,
+	// and whether the values are considered a guaranteed API.
+	// The value should be a CamelCase string.
+	// This field may not be empty.
+	Reason pulumi.StringPtrInput `pulumi:"reason"`
+	// status of the condition, one of True, False, Unknown.
+	Status pulumi.StringPtrInput `pulumi:"status"`
+	// type of condition in CamelCase or in foo.example.com/CamelCase.
+	Type pulumi.StringPtrInput `pulumi:"type"`
+}
+
+func (ClusterStatusConditionsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConditions)(nil)).Elem()
+}
+
+func (i ClusterStatusConditionsArgs) ToClusterStatusConditionsOutput() ClusterStatusConditionsOutput {
+	return i.ToClusterStatusConditionsOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConditionsArgs) ToClusterStatusConditionsOutputWithContext(ctx context.Context) ClusterStatusConditionsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConditionsOutput)
+}
+
+// ClusterStatusConditionsArrayInput is an input type that accepts ClusterStatusConditionsArray and ClusterStatusConditionsArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusConditionsArrayInput` via:
+//
+//	ClusterStatusConditionsArray{ ClusterStatusConditionsArgs{...} }
+type ClusterStatusConditionsArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusConditionsArrayOutput() ClusterStatusConditionsArrayOutput
+	ToClusterStatusConditionsArrayOutputWithContext(context.Context) ClusterStatusConditionsArrayOutput
+}
+
+type ClusterStatusConditionsArray []ClusterStatusConditionsInput
+
+func (ClusterStatusConditionsArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusConditions)(nil)).Elem()
+}
+
+func (i ClusterStatusConditionsArray) ToClusterStatusConditionsArrayOutput() ClusterStatusConditionsArrayOutput {
+	return i.ToClusterStatusConditionsArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConditionsArray) ToClusterStatusConditionsArrayOutputWithContext(ctx context.Context) ClusterStatusConditionsArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConditionsArrayOutput)
+}
+
+// Condition contains details for one aspect of the current state of this API Resource.
+type ClusterStatusConditionsOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConditionsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConditions)(nil)).Elem()
+}
+
+func (o ClusterStatusConditionsOutput) ToClusterStatusConditionsOutput() ClusterStatusConditionsOutput {
+	return o
+}
+
+func (o ClusterStatusConditionsOutput) ToClusterStatusConditionsOutputWithContext(ctx context.Context) ClusterStatusConditionsOutput {
+	return o
+}
+
+// lastTransitionTime is the last time the condition transitioned from one status to another.
+// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+func (o ClusterStatusConditionsOutput) LastTransitionTime() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditions) *string { return v.LastTransitionTime }).(pulumi.StringPtrOutput)
+}
+
+// message is a human readable message indicating details about the transition.
+// This may be an empty string.
+func (o ClusterStatusConditionsOutput) Message() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditions) *string { return v.Message }).(pulumi.StringPtrOutput)
+}
+
+// observedGeneration represents the .metadata.generation that the condition was set based upon.
+// For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+// with respect to the current state of the instance.
+func (o ClusterStatusConditionsOutput) ObservedGeneration() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditions) *int { return v.ObservedGeneration }).(pulumi.IntPtrOutput)
+}
+
+// reason contains a programmatic identifier indicating the reason for the condition's last transition.
+// Producers of specific condition types may define expected values and meanings for this field,
+// and whether the values are considered a guaranteed API.
+// The value should be a CamelCase string.
+// This field may not be empty.
+func (o ClusterStatusConditionsOutput) Reason() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditions) *string { return v.Reason }).(pulumi.StringPtrOutput)
+}
+
+// status of the condition, one of True, False, Unknown.
+func (o ClusterStatusConditionsOutput) Status() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditions) *string { return v.Status }).(pulumi.StringPtrOutput)
+}
+
+// type of condition in CamelCase or in foo.example.com/CamelCase.
+func (o ClusterStatusConditionsOutput) Type() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditions) *string { return v.Type }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusConditionsArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConditionsArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusConditions)(nil)).Elem()
+}
+
+func (o ClusterStatusConditionsArrayOutput) ToClusterStatusConditionsArrayOutput() ClusterStatusConditionsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusConditionsArrayOutput) ToClusterStatusConditionsArrayOutputWithContext(ctx context.Context) ClusterStatusConditionsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusConditionsArrayOutput) Index(i pulumi.IntInput) ClusterStatusConditionsOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusConditions {
+		return vs[0].([]ClusterStatusConditions)[vs[1].(int)]
+	}).(ClusterStatusConditionsOutput)
+}
+
+// Condition contains details for one aspect of the current state of this API Resource.
+type ClusterStatusConditionsPatch struct {
+	// lastTransitionTime is the last time the condition transitioned from one status to another.
+	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+	LastTransitionTime *string `pulumi:"lastTransitionTime"`
+	// message is a human readable message indicating details about the transition.
+	// This may be an empty string.
+	Message *string `pulumi:"message"`
+	// observedGeneration represents the .metadata.generation that the condition was set based upon.
+	// For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+	// with respect to the current state of the instance.
+	ObservedGeneration *int `pulumi:"observedGeneration"`
+	// reason contains a programmatic identifier indicating the reason for the condition's last transition.
+	// Producers of specific condition types may define expected values and meanings for this field,
+	// and whether the values are considered a guaranteed API.
+	// The value should be a CamelCase string.
+	// This field may not be empty.
+	Reason *string `pulumi:"reason"`
+	// status of the condition, one of True, False, Unknown.
+	Status *string `pulumi:"status"`
+	// type of condition in CamelCase or in foo.example.com/CamelCase.
+	Type *string `pulumi:"type"`
+}
+
+// ClusterStatusConditionsPatchInput is an input type that accepts ClusterStatusConditionsPatchArgs and ClusterStatusConditionsPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusConditionsPatchInput` via:
+//
+//	ClusterStatusConditionsPatchArgs{...}
+type ClusterStatusConditionsPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusConditionsPatchOutput() ClusterStatusConditionsPatchOutput
+	ToClusterStatusConditionsPatchOutputWithContext(context.Context) ClusterStatusConditionsPatchOutput
+}
+
+// Condition contains details for one aspect of the current state of this API Resource.
+type ClusterStatusConditionsPatchArgs struct {
+	// lastTransitionTime is the last time the condition transitioned from one status to another.
+	// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+	LastTransitionTime pulumi.StringPtrInput `pulumi:"lastTransitionTime"`
+	// message is a human readable message indicating details about the transition.
+	// This may be an empty string.
+	Message pulumi.StringPtrInput `pulumi:"message"`
+	// observedGeneration represents the .metadata.generation that the condition was set based upon.
+	// For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+	// with respect to the current state of the instance.
+	ObservedGeneration pulumi.IntPtrInput `pulumi:"observedGeneration"`
+	// reason contains a programmatic identifier indicating the reason for the condition's last transition.
+	// Producers of specific condition types may define expected values and meanings for this field,
+	// and whether the values are considered a guaranteed API.
+	// The value should be a CamelCase string.
+	// This field may not be empty.
+	Reason pulumi.StringPtrInput `pulumi:"reason"`
+	// status of the condition, one of True, False, Unknown.
+	Status pulumi.StringPtrInput `pulumi:"status"`
+	// type of condition in CamelCase or in foo.example.com/CamelCase.
+	Type pulumi.StringPtrInput `pulumi:"type"`
+}
+
+func (ClusterStatusConditionsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConditionsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusConditionsPatchArgs) ToClusterStatusConditionsPatchOutput() ClusterStatusConditionsPatchOutput {
+	return i.ToClusterStatusConditionsPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConditionsPatchArgs) ToClusterStatusConditionsPatchOutputWithContext(ctx context.Context) ClusterStatusConditionsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConditionsPatchOutput)
+}
+
+// ClusterStatusConditionsPatchArrayInput is an input type that accepts ClusterStatusConditionsPatchArray and ClusterStatusConditionsPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusConditionsPatchArrayInput` via:
+//
+//	ClusterStatusConditionsPatchArray{ ClusterStatusConditionsPatchArgs{...} }
+type ClusterStatusConditionsPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusConditionsPatchArrayOutput() ClusterStatusConditionsPatchArrayOutput
+	ToClusterStatusConditionsPatchArrayOutputWithContext(context.Context) ClusterStatusConditionsPatchArrayOutput
+}
+
+type ClusterStatusConditionsPatchArray []ClusterStatusConditionsPatchInput
+
+func (ClusterStatusConditionsPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusConditionsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusConditionsPatchArray) ToClusterStatusConditionsPatchArrayOutput() ClusterStatusConditionsPatchArrayOutput {
+	return i.ToClusterStatusConditionsPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConditionsPatchArray) ToClusterStatusConditionsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusConditionsPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConditionsPatchArrayOutput)
+}
+
+// Condition contains details for one aspect of the current state of this API Resource.
+type ClusterStatusConditionsPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConditionsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConditionsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusConditionsPatchOutput) ToClusterStatusConditionsPatchOutput() ClusterStatusConditionsPatchOutput {
+	return o
+}
+
+func (o ClusterStatusConditionsPatchOutput) ToClusterStatusConditionsPatchOutputWithContext(ctx context.Context) ClusterStatusConditionsPatchOutput {
+	return o
+}
+
+// lastTransitionTime is the last time the condition transitioned from one status to another.
+// This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+func (o ClusterStatusConditionsPatchOutput) LastTransitionTime() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditionsPatch) *string { return v.LastTransitionTime }).(pulumi.StringPtrOutput)
+}
+
+// message is a human readable message indicating details about the transition.
+// This may be an empty string.
+func (o ClusterStatusConditionsPatchOutput) Message() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditionsPatch) *string { return v.Message }).(pulumi.StringPtrOutput)
+}
+
+// observedGeneration represents the .metadata.generation that the condition was set based upon.
+// For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+// with respect to the current state of the instance.
+func (o ClusterStatusConditionsPatchOutput) ObservedGeneration() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditionsPatch) *int { return v.ObservedGeneration }).(pulumi.IntPtrOutput)
+}
+
+// reason contains a programmatic identifier indicating the reason for the condition's last transition.
+// Producers of specific condition types may define expected values and meanings for this field,
+// and whether the values are considered a guaranteed API.
+// The value should be a CamelCase string.
+// This field may not be empty.
+func (o ClusterStatusConditionsPatchOutput) Reason() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditionsPatch) *string { return v.Reason }).(pulumi.StringPtrOutput)
+}
+
+// status of the condition, one of True, False, Unknown.
+func (o ClusterStatusConditionsPatchOutput) Status() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditionsPatch) *string { return v.Status }).(pulumi.StringPtrOutput)
+}
+
+// type of condition in CamelCase or in foo.example.com/CamelCase.
+func (o ClusterStatusConditionsPatchOutput) Type() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusConditionsPatch) *string { return v.Type }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusConditionsPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConditionsPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusConditionsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusConditionsPatchArrayOutput) ToClusterStatusConditionsPatchArrayOutput() ClusterStatusConditionsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusConditionsPatchArrayOutput) ToClusterStatusConditionsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusConditionsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusConditionsPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusConditionsPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusConditionsPatch {
+		return vs[0].([]ClusterStatusConditionsPatch)[vs[1].(int)]
+	}).(ClusterStatusConditionsPatchOutput)
+}
+
+// The list of resource versions of the configmaps,
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// configmap data
+type ClusterStatusConfigMapResourceVersion struct {
+	// A map with the versions of all the config maps used to pass metrics.
+	// Map keys are the config map names, map values are the versions
+	Metrics map[string]string `pulumi:"metrics"`
+}
+
+// ClusterStatusConfigMapResourceVersionInput is an input type that accepts ClusterStatusConfigMapResourceVersionArgs and ClusterStatusConfigMapResourceVersionOutput values.
+// You can construct a concrete instance of `ClusterStatusConfigMapResourceVersionInput` via:
+//
+//	ClusterStatusConfigMapResourceVersionArgs{...}
+type ClusterStatusConfigMapResourceVersionInput interface {
+	pulumi.Input
+
+	ToClusterStatusConfigMapResourceVersionOutput() ClusterStatusConfigMapResourceVersionOutput
+	ToClusterStatusConfigMapResourceVersionOutputWithContext(context.Context) ClusterStatusConfigMapResourceVersionOutput
+}
+
+// The list of resource versions of the configmaps,
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// configmap data
+type ClusterStatusConfigMapResourceVersionArgs struct {
+	// A map with the versions of all the config maps used to pass metrics.
+	// Map keys are the config map names, map values are the versions
+	Metrics pulumi.StringMapInput `pulumi:"metrics"`
+}
+
+func (ClusterStatusConfigMapResourceVersionArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConfigMapResourceVersion)(nil)).Elem()
+}
+
+func (i ClusterStatusConfigMapResourceVersionArgs) ToClusterStatusConfigMapResourceVersionOutput() ClusterStatusConfigMapResourceVersionOutput {
+	return i.ToClusterStatusConfigMapResourceVersionOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConfigMapResourceVersionArgs) ToClusterStatusConfigMapResourceVersionOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConfigMapResourceVersionOutput)
+}
+
+func (i ClusterStatusConfigMapResourceVersionArgs) ToClusterStatusConfigMapResourceVersionPtrOutput() ClusterStatusConfigMapResourceVersionPtrOutput {
+	return i.ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConfigMapResourceVersionArgs) ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConfigMapResourceVersionOutput).ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusConfigMapResourceVersionPtrInput is an input type that accepts ClusterStatusConfigMapResourceVersionArgs, ClusterStatusConfigMapResourceVersionPtr and ClusterStatusConfigMapResourceVersionPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusConfigMapResourceVersionPtrInput` via:
+//
+//	        ClusterStatusConfigMapResourceVersionArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusConfigMapResourceVersionPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusConfigMapResourceVersionPtrOutput() ClusterStatusConfigMapResourceVersionPtrOutput
+	ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(context.Context) ClusterStatusConfigMapResourceVersionPtrOutput
+}
+
+type clusterStatusConfigMapResourceVersionPtrType ClusterStatusConfigMapResourceVersionArgs
+
+func ClusterStatusConfigMapResourceVersionPtr(v *ClusterStatusConfigMapResourceVersionArgs) ClusterStatusConfigMapResourceVersionPtrInput {
+	return (*clusterStatusConfigMapResourceVersionPtrType)(v)
+}
+
+func (*clusterStatusConfigMapResourceVersionPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusConfigMapResourceVersion)(nil)).Elem()
+}
+
+func (i *clusterStatusConfigMapResourceVersionPtrType) ToClusterStatusConfigMapResourceVersionPtrOutput() ClusterStatusConfigMapResourceVersionPtrOutput {
+	return i.ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusConfigMapResourceVersionPtrType) ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConfigMapResourceVersionPtrOutput)
+}
+
+// The list of resource versions of the configmaps,
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// configmap data
+type ClusterStatusConfigMapResourceVersionOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConfigMapResourceVersionOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConfigMapResourceVersion)(nil)).Elem()
+}
+
+func (o ClusterStatusConfigMapResourceVersionOutput) ToClusterStatusConfigMapResourceVersionOutput() ClusterStatusConfigMapResourceVersionOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionOutput) ToClusterStatusConfigMapResourceVersionOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionOutput) ToClusterStatusConfigMapResourceVersionPtrOutput() ClusterStatusConfigMapResourceVersionPtrOutput {
+	return o.ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusConfigMapResourceVersionOutput) ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusConfigMapResourceVersion) *ClusterStatusConfigMapResourceVersion {
+		return &v
+	}).(ClusterStatusConfigMapResourceVersionPtrOutput)
+}
+
+// A map with the versions of all the config maps used to pass metrics.
+// Map keys are the config map names, map values are the versions
+func (o ClusterStatusConfigMapResourceVersionOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusConfigMapResourceVersion) map[string]string { return v.Metrics }).(pulumi.StringMapOutput)
+}
+
+type ClusterStatusConfigMapResourceVersionPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConfigMapResourceVersionPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusConfigMapResourceVersion)(nil)).Elem()
+}
+
+func (o ClusterStatusConfigMapResourceVersionPtrOutput) ToClusterStatusConfigMapResourceVersionPtrOutput() ClusterStatusConfigMapResourceVersionPtrOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionPtrOutput) ToClusterStatusConfigMapResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPtrOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionPtrOutput) Elem() ClusterStatusConfigMapResourceVersionOutput {
+	return o.ApplyT(func(v *ClusterStatusConfigMapResourceVersion) ClusterStatusConfigMapResourceVersion {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusConfigMapResourceVersion
+		return ret
+	}).(ClusterStatusConfigMapResourceVersionOutput)
+}
+
+// A map with the versions of all the config maps used to pass metrics.
+// Map keys are the config map names, map values are the versions
+func (o ClusterStatusConfigMapResourceVersionPtrOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusConfigMapResourceVersion) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Metrics
+	}).(pulumi.StringMapOutput)
+}
+
+// The list of resource versions of the configmaps,
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// configmap data
+type ClusterStatusConfigMapResourceVersionPatch struct {
+	// A map with the versions of all the config maps used to pass metrics.
+	// Map keys are the config map names, map values are the versions
+	Metrics map[string]string `pulumi:"metrics"`
+}
+
+// ClusterStatusConfigMapResourceVersionPatchInput is an input type that accepts ClusterStatusConfigMapResourceVersionPatchArgs and ClusterStatusConfigMapResourceVersionPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusConfigMapResourceVersionPatchInput` via:
+//
+//	ClusterStatusConfigMapResourceVersionPatchArgs{...}
+type ClusterStatusConfigMapResourceVersionPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusConfigMapResourceVersionPatchOutput() ClusterStatusConfigMapResourceVersionPatchOutput
+	ToClusterStatusConfigMapResourceVersionPatchOutputWithContext(context.Context) ClusterStatusConfigMapResourceVersionPatchOutput
+}
+
+// The list of resource versions of the configmaps,
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// configmap data
+type ClusterStatusConfigMapResourceVersionPatchArgs struct {
+	// A map with the versions of all the config maps used to pass metrics.
+	// Map keys are the config map names, map values are the versions
+	Metrics pulumi.StringMapInput `pulumi:"metrics"`
+}
+
+func (ClusterStatusConfigMapResourceVersionPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConfigMapResourceVersionPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusConfigMapResourceVersionPatchArgs) ToClusterStatusConfigMapResourceVersionPatchOutput() ClusterStatusConfigMapResourceVersionPatchOutput {
+	return i.ToClusterStatusConfigMapResourceVersionPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConfigMapResourceVersionPatchArgs) ToClusterStatusConfigMapResourceVersionPatchOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConfigMapResourceVersionPatchOutput)
+}
+
+func (i ClusterStatusConfigMapResourceVersionPatchArgs) ToClusterStatusConfigMapResourceVersionPatchPtrOutput() ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return i.ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusConfigMapResourceVersionPatchArgs) ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConfigMapResourceVersionPatchOutput).ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusConfigMapResourceVersionPatchPtrInput is an input type that accepts ClusterStatusConfigMapResourceVersionPatchArgs, ClusterStatusConfigMapResourceVersionPatchPtr and ClusterStatusConfigMapResourceVersionPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusConfigMapResourceVersionPatchPtrInput` via:
+//
+//	        ClusterStatusConfigMapResourceVersionPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusConfigMapResourceVersionPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusConfigMapResourceVersionPatchPtrOutput() ClusterStatusConfigMapResourceVersionPatchPtrOutput
+	ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(context.Context) ClusterStatusConfigMapResourceVersionPatchPtrOutput
+}
+
+type clusterStatusConfigMapResourceVersionPatchPtrType ClusterStatusConfigMapResourceVersionPatchArgs
+
+func ClusterStatusConfigMapResourceVersionPatchPtr(v *ClusterStatusConfigMapResourceVersionPatchArgs) ClusterStatusConfigMapResourceVersionPatchPtrInput {
+	return (*clusterStatusConfigMapResourceVersionPatchPtrType)(v)
+}
+
+func (*clusterStatusConfigMapResourceVersionPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusConfigMapResourceVersionPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusConfigMapResourceVersionPatchPtrType) ToClusterStatusConfigMapResourceVersionPatchPtrOutput() ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return i.ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusConfigMapResourceVersionPatchPtrType) ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusConfigMapResourceVersionPatchPtrOutput)
+}
+
+// The list of resource versions of the configmaps,
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// configmap data
+type ClusterStatusConfigMapResourceVersionPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConfigMapResourceVersionPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusConfigMapResourceVersionPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusConfigMapResourceVersionPatchOutput) ToClusterStatusConfigMapResourceVersionPatchOutput() ClusterStatusConfigMapResourceVersionPatchOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionPatchOutput) ToClusterStatusConfigMapResourceVersionPatchOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPatchOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionPatchOutput) ToClusterStatusConfigMapResourceVersionPatchPtrOutput() ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return o.ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusConfigMapResourceVersionPatchOutput) ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusConfigMapResourceVersionPatch) *ClusterStatusConfigMapResourceVersionPatch {
+		return &v
+	}).(ClusterStatusConfigMapResourceVersionPatchPtrOutput)
+}
+
+// A map with the versions of all the config maps used to pass metrics.
+// Map keys are the config map names, map values are the versions
+func (o ClusterStatusConfigMapResourceVersionPatchOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusConfigMapResourceVersionPatch) map[string]string { return v.Metrics }).(pulumi.StringMapOutput)
+}
+
+type ClusterStatusConfigMapResourceVersionPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusConfigMapResourceVersionPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusConfigMapResourceVersionPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusConfigMapResourceVersionPatchPtrOutput) ToClusterStatusConfigMapResourceVersionPatchPtrOutput() ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionPatchPtrOutput) ToClusterStatusConfigMapResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusConfigMapResourceVersionPatchPtrOutput) Elem() ClusterStatusConfigMapResourceVersionPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusConfigMapResourceVersionPatch) ClusterStatusConfigMapResourceVersionPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusConfigMapResourceVersionPatch
+		return ret
+	}).(ClusterStatusConfigMapResourceVersionPatchOutput)
+}
+
+// A map with the versions of all the config maps used to pass metrics.
+// Map keys are the config map names, map values are the versions
+func (o ClusterStatusConfigMapResourceVersionPatchPtrOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusConfigMapResourceVersionPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Metrics
+	}).(pulumi.StringMapOutput)
+}
+
+// ManagedRolesStatus reports the state of the managed roles in the cluster
+type ClusterStatusManagedRolesStatus struct {
+	// ByStatus gives the list of roles in each state
+	ByStatus map[string][]string `pulumi:"byStatus"`
+	// CannotReconcile lists roles that cannot be reconciled, with an
+	// explanation of the cause. Failures may originate in PostgreSQL
+	// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+	// the referenced password Secret cannot be fetched).
+	CannotReconcile map[string][]string `pulumi:"cannotReconcile"`
+	// PasswordStatus gives the last transaction id and password secret version for each managed role
+	PasswordStatus map[string]map[string]string `pulumi:"passwordStatus"`
+}
+
+// ClusterStatusManagedRolesStatusInput is an input type that accepts ClusterStatusManagedRolesStatusArgs and ClusterStatusManagedRolesStatusOutput values.
+// You can construct a concrete instance of `ClusterStatusManagedRolesStatusInput` via:
+//
+//	ClusterStatusManagedRolesStatusArgs{...}
+type ClusterStatusManagedRolesStatusInput interface {
+	pulumi.Input
+
+	ToClusterStatusManagedRolesStatusOutput() ClusterStatusManagedRolesStatusOutput
+	ToClusterStatusManagedRolesStatusOutputWithContext(context.Context) ClusterStatusManagedRolesStatusOutput
+}
+
+// ManagedRolesStatus reports the state of the managed roles in the cluster
+type ClusterStatusManagedRolesStatusArgs struct {
+	// ByStatus gives the list of roles in each state
+	ByStatus pulumi.StringArrayMapInput `pulumi:"byStatus"`
+	// CannotReconcile lists roles that cannot be reconciled, with an
+	// explanation of the cause. Failures may originate in PostgreSQL
+	// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+	// the referenced password Secret cannot be fetched).
+	CannotReconcile pulumi.StringArrayMapInput `pulumi:"cannotReconcile"`
+	// PasswordStatus gives the last transaction id and password secret version for each managed role
+	PasswordStatus pulumi.StringMapMapInput `pulumi:"passwordStatus"`
+}
+
+func (ClusterStatusManagedRolesStatusArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusManagedRolesStatus)(nil)).Elem()
+}
+
+func (i ClusterStatusManagedRolesStatusArgs) ToClusterStatusManagedRolesStatusOutput() ClusterStatusManagedRolesStatusOutput {
+	return i.ToClusterStatusManagedRolesStatusOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusManagedRolesStatusArgs) ToClusterStatusManagedRolesStatusOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusManagedRolesStatusOutput)
+}
+
+func (i ClusterStatusManagedRolesStatusArgs) ToClusterStatusManagedRolesStatusPtrOutput() ClusterStatusManagedRolesStatusPtrOutput {
+	return i.ToClusterStatusManagedRolesStatusPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusManagedRolesStatusArgs) ToClusterStatusManagedRolesStatusPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusManagedRolesStatusOutput).ToClusterStatusManagedRolesStatusPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusManagedRolesStatusPtrInput is an input type that accepts ClusterStatusManagedRolesStatusArgs, ClusterStatusManagedRolesStatusPtr and ClusterStatusManagedRolesStatusPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusManagedRolesStatusPtrInput` via:
+//
+//	        ClusterStatusManagedRolesStatusArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusManagedRolesStatusPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusManagedRolesStatusPtrOutput() ClusterStatusManagedRolesStatusPtrOutput
+	ToClusterStatusManagedRolesStatusPtrOutputWithContext(context.Context) ClusterStatusManagedRolesStatusPtrOutput
+}
+
+type clusterStatusManagedRolesStatusPtrType ClusterStatusManagedRolesStatusArgs
+
+func ClusterStatusManagedRolesStatusPtr(v *ClusterStatusManagedRolesStatusArgs) ClusterStatusManagedRolesStatusPtrInput {
+	return (*clusterStatusManagedRolesStatusPtrType)(v)
+}
+
+func (*clusterStatusManagedRolesStatusPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusManagedRolesStatus)(nil)).Elem()
+}
+
+func (i *clusterStatusManagedRolesStatusPtrType) ToClusterStatusManagedRolesStatusPtrOutput() ClusterStatusManagedRolesStatusPtrOutput {
+	return i.ToClusterStatusManagedRolesStatusPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusManagedRolesStatusPtrType) ToClusterStatusManagedRolesStatusPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusManagedRolesStatusPtrOutput)
+}
+
+// ManagedRolesStatus reports the state of the managed roles in the cluster
+type ClusterStatusManagedRolesStatusOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusManagedRolesStatusOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusManagedRolesStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusManagedRolesStatusOutput) ToClusterStatusManagedRolesStatusOutput() ClusterStatusManagedRolesStatusOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusOutput) ToClusterStatusManagedRolesStatusOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusOutput) ToClusterStatusManagedRolesStatusPtrOutput() ClusterStatusManagedRolesStatusPtrOutput {
+	return o.ToClusterStatusManagedRolesStatusPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusManagedRolesStatusOutput) ToClusterStatusManagedRolesStatusPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusManagedRolesStatus) *ClusterStatusManagedRolesStatus {
+		return &v
+	}).(ClusterStatusManagedRolesStatusPtrOutput)
+}
+
+// ByStatus gives the list of roles in each state
+func (o ClusterStatusManagedRolesStatusOutput) ByStatus() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v ClusterStatusManagedRolesStatus) map[string][]string { return v.ByStatus }).(pulumi.StringArrayMapOutput)
+}
+
+// CannotReconcile lists roles that cannot be reconciled, with an
+// explanation of the cause. Failures may originate in PostgreSQL
+// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+// the referenced password Secret cannot be fetched).
+func (o ClusterStatusManagedRolesStatusOutput) CannotReconcile() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v ClusterStatusManagedRolesStatus) map[string][]string { return v.CannotReconcile }).(pulumi.StringArrayMapOutput)
+}
+
+// PasswordStatus gives the last transaction id and password secret version for each managed role
+func (o ClusterStatusManagedRolesStatusOutput) PasswordStatus() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v ClusterStatusManagedRolesStatus) map[string]map[string]string { return v.PasswordStatus }).(pulumi.StringMapMapOutput)
+}
+
+type ClusterStatusManagedRolesStatusPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusManagedRolesStatusPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusManagedRolesStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusManagedRolesStatusPtrOutput) ToClusterStatusManagedRolesStatusPtrOutput() ClusterStatusManagedRolesStatusPtrOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusPtrOutput) ToClusterStatusManagedRolesStatusPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPtrOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusPtrOutput) Elem() ClusterStatusManagedRolesStatusOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatus) ClusterStatusManagedRolesStatus {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusManagedRolesStatus
+		return ret
+	}).(ClusterStatusManagedRolesStatusOutput)
+}
+
+// ByStatus gives the list of roles in each state
+func (o ClusterStatusManagedRolesStatusPtrOutput) ByStatus() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatus) map[string][]string {
+		if v == nil {
+			return nil
+		}
+		return v.ByStatus
+	}).(pulumi.StringArrayMapOutput)
+}
+
+// CannotReconcile lists roles that cannot be reconciled, with an
+// explanation of the cause. Failures may originate in PostgreSQL
+// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+// the referenced password Secret cannot be fetched).
+func (o ClusterStatusManagedRolesStatusPtrOutput) CannotReconcile() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatus) map[string][]string {
+		if v == nil {
+			return nil
+		}
+		return v.CannotReconcile
+	}).(pulumi.StringArrayMapOutput)
+}
+
+// PasswordStatus gives the last transaction id and password secret version for each managed role
+func (o ClusterStatusManagedRolesStatusPtrOutput) PasswordStatus() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatus) map[string]map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.PasswordStatus
+	}).(pulumi.StringMapMapOutput)
+}
+
+// ManagedRolesStatus reports the state of the managed roles in the cluster
+type ClusterStatusManagedRolesStatusPatch struct {
+	// ByStatus gives the list of roles in each state
+	ByStatus map[string][]string `pulumi:"byStatus"`
+	// CannotReconcile lists roles that cannot be reconciled, with an
+	// explanation of the cause. Failures may originate in PostgreSQL
+	// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+	// the referenced password Secret cannot be fetched).
+	CannotReconcile map[string][]string `pulumi:"cannotReconcile"`
+	// PasswordStatus gives the last transaction id and password secret version for each managed role
+	PasswordStatus map[string]map[string]string `pulumi:"passwordStatus"`
+}
+
+// ClusterStatusManagedRolesStatusPatchInput is an input type that accepts ClusterStatusManagedRolesStatusPatchArgs and ClusterStatusManagedRolesStatusPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusManagedRolesStatusPatchInput` via:
+//
+//	ClusterStatusManagedRolesStatusPatchArgs{...}
+type ClusterStatusManagedRolesStatusPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusManagedRolesStatusPatchOutput() ClusterStatusManagedRolesStatusPatchOutput
+	ToClusterStatusManagedRolesStatusPatchOutputWithContext(context.Context) ClusterStatusManagedRolesStatusPatchOutput
+}
+
+// ManagedRolesStatus reports the state of the managed roles in the cluster
+type ClusterStatusManagedRolesStatusPatchArgs struct {
+	// ByStatus gives the list of roles in each state
+	ByStatus pulumi.StringArrayMapInput `pulumi:"byStatus"`
+	// CannotReconcile lists roles that cannot be reconciled, with an
+	// explanation of the cause. Failures may originate in PostgreSQL
+	// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+	// the referenced password Secret cannot be fetched).
+	CannotReconcile pulumi.StringArrayMapInput `pulumi:"cannotReconcile"`
+	// PasswordStatus gives the last transaction id and password secret version for each managed role
+	PasswordStatus pulumi.StringMapMapInput `pulumi:"passwordStatus"`
+}
+
+func (ClusterStatusManagedRolesStatusPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusManagedRolesStatusPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusManagedRolesStatusPatchArgs) ToClusterStatusManagedRolesStatusPatchOutput() ClusterStatusManagedRolesStatusPatchOutput {
+	return i.ToClusterStatusManagedRolesStatusPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusManagedRolesStatusPatchArgs) ToClusterStatusManagedRolesStatusPatchOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusManagedRolesStatusPatchOutput)
+}
+
+func (i ClusterStatusManagedRolesStatusPatchArgs) ToClusterStatusManagedRolesStatusPatchPtrOutput() ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return i.ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusManagedRolesStatusPatchArgs) ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusManagedRolesStatusPatchOutput).ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusManagedRolesStatusPatchPtrInput is an input type that accepts ClusterStatusManagedRolesStatusPatchArgs, ClusterStatusManagedRolesStatusPatchPtr and ClusterStatusManagedRolesStatusPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusManagedRolesStatusPatchPtrInput` via:
+//
+//	        ClusterStatusManagedRolesStatusPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusManagedRolesStatusPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusManagedRolesStatusPatchPtrOutput() ClusterStatusManagedRolesStatusPatchPtrOutput
+	ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(context.Context) ClusterStatusManagedRolesStatusPatchPtrOutput
+}
+
+type clusterStatusManagedRolesStatusPatchPtrType ClusterStatusManagedRolesStatusPatchArgs
+
+func ClusterStatusManagedRolesStatusPatchPtr(v *ClusterStatusManagedRolesStatusPatchArgs) ClusterStatusManagedRolesStatusPatchPtrInput {
+	return (*clusterStatusManagedRolesStatusPatchPtrType)(v)
+}
+
+func (*clusterStatusManagedRolesStatusPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusManagedRolesStatusPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusManagedRolesStatusPatchPtrType) ToClusterStatusManagedRolesStatusPatchPtrOutput() ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return i.ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusManagedRolesStatusPatchPtrType) ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusManagedRolesStatusPatchPtrOutput)
+}
+
+// ManagedRolesStatus reports the state of the managed roles in the cluster
+type ClusterStatusManagedRolesStatusPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusManagedRolesStatusPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusManagedRolesStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusManagedRolesStatusPatchOutput) ToClusterStatusManagedRolesStatusPatchOutput() ClusterStatusManagedRolesStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusPatchOutput) ToClusterStatusManagedRolesStatusPatchOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusPatchOutput) ToClusterStatusManagedRolesStatusPatchPtrOutput() ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return o.ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusManagedRolesStatusPatchOutput) ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusManagedRolesStatusPatch) *ClusterStatusManagedRolesStatusPatch {
+		return &v
+	}).(ClusterStatusManagedRolesStatusPatchPtrOutput)
+}
+
+// ByStatus gives the list of roles in each state
+func (o ClusterStatusManagedRolesStatusPatchOutput) ByStatus() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v ClusterStatusManagedRolesStatusPatch) map[string][]string { return v.ByStatus }).(pulumi.StringArrayMapOutput)
+}
+
+// CannotReconcile lists roles that cannot be reconciled, with an
+// explanation of the cause. Failures may originate in PostgreSQL
+// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+// the referenced password Secret cannot be fetched).
+func (o ClusterStatusManagedRolesStatusPatchOutput) CannotReconcile() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v ClusterStatusManagedRolesStatusPatch) map[string][]string { return v.CannotReconcile }).(pulumi.StringArrayMapOutput)
+}
+
+// PasswordStatus gives the last transaction id and password secret version for each managed role
+func (o ClusterStatusManagedRolesStatusPatchOutput) PasswordStatus() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v ClusterStatusManagedRolesStatusPatch) map[string]map[string]string { return v.PasswordStatus }).(pulumi.StringMapMapOutput)
+}
+
+type ClusterStatusManagedRolesStatusPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusManagedRolesStatusPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusManagedRolesStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusManagedRolesStatusPatchPtrOutput) ToClusterStatusManagedRolesStatusPatchPtrOutput() ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusPatchPtrOutput) ToClusterStatusManagedRolesStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusManagedRolesStatusPatchPtrOutput) Elem() ClusterStatusManagedRolesStatusPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatusPatch) ClusterStatusManagedRolesStatusPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusManagedRolesStatusPatch
+		return ret
+	}).(ClusterStatusManagedRolesStatusPatchOutput)
+}
+
+// ByStatus gives the list of roles in each state
+func (o ClusterStatusManagedRolesStatusPatchPtrOutput) ByStatus() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatusPatch) map[string][]string {
+		if v == nil {
+			return nil
+		}
+		return v.ByStatus
+	}).(pulumi.StringArrayMapOutput)
+}
+
+// CannotReconcile lists roles that cannot be reconciled, with an
+// explanation of the cause. Failures may originate in PostgreSQL
+// (e.g. dropping a role that owns objects) or in Kubernetes (e.g.
+// the referenced password Secret cannot be fetched).
+func (o ClusterStatusManagedRolesStatusPatchPtrOutput) CannotReconcile() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatusPatch) map[string][]string {
+		if v == nil {
+			return nil
+		}
+		return v.CannotReconcile
+	}).(pulumi.StringArrayMapOutput)
+}
+
+// PasswordStatus gives the last transaction id and password secret version for each managed role
+func (o ClusterStatusManagedRolesStatusPatchPtrOutput) PasswordStatus() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v *ClusterStatusManagedRolesStatusPatch) map[string]map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.PasswordStatus
+	}).(pulumi.StringMapMapOutput)
+}
+
+// Most recently observed status of the cluster. This data may not be up
+// to date. Populated by the system. Read-only.
+// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+type ClusterStatusPatch struct {
+	// AvailableArchitectures reports the available architectures of a cluster
+	AvailableArchitectures []ClusterStatusAvailableArchitecturesPatch `pulumi:"availableArchitectures"`
+	Certificates           *ClusterStatusCertificatesPatch            `pulumi:"certificates"`
+	// The commit hash number of which this operator running
+	CloudNativePGCommitHash *string `pulumi:"cloudNativePGCommitHash"`
+	// The hash of the binary of the operator
+	CloudNativePGOperatorHash *string `pulumi:"cloudNativePGOperatorHash"`
+	// Conditions for cluster object
+	Conditions               []ClusterStatusConditionsPatch              `pulumi:"conditions"`
+	ConfigMapResourceVersion *ClusterStatusConfigMapResourceVersionPatch `pulumi:"configMapResourceVersion"`
+	// Current primary instance
+	CurrentPrimary *string `pulumi:"currentPrimary"`
+	// The timestamp when the primary was detected to be unhealthy
+	// This field is reported when `.spec.failoverDelay` is populated or during online upgrades
+	CurrentPrimaryFailingSinceTimestamp *string `pulumi:"currentPrimaryFailingSinceTimestamp"`
+	// The timestamp when the last actual promotion to primary has occurred
+	CurrentPrimaryTimestamp *string `pulumi:"currentPrimaryTimestamp"`
+	// List of all the PVCs created by this cluster and still available
+	// which are not attached to a Pod
+	DanglingPVC []string `pulumi:"danglingPVC"`
+	// DemotionToken is a JSON token containing the information
+	// from pg_controldata such as Database system identifier, Latest checkpoint's
+	// TimeLineID, Latest checkpoint's REDO location, Latest checkpoint's REDO
+	// WAL file, and Time of latest checkpoint
+	DemotionToken *string `pulumi:"demotionToken"`
+	// The first recoverability point, stored as a date in RFC3339 format.
+	// This field is calculated from the content of FirstRecoverabilityPointByMethod.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	FirstRecoverabilityPoint *string `pulumi:"firstRecoverabilityPoint"`
+	// The first recoverability point, stored as a date in RFC3339 format, per backup method type.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	FirstRecoverabilityPointByMethod map[string]string `pulumi:"firstRecoverabilityPointByMethod"`
+	// List of all the PVCs not dangling nor initializing
+	HealthyPVC []string `pulumi:"healthyPVC"`
+	// Image contains the image name used by the pods
+	Image *string `pulumi:"image"`
+	// List of all the PVCs that are being initialized by this cluster
+	InitializingPVC []string `pulumi:"initializingPVC"`
+	// List of instance names in the cluster
+	InstanceNames []string `pulumi:"instanceNames"`
+	// The total number of PVC Groups detected in the cluster. It may differ from the number of existing instance pods.
+	Instances *int `pulumi:"instances"`
+	// The reported state of the instances during the last reconciliation loop
+	InstancesReportedState map[string]map[string]string `pulumi:"instancesReportedState"`
+	// InstancesStatus indicates in which status the instances are
+	InstancesStatus map[string][]string `pulumi:"instancesStatus"`
+	// How many Jobs have been created by this cluster
+	JobCount *int `pulumi:"jobCount"`
+	// Last failed backup, stored as a date in RFC3339 format.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	LastFailedBackup *string `pulumi:"lastFailedBackup"`
+	// LastPromotionToken is the last verified promotion token that
+	// was used to promote a replica cluster
+	LastPromotionToken *string `pulumi:"lastPromotionToken"`
+	// Last successful backup, stored as a date in RFC3339 format.
+	// This field is calculated from the content of LastSuccessfulBackupByMethod.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	LastSuccessfulBackup *string `pulumi:"lastSuccessfulBackup"`
+	// Last successful backup, stored as a date in RFC3339 format, per backup method type.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	LastSuccessfulBackupByMethod map[string]string `pulumi:"lastSuccessfulBackupByMethod"`
+	// ID of the latest generated node (used to avoid node name clashing)
+	//
+	// Deprecated: this field is not set anymore
+	LatestGeneratedNode *int                                  `pulumi:"latestGeneratedNode"`
+	ManagedRolesStatus  *ClusterStatusManagedRolesStatusPatch `pulumi:"managedRolesStatus"`
+	// OnlineUpdateEnabled shows if the online upgrade is enabled inside the cluster
+	OnlineUpdateEnabled *bool `pulumi:"onlineUpdateEnabled"`
+	// OperatorCertificateFingerprint is the SHA256 fingerprint of the operator's
+	// in-memory client certificate public key. The instance manager pins this
+	// fingerprint to authenticate requests from the operator.
+	OperatorCertificateFingerprint *string                            `pulumi:"operatorCertificateFingerprint"`
+	PgDataImageInfo                *ClusterStatusPgDataImageInfoPatch `pulumi:"pgDataImageInfo"`
+	// Current phase of the cluster
+	Phase *string `pulumi:"phase"`
+	// Reason for the current phase
+	PhaseReason *string `pulumi:"phaseReason"`
+	// PluginStatus is the status of the loaded plugins
+	PluginStatus []ClusterStatusPluginStatusPatch `pulumi:"pluginStatus"`
+	// PodSelectorRefs contains the resolved pod IPs for each named selector
+	// defined in spec.podSelectorRefs.
+	PodSelectorRefs    []ClusterStatusPodSelectorRefsPatch   `pulumi:"podSelectorRefs"`
+	PoolerIntegrations *ClusterStatusPoolerIntegrationsPatch `pulumi:"poolerIntegrations"`
+	// How many PVCs have been created by this cluster
+	PvcCount *int `pulumi:"pvcCount"`
+	// Current list of read pods
+	ReadService *string `pulumi:"readService"`
+	// The total number of ready instances in the cluster. It is equal to the number of ready instance pods.
+	ReadyInstances *int `pulumi:"readyInstances"`
+	// List of all the PVCs that have ResizingPVC condition.
+	ResizingPVC            []string                                  `pulumi:"resizingPVC"`
+	SecretsResourceVersion *ClusterStatusSecretsResourceVersionPatch `pulumi:"secretsResourceVersion"`
+	// Selector is the serialized form of the label selector that identifies
+	// the pods managed by this cluster. Populated by the operator and exposed
+	// through the scale sub-resource so an autoscaler (such as HPA or VPA)
+	// can discover the managed instance pods.
+	Selector                   *string                                       `pulumi:"selector"`
+	SwitchReplicaClusterStatus *ClusterStatusSwitchReplicaClusterStatusPatch `pulumi:"switchReplicaClusterStatus"`
+	// SystemID is the latest detected PostgreSQL SystemID
+	SystemID *string `pulumi:"systemID"`
+	// TablespacesStatus reports the state of the declarative tablespaces in the cluster
+	TablespacesStatus     []ClusterStatusTablespacesStatusPatch    `pulumi:"tablespacesStatus"`
+	TargetPgDataImageInfo *ClusterStatusTargetPgDataImageInfoPatch `pulumi:"targetPgDataImageInfo"`
+	// Target primary instance, this is different from the previous one
+	// during a switchover or a failover
+	TargetPrimary *string `pulumi:"targetPrimary"`
+	// The timestamp when the last request for a new primary has occurred
+	TargetPrimaryTimestamp *string `pulumi:"targetPrimaryTimestamp"`
+	// The timeline of the Postgres cluster
+	TimelineID *int                        `pulumi:"timelineID"`
+	Topology   *ClusterStatusTopologyPatch `pulumi:"topology"`
+	// List of all the PVCs that are unusable because another PVC is missing
+	UnusablePVC []string `pulumi:"unusablePVC"`
+	// Current write pod
+	WriteService *string `pulumi:"writeService"`
+}
+
+// ClusterStatusPatchInput is an input type that accepts ClusterStatusPatchArgs and ClusterStatusPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPatchInput` via:
+//
+//	ClusterStatusPatchArgs{...}
+type ClusterStatusPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPatchOutput() ClusterStatusPatchOutput
+	ToClusterStatusPatchOutputWithContext(context.Context) ClusterStatusPatchOutput
+}
+
+// Most recently observed status of the cluster. This data may not be up
+// to date. Populated by the system. Read-only.
+// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+type ClusterStatusPatchArgs struct {
+	// AvailableArchitectures reports the available architectures of a cluster
+	AvailableArchitectures ClusterStatusAvailableArchitecturesPatchArrayInput `pulumi:"availableArchitectures"`
+	Certificates           ClusterStatusCertificatesPatchPtrInput             `pulumi:"certificates"`
+	// The commit hash number of which this operator running
+	CloudNativePGCommitHash pulumi.StringPtrInput `pulumi:"cloudNativePGCommitHash"`
+	// The hash of the binary of the operator
+	CloudNativePGOperatorHash pulumi.StringPtrInput `pulumi:"cloudNativePGOperatorHash"`
+	// Conditions for cluster object
+	Conditions               ClusterStatusConditionsPatchArrayInput             `pulumi:"conditions"`
+	ConfigMapResourceVersion ClusterStatusConfigMapResourceVersionPatchPtrInput `pulumi:"configMapResourceVersion"`
+	// Current primary instance
+	CurrentPrimary pulumi.StringPtrInput `pulumi:"currentPrimary"`
+	// The timestamp when the primary was detected to be unhealthy
+	// This field is reported when `.spec.failoverDelay` is populated or during online upgrades
+	CurrentPrimaryFailingSinceTimestamp pulumi.StringPtrInput `pulumi:"currentPrimaryFailingSinceTimestamp"`
+	// The timestamp when the last actual promotion to primary has occurred
+	CurrentPrimaryTimestamp pulumi.StringPtrInput `pulumi:"currentPrimaryTimestamp"`
+	// List of all the PVCs created by this cluster and still available
+	// which are not attached to a Pod
+	DanglingPVC pulumi.StringArrayInput `pulumi:"danglingPVC"`
+	// DemotionToken is a JSON token containing the information
+	// from pg_controldata such as Database system identifier, Latest checkpoint's
+	// TimeLineID, Latest checkpoint's REDO location, Latest checkpoint's REDO
+	// WAL file, and Time of latest checkpoint
+	DemotionToken pulumi.StringPtrInput `pulumi:"demotionToken"`
+	// The first recoverability point, stored as a date in RFC3339 format.
+	// This field is calculated from the content of FirstRecoverabilityPointByMethod.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	FirstRecoverabilityPoint pulumi.StringPtrInput `pulumi:"firstRecoverabilityPoint"`
+	// The first recoverability point, stored as a date in RFC3339 format, per backup method type.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	FirstRecoverabilityPointByMethod pulumi.StringMapInput `pulumi:"firstRecoverabilityPointByMethod"`
+	// List of all the PVCs not dangling nor initializing
+	HealthyPVC pulumi.StringArrayInput `pulumi:"healthyPVC"`
+	// Image contains the image name used by the pods
+	Image pulumi.StringPtrInput `pulumi:"image"`
+	// List of all the PVCs that are being initialized by this cluster
+	InitializingPVC pulumi.StringArrayInput `pulumi:"initializingPVC"`
+	// List of instance names in the cluster
+	InstanceNames pulumi.StringArrayInput `pulumi:"instanceNames"`
+	// The total number of PVC Groups detected in the cluster. It may differ from the number of existing instance pods.
+	Instances pulumi.IntPtrInput `pulumi:"instances"`
+	// The reported state of the instances during the last reconciliation loop
+	InstancesReportedState pulumi.StringMapMapInput `pulumi:"instancesReportedState"`
+	// InstancesStatus indicates in which status the instances are
+	InstancesStatus pulumi.StringArrayMapInput `pulumi:"instancesStatus"`
+	// How many Jobs have been created by this cluster
+	JobCount pulumi.IntPtrInput `pulumi:"jobCount"`
+	// Last failed backup, stored as a date in RFC3339 format.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	LastFailedBackup pulumi.StringPtrInput `pulumi:"lastFailedBackup"`
+	// LastPromotionToken is the last verified promotion token that
+	// was used to promote a replica cluster
+	LastPromotionToken pulumi.StringPtrInput `pulumi:"lastPromotionToken"`
+	// Last successful backup, stored as a date in RFC3339 format.
+	// This field is calculated from the content of LastSuccessfulBackupByMethod.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	LastSuccessfulBackup pulumi.StringPtrInput `pulumi:"lastSuccessfulBackup"`
+	// Last successful backup, stored as a date in RFC3339 format, per backup method type.
+	//
+	// Deprecated: the field is not set for backup plugins.
+	LastSuccessfulBackupByMethod pulumi.StringMapInput `pulumi:"lastSuccessfulBackupByMethod"`
+	// ID of the latest generated node (used to avoid node name clashing)
+	//
+	// Deprecated: this field is not set anymore
+	LatestGeneratedNode pulumi.IntPtrInput                           `pulumi:"latestGeneratedNode"`
+	ManagedRolesStatus  ClusterStatusManagedRolesStatusPatchPtrInput `pulumi:"managedRolesStatus"`
+	// OnlineUpdateEnabled shows if the online upgrade is enabled inside the cluster
+	OnlineUpdateEnabled pulumi.BoolPtrInput `pulumi:"onlineUpdateEnabled"`
+	// OperatorCertificateFingerprint is the SHA256 fingerprint of the operator's
+	// in-memory client certificate public key. The instance manager pins this
+	// fingerprint to authenticate requests from the operator.
+	OperatorCertificateFingerprint pulumi.StringPtrInput                     `pulumi:"operatorCertificateFingerprint"`
+	PgDataImageInfo                ClusterStatusPgDataImageInfoPatchPtrInput `pulumi:"pgDataImageInfo"`
+	// Current phase of the cluster
+	Phase pulumi.StringPtrInput `pulumi:"phase"`
+	// Reason for the current phase
+	PhaseReason pulumi.StringPtrInput `pulumi:"phaseReason"`
+	// PluginStatus is the status of the loaded plugins
+	PluginStatus ClusterStatusPluginStatusPatchArrayInput `pulumi:"pluginStatus"`
+	// PodSelectorRefs contains the resolved pod IPs for each named selector
+	// defined in spec.podSelectorRefs.
+	PodSelectorRefs    ClusterStatusPodSelectorRefsPatchArrayInput  `pulumi:"podSelectorRefs"`
+	PoolerIntegrations ClusterStatusPoolerIntegrationsPatchPtrInput `pulumi:"poolerIntegrations"`
+	// How many PVCs have been created by this cluster
+	PvcCount pulumi.IntPtrInput `pulumi:"pvcCount"`
+	// Current list of read pods
+	ReadService pulumi.StringPtrInput `pulumi:"readService"`
+	// The total number of ready instances in the cluster. It is equal to the number of ready instance pods.
+	ReadyInstances pulumi.IntPtrInput `pulumi:"readyInstances"`
+	// List of all the PVCs that have ResizingPVC condition.
+	ResizingPVC            pulumi.StringArrayInput                          `pulumi:"resizingPVC"`
+	SecretsResourceVersion ClusterStatusSecretsResourceVersionPatchPtrInput `pulumi:"secretsResourceVersion"`
+	// Selector is the serialized form of the label selector that identifies
+	// the pods managed by this cluster. Populated by the operator and exposed
+	// through the scale sub-resource so an autoscaler (such as HPA or VPA)
+	// can discover the managed instance pods.
+	Selector                   pulumi.StringPtrInput                                `pulumi:"selector"`
+	SwitchReplicaClusterStatus ClusterStatusSwitchReplicaClusterStatusPatchPtrInput `pulumi:"switchReplicaClusterStatus"`
+	// SystemID is the latest detected PostgreSQL SystemID
+	SystemID pulumi.StringPtrInput `pulumi:"systemID"`
+	// TablespacesStatus reports the state of the declarative tablespaces in the cluster
+	TablespacesStatus     ClusterStatusTablespacesStatusPatchArrayInput   `pulumi:"tablespacesStatus"`
+	TargetPgDataImageInfo ClusterStatusTargetPgDataImageInfoPatchPtrInput `pulumi:"targetPgDataImageInfo"`
+	// Target primary instance, this is different from the previous one
+	// during a switchover or a failover
+	TargetPrimary pulumi.StringPtrInput `pulumi:"targetPrimary"`
+	// The timestamp when the last request for a new primary has occurred
+	TargetPrimaryTimestamp pulumi.StringPtrInput `pulumi:"targetPrimaryTimestamp"`
+	// The timeline of the Postgres cluster
+	TimelineID pulumi.IntPtrInput                 `pulumi:"timelineID"`
+	Topology   ClusterStatusTopologyPatchPtrInput `pulumi:"topology"`
+	// List of all the PVCs that are unusable because another PVC is missing
+	UnusablePVC pulumi.StringArrayInput `pulumi:"unusablePVC"`
+	// Current write pod
+	WriteService pulumi.StringPtrInput `pulumi:"writeService"`
+}
+
+func (ClusterStatusPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPatchArgs) ToClusterStatusPatchOutput() ClusterStatusPatchOutput {
+	return i.ToClusterStatusPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPatchArgs) ToClusterStatusPatchOutputWithContext(ctx context.Context) ClusterStatusPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPatchOutput)
+}
+
+func (i ClusterStatusPatchArgs) ToClusterStatusPatchPtrOutput() ClusterStatusPatchPtrOutput {
+	return i.ToClusterStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPatchArgs) ToClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPatchOutput).ToClusterStatusPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPatchPtrInput is an input type that accepts ClusterStatusPatchArgs, ClusterStatusPatchPtr and ClusterStatusPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPatchPtrInput` via:
+//
+//	        ClusterStatusPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPatchPtrOutput() ClusterStatusPatchPtrOutput
+	ToClusterStatusPatchPtrOutputWithContext(context.Context) ClusterStatusPatchPtrOutput
+}
+
+type clusterStatusPatchPtrType ClusterStatusPatchArgs
+
+func ClusterStatusPatchPtr(v *ClusterStatusPatchArgs) ClusterStatusPatchPtrInput {
+	return (*clusterStatusPatchPtrType)(v)
+}
+
+func (*clusterStatusPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusPatchPtrType) ToClusterStatusPatchPtrOutput() ClusterStatusPatchPtrOutput {
+	return i.ToClusterStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPatchPtrType) ToClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPatchPtrOutput)
+}
+
+// Most recently observed status of the cluster. This data may not be up
+// to date. Populated by the system. Read-only.
+// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+type ClusterStatusPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPatchOutput) ToClusterStatusPatchOutput() ClusterStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPatchOutput) ToClusterStatusPatchOutputWithContext(ctx context.Context) ClusterStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPatchOutput) ToClusterStatusPatchPtrOutput() ClusterStatusPatchPtrOutput {
+	return o.ToClusterStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPatchOutput) ToClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPatch) *ClusterStatusPatch {
+		return &v
+	}).(ClusterStatusPatchPtrOutput)
+}
+
+// AvailableArchitectures reports the available architectures of a cluster
+func (o ClusterStatusPatchOutput) AvailableArchitectures() ClusterStatusAvailableArchitecturesPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []ClusterStatusAvailableArchitecturesPatch { return v.AvailableArchitectures }).(ClusterStatusAvailableArchitecturesPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchOutput) Certificates() ClusterStatusCertificatesPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusCertificatesPatch { return v.Certificates }).(ClusterStatusCertificatesPatchPtrOutput)
+}
+
+// The commit hash number of which this operator running
+func (o ClusterStatusPatchOutput) CloudNativePGCommitHash() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.CloudNativePGCommitHash }).(pulumi.StringPtrOutput)
+}
+
+// The hash of the binary of the operator
+func (o ClusterStatusPatchOutput) CloudNativePGOperatorHash() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.CloudNativePGOperatorHash }).(pulumi.StringPtrOutput)
+}
+
+// Conditions for cluster object
+func (o ClusterStatusPatchOutput) Conditions() ClusterStatusConditionsPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []ClusterStatusConditionsPatch { return v.Conditions }).(ClusterStatusConditionsPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchOutput) ConfigMapResourceVersion() ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusConfigMapResourceVersionPatch {
+		return v.ConfigMapResourceVersion
+	}).(ClusterStatusConfigMapResourceVersionPatchPtrOutput)
+}
+
+// Current primary instance
+func (o ClusterStatusPatchOutput) CurrentPrimary() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.CurrentPrimary }).(pulumi.StringPtrOutput)
+}
+
+// The timestamp when the primary was detected to be unhealthy
+// This field is reported when `.spec.failoverDelay` is populated or during online upgrades
+func (o ClusterStatusPatchOutput) CurrentPrimaryFailingSinceTimestamp() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.CurrentPrimaryFailingSinceTimestamp }).(pulumi.StringPtrOutput)
+}
+
+// The timestamp when the last actual promotion to primary has occurred
+func (o ClusterStatusPatchOutput) CurrentPrimaryTimestamp() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.CurrentPrimaryTimestamp }).(pulumi.StringPtrOutput)
+}
+
+// List of all the PVCs created by this cluster and still available
+// which are not attached to a Pod
+func (o ClusterStatusPatchOutput) DanglingPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []string { return v.DanglingPVC }).(pulumi.StringArrayOutput)
+}
+
+// DemotionToken is a JSON token containing the information
+// from pg_controldata such as Database system identifier, Latest checkpoint's
+// TimeLineID, Latest checkpoint's REDO location, Latest checkpoint's REDO
+// WAL file, and Time of latest checkpoint
+func (o ClusterStatusPatchOutput) DemotionToken() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.DemotionToken }).(pulumi.StringPtrOutput)
+}
+
+// The first recoverability point, stored as a date in RFC3339 format.
+// This field is calculated from the content of FirstRecoverabilityPointByMethod.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchOutput) FirstRecoverabilityPoint() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.FirstRecoverabilityPoint }).(pulumi.StringPtrOutput)
+}
+
+// The first recoverability point, stored as a date in RFC3339 format, per backup method type.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchOutput) FirstRecoverabilityPointByMethod() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) map[string]string { return v.FirstRecoverabilityPointByMethod }).(pulumi.StringMapOutput)
+}
+
+// List of all the PVCs not dangling nor initializing
+func (o ClusterStatusPatchOutput) HealthyPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []string { return v.HealthyPVC }).(pulumi.StringArrayOutput)
+}
+
+// Image contains the image name used by the pods
+func (o ClusterStatusPatchOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.Image }).(pulumi.StringPtrOutput)
+}
+
+// List of all the PVCs that are being initialized by this cluster
+func (o ClusterStatusPatchOutput) InitializingPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []string { return v.InitializingPVC }).(pulumi.StringArrayOutput)
+}
+
+// List of instance names in the cluster
+func (o ClusterStatusPatchOutput) InstanceNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []string { return v.InstanceNames }).(pulumi.StringArrayOutput)
+}
+
+// The total number of PVC Groups detected in the cluster. It may differ from the number of existing instance pods.
+func (o ClusterStatusPatchOutput) Instances() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *int { return v.Instances }).(pulumi.IntPtrOutput)
+}
+
+// The reported state of the instances during the last reconciliation loop
+func (o ClusterStatusPatchOutput) InstancesReportedState() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) map[string]map[string]string { return v.InstancesReportedState }).(pulumi.StringMapMapOutput)
+}
+
+// InstancesStatus indicates in which status the instances are
+func (o ClusterStatusPatchOutput) InstancesStatus() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) map[string][]string { return v.InstancesStatus }).(pulumi.StringArrayMapOutput)
+}
+
+// How many Jobs have been created by this cluster
+func (o ClusterStatusPatchOutput) JobCount() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *int { return v.JobCount }).(pulumi.IntPtrOutput)
+}
+
+// Last failed backup, stored as a date in RFC3339 format.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchOutput) LastFailedBackup() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.LastFailedBackup }).(pulumi.StringPtrOutput)
+}
+
+// LastPromotionToken is the last verified promotion token that
+// was used to promote a replica cluster
+func (o ClusterStatusPatchOutput) LastPromotionToken() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.LastPromotionToken }).(pulumi.StringPtrOutput)
+}
+
+// Last successful backup, stored as a date in RFC3339 format.
+// This field is calculated from the content of LastSuccessfulBackupByMethod.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchOutput) LastSuccessfulBackup() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.LastSuccessfulBackup }).(pulumi.StringPtrOutput)
+}
+
+// Last successful backup, stored as a date in RFC3339 format, per backup method type.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchOutput) LastSuccessfulBackupByMethod() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) map[string]string { return v.LastSuccessfulBackupByMethod }).(pulumi.StringMapOutput)
+}
+
+// ID of the latest generated node (used to avoid node name clashing)
+//
+// Deprecated: this field is not set anymore
+func (o ClusterStatusPatchOutput) LatestGeneratedNode() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *int { return v.LatestGeneratedNode }).(pulumi.IntPtrOutput)
+}
+
+func (o ClusterStatusPatchOutput) ManagedRolesStatus() ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusManagedRolesStatusPatch { return v.ManagedRolesStatus }).(ClusterStatusManagedRolesStatusPatchPtrOutput)
+}
+
+// OnlineUpdateEnabled shows if the online upgrade is enabled inside the cluster
+func (o ClusterStatusPatchOutput) OnlineUpdateEnabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *bool { return v.OnlineUpdateEnabled }).(pulumi.BoolPtrOutput)
+}
+
+// OperatorCertificateFingerprint is the SHA256 fingerprint of the operator's
+// in-memory client certificate public key. The instance manager pins this
+// fingerprint to authenticate requests from the operator.
+func (o ClusterStatusPatchOutput) OperatorCertificateFingerprint() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.OperatorCertificateFingerprint }).(pulumi.StringPtrOutput)
+}
+
+func (o ClusterStatusPatchOutput) PgDataImageInfo() ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusPgDataImageInfoPatch { return v.PgDataImageInfo }).(ClusterStatusPgDataImageInfoPatchPtrOutput)
+}
+
+// Current phase of the cluster
+func (o ClusterStatusPatchOutput) Phase() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.Phase }).(pulumi.StringPtrOutput)
+}
+
+// Reason for the current phase
+func (o ClusterStatusPatchOutput) PhaseReason() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.PhaseReason }).(pulumi.StringPtrOutput)
+}
+
+// PluginStatus is the status of the loaded plugins
+func (o ClusterStatusPatchOutput) PluginStatus() ClusterStatusPluginStatusPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []ClusterStatusPluginStatusPatch { return v.PluginStatus }).(ClusterStatusPluginStatusPatchArrayOutput)
+}
+
+// PodSelectorRefs contains the resolved pod IPs for each named selector
+// defined in spec.podSelectorRefs.
+func (o ClusterStatusPatchOutput) PodSelectorRefs() ClusterStatusPodSelectorRefsPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []ClusterStatusPodSelectorRefsPatch { return v.PodSelectorRefs }).(ClusterStatusPodSelectorRefsPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchOutput) PoolerIntegrations() ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusPoolerIntegrationsPatch { return v.PoolerIntegrations }).(ClusterStatusPoolerIntegrationsPatchPtrOutput)
+}
+
+// How many PVCs have been created by this cluster
+func (o ClusterStatusPatchOutput) PvcCount() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *int { return v.PvcCount }).(pulumi.IntPtrOutput)
+}
+
+// Current list of read pods
+func (o ClusterStatusPatchOutput) ReadService() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.ReadService }).(pulumi.StringPtrOutput)
+}
+
+// The total number of ready instances in the cluster. It is equal to the number of ready instance pods.
+func (o ClusterStatusPatchOutput) ReadyInstances() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *int { return v.ReadyInstances }).(pulumi.IntPtrOutput)
+}
+
+// List of all the PVCs that have ResizingPVC condition.
+func (o ClusterStatusPatchOutput) ResizingPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []string { return v.ResizingPVC }).(pulumi.StringArrayOutput)
+}
+
+func (o ClusterStatusPatchOutput) SecretsResourceVersion() ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusSecretsResourceVersionPatch { return v.SecretsResourceVersion }).(ClusterStatusSecretsResourceVersionPatchPtrOutput)
+}
+
+// Selector is the serialized form of the label selector that identifies
+// the pods managed by this cluster. Populated by the operator and exposed
+// through the scale sub-resource so an autoscaler (such as HPA or VPA)
+// can discover the managed instance pods.
+func (o ClusterStatusPatchOutput) Selector() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.Selector }).(pulumi.StringPtrOutput)
+}
+
+func (o ClusterStatusPatchOutput) SwitchReplicaClusterStatus() ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusSwitchReplicaClusterStatusPatch {
+		return v.SwitchReplicaClusterStatus
+	}).(ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput)
+}
+
+// SystemID is the latest detected PostgreSQL SystemID
+func (o ClusterStatusPatchOutput) SystemID() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.SystemID }).(pulumi.StringPtrOutput)
+}
+
+// TablespacesStatus reports the state of the declarative tablespaces in the cluster
+func (o ClusterStatusPatchOutput) TablespacesStatus() ClusterStatusTablespacesStatusPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []ClusterStatusTablespacesStatusPatch { return v.TablespacesStatus }).(ClusterStatusTablespacesStatusPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchOutput) TargetPgDataImageInfo() ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusTargetPgDataImageInfoPatch { return v.TargetPgDataImageInfo }).(ClusterStatusTargetPgDataImageInfoPatchPtrOutput)
+}
+
+// Target primary instance, this is different from the previous one
+// during a switchover or a failover
+func (o ClusterStatusPatchOutput) TargetPrimary() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.TargetPrimary }).(pulumi.StringPtrOutput)
+}
+
+// The timestamp when the last request for a new primary has occurred
+func (o ClusterStatusPatchOutput) TargetPrimaryTimestamp() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.TargetPrimaryTimestamp }).(pulumi.StringPtrOutput)
+}
+
+// The timeline of the Postgres cluster
+func (o ClusterStatusPatchOutput) TimelineID() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *int { return v.TimelineID }).(pulumi.IntPtrOutput)
+}
+
+func (o ClusterStatusPatchOutput) Topology() ClusterStatusTopologyPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *ClusterStatusTopologyPatch { return v.Topology }).(ClusterStatusTopologyPatchPtrOutput)
+}
+
+// List of all the PVCs that are unusable because another PVC is missing
+func (o ClusterStatusPatchOutput) UnusablePVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) []string { return v.UnusablePVC }).(pulumi.StringArrayOutput)
+}
+
+// Current write pod
+func (o ClusterStatusPatchOutput) WriteService() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPatch) *string { return v.WriteService }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPatchPtrOutput) ToClusterStatusPatchPtrOutput() ClusterStatusPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPatchPtrOutput) ToClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPatchPtrOutput) Elem() ClusterStatusPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) ClusterStatusPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPatch
+		return ret
+	}).(ClusterStatusPatchOutput)
+}
+
+// AvailableArchitectures reports the available architectures of a cluster
+func (o ClusterStatusPatchPtrOutput) AvailableArchitectures() ClusterStatusAvailableArchitecturesPatchArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []ClusterStatusAvailableArchitecturesPatch {
+		if v == nil {
+			return nil
+		}
+		return v.AvailableArchitectures
+	}).(ClusterStatusAvailableArchitecturesPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) Certificates() ClusterStatusCertificatesPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusCertificatesPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Certificates
+	}).(ClusterStatusCertificatesPatchPtrOutput)
+}
+
+// The commit hash number of which this operator running
+func (o ClusterStatusPatchPtrOutput) CloudNativePGCommitHash() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.CloudNativePGCommitHash
+	}).(pulumi.StringPtrOutput)
+}
+
+// The hash of the binary of the operator
+func (o ClusterStatusPatchPtrOutput) CloudNativePGOperatorHash() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.CloudNativePGOperatorHash
+	}).(pulumi.StringPtrOutput)
+}
+
+// Conditions for cluster object
+func (o ClusterStatusPatchPtrOutput) Conditions() ClusterStatusConditionsPatchArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []ClusterStatusConditionsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Conditions
+	}).(ClusterStatusConditionsPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) ConfigMapResourceVersion() ClusterStatusConfigMapResourceVersionPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusConfigMapResourceVersionPatch {
+		if v == nil {
+			return nil
+		}
+		return v.ConfigMapResourceVersion
+	}).(ClusterStatusConfigMapResourceVersionPatchPtrOutput)
+}
+
+// Current primary instance
+func (o ClusterStatusPatchPtrOutput) CurrentPrimary() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.CurrentPrimary
+	}).(pulumi.StringPtrOutput)
+}
+
+// The timestamp when the primary was detected to be unhealthy
+// This field is reported when `.spec.failoverDelay` is populated or during online upgrades
+func (o ClusterStatusPatchPtrOutput) CurrentPrimaryFailingSinceTimestamp() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.CurrentPrimaryFailingSinceTimestamp
+	}).(pulumi.StringPtrOutput)
+}
+
+// The timestamp when the last actual promotion to primary has occurred
+func (o ClusterStatusPatchPtrOutput) CurrentPrimaryTimestamp() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.CurrentPrimaryTimestamp
+	}).(pulumi.StringPtrOutput)
+}
+
+// List of all the PVCs created by this cluster and still available
+// which are not attached to a Pod
+func (o ClusterStatusPatchPtrOutput) DanglingPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.DanglingPVC
+	}).(pulumi.StringArrayOutput)
+}
+
+// DemotionToken is a JSON token containing the information
+// from pg_controldata such as Database system identifier, Latest checkpoint's
+// TimeLineID, Latest checkpoint's REDO location, Latest checkpoint's REDO
+// WAL file, and Time of latest checkpoint
+func (o ClusterStatusPatchPtrOutput) DemotionToken() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.DemotionToken
+	}).(pulumi.StringPtrOutput)
+}
+
+// The first recoverability point, stored as a date in RFC3339 format.
+// This field is calculated from the content of FirstRecoverabilityPointByMethod.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchPtrOutput) FirstRecoverabilityPoint() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.FirstRecoverabilityPoint
+	}).(pulumi.StringPtrOutput)
+}
+
+// The first recoverability point, stored as a date in RFC3339 format, per backup method type.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchPtrOutput) FirstRecoverabilityPointByMethod() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.FirstRecoverabilityPointByMethod
+	}).(pulumi.StringMapOutput)
+}
+
+// List of all the PVCs not dangling nor initializing
+func (o ClusterStatusPatchPtrOutput) HealthyPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.HealthyPVC
+	}).(pulumi.StringArrayOutput)
+}
+
+// Image contains the image name used by the pods
+func (o ClusterStatusPatchPtrOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Image
+	}).(pulumi.StringPtrOutput)
+}
+
+// List of all the PVCs that are being initialized by this cluster
+func (o ClusterStatusPatchPtrOutput) InitializingPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.InitializingPVC
+	}).(pulumi.StringArrayOutput)
+}
+
+// List of instance names in the cluster
+func (o ClusterStatusPatchPtrOutput) InstanceNames() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.InstanceNames
+	}).(pulumi.StringArrayOutput)
+}
+
+// The total number of PVC Groups detected in the cluster. It may differ from the number of existing instance pods.
+func (o ClusterStatusPatchPtrOutput) Instances() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.Instances
+	}).(pulumi.IntPtrOutput)
+}
+
+// The reported state of the instances during the last reconciliation loop
+func (o ClusterStatusPatchPtrOutput) InstancesReportedState() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) map[string]map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.InstancesReportedState
+	}).(pulumi.StringMapMapOutput)
+}
+
+// InstancesStatus indicates in which status the instances are
+func (o ClusterStatusPatchPtrOutput) InstancesStatus() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) map[string][]string {
+		if v == nil {
+			return nil
+		}
+		return v.InstancesStatus
+	}).(pulumi.StringArrayMapOutput)
+}
+
+// How many Jobs have been created by this cluster
+func (o ClusterStatusPatchPtrOutput) JobCount() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.JobCount
+	}).(pulumi.IntPtrOutput)
+}
+
+// Last failed backup, stored as a date in RFC3339 format.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchPtrOutput) LastFailedBackup() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.LastFailedBackup
+	}).(pulumi.StringPtrOutput)
+}
+
+// LastPromotionToken is the last verified promotion token that
+// was used to promote a replica cluster
+func (o ClusterStatusPatchPtrOutput) LastPromotionToken() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.LastPromotionToken
+	}).(pulumi.StringPtrOutput)
+}
+
+// Last successful backup, stored as a date in RFC3339 format.
+// This field is calculated from the content of LastSuccessfulBackupByMethod.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchPtrOutput) LastSuccessfulBackup() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.LastSuccessfulBackup
+	}).(pulumi.StringPtrOutput)
+}
+
+// Last successful backup, stored as a date in RFC3339 format, per backup method type.
+//
+// Deprecated: the field is not set for backup plugins.
+func (o ClusterStatusPatchPtrOutput) LastSuccessfulBackupByMethod() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.LastSuccessfulBackupByMethod
+	}).(pulumi.StringMapOutput)
+}
+
+// ID of the latest generated node (used to avoid node name clashing)
+//
+// Deprecated: this field is not set anymore
+func (o ClusterStatusPatchPtrOutput) LatestGeneratedNode() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.LatestGeneratedNode
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) ManagedRolesStatus() ClusterStatusManagedRolesStatusPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusManagedRolesStatusPatch {
+		if v == nil {
+			return nil
+		}
+		return v.ManagedRolesStatus
+	}).(ClusterStatusManagedRolesStatusPatchPtrOutput)
+}
+
+// OnlineUpdateEnabled shows if the online upgrade is enabled inside the cluster
+func (o ClusterStatusPatchPtrOutput) OnlineUpdateEnabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.OnlineUpdateEnabled
+	}).(pulumi.BoolPtrOutput)
+}
+
+// OperatorCertificateFingerprint is the SHA256 fingerprint of the operator's
+// in-memory client certificate public key. The instance manager pins this
+// fingerprint to authenticate requests from the operator.
+func (o ClusterStatusPatchPtrOutput) OperatorCertificateFingerprint() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.OperatorCertificateFingerprint
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) PgDataImageInfo() ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusPgDataImageInfoPatch {
+		if v == nil {
+			return nil
+		}
+		return v.PgDataImageInfo
+	}).(ClusterStatusPgDataImageInfoPatchPtrOutput)
+}
+
+// Current phase of the cluster
+func (o ClusterStatusPatchPtrOutput) Phase() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Phase
+	}).(pulumi.StringPtrOutput)
+}
+
+// Reason for the current phase
+func (o ClusterStatusPatchPtrOutput) PhaseReason() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.PhaseReason
+	}).(pulumi.StringPtrOutput)
+}
+
+// PluginStatus is the status of the loaded plugins
+func (o ClusterStatusPatchPtrOutput) PluginStatus() ClusterStatusPluginStatusPatchArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []ClusterStatusPluginStatusPatch {
+		if v == nil {
+			return nil
+		}
+		return v.PluginStatus
+	}).(ClusterStatusPluginStatusPatchArrayOutput)
+}
+
+// PodSelectorRefs contains the resolved pod IPs for each named selector
+// defined in spec.podSelectorRefs.
+func (o ClusterStatusPatchPtrOutput) PodSelectorRefs() ClusterStatusPodSelectorRefsPatchArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []ClusterStatusPodSelectorRefsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.PodSelectorRefs
+	}).(ClusterStatusPodSelectorRefsPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) PoolerIntegrations() ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusPoolerIntegrationsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.PoolerIntegrations
+	}).(ClusterStatusPoolerIntegrationsPatchPtrOutput)
+}
+
+// How many PVCs have been created by this cluster
+func (o ClusterStatusPatchPtrOutput) PvcCount() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.PvcCount
+	}).(pulumi.IntPtrOutput)
+}
+
+// Current list of read pods
+func (o ClusterStatusPatchPtrOutput) ReadService() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ReadService
+	}).(pulumi.StringPtrOutput)
+}
+
+// The total number of ready instances in the cluster. It is equal to the number of ready instance pods.
+func (o ClusterStatusPatchPtrOutput) ReadyInstances() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.ReadyInstances
+	}).(pulumi.IntPtrOutput)
+}
+
+// List of all the PVCs that have ResizingPVC condition.
+func (o ClusterStatusPatchPtrOutput) ResizingPVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.ResizingPVC
+	}).(pulumi.StringArrayOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) SecretsResourceVersion() ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusSecretsResourceVersionPatch {
+		if v == nil {
+			return nil
+		}
+		return v.SecretsResourceVersion
+	}).(ClusterStatusSecretsResourceVersionPatchPtrOutput)
+}
+
+// Selector is the serialized form of the label selector that identifies
+// the pods managed by this cluster. Populated by the operator and exposed
+// through the scale sub-resource so an autoscaler (such as HPA or VPA)
+// can discover the managed instance pods.
+func (o ClusterStatusPatchPtrOutput) Selector() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Selector
+	}).(pulumi.StringPtrOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) SwitchReplicaClusterStatus() ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusSwitchReplicaClusterStatusPatch {
+		if v == nil {
+			return nil
+		}
+		return v.SwitchReplicaClusterStatus
+	}).(ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput)
+}
+
+// SystemID is the latest detected PostgreSQL SystemID
+func (o ClusterStatusPatchPtrOutput) SystemID() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.SystemID
+	}).(pulumi.StringPtrOutput)
+}
+
+// TablespacesStatus reports the state of the declarative tablespaces in the cluster
+func (o ClusterStatusPatchPtrOutput) TablespacesStatus() ClusterStatusTablespacesStatusPatchArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []ClusterStatusTablespacesStatusPatch {
+		if v == nil {
+			return nil
+		}
+		return v.TablespacesStatus
+	}).(ClusterStatusTablespacesStatusPatchArrayOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) TargetPgDataImageInfo() ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusTargetPgDataImageInfoPatch {
+		if v == nil {
+			return nil
+		}
+		return v.TargetPgDataImageInfo
+	}).(ClusterStatusTargetPgDataImageInfoPatchPtrOutput)
+}
+
+// Target primary instance, this is different from the previous one
+// during a switchover or a failover
+func (o ClusterStatusPatchPtrOutput) TargetPrimary() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.TargetPrimary
+	}).(pulumi.StringPtrOutput)
+}
+
+// The timestamp when the last request for a new primary has occurred
+func (o ClusterStatusPatchPtrOutput) TargetPrimaryTimestamp() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.TargetPrimaryTimestamp
+	}).(pulumi.StringPtrOutput)
+}
+
+// The timeline of the Postgres cluster
+func (o ClusterStatusPatchPtrOutput) TimelineID() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.TimelineID
+	}).(pulumi.IntPtrOutput)
+}
+
+func (o ClusterStatusPatchPtrOutput) Topology() ClusterStatusTopologyPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *ClusterStatusTopologyPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Topology
+	}).(ClusterStatusTopologyPatchPtrOutput)
+}
+
+// List of all the PVCs that are unusable because another PVC is missing
+func (o ClusterStatusPatchPtrOutput) UnusablePVC() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.UnusablePVC
+	}).(pulumi.StringArrayOutput)
+}
+
+// Current write pod
+func (o ClusterStatusPatchPtrOutput) WriteService() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.WriteService
+	}).(pulumi.StringPtrOutput)
+}
+
+// PGDataImageInfo contains the details of the latest image that has run on the current data directory.
+type ClusterStatusPgDataImageInfo struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions []ClusterStatusPgDataImageInfoExtensions `pulumi:"extensions"`
+	// Image is the image name
+	Image *string `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion *int `pulumi:"majorVersion"`
+}
+
+// ClusterStatusPgDataImageInfoInput is an input type that accepts ClusterStatusPgDataImageInfoArgs and ClusterStatusPgDataImageInfoOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoInput` via:
+//
+//	ClusterStatusPgDataImageInfoArgs{...}
+type ClusterStatusPgDataImageInfoInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoOutput() ClusterStatusPgDataImageInfoOutput
+	ToClusterStatusPgDataImageInfoOutputWithContext(context.Context) ClusterStatusPgDataImageInfoOutput
+}
+
+// PGDataImageInfo contains the details of the latest image that has run on the current data directory.
+type ClusterStatusPgDataImageInfoArgs struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions ClusterStatusPgDataImageInfoExtensionsArrayInput `pulumi:"extensions"`
+	// Image is the image name
+	Image pulumi.StringPtrInput `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion pulumi.IntPtrInput `pulumi:"majorVersion"`
+}
+
+func (ClusterStatusPgDataImageInfoArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfo)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoArgs) ToClusterStatusPgDataImageInfoOutput() ClusterStatusPgDataImageInfoOutput {
+	return i.ToClusterStatusPgDataImageInfoOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoArgs) ToClusterStatusPgDataImageInfoOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoOutput)
+}
+
+func (i ClusterStatusPgDataImageInfoArgs) ToClusterStatusPgDataImageInfoPtrOutput() ClusterStatusPgDataImageInfoPtrOutput {
+	return i.ToClusterStatusPgDataImageInfoPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoArgs) ToClusterStatusPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoOutput).ToClusterStatusPgDataImageInfoPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPgDataImageInfoPtrInput is an input type that accepts ClusterStatusPgDataImageInfoArgs, ClusterStatusPgDataImageInfoPtr and ClusterStatusPgDataImageInfoPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoPtrInput` via:
+//
+//	        ClusterStatusPgDataImageInfoArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPgDataImageInfoPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoPtrOutput() ClusterStatusPgDataImageInfoPtrOutput
+	ToClusterStatusPgDataImageInfoPtrOutputWithContext(context.Context) ClusterStatusPgDataImageInfoPtrOutput
+}
+
+type clusterStatusPgDataImageInfoPtrType ClusterStatusPgDataImageInfoArgs
+
+func ClusterStatusPgDataImageInfoPtr(v *ClusterStatusPgDataImageInfoArgs) ClusterStatusPgDataImageInfoPtrInput {
+	return (*clusterStatusPgDataImageInfoPtrType)(v)
+}
+
+func (*clusterStatusPgDataImageInfoPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfo)(nil)).Elem()
+}
+
+func (i *clusterStatusPgDataImageInfoPtrType) ToClusterStatusPgDataImageInfoPtrOutput() ClusterStatusPgDataImageInfoPtrOutput {
+	return i.ToClusterStatusPgDataImageInfoPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPgDataImageInfoPtrType) ToClusterStatusPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoPtrOutput)
+}
+
+// PGDataImageInfo contains the details of the latest image that has run on the current data directory.
+type ClusterStatusPgDataImageInfoOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfo)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoOutput) ToClusterStatusPgDataImageInfoOutput() ClusterStatusPgDataImageInfoOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoOutput) ToClusterStatusPgDataImageInfoOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoOutput) ToClusterStatusPgDataImageInfoPtrOutput() ClusterStatusPgDataImageInfoPtrOutput {
+	return o.ToClusterStatusPgDataImageInfoPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPgDataImageInfoOutput) ToClusterStatusPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPgDataImageInfo) *ClusterStatusPgDataImageInfo {
+		return &v
+	}).(ClusterStatusPgDataImageInfoPtrOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusPgDataImageInfoOutput) Extensions() ClusterStatusPgDataImageInfoExtensionsArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfo) []ClusterStatusPgDataImageInfoExtensions { return v.Extensions }).(ClusterStatusPgDataImageInfoExtensionsArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusPgDataImageInfoOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfo) *string { return v.Image }).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusPgDataImageInfoOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfo) *int { return v.MajorVersion }).(pulumi.IntPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfo)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoPtrOutput) ToClusterStatusPgDataImageInfoPtrOutput() ClusterStatusPgDataImageInfoPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoPtrOutput) ToClusterStatusPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoPtrOutput) Elem() ClusterStatusPgDataImageInfoOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfo) ClusterStatusPgDataImageInfo {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPgDataImageInfo
+		return ret
+	}).(ClusterStatusPgDataImageInfoOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusPgDataImageInfoPtrOutput) Extensions() ClusterStatusPgDataImageInfoExtensionsArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfo) []ClusterStatusPgDataImageInfoExtensions {
+		if v == nil {
+			return nil
+		}
+		return v.Extensions
+	}).(ClusterStatusPgDataImageInfoExtensionsArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusPgDataImageInfoPtrOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfo) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Image
+	}).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusPgDataImageInfoPtrOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfo) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MajorVersion
+	}).(pulumi.IntPtrOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusPgDataImageInfoExtensions struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path []string `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path []string `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env []ClusterStatusPgDataImageInfoExtensionsEnv `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path []string                                     `pulumi:"extension_control_path"`
+	Image                  *ClusterStatusPgDataImageInfoExtensionsImage `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path []string `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name *string `pulumi:"name"`
+}
+
+// ClusterStatusPgDataImageInfoExtensionsInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsArgs and ClusterStatusPgDataImageInfoExtensionsOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsArgs{...}
+type ClusterStatusPgDataImageInfoExtensionsInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsOutput() ClusterStatusPgDataImageInfoExtensionsOutput
+	ToClusterStatusPgDataImageInfoExtensionsOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsOutput
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusPgDataImageInfoExtensionsArgs struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path pulumi.StringArrayInput `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path pulumi.StringArrayInput `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env ClusterStatusPgDataImageInfoExtensionsEnvArrayInput `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path pulumi.StringArrayInput                             `pulumi:"extension_control_path"`
+	Image                  ClusterStatusPgDataImageInfoExtensionsImagePtrInput `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path pulumi.StringArrayInput `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (ClusterStatusPgDataImageInfoExtensionsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsArgs) ToClusterStatusPgDataImageInfoExtensionsOutput() ClusterStatusPgDataImageInfoExtensionsOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsArgs) ToClusterStatusPgDataImageInfoExtensionsOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsOutput)
+}
+
+// ClusterStatusPgDataImageInfoExtensionsArrayInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsArray and ClusterStatusPgDataImageInfoExtensionsArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsArrayInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsArray{ ClusterStatusPgDataImageInfoExtensionsArgs{...} }
+type ClusterStatusPgDataImageInfoExtensionsArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsArrayOutput() ClusterStatusPgDataImageInfoExtensionsArrayOutput
+	ToClusterStatusPgDataImageInfoExtensionsArrayOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsArrayOutput
+}
+
+type ClusterStatusPgDataImageInfoExtensionsArray []ClusterStatusPgDataImageInfoExtensionsInput
+
+func (ClusterStatusPgDataImageInfoExtensionsArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsArray) ToClusterStatusPgDataImageInfoExtensionsArrayOutput() ClusterStatusPgDataImageInfoExtensionsArrayOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsArray) ToClusterStatusPgDataImageInfoExtensionsArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsArrayOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusPgDataImageInfoExtensionsOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) ToClusterStatusPgDataImageInfoExtensionsOutput() ClusterStatusPgDataImageInfoExtensionsOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) ToClusterStatusPgDataImageInfoExtensionsOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsOutput {
+	return o
+}
+
+// A list of directories within the image to be appended to the
+// PostgreSQL process's `PATH` environment variable.
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) Bin_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensions) []string { return v.Bin_path }).(pulumi.StringArrayOutput)
+}
+
+// The list of directories inside the image which should be added to dynamic_library_path.
+// If not defined, defaults to "/lib".
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) Dynamic_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensions) []string { return v.Dynamic_library_path }).(pulumi.StringArrayOutput)
+}
+
+// Env is a list of custom environment variables to be set in the
+// PostgreSQL process for this extension. It is the responsibility of the
+// cluster administrator to ensure the variables are correct for the
+// specific extension. Note that changes to these variables require
+// a manual cluster restart to take effect.
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) Env() ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensions) []ClusterStatusPgDataImageInfoExtensionsEnv {
+		return v.Env
+	}).(ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput)
+}
+
+// The list of directories inside the image which should be added to extension_control_path.
+// If not defined, defaults to "/share".
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) Extension_control_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensions) []string { return v.Extension_control_path }).(pulumi.StringArrayOutput)
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) Image() ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensions) *ClusterStatusPgDataImageInfoExtensionsImage {
+		return v.Image
+	}).(ClusterStatusPgDataImageInfoExtensionsImagePtrOutput)
+}
+
+// The list of directories inside the image which should be added to ld_library_path.
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) Ld_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensions) []string { return v.Ld_library_path }).(pulumi.StringArrayOutput)
+}
+
+// The name of the extension, required. The limit of 59 characters
+// leaves room for the prefix the operator adds when deriving the
+// extension's Kubernetes Volume name (capped at 63 characters).
+func (o ClusterStatusPgDataImageInfoExtensionsOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensions) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoExtensionsArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsArrayOutput) ToClusterStatusPgDataImageInfoExtensionsArrayOutput() ClusterStatusPgDataImageInfoExtensionsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsArrayOutput) ToClusterStatusPgDataImageInfoExtensionsArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsArrayOutput) Index(i pulumi.IntInput) ClusterStatusPgDataImageInfoExtensionsOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPgDataImageInfoExtensions {
+		return vs[0].([]ClusterStatusPgDataImageInfoExtensions)[vs[1].(int)]
+	}).(ClusterStatusPgDataImageInfoExtensionsOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusPgDataImageInfoExtensionsEnv struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name *string `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value *string `pulumi:"value"`
+}
+
+// ClusterStatusPgDataImageInfoExtensionsEnvInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsEnvArgs and ClusterStatusPgDataImageInfoExtensionsEnvOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsEnvInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsEnvArgs{...}
+type ClusterStatusPgDataImageInfoExtensionsEnvInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsEnvOutput() ClusterStatusPgDataImageInfoExtensionsEnvOutput
+	ToClusterStatusPgDataImageInfoExtensionsEnvOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsEnvOutput
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusPgDataImageInfoExtensionsEnvArgs struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value pulumi.StringPtrInput `pulumi:"value"`
+}
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvArgs) ToClusterStatusPgDataImageInfoExtensionsEnvOutput() ClusterStatusPgDataImageInfoExtensionsEnvOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsEnvOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvArgs) ToClusterStatusPgDataImageInfoExtensionsEnvOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsEnvOutput)
+}
+
+// ClusterStatusPgDataImageInfoExtensionsEnvArrayInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsEnvArray and ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsEnvArrayInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsEnvArray{ ClusterStatusPgDataImageInfoExtensionsEnvArgs{...} }
+type ClusterStatusPgDataImageInfoExtensionsEnvArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsEnvArrayOutput() ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput
+	ToClusterStatusPgDataImageInfoExtensionsEnvArrayOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput
+}
+
+type ClusterStatusPgDataImageInfoExtensionsEnvArray []ClusterStatusPgDataImageInfoExtensionsEnvInput
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvArray) ToClusterStatusPgDataImageInfoExtensionsEnvArrayOutput() ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsEnvArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvArray) ToClusterStatusPgDataImageInfoExtensionsEnvArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusPgDataImageInfoExtensionsEnvOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvOutput) ToClusterStatusPgDataImageInfoExtensionsEnvOutput() ClusterStatusPgDataImageInfoExtensionsEnvOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvOutput) ToClusterStatusPgDataImageInfoExtensionsEnvOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvOutput {
+	return o
+}
+
+// Name of the environment variable to be injected into the
+// PostgreSQL process.
+func (o ClusterStatusPgDataImageInfoExtensionsEnvOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsEnv) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Value of the environment variable. CloudNativePG performs a direct
+// replacement of this value, with support for placeholder expansion.
+// The ${`image_root`} placeholder resolves to the absolute mount path
+// of the extension's volume (e.g., `/extensions/my-extension`). This
+// is particularly useful for allowing applications or libraries to
+// locate specific directories within the mounted image.
+// Unrecognized placeholders are rejected. To include a literal ${...}
+// in the value, escape it as $${...}.
+func (o ClusterStatusPgDataImageInfoExtensionsEnvOutput) Value() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsEnv) *string { return v.Value }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput) ToClusterStatusPgDataImageInfoExtensionsEnvArrayOutput() ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput) ToClusterStatusPgDataImageInfoExtensionsEnvArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput) Index(i pulumi.IntInput) ClusterStatusPgDataImageInfoExtensionsEnvOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPgDataImageInfoExtensionsEnv {
+		return vs[0].([]ClusterStatusPgDataImageInfoExtensionsEnv)[vs[1].(int)]
+	}).(ClusterStatusPgDataImageInfoExtensionsEnvOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusPgDataImageInfoExtensionsEnvPatch struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name *string `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value *string `pulumi:"value"`
+}
+
+// ClusterStatusPgDataImageInfoExtensionsEnvPatchInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs and ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsEnvPatchInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs{...}
+type ClusterStatusPgDataImageInfoExtensionsEnvPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsEnvPatchOutput() ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput
+	ToClusterStatusPgDataImageInfoExtensionsEnvPatchOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value pulumi.StringPtrInput `pulumi:"value"`
+}
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs) ToClusterStatusPgDataImageInfoExtensionsEnvPatchOutput() ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsEnvPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs) ToClusterStatusPgDataImageInfoExtensionsEnvPatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput)
+}
+
+// ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsEnvPatchArray and ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsEnvPatchArray{ ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs{...} }
+type ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput() ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput
+	ToClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput
+}
+
+type ClusterStatusPgDataImageInfoExtensionsEnvPatchArray []ClusterStatusPgDataImageInfoExtensionsEnvPatchInput
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvPatchArray) ToClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput() ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsEnvPatchArray) ToClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput) ToClusterStatusPgDataImageInfoExtensionsEnvPatchOutput() ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput) ToClusterStatusPgDataImageInfoExtensionsEnvPatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput {
+	return o
+}
+
+// Name of the environment variable to be injected into the
+// PostgreSQL process.
+func (o ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsEnvPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Value of the environment variable. CloudNativePG performs a direct
+// replacement of this value, with support for placeholder expansion.
+// The ${`image_root`} placeholder resolves to the absolute mount path
+// of the extension's volume (e.g., `/extensions/my-extension`). This
+// is particularly useful for allowing applications or libraries to
+// locate specific directories within the mounted image.
+// Unrecognized placeholders are rejected. To include a literal ${...}
+// in the value, escape it as $${...}.
+func (o ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput) Value() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsEnvPatch) *string { return v.Value }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput) ToClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput() ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput) ToClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPgDataImageInfoExtensionsEnvPatch {
+		return vs[0].([]ClusterStatusPgDataImageInfoExtensionsEnvPatch)[vs[1].(int)]
+	}).(ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusPgDataImageInfoExtensionsImage struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy *string `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference *string `pulumi:"reference"`
+}
+
+// ClusterStatusPgDataImageInfoExtensionsImageInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsImageArgs and ClusterStatusPgDataImageInfoExtensionsImageOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsImageInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsImageArgs{...}
+type ClusterStatusPgDataImageInfoExtensionsImageInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsImageOutput() ClusterStatusPgDataImageInfoExtensionsImageOutput
+	ToClusterStatusPgDataImageInfoExtensionsImageOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsImageOutput
+}
+
+// The image containing the extension.
+type ClusterStatusPgDataImageInfoExtensionsImageArgs struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy pulumi.StringPtrInput `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference pulumi.StringPtrInput `pulumi:"reference"`
+}
+
+func (ClusterStatusPgDataImageInfoExtensionsImageArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImageArgs) ToClusterStatusPgDataImageInfoExtensionsImageOutput() ClusterStatusPgDataImageInfoExtensionsImageOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsImageOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImageArgs) ToClusterStatusPgDataImageInfoExtensionsImageOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImageOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsImageOutput)
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImageArgs) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImageArgs) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsImageOutput).ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPgDataImageInfoExtensionsImagePtrInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsImageArgs, ClusterStatusPgDataImageInfoExtensionsImagePtr and ClusterStatusPgDataImageInfoExtensionsImagePtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsImagePtrInput` via:
+//
+//	        ClusterStatusPgDataImageInfoExtensionsImageArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPgDataImageInfoExtensionsImagePtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePtrOutput
+	ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsImagePtrOutput
+}
+
+type clusterStatusPgDataImageInfoExtensionsImagePtrType ClusterStatusPgDataImageInfoExtensionsImageArgs
+
+func ClusterStatusPgDataImageInfoExtensionsImagePtr(v *ClusterStatusPgDataImageInfoExtensionsImageArgs) ClusterStatusPgDataImageInfoExtensionsImagePtrInput {
+	return (*clusterStatusPgDataImageInfoExtensionsImagePtrType)(v)
+}
+
+func (*clusterStatusPgDataImageInfoExtensionsImagePtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (i *clusterStatusPgDataImageInfoExtensionsImagePtrType) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPgDataImageInfoExtensionsImagePtrType) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsImagePtrOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusPgDataImageInfoExtensionsImageOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsImageOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImageOutput) ToClusterStatusPgDataImageInfoExtensionsImageOutput() ClusterStatusPgDataImageInfoExtensionsImageOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImageOutput) ToClusterStatusPgDataImageInfoExtensionsImageOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImageOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImageOutput) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return o.ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImageOutput) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPgDataImageInfoExtensionsImage) *ClusterStatusPgDataImageInfoExtensionsImage {
+		return &v
+	}).(ClusterStatusPgDataImageInfoExtensionsImagePtrOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusPgDataImageInfoExtensionsImageOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsImage) *string { return v.PullPolicy }).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusPgDataImageInfoExtensionsImageOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsImage) *string { return v.Reference }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoExtensionsImagePtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsImagePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePtrOutput) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePtrOutput) ToClusterStatusPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePtrOutput) Elem() ClusterStatusPgDataImageInfoExtensionsImageOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoExtensionsImage) ClusterStatusPgDataImageInfoExtensionsImage {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPgDataImageInfoExtensionsImage
+		return ret
+	}).(ClusterStatusPgDataImageInfoExtensionsImageOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusPgDataImageInfoExtensionsImagePtrOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoExtensionsImage) *string {
+		if v == nil {
+			return nil
+		}
+		return v.PullPolicy
+	}).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusPgDataImageInfoExtensionsImagePtrOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoExtensionsImage) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Reference
+	}).(pulumi.StringPtrOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusPgDataImageInfoExtensionsImagePatch struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy *string `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference *string `pulumi:"reference"`
+}
+
+// ClusterStatusPgDataImageInfoExtensionsImagePatchInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsImagePatchArgs and ClusterStatusPgDataImageInfoExtensionsImagePatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsImagePatchInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsImagePatchArgs{...}
+type ClusterStatusPgDataImageInfoExtensionsImagePatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsImagePatchOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchOutput
+	ToClusterStatusPgDataImageInfoExtensionsImagePatchOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchOutput
+}
+
+// The image containing the extension.
+type ClusterStatusPgDataImageInfoExtensionsImagePatchArgs struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy pulumi.StringPtrInput `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference pulumi.StringPtrInput `pulumi:"reference"`
+}
+
+func (ClusterStatusPgDataImageInfoExtensionsImagePatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusPgDataImageInfoExtensionsImagePatchOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsImagePatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusPgDataImageInfoExtensionsImagePatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsImagePatchOutput)
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsImagePatchOutput).ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPgDataImageInfoExtensionsImagePatchPtrInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsImagePatchArgs, ClusterStatusPgDataImageInfoExtensionsImagePatchPtr and ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsImagePatchPtrInput` via:
+//
+//	        ClusterStatusPgDataImageInfoExtensionsImagePatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPgDataImageInfoExtensionsImagePatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput
+	ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput
+}
+
+type clusterStatusPgDataImageInfoExtensionsImagePatchPtrType ClusterStatusPgDataImageInfoExtensionsImagePatchArgs
+
+func ClusterStatusPgDataImageInfoExtensionsImagePatchPtr(v *ClusterStatusPgDataImageInfoExtensionsImagePatchArgs) ClusterStatusPgDataImageInfoExtensionsImagePatchPtrInput {
+	return (*clusterStatusPgDataImageInfoExtensionsImagePatchPtrType)(v)
+}
+
+func (*clusterStatusPgDataImageInfoExtensionsImagePatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (i *clusterStatusPgDataImageInfoExtensionsImagePatchPtrType) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPgDataImageInfoExtensionsImagePatchPtrType) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusPgDataImageInfoExtensionsImagePatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsImagePatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusPgDataImageInfoExtensionsImagePatchOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusPgDataImageInfoExtensionsImagePatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o.ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPgDataImageInfoExtensionsImagePatch) *ClusterStatusPgDataImageInfoExtensionsImagePatch {
+		return &v
+	}).(ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsImagePatch) *string { return v.PullPolicy }).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsImagePatch) *string { return v.Reference }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput) ToClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput) Elem() ClusterStatusPgDataImageInfoExtensionsImagePatchOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoExtensionsImagePatch) ClusterStatusPgDataImageInfoExtensionsImagePatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPgDataImageInfoExtensionsImagePatch
+		return ret
+	}).(ClusterStatusPgDataImageInfoExtensionsImagePatchOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoExtensionsImagePatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.PullPolicy
+	}).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoExtensionsImagePatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Reference
+	}).(pulumi.StringPtrOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusPgDataImageInfoExtensionsPatch struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path []string `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path []string `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env []ClusterStatusPgDataImageInfoExtensionsEnvPatch `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path []string                                          `pulumi:"extension_control_path"`
+	Image                  *ClusterStatusPgDataImageInfoExtensionsImagePatch `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path []string `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name *string `pulumi:"name"`
+}
+
+// ClusterStatusPgDataImageInfoExtensionsPatchInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsPatchArgs and ClusterStatusPgDataImageInfoExtensionsPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsPatchInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsPatchArgs{...}
+type ClusterStatusPgDataImageInfoExtensionsPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsPatchOutput() ClusterStatusPgDataImageInfoExtensionsPatchOutput
+	ToClusterStatusPgDataImageInfoExtensionsPatchOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsPatchOutput
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusPgDataImageInfoExtensionsPatchArgs struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path pulumi.StringArrayInput `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path pulumi.StringArrayInput `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayInput `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path pulumi.StringArrayInput                                  `pulumi:"extension_control_path"`
+	Image                  ClusterStatusPgDataImageInfoExtensionsImagePatchPtrInput `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path pulumi.StringArrayInput `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (ClusterStatusPgDataImageInfoExtensionsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsPatchArgs) ToClusterStatusPgDataImageInfoExtensionsPatchOutput() ClusterStatusPgDataImageInfoExtensionsPatchOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsPatchArgs) ToClusterStatusPgDataImageInfoExtensionsPatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsPatchOutput)
+}
+
+// ClusterStatusPgDataImageInfoExtensionsPatchArrayInput is an input type that accepts ClusterStatusPgDataImageInfoExtensionsPatchArray and ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoExtensionsPatchArrayInput` via:
+//
+//	ClusterStatusPgDataImageInfoExtensionsPatchArray{ ClusterStatusPgDataImageInfoExtensionsPatchArgs{...} }
+type ClusterStatusPgDataImageInfoExtensionsPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoExtensionsPatchArrayOutput() ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput
+	ToClusterStatusPgDataImageInfoExtensionsPatchArrayOutputWithContext(context.Context) ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput
+}
+
+type ClusterStatusPgDataImageInfoExtensionsPatchArray []ClusterStatusPgDataImageInfoExtensionsPatchInput
+
+func (ClusterStatusPgDataImageInfoExtensionsPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsPatchArray) ToClusterStatusPgDataImageInfoExtensionsPatchArrayOutput() ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput {
+	return i.ToClusterStatusPgDataImageInfoExtensionsPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoExtensionsPatchArray) ToClusterStatusPgDataImageInfoExtensionsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusPgDataImageInfoExtensionsPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) ToClusterStatusPgDataImageInfoExtensionsPatchOutput() ClusterStatusPgDataImageInfoExtensionsPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) ToClusterStatusPgDataImageInfoExtensionsPatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsPatchOutput {
+	return o
+}
+
+// A list of directories within the image to be appended to the
+// PostgreSQL process's `PATH` environment variable.
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) Bin_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsPatch) []string { return v.Bin_path }).(pulumi.StringArrayOutput)
+}
+
+// The list of directories inside the image which should be added to dynamic_library_path.
+// If not defined, defaults to "/lib".
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) Dynamic_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsPatch) []string { return v.Dynamic_library_path }).(pulumi.StringArrayOutput)
+}
+
+// Env is a list of custom environment variables to be set in the
+// PostgreSQL process for this extension. It is the responsibility of the
+// cluster administrator to ensure the variables are correct for the
+// specific extension. Note that changes to these variables require
+// a manual cluster restart to take effect.
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) Env() ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsPatch) []ClusterStatusPgDataImageInfoExtensionsEnvPatch {
+		return v.Env
+	}).(ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput)
+}
+
+// The list of directories inside the image which should be added to extension_control_path.
+// If not defined, defaults to "/share".
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) Extension_control_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsPatch) []string { return v.Extension_control_path }).(pulumi.StringArrayOutput)
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) Image() ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsPatch) *ClusterStatusPgDataImageInfoExtensionsImagePatch {
+		return v.Image
+	}).(ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput)
+}
+
+// The list of directories inside the image which should be added to ld_library_path.
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) Ld_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsPatch) []string { return v.Ld_library_path }).(pulumi.StringArrayOutput)
+}
+
+// The name of the extension, required. The limit of 59 characters
+// leaves room for the prefix the operator adds when deriving the
+// extension's Kubernetes Volume name (capped at 63 characters).
+func (o ClusterStatusPgDataImageInfoExtensionsPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoExtensionsPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput) ToClusterStatusPgDataImageInfoExtensionsPatchArrayOutput() ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput) ToClusterStatusPgDataImageInfoExtensionsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusPgDataImageInfoExtensionsPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPgDataImageInfoExtensionsPatch {
+		return vs[0].([]ClusterStatusPgDataImageInfoExtensionsPatch)[vs[1].(int)]
+	}).(ClusterStatusPgDataImageInfoExtensionsPatchOutput)
+}
+
+// PGDataImageInfo contains the details of the latest image that has run on the current data directory.
+type ClusterStatusPgDataImageInfoPatch struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions []ClusterStatusPgDataImageInfoExtensionsPatch `pulumi:"extensions"`
+	// Image is the image name
+	Image *string `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion *int `pulumi:"majorVersion"`
+}
+
+// ClusterStatusPgDataImageInfoPatchInput is an input type that accepts ClusterStatusPgDataImageInfoPatchArgs and ClusterStatusPgDataImageInfoPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoPatchInput` via:
+//
+//	ClusterStatusPgDataImageInfoPatchArgs{...}
+type ClusterStatusPgDataImageInfoPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoPatchOutput() ClusterStatusPgDataImageInfoPatchOutput
+	ToClusterStatusPgDataImageInfoPatchOutputWithContext(context.Context) ClusterStatusPgDataImageInfoPatchOutput
+}
+
+// PGDataImageInfo contains the details of the latest image that has run on the current data directory.
+type ClusterStatusPgDataImageInfoPatchArgs struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions ClusterStatusPgDataImageInfoExtensionsPatchArrayInput `pulumi:"extensions"`
+	// Image is the image name
+	Image pulumi.StringPtrInput `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion pulumi.IntPtrInput `pulumi:"majorVersion"`
+}
+
+func (ClusterStatusPgDataImageInfoPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPgDataImageInfoPatchArgs) ToClusterStatusPgDataImageInfoPatchOutput() ClusterStatusPgDataImageInfoPatchOutput {
+	return i.ToClusterStatusPgDataImageInfoPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoPatchArgs) ToClusterStatusPgDataImageInfoPatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoPatchOutput)
+}
+
+func (i ClusterStatusPgDataImageInfoPatchArgs) ToClusterStatusPgDataImageInfoPatchPtrOutput() ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return i.ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPgDataImageInfoPatchArgs) ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoPatchOutput).ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPgDataImageInfoPatchPtrInput is an input type that accepts ClusterStatusPgDataImageInfoPatchArgs, ClusterStatusPgDataImageInfoPatchPtr and ClusterStatusPgDataImageInfoPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPgDataImageInfoPatchPtrInput` via:
+//
+//	        ClusterStatusPgDataImageInfoPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPgDataImageInfoPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPgDataImageInfoPatchPtrOutput() ClusterStatusPgDataImageInfoPatchPtrOutput
+	ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(context.Context) ClusterStatusPgDataImageInfoPatchPtrOutput
+}
+
+type clusterStatusPgDataImageInfoPatchPtrType ClusterStatusPgDataImageInfoPatchArgs
+
+func ClusterStatusPgDataImageInfoPatchPtr(v *ClusterStatusPgDataImageInfoPatchArgs) ClusterStatusPgDataImageInfoPatchPtrInput {
+	return (*clusterStatusPgDataImageInfoPatchPtrType)(v)
+}
+
+func (*clusterStatusPgDataImageInfoPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusPgDataImageInfoPatchPtrType) ToClusterStatusPgDataImageInfoPatchPtrOutput() ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return i.ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPgDataImageInfoPatchPtrType) ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPgDataImageInfoPatchPtrOutput)
+}
+
+// PGDataImageInfo contains the details of the latest image that has run on the current data directory.
+type ClusterStatusPgDataImageInfoPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoPatchOutput) ToClusterStatusPgDataImageInfoPatchOutput() ClusterStatusPgDataImageInfoPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoPatchOutput) ToClusterStatusPgDataImageInfoPatchOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoPatchOutput) ToClusterStatusPgDataImageInfoPatchPtrOutput() ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return o.ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPgDataImageInfoPatchOutput) ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPgDataImageInfoPatch) *ClusterStatusPgDataImageInfoPatch {
+		return &v
+	}).(ClusterStatusPgDataImageInfoPatchPtrOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusPgDataImageInfoPatchOutput) Extensions() ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoPatch) []ClusterStatusPgDataImageInfoExtensionsPatch {
+		return v.Extensions
+	}).(ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusPgDataImageInfoPatchOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoPatch) *string { return v.Image }).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusPgDataImageInfoPatchOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPgDataImageInfoPatch) *int { return v.MajorVersion }).(pulumi.IntPtrOutput)
+}
+
+type ClusterStatusPgDataImageInfoPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPgDataImageInfoPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPgDataImageInfoPatchPtrOutput) ToClusterStatusPgDataImageInfoPatchPtrOutput() ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoPatchPtrOutput) ToClusterStatusPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPgDataImageInfoPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPgDataImageInfoPatchPtrOutput) Elem() ClusterStatusPgDataImageInfoPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoPatch) ClusterStatusPgDataImageInfoPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPgDataImageInfoPatch
+		return ret
+	}).(ClusterStatusPgDataImageInfoPatchOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusPgDataImageInfoPatchPtrOutput) Extensions() ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoPatch) []ClusterStatusPgDataImageInfoExtensionsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Extensions
+	}).(ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusPgDataImageInfoPatchPtrOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Image
+	}).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusPgDataImageInfoPatchPtrOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPgDataImageInfoPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MajorVersion
+	}).(pulumi.IntPtrOutput)
+}
+
+// PluginStatus is the status of a loaded plugin
+type ClusterStatusPluginStatus struct {
+	// BackupCapabilities are the list of capabilities of the
+	// plugin regarding the Backup management
+	BackupCapabilities []string `pulumi:"backupCapabilities"`
+	// Capabilities are the list of capabilities of the
+	// plugin
+	Capabilities []string `pulumi:"capabilities"`
+	// Name is the name of the plugin
+	Name *string `pulumi:"name"`
+	// OperatorCapabilities are the list of capabilities of the
+	// plugin regarding the reconciler
+	OperatorCapabilities []string `pulumi:"operatorCapabilities"`
+	// RestoreJobHookCapabilities are the list of capabilities of the
+	// plugin regarding the RestoreJobHook management
+	RestoreJobHookCapabilities []string `pulumi:"restoreJobHookCapabilities"`
+	// Status contain the status reported by the plugin through the SetStatusInCluster interface
+	Status *string `pulumi:"status"`
+	// Version is the version of the plugin loaded by the
+	// latest reconciliation loop
+	Version *string `pulumi:"version"`
+	// WALCapabilities are the list of capabilities of the
+	// plugin regarding the WAL management
+	WalCapabilities []string `pulumi:"walCapabilities"`
+}
+
+// ClusterStatusPluginStatusInput is an input type that accepts ClusterStatusPluginStatusArgs and ClusterStatusPluginStatusOutput values.
+// You can construct a concrete instance of `ClusterStatusPluginStatusInput` via:
+//
+//	ClusterStatusPluginStatusArgs{...}
+type ClusterStatusPluginStatusInput interface {
+	pulumi.Input
+
+	ToClusterStatusPluginStatusOutput() ClusterStatusPluginStatusOutput
+	ToClusterStatusPluginStatusOutputWithContext(context.Context) ClusterStatusPluginStatusOutput
+}
+
+// PluginStatus is the status of a loaded plugin
+type ClusterStatusPluginStatusArgs struct {
+	// BackupCapabilities are the list of capabilities of the
+	// plugin regarding the Backup management
+	BackupCapabilities pulumi.StringArrayInput `pulumi:"backupCapabilities"`
+	// Capabilities are the list of capabilities of the
+	// plugin
+	Capabilities pulumi.StringArrayInput `pulumi:"capabilities"`
+	// Name is the name of the plugin
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// OperatorCapabilities are the list of capabilities of the
+	// plugin regarding the reconciler
+	OperatorCapabilities pulumi.StringArrayInput `pulumi:"operatorCapabilities"`
+	// RestoreJobHookCapabilities are the list of capabilities of the
+	// plugin regarding the RestoreJobHook management
+	RestoreJobHookCapabilities pulumi.StringArrayInput `pulumi:"restoreJobHookCapabilities"`
+	// Status contain the status reported by the plugin through the SetStatusInCluster interface
+	Status pulumi.StringPtrInput `pulumi:"status"`
+	// Version is the version of the plugin loaded by the
+	// latest reconciliation loop
+	Version pulumi.StringPtrInput `pulumi:"version"`
+	// WALCapabilities are the list of capabilities of the
+	// plugin regarding the WAL management
+	WalCapabilities pulumi.StringArrayInput `pulumi:"walCapabilities"`
+}
+
+func (ClusterStatusPluginStatusArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPluginStatus)(nil)).Elem()
+}
+
+func (i ClusterStatusPluginStatusArgs) ToClusterStatusPluginStatusOutput() ClusterStatusPluginStatusOutput {
+	return i.ToClusterStatusPluginStatusOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPluginStatusArgs) ToClusterStatusPluginStatusOutputWithContext(ctx context.Context) ClusterStatusPluginStatusOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPluginStatusOutput)
+}
+
+// ClusterStatusPluginStatusArrayInput is an input type that accepts ClusterStatusPluginStatusArray and ClusterStatusPluginStatusArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPluginStatusArrayInput` via:
+//
+//	ClusterStatusPluginStatusArray{ ClusterStatusPluginStatusArgs{...} }
+type ClusterStatusPluginStatusArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPluginStatusArrayOutput() ClusterStatusPluginStatusArrayOutput
+	ToClusterStatusPluginStatusArrayOutputWithContext(context.Context) ClusterStatusPluginStatusArrayOutput
+}
+
+type ClusterStatusPluginStatusArray []ClusterStatusPluginStatusInput
+
+func (ClusterStatusPluginStatusArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPluginStatus)(nil)).Elem()
+}
+
+func (i ClusterStatusPluginStatusArray) ToClusterStatusPluginStatusArrayOutput() ClusterStatusPluginStatusArrayOutput {
+	return i.ToClusterStatusPluginStatusArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPluginStatusArray) ToClusterStatusPluginStatusArrayOutputWithContext(ctx context.Context) ClusterStatusPluginStatusArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPluginStatusArrayOutput)
+}
+
+// PluginStatus is the status of a loaded plugin
+type ClusterStatusPluginStatusOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPluginStatusOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPluginStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusPluginStatusOutput) ToClusterStatusPluginStatusOutput() ClusterStatusPluginStatusOutput {
+	return o
+}
+
+func (o ClusterStatusPluginStatusOutput) ToClusterStatusPluginStatusOutputWithContext(ctx context.Context) ClusterStatusPluginStatusOutput {
+	return o
+}
+
+// BackupCapabilities are the list of capabilities of the
+// plugin regarding the Backup management
+func (o ClusterStatusPluginStatusOutput) BackupCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) []string { return v.BackupCapabilities }).(pulumi.StringArrayOutput)
+}
+
+// Capabilities are the list of capabilities of the
+// plugin
+func (o ClusterStatusPluginStatusOutput) Capabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) []string { return v.Capabilities }).(pulumi.StringArrayOutput)
+}
+
+// Name is the name of the plugin
+func (o ClusterStatusPluginStatusOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// OperatorCapabilities are the list of capabilities of the
+// plugin regarding the reconciler
+func (o ClusterStatusPluginStatusOutput) OperatorCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) []string { return v.OperatorCapabilities }).(pulumi.StringArrayOutput)
+}
+
+// RestoreJobHookCapabilities are the list of capabilities of the
+// plugin regarding the RestoreJobHook management
+func (o ClusterStatusPluginStatusOutput) RestoreJobHookCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) []string { return v.RestoreJobHookCapabilities }).(pulumi.StringArrayOutput)
+}
+
+// Status contain the status reported by the plugin through the SetStatusInCluster interface
+func (o ClusterStatusPluginStatusOutput) Status() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) *string { return v.Status }).(pulumi.StringPtrOutput)
+}
+
+// Version is the version of the plugin loaded by the
+// latest reconciliation loop
+func (o ClusterStatusPluginStatusOutput) Version() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) *string { return v.Version }).(pulumi.StringPtrOutput)
+}
+
+// WALCapabilities are the list of capabilities of the
+// plugin regarding the WAL management
+func (o ClusterStatusPluginStatusOutput) WalCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatus) []string { return v.WalCapabilities }).(pulumi.StringArrayOutput)
+}
+
+type ClusterStatusPluginStatusArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPluginStatusArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPluginStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusPluginStatusArrayOutput) ToClusterStatusPluginStatusArrayOutput() ClusterStatusPluginStatusArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPluginStatusArrayOutput) ToClusterStatusPluginStatusArrayOutputWithContext(ctx context.Context) ClusterStatusPluginStatusArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPluginStatusArrayOutput) Index(i pulumi.IntInput) ClusterStatusPluginStatusOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPluginStatus {
+		return vs[0].([]ClusterStatusPluginStatus)[vs[1].(int)]
+	}).(ClusterStatusPluginStatusOutput)
+}
+
+// PluginStatus is the status of a loaded plugin
+type ClusterStatusPluginStatusPatch struct {
+	// BackupCapabilities are the list of capabilities of the
+	// plugin regarding the Backup management
+	BackupCapabilities []string `pulumi:"backupCapabilities"`
+	// Capabilities are the list of capabilities of the
+	// plugin
+	Capabilities []string `pulumi:"capabilities"`
+	// Name is the name of the plugin
+	Name *string `pulumi:"name"`
+	// OperatorCapabilities are the list of capabilities of the
+	// plugin regarding the reconciler
+	OperatorCapabilities []string `pulumi:"operatorCapabilities"`
+	// RestoreJobHookCapabilities are the list of capabilities of the
+	// plugin regarding the RestoreJobHook management
+	RestoreJobHookCapabilities []string `pulumi:"restoreJobHookCapabilities"`
+	// Status contain the status reported by the plugin through the SetStatusInCluster interface
+	Status *string `pulumi:"status"`
+	// Version is the version of the plugin loaded by the
+	// latest reconciliation loop
+	Version *string `pulumi:"version"`
+	// WALCapabilities are the list of capabilities of the
+	// plugin regarding the WAL management
+	WalCapabilities []string `pulumi:"walCapabilities"`
+}
+
+// ClusterStatusPluginStatusPatchInput is an input type that accepts ClusterStatusPluginStatusPatchArgs and ClusterStatusPluginStatusPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPluginStatusPatchInput` via:
+//
+//	ClusterStatusPluginStatusPatchArgs{...}
+type ClusterStatusPluginStatusPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPluginStatusPatchOutput() ClusterStatusPluginStatusPatchOutput
+	ToClusterStatusPluginStatusPatchOutputWithContext(context.Context) ClusterStatusPluginStatusPatchOutput
+}
+
+// PluginStatus is the status of a loaded plugin
+type ClusterStatusPluginStatusPatchArgs struct {
+	// BackupCapabilities are the list of capabilities of the
+	// plugin regarding the Backup management
+	BackupCapabilities pulumi.StringArrayInput `pulumi:"backupCapabilities"`
+	// Capabilities are the list of capabilities of the
+	// plugin
+	Capabilities pulumi.StringArrayInput `pulumi:"capabilities"`
+	// Name is the name of the plugin
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// OperatorCapabilities are the list of capabilities of the
+	// plugin regarding the reconciler
+	OperatorCapabilities pulumi.StringArrayInput `pulumi:"operatorCapabilities"`
+	// RestoreJobHookCapabilities are the list of capabilities of the
+	// plugin regarding the RestoreJobHook management
+	RestoreJobHookCapabilities pulumi.StringArrayInput `pulumi:"restoreJobHookCapabilities"`
+	// Status contain the status reported by the plugin through the SetStatusInCluster interface
+	Status pulumi.StringPtrInput `pulumi:"status"`
+	// Version is the version of the plugin loaded by the
+	// latest reconciliation loop
+	Version pulumi.StringPtrInput `pulumi:"version"`
+	// WALCapabilities are the list of capabilities of the
+	// plugin regarding the WAL management
+	WalCapabilities pulumi.StringArrayInput `pulumi:"walCapabilities"`
+}
+
+func (ClusterStatusPluginStatusPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPluginStatusPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPluginStatusPatchArgs) ToClusterStatusPluginStatusPatchOutput() ClusterStatusPluginStatusPatchOutput {
+	return i.ToClusterStatusPluginStatusPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPluginStatusPatchArgs) ToClusterStatusPluginStatusPatchOutputWithContext(ctx context.Context) ClusterStatusPluginStatusPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPluginStatusPatchOutput)
+}
+
+// ClusterStatusPluginStatusPatchArrayInput is an input type that accepts ClusterStatusPluginStatusPatchArray and ClusterStatusPluginStatusPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPluginStatusPatchArrayInput` via:
+//
+//	ClusterStatusPluginStatusPatchArray{ ClusterStatusPluginStatusPatchArgs{...} }
+type ClusterStatusPluginStatusPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPluginStatusPatchArrayOutput() ClusterStatusPluginStatusPatchArrayOutput
+	ToClusterStatusPluginStatusPatchArrayOutputWithContext(context.Context) ClusterStatusPluginStatusPatchArrayOutput
+}
+
+type ClusterStatusPluginStatusPatchArray []ClusterStatusPluginStatusPatchInput
+
+func (ClusterStatusPluginStatusPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPluginStatusPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPluginStatusPatchArray) ToClusterStatusPluginStatusPatchArrayOutput() ClusterStatusPluginStatusPatchArrayOutput {
+	return i.ToClusterStatusPluginStatusPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPluginStatusPatchArray) ToClusterStatusPluginStatusPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPluginStatusPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPluginStatusPatchArrayOutput)
+}
+
+// PluginStatus is the status of a loaded plugin
+type ClusterStatusPluginStatusPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPluginStatusPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPluginStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPluginStatusPatchOutput) ToClusterStatusPluginStatusPatchOutput() ClusterStatusPluginStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPluginStatusPatchOutput) ToClusterStatusPluginStatusPatchOutputWithContext(ctx context.Context) ClusterStatusPluginStatusPatchOutput {
+	return o
+}
+
+// BackupCapabilities are the list of capabilities of the
+// plugin regarding the Backup management
+func (o ClusterStatusPluginStatusPatchOutput) BackupCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) []string { return v.BackupCapabilities }).(pulumi.StringArrayOutput)
+}
+
+// Capabilities are the list of capabilities of the
+// plugin
+func (o ClusterStatusPluginStatusPatchOutput) Capabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) []string { return v.Capabilities }).(pulumi.StringArrayOutput)
+}
+
+// Name is the name of the plugin
+func (o ClusterStatusPluginStatusPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// OperatorCapabilities are the list of capabilities of the
+// plugin regarding the reconciler
+func (o ClusterStatusPluginStatusPatchOutput) OperatorCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) []string { return v.OperatorCapabilities }).(pulumi.StringArrayOutput)
+}
+
+// RestoreJobHookCapabilities are the list of capabilities of the
+// plugin regarding the RestoreJobHook management
+func (o ClusterStatusPluginStatusPatchOutput) RestoreJobHookCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) []string { return v.RestoreJobHookCapabilities }).(pulumi.StringArrayOutput)
+}
+
+// Status contain the status reported by the plugin through the SetStatusInCluster interface
+func (o ClusterStatusPluginStatusPatchOutput) Status() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) *string { return v.Status }).(pulumi.StringPtrOutput)
+}
+
+// Version is the version of the plugin loaded by the
+// latest reconciliation loop
+func (o ClusterStatusPluginStatusPatchOutput) Version() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) *string { return v.Version }).(pulumi.StringPtrOutput)
+}
+
+// WALCapabilities are the list of capabilities of the
+// plugin regarding the WAL management
+func (o ClusterStatusPluginStatusPatchOutput) WalCapabilities() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPluginStatusPatch) []string { return v.WalCapabilities }).(pulumi.StringArrayOutput)
+}
+
+type ClusterStatusPluginStatusPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPluginStatusPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPluginStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPluginStatusPatchArrayOutput) ToClusterStatusPluginStatusPatchArrayOutput() ClusterStatusPluginStatusPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPluginStatusPatchArrayOutput) ToClusterStatusPluginStatusPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPluginStatusPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPluginStatusPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusPluginStatusPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPluginStatusPatch {
+		return vs[0].([]ClusterStatusPluginStatusPatch)[vs[1].(int)]
+	}).(ClusterStatusPluginStatusPatchOutput)
+}
+
+// PodSelectorRefStatus contains the resolved pod IPs for a named selector.
+type ClusterStatusPodSelectorRefs struct {
+	// IPs is the list of pod IPs matching the selector.
+	// Each IP is a single address (no CIDR notation).
+	Ips []string `pulumi:"ips"`
+	// Name corresponds to the name in the spec's PodSelectorRef.
+	Name *string `pulumi:"name"`
+}
+
+// ClusterStatusPodSelectorRefsInput is an input type that accepts ClusterStatusPodSelectorRefsArgs and ClusterStatusPodSelectorRefsOutput values.
+// You can construct a concrete instance of `ClusterStatusPodSelectorRefsInput` via:
+//
+//	ClusterStatusPodSelectorRefsArgs{...}
+type ClusterStatusPodSelectorRefsInput interface {
+	pulumi.Input
+
+	ToClusterStatusPodSelectorRefsOutput() ClusterStatusPodSelectorRefsOutput
+	ToClusterStatusPodSelectorRefsOutputWithContext(context.Context) ClusterStatusPodSelectorRefsOutput
+}
+
+// PodSelectorRefStatus contains the resolved pod IPs for a named selector.
+type ClusterStatusPodSelectorRefsArgs struct {
+	// IPs is the list of pod IPs matching the selector.
+	// Each IP is a single address (no CIDR notation).
+	Ips pulumi.StringArrayInput `pulumi:"ips"`
+	// Name corresponds to the name in the spec's PodSelectorRef.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (ClusterStatusPodSelectorRefsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPodSelectorRefs)(nil)).Elem()
+}
+
+func (i ClusterStatusPodSelectorRefsArgs) ToClusterStatusPodSelectorRefsOutput() ClusterStatusPodSelectorRefsOutput {
+	return i.ToClusterStatusPodSelectorRefsOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPodSelectorRefsArgs) ToClusterStatusPodSelectorRefsOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPodSelectorRefsOutput)
+}
+
+// ClusterStatusPodSelectorRefsArrayInput is an input type that accepts ClusterStatusPodSelectorRefsArray and ClusterStatusPodSelectorRefsArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPodSelectorRefsArrayInput` via:
+//
+//	ClusterStatusPodSelectorRefsArray{ ClusterStatusPodSelectorRefsArgs{...} }
+type ClusterStatusPodSelectorRefsArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPodSelectorRefsArrayOutput() ClusterStatusPodSelectorRefsArrayOutput
+	ToClusterStatusPodSelectorRefsArrayOutputWithContext(context.Context) ClusterStatusPodSelectorRefsArrayOutput
+}
+
+type ClusterStatusPodSelectorRefsArray []ClusterStatusPodSelectorRefsInput
+
+func (ClusterStatusPodSelectorRefsArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPodSelectorRefs)(nil)).Elem()
+}
+
+func (i ClusterStatusPodSelectorRefsArray) ToClusterStatusPodSelectorRefsArrayOutput() ClusterStatusPodSelectorRefsArrayOutput {
+	return i.ToClusterStatusPodSelectorRefsArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPodSelectorRefsArray) ToClusterStatusPodSelectorRefsArrayOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPodSelectorRefsArrayOutput)
+}
+
+// PodSelectorRefStatus contains the resolved pod IPs for a named selector.
+type ClusterStatusPodSelectorRefsOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPodSelectorRefsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPodSelectorRefs)(nil)).Elem()
+}
+
+func (o ClusterStatusPodSelectorRefsOutput) ToClusterStatusPodSelectorRefsOutput() ClusterStatusPodSelectorRefsOutput {
+	return o
+}
+
+func (o ClusterStatusPodSelectorRefsOutput) ToClusterStatusPodSelectorRefsOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsOutput {
+	return o
+}
+
+// IPs is the list of pod IPs matching the selector.
+// Each IP is a single address (no CIDR notation).
+func (o ClusterStatusPodSelectorRefsOutput) Ips() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPodSelectorRefs) []string { return v.Ips }).(pulumi.StringArrayOutput)
+}
+
+// Name corresponds to the name in the spec's PodSelectorRef.
+func (o ClusterStatusPodSelectorRefsOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPodSelectorRefs) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPodSelectorRefsArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPodSelectorRefsArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPodSelectorRefs)(nil)).Elem()
+}
+
+func (o ClusterStatusPodSelectorRefsArrayOutput) ToClusterStatusPodSelectorRefsArrayOutput() ClusterStatusPodSelectorRefsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPodSelectorRefsArrayOutput) ToClusterStatusPodSelectorRefsArrayOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPodSelectorRefsArrayOutput) Index(i pulumi.IntInput) ClusterStatusPodSelectorRefsOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPodSelectorRefs {
+		return vs[0].([]ClusterStatusPodSelectorRefs)[vs[1].(int)]
+	}).(ClusterStatusPodSelectorRefsOutput)
+}
+
+// PodSelectorRefStatus contains the resolved pod IPs for a named selector.
+type ClusterStatusPodSelectorRefsPatch struct {
+	// IPs is the list of pod IPs matching the selector.
+	// Each IP is a single address (no CIDR notation).
+	Ips []string `pulumi:"ips"`
+	// Name corresponds to the name in the spec's PodSelectorRef.
+	Name *string `pulumi:"name"`
+}
+
+// ClusterStatusPodSelectorRefsPatchInput is an input type that accepts ClusterStatusPodSelectorRefsPatchArgs and ClusterStatusPodSelectorRefsPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPodSelectorRefsPatchInput` via:
+//
+//	ClusterStatusPodSelectorRefsPatchArgs{...}
+type ClusterStatusPodSelectorRefsPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPodSelectorRefsPatchOutput() ClusterStatusPodSelectorRefsPatchOutput
+	ToClusterStatusPodSelectorRefsPatchOutputWithContext(context.Context) ClusterStatusPodSelectorRefsPatchOutput
+}
+
+// PodSelectorRefStatus contains the resolved pod IPs for a named selector.
+type ClusterStatusPodSelectorRefsPatchArgs struct {
+	// IPs is the list of pod IPs matching the selector.
+	// Each IP is a single address (no CIDR notation).
+	Ips pulumi.StringArrayInput `pulumi:"ips"`
+	// Name corresponds to the name in the spec's PodSelectorRef.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (ClusterStatusPodSelectorRefsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPodSelectorRefsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPodSelectorRefsPatchArgs) ToClusterStatusPodSelectorRefsPatchOutput() ClusterStatusPodSelectorRefsPatchOutput {
+	return i.ToClusterStatusPodSelectorRefsPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPodSelectorRefsPatchArgs) ToClusterStatusPodSelectorRefsPatchOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPodSelectorRefsPatchOutput)
+}
+
+// ClusterStatusPodSelectorRefsPatchArrayInput is an input type that accepts ClusterStatusPodSelectorRefsPatchArray and ClusterStatusPodSelectorRefsPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusPodSelectorRefsPatchArrayInput` via:
+//
+//	ClusterStatusPodSelectorRefsPatchArray{ ClusterStatusPodSelectorRefsPatchArgs{...} }
+type ClusterStatusPodSelectorRefsPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusPodSelectorRefsPatchArrayOutput() ClusterStatusPodSelectorRefsPatchArrayOutput
+	ToClusterStatusPodSelectorRefsPatchArrayOutputWithContext(context.Context) ClusterStatusPodSelectorRefsPatchArrayOutput
+}
+
+type ClusterStatusPodSelectorRefsPatchArray []ClusterStatusPodSelectorRefsPatchInput
+
+func (ClusterStatusPodSelectorRefsPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPodSelectorRefsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPodSelectorRefsPatchArray) ToClusterStatusPodSelectorRefsPatchArrayOutput() ClusterStatusPodSelectorRefsPatchArrayOutput {
+	return i.ToClusterStatusPodSelectorRefsPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPodSelectorRefsPatchArray) ToClusterStatusPodSelectorRefsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPodSelectorRefsPatchArrayOutput)
+}
+
+// PodSelectorRefStatus contains the resolved pod IPs for a named selector.
+type ClusterStatusPodSelectorRefsPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPodSelectorRefsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPodSelectorRefsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPodSelectorRefsPatchOutput) ToClusterStatusPodSelectorRefsPatchOutput() ClusterStatusPodSelectorRefsPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPodSelectorRefsPatchOutput) ToClusterStatusPodSelectorRefsPatchOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsPatchOutput {
+	return o
+}
+
+// IPs is the list of pod IPs matching the selector.
+// Each IP is a single address (no CIDR notation).
+func (o ClusterStatusPodSelectorRefsPatchOutput) Ips() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPodSelectorRefsPatch) []string { return v.Ips }).(pulumi.StringArrayOutput)
+}
+
+// Name corresponds to the name in the spec's PodSelectorRef.
+func (o ClusterStatusPodSelectorRefsPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPodSelectorRefsPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusPodSelectorRefsPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPodSelectorRefsPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusPodSelectorRefsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPodSelectorRefsPatchArrayOutput) ToClusterStatusPodSelectorRefsPatchArrayOutput() ClusterStatusPodSelectorRefsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPodSelectorRefsPatchArrayOutput) ToClusterStatusPodSelectorRefsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusPodSelectorRefsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusPodSelectorRefsPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusPodSelectorRefsPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusPodSelectorRefsPatch {
+		return vs[0].([]ClusterStatusPodSelectorRefsPatch)[vs[1].(int)]
+	}).(ClusterStatusPodSelectorRefsPatchOutput)
+}
+
+// The integration needed by poolers referencing the cluster
+type ClusterStatusPoolerIntegrations struct {
+	PgBouncerIntegration *ClusterStatusPoolerIntegrationsPgBouncerIntegration `pulumi:"pgBouncerIntegration"`
+}
+
+// ClusterStatusPoolerIntegrationsInput is an input type that accepts ClusterStatusPoolerIntegrationsArgs and ClusterStatusPoolerIntegrationsOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsInput` via:
+//
+//	ClusterStatusPoolerIntegrationsArgs{...}
+type ClusterStatusPoolerIntegrationsInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsOutput() ClusterStatusPoolerIntegrationsOutput
+	ToClusterStatusPoolerIntegrationsOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsOutput
+}
+
+// The integration needed by poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsArgs struct {
+	PgBouncerIntegration ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrInput `pulumi:"pgBouncerIntegration"`
+}
+
+func (ClusterStatusPoolerIntegrationsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrations)(nil)).Elem()
+}
+
+func (i ClusterStatusPoolerIntegrationsArgs) ToClusterStatusPoolerIntegrationsOutput() ClusterStatusPoolerIntegrationsOutput {
+	return i.ToClusterStatusPoolerIntegrationsOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsArgs) ToClusterStatusPoolerIntegrationsOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsOutput)
+}
+
+func (i ClusterStatusPoolerIntegrationsArgs) ToClusterStatusPoolerIntegrationsPtrOutput() ClusterStatusPoolerIntegrationsPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsArgs) ToClusterStatusPoolerIntegrationsPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsOutput).ToClusterStatusPoolerIntegrationsPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPoolerIntegrationsPtrInput is an input type that accepts ClusterStatusPoolerIntegrationsArgs, ClusterStatusPoolerIntegrationsPtr and ClusterStatusPoolerIntegrationsPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsPtrInput` via:
+//
+//	        ClusterStatusPoolerIntegrationsArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPoolerIntegrationsPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsPtrOutput() ClusterStatusPoolerIntegrationsPtrOutput
+	ToClusterStatusPoolerIntegrationsPtrOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsPtrOutput
+}
+
+type clusterStatusPoolerIntegrationsPtrType ClusterStatusPoolerIntegrationsArgs
+
+func ClusterStatusPoolerIntegrationsPtr(v *ClusterStatusPoolerIntegrationsArgs) ClusterStatusPoolerIntegrationsPtrInput {
+	return (*clusterStatusPoolerIntegrationsPtrType)(v)
+}
+
+func (*clusterStatusPoolerIntegrationsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrations)(nil)).Elem()
+}
+
+func (i *clusterStatusPoolerIntegrationsPtrType) ToClusterStatusPoolerIntegrationsPtrOutput() ClusterStatusPoolerIntegrationsPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPoolerIntegrationsPtrType) ToClusterStatusPoolerIntegrationsPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPtrOutput)
+}
+
+// The integration needed by poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrations)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsOutput) ToClusterStatusPoolerIntegrationsOutput() ClusterStatusPoolerIntegrationsOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsOutput) ToClusterStatusPoolerIntegrationsOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsOutput) ToClusterStatusPoolerIntegrationsPtrOutput() ClusterStatusPoolerIntegrationsPtrOutput {
+	return o.ToClusterStatusPoolerIntegrationsPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPoolerIntegrationsOutput) ToClusterStatusPoolerIntegrationsPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPoolerIntegrations) *ClusterStatusPoolerIntegrations {
+		return &v
+	}).(ClusterStatusPoolerIntegrationsPtrOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsOutput) PgBouncerIntegration() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPoolerIntegrations) *ClusterStatusPoolerIntegrationsPgBouncerIntegration {
+		return v.PgBouncerIntegration
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput)
+}
+
+type ClusterStatusPoolerIntegrationsPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrations)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsPtrOutput) ToClusterStatusPoolerIntegrationsPtrOutput() ClusterStatusPoolerIntegrationsPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPtrOutput) ToClusterStatusPoolerIntegrationsPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPtrOutput) Elem() ClusterStatusPoolerIntegrationsOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrations) ClusterStatusPoolerIntegrations {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPoolerIntegrations
+		return ret
+	}).(ClusterStatusPoolerIntegrationsOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsPtrOutput) PgBouncerIntegration() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrations) *ClusterStatusPoolerIntegrationsPgBouncerIntegration {
+		if v == nil {
+			return nil
+		}
+		return v.PgBouncerIntegration
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput)
+}
+
+// The integration needed by poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPatch struct {
+	PgBouncerIntegration *ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch `pulumi:"pgBouncerIntegration"`
+}
+
+// ClusterStatusPoolerIntegrationsPatchInput is an input type that accepts ClusterStatusPoolerIntegrationsPatchArgs and ClusterStatusPoolerIntegrationsPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsPatchInput` via:
+//
+//	ClusterStatusPoolerIntegrationsPatchArgs{...}
+type ClusterStatusPoolerIntegrationsPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsPatchOutput() ClusterStatusPoolerIntegrationsPatchOutput
+	ToClusterStatusPoolerIntegrationsPatchOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsPatchOutput
+}
+
+// The integration needed by poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPatchArgs struct {
+	PgBouncerIntegration ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrInput `pulumi:"pgBouncerIntegration"`
+}
+
+func (ClusterStatusPoolerIntegrationsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrationsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPoolerIntegrationsPatchArgs) ToClusterStatusPoolerIntegrationsPatchOutput() ClusterStatusPoolerIntegrationsPatchOutput {
+	return i.ToClusterStatusPoolerIntegrationsPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsPatchArgs) ToClusterStatusPoolerIntegrationsPatchOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPatchOutput)
+}
+
+func (i ClusterStatusPoolerIntegrationsPatchArgs) ToClusterStatusPoolerIntegrationsPatchPtrOutput() ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsPatchArgs) ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPatchOutput).ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPoolerIntegrationsPatchPtrInput is an input type that accepts ClusterStatusPoolerIntegrationsPatchArgs, ClusterStatusPoolerIntegrationsPatchPtr and ClusterStatusPoolerIntegrationsPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsPatchPtrInput` via:
+//
+//	        ClusterStatusPoolerIntegrationsPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPoolerIntegrationsPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsPatchPtrOutput() ClusterStatusPoolerIntegrationsPatchPtrOutput
+	ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsPatchPtrOutput
+}
+
+type clusterStatusPoolerIntegrationsPatchPtrType ClusterStatusPoolerIntegrationsPatchArgs
+
+func ClusterStatusPoolerIntegrationsPatchPtr(v *ClusterStatusPoolerIntegrationsPatchArgs) ClusterStatusPoolerIntegrationsPatchPtrInput {
+	return (*clusterStatusPoolerIntegrationsPatchPtrType)(v)
+}
+
+func (*clusterStatusPoolerIntegrationsPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrationsPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusPoolerIntegrationsPatchPtrType) ToClusterStatusPoolerIntegrationsPatchPtrOutput() ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPoolerIntegrationsPatchPtrType) ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPatchPtrOutput)
+}
+
+// The integration needed by poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrationsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchOutput) ToClusterStatusPoolerIntegrationsPatchOutput() ClusterStatusPoolerIntegrationsPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchOutput) ToClusterStatusPoolerIntegrationsPatchOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchOutput) ToClusterStatusPoolerIntegrationsPatchPtrOutput() ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return o.ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchOutput) ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPoolerIntegrationsPatch) *ClusterStatusPoolerIntegrationsPatch {
+		return &v
+	}).(ClusterStatusPoolerIntegrationsPatchPtrOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchOutput) PgBouncerIntegration() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusPoolerIntegrationsPatch) *ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch {
+		return v.PgBouncerIntegration
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput)
+}
+
+type ClusterStatusPoolerIntegrationsPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrationsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchPtrOutput) ToClusterStatusPoolerIntegrationsPatchPtrOutput() ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchPtrOutput) ToClusterStatusPoolerIntegrationsPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchPtrOutput) Elem() ClusterStatusPoolerIntegrationsPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrationsPatch) ClusterStatusPoolerIntegrationsPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPoolerIntegrationsPatch
+		return ret
+	}).(ClusterStatusPoolerIntegrationsPatchOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsPatchPtrOutput) PgBouncerIntegration() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrationsPatch) *ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch {
+		if v == nil {
+			return nil
+		}
+		return v.PgBouncerIntegration
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput)
+}
+
+// PgBouncerIntegrationStatus encapsulates the needed integration for the pgbouncer poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPgBouncerIntegration struct {
+	Secrets []string `pulumi:"secrets"`
+}
+
+// ClusterStatusPoolerIntegrationsPgBouncerIntegrationInput is an input type that accepts ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs and ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsPgBouncerIntegrationInput` via:
+//
+//	ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs{...}
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput
+}
+
+// PgBouncerIntegrationStatus encapsulates the needed integration for the pgbouncer poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs struct {
+	Secrets pulumi.StringArrayInput `pulumi:"secrets"`
+}
+
+func (ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegration)(nil)).Elem()
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput {
+	return i.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput)
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput).ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrInput is an input type that accepts ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs, ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtr and ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrInput` via:
+//
+//	        ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput
+}
+
+type clusterStatusPoolerIntegrationsPgBouncerIntegrationPtrType ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs
+
+func ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtr(v *ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrInput {
+	return (*clusterStatusPoolerIntegrationsPgBouncerIntegrationPtrType)(v)
+}
+
+func (*clusterStatusPoolerIntegrationsPgBouncerIntegrationPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrationsPgBouncerIntegration)(nil)).Elem()
+}
+
+func (i *clusterStatusPoolerIntegrationsPgBouncerIntegrationPtrType) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPoolerIntegrationsPgBouncerIntegrationPtrType) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput)
+}
+
+// PgBouncerIntegrationStatus encapsulates the needed integration for the pgbouncer poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegration)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return o.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPoolerIntegrationsPgBouncerIntegration) *ClusterStatusPoolerIntegrationsPgBouncerIntegration {
+		return &v
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput) Secrets() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPoolerIntegrationsPgBouncerIntegration) []string { return v.Secrets }).(pulumi.StringArrayOutput)
+}
+
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrationsPgBouncerIntegration)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput) Elem() ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrationsPgBouncerIntegration) ClusterStatusPoolerIntegrationsPgBouncerIntegration {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPoolerIntegrationsPgBouncerIntegration
+		return ret
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput) Secrets() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrationsPgBouncerIntegration) []string {
+		if v == nil {
+			return nil
+		}
+		return v.Secrets
+	}).(pulumi.StringArrayOutput)
+}
+
+// PgBouncerIntegrationStatus encapsulates the needed integration for the pgbouncer poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch struct {
+	Secrets []string `pulumi:"secrets"`
+}
+
+// ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchInput is an input type that accepts ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs and ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchInput` via:
+//
+//	ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs{...}
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput
+}
+
+// PgBouncerIntegrationStatus encapsulates the needed integration for the pgbouncer poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs struct {
+	Secrets pulumi.StringArrayInput `pulumi:"secrets"`
+}
+
+func (ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput {
+	return i.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput)
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput).ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrInput is an input type that accepts ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs, ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtr and ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrInput` via:
+//
+//	        ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput
+	ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput
+}
+
+type clusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrType ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs
+
+func ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtr(v *ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrInput {
+	return (*clusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrType)(v)
+}
+
+func (*clusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrType) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return i.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrType) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput)
+}
+
+// PgBouncerIntegrationStatus encapsulates the needed integration for the pgbouncer poolers referencing the cluster
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return o.ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch) *ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch {
+		return &v
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput) Secrets() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch) []string { return v.Secrets }).(pulumi.StringArrayOutput)
+}
+
+type ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput) ToClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutputWithContext(ctx context.Context) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput) Elem() ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch) ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch
+		return ret
+	}).(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput)
+}
+
+func (o ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput) Secrets() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatch) []string {
+		if v == nil {
+			return nil
+		}
+		return v.Secrets
+	}).(pulumi.StringArrayOutput)
+}
+
+// The list of resource versions of the secrets
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// secret data
+type ClusterStatusSecretsResourceVersion struct {
+	// The resource version of the "app" user secret
+	ApplicationSecretVersion *string `pulumi:"applicationSecretVersion"`
+	// The resource version of the Barman Endpoint CA if provided
+	BarmanEndpointCA *string `pulumi:"barmanEndpointCA"`
+	// Unused. Retained for compatibility with old versions.
+	CaSecretVersion *string `pulumi:"caSecretVersion"`
+	// The resource version of the PostgreSQL client-side CA secret version
+	ClientCaSecretVersion *string `pulumi:"clientCaSecretVersion"`
+	// The resource versions of the external cluster secrets
+	ExternalClusterSecretVersion map[string]string `pulumi:"externalClusterSecretVersion"`
+	// The resource versions of the managed roles secrets
+	ManagedRoleSecretVersion map[string]string `pulumi:"managedRoleSecretVersion"`
+	// A map with the versions of all the secrets used to pass metrics.
+	// Map keys are the secret names, map values are the versions
+	Metrics map[string]string `pulumi:"metrics"`
+	// The resource version of the "streaming_replica" user secret
+	ReplicationSecretVersion *string `pulumi:"replicationSecretVersion"`
+	// The resource version of the PostgreSQL server-side CA secret version
+	ServerCaSecretVersion *string `pulumi:"serverCaSecretVersion"`
+	// The resource version of the PostgreSQL server-side secret version
+	ServerSecretVersion *string `pulumi:"serverSecretVersion"`
+	// The resource version of the "postgres" user secret
+	SuperuserSecretVersion *string `pulumi:"superuserSecretVersion"`
+}
+
+// ClusterStatusSecretsResourceVersionInput is an input type that accepts ClusterStatusSecretsResourceVersionArgs and ClusterStatusSecretsResourceVersionOutput values.
+// You can construct a concrete instance of `ClusterStatusSecretsResourceVersionInput` via:
+//
+//	ClusterStatusSecretsResourceVersionArgs{...}
+type ClusterStatusSecretsResourceVersionInput interface {
+	pulumi.Input
+
+	ToClusterStatusSecretsResourceVersionOutput() ClusterStatusSecretsResourceVersionOutput
+	ToClusterStatusSecretsResourceVersionOutputWithContext(context.Context) ClusterStatusSecretsResourceVersionOutput
+}
+
+// The list of resource versions of the secrets
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// secret data
+type ClusterStatusSecretsResourceVersionArgs struct {
+	// The resource version of the "app" user secret
+	ApplicationSecretVersion pulumi.StringPtrInput `pulumi:"applicationSecretVersion"`
+	// The resource version of the Barman Endpoint CA if provided
+	BarmanEndpointCA pulumi.StringPtrInput `pulumi:"barmanEndpointCA"`
+	// Unused. Retained for compatibility with old versions.
+	CaSecretVersion pulumi.StringPtrInput `pulumi:"caSecretVersion"`
+	// The resource version of the PostgreSQL client-side CA secret version
+	ClientCaSecretVersion pulumi.StringPtrInput `pulumi:"clientCaSecretVersion"`
+	// The resource versions of the external cluster secrets
+	ExternalClusterSecretVersion pulumi.StringMapInput `pulumi:"externalClusterSecretVersion"`
+	// The resource versions of the managed roles secrets
+	ManagedRoleSecretVersion pulumi.StringMapInput `pulumi:"managedRoleSecretVersion"`
+	// A map with the versions of all the secrets used to pass metrics.
+	// Map keys are the secret names, map values are the versions
+	Metrics pulumi.StringMapInput `pulumi:"metrics"`
+	// The resource version of the "streaming_replica" user secret
+	ReplicationSecretVersion pulumi.StringPtrInput `pulumi:"replicationSecretVersion"`
+	// The resource version of the PostgreSQL server-side CA secret version
+	ServerCaSecretVersion pulumi.StringPtrInput `pulumi:"serverCaSecretVersion"`
+	// The resource version of the PostgreSQL server-side secret version
+	ServerSecretVersion pulumi.StringPtrInput `pulumi:"serverSecretVersion"`
+	// The resource version of the "postgres" user secret
+	SuperuserSecretVersion pulumi.StringPtrInput `pulumi:"superuserSecretVersion"`
+}
+
+func (ClusterStatusSecretsResourceVersionArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSecretsResourceVersion)(nil)).Elem()
+}
+
+func (i ClusterStatusSecretsResourceVersionArgs) ToClusterStatusSecretsResourceVersionOutput() ClusterStatusSecretsResourceVersionOutput {
+	return i.ToClusterStatusSecretsResourceVersionOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSecretsResourceVersionArgs) ToClusterStatusSecretsResourceVersionOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSecretsResourceVersionOutput)
+}
+
+func (i ClusterStatusSecretsResourceVersionArgs) ToClusterStatusSecretsResourceVersionPtrOutput() ClusterStatusSecretsResourceVersionPtrOutput {
+	return i.ToClusterStatusSecretsResourceVersionPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSecretsResourceVersionArgs) ToClusterStatusSecretsResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSecretsResourceVersionOutput).ToClusterStatusSecretsResourceVersionPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusSecretsResourceVersionPtrInput is an input type that accepts ClusterStatusSecretsResourceVersionArgs, ClusterStatusSecretsResourceVersionPtr and ClusterStatusSecretsResourceVersionPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusSecretsResourceVersionPtrInput` via:
+//
+//	        ClusterStatusSecretsResourceVersionArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusSecretsResourceVersionPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusSecretsResourceVersionPtrOutput() ClusterStatusSecretsResourceVersionPtrOutput
+	ToClusterStatusSecretsResourceVersionPtrOutputWithContext(context.Context) ClusterStatusSecretsResourceVersionPtrOutput
+}
+
+type clusterStatusSecretsResourceVersionPtrType ClusterStatusSecretsResourceVersionArgs
+
+func ClusterStatusSecretsResourceVersionPtr(v *ClusterStatusSecretsResourceVersionArgs) ClusterStatusSecretsResourceVersionPtrInput {
+	return (*clusterStatusSecretsResourceVersionPtrType)(v)
+}
+
+func (*clusterStatusSecretsResourceVersionPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSecretsResourceVersion)(nil)).Elem()
+}
+
+func (i *clusterStatusSecretsResourceVersionPtrType) ToClusterStatusSecretsResourceVersionPtrOutput() ClusterStatusSecretsResourceVersionPtrOutput {
+	return i.ToClusterStatusSecretsResourceVersionPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusSecretsResourceVersionPtrType) ToClusterStatusSecretsResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSecretsResourceVersionPtrOutput)
+}
+
+// The list of resource versions of the secrets
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// secret data
+type ClusterStatusSecretsResourceVersionOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSecretsResourceVersionOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSecretsResourceVersion)(nil)).Elem()
+}
+
+func (o ClusterStatusSecretsResourceVersionOutput) ToClusterStatusSecretsResourceVersionOutput() ClusterStatusSecretsResourceVersionOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionOutput) ToClusterStatusSecretsResourceVersionOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionOutput) ToClusterStatusSecretsResourceVersionPtrOutput() ClusterStatusSecretsResourceVersionPtrOutput {
+	return o.ToClusterStatusSecretsResourceVersionPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusSecretsResourceVersionOutput) ToClusterStatusSecretsResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusSecretsResourceVersion) *ClusterStatusSecretsResourceVersion {
+		return &v
+	}).(ClusterStatusSecretsResourceVersionPtrOutput)
+}
+
+// The resource version of the "app" user secret
+func (o ClusterStatusSecretsResourceVersionOutput) ApplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.ApplicationSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the Barman Endpoint CA if provided
+func (o ClusterStatusSecretsResourceVersionOutput) BarmanEndpointCA() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.BarmanEndpointCA }).(pulumi.StringPtrOutput)
+}
+
+// Unused. Retained for compatibility with old versions.
+func (o ClusterStatusSecretsResourceVersionOutput) CaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.CaSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL client-side CA secret version
+func (o ClusterStatusSecretsResourceVersionOutput) ClientCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.ClientCaSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource versions of the external cluster secrets
+func (o ClusterStatusSecretsResourceVersionOutput) ExternalClusterSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) map[string]string { return v.ExternalClusterSecretVersion }).(pulumi.StringMapOutput)
+}
+
+// The resource versions of the managed roles secrets
+func (o ClusterStatusSecretsResourceVersionOutput) ManagedRoleSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) map[string]string { return v.ManagedRoleSecretVersion }).(pulumi.StringMapOutput)
+}
+
+// A map with the versions of all the secrets used to pass metrics.
+// Map keys are the secret names, map values are the versions
+func (o ClusterStatusSecretsResourceVersionOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) map[string]string { return v.Metrics }).(pulumi.StringMapOutput)
+}
+
+// The resource version of the "streaming_replica" user secret
+func (o ClusterStatusSecretsResourceVersionOutput) ReplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.ReplicationSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side CA secret version
+func (o ClusterStatusSecretsResourceVersionOutput) ServerCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.ServerCaSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side secret version
+func (o ClusterStatusSecretsResourceVersionOutput) ServerSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.ServerSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the "postgres" user secret
+func (o ClusterStatusSecretsResourceVersionOutput) SuperuserSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersion) *string { return v.SuperuserSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusSecretsResourceVersionPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSecretsResourceVersionPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSecretsResourceVersion)(nil)).Elem()
+}
+
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ToClusterStatusSecretsResourceVersionPtrOutput() ClusterStatusSecretsResourceVersionPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ToClusterStatusSecretsResourceVersionPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionPtrOutput) Elem() ClusterStatusSecretsResourceVersionOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) ClusterStatusSecretsResourceVersion {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusSecretsResourceVersion
+		return ret
+	}).(ClusterStatusSecretsResourceVersionOutput)
+}
+
+// The resource version of the "app" user secret
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ApplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ApplicationSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the Barman Endpoint CA if provided
+func (o ClusterStatusSecretsResourceVersionPtrOutput) BarmanEndpointCA() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.BarmanEndpointCA
+	}).(pulumi.StringPtrOutput)
+}
+
+// Unused. Retained for compatibility with old versions.
+func (o ClusterStatusSecretsResourceVersionPtrOutput) CaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.CaSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL client-side CA secret version
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ClientCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ClientCaSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource versions of the external cluster secrets
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ExternalClusterSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.ExternalClusterSecretVersion
+	}).(pulumi.StringMapOutput)
+}
+
+// The resource versions of the managed roles secrets
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ManagedRoleSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.ManagedRoleSecretVersion
+	}).(pulumi.StringMapOutput)
+}
+
+// A map with the versions of all the secrets used to pass metrics.
+// Map keys are the secret names, map values are the versions
+func (o ClusterStatusSecretsResourceVersionPtrOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Metrics
+	}).(pulumi.StringMapOutput)
+}
+
+// The resource version of the "streaming_replica" user secret
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ReplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ReplicationSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side CA secret version
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ServerCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerCaSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side secret version
+func (o ClusterStatusSecretsResourceVersionPtrOutput) ServerSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the "postgres" user secret
+func (o ClusterStatusSecretsResourceVersionPtrOutput) SuperuserSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersion) *string {
+		if v == nil {
+			return nil
+		}
+		return v.SuperuserSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The list of resource versions of the secrets
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// secret data
+type ClusterStatusSecretsResourceVersionPatch struct {
+	// The resource version of the "app" user secret
+	ApplicationSecretVersion *string `pulumi:"applicationSecretVersion"`
+	// The resource version of the Barman Endpoint CA if provided
+	BarmanEndpointCA *string `pulumi:"barmanEndpointCA"`
+	// Unused. Retained for compatibility with old versions.
+	CaSecretVersion *string `pulumi:"caSecretVersion"`
+	// The resource version of the PostgreSQL client-side CA secret version
+	ClientCaSecretVersion *string `pulumi:"clientCaSecretVersion"`
+	// The resource versions of the external cluster secrets
+	ExternalClusterSecretVersion map[string]string `pulumi:"externalClusterSecretVersion"`
+	// The resource versions of the managed roles secrets
+	ManagedRoleSecretVersion map[string]string `pulumi:"managedRoleSecretVersion"`
+	// A map with the versions of all the secrets used to pass metrics.
+	// Map keys are the secret names, map values are the versions
+	Metrics map[string]string `pulumi:"metrics"`
+	// The resource version of the "streaming_replica" user secret
+	ReplicationSecretVersion *string `pulumi:"replicationSecretVersion"`
+	// The resource version of the PostgreSQL server-side CA secret version
+	ServerCaSecretVersion *string `pulumi:"serverCaSecretVersion"`
+	// The resource version of the PostgreSQL server-side secret version
+	ServerSecretVersion *string `pulumi:"serverSecretVersion"`
+	// The resource version of the "postgres" user secret
+	SuperuserSecretVersion *string `pulumi:"superuserSecretVersion"`
+}
+
+// ClusterStatusSecretsResourceVersionPatchInput is an input type that accepts ClusterStatusSecretsResourceVersionPatchArgs and ClusterStatusSecretsResourceVersionPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusSecretsResourceVersionPatchInput` via:
+//
+//	ClusterStatusSecretsResourceVersionPatchArgs{...}
+type ClusterStatusSecretsResourceVersionPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusSecretsResourceVersionPatchOutput() ClusterStatusSecretsResourceVersionPatchOutput
+	ToClusterStatusSecretsResourceVersionPatchOutputWithContext(context.Context) ClusterStatusSecretsResourceVersionPatchOutput
+}
+
+// The list of resource versions of the secrets
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// secret data
+type ClusterStatusSecretsResourceVersionPatchArgs struct {
+	// The resource version of the "app" user secret
+	ApplicationSecretVersion pulumi.StringPtrInput `pulumi:"applicationSecretVersion"`
+	// The resource version of the Barman Endpoint CA if provided
+	BarmanEndpointCA pulumi.StringPtrInput `pulumi:"barmanEndpointCA"`
+	// Unused. Retained for compatibility with old versions.
+	CaSecretVersion pulumi.StringPtrInput `pulumi:"caSecretVersion"`
+	// The resource version of the PostgreSQL client-side CA secret version
+	ClientCaSecretVersion pulumi.StringPtrInput `pulumi:"clientCaSecretVersion"`
+	// The resource versions of the external cluster secrets
+	ExternalClusterSecretVersion pulumi.StringMapInput `pulumi:"externalClusterSecretVersion"`
+	// The resource versions of the managed roles secrets
+	ManagedRoleSecretVersion pulumi.StringMapInput `pulumi:"managedRoleSecretVersion"`
+	// A map with the versions of all the secrets used to pass metrics.
+	// Map keys are the secret names, map values are the versions
+	Metrics pulumi.StringMapInput `pulumi:"metrics"`
+	// The resource version of the "streaming_replica" user secret
+	ReplicationSecretVersion pulumi.StringPtrInput `pulumi:"replicationSecretVersion"`
+	// The resource version of the PostgreSQL server-side CA secret version
+	ServerCaSecretVersion pulumi.StringPtrInput `pulumi:"serverCaSecretVersion"`
+	// The resource version of the PostgreSQL server-side secret version
+	ServerSecretVersion pulumi.StringPtrInput `pulumi:"serverSecretVersion"`
+	// The resource version of the "postgres" user secret
+	SuperuserSecretVersion pulumi.StringPtrInput `pulumi:"superuserSecretVersion"`
+}
+
+func (ClusterStatusSecretsResourceVersionPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSecretsResourceVersionPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusSecretsResourceVersionPatchArgs) ToClusterStatusSecretsResourceVersionPatchOutput() ClusterStatusSecretsResourceVersionPatchOutput {
+	return i.ToClusterStatusSecretsResourceVersionPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSecretsResourceVersionPatchArgs) ToClusterStatusSecretsResourceVersionPatchOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSecretsResourceVersionPatchOutput)
+}
+
+func (i ClusterStatusSecretsResourceVersionPatchArgs) ToClusterStatusSecretsResourceVersionPatchPtrOutput() ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return i.ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSecretsResourceVersionPatchArgs) ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSecretsResourceVersionPatchOutput).ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusSecretsResourceVersionPatchPtrInput is an input type that accepts ClusterStatusSecretsResourceVersionPatchArgs, ClusterStatusSecretsResourceVersionPatchPtr and ClusterStatusSecretsResourceVersionPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusSecretsResourceVersionPatchPtrInput` via:
+//
+//	        ClusterStatusSecretsResourceVersionPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusSecretsResourceVersionPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusSecretsResourceVersionPatchPtrOutput() ClusterStatusSecretsResourceVersionPatchPtrOutput
+	ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(context.Context) ClusterStatusSecretsResourceVersionPatchPtrOutput
+}
+
+type clusterStatusSecretsResourceVersionPatchPtrType ClusterStatusSecretsResourceVersionPatchArgs
+
+func ClusterStatusSecretsResourceVersionPatchPtr(v *ClusterStatusSecretsResourceVersionPatchArgs) ClusterStatusSecretsResourceVersionPatchPtrInput {
+	return (*clusterStatusSecretsResourceVersionPatchPtrType)(v)
+}
+
+func (*clusterStatusSecretsResourceVersionPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSecretsResourceVersionPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusSecretsResourceVersionPatchPtrType) ToClusterStatusSecretsResourceVersionPatchPtrOutput() ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return i.ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusSecretsResourceVersionPatchPtrType) ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSecretsResourceVersionPatchPtrOutput)
+}
+
+// The list of resource versions of the secrets
+// managed by the operator. Every change here is done in the
+// interest of the instance manager, which will refresh the
+// secret data
+type ClusterStatusSecretsResourceVersionPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSecretsResourceVersionPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSecretsResourceVersionPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ToClusterStatusSecretsResourceVersionPatchOutput() ClusterStatusSecretsResourceVersionPatchOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ToClusterStatusSecretsResourceVersionPatchOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPatchOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ToClusterStatusSecretsResourceVersionPatchPtrOutput() ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return o.ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusSecretsResourceVersionPatch) *ClusterStatusSecretsResourceVersionPatch {
+		return &v
+	}).(ClusterStatusSecretsResourceVersionPatchPtrOutput)
+}
+
+// The resource version of the "app" user secret
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ApplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.ApplicationSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the Barman Endpoint CA if provided
+func (o ClusterStatusSecretsResourceVersionPatchOutput) BarmanEndpointCA() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.BarmanEndpointCA }).(pulumi.StringPtrOutput)
+}
+
+// Unused. Retained for compatibility with old versions.
+func (o ClusterStatusSecretsResourceVersionPatchOutput) CaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.CaSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL client-side CA secret version
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ClientCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.ClientCaSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource versions of the external cluster secrets
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ExternalClusterSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) map[string]string {
+		return v.ExternalClusterSecretVersion
+	}).(pulumi.StringMapOutput)
+}
+
+// The resource versions of the managed roles secrets
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ManagedRoleSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) map[string]string { return v.ManagedRoleSecretVersion }).(pulumi.StringMapOutput)
+}
+
+// A map with the versions of all the secrets used to pass metrics.
+// Map keys are the secret names, map values are the versions
+func (o ClusterStatusSecretsResourceVersionPatchOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) map[string]string { return v.Metrics }).(pulumi.StringMapOutput)
+}
+
+// The resource version of the "streaming_replica" user secret
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ReplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.ReplicationSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side CA secret version
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ServerCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.ServerCaSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side secret version
+func (o ClusterStatusSecretsResourceVersionPatchOutput) ServerSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.ServerSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the "postgres" user secret
+func (o ClusterStatusSecretsResourceVersionPatchOutput) SuperuserSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSecretsResourceVersionPatch) *string { return v.SuperuserSecretVersion }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusSecretsResourceVersionPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSecretsResourceVersionPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSecretsResourceVersionPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ToClusterStatusSecretsResourceVersionPatchPtrOutput() ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ToClusterStatusSecretsResourceVersionPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSecretsResourceVersionPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) Elem() ClusterStatusSecretsResourceVersionPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) ClusterStatusSecretsResourceVersionPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusSecretsResourceVersionPatch
+		return ret
+	}).(ClusterStatusSecretsResourceVersionPatchOutput)
+}
+
+// The resource version of the "app" user secret
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ApplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ApplicationSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the Barman Endpoint CA if provided
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) BarmanEndpointCA() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.BarmanEndpointCA
+	}).(pulumi.StringPtrOutput)
+}
+
+// Unused. Retained for compatibility with old versions.
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) CaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.CaSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL client-side CA secret version
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ClientCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ClientCaSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource versions of the external cluster secrets
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ExternalClusterSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.ExternalClusterSecretVersion
+	}).(pulumi.StringMapOutput)
+}
+
+// The resource versions of the managed roles secrets
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ManagedRoleSecretVersion() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.ManagedRoleSecretVersion
+	}).(pulumi.StringMapOutput)
+}
+
+// A map with the versions of all the secrets used to pass metrics.
+// Map keys are the secret names, map values are the versions
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) Metrics() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Metrics
+	}).(pulumi.StringMapOutput)
+}
+
+// The resource version of the "streaming_replica" user secret
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ReplicationSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ReplicationSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side CA secret version
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ServerCaSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerCaSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the PostgreSQL server-side secret version
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) ServerSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.ServerSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// The resource version of the "postgres" user secret
+func (o ClusterStatusSecretsResourceVersionPatchPtrOutput) SuperuserSecretVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSecretsResourceVersionPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.SuperuserSecretVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+// SwitchReplicaClusterStatus is the status of the switch to replica cluster
+type ClusterStatusSwitchReplicaClusterStatus struct {
+	// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+	InProgress *bool `pulumi:"inProgress"`
+}
+
+// ClusterStatusSwitchReplicaClusterStatusInput is an input type that accepts ClusterStatusSwitchReplicaClusterStatusArgs and ClusterStatusSwitchReplicaClusterStatusOutput values.
+// You can construct a concrete instance of `ClusterStatusSwitchReplicaClusterStatusInput` via:
+//
+//	ClusterStatusSwitchReplicaClusterStatusArgs{...}
+type ClusterStatusSwitchReplicaClusterStatusInput interface {
+	pulumi.Input
+
+	ToClusterStatusSwitchReplicaClusterStatusOutput() ClusterStatusSwitchReplicaClusterStatusOutput
+	ToClusterStatusSwitchReplicaClusterStatusOutputWithContext(context.Context) ClusterStatusSwitchReplicaClusterStatusOutput
+}
+
+// SwitchReplicaClusterStatus is the status of the switch to replica cluster
+type ClusterStatusSwitchReplicaClusterStatusArgs struct {
+	// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+	InProgress pulumi.BoolPtrInput `pulumi:"inProgress"`
+}
+
+func (ClusterStatusSwitchReplicaClusterStatusArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatus)(nil)).Elem()
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusArgs) ToClusterStatusSwitchReplicaClusterStatusOutput() ClusterStatusSwitchReplicaClusterStatusOutput {
+	return i.ToClusterStatusSwitchReplicaClusterStatusOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusArgs) ToClusterStatusSwitchReplicaClusterStatusOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSwitchReplicaClusterStatusOutput)
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusArgs) ToClusterStatusSwitchReplicaClusterStatusPtrOutput() ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return i.ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusArgs) ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSwitchReplicaClusterStatusOutput).ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusSwitchReplicaClusterStatusPtrInput is an input type that accepts ClusterStatusSwitchReplicaClusterStatusArgs, ClusterStatusSwitchReplicaClusterStatusPtr and ClusterStatusSwitchReplicaClusterStatusPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusSwitchReplicaClusterStatusPtrInput` via:
+//
+//	        ClusterStatusSwitchReplicaClusterStatusArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusSwitchReplicaClusterStatusPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusSwitchReplicaClusterStatusPtrOutput() ClusterStatusSwitchReplicaClusterStatusPtrOutput
+	ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(context.Context) ClusterStatusSwitchReplicaClusterStatusPtrOutput
+}
+
+type clusterStatusSwitchReplicaClusterStatusPtrType ClusterStatusSwitchReplicaClusterStatusArgs
+
+func ClusterStatusSwitchReplicaClusterStatusPtr(v *ClusterStatusSwitchReplicaClusterStatusArgs) ClusterStatusSwitchReplicaClusterStatusPtrInput {
+	return (*clusterStatusSwitchReplicaClusterStatusPtrType)(v)
+}
+
+func (*clusterStatusSwitchReplicaClusterStatusPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSwitchReplicaClusterStatus)(nil)).Elem()
+}
+
+func (i *clusterStatusSwitchReplicaClusterStatusPtrType) ToClusterStatusSwitchReplicaClusterStatusPtrOutput() ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return i.ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusSwitchReplicaClusterStatusPtrType) ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSwitchReplicaClusterStatusPtrOutput)
+}
+
+// SwitchReplicaClusterStatus is the status of the switch to replica cluster
+type ClusterStatusSwitchReplicaClusterStatusOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSwitchReplicaClusterStatusOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusOutput) ToClusterStatusSwitchReplicaClusterStatusOutput() ClusterStatusSwitchReplicaClusterStatusOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusOutput) ToClusterStatusSwitchReplicaClusterStatusOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusOutput) ToClusterStatusSwitchReplicaClusterStatusPtrOutput() ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return o.ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusOutput) ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusSwitchReplicaClusterStatus) *ClusterStatusSwitchReplicaClusterStatus {
+		return &v
+	}).(ClusterStatusSwitchReplicaClusterStatusPtrOutput)
+}
+
+// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+func (o ClusterStatusSwitchReplicaClusterStatusOutput) InProgress() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSwitchReplicaClusterStatus) *bool { return v.InProgress }).(pulumi.BoolPtrOutput)
+}
+
+type ClusterStatusSwitchReplicaClusterStatusPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSwitchReplicaClusterStatusPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSwitchReplicaClusterStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPtrOutput) ToClusterStatusSwitchReplicaClusterStatusPtrOutput() ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPtrOutput) ToClusterStatusSwitchReplicaClusterStatusPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPtrOutput) Elem() ClusterStatusSwitchReplicaClusterStatusOutput {
+	return o.ApplyT(func(v *ClusterStatusSwitchReplicaClusterStatus) ClusterStatusSwitchReplicaClusterStatus {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusSwitchReplicaClusterStatus
+		return ret
+	}).(ClusterStatusSwitchReplicaClusterStatusOutput)
+}
+
+// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+func (o ClusterStatusSwitchReplicaClusterStatusPtrOutput) InProgress() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSwitchReplicaClusterStatus) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.InProgress
+	}).(pulumi.BoolPtrOutput)
+}
+
+// SwitchReplicaClusterStatus is the status of the switch to replica cluster
+type ClusterStatusSwitchReplicaClusterStatusPatch struct {
+	// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+	InProgress *bool `pulumi:"inProgress"`
+}
+
+// ClusterStatusSwitchReplicaClusterStatusPatchInput is an input type that accepts ClusterStatusSwitchReplicaClusterStatusPatchArgs and ClusterStatusSwitchReplicaClusterStatusPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusSwitchReplicaClusterStatusPatchInput` via:
+//
+//	ClusterStatusSwitchReplicaClusterStatusPatchArgs{...}
+type ClusterStatusSwitchReplicaClusterStatusPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusSwitchReplicaClusterStatusPatchOutput() ClusterStatusSwitchReplicaClusterStatusPatchOutput
+	ToClusterStatusSwitchReplicaClusterStatusPatchOutputWithContext(context.Context) ClusterStatusSwitchReplicaClusterStatusPatchOutput
+}
+
+// SwitchReplicaClusterStatus is the status of the switch to replica cluster
+type ClusterStatusSwitchReplicaClusterStatusPatchArgs struct {
+	// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+	InProgress pulumi.BoolPtrInput `pulumi:"inProgress"`
+}
+
+func (ClusterStatusSwitchReplicaClusterStatusPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatusPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusPatchArgs) ToClusterStatusSwitchReplicaClusterStatusPatchOutput() ClusterStatusSwitchReplicaClusterStatusPatchOutput {
+	return i.ToClusterStatusSwitchReplicaClusterStatusPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusPatchArgs) ToClusterStatusSwitchReplicaClusterStatusPatchOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSwitchReplicaClusterStatusPatchOutput)
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusPatchArgs) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutput() ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return i.ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusSwitchReplicaClusterStatusPatchArgs) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSwitchReplicaClusterStatusPatchOutput).ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusSwitchReplicaClusterStatusPatchPtrInput is an input type that accepts ClusterStatusSwitchReplicaClusterStatusPatchArgs, ClusterStatusSwitchReplicaClusterStatusPatchPtr and ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusSwitchReplicaClusterStatusPatchPtrInput` via:
+//
+//	        ClusterStatusSwitchReplicaClusterStatusPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusSwitchReplicaClusterStatusPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutput() ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput
+	ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(context.Context) ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput
+}
+
+type clusterStatusSwitchReplicaClusterStatusPatchPtrType ClusterStatusSwitchReplicaClusterStatusPatchArgs
+
+func ClusterStatusSwitchReplicaClusterStatusPatchPtr(v *ClusterStatusSwitchReplicaClusterStatusPatchArgs) ClusterStatusSwitchReplicaClusterStatusPatchPtrInput {
+	return (*clusterStatusSwitchReplicaClusterStatusPatchPtrType)(v)
+}
+
+func (*clusterStatusSwitchReplicaClusterStatusPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSwitchReplicaClusterStatusPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusSwitchReplicaClusterStatusPatchPtrType) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutput() ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return i.ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusSwitchReplicaClusterStatusPatchPtrType) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput)
+}
+
+// SwitchReplicaClusterStatus is the status of the switch to replica cluster
+type ClusterStatusSwitchReplicaClusterStatusPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSwitchReplicaClusterStatusPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPatchOutput) ToClusterStatusSwitchReplicaClusterStatusPatchOutput() ClusterStatusSwitchReplicaClusterStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPatchOutput) ToClusterStatusSwitchReplicaClusterStatusPatchOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPatchOutput) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutput() ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return o.ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPatchOutput) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusSwitchReplicaClusterStatusPatch) *ClusterStatusSwitchReplicaClusterStatusPatch {
+		return &v
+	}).(ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput)
+}
+
+// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+func (o ClusterStatusSwitchReplicaClusterStatusPatchOutput) InProgress() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ClusterStatusSwitchReplicaClusterStatusPatch) *bool { return v.InProgress }).(pulumi.BoolPtrOutput)
+}
+
+type ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusSwitchReplicaClusterStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutput() ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput) ToClusterStatusSwitchReplicaClusterStatusPatchPtrOutputWithContext(ctx context.Context) ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput) Elem() ClusterStatusSwitchReplicaClusterStatusPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusSwitchReplicaClusterStatusPatch) ClusterStatusSwitchReplicaClusterStatusPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusSwitchReplicaClusterStatusPatch
+		return ret
+	}).(ClusterStatusSwitchReplicaClusterStatusPatchOutput)
+}
+
+// InProgress indicates if there is an ongoing procedure of switching a cluster to a replica cluster.
+func (o ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput) InProgress() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusSwitchReplicaClusterStatusPatch) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.InProgress
+	}).(pulumi.BoolPtrOutput)
+}
+
+// TablespaceState represents the state of a tablespace in a cluster
+type ClusterStatusTablespacesStatus struct {
+	// Error is the reconciliation error, if any
+	Error *string `pulumi:"error"`
+	// Name is the name of the tablespace
+	Name *string `pulumi:"name"`
+	// Owner is the PostgreSQL user owning the tablespace
+	Owner *string `pulumi:"owner"`
+	// State is the latest reconciliation state
+	State *string `pulumi:"state"`
+}
+
+// ClusterStatusTablespacesStatusInput is an input type that accepts ClusterStatusTablespacesStatusArgs and ClusterStatusTablespacesStatusOutput values.
+// You can construct a concrete instance of `ClusterStatusTablespacesStatusInput` via:
+//
+//	ClusterStatusTablespacesStatusArgs{...}
+type ClusterStatusTablespacesStatusInput interface {
+	pulumi.Input
+
+	ToClusterStatusTablespacesStatusOutput() ClusterStatusTablespacesStatusOutput
+	ToClusterStatusTablespacesStatusOutputWithContext(context.Context) ClusterStatusTablespacesStatusOutput
+}
+
+// TablespaceState represents the state of a tablespace in a cluster
+type ClusterStatusTablespacesStatusArgs struct {
+	// Error is the reconciliation error, if any
+	Error pulumi.StringPtrInput `pulumi:"error"`
+	// Name is the name of the tablespace
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Owner is the PostgreSQL user owning the tablespace
+	Owner pulumi.StringPtrInput `pulumi:"owner"`
+	// State is the latest reconciliation state
+	State pulumi.StringPtrInput `pulumi:"state"`
+}
+
+func (ClusterStatusTablespacesStatusArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTablespacesStatus)(nil)).Elem()
+}
+
+func (i ClusterStatusTablespacesStatusArgs) ToClusterStatusTablespacesStatusOutput() ClusterStatusTablespacesStatusOutput {
+	return i.ToClusterStatusTablespacesStatusOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTablespacesStatusArgs) ToClusterStatusTablespacesStatusOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTablespacesStatusOutput)
+}
+
+// ClusterStatusTablespacesStatusArrayInput is an input type that accepts ClusterStatusTablespacesStatusArray and ClusterStatusTablespacesStatusArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusTablespacesStatusArrayInput` via:
+//
+//	ClusterStatusTablespacesStatusArray{ ClusterStatusTablespacesStatusArgs{...} }
+type ClusterStatusTablespacesStatusArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusTablespacesStatusArrayOutput() ClusterStatusTablespacesStatusArrayOutput
+	ToClusterStatusTablespacesStatusArrayOutputWithContext(context.Context) ClusterStatusTablespacesStatusArrayOutput
+}
+
+type ClusterStatusTablespacesStatusArray []ClusterStatusTablespacesStatusInput
+
+func (ClusterStatusTablespacesStatusArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTablespacesStatus)(nil)).Elem()
+}
+
+func (i ClusterStatusTablespacesStatusArray) ToClusterStatusTablespacesStatusArrayOutput() ClusterStatusTablespacesStatusArrayOutput {
+	return i.ToClusterStatusTablespacesStatusArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTablespacesStatusArray) ToClusterStatusTablespacesStatusArrayOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTablespacesStatusArrayOutput)
+}
+
+// TablespaceState represents the state of a tablespace in a cluster
+type ClusterStatusTablespacesStatusOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTablespacesStatusOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTablespacesStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusTablespacesStatusOutput) ToClusterStatusTablespacesStatusOutput() ClusterStatusTablespacesStatusOutput {
+	return o
+}
+
+func (o ClusterStatusTablespacesStatusOutput) ToClusterStatusTablespacesStatusOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusOutput {
+	return o
+}
+
+// Error is the reconciliation error, if any
+func (o ClusterStatusTablespacesStatusOutput) Error() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatus) *string { return v.Error }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the tablespace
+func (o ClusterStatusTablespacesStatusOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatus) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Owner is the PostgreSQL user owning the tablespace
+func (o ClusterStatusTablespacesStatusOutput) Owner() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatus) *string { return v.Owner }).(pulumi.StringPtrOutput)
+}
+
+// State is the latest reconciliation state
+func (o ClusterStatusTablespacesStatusOutput) State() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatus) *string { return v.State }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTablespacesStatusArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTablespacesStatusArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTablespacesStatus)(nil)).Elem()
+}
+
+func (o ClusterStatusTablespacesStatusArrayOutput) ToClusterStatusTablespacesStatusArrayOutput() ClusterStatusTablespacesStatusArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTablespacesStatusArrayOutput) ToClusterStatusTablespacesStatusArrayOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTablespacesStatusArrayOutput) Index(i pulumi.IntInput) ClusterStatusTablespacesStatusOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusTablespacesStatus {
+		return vs[0].([]ClusterStatusTablespacesStatus)[vs[1].(int)]
+	}).(ClusterStatusTablespacesStatusOutput)
+}
+
+// TablespaceState represents the state of a tablespace in a cluster
+type ClusterStatusTablespacesStatusPatch struct {
+	// Error is the reconciliation error, if any
+	Error *string `pulumi:"error"`
+	// Name is the name of the tablespace
+	Name *string `pulumi:"name"`
+	// Owner is the PostgreSQL user owning the tablespace
+	Owner *string `pulumi:"owner"`
+	// State is the latest reconciliation state
+	State *string `pulumi:"state"`
+}
+
+// ClusterStatusTablespacesStatusPatchInput is an input type that accepts ClusterStatusTablespacesStatusPatchArgs and ClusterStatusTablespacesStatusPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusTablespacesStatusPatchInput` via:
+//
+//	ClusterStatusTablespacesStatusPatchArgs{...}
+type ClusterStatusTablespacesStatusPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusTablespacesStatusPatchOutput() ClusterStatusTablespacesStatusPatchOutput
+	ToClusterStatusTablespacesStatusPatchOutputWithContext(context.Context) ClusterStatusTablespacesStatusPatchOutput
+}
+
+// TablespaceState represents the state of a tablespace in a cluster
+type ClusterStatusTablespacesStatusPatchArgs struct {
+	// Error is the reconciliation error, if any
+	Error pulumi.StringPtrInput `pulumi:"error"`
+	// Name is the name of the tablespace
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Owner is the PostgreSQL user owning the tablespace
+	Owner pulumi.StringPtrInput `pulumi:"owner"`
+	// State is the latest reconciliation state
+	State pulumi.StringPtrInput `pulumi:"state"`
+}
+
+func (ClusterStatusTablespacesStatusPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTablespacesStatusPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTablespacesStatusPatchArgs) ToClusterStatusTablespacesStatusPatchOutput() ClusterStatusTablespacesStatusPatchOutput {
+	return i.ToClusterStatusTablespacesStatusPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTablespacesStatusPatchArgs) ToClusterStatusTablespacesStatusPatchOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTablespacesStatusPatchOutput)
+}
+
+// ClusterStatusTablespacesStatusPatchArrayInput is an input type that accepts ClusterStatusTablespacesStatusPatchArray and ClusterStatusTablespacesStatusPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusTablespacesStatusPatchArrayInput` via:
+//
+//	ClusterStatusTablespacesStatusPatchArray{ ClusterStatusTablespacesStatusPatchArgs{...} }
+type ClusterStatusTablespacesStatusPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusTablespacesStatusPatchArrayOutput() ClusterStatusTablespacesStatusPatchArrayOutput
+	ToClusterStatusTablespacesStatusPatchArrayOutputWithContext(context.Context) ClusterStatusTablespacesStatusPatchArrayOutput
+}
+
+type ClusterStatusTablespacesStatusPatchArray []ClusterStatusTablespacesStatusPatchInput
+
+func (ClusterStatusTablespacesStatusPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTablespacesStatusPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTablespacesStatusPatchArray) ToClusterStatusTablespacesStatusPatchArrayOutput() ClusterStatusTablespacesStatusPatchArrayOutput {
+	return i.ToClusterStatusTablespacesStatusPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTablespacesStatusPatchArray) ToClusterStatusTablespacesStatusPatchArrayOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTablespacesStatusPatchArrayOutput)
+}
+
+// TablespaceState represents the state of a tablespace in a cluster
+type ClusterStatusTablespacesStatusPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTablespacesStatusPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTablespacesStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTablespacesStatusPatchOutput) ToClusterStatusTablespacesStatusPatchOutput() ClusterStatusTablespacesStatusPatchOutput {
+	return o
+}
+
+func (o ClusterStatusTablespacesStatusPatchOutput) ToClusterStatusTablespacesStatusPatchOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusPatchOutput {
+	return o
+}
+
+// Error is the reconciliation error, if any
+func (o ClusterStatusTablespacesStatusPatchOutput) Error() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatusPatch) *string { return v.Error }).(pulumi.StringPtrOutput)
+}
+
+// Name is the name of the tablespace
+func (o ClusterStatusTablespacesStatusPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatusPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Owner is the PostgreSQL user owning the tablespace
+func (o ClusterStatusTablespacesStatusPatchOutput) Owner() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatusPatch) *string { return v.Owner }).(pulumi.StringPtrOutput)
+}
+
+// State is the latest reconciliation state
+func (o ClusterStatusTablespacesStatusPatchOutput) State() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTablespacesStatusPatch) *string { return v.State }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTablespacesStatusPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTablespacesStatusPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTablespacesStatusPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTablespacesStatusPatchArrayOutput) ToClusterStatusTablespacesStatusPatchArrayOutput() ClusterStatusTablespacesStatusPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTablespacesStatusPatchArrayOutput) ToClusterStatusTablespacesStatusPatchArrayOutputWithContext(ctx context.Context) ClusterStatusTablespacesStatusPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTablespacesStatusPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusTablespacesStatusPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusTablespacesStatusPatch {
+		return vs[0].([]ClusterStatusTablespacesStatusPatch)[vs[1].(int)]
+	}).(ClusterStatusTablespacesStatusPatchOutput)
+}
+
+// TargetPGDataImageInfo contains the details of the target image for an
+// in-progress major upgrade. It is set before the upgrade Job is created,
+// and cleared on successful completion or when the upgrade is rolled back.
+type ClusterStatusTargetPgDataImageInfo struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions []ClusterStatusTargetPgDataImageInfoExtensions `pulumi:"extensions"`
+	// Image is the image name
+	Image *string `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion *int `pulumi:"majorVersion"`
+}
+
+// ClusterStatusTargetPgDataImageInfoInput is an input type that accepts ClusterStatusTargetPgDataImageInfoArgs and ClusterStatusTargetPgDataImageInfoOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoArgs{...}
+type ClusterStatusTargetPgDataImageInfoInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoOutput() ClusterStatusTargetPgDataImageInfoOutput
+	ToClusterStatusTargetPgDataImageInfoOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoOutput
+}
+
+// TargetPGDataImageInfo contains the details of the target image for an
+// in-progress major upgrade. It is set before the upgrade Job is created,
+// and cleared on successful completion or when the upgrade is rolled back.
+type ClusterStatusTargetPgDataImageInfoArgs struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions ClusterStatusTargetPgDataImageInfoExtensionsArrayInput `pulumi:"extensions"`
+	// Image is the image name
+	Image pulumi.StringPtrInput `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion pulumi.IntPtrInput `pulumi:"majorVersion"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfo)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoArgs) ToClusterStatusTargetPgDataImageInfoOutput() ClusterStatusTargetPgDataImageInfoOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoArgs) ToClusterStatusTargetPgDataImageInfoOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoOutput)
+}
+
+func (i ClusterStatusTargetPgDataImageInfoArgs) ToClusterStatusTargetPgDataImageInfoPtrOutput() ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoArgs) ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoOutput).ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusTargetPgDataImageInfoPtrInput is an input type that accepts ClusterStatusTargetPgDataImageInfoArgs, ClusterStatusTargetPgDataImageInfoPtr and ClusterStatusTargetPgDataImageInfoPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoPtrInput` via:
+//
+//	        ClusterStatusTargetPgDataImageInfoArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusTargetPgDataImageInfoPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoPtrOutput() ClusterStatusTargetPgDataImageInfoPtrOutput
+	ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoPtrOutput
+}
+
+type clusterStatusTargetPgDataImageInfoPtrType ClusterStatusTargetPgDataImageInfoArgs
+
+func ClusterStatusTargetPgDataImageInfoPtr(v *ClusterStatusTargetPgDataImageInfoArgs) ClusterStatusTargetPgDataImageInfoPtrInput {
+	return (*clusterStatusTargetPgDataImageInfoPtrType)(v)
+}
+
+func (*clusterStatusTargetPgDataImageInfoPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfo)(nil)).Elem()
+}
+
+func (i *clusterStatusTargetPgDataImageInfoPtrType) ToClusterStatusTargetPgDataImageInfoPtrOutput() ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusTargetPgDataImageInfoPtrType) ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoPtrOutput)
+}
+
+// TargetPGDataImageInfo contains the details of the target image for an
+// in-progress major upgrade. It is set before the upgrade Job is created,
+// and cleared on successful completion or when the upgrade is rolled back.
+type ClusterStatusTargetPgDataImageInfoOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfo)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoOutput) ToClusterStatusTargetPgDataImageInfoOutput() ClusterStatusTargetPgDataImageInfoOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoOutput) ToClusterStatusTargetPgDataImageInfoOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoOutput) ToClusterStatusTargetPgDataImageInfoPtrOutput() ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return o.ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusTargetPgDataImageInfoOutput) ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusTargetPgDataImageInfo) *ClusterStatusTargetPgDataImageInfo {
+		return &v
+	}).(ClusterStatusTargetPgDataImageInfoPtrOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusTargetPgDataImageInfoOutput) Extensions() ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfo) []ClusterStatusTargetPgDataImageInfoExtensions {
+		return v.Extensions
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusTargetPgDataImageInfoOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfo) *string { return v.Image }).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusTargetPgDataImageInfoOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfo) *int { return v.MajorVersion }).(pulumi.IntPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfo)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPtrOutput) ToClusterStatusTargetPgDataImageInfoPtrOutput() ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPtrOutput) ToClusterStatusTargetPgDataImageInfoPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPtrOutput) Elem() ClusterStatusTargetPgDataImageInfoOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfo) ClusterStatusTargetPgDataImageInfo {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusTargetPgDataImageInfo
+		return ret
+	}).(ClusterStatusTargetPgDataImageInfoOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusTargetPgDataImageInfoPtrOutput) Extensions() ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfo) []ClusterStatusTargetPgDataImageInfoExtensions {
+		if v == nil {
+			return nil
+		}
+		return v.Extensions
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusTargetPgDataImageInfoPtrOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfo) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Image
+	}).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusTargetPgDataImageInfoPtrOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfo) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MajorVersion
+	}).(pulumi.IntPtrOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusTargetPgDataImageInfoExtensions struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path []string `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path []string `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env []ClusterStatusTargetPgDataImageInfoExtensionsEnv `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path []string                                           `pulumi:"extension_control_path"`
+	Image                  *ClusterStatusTargetPgDataImageInfoExtensionsImage `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path []string `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name *string `pulumi:"name"`
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsArgs and ClusterStatusTargetPgDataImageInfoExtensionsOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsArgs{...}
+type ClusterStatusTargetPgDataImageInfoExtensionsInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsOutput() ClusterStatusTargetPgDataImageInfoExtensionsOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsOutput
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusTargetPgDataImageInfoExtensionsArgs struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path pulumi.StringArrayInput `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path pulumi.StringArrayInput `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayInput `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path pulumi.StringArrayInput                                   `pulumi:"extension_control_path"`
+	Image                  ClusterStatusTargetPgDataImageInfoExtensionsImagePtrInput `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path pulumi.StringArrayInput `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsArgs) ToClusterStatusTargetPgDataImageInfoExtensionsOutput() ClusterStatusTargetPgDataImageInfoExtensionsOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsArgs) ToClusterStatusTargetPgDataImageInfoExtensionsOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsOutput)
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsArrayInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsArray and ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsArrayInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsArray{ ClusterStatusTargetPgDataImageInfoExtensionsArgs{...} }
+type ClusterStatusTargetPgDataImageInfoExtensionsArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsArrayOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsArray []ClusterStatusTargetPgDataImageInfoExtensionsInput
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsArray) ToClusterStatusTargetPgDataImageInfoExtensionsArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsArray) ToClusterStatusTargetPgDataImageInfoExtensionsArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusTargetPgDataImageInfoExtensionsOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) ToClusterStatusTargetPgDataImageInfoExtensionsOutput() ClusterStatusTargetPgDataImageInfoExtensionsOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) ToClusterStatusTargetPgDataImageInfoExtensionsOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsOutput {
+	return o
+}
+
+// A list of directories within the image to be appended to the
+// PostgreSQL process's `PATH` environment variable.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) Bin_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensions) []string { return v.Bin_path }).(pulumi.StringArrayOutput)
+}
+
+// The list of directories inside the image which should be added to dynamic_library_path.
+// If not defined, defaults to "/lib".
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) Dynamic_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensions) []string { return v.Dynamic_library_path }).(pulumi.StringArrayOutput)
+}
+
+// Env is a list of custom environment variables to be set in the
+// PostgreSQL process for this extension. It is the responsibility of the
+// cluster administrator to ensure the variables are correct for the
+// specific extension. Note that changes to these variables require
+// a manual cluster restart to take effect.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) Env() ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensions) []ClusterStatusTargetPgDataImageInfoExtensionsEnv {
+		return v.Env
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput)
+}
+
+// The list of directories inside the image which should be added to extension_control_path.
+// If not defined, defaults to "/share".
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) Extension_control_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensions) []string { return v.Extension_control_path }).(pulumi.StringArrayOutput)
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) Image() ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensions) *ClusterStatusTargetPgDataImageInfoExtensionsImage {
+		return v.Image
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput)
+}
+
+// The list of directories inside the image which should be added to ld_library_path.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) Ld_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensions) []string { return v.Ld_library_path }).(pulumi.StringArrayOutput)
+}
+
+// The name of the extension, required. The limit of 59 characters
+// leaves room for the prefix the operator adds when deriving the
+// extension's Kubernetes Volume name (capped at 63 characters).
+func (o ClusterStatusTargetPgDataImageInfoExtensionsOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensions) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensions)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput) Index(i pulumi.IntInput) ClusterStatusTargetPgDataImageInfoExtensionsOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusTargetPgDataImageInfoExtensions {
+		return vs[0].([]ClusterStatusTargetPgDataImageInfoExtensions)[vs[1].(int)]
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusTargetPgDataImageInfoExtensionsEnv struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name *string `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value *string `pulumi:"value"`
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsEnvInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs and ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsEnvInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs{...}
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value pulumi.StringPtrInput `pulumi:"value"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs) ToClusterStatusTargetPgDataImageInfoExtensionsEnvOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsEnvOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs) ToClusterStatusTargetPgDataImageInfoExtensionsEnvOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput)
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsEnvArray and ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsEnvArray{ ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs{...} }
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvArray []ClusterStatusTargetPgDataImageInfoExtensionsEnvInput
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvArray) ToClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvArray) ToClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput {
+	return o
+}
+
+// Name of the environment variable to be injected into the
+// PostgreSQL process.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsEnv) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Value of the environment variable. CloudNativePG performs a direct
+// replacement of this value, with support for placeholder expansion.
+// The ${`image_root`} placeholder resolves to the absolute mount path
+// of the extension's volume (e.g., `/extensions/my-extension`). This
+// is particularly useful for allowing applications or libraries to
+// locate specific directories within the mounted image.
+// Unrecognized placeholders are rejected. To include a literal ${...}
+// in the value, escape it as $${...}.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput) Value() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsEnv) *string { return v.Value }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensionsEnv)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput) Index(i pulumi.IntInput) ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusTargetPgDataImageInfoExtensionsEnv {
+		return vs[0].([]ClusterStatusTargetPgDataImageInfoExtensionsEnv)[vs[1].(int)]
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name *string `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value *string `pulumi:"value"`
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs and ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs{...}
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs struct {
+	// Name of the environment variable to be injected into the
+	// PostgreSQL process.
+	Name pulumi.StringPtrInput `pulumi:"name"`
+	// Value of the environment variable. CloudNativePG performs a direct
+	// replacement of this value, with support for placeholder expansion.
+	// The ${`image_root`} placeholder resolves to the absolute mount path
+	// of the extension's volume (e.g., `/extensions/my-extension`). This
+	// is particularly useful for allowing applications or libraries to
+	// locate specific directories within the mounted image.
+	// Unrecognized placeholders are rejected. To include a literal ${...}
+	// in the value, escape it as $${...}.
+	Value pulumi.StringPtrInput `pulumi:"value"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput)
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArray and ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArray{ ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs{...} }
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArray []ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchInput
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArray) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArray) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput)
+}
+
+// ExtensionEnvVar defines an environment variable for a specific extension
+// image volume.
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput {
+	return o
+}
+
+// Name of the environment variable to be injected into the
+// PostgreSQL process.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+// Value of the environment variable. CloudNativePG performs a direct
+// replacement of this value, with support for placeholder expansion.
+// The ${`image_root`} placeholder resolves to the absolute mount path
+// of the extension's volume (e.g., `/extensions/my-extension`). This
+// is particularly useful for allowing applications or libraries to
+// locate specific directories within the mounted image.
+// Unrecognized placeholders are rejected. To include a literal ${...}
+// in the value, escape it as $${...}.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput) Value() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch) *string { return v.Value }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch {
+		return vs[0].([]ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch)[vs[1].(int)]
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusTargetPgDataImageInfoExtensionsImage struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy *string `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference *string `pulumi:"reference"`
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsImageInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsImageArgs and ClusterStatusTargetPgDataImageInfoExtensionsImageOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsImageInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsImageArgs{...}
+type ClusterStatusTargetPgDataImageInfoExtensionsImageInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsImageOutput() ClusterStatusTargetPgDataImageInfoExtensionsImageOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsImageOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImageOutput
+}
+
+// The image containing the extension.
+type ClusterStatusTargetPgDataImageInfoExtensionsImageArgs struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy pulumi.StringPtrInput `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference pulumi.StringPtrInput `pulumi:"reference"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsImageArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImageArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImageOutput() ClusterStatusTargetPgDataImageInfoExtensionsImageOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsImageOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImageArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImageOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImageOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsImageOutput)
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImageArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImageArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsImageOutput).ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx)
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsImagePtrInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsImageArgs, ClusterStatusTargetPgDataImageInfoExtensionsImagePtr and ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsImagePtrInput` via:
+//
+//	        ClusterStatusTargetPgDataImageInfoExtensionsImageArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput
+}
+
+type clusterStatusTargetPgDataImageInfoExtensionsImagePtrType ClusterStatusTargetPgDataImageInfoExtensionsImageArgs
+
+func ClusterStatusTargetPgDataImageInfoExtensionsImagePtr(v *ClusterStatusTargetPgDataImageInfoExtensionsImageArgs) ClusterStatusTargetPgDataImageInfoExtensionsImagePtrInput {
+	return (*clusterStatusTargetPgDataImageInfoExtensionsImagePtrType)(v)
+}
+
+func (*clusterStatusTargetPgDataImageInfoExtensionsImagePtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (i *clusterStatusTargetPgDataImageInfoExtensionsImagePtrType) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusTargetPgDataImageInfoExtensionsImagePtrType) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusTargetPgDataImageInfoExtensionsImageOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsImageOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImageOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImageOutput() ClusterStatusTargetPgDataImageInfoExtensionsImageOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImageOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImageOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImageOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImageOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return o.ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImageOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusTargetPgDataImageInfoExtensionsImage) *ClusterStatusTargetPgDataImageInfoExtensionsImage {
+		return &v
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImageOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsImage) *string { return v.PullPolicy }).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImageOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsImage) *string { return v.Reference }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfoExtensionsImage)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput) Elem() ClusterStatusTargetPgDataImageInfoExtensionsImageOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoExtensionsImage) ClusterStatusTargetPgDataImageInfoExtensionsImage {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusTargetPgDataImageInfoExtensionsImage
+		return ret
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsImageOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoExtensionsImage) *string {
+		if v == nil {
+			return nil
+		}
+		return v.PullPolicy
+	}).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoExtensionsImage) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Reference
+	}).(pulumi.StringPtrOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePatch struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy *string `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference *string `pulumi:"reference"`
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsImagePatchInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs and ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsImagePatchInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs{...}
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput
+}
+
+// The image containing the extension.
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs struct {
+	// Policy for pulling OCI objects. Possible values are:
+	// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+	// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+	// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+	// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+	PullPolicy pulumi.StringPtrInput `pulumi:"pullPolicy"`
+	// Required: Image or artifact reference to be used.
+	// Behaves in the same way as pod.spec.containers[*].image.
+	// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+	// More info: https://kubernetes.io/docs/concepts/containers/images
+	// This field is optional to allow higher level config management to default or override
+	// container images in workload controllers like Deployments and StatefulSets.
+	Reference pulumi.StringPtrInput `pulumi:"reference"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput)
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput).ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs, ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtr and ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrInput` via:
+//
+//	        ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput
+}
+
+type clusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrType ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs
+
+func ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtr(v *ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrInput {
+	return (*clusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrType)(v)
+}
+
+func (*clusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (i *clusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrType) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrType) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput)
+}
+
+// The image containing the extension.
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o.ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusTargetPgDataImageInfoExtensionsImagePatch) *ClusterStatusTargetPgDataImageInfoExtensionsImagePatch {
+		return &v
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsImagePatch) *string { return v.PullPolicy }).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsImagePatch) *string { return v.Reference }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfoExtensionsImagePatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput) ToClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput) Elem() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoExtensionsImagePatch) ClusterStatusTargetPgDataImageInfoExtensionsImagePatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusTargetPgDataImageInfoExtensionsImagePatch
+		return ret
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput)
+}
+
+// Policy for pulling OCI objects. Possible values are:
+// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput) PullPolicy() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoExtensionsImagePatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.PullPolicy
+	}).(pulumi.StringPtrOutput)
+}
+
+// Required: Image or artifact reference to be used.
+// Behaves in the same way as pod.spec.containers[*].image.
+// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+// More info: https://kubernetes.io/docs/concepts/containers/images
+// This field is optional to allow higher level config management to default or override
+// container images in workload controllers like Deployments and StatefulSets.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput) Reference() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoExtensionsImagePatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Reference
+	}).(pulumi.StringPtrOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusTargetPgDataImageInfoExtensionsPatch struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path []string `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path []string `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env []ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path []string                                                `pulumi:"extension_control_path"`
+	Image                  *ClusterStatusTargetPgDataImageInfoExtensionsImagePatch `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path []string `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name *string `pulumi:"name"`
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsPatchInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs and ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsPatchInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs{...}
+type ClusterStatusTargetPgDataImageInfoExtensionsPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsPatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsPatchOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs struct {
+	// A list of directories within the image to be appended to the
+	// PostgreSQL process's `PATH` environment variable.
+	Bin_path pulumi.StringArrayInput `pulumi:"bin_path"`
+	// The list of directories inside the image which should be added to dynamic_library_path.
+	// If not defined, defaults to "/lib".
+	Dynamic_library_path pulumi.StringArrayInput `pulumi:"dynamic_library_path"`
+	// Env is a list of custom environment variables to be set in the
+	// PostgreSQL process for this extension. It is the responsibility of the
+	// cluster administrator to ensure the variables are correct for the
+	// specific extension. Note that changes to these variables require
+	// a manual cluster restart to take effect.
+	Env ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayInput `pulumi:"env"`
+	// The list of directories inside the image which should be added to extension_control_path.
+	// If not defined, defaults to "/share".
+	Extension_control_path pulumi.StringArrayInput                                        `pulumi:"extension_control_path"`
+	Image                  ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrInput `pulumi:"image"`
+	// The list of directories inside the image which should be added to ld_library_path.
+	Ld_library_path pulumi.StringArrayInput `pulumi:"ld_library_path"`
+	// The name of the extension, required. The limit of 59 characters
+	// leaves room for the prefix the operator adds when deriving the
+	// extension's Kubernetes Volume name (capped at 63 characters).
+	Name pulumi.StringPtrInput `pulumi:"name"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsPatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs) ToClusterStatusTargetPgDataImageInfoExtensionsPatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput)
+}
+
+// ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayInput is an input type that accepts ClusterStatusTargetPgDataImageInfoExtensionsPatchArray and ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoExtensionsPatchArray{ ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs{...} }
+type ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput
+	ToClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsPatchArray []ClusterStatusTargetPgDataImageInfoExtensionsPatchInput
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsPatchArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsPatchArray) ToClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoExtensionsPatchArray) ToClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput)
+}
+
+// ExtensionConfiguration is the configuration used to add
+// PostgreSQL extensions to the Cluster.
+type ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsPatchOutput() ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) ToClusterStatusTargetPgDataImageInfoExtensionsPatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput {
+	return o
+}
+
+// A list of directories within the image to be appended to the
+// PostgreSQL process's `PATH` environment variable.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) Bin_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsPatch) []string { return v.Bin_path }).(pulumi.StringArrayOutput)
+}
+
+// The list of directories inside the image which should be added to dynamic_library_path.
+// If not defined, defaults to "/lib".
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) Dynamic_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsPatch) []string { return v.Dynamic_library_path }).(pulumi.StringArrayOutput)
+}
+
+// Env is a list of custom environment variables to be set in the
+// PostgreSQL process for this extension. It is the responsibility of the
+// cluster administrator to ensure the variables are correct for the
+// specific extension. Note that changes to these variables require
+// a manual cluster restart to take effect.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) Env() ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsPatch) []ClusterStatusTargetPgDataImageInfoExtensionsEnvPatch {
+		return v.Env
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput)
+}
+
+// The list of directories inside the image which should be added to extension_control_path.
+// If not defined, defaults to "/share".
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) Extension_control_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsPatch) []string { return v.Extension_control_path }).(pulumi.StringArrayOutput)
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) Image() ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsPatch) *ClusterStatusTargetPgDataImageInfoExtensionsImagePatch {
+		return v.Image
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput)
+}
+
+// The list of directories inside the image which should be added to ld_library_path.
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) Ld_library_path() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsPatch) []string { return v.Ld_library_path }).(pulumi.StringArrayOutput)
+}
+
+// The name of the extension, required. The limit of 59 characters
+// leaves room for the prefix the operator adds when deriving the
+// extension's Kubernetes Volume name (capped at 63 characters).
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoExtensionsPatch) *string { return v.Name }).(pulumi.StringPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ClusterStatusTargetPgDataImageInfoExtensionsPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput() ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput) ToClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput) Index(i pulumi.IntInput) ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ClusterStatusTargetPgDataImageInfoExtensionsPatch {
+		return vs[0].([]ClusterStatusTargetPgDataImageInfoExtensionsPatch)[vs[1].(int)]
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput)
+}
+
+// TargetPGDataImageInfo contains the details of the target image for an
+// in-progress major upgrade. It is set before the upgrade Job is created,
+// and cleared on successful completion or when the upgrade is rolled back.
+type ClusterStatusTargetPgDataImageInfoPatch struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions []ClusterStatusTargetPgDataImageInfoExtensionsPatch `pulumi:"extensions"`
+	// Image is the image name
+	Image *string `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion *int `pulumi:"majorVersion"`
+}
+
+// ClusterStatusTargetPgDataImageInfoPatchInput is an input type that accepts ClusterStatusTargetPgDataImageInfoPatchArgs and ClusterStatusTargetPgDataImageInfoPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoPatchInput` via:
+//
+//	ClusterStatusTargetPgDataImageInfoPatchArgs{...}
+type ClusterStatusTargetPgDataImageInfoPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoPatchOutput() ClusterStatusTargetPgDataImageInfoPatchOutput
+	ToClusterStatusTargetPgDataImageInfoPatchOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoPatchOutput
+}
+
+// TargetPGDataImageInfo contains the details of the target image for an
+// in-progress major upgrade. It is set before the upgrade Job is created,
+// and cleared on successful completion or when the upgrade is rolled back.
+type ClusterStatusTargetPgDataImageInfoPatchArgs struct {
+	// Extensions contains the container image extensions available for the current Image
+	Extensions ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayInput `pulumi:"extensions"`
+	// Image is the image name
+	Image pulumi.StringPtrInput `pulumi:"image"`
+	// MajorVersion is the major version of the image
+	MajorVersion pulumi.IntPtrInput `pulumi:"majorVersion"`
+}
+
+func (ClusterStatusTargetPgDataImageInfoPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTargetPgDataImageInfoPatchArgs) ToClusterStatusTargetPgDataImageInfoPatchOutput() ClusterStatusTargetPgDataImageInfoPatchOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoPatchArgs) ToClusterStatusTargetPgDataImageInfoPatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoPatchOutput)
+}
+
+func (i ClusterStatusTargetPgDataImageInfoPatchArgs) ToClusterStatusTargetPgDataImageInfoPatchPtrOutput() ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTargetPgDataImageInfoPatchArgs) ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoPatchOutput).ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusTargetPgDataImageInfoPatchPtrInput is an input type that accepts ClusterStatusTargetPgDataImageInfoPatchArgs, ClusterStatusTargetPgDataImageInfoPatchPtr and ClusterStatusTargetPgDataImageInfoPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusTargetPgDataImageInfoPatchPtrInput` via:
+//
+//	        ClusterStatusTargetPgDataImageInfoPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusTargetPgDataImageInfoPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusTargetPgDataImageInfoPatchPtrOutput() ClusterStatusTargetPgDataImageInfoPatchPtrOutput
+	ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(context.Context) ClusterStatusTargetPgDataImageInfoPatchPtrOutput
+}
+
+type clusterStatusTargetPgDataImageInfoPatchPtrType ClusterStatusTargetPgDataImageInfoPatchArgs
+
+func ClusterStatusTargetPgDataImageInfoPatchPtr(v *ClusterStatusTargetPgDataImageInfoPatchArgs) ClusterStatusTargetPgDataImageInfoPatchPtrInput {
+	return (*clusterStatusTargetPgDataImageInfoPatchPtrType)(v)
+}
+
+func (*clusterStatusTargetPgDataImageInfoPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusTargetPgDataImageInfoPatchPtrType) ToClusterStatusTargetPgDataImageInfoPatchPtrOutput() ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return i.ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusTargetPgDataImageInfoPatchPtrType) ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTargetPgDataImageInfoPatchPtrOutput)
+}
+
+// TargetPGDataImageInfo contains the details of the target image for an
+// in-progress major upgrade. It is set before the upgrade Job is created,
+// and cleared on successful completion or when the upgrade is rolled back.
+type ClusterStatusTargetPgDataImageInfoPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPatchOutput) ToClusterStatusTargetPgDataImageInfoPatchOutput() ClusterStatusTargetPgDataImageInfoPatchOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPatchOutput) ToClusterStatusTargetPgDataImageInfoPatchOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPatchOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPatchOutput) ToClusterStatusTargetPgDataImageInfoPatchPtrOutput() ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return o.ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPatchOutput) ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusTargetPgDataImageInfoPatch) *ClusterStatusTargetPgDataImageInfoPatch {
+		return &v
+	}).(ClusterStatusTargetPgDataImageInfoPatchPtrOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusTargetPgDataImageInfoPatchOutput) Extensions() ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoPatch) []ClusterStatusTargetPgDataImageInfoExtensionsPatch {
+		return v.Extensions
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusTargetPgDataImageInfoPatchOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoPatch) *string { return v.Image }).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusTargetPgDataImageInfoPatchOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTargetPgDataImageInfoPatch) *int { return v.MajorVersion }).(pulumi.IntPtrOutput)
+}
+
+type ClusterStatusTargetPgDataImageInfoPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTargetPgDataImageInfoPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTargetPgDataImageInfoPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPatchPtrOutput) ToClusterStatusTargetPgDataImageInfoPatchPtrOutput() ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPatchPtrOutput) ToClusterStatusTargetPgDataImageInfoPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTargetPgDataImageInfoPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTargetPgDataImageInfoPatchPtrOutput) Elem() ClusterStatusTargetPgDataImageInfoPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoPatch) ClusterStatusTargetPgDataImageInfoPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusTargetPgDataImageInfoPatch
+		return ret
+	}).(ClusterStatusTargetPgDataImageInfoPatchOutput)
+}
+
+// Extensions contains the container image extensions available for the current Image
+func (o ClusterStatusTargetPgDataImageInfoPatchPtrOutput) Extensions() ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoPatch) []ClusterStatusTargetPgDataImageInfoExtensionsPatch {
+		if v == nil {
+			return nil
+		}
+		return v.Extensions
+	}).(ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput)
+}
+
+// Image is the image name
+func (o ClusterStatusTargetPgDataImageInfoPatchPtrOutput) Image() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoPatch) *string {
+		if v == nil {
+			return nil
+		}
+		return v.Image
+	}).(pulumi.StringPtrOutput)
+}
+
+// MajorVersion is the major version of the image
+func (o ClusterStatusTargetPgDataImageInfoPatchPtrOutput) MajorVersion() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTargetPgDataImageInfoPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.MajorVersion
+	}).(pulumi.IntPtrOutput)
+}
+
+// Instances topology.
+type ClusterStatusTopology struct {
+	// Instances contains the pod topology of the instances
+	Instances map[string]map[string]string `pulumi:"instances"`
+	// NodesUsed represents the count of distinct nodes accommodating the instances.
+	// A value of '1' suggests that all instances are hosted on a single node,
+	// implying the absence of High Availability (HA). Ideally, this value should
+	// be the same as the number of instances in the Postgres HA cluster, implying
+	// shared nothing architecture on the compute side.
+	NodesUsed *int `pulumi:"nodesUsed"`
+	// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+	// in synchronous replica election in case of failures
+	SuccessfullyExtracted *bool `pulumi:"successfullyExtracted"`
+}
+
+// ClusterStatusTopologyInput is an input type that accepts ClusterStatusTopologyArgs and ClusterStatusTopologyOutput values.
+// You can construct a concrete instance of `ClusterStatusTopologyInput` via:
+//
+//	ClusterStatusTopologyArgs{...}
+type ClusterStatusTopologyInput interface {
+	pulumi.Input
+
+	ToClusterStatusTopologyOutput() ClusterStatusTopologyOutput
+	ToClusterStatusTopologyOutputWithContext(context.Context) ClusterStatusTopologyOutput
+}
+
+// Instances topology.
+type ClusterStatusTopologyArgs struct {
+	// Instances contains the pod topology of the instances
+	Instances pulumi.StringMapMapInput `pulumi:"instances"`
+	// NodesUsed represents the count of distinct nodes accommodating the instances.
+	// A value of '1' suggests that all instances are hosted on a single node,
+	// implying the absence of High Availability (HA). Ideally, this value should
+	// be the same as the number of instances in the Postgres HA cluster, implying
+	// shared nothing architecture on the compute side.
+	NodesUsed pulumi.IntPtrInput `pulumi:"nodesUsed"`
+	// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+	// in synchronous replica election in case of failures
+	SuccessfullyExtracted pulumi.BoolPtrInput `pulumi:"successfullyExtracted"`
+}
+
+func (ClusterStatusTopologyArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTopology)(nil)).Elem()
+}
+
+func (i ClusterStatusTopologyArgs) ToClusterStatusTopologyOutput() ClusterStatusTopologyOutput {
+	return i.ToClusterStatusTopologyOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTopologyArgs) ToClusterStatusTopologyOutputWithContext(ctx context.Context) ClusterStatusTopologyOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTopologyOutput)
+}
+
+func (i ClusterStatusTopologyArgs) ToClusterStatusTopologyPtrOutput() ClusterStatusTopologyPtrOutput {
+	return i.ToClusterStatusTopologyPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTopologyArgs) ToClusterStatusTopologyPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTopologyOutput).ToClusterStatusTopologyPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusTopologyPtrInput is an input type that accepts ClusterStatusTopologyArgs, ClusterStatusTopologyPtr and ClusterStatusTopologyPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusTopologyPtrInput` via:
+//
+//	        ClusterStatusTopologyArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusTopologyPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusTopologyPtrOutput() ClusterStatusTopologyPtrOutput
+	ToClusterStatusTopologyPtrOutputWithContext(context.Context) ClusterStatusTopologyPtrOutput
+}
+
+type clusterStatusTopologyPtrType ClusterStatusTopologyArgs
+
+func ClusterStatusTopologyPtr(v *ClusterStatusTopologyArgs) ClusterStatusTopologyPtrInput {
+	return (*clusterStatusTopologyPtrType)(v)
+}
+
+func (*clusterStatusTopologyPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTopology)(nil)).Elem()
+}
+
+func (i *clusterStatusTopologyPtrType) ToClusterStatusTopologyPtrOutput() ClusterStatusTopologyPtrOutput {
+	return i.ToClusterStatusTopologyPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusTopologyPtrType) ToClusterStatusTopologyPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTopologyPtrOutput)
+}
+
+// Instances topology.
+type ClusterStatusTopologyOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTopologyOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTopology)(nil)).Elem()
+}
+
+func (o ClusterStatusTopologyOutput) ToClusterStatusTopologyOutput() ClusterStatusTopologyOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyOutput) ToClusterStatusTopologyOutputWithContext(ctx context.Context) ClusterStatusTopologyOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyOutput) ToClusterStatusTopologyPtrOutput() ClusterStatusTopologyPtrOutput {
+	return o.ToClusterStatusTopologyPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusTopologyOutput) ToClusterStatusTopologyPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusTopology) *ClusterStatusTopology {
+		return &v
+	}).(ClusterStatusTopologyPtrOutput)
+}
+
+// Instances contains the pod topology of the instances
+func (o ClusterStatusTopologyOutput) Instances() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v ClusterStatusTopology) map[string]map[string]string { return v.Instances }).(pulumi.StringMapMapOutput)
+}
+
+// NodesUsed represents the count of distinct nodes accommodating the instances.
+// A value of '1' suggests that all instances are hosted on a single node,
+// implying the absence of High Availability (HA). Ideally, this value should
+// be the same as the number of instances in the Postgres HA cluster, implying
+// shared nothing architecture on the compute side.
+func (o ClusterStatusTopologyOutput) NodesUsed() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTopology) *int { return v.NodesUsed }).(pulumi.IntPtrOutput)
+}
+
+// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+// in synchronous replica election in case of failures
+func (o ClusterStatusTopologyOutput) SuccessfullyExtracted() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTopology) *bool { return v.SuccessfullyExtracted }).(pulumi.BoolPtrOutput)
+}
+
+type ClusterStatusTopologyPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTopologyPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTopology)(nil)).Elem()
+}
+
+func (o ClusterStatusTopologyPtrOutput) ToClusterStatusTopologyPtrOutput() ClusterStatusTopologyPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyPtrOutput) ToClusterStatusTopologyPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyPtrOutput) Elem() ClusterStatusTopologyOutput {
+	return o.ApplyT(func(v *ClusterStatusTopology) ClusterStatusTopology {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusTopology
+		return ret
+	}).(ClusterStatusTopologyOutput)
+}
+
+// Instances contains the pod topology of the instances
+func (o ClusterStatusTopologyPtrOutput) Instances() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v *ClusterStatusTopology) map[string]map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Instances
+	}).(pulumi.StringMapMapOutput)
+}
+
+// NodesUsed represents the count of distinct nodes accommodating the instances.
+// A value of '1' suggests that all instances are hosted on a single node,
+// implying the absence of High Availability (HA). Ideally, this value should
+// be the same as the number of instances in the Postgres HA cluster, implying
+// shared nothing architecture on the compute side.
+func (o ClusterStatusTopologyPtrOutput) NodesUsed() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTopology) *int {
+		if v == nil {
+			return nil
+		}
+		return v.NodesUsed
+	}).(pulumi.IntPtrOutput)
+}
+
+// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+// in synchronous replica election in case of failures
+func (o ClusterStatusTopologyPtrOutput) SuccessfullyExtracted() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTopology) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.SuccessfullyExtracted
+	}).(pulumi.BoolPtrOutput)
+}
+
+// Instances topology.
+type ClusterStatusTopologyPatch struct {
+	// Instances contains the pod topology of the instances
+	Instances map[string]map[string]string `pulumi:"instances"`
+	// NodesUsed represents the count of distinct nodes accommodating the instances.
+	// A value of '1' suggests that all instances are hosted on a single node,
+	// implying the absence of High Availability (HA). Ideally, this value should
+	// be the same as the number of instances in the Postgres HA cluster, implying
+	// shared nothing architecture on the compute side.
+	NodesUsed *int `pulumi:"nodesUsed"`
+	// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+	// in synchronous replica election in case of failures
+	SuccessfullyExtracted *bool `pulumi:"successfullyExtracted"`
+}
+
+// ClusterStatusTopologyPatchInput is an input type that accepts ClusterStatusTopologyPatchArgs and ClusterStatusTopologyPatchOutput values.
+// You can construct a concrete instance of `ClusterStatusTopologyPatchInput` via:
+//
+//	ClusterStatusTopologyPatchArgs{...}
+type ClusterStatusTopologyPatchInput interface {
+	pulumi.Input
+
+	ToClusterStatusTopologyPatchOutput() ClusterStatusTopologyPatchOutput
+	ToClusterStatusTopologyPatchOutputWithContext(context.Context) ClusterStatusTopologyPatchOutput
+}
+
+// Instances topology.
+type ClusterStatusTopologyPatchArgs struct {
+	// Instances contains the pod topology of the instances
+	Instances pulumi.StringMapMapInput `pulumi:"instances"`
+	// NodesUsed represents the count of distinct nodes accommodating the instances.
+	// A value of '1' suggests that all instances are hosted on a single node,
+	// implying the absence of High Availability (HA). Ideally, this value should
+	// be the same as the number of instances in the Postgres HA cluster, implying
+	// shared nothing architecture on the compute side.
+	NodesUsed pulumi.IntPtrInput `pulumi:"nodesUsed"`
+	// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+	// in synchronous replica election in case of failures
+	SuccessfullyExtracted pulumi.BoolPtrInput `pulumi:"successfullyExtracted"`
+}
+
+func (ClusterStatusTopologyPatchArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTopologyPatch)(nil)).Elem()
+}
+
+func (i ClusterStatusTopologyPatchArgs) ToClusterStatusTopologyPatchOutput() ClusterStatusTopologyPatchOutput {
+	return i.ToClusterStatusTopologyPatchOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTopologyPatchArgs) ToClusterStatusTopologyPatchOutputWithContext(ctx context.Context) ClusterStatusTopologyPatchOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTopologyPatchOutput)
+}
+
+func (i ClusterStatusTopologyPatchArgs) ToClusterStatusTopologyPatchPtrOutput() ClusterStatusTopologyPatchPtrOutput {
+	return i.ToClusterStatusTopologyPatchPtrOutputWithContext(context.Background())
+}
+
+func (i ClusterStatusTopologyPatchArgs) ToClusterStatusTopologyPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTopologyPatchOutput).ToClusterStatusTopologyPatchPtrOutputWithContext(ctx)
+}
+
+// ClusterStatusTopologyPatchPtrInput is an input type that accepts ClusterStatusTopologyPatchArgs, ClusterStatusTopologyPatchPtr and ClusterStatusTopologyPatchPtrOutput values.
+// You can construct a concrete instance of `ClusterStatusTopologyPatchPtrInput` via:
+//
+//	        ClusterStatusTopologyPatchArgs{...}
+//
+//	or:
+//
+//	        nil
+type ClusterStatusTopologyPatchPtrInput interface {
+	pulumi.Input
+
+	ToClusterStatusTopologyPatchPtrOutput() ClusterStatusTopologyPatchPtrOutput
+	ToClusterStatusTopologyPatchPtrOutputWithContext(context.Context) ClusterStatusTopologyPatchPtrOutput
+}
+
+type clusterStatusTopologyPatchPtrType ClusterStatusTopologyPatchArgs
+
+func ClusterStatusTopologyPatchPtr(v *ClusterStatusTopologyPatchArgs) ClusterStatusTopologyPatchPtrInput {
+	return (*clusterStatusTopologyPatchPtrType)(v)
+}
+
+func (*clusterStatusTopologyPatchPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTopologyPatch)(nil)).Elem()
+}
+
+func (i *clusterStatusTopologyPatchPtrType) ToClusterStatusTopologyPatchPtrOutput() ClusterStatusTopologyPatchPtrOutput {
+	return i.ToClusterStatusTopologyPatchPtrOutputWithContext(context.Background())
+}
+
+func (i *clusterStatusTopologyPatchPtrType) ToClusterStatusTopologyPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPatchPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ClusterStatusTopologyPatchPtrOutput)
+}
+
+// Instances topology.
+type ClusterStatusTopologyPatchOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTopologyPatchOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ClusterStatusTopologyPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTopologyPatchOutput) ToClusterStatusTopologyPatchOutput() ClusterStatusTopologyPatchOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyPatchOutput) ToClusterStatusTopologyPatchOutputWithContext(ctx context.Context) ClusterStatusTopologyPatchOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyPatchOutput) ToClusterStatusTopologyPatchPtrOutput() ClusterStatusTopologyPatchPtrOutput {
+	return o.ToClusterStatusTopologyPatchPtrOutputWithContext(context.Background())
+}
+
+func (o ClusterStatusTopologyPatchOutput) ToClusterStatusTopologyPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPatchPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ClusterStatusTopologyPatch) *ClusterStatusTopologyPatch {
+		return &v
+	}).(ClusterStatusTopologyPatchPtrOutput)
+}
+
+// Instances contains the pod topology of the instances
+func (o ClusterStatusTopologyPatchOutput) Instances() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v ClusterStatusTopologyPatch) map[string]map[string]string { return v.Instances }).(pulumi.StringMapMapOutput)
+}
+
+// NodesUsed represents the count of distinct nodes accommodating the instances.
+// A value of '1' suggests that all instances are hosted on a single node,
+// implying the absence of High Availability (HA). Ideally, this value should
+// be the same as the number of instances in the Postgres HA cluster, implying
+// shared nothing architecture on the compute side.
+func (o ClusterStatusTopologyPatchOutput) NodesUsed() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTopologyPatch) *int { return v.NodesUsed }).(pulumi.IntPtrOutput)
+}
+
+// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+// in synchronous replica election in case of failures
+func (o ClusterStatusTopologyPatchOutput) SuccessfullyExtracted() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ClusterStatusTopologyPatch) *bool { return v.SuccessfullyExtracted }).(pulumi.BoolPtrOutput)
+}
+
+type ClusterStatusTopologyPatchPtrOutput struct{ *pulumi.OutputState }
+
+func (ClusterStatusTopologyPatchPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ClusterStatusTopologyPatch)(nil)).Elem()
+}
+
+func (o ClusterStatusTopologyPatchPtrOutput) ToClusterStatusTopologyPatchPtrOutput() ClusterStatusTopologyPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyPatchPtrOutput) ToClusterStatusTopologyPatchPtrOutputWithContext(ctx context.Context) ClusterStatusTopologyPatchPtrOutput {
+	return o
+}
+
+func (o ClusterStatusTopologyPatchPtrOutput) Elem() ClusterStatusTopologyPatchOutput {
+	return o.ApplyT(func(v *ClusterStatusTopologyPatch) ClusterStatusTopologyPatch {
+		if v != nil {
+			return *v
+		}
+		var ret ClusterStatusTopologyPatch
+		return ret
+	}).(ClusterStatusTopologyPatchOutput)
+}
+
+// Instances contains the pod topology of the instances
+func (o ClusterStatusTopologyPatchPtrOutput) Instances() pulumi.StringMapMapOutput {
+	return o.ApplyT(func(v *ClusterStatusTopologyPatch) map[string]map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.Instances
+	}).(pulumi.StringMapMapOutput)
+}
+
+// NodesUsed represents the count of distinct nodes accommodating the instances.
+// A value of '1' suggests that all instances are hosted on a single node,
+// implying the absence of High Availability (HA). Ideally, this value should
+// be the same as the number of instances in the Postgres HA cluster, implying
+// shared nothing architecture on the compute side.
+func (o ClusterStatusTopologyPatchPtrOutput) NodesUsed() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTopologyPatch) *int {
+		if v == nil {
+			return nil
+		}
+		return v.NodesUsed
+	}).(pulumi.IntPtrOutput)
+}
+
+// SuccessfullyExtracted indicates if the topology data was extract. It is useful to enact fallback behaviors
+// in synchronous replica election in case of failures
+func (o ClusterStatusTopologyPatchPtrOutput) SuccessfullyExtracted() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ClusterStatusTopologyPatch) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.SuccessfullyExtracted
+	}).(pulumi.BoolPtrOutput)
+}
+
+// ScheduledBackup is the Schema for the scheduledbackups API
+type ScheduledBackupType struct {
+	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+	ApiVersion *string `pulumi:"apiVersion"`
+	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Kind *string `pulumi:"kind"`
+	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	Metadata *metav1.ObjectMeta     `pulumi:"metadata"`
+	Spec     *ScheduledBackupSpec   `pulumi:"spec"`
+	Status   *ScheduledBackupStatus `pulumi:"status"`
+}
+
+// ScheduledBackupTypeInput is an input type that accepts ScheduledBackupTypeArgs and ScheduledBackupTypeOutput values.
+// You can construct a concrete instance of `ScheduledBackupTypeInput` via:
+//
+//	ScheduledBackupTypeArgs{...}
+type ScheduledBackupTypeInput interface {
+	pulumi.Input
+
+	ToScheduledBackupTypeOutput() ScheduledBackupTypeOutput
+	ToScheduledBackupTypeOutputWithContext(context.Context) ScheduledBackupTypeOutput
+}
+
+// ScheduledBackup is the Schema for the scheduledbackups API
+type ScheduledBackupTypeArgs struct {
+	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+	ApiVersion pulumi.StringPtrInput `pulumi:"apiVersion"`
+	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	Metadata metav1.ObjectMetaPtrInput     `pulumi:"metadata"`
+	Spec     ScheduledBackupSpecPtrInput   `pulumi:"spec"`
+	Status   ScheduledBackupStatusPtrInput `pulumi:"status"`
+}
+
+func (ScheduledBackupTypeArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ScheduledBackupType)(nil)).Elem()
+}
+
+func (i ScheduledBackupTypeArgs) ToScheduledBackupTypeOutput() ScheduledBackupTypeOutput {
+	return i.ToScheduledBackupTypeOutputWithContext(context.Background())
+}
+
+func (i ScheduledBackupTypeArgs) ToScheduledBackupTypeOutputWithContext(ctx context.Context) ScheduledBackupTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ScheduledBackupTypeOutput)
+}
+
+// ScheduledBackupTypeArrayInput is an input type that accepts ScheduledBackupTypeArray and ScheduledBackupTypeArrayOutput values.
+// You can construct a concrete instance of `ScheduledBackupTypeArrayInput` via:
+//
+//	ScheduledBackupTypeArray{ ScheduledBackupTypeArgs{...} }
+type ScheduledBackupTypeArrayInput interface {
+	pulumi.Input
+
+	ToScheduledBackupTypeArrayOutput() ScheduledBackupTypeArrayOutput
+	ToScheduledBackupTypeArrayOutputWithContext(context.Context) ScheduledBackupTypeArrayOutput
+}
+
+type ScheduledBackupTypeArray []ScheduledBackupTypeInput
+
+func (ScheduledBackupTypeArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ScheduledBackupType)(nil)).Elem()
+}
+
+func (i ScheduledBackupTypeArray) ToScheduledBackupTypeArrayOutput() ScheduledBackupTypeArrayOutput {
+	return i.ToScheduledBackupTypeArrayOutputWithContext(context.Background())
+}
+
+func (i ScheduledBackupTypeArray) ToScheduledBackupTypeArrayOutputWithContext(ctx context.Context) ScheduledBackupTypeArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ScheduledBackupTypeArrayOutput)
+}
+
+// ScheduledBackup is the Schema for the scheduledbackups API
+type ScheduledBackupTypeOutput struct{ *pulumi.OutputState }
+
+func (ScheduledBackupTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ScheduledBackupType)(nil)).Elem()
+}
+
+func (o ScheduledBackupTypeOutput) ToScheduledBackupTypeOutput() ScheduledBackupTypeOutput {
+	return o
+}
+
+func (o ScheduledBackupTypeOutput) ToScheduledBackupTypeOutputWithContext(ctx context.Context) ScheduledBackupTypeOutput {
+	return o
+}
+
+// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+func (o ScheduledBackupTypeOutput) ApiVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupType) *string { return v.ApiVersion }).(pulumi.StringPtrOutput)
+}
+
+// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+func (o ScheduledBackupTypeOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupType) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+func (o ScheduledBackupTypeOutput) Metadata() metav1.ObjectMetaPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupType) *metav1.ObjectMeta { return v.Metadata }).(metav1.ObjectMetaPtrOutput)
+}
+
+func (o ScheduledBackupTypeOutput) Spec() ScheduledBackupSpecPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupType) *ScheduledBackupSpec { return v.Spec }).(ScheduledBackupSpecPtrOutput)
+}
+
+func (o ScheduledBackupTypeOutput) Status() ScheduledBackupStatusPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupType) *ScheduledBackupStatus { return v.Status }).(ScheduledBackupStatusPtrOutput)
+}
+
+type ScheduledBackupTypeArrayOutput struct{ *pulumi.OutputState }
+
+func (ScheduledBackupTypeArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ScheduledBackupType)(nil)).Elem()
+}
+
+func (o ScheduledBackupTypeArrayOutput) ToScheduledBackupTypeArrayOutput() ScheduledBackupTypeArrayOutput {
+	return o
+}
+
+func (o ScheduledBackupTypeArrayOutput) ToScheduledBackupTypeArrayOutputWithContext(ctx context.Context) ScheduledBackupTypeArrayOutput {
+	return o
+}
+
+func (o ScheduledBackupTypeArrayOutput) Index(i pulumi.IntInput) ScheduledBackupTypeOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ScheduledBackupType {
+		return vs[0].([]ScheduledBackupType)[vs[1].(int)]
+	}).(ScheduledBackupTypeOutput)
+}
+
+// ScheduledBackupList is a list of ScheduledBackup
+type ScheduledBackupListType struct {
+	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+	ApiVersion *string `pulumi:"apiVersion"`
+	// List of scheduledbackups. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md
+	Items []ScheduledBackupType `pulumi:"items"`
+	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Kind *string `pulumi:"kind"`
+	// Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Metadata *metav1.ListMeta `pulumi:"metadata"`
+}
+
+// ScheduledBackupListTypeInput is an input type that accepts ScheduledBackupListTypeArgs and ScheduledBackupListTypeOutput values.
+// You can construct a concrete instance of `ScheduledBackupListTypeInput` via:
+//
+//	ScheduledBackupListTypeArgs{...}
+type ScheduledBackupListTypeInput interface {
+	pulumi.Input
+
+	ToScheduledBackupListTypeOutput() ScheduledBackupListTypeOutput
+	ToScheduledBackupListTypeOutputWithContext(context.Context) ScheduledBackupListTypeOutput
+}
+
+// ScheduledBackupList is a list of ScheduledBackup
+type ScheduledBackupListTypeArgs struct {
+	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+	ApiVersion pulumi.StringPtrInput `pulumi:"apiVersion"`
+	// List of scheduledbackups. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md
+	Items ScheduledBackupTypeArrayInput `pulumi:"items"`
+	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Metadata metav1.ListMetaPtrInput `pulumi:"metadata"`
+}
+
+func (ScheduledBackupListTypeArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ScheduledBackupListType)(nil)).Elem()
+}
+
+func (i ScheduledBackupListTypeArgs) ToScheduledBackupListTypeOutput() ScheduledBackupListTypeOutput {
+	return i.ToScheduledBackupListTypeOutputWithContext(context.Background())
+}
+
+func (i ScheduledBackupListTypeArgs) ToScheduledBackupListTypeOutputWithContext(ctx context.Context) ScheduledBackupListTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ScheduledBackupListTypeOutput)
+}
+
+// ScheduledBackupList is a list of ScheduledBackup
+type ScheduledBackupListTypeOutput struct{ *pulumi.OutputState }
+
+func (ScheduledBackupListTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ScheduledBackupListType)(nil)).Elem()
+}
+
+func (o ScheduledBackupListTypeOutput) ToScheduledBackupListTypeOutput() ScheduledBackupListTypeOutput {
+	return o
+}
+
+func (o ScheduledBackupListTypeOutput) ToScheduledBackupListTypeOutputWithContext(ctx context.Context) ScheduledBackupListTypeOutput {
+	return o
+}
+
+// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+func (o ScheduledBackupListTypeOutput) ApiVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupListType) *string { return v.ApiVersion }).(pulumi.StringPtrOutput)
+}
+
+// List of scheduledbackups. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md
+func (o ScheduledBackupListTypeOutput) Items() ScheduledBackupTypeArrayOutput {
+	return o.ApplyT(func(v ScheduledBackupListType) []ScheduledBackupType { return v.Items }).(ScheduledBackupTypeArrayOutput)
+}
+
+// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+func (o ScheduledBackupListTypeOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupListType) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Standard list metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+func (o ScheduledBackupListTypeOutput) Metadata() metav1.ListMetaPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupListType) *metav1.ListMeta { return v.Metadata }).(metav1.ListMetaPtrOutput)
+}
+
+// ScheduledBackup is the Schema for the scheduledbackups API
+type ScheduledBackupPatchType struct {
+	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+	ApiVersion *string `pulumi:"apiVersion"`
+	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Kind *string `pulumi:"kind"`
+	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	Metadata *metav1.ObjectMetaPatch     `pulumi:"metadata"`
+	Spec     *ScheduledBackupSpecPatch   `pulumi:"spec"`
+	Status   *ScheduledBackupStatusPatch `pulumi:"status"`
+}
+
+// ScheduledBackupPatchTypeInput is an input type that accepts ScheduledBackupPatchTypeArgs and ScheduledBackupPatchTypeOutput values.
+// You can construct a concrete instance of `ScheduledBackupPatchTypeInput` via:
+//
+//	ScheduledBackupPatchTypeArgs{...}
+type ScheduledBackupPatchTypeInput interface {
+	pulumi.Input
+
+	ToScheduledBackupPatchTypeOutput() ScheduledBackupPatchTypeOutput
+	ToScheduledBackupPatchTypeOutputWithContext(context.Context) ScheduledBackupPatchTypeOutput
+}
+
+// ScheduledBackup is the Schema for the scheduledbackups API
+type ScheduledBackupPatchTypeArgs struct {
+	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+	ApiVersion pulumi.StringPtrInput `pulumi:"apiVersion"`
+	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Kind pulumi.StringPtrInput `pulumi:"kind"`
+	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	Metadata metav1.ObjectMetaPatchPtrInput     `pulumi:"metadata"`
+	Spec     ScheduledBackupSpecPatchPtrInput   `pulumi:"spec"`
+	Status   ScheduledBackupStatusPatchPtrInput `pulumi:"status"`
+}
+
+func (ScheduledBackupPatchTypeArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ScheduledBackupPatchType)(nil)).Elem()
+}
+
+func (i ScheduledBackupPatchTypeArgs) ToScheduledBackupPatchTypeOutput() ScheduledBackupPatchTypeOutput {
+	return i.ToScheduledBackupPatchTypeOutputWithContext(context.Background())
+}
+
+func (i ScheduledBackupPatchTypeArgs) ToScheduledBackupPatchTypeOutputWithContext(ctx context.Context) ScheduledBackupPatchTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ScheduledBackupPatchTypeOutput)
+}
+
+// ScheduledBackup is the Schema for the scheduledbackups API
+type ScheduledBackupPatchTypeOutput struct{ *pulumi.OutputState }
+
+func (ScheduledBackupPatchTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ScheduledBackupPatchType)(nil)).Elem()
+}
+
+func (o ScheduledBackupPatchTypeOutput) ToScheduledBackupPatchTypeOutput() ScheduledBackupPatchTypeOutput {
+	return o
+}
+
+func (o ScheduledBackupPatchTypeOutput) ToScheduledBackupPatchTypeOutputWithContext(ctx context.Context) ScheduledBackupPatchTypeOutput {
+	return o
+}
+
+// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+func (o ScheduledBackupPatchTypeOutput) ApiVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupPatchType) *string { return v.ApiVersion }).(pulumi.StringPtrOutput)
+}
+
+// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+func (o ScheduledBackupPatchTypeOutput) Kind() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupPatchType) *string { return v.Kind }).(pulumi.StringPtrOutput)
+}
+
+// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+func (o ScheduledBackupPatchTypeOutput) Metadata() metav1.ObjectMetaPatchPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupPatchType) *metav1.ObjectMetaPatch { return v.Metadata }).(metav1.ObjectMetaPatchPtrOutput)
+}
+
+func (o ScheduledBackupPatchTypeOutput) Spec() ScheduledBackupSpecPatchPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupPatchType) *ScheduledBackupSpecPatch { return v.Spec }).(ScheduledBackupSpecPatchPtrOutput)
+}
+
+func (o ScheduledBackupPatchTypeOutput) Status() ScheduledBackupStatusPatchPtrOutput {
+	return o.ApplyT(func(v ScheduledBackupPatchType) *ScheduledBackupStatusPatch { return v.Status }).(ScheduledBackupStatusPatchPtrOutput)
+}
 
 // Specification of the desired behavior of the ScheduledBackup.
 // More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -2158,6 +10953,94 @@ func (o ScheduledBackupStatusPatchPtrOutput) NextScheduleTime() pulumi.StringPtr
 }
 
 func init() {
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusAvailableArchitecturesPatchInput)(nil)).Elem(), ClusterStatusAvailableArchitecturesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusAvailableArchitecturesPatchArrayInput)(nil)).Elem(), ClusterStatusAvailableArchitecturesPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusCertificatesInput)(nil)).Elem(), ClusterStatusCertificatesArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusCertificatesPtrInput)(nil)).Elem(), ClusterStatusCertificatesArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusCertificatesPatchInput)(nil)).Elem(), ClusterStatusCertificatesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusCertificatesPatchPtrInput)(nil)).Elem(), ClusterStatusCertificatesPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConditionsInput)(nil)).Elem(), ClusterStatusConditionsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConditionsArrayInput)(nil)).Elem(), ClusterStatusConditionsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConditionsPatchInput)(nil)).Elem(), ClusterStatusConditionsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConditionsPatchArrayInput)(nil)).Elem(), ClusterStatusConditionsPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConfigMapResourceVersionInput)(nil)).Elem(), ClusterStatusConfigMapResourceVersionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConfigMapResourceVersionPtrInput)(nil)).Elem(), ClusterStatusConfigMapResourceVersionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConfigMapResourceVersionPatchInput)(nil)).Elem(), ClusterStatusConfigMapResourceVersionPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusConfigMapResourceVersionPatchPtrInput)(nil)).Elem(), ClusterStatusConfigMapResourceVersionPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusManagedRolesStatusInput)(nil)).Elem(), ClusterStatusManagedRolesStatusArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusManagedRolesStatusPtrInput)(nil)).Elem(), ClusterStatusManagedRolesStatusArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusManagedRolesStatusPatchInput)(nil)).Elem(), ClusterStatusManagedRolesStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusManagedRolesStatusPatchPtrInput)(nil)).Elem(), ClusterStatusManagedRolesStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPatchInput)(nil)).Elem(), ClusterStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPatchPtrInput)(nil)).Elem(), ClusterStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoInput)(nil)).Elem(), ClusterStatusPgDataImageInfoArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoPtrInput)(nil)).Elem(), ClusterStatusPgDataImageInfoArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsArrayInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnvInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsEnvArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnvArrayInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsEnvArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnvPatchInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsEnvPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsEnvPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImageInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsImageArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImagePtrInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsImageArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImagePatchInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsImagePatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsImagePatchPtrInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsImagePatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsPatchInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoExtensionsPatchArrayInput)(nil)).Elem(), ClusterStatusPgDataImageInfoExtensionsPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoPatchInput)(nil)).Elem(), ClusterStatusPgDataImageInfoPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPgDataImageInfoPatchPtrInput)(nil)).Elem(), ClusterStatusPgDataImageInfoPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPluginStatusInput)(nil)).Elem(), ClusterStatusPluginStatusArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPluginStatusArrayInput)(nil)).Elem(), ClusterStatusPluginStatusArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPluginStatusPatchInput)(nil)).Elem(), ClusterStatusPluginStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPluginStatusPatchArrayInput)(nil)).Elem(), ClusterStatusPluginStatusPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPodSelectorRefsInput)(nil)).Elem(), ClusterStatusPodSelectorRefsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPodSelectorRefsArrayInput)(nil)).Elem(), ClusterStatusPodSelectorRefsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPodSelectorRefsPatchInput)(nil)).Elem(), ClusterStatusPodSelectorRefsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPodSelectorRefsPatchArrayInput)(nil)).Elem(), ClusterStatusPodSelectorRefsPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsPtrInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsPatchInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsPatchPtrInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegrationInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsPgBouncerIntegrationArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrInput)(nil)).Elem(), ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSecretsResourceVersionInput)(nil)).Elem(), ClusterStatusSecretsResourceVersionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSecretsResourceVersionPtrInput)(nil)).Elem(), ClusterStatusSecretsResourceVersionArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSecretsResourceVersionPatchInput)(nil)).Elem(), ClusterStatusSecretsResourceVersionPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSecretsResourceVersionPatchPtrInput)(nil)).Elem(), ClusterStatusSecretsResourceVersionPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatusInput)(nil)).Elem(), ClusterStatusSwitchReplicaClusterStatusArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatusPtrInput)(nil)).Elem(), ClusterStatusSwitchReplicaClusterStatusArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatusPatchInput)(nil)).Elem(), ClusterStatusSwitchReplicaClusterStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusSwitchReplicaClusterStatusPatchPtrInput)(nil)).Elem(), ClusterStatusSwitchReplicaClusterStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTablespacesStatusInput)(nil)).Elem(), ClusterStatusTablespacesStatusArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTablespacesStatusArrayInput)(nil)).Elem(), ClusterStatusTablespacesStatusArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTablespacesStatusPatchInput)(nil)).Elem(), ClusterStatusTablespacesStatusPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTablespacesStatusPatchArrayInput)(nil)).Elem(), ClusterStatusTablespacesStatusPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoPtrInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsArrayInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnvInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsEnvArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsEnvArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImageInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsImageArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImagePtrInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsImageArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImagePatchInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsImagePatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsPatchInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoExtensionsPatchArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoPatchInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTargetPgDataImageInfoPatchPtrInput)(nil)).Elem(), ClusterStatusTargetPgDataImageInfoPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTopologyInput)(nil)).Elem(), ClusterStatusTopologyArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTopologyPtrInput)(nil)).Elem(), ClusterStatusTopologyArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTopologyPatchInput)(nil)).Elem(), ClusterStatusTopologyPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ClusterStatusTopologyPatchPtrInput)(nil)).Elem(), ClusterStatusTopologyPatchArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupTypeInput)(nil)).Elem(), ScheduledBackupTypeArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupTypeArrayInput)(nil)).Elem(), ScheduledBackupTypeArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupListTypeInput)(nil)).Elem(), ScheduledBackupListTypeArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupPatchTypeInput)(nil)).Elem(), ScheduledBackupPatchTypeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupSpecInput)(nil)).Elem(), ScheduledBackupSpecArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupSpecPtrInput)(nil)).Elem(), ScheduledBackupSpecArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupSpecClusterInput)(nil)).Elem(), ScheduledBackupSpecClusterArgs{})
@@ -2178,6 +11061,94 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupStatusPtrInput)(nil)).Elem(), ScheduledBackupStatusArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupStatusPatchInput)(nil)).Elem(), ScheduledBackupStatusPatchArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ScheduledBackupStatusPatchPtrInput)(nil)).Elem(), ScheduledBackupStatusPatchArgs{})
+	pulumi.RegisterOutputType(ClusterStatusAvailableArchitecturesPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusAvailableArchitecturesPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusCertificatesOutput{})
+	pulumi.RegisterOutputType(ClusterStatusCertificatesPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusCertificatesPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusCertificatesPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConditionsOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConditionsArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConditionsPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConditionsPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConfigMapResourceVersionOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConfigMapResourceVersionPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConfigMapResourceVersionPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusConfigMapResourceVersionPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusManagedRolesStatusOutput{})
+	pulumi.RegisterOutputType(ClusterStatusManagedRolesStatusPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusManagedRolesStatusPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusManagedRolesStatusPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsEnvOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsEnvArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsEnvPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsEnvPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsImageOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsImagePtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsImagePatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsImagePatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoExtensionsPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPgDataImageInfoPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPluginStatusOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPluginStatusArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPluginStatusPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPluginStatusPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPodSelectorRefsOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPodSelectorRefsArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPodSelectorRefsPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPodSelectorRefsPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsPgBouncerIntegrationOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusPoolerIntegrationsPgBouncerIntegrationPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSecretsResourceVersionOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSecretsResourceVersionPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSecretsResourceVersionPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSecretsResourceVersionPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSwitchReplicaClusterStatusOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSwitchReplicaClusterStatusPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSwitchReplicaClusterStatusPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusSwitchReplicaClusterStatusPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTablespacesStatusOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTablespacesStatusArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTablespacesStatusPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTablespacesStatusPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsEnvOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsEnvArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsEnvPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsImageOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsImagePtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsImagePatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoExtensionsPatchArrayOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTargetPgDataImageInfoPatchPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTopologyOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTopologyPtrOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTopologyPatchOutput{})
+	pulumi.RegisterOutputType(ClusterStatusTopologyPatchPtrOutput{})
+	pulumi.RegisterOutputType(ScheduledBackupTypeOutput{})
+	pulumi.RegisterOutputType(ScheduledBackupTypeArrayOutput{})
+	pulumi.RegisterOutputType(ScheduledBackupListTypeOutput{})
+	pulumi.RegisterOutputType(ScheduledBackupPatchTypeOutput{})
 	pulumi.RegisterOutputType(ScheduledBackupSpecOutput{})
 	pulumi.RegisterOutputType(ScheduledBackupSpecPtrOutput{})
 	pulumi.RegisterOutputType(ScheduledBackupSpecClusterOutput{})

@@ -7,11 +7,17 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
 func TestCloudflareDnsZoneSpec(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
 	ginkgo.RunSpecs(t, "CloudflareDnsZoneSpec Custom Validation Tests")
+}
+
+// literal is a convenience for building a literal record content value.
+func literal(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
 }
 
 func zone(name string, spec *CloudflareDnsZoneSpec) *CloudflareDnsZone {
@@ -55,8 +61,8 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 				err := protovalidate.Validate(zone("z", &CloudflareDnsZoneSpec{
 					ZoneName: "example.com", AccountId: "test-account-123",
 					Records: []*CloudflareDnsZoneRecord{
-						{Name: "www", Type: CloudflareDnsZoneRecord_A, Content: "192.0.2.1", Proxied: true},
-						{Name: "@", Type: CloudflareDnsZoneRecord_MX, Content: "mail.example.com", Priority: 10},
+						{Name: "www", Type: CloudflareDnsZoneRecord_A, Content: literal("192.0.2.1"), Proxied: true},
+						{Name: "@", Type: CloudflareDnsZoneRecord_MX, Content: literal("mail.example.com"), Priority: 10},
 					},
 				}))
 				gomega.Expect(err).To(gomega.BeNil())
@@ -67,7 +73,7 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 					ZoneName: "example.com", AccountId: "test-account-123",
 					Records: []*CloudflareDnsZoneRecord{
 						{Name: "_sip._tcp", Type: CloudflareDnsZoneRecord_SRV,
-							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: "sip.example.com"}}},
+							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: literal("sip.example.com")}}},
 						{Name: "@", Type: CloudflareDnsZoneRecord_CAA,
 							Data: &CloudflareDnsZoneRecord_Caa{Caa: &CaaData{Tag: "issue", Value: "letsencrypt.org"}}},
 					},
@@ -79,7 +85,7 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 				err := protovalidate.Validate(zone("z", &CloudflareDnsZoneSpec{
 					ZoneName: "example.com", AccountId: "test-account-123",
 					Records: []*CloudflareDnsZoneRecord{
-						{Name: "app", Type: CloudflareDnsZoneRecord_A, Content: "192.0.2.7", Proxied: true,
+						{Name: "app", Type: CloudflareDnsZoneRecord_A, Content: literal("192.0.2.7"), Proxied: true,
 							Tags:     []string{"team:web", "env:prod"},
 							Settings: &CloudflareDnsZoneRecordSettings{Ipv4Only: true}},
 					},
@@ -197,7 +203,7 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 			ginkgo.It("rejects a proxied TXT record", func() {
 				err := protovalidate.Validate(zone("z", &CloudflareDnsZoneSpec{
 					ZoneName: "example.com", AccountId: "a",
-					Records: []*CloudflareDnsZoneRecord{{Name: "@", Type: CloudflareDnsZoneRecord_TXT, Content: "v=spf1 ~all", Proxied: true}},
+					Records: []*CloudflareDnsZoneRecord{{Name: "@", Type: CloudflareDnsZoneRecord_TXT, Content: literal("v=spf1 ~all"), Proxied: true}},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -205,7 +211,7 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 			ginkgo.It("rejects an MX record without priority", func() {
 				err := protovalidate.Validate(zone("z", &CloudflareDnsZoneSpec{
 					ZoneName: "example.com", AccountId: "a",
-					Records: []*CloudflareDnsZoneRecord{{Name: "@", Type: CloudflareDnsZoneRecord_MX, Content: "mail.example.com"}},
+					Records: []*CloudflareDnsZoneRecord{{Name: "@", Type: CloudflareDnsZoneRecord_MX, Content: literal("mail.example.com")}},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -214,8 +220,8 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 				err := protovalidate.Validate(zone("z", &CloudflareDnsZoneSpec{
 					ZoneName: "example.com", AccountId: "a",
 					Records: []*CloudflareDnsZoneRecord{
-						{Name: "_sip._tcp", Type: CloudflareDnsZoneRecord_SRV, Content: "bogus",
-							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Target: "sip.example.com"}}},
+						{Name: "_sip._tcp", Type: CloudflareDnsZoneRecord_SRV, Content: literal("bogus"),
+							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Target: literal("sip.example.com")}}},
 					},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
@@ -224,7 +230,7 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 			ginkgo.It("rejects a structured type without its data block", func() {
 				err := protovalidate.Validate(zone("z", &CloudflareDnsZoneSpec{
 					ZoneName: "example.com", AccountId: "a",
-					Records: []*CloudflareDnsZoneRecord{{Name: "_sip._tcp", Type: CloudflareDnsZoneRecord_SRV, Content: "10 5 5060 sip.example.com"}},
+					Records: []*CloudflareDnsZoneRecord{{Name: "_sip._tcp", Type: CloudflareDnsZoneRecord_SRV, Content: literal("10 5 5060 sip.example.com")}},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})

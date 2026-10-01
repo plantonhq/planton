@@ -3,25 +3,49 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabasefirewall
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios on the PostgreSQL cluster registry
-  # prerequisite: `minimal` proves the ip_addr fan-out across IPv4/CIDR/
-  # IPv6 shapes AND the kind's unusual destroy contract (the verifier
-  # asserts an EMPTY live rule list after destroy -- delete is a PUT of an
-  # empty set, and the cluster then accepts connections from anywhere);
-  # `full` proves droplet targeting through the droplet_ids REFERENCE (the
-  # Droplet fixture rides the scenario annotation, installing from that
-  # kind's minimal scenario). Deliberately not in the live lanes: tag rules
-  # (may require a pre-existing DigitalOcean tag -- same class as the
-  # network firewall's implicit-tag watch item; prove there first),
-  # kubernetes_cluster_ids (needs the slow ~10-min DOKS fixture), app_ids
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip on every Terraform
+  # lane (the BARE `{cluster_id}` -- the provider mints a random state id,
+  # which is never compared; lossless on both scenarios). TWO scenarios on
+  # the PostgreSQL cluster registry prerequisite (`planton-oss-e2e-dodb-min`):
+  # `minimal` proves the ip_addr fan-out across the shapes DigitalOcean
+  # accepts -- a plain IPv4, a /16 and a /24 CIDR -- AND the kind's unusual
+  # destroy contract (the verifier asserts an EMPTY live rule list after
+  # destroy -- delete is a PUT of an empty set, and the cluster then accepts
+  # connections from anywhere); `full` proves droplet targeting through the
+  # droplet_ids REFERENCE (the Droplet fixture rides the scenario
+  # annotation, installing from that kind's minimal scenario beside the
+  # cluster; the live rule list carried the fixture's id).
+  #
+  # Live-caught 2026-09-17 and fixed at the spec: DigitalOcean's database
+  # firewall accepts IPv4 ONLY -- an IPv6 address and an IPv6 prefix both
+  # answer `422 invalid rule with type IP_ADDR because: invalid ip format`
+  # (the first minimal lane failed at DEPLOY on the IPv6 rule the scenario
+  # carried), so `ipRules` now rejects IPv6 at validation. A bare IPv4 and
+  # its /32 form are both accepted and read back exactly as written.
+  # Measured the same day on a probe primary and its replica: a read
+  # replica is its own cluster with its own, initially EMPTY firewall --
+  # the primary's rules do not reach it; a rule PUT on the replica's UUID
+  # lands on the replica alone. The kind's docs teach a second firewall
+  # per replica with `cluster` pointing at the replica's `replica_id`; that
+  # composition is measured by API, not yet by a lane (a replica fixture is
+  # a second cluster-sized create -- run it when a session pays for one).
+  #
+  # Deliberately not in the live lanes: tag rules (a firewall tag rule must
+  # name a tag a Droplet already carries -- the network firewall precedent;
+  # prove with the Droplet fixture's identity tag when a session takes the
+  # arm), kubernetes_cluster_ids (needs the ~5-min DOKS fixture), app_ids
   # (needs an App Platform fixture) -- all three are the SAME fan-out code
-  # path the ip/droplet lanes prove. Firewall operations are seconds; the
-  # cluster fixture (~5 min, ~$0.02/hour) plus the full lane's droplet
-  # (~1 min, ~$0.009/hour) dominate.
+  # path the ip/droplet lanes prove. Firewall operations are 2-7 s; the
+  # cluster fixture (4m30s-5m16s, ~$0.02/hour) plus the full lane's droplet
+  # (~40 s, ~$0.009/hour) dominate; DEPENDENCIES-DOWN with the droplet is
+  # ~40 s.
+  #
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: cluster and droplet fixtures 5m07s, DEPLOY 9 s,
+  # IDEMPOTENCY PASS, VERIFY-RES PASS, DESTROY 15 s, VERIFY-CLN PASS (the
+  # EMPTY-list destroy contract held), first run.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 35

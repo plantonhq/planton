@@ -50,3 +50,35 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubernetes_network_policy_v1.ingress and kubernetes_network_policy_v1.egress -- the default-deny isolation policies rendered inside the created namespace only when spec.network_config sets isolate_ingress or restrict_egress.
+      - api_groups:
+          - networking.k8s.io
+        resources:
+          - networkpolicies
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the NetworkPolicy in network_policies.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - events
+          - limitranges
+          - resourcequotas
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the LimitRange in limit_range.go and the ResourceQuota in resource_quota.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing. Events are read differently. While it waits on the ResourceQuota in resource_quota.go, the provider also watches the object's events, at await.go:352 and watchers.go:202-241, for the Warning events a person watching the deploy sees, such as FailedScheduling or an image pull back-off. That informer runs beside the wait, so without events the warnings go silent rather than the deploy hanging.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

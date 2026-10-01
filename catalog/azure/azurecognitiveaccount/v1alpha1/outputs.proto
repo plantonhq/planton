@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecognitiveaccount.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureCognitiveAccountStackOutputs** captures the outputs of
 // provisioning an Azure AI services account.
 message AzureCognitiveAccountStackOutputs {
@@ -23,12 +25,12 @@ message AzureCognitiveAccountStackOutputs {
   // The account's primary access key. Marked sensitive in both
   // engines. Empty when local_auth_enabled is false (token auth
   // only).
-  string primary_access_key = 4;
+  string primary_access_key = 4 [(dev.planton.shared.options.sensitive) = true];
 
   // The account's secondary access key (for zero-downtime rotation).
   // Marked sensitive in both engines. Empty when local_auth_enabled
   // is false.
-  string secondary_access_key = 5;
+  string secondary_access_key = 5 [(dev.planton.shared.options.sensitive) = true];
 
   // The principal (object) ID of the account's system-assigned
   // identity, when one is enabled -- what Key Vault and storage grants

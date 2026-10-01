@@ -365,7 +365,9 @@ generate-provider-schemas:
 		--provider 'azurerm=hashicorp/azurerm@5.0.0' \
 		--provider 'aws=hashicorp/aws@~> 6.58' \
 		--provider 'cloudflare=cloudflare/cloudflare@5.23.0' \
-		--provider 'digitalocean=digitalocean/digitalocean@~> 2.99'
+		--provider 'digitalocean=digitalocean/digitalocean@~> 2.99' \
+		--provider 'auth0=auth0/auth0@~> 1.58' \
+		--provider 'stripe=stripe/stripe@0.3.0'
 
 # Regenerate every committed public parity page (catalog/<provider>/terraform-parity.md)
 # from the accounting. Each page embeds its own generation parameters, so this
@@ -466,7 +468,15 @@ build: protos generate-cloud-resource-kind-map generate-proto-docs bazel-mod-tid
 ${build_dir}/${name}: build-go
 
 .PHONY: test
+# Every package in the module under the race detector: CI's run. On a laptop
+# it builds the whole module's test binaries and can fill the disk, so it
+# refuses there unless asked for by name.
 test:
+	@if [ -z "$$CI" ] && [ "$$PLANTON_ALLOW_REPO_WIDE" != "1" ]; then \
+		echo "make test runs every package in the repository under the race detector, which can fill this machine's disk."; \
+		echo "Test the packages you changed (go test ./catalog/<provider>/<kind>/...), or run it on purpose: PLANTON_ALLOW_REPO_WIDE=1 make test"; \
+		exit 1; \
+	fi
 	go test -race -v -count=1 -p $(PARALLEL) ./...
 
 .PHONY: run
@@ -606,6 +616,17 @@ e2e-test-auth0-pulumi:  ## Run Auth0 Pulumi E2E tests only
 e2e-test-auth0-terraform:  ## Run Auth0 Terraform E2E tests only
 	go test -tags=e2e -timeout=20m -v -count=1 -run ".*_Terraform" ./e2e/auth0/...
 
+# ── Stripe E2E targets ───────────────────────────────────────────────────────
+# Stripe kinds run on OpenTofu only, so there is one lane. It runs only against
+# the dedicated test sandbox: the harness refuses any key that is not a
+# test-mode key (sk_test_/rk_test_) before a lane starts. Export
+# PLANTON_E2E_IMPORT_ROUNDTRIP=1 to add the blind import round trip to every
+# lane (the CI live job always does); every lane together takes minutes.
+
+.PHONY: e2e-test-stripe
+e2e-test-stripe:  ## Run Stripe E2E tests (requires STRIPE_API_KEY of the test sandbox; live keys are refused)
+	go test -tags=e2e -timeout=20m -v -count=1 -run ".*_Tofu" ./e2e/stripe/...
+
 # ── Cloudflare E2E targets ───────────────────────────────────────────────────
 
 .PHONY: e2e-test-cloudflare
@@ -661,7 +682,8 @@ $(if $(findstring Aws,$(component)),./e2e/aws/...,\
 $(if $(findstring Gcp,$(component)),./e2e/gcp/...,\
 $(if $(findstring Azure,$(component)),./e2e/azure/...,\
 $(if $(findstring Auth0,$(component)),./e2e/auth0/...,\
-$(if $(findstring Cloudflare,$(component)),./e2e/cloudflare/...,./e2e/...)))))))
+$(if $(findstring Cloudflare,$(component)),./e2e/cloudflare/...,\
+$(if $(findstring Stripe,$(component)),./e2e/stripe/...,./e2e/...))))))))
 
 .PHONY: e2e-test-component
 e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)

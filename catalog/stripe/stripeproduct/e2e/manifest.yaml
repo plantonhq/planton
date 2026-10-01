@@ -1,0 +1,15 @@
+# The canonical example: a SaaS plan as customers see it. Its prices are
+# StripePrice resources that name it.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeProduct
+metadata:
+  name: pro-plan
+  org: e2e-org
+  env: testing
+spec:
+  name: Pro
+  description: For growing teams
+  unitLabel: seat
+  marketingFeatures:
+    - name: Unlimited projects
+    - name: Priority support

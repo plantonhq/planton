@@ -1,0 +1,12 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomain
+metadata:
+  name: sign-in-domain
+  org: example-org
+  env: production
+spec:
+  # Realistic sample domains (hostname-validated fields) -- replace with your own.
+  domain: id.example.com
+  type: auth0_managed_certs
+  tlsPolicy: recommended
+  relyingPartyIdentifier: example.com

@@ -23,4 +23,4 @@ spec:
   commands:
     - first
     - second
-  sensitive_string: not-a-real-secret
+  sensitive_string: $secret/not-a-real-secret

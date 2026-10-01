@@ -22,7 +22,7 @@ A secret's version history in Planton is **live**: the storage backend is the so
 
 ## Latest Means the Store's Latest
 
-When a deployment, a service pipeline, or `planton secret get` resolves a secret, "latest" is the **backend's** latest version — including one added out-of-band five seconds ago. Rotating a credential directly in your provider console is a fully supported workflow: the next deployment picks it up with no Planton step in between.
+When a deployment, a service pipeline, or `planton secret get --reveal` resolves a secret, "latest" is the **backend's** latest version — including one added out-of-band five seconds ago. Rotating a credential directly in your provider console is a fully supported workflow: the next deployment picks it up with no Planton step in between.
 
 ## Version Pinning
 

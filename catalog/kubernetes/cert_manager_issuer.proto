@@ -388,7 +388,7 @@ message CertManagerRoute53ServiceAccountAuth {
   dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_name = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesServiceAccount,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.service_account_name"
   ];
 
   // TokenRequest audiences for the projected token. Empty = cert-manager's
@@ -688,9 +688,54 @@ message CertManagerVaultKubernetesAuth {
   dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_name = 3 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesServiceAccount,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.service_account_name"
   ];
 
   // TokenRequest audiences for the ServiceAccount token. Empty = Vault default.
   repeated string audiences = 4;
+}
+
+// CertManagerIssuerRef names an existing cert-manager issuer that signs a
+// component's own certificates (a webhook's or an API server's serving
+// certificate), by grain: a namespaced Issuer, which must live in the
+// component's installation namespace, or a cluster-scoped ClusterIssuer. The
+// grain is the arm, so every reader -- the reference picker, the dependency
+// graph, the modules -- knows which issuer kind a literal name or a
+// reference means.
+message CertManagerIssuerRef {
+  option (buf.validate.message).cel = {
+    id: "issuer_ref.one_required"
+    message: "An issuer is required -- choose 'issuer' (a namespaced Issuer in the installation namespace) or 'cluster_issuer' (a cluster-scoped ClusterIssuer)"
+    expression: "[has(this.issuer), has(this.cluster_issuer)].filter(x, x).size() == 1"
+  };
+
+  oneof issuer_type {
+    // A namespaced Issuer in the installation namespace, by name.
+    CertManagerNamespacedIssuerRef issuer = 1;
+
+    // A cluster-scoped ClusterIssuer, by name.
+    CertManagerClusterIssuerRef cluster_issuer = 2;
+  }
+}
+
+// Reference to a namespace-scoped cert-manager Issuer.
+message CertManagerNamespacedIssuerRef {
+  // Issuer name. Accepts a literal name or a reference to a KubernetesIssuer
+  // resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesIssuer,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.issuer_name"
+  ];
+}
+
+// Reference to a cluster-scoped cert-manager ClusterIssuer.
+message CertManagerClusterIssuerRef {
+  // ClusterIssuer name. Accepts a literal name or a reference to a
+  // KubernetesClusterIssuer resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesClusterIssuer,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_issuer_name"
+  ];
 }

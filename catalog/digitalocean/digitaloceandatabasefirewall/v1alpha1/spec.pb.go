@@ -46,8 +46,20 @@ type DigitalOceanDatabaseFirewallSpec struct {
 	// The database cluster whose inbound sources these rules define. Use a
 	// literal cluster UUID or a reference to a DigitalOceanDatabaseCluster
 	// resource. Changing it moves the rule set to another cluster (replace).
+	//
+	// A read replica is its own cluster to DigitalOcean with its own
+	// trusted-sources list, which starts EMPTY -- the primary's rules never
+	// reach it. Protect a replica with a second firewall resource whose
+	// cluster points at the replica: `valueFrom` with
+	// `kind: DigitalOceanDatabaseReplica` and
+	// `fieldPath: status.outputs.replica_id`, or its UUID as a literal.
 	Cluster *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=cluster,proto3" json:"cluster,omitempty"`
-	// (Optional) IP addresses or CIDR blocks trusted to reach the cluster.
+	// (Optional) IPv4 addresses or IPv4 CIDR blocks trusted to reach the
+	// cluster. IPv4 ONLY: DigitalOcean's database firewall rejects every IPv6
+	// shape at apply (`422 invalid rule with type IP_ADDR because: invalid ip
+	// format`, measured 2026-09-17 for both an address and a /32 prefix), so
+	// the rule below refuses IPv6 at validation instead. A bare address and
+	// its /32 form are both accepted and read back exactly as sent.
 	IpRules []string `protobuf:"bytes,2,rep,name=ip_rules,json=ipRules,proto3" json:"ip_rules,omitempty"`
 	// (Optional) Droplets trusted to reach the cluster, as literal numeric
 	// Droplet IDs or references to DigitalOceanDroplet resources.
@@ -148,12 +160,11 @@ var File_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_spec_proto p
 
 const file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/digitalocean/digitaloceandatabasefirewall/v1alpha1/spec.proto\x12>dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xed\a\n" +
+	"Ecatalog/digitalocean/digitaloceandatabasefirewall/v1alpha1/spec.proto\x12>dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xb3\b\n" +
 	" DigitalOceanDatabaseFirewallSpec\x12v\n" +
-	"\acluster\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x8b'\x92\xd4a\x19status.outputs.cluster_idR\acluster\x12y\n" +
-	"\bip_rules\x18\x02 \x03(\tB^\xbaH[\x92\x01X\"V\xba\x01S\n" +
-	"\n" +
-	"ip_or_cidr\x12#must be an IP address or CIDR block\x1a this.isIp() || this.isIpPrefix()R\aipRules\x12w\n" +
+	"\acluster\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x8b'\x92\xd4a\x19status.outputs.cluster_idR\acluster\x12\xbe\x01\n" +
+	"\bip_rules\x18\x02 \x03(\tB\xa2\x01\xbaH\x9e\x01\x92\x01\x9a\x01\"\x97\x01\xba\x01\x93\x01\n" +
+	"\fipv4_or_cidr\x12_must be an IPv4 address or IPv4 CIDR block (DigitalOcean database firewalls do not accept IPv6)\x1a\"this.isIp(4) || this.isIpPrefix(4)R\aipRules\x12w\n" +
 	"\vdroplet_ids\x18\x03 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\n" +
 	"dropletIds\x12\x90\x01\n" +
 	"\x16kubernetes_cluster_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\x14kubernetesClusterIds\x12k\n" +

@@ -4,6 +4,15 @@
 # api_server_endpoint outputs. The REQUIRED vpc reference resolves against
 # the VPC registry prerequisite. Named `minimal` so it doubles as this
 # kind's install profile when the node-pool kind composes it as a fixture.
+#
+# clusterName carries ${E2E_RUN_ID}: a DOKS delete runs for minutes after
+# the API accepts it, so a fixed name would collide with the next lane's
+# create. kubernetesVersion is a MINOR prefix, never a full slug: DigitalOcean
+# retires patch slugs every few weeks (a create with a retired slug fails
+# 422), while a minor lives for its whole support window; the provider
+# resolves the prefix to the current patch and both engines ignore drift on
+# the field. Check the live offer with GET /v2/kubernetes/options before
+# bumping (2026-09-16: 1.34, 1.35, 1.36).
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanKubernetesCluster
 metadata:
@@ -19,9 +28,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-doks-min
+  clusterName: pltn-e2e-doks-min-${E2E_RUN_ID}
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     valueFrom:
       kind: DigitalOceanVpc

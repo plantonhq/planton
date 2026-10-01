@@ -115,6 +115,7 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 
 	cluster := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{
 		CRName:                    planton.Name,
+		Resources:                 resources.EffectiveFor(resources.SizingPostgreSQL, &planton.Spec),
 		Namespace:                 planton.Namespace,
 		Instances:                 instances,
 		StorageSize:               storageSize,
@@ -169,10 +170,11 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 	planton.Status.Backup = withVaultCoverage(planton, backupStatus)
 
 	ready, statusMsg := clusterReadiness(live, instances)
+	workload := PostgresClusterRef(clusterName).Sized(resources.SizingPostgreSQL)
 	if !ready {
 		// The Cluster's own readiness sentence is the generic answer; the
 		// instance pods (labelled cnpg.io/cluster) supply anything sharper.
-		return p.NotReady(ctx, c, planton.Namespace, PostgresClusterRef(clusterName), statusMsg), nil
+		return p.NotReady(ctx, c, planton.Namespace, workload, statusMsg), nil
 	}
 
 	credentialsReady, err := p.superuserSecretExists(ctx, c, planton)
@@ -191,7 +193,7 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 	}
 
 	log.Info("PostgreSQL ready")
-	return Result{Ready: true, Message: statusMsg}, nil
+	return p.Ready(ctx, c, planton.Namespace, statusMsg, workload), nil
 }
 
 // liveCluster reads the platform's CloudNativePG Cluster as it is on the

@@ -71,8 +71,26 @@ spec:
         so any other target is refused before the build starts, in plain
         words, rather than producing an image the target cannot run.
       default: ""
+    - name: RELEASE_TAG
+      description: >-
+        The release's tag when this build is a tag release (v1.4.0); empty
+        otherwise. A tag that is also a valid image tag names the pushed image
+        too, on the same digest. A tag an image cannot carry (release/1.4) is
+        said and left off: the image keeps its commit's name only.
+      default: ""
+    - name: REGISTRY_SIGN_IN_EXPIRES_AT
+      description: >-
+        When the registry sign-in this build pushes with stops being
+        accepted, as Unix seconds; empty when it outlives any build. A push
+        the registry refuses after that moment says so, with both times.
+      default: ""
 
   results:
+    - name: image-digest
+      description: >-
+        The content digest (sha256:…) of the image this build pushed, as the
+        lifecycle reported it -- what a deployment pins, so re-pushing the tag
+        never changes what runs.
     - name: APP_IMAGE_DIGEST
       description: The digest of the built `APP_IMAGE`.
     - name: APP_IMAGE_URL
@@ -83,6 +101,11 @@ spec:
         the pod itself saw it. Read beside the platform the image was built
         for, it says whether the build ran native or emulated -- on an arm64
         machine the Buildpacks track always runs emulated.
+    - name: release-tag
+      description: >-
+        The release tag this build also pushed the image under, on the same
+        digest; empty when it pushed none (not a tag release, or a tag no
+        image can carry).
 
   stepTemplate:
     env:
@@ -170,24 +193,63 @@ spec:
     - name: create
       image: $(params.BUILDER_IMAGE)
       imagePullPolicy: Always
-      command: ["/cnb/lifecycle/creator"]
       env:
         - name: DOCKER_CONFIG
           value: $(workspaces.dockerconfig.path)
-      args:
-        - "-app=$(workspaces.source.path)/$(params.SOURCE_SUBPATH)"
-        - "-cache-dir=$(workspaces.cache.path)"
-        - "-cache-image=$(params.CACHE_IMAGE)"
-        - "-uid=$(params.USER_ID)"
-        - "-gid=$(params.GROUP_ID)"
-        - "-layers=/layers"
-        - "-platform=/platform"
-        - "-report=/layers/report.toml"
-        - "-process-type=$(params.PROCESS_TYPE)"
-        - "-skip-restore=$(params.SKIP_RESTORE)"
-        - "-previous-image=$(params.APP_IMAGE)"
-        - "-run-image=$(params.RUN_IMAGE)"
-        - "$(params.APP_IMAGE)"
+      # A script rather than the bare lifecycle command, for two facts the
+      # lifecycle cannot state on its own: a tag release's second name, and
+      # why a push was refused when the sign-in it carried had expired.
+      script: |
+        #!/bin/sh
+        set -u
+        set -- \
+          "-app=$(workspaces.source.path)/$(params.SOURCE_SUBPATH)" \
+          "-cache-dir=$(workspaces.cache.path)" \
+          "-cache-image=$(params.CACHE_IMAGE)" \
+          "-uid=$(params.USER_ID)" \
+          "-gid=$(params.GROUP_ID)" \
+          "-layers=/layers" \
+          "-platform=/platform" \
+          "-report=/layers/report.toml" \
+          "-process-type=$(params.PROCESS_TYPE)" \
+          "-skip-restore=$(params.SKIP_RESTORE)" \
+          "-previous-image=$(params.APP_IMAGE)" \
+          "-run-image=$(params.RUN_IMAGE)"
+
+        # A tag release also names the image by its release, on the same
+        # digest. Docker's tag grammar is narrower than git's, so a tag an
+        # image cannot carry is said, never mangled.
+        if [ -n "$(params.RELEASE_TAG)" ]; then
+          if printf '%s' "$(params.RELEASE_TAG)" | grep -qE '^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$'; then
+            repository="$(printf '%s' "$(params.APP_IMAGE)" | sed 's|:[^:/]*$||')"
+            set -- "$@" "-tag=$repository:$(params.RELEASE_TAG)"
+            printf '%s' "$(params.RELEASE_TAG)" > /layers/release-tag
+          else
+            echo "The release tag $(params.RELEASE_TAG) isn't a valid image tag (letters, digits, '_', '.' and '-', up to 128), so the image is pushed under its commit only." >&2
+          fi
+        fi
+
+        # The build's output streams to the step log as it runs and is kept,
+        # so a refused push can be read afterwards.
+        log=/tmp/create.log
+        mkfifo /tmp/create.fifo
+        tee "$log" < /tmp/create.fifo &
+        tee_pid=$!
+        /cnb/lifecycle/creator "$@" "$(params.APP_IMAGE)" > /tmp/create.fifo 2>&1
+        status=$?
+        wait "$tee_pid"
+
+        if [ "$status" -ne 0 ]; then
+          # A push refused after the sign-in Planton made for this build
+          # expired: say both moments, and the way out.
+          expires="$(params.REGISTRY_SIGN_IN_EXPIRES_AT)"
+          if [ -n "$expires" ] && grep -qiE '401 unauthorized|unauthorized:|authentication required' "$log"; then
+            if [ "$(date -u +%s)" -ge "$expires" ]; then
+              echo "The registry sign-in Planton made when this build started expired at $(date -u -d "@$expires" '+%H:%M UTC'), before the push at $(date -u '+%H:%M UTC'). Give the registry connection its own key (a service-account key or an access token), which outlives any build, or shorten the build so it pushes within the hour the sign-in lasts." >&2
+            fi
+          fi
+          exit "$status"
+        fi
       volumeMounts:
         - name: layers-dir
           mountPath: /layers
@@ -202,7 +264,22 @@ spec:
       script: |
         #!/usr/bin/env bash
         set -e
-        grep "digest" /layers/report.toml | cut -d'"' -f2 | cut -d'"' -f2 | tr -d '\n' | tee "$(results.APP_IMAGE_DIGEST.path)"
+        digest="$(grep "digest" /layers/report.toml | cut -d'"' -f2 | tr -d '\n')"
+        # A build that pushed and cannot name its image fails here, where the
+        # fact is born, rather than deploy by a tag anyone can re-push.
+        if [ -z "$digest" ]; then
+          echo "The lifecycle pushed $(params.APP_IMAGE) but reported no image digest, so this build cannot name the image it produced; nothing deploys an image it cannot name." >&2
+          exit 1
+        fi
+        printf '%s' "$digest" | tee "$(results.APP_IMAGE_DIGEST.path)"
+        printf '%s' "$digest" > "$(results.image-digest.path)"
+        # The create step leaves the release tag it pushed, and nothing when
+        # it pushed none.
+        if [ -f /layers/release-tag ]; then
+          cp /layers/release-tag "$(results.release-tag.path)"
+        else
+          printf '' > "$(results.release-tag.path)"
+        fi
         echo -n "$(params.APP_IMAGE)" | tee "$(results.APP_IMAGE_URL.path)"
       volumeMounts:
         - name: layers-dir

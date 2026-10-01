@@ -12,9 +12,9 @@ spec:
   namespace:
     value: team-a
   storeRef:
-    name:
-      value: platform-aws
-    kind: ClusterSecretStore
+    clusterSecretStore:
+      name:
+        value: platform-aws
   refreshInterval: 15m
   refreshPolicy: Periodic
   target:

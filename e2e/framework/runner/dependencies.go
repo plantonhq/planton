@@ -9,14 +9,19 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
+	"testing"
 	"time"
 
+	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/internal/manifest"
 	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"sigs.k8s.io/yaml"
 )
 
 // Dependency is a single prerequisite deployment that must exist before a
@@ -32,11 +37,26 @@ type Dependency struct {
 
 // DependencyState tracks a deployed dependency so it can be torn down later.
 type DependencyState struct {
-	Dependency     Dependency
-	ModuleDir      string
+	Dependency Dependency
+
+	// Engine is the engine the dependency deployed on (see dependencyEngine):
+	// "pulumi", or "terraform" for the HCL lane running TerraformBinary.
+	Engine string
+
+	ModuleDir string
+
+	// StackName labels the deploy on both engines; on Pulumi it is the stack.
 	StackName      string
 	BackendURL     string
 	StackInputPath string
+
+	// WorkDir is the HCL arm's disposable copy of the module, holding the
+	// dependency's local state. It outlives a failed destroy on purpose: it is
+	// then the only record of what is still live.
+	WorkDir          string
+	terraformOpts    *tt.Options
+	terraformCleanup func()
+	t                testing.TB
 
 	// ManifestName is the metadata.name of the deployed manifest. It keys this
 	// instance's outputs in DependencyOutputs so a reference can address one
@@ -47,6 +67,13 @@ type DependencyState struct {
 	// verify the dependency and to resolve the dependent component's value_from
 	// references (see ResolveManifestRefs).
 	Outputs map[string]interface{}
+}
+
+// tracked reports whether the deploy may have created resources that teardown
+// must destroy -- true as soon as either engine started, even if the apply or
+// the verification afterwards failed.
+func (s DependencyState) tracked() bool {
+	return s.StackName != "" || s.WorkDir != ""
 }
 
 // scenarioPrerequisitesAnnotation is the manifest annotation through which a
@@ -100,7 +127,12 @@ const ScenarioPrerequisiteInstallManifestAnnotation = "planton.dev/e2e-prerequis
 // its own edges with it, unless another prerequisite reaches them). The
 // value is a comma-separated list of kind names.
 //
-// A resident is a property of a real cluster, never of a harness-owned one:
+// A resident is also any account-level object a scenario's fixtures name by a
+// literal id because it must be real (a publicly delegated DNS zone a
+// verification record has to live in): the kind's install profile would make
+// a throwaway one the fixture never reads.
+//
+// On Kubernetes, a resident is a property of a real cluster, never of a harness-owned one:
 // the batch EKS cluster carried its own load-balancer controller, the GKE
 // management cluster carries cert-manager and CloudNativePG from the Planton
 // operator. Deploying a second copy beside a resident is exactly the
@@ -440,7 +472,14 @@ func prerequisiteManifestPath(repoRoot, componentProvider, consumer, slug string
 	if _, err := crkreflect.ComponentVersionDir(slug); err != nil {
 		return "", err
 	}
-	base := filepath.Join(repoRoot, "catalog", componentProvider, slug, "e2e")
+	// The published profiles live under the DEPENDENCY's provider, which may
+	// not be the consumer's: an Auth0 verification's DNS record is a
+	// Cloudflare kind.
+	depProvider, err := kindProviderDir(slug)
+	if err != nil {
+		return "", err
+	}
+	base := filepath.Join(repoRoot, "catalog", depProvider, slug, "e2e")
 	prereq := filepath.Join(base, "prerequisite.yaml")
 	if pathExists(prereq) {
 		return prereq, nil
@@ -453,12 +492,13 @@ func prerequisiteManifestPath(repoRoot, componentProvider, consumer, slug string
 }
 
 // DeployDependencies resolves and deploys all prerequisite deployments for a
-// component in order, via Pulumi. scenarioManifestPath (optional, "" to skip)
-// lets the scenario under test add composed-but-optional prerequisites via its
-// annotation. Returns the deployed states (needed for teardown) and any error.
-// On the first failure it stops and returns whatever was already deployed so
-// the caller can tear it down.
-func DeployDependencies(ctx context.Context, repoRoot, componentProvider, component, scenarioManifestPath, backendURL, runID string, harness provider.Harness) ([]DependencyState, error) {
+// component in order, each on its own kind's engine (see dependencyEngine).
+// scenarioManifestPath (optional, "" to skip) lets the scenario under test add
+// composed-but-optional prerequisites via its annotation. t is the lane's test,
+// which the HCL arm's Terratest calls run under. Returns the deployed states
+// (needed for teardown) and any error. On the first failure it stops and
+// returns whatever was already deployed so the caller can tear it down.
+func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentProvider, component, scenarioManifestPath, backendURL, runID string, clock time.Time, harness provider.Harness) ([]DependencyState, error) {
 	deps, err := ResolveDependencies(repoRoot, componentProvider, component, scenarioManifestPath)
 	if err != nil {
 		return nil, err
@@ -493,7 +533,7 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 			// token-suffixed reference lines up with the prerequisite it points
 			// at) plus the scenario slug, so reservation-window identifiers can
 			// be scenario-unique (see ScenarioToken).
-			expandedManifestPath, err := ExpandManifestTokens(docDep.ManifestPath, runID, ScenarioSlug(scenarioManifestPath))
+			expandedManifestPath, err := ExpandManifestTokens(docDep.ManifestPath, runID, ScenarioSlug(scenarioManifestPath), clock)
 			if err != nil {
 				return deployed, errors.Wrapf(err, "failed to expand manifest tokens for dependency %q", dep.KindSlug)
 			}
@@ -505,10 +545,8 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 			}
 			docDep.ManifestPath = resolvedManifestPath
 
-			state, err := deployDependency(ctx, repoRoot, componentProvider, docDep, backendURL, runID, harness, docIndex)
-			// A non-empty stack name means Pulumi created resources we must track
-			// for teardown, even if verification afterwards failed.
-			if state.StackName != "" {
+			state, err := deployDependency(ctx, t, repoRoot, componentProvider, docDep, backendURL, runID, harness, docIndex)
+			if state.tracked() {
 				deployed = append(deployed, state)
 			}
 			if err != nil {
@@ -525,18 +563,50 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 	return deployed, nil
 }
 
-// deployDependency builds the stack input, runs `pulumi up`, and verifies the
-// dependency is present. The dependency's own pulumi module is always used
-// (dependencies deploy via Pulumi even when the component under test uses
-// Terraform). docIndex disambiguates the stack name when an install profile
-// deploys several instances of the same kind.
-func deployDependency(ctx context.Context, repoRoot, componentProvider string, dep Dependency, backendURL, runID string, harness provider.Harness, docIndex int) (DependencyState, error) {
+// dependencyEngine picks the engine a prerequisite deploys on, whatever engine
+// the lane under test runs: Pulumi when the kind has a Pulumi module (every
+// kind that declares no engines, so those chains are unchanged), otherwise the
+// HCL lane. The HCL arm runs TerraformBinary, so a kind that declares OpenTofu
+// alone is refused under PLANTON_E2E_TF_BINARY=terraform exactly as its own
+// lane is.
+func dependencyEngine(slug string) (string, error) {
+	allowed, err := provisioner.Allowed(crkreflect.KindFromString(slug))
+	if err != nil {
+		return "", errors.Wrapf(err, "reading the engines dependency %q runs on", slug)
+	}
+	if slices.Contains(allowed, provisioner.ProvisionerTypePulumi) {
+		return "pulumi", nil
+	}
+	if err := requireLaneEngine(slug, "terraform"); err != nil {
+		return "", errors.Wrapf(err, "dependency %q", slug)
+	}
+	return "terraform", nil
+}
+
+// deployDependency deploys one prerequisite on its kind's engine (see
+// dependencyEngine), from its own provider's catalog, captures its outputs, and
+// has its own provider's harness verify it (see dependencyHarness). docIndex
+// disambiguates the deploy label when an install profile deploys several
+// instances of the same kind.
+func deployDependency(ctx context.Context, t testing.TB, repoRoot, componentProvider string, dep Dependency, backendURL, runID string, harness provider.Harness, docIndex int) (DependencyState, error) {
 	if _, err := crkreflect.ComponentVersionDir(dep.KindSlug); err != nil {
 		return DependencyState{}, err
 	}
-	moduleDir := filepath.Join(repoRoot, "catalog", componentProvider, dep.KindSlug, "iac", "pulumi")
+	depHarness, depProvider, err := dependencyHarness(componentProvider, dep.KindSlug, harness)
+	if err != nil {
+		return DependencyState{}, err
+	}
+	engine, err := dependencyEngine(dep.KindSlug)
+	if err != nil {
+		return DependencyState{}, err
+	}
+	moduleSubdir := "pulumi"
+	if engine == "terraform" {
+		moduleSubdir = "tf"
+	}
+	moduleDir := filepath.Join(repoRoot, "catalog", depProvider, dep.KindSlug, "iac", moduleSubdir)
 	if !pathExists(moduleDir) {
-		return DependencyState{}, errors.Errorf("dependency %q pulumi module not found at %s", dep.KindSlug, moduleDir)
+		return DependencyState{}, errors.Errorf("dependency %q %s module not found at %s", dep.KindSlug, moduleSubdir, moduleDir)
 	}
 
 	manifestName, err := manifestMetadataName(dep.ManifestPath)
@@ -565,9 +635,32 @@ func deployDependency(ctx context.Context, repoRoot, componentProvider string, d
 	// distinct.
 	stackName := boundStackName(GenerateStackName(stackLabel, runID))
 
-	fmt.Printf("  [deps] Deploying dependency %s (%s)...\n", dep.KindSlug, manifestName)
+	fmt.Printf("  [deps] Deploying dependency %s (%s) on %s...\n", dep.KindSlug, manifestName, engine)
 	start := time.Now()
 
+	var state DependencyState
+	if engine == "terraform" {
+		state, err = deployTofuDependency(t, moduleDir, dep, stackName, manifestName)
+	} else {
+		state, err = deployPulumiDependency(moduleDir, dep, stackName, backendURL, manifestName)
+	}
+	if err != nil {
+		return state, err
+	}
+
+	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, dep.ManifestPath)
+	if err := depHarness.VerifyDeployed(verifyCtx, dep.KindSlug, state.Outputs); err != nil {
+		return state, errors.Wrapf(err, "dependency %q deployed but verification failed", dep.KindSlug)
+	}
+
+	fmt.Printf("  [deps] Dependency %s deployed and verified in %s\n", dep.KindSlug, time.Since(start).Round(time.Second))
+	return state, nil
+}
+
+// deployPulumiDependency runs `pulumi up` on the dependency's Pulumi module and
+// captures its outputs, so its verifier can confirm it (cloud verifiers need
+// the resource id) and the dependent's value_from refs can resolve against them.
+func deployPulumiDependency(moduleDir string, dep Dependency, stackName, backendURL, manifestName string) (DependencyState, error) {
 	// Dependencies deploy with the harness's default posture (ambient
 	// credentials, empty provider block) -- the provider-config fixture is
 	// the component under test's, never its prerequisites'.
@@ -582,6 +675,7 @@ func deployDependency(ctx context.Context, repoRoot, componentProvider string, d
 
 	state := DependencyState{
 		Dependency:     dep,
+		Engine:         "pulumi",
 		ModuleDir:      moduleDir,
 		StackName:      stackName,
 		BackendURL:     backendURL,
@@ -589,9 +683,6 @@ func deployDependency(ctx context.Context, repoRoot, componentProvider string, d
 		ManifestName:   manifestName,
 	}
 
-	// Capture the dependency's outputs so its verifier can confirm it (cloud
-	// verifiers need the resource id from the outputs) and so the dependent
-	// component's value_from refs can resolve against them.
 	outputsJSON, err := PulumiStackOutputs(moduleDir, stackName, backendURL)
 	if err != nil {
 		return state, errors.Wrapf(err, "failed to read outputs for dependency %q", dep.KindSlug)
@@ -601,22 +692,59 @@ func deployDependency(ctx context.Context, repoRoot, componentProvider string, d
 		return state, errors.Wrapf(err, "failed to parse outputs for dependency %q", dep.KindSlug)
 	}
 	state.Outputs = depStackOutputs
-
-	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, dep.ManifestPath)
-	if err := harness.VerifyDeployed(verifyCtx, dep.KindSlug, state.Outputs); err != nil {
-		return state, errors.Wrapf(err, "dependency %q deployed but verification failed", dep.KindSlug)
-	}
-
-	fmt.Printf("  [deps] Dependency %s deployed and verified in %s\n", dep.KindSlug, time.Since(start).Round(time.Second))
 	return state, nil
 }
 
-// pulumiDestroyFn / pulumiRemoveStackFn are seams over the Pulumi CLI wrappers
-// so teardown aggregation can be unit-tested without a live Pulumi backend.
-// Production code never overrides them.
+// deployTofuDependency applies the dependency's HCL module in its own
+// disposable working copy, with state in that copy's local backend -- the same
+// preparation the component under test gets (PrepareWorkDir,
+// BuildTerraformInput), with the harness's default posture. A prerequisite
+// deploys fresh for every scenario, so no state is shared across scenarios.
+// The state is tracked from before the apply: a failed apply may still have
+// created resources, and teardown must destroy them.
+func deployTofuDependency(t testing.TB, moduleDir string, dep Dependency, stackName, manifestName string) (DependencyState, error) {
+	workDir, cleanup, err := PrepareWorkDir(moduleDir)
+	if err != nil {
+		return DependencyState{}, errors.Wrapf(err, "failed to prepare a working copy for dependency %q", dep.KindSlug)
+	}
+	input, err := BuildTerraformInput(dep.ManifestPath, workDir, nil)
+	if err != nil {
+		cleanup()
+		return DependencyState{}, errors.Wrapf(err, "failed to build terraform input for dependency %q", dep.KindSlug)
+	}
+	opts := BuildTerratestOptions(t, workDir, input.TfvarsPath, input.EnvVars)
+
+	state := DependencyState{
+		Dependency:       dep,
+		Engine:           "terraform",
+		ModuleDir:        moduleDir,
+		StackName:        stackName,
+		WorkDir:          workDir,
+		ManifestName:     manifestName,
+		terraformOpts:    opts,
+		terraformCleanup: cleanup,
+		t:                t,
+	}
+	if _, err := terraformDeployFn(t, opts); err != nil {
+		return state, errors.Wrapf(err, "failed to deploy dependency %q", dep.KindSlug)
+	}
+	outputs, err := terraformOutputsFn(t, opts)
+	if err != nil {
+		return state, errors.Wrapf(err, "failed to read outputs for dependency %q", dep.KindSlug)
+	}
+	state.Outputs = outputs
+	return state, nil
+}
+
+// pulumiDestroyFn / pulumiRemoveStackFn and the terraform*Fn trio are seams
+// over the engine wrappers so deploy and teardown can be unit-tested without a
+// live backend or cloud. Production code never overrides them.
 var (
 	pulumiDestroyFn     = PulumiDestroy
 	pulumiRemoveStackFn = PulumiRemoveStack
+	terraformDeployFn   = TerraformDeploy
+	terraformOutputsFn  = TerraformOutputs
+	terraformDestroyFn  = TerraformDestroy
 )
 
 // Dependency destroys retry because some producer-side cleanups are
@@ -660,7 +788,12 @@ func TeardownDependencies(deployed []DependencyState) error {
 
 		var destroyErr error
 		for attempt := 1; attempt <= attempts; attempt++ {
-			if _, destroyErr = pulumiDestroyFn(dep.ModuleDir, dep.StackName, dep.BackendURL, dep.StackInputPath); destroyErr == nil {
+			if dep.Engine == "terraform" {
+				_, destroyErr = terraformDestroyFn(dep.t, dep.terraformOpts)
+			} else {
+				_, destroyErr = pulumiDestroyFn(dep.ModuleDir, dep.StackName, dep.BackendURL, dep.StackInputPath)
+			}
+			if destroyErr == nil {
 				break
 			}
 			if attempt < attempts {
@@ -670,7 +803,17 @@ func TeardownDependencies(deployed []DependencyState) error {
 			}
 		}
 		if destroyErr != nil {
-			failures = append(failures, errors.Wrapf(destroyErr, "dependency %s (stack %s) destroy failed after %d attempts", dep.Dependency.KindSlug, dep.StackName, attempts))
+			if dep.Engine == "terraform" {
+				failures = append(failures, errors.Wrapf(destroyErr, "dependency %s destroy failed after %d attempts; its state is kept in %s", dep.Dependency.KindSlug, attempts, dep.WorkDir))
+			} else {
+				failures = append(failures, errors.Wrapf(destroyErr, "dependency %s (stack %s) destroy failed after %d attempts", dep.Dependency.KindSlug, dep.StackName, attempts))
+			}
+			continue
+		}
+		if dep.Engine == "terraform" {
+			if dep.terraformCleanup != nil {
+				dep.terraformCleanup()
+			}
 			continue
 		}
 		if err := pulumiRemoveStackFn(dep.ModuleDir, dep.StackName, dep.BackendURL); err != nil {
@@ -1006,25 +1149,25 @@ func ScenarioMissingRequiredEnv(manifestPath string) ([]string, error) {
 
 // manifestAnnotation reads a single metadata annotation from a KRM manifest,
 // returning "" when the annotation (or the annotations map) is absent.
+// manifestAnnotation reads one metadata annotation straight from the YAML document, never through
+// the kind's typed message. Annotations are read from the scenario file as authored, before its
+// tokens expand, and a run token standing in a typed field (a number like
+// ${E2E_UNIX_TIME_PLUS:30d}) cannot parse into the kind's message until then -- annotations are
+// metadata, so reading them must not depend on the spec parsing.
 func manifestAnnotation(manifestPath, key string) (string, error) {
-	obj, err := manifest.LoadManifest(manifestPath)
+	data, err := os.ReadFile(manifestPath)
 	if err != nil {
-		return "", err
+		return "", errors.Wrapf(err, "reading %s", manifestPath)
 	}
-	top := obj.ProtoReflect()
-	metaFd := top.Descriptor().Fields().ByName("metadata")
-	if metaFd == nil || metaFd.Kind() != protoreflect.MessageKind {
-		return "", nil
+	var document struct {
+		Metadata struct {
+			Annotations map[string]string `json:"annotations"`
+		} `json:"metadata"`
 	}
-	annFd := metaFd.Message().Fields().ByName("annotations")
-	if annFd == nil || !annFd.IsMap() {
-		return "", nil
+	if err := yaml.Unmarshal(data, &document); err != nil {
+		return "", errors.Wrapf(err, "reading metadata.annotations of %s", manifestPath)
 	}
-	value := top.Get(metaFd).Message().Get(annFd).Map().Get(protoreflect.ValueOfString(key).MapKey())
-	if !value.IsValid() {
-		return "", nil
-	}
-	return value.String(), nil
+	return document.Metadata.Annotations[key], nil
 }
 
 // manifestMetadataName reads metadata.name from a KRM manifest. The name keys
@@ -1049,4 +1192,104 @@ func manifestMetadataName(manifestPath string) (string, error) {
 		return "", errors.Errorf("manifest %s has an empty metadata.name", manifestPath)
 	}
 	return name, nil
+}
+
+// kindProviderDir is the catalog directory of the provider a kind belongs to
+// (catalog/<provider>/<kind>), read from the kind's registry metadata rather
+// than assumed from the component under test.
+func kindProviderDir(slug string) (string, error) {
+	kind := crkreflect.KindFromString(slug)
+	if kind == cloudresourcekind.CloudResourceKind_unspecified {
+		return "", errors.Errorf("cannot resolve %q to a cloud-resource kind, so its provider's catalog directory cannot be located", slug)
+	}
+	meta, err := crkreflect.KindMeta(kind)
+	if err != nil {
+		return "", errors.Wrapf(err, "no kind metadata for %s", kind)
+	}
+	return crkreflect.ProviderDirName(meta.Provider), nil
+}
+
+// registeredHarness is another provider's harness a suite lends the runner for
+// its prerequisites, set up on first use.
+type registeredHarness struct {
+	harness  provider.Harness
+	once     sync.Once
+	setupErr error
+	// setUp records a successful Setup, so teardown touches only harnesses a
+	// scenario actually used.
+	setUp bool
+}
+
+var (
+	dependencyHarnessesMu sync.Mutex
+	// dependencyHarnesses holds, by provider directory name, the harnesses of
+	// providers OTHER than a suite's own that its scenarios deploy prerequisites
+	// from.
+	dependencyHarnesses = map[string]*registeredHarness{}
+)
+
+// RegisterDependencyHarness lends the runner another provider's harness, for
+// scenarios whose prerequisites include that provider's kinds -- an Auth0
+// custom domain's verification waits for a Cloudflare DNS record, so the Auth0
+// suite registers the Cloudflare harness. Such a prerequisite deploys from its
+// own provider's module with that provider's ambient credentials, and the
+// registered harness verifies it. The harness is set up on first use, so a
+// suite whose cross-provider scenarios are skipped (their required environment
+// unset) never needs that provider's credentials. Call it from the suite's
+// TestMain, and TeardownDependencyHarnesses after the tests.
+func RegisterDependencyHarness(providerDir string, harness provider.Harness) {
+	dependencyHarnessesMu.Lock()
+	defer dependencyHarnessesMu.Unlock()
+	dependencyHarnesses[providerDir] = &registeredHarness{harness: harness}
+}
+
+// TeardownDependencyHarnesses tears down every registered harness that was set
+// up, returning the aggregated failures.
+func TeardownDependencyHarnesses(ctx context.Context) error {
+	dependencyHarnessesMu.Lock()
+	defer dependencyHarnessesMu.Unlock()
+	var failures []error
+	for providerDir, registered := range dependencyHarnesses {
+		if !registered.setUp {
+			continue
+		}
+		if err := registered.harness.Teardown(ctx); err != nil {
+			failures = append(failures, errors.Wrapf(err, "tearing down the %s dependency harness", providerDir))
+		}
+	}
+	return stderrors.Join(failures...)
+}
+
+// dependencyHarness returns the harness that verifies a prerequisite and the
+// provider directory its module lives under: the component's own harness for a
+// kind of the component's provider, the registered harness (set up once, on
+// first use) for another provider's kind.
+func dependencyHarness(componentProvider, slug string, componentHarness provider.Harness) (provider.Harness, string, error) {
+	depProvider, err := kindProviderDir(slug)
+	if err != nil {
+		return nil, "", err
+	}
+	if depProvider == componentProvider {
+		return componentHarness, depProvider, nil
+	}
+
+	dependencyHarnessesMu.Lock()
+	registered, ok := dependencyHarnesses[depProvider]
+	dependencyHarnessesMu.Unlock()
+	if !ok {
+		return nil, "", errors.Errorf(
+			"prerequisite %q is a %s kind, and the %s suite registered no %s harness to deploy and verify it with -- "+
+				"call runner.RegisterDependencyHarness(%q, <the %s harness>) in the suite's TestMain",
+			slug, depProvider, componentProvider, depProvider, depProvider, depProvider)
+	}
+	registered.once.Do(func() {
+		registered.setupErr = registered.harness.Setup(context.Background())
+		registered.setUp = registered.setupErr == nil
+	})
+	if registered.setupErr != nil {
+		return nil, "", errors.Wrapf(registered.setupErr,
+			"the %s harness could not be set up to deploy prerequisite %q (its credentials are read from the environment, as the %s suite reads them)",
+			depProvider, slug, depProvider)
+	}
+	return registered.harness, depProvider, nil
 }

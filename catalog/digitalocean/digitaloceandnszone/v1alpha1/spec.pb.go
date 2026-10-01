@@ -39,12 +39,17 @@ type DigitalOceanDnsZoneSpec struct {
 	// DNS records to create within the zone (optional).
 	Records []*DigitalOceanDnsZoneRecord `protobuf:"bytes,2,rep,name=records,proto3" json:"records,omitempty"`
 	// (Optional) An IPv4 address that seeds an initial A record at the zone
-	// apex when the zone is created. Create-only convenience: the DigitalOcean
-	// API never returns it, and the A record it creates is NOT tracked — later
-	// edits to `records` will not see or manage it. Prefer declaring an apex A
-	// record in `records`, which is tracked and updatable; use this only when
-	// migrating a configuration that already relies on it.
-	IpAddress     string `protobuf:"bytes,3,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
+	// apex when the zone is created. Applied at creation ONLY; later edits are
+	// ignored (both provisioners skip changes to it, because the only
+	// alternative the provider offers is recreating the whole zone). The
+	// DigitalOcean API never returns it, and the A record it creates is NOT
+	// tracked — later edits to `records` will not see or manage it, yet it
+	// shares the apex A record set (and therefore the TTL) with any apex A
+	// records you declare. Prefer declaring an apex A record in `records`,
+	// which is tracked and updatable; use this only when migrating a
+	// configuration that already relies on it. A literal or a reference to
+	// another resource's address output (a load balancer's IP).
+	IpAddress     *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -93,11 +98,11 @@ func (x *DigitalOceanDnsZoneSpec) GetRecords() []*DigitalOceanDnsZoneRecord {
 	return nil
 }
 
-func (x *DigitalOceanDnsZoneSpec) GetIpAddress() string {
+func (x *DigitalOceanDnsZoneSpec) GetIpAddress() *v1.StringValueOrRef {
 	if x != nil {
 		return x.IpAddress
 	}
-	return ""
+	return nil
 }
 
 // A DNS record entry managed inside the zone. The same type-conditional
@@ -114,12 +119,21 @@ type DigitalOceanDnsZoneRecord struct {
 	// - TXT: the text data
 	// - CAA: the certificate authority domain
 	// Each value can be a literal or a reference to another resource's output.
-	// Read-back normalization: for CNAME, MX, NS, SRV, and CAA (except
-	// tag=iodef), the provider appends a trailing dot to the stored value.
+	// Hostname values (CNAME, MX, NS, SRV, and CAA except tag=iodef) must be
+	// written either fully qualified WITH a trailing dot
+	// ("mail.example.com.", "letsencrypt.org.") or relative to this zone
+	// ("mail"). DigitalOcean reports every such value back fully qualified
+	// with a trailing dot, and the provider forgives only those two spellings
+	// — a bare fully-qualified name without the dot ("letsencrypt.org") is
+	// re-applied on every run, forever.
 	Values []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
 	// Time to live for the record, in seconds. When unset (0), the DigitalOcean
 	// API applies its default (1800 seconds). DigitalOcean harmonizes TTLs
-	// across records sharing a fully-qualified name (RFC 2181 §5.2).
+	// across records sharing a fully-qualified name (RFC 2181 §5.2) and
+	// rewrites the stragglers server-side, so give every record on one name
+	// the same ttl_seconds (or leave them all unset) — a lone custom TTL on a
+	// shared name is overwritten and shows up as a change on every run. The
+	// apex A record seeded by `ip_address` counts as one of those records.
 	TtlSeconds uint32 `protobuf:"varint,3,opt,name=ttl_seconds,json=ttlSeconds,proto3" json:"ttl_seconds,omitempty"`
 	// The type of DNS record. Required; see the message rules for the accepted
 	// subset of the shared enum.
@@ -248,13 +262,13 @@ var File_catalog_digitalocean_digitaloceandnszone_v1alpha1_spec_proto protorefle
 
 const file_catalog_digitalocean_digitaloceandnszone_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/digitalocean/digitaloceandnszone/v1alpha1/spec.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a;shared/networking/enums/dnsrecordtype/dns_record_type.proto\"\xf3\x01\n" +
+	"<catalog/digitalocean/digitaloceandnszone/v1alpha1/spec.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a;shared/networking/enums/dnsrecordtype/dns_record_type.proto\"\xa7\x02\n" +
 	"\x17DigitalOceanDnsZoneSpec\x12M\n" +
 	"\vdomain_name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$2\"^(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$R\n" +
 	"domainName\x12j\n" +
-	"\arecords\x18\x02 \x03(\v2P.dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneRecordR\arecords\x12\x1d\n" +
+	"\arecords\x18\x02 \x03(\v2P.dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneRecordR\arecords\x12Q\n" +
 	"\n" +
-	"ip_address\x18\x03 \x01(\tR\tipAddress\"\x9a\t\n" +
+	"ip_address\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\tipAddress\"\x9a\t\n" +
 	"\x19DigitalOceanDnsZoneRecord\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12W\n" +
 	"\x06values\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\v\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01R\x06values\x12\x1f\n" +
@@ -297,13 +311,14 @@ var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_spec_proto_goTypes = 
 }
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_spec_proto_depIdxs = []int32{
 	1, // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneSpec.records:type_name -> dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneRecord
-	2, // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneRecord.values:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3, // 2: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneRecord.type:type_name -> dev.planton.shared.networking.enums.dnsrecordtype.DnsRecordType
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneSpec.ip_address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2, // 2: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneRecord.values:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3, // 3: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneRecord.type:type_name -> dev.planton.shared.networking.enums.dnsrecordtype.DnsRecordType
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceandnszone_v1alpha1_spec_proto_init() }

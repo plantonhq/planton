@@ -35,4 +35,17 @@ resource "digitalocean_project" "project" {
   # left untouched -- the attribute is Optional+Computed upstream, so
   # omitting it adopts whatever the API reports without drift.
   resources = length(var.spec.resources) > 0 ? var.spec.resources : null
+
+  # The relocation of members is asynchronous on DigitalOcean's side and the
+  # provider retries the DELETE through "412 cannot delete a project with
+  # resources" only until this timeout. Its 3-minute default was exceeded
+  # live: a one-member project stayed non-empty for over 180 seconds after
+  # the relocation was accepted, the destroy failed, and a second destroy of
+  # the by-then-empty project succeeded. Ten minutes covers the measured lag
+  # with room; a retry that ends earlier costs nothing. Twin of the Pulumi
+  # module's CustomTimeouts. The tight default and the undocumented knob are
+  # reported upstream as digitalocean/terraform-provider-digitalocean#1608.
+  timeouts {
+    delete = "10m"
+  }
 }

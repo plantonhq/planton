@@ -47,7 +47,7 @@ func TestRedisHelmOptions_DeclaredFieldsWinOverDefaultsAndTheStorageBlock(t *tes
 		Persistence:     &off,
 		MaxMemory:       "2gb",
 		MaxMemoryPolicy: "volatile-ttl",
-		Resources: &corev1.ResourceRequirements{
+		Resources: &v1.ComponentResources{
 			Limits: corev1.ResourceList{corev1.ResourceMemory: resource.MustParse("3Gi")},
 		},
 	}}
@@ -65,8 +65,10 @@ func TestRedisHelmOptions_DeclaredFieldsWinOverDefaultsAndTheStorageBlock(t *tes
 	if opts.StorageClass != "platform-wide" {
 		t.Errorf("an unset component class falls back to the platform-wide block, got %q", opts.StorageClass)
 	}
-	if opts.Resources.Limits.Memory().String() != "3Gi" || !opts.Resources.Requests.Cpu().IsZero() {
-		t.Errorf("declared resources are honored verbatim, not merged with the defaults; got %v", opts.Resources)
+	// One declared quantity wins and every other keeps its default: a limit
+	// raised alone must not cost the store its requests.
+	if opts.Resources.Limits.Memory().String() != "3Gi" || opts.Resources.Requests.Cpu().IsZero() || opts.Resources.Requests.Memory().IsZero() {
+		t.Errorf("the declared limit must win and the default requests stay; got %v", opts.Resources)
 	}
 }
 

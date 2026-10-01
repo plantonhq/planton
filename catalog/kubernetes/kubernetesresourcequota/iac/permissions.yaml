@@ -24,3 +24,15 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubernetes_resource_quota_v1.resource_quota (always created) and kubernetes_limit_range_v1.limit_range (created only when spec.limit_defaults is set, guarded by create_limit_range) -- both in the governed namespace.
+      - api_groups:
+          - ""
+        resources:
+          - events
+          - limitranges
+          - resourcequotas
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the LimitRange in resourcequota.go and the ResourceQuota in resourcequota.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing. Events are read differently. While it waits on the ResourceQuota in resourcequota.go, the provider also watches the object's events, at await.go:352 and watchers.go:202-241, for the Warning events a person watching the deploy sees, such as FailedScheduling or an image pull back-off. That informer runs beside the wait, so without events the warnings go silent rather than the deploy hanging.

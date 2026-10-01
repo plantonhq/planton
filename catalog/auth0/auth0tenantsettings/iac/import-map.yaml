@@ -1,0 +1,27 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0tenantsettings
+spec:
+  # A tenant has one set of settings, and the provider imports them by any
+  # string (its importer passes the id through and reads the settings of the
+  # credential's tenant), so the id is a fixed word. After an import, the
+  # first apply resets error_page, default_token_quota, country_codes and
+  # skip_non_verifiable_callback_uri_confirmation_prompt when the manifest
+  # leaves them unset, and default_redirection_uri plans a removal (see the
+  # spec) -- declare their live values before applying.
+  values:
+    - name: tenant_id
+      derivations:
+        - literal: tenant
+      where_to_find: >-
+        Nothing to look up -- any string imports the tenant's one set of
+        settings.
+    # The tenant has one default domain, which the provider imports by the
+    # fixed identifier "custom_domain_default".
+    - name: custom_domain_default_id
+      derivations:
+        - literal: custom_domain_default
+      where_to_find: >-
+        Nothing to look up -- the provider imports the tenant's one default
+        domain by the fixed identifier "custom_domain_default".

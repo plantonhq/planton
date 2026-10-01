@@ -98,6 +98,8 @@ These are the most important decisions when configuring Valkey. Explore the full
 
 **Write safety in replication** -- `minReplicasToWrite` makes the primary refuse writes unless that many replicas are in sync, so a partitioned primary stops accepting writes replicas would never see. Applications see errors instead of silent divergence.
 
+**Pod health** -- every pod carries a readiness probe (the chart ships none), so a pod that is starting or still loading its dataset takes no traffic until it answers. The probes run `valkey-cli ping`; with `tls.requireClientCertificate` they are a TCP connect to the Valkey port instead, because the ping presents no client certificate and would fail every handshake, restarting the pod in a loop. Tune timings or replace a probe through `helmValues`.
+
 **Keep-on-uninstall** -- standalone only: keep the PVC (and the dataset) when the release is uninstalled. Off — the chart default — means the data dies with the resource.
 
 **Exposure is composed** -- the store is in-cluster plumbing reachable at the exported endpoint; the LoadBalancer arm exists for managed-cloud recipes carried by the Service annotations. Compose a first-class exposure kind for anything else, and never expose an unauthenticated store.

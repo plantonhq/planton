@@ -1,0 +1,18 @@
+# The canonical example: 49 USD a month, found by lookup key. The product is a
+# literal id here so the manifest plans on its own; a real manifest references
+# its StripeProduct (see the scenarios).
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePrice
+metadata:
+  name: pro-monthly
+  org: e2e-org
+  env: testing
+spec:
+  product:
+    value: prod_pro
+  currency: usd
+  unitAmount: 4900
+  recurring:
+    interval: month
+  lookupKey: pro-monthly
+  nickname: Pro, monthly

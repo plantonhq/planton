@@ -84,13 +84,14 @@ func (r *Redis) Reconcile(ctx context.Context, c client.Client, _ *runtime.Schem
 	if err != nil {
 		return Result{}, fmt.Errorf("checking Redis readiness: %w", err)
 	}
+	workload := StatefulSetRef(stsName).Sized(resources.SizingRedis)
 	if !ready {
 		log.Info("Redis not ready")
-		return r.NotReady(ctx, c, planton.Namespace, StatefulSetRef(stsName), "Waiting for Redis"), nil
+		return r.NotReady(ctx, c, planton.Namespace, workload, "Waiting for Redis"), nil
 	}
 
 	log.Info("Redis ready")
-	return Result{Ready: true, Message: "Redis healthy"}, nil
+	return r.Ready(ctx, c, planton.Namespace, "Redis healthy", workload), nil
 }
 
 // redisHelmOptions resolves every sizing knob the store's render needs: the
@@ -115,10 +116,6 @@ func redisHelmOptions(planton *v1.PlantonPlatform) resources.ValkeyHelmOptions {
 	if spec.MaxMemoryPolicy != "" {
 		maxMemoryPolicy = spec.MaxMemoryPolicy
 	}
-	containerResources := resources.ValkeyDefaultResources()
-	if spec.Resources != nil {
-		containerResources = *spec.Resources
-	}
 
 	return resources.ValkeyHelmOptions{
 		CRName:          planton.Name,
@@ -127,7 +124,7 @@ func redisHelmOptions(planton *v1.PlantonPlatform) resources.ValkeyHelmOptions {
 		StorageClass:    effectiveStorageClass(planton, spec.StorageClassName),
 		MaxMemory:       maxMemory,
 		MaxMemoryPolicy: maxMemoryPolicy,
-		Resources:       containerResources,
+		Resources:       resources.EffectiveFor(resources.SizingRedis, &planton.Spec),
 	}
 }
 

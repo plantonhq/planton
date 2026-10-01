@@ -26,13 +26,13 @@ leaves are what other manifests reference (each page's "Outputs" section).
 | Field | Meaning |
 |---|---|
 | `metadata.name` | The resource's name |
-| `metadata.slug`, `metadata.id` | Platform identifiers |
+| `metadata.slug`, `metadata.id` | Platform identifiers. A slug is lowercase letters and digits joined by single hyphens, like my-app-2; left empty, it is derived from `metadata.name` (`example.com` becomes `example-com`) |
 | `metadata.org`, `metadata.env` | The organization and environment the resource belongs to |
 | `metadata.labels` | Key/value pairs the IaC modules derive into cloud-provider tags on the real resources |
 | `metadata.annotations` | Platform-behavior signals (see below) |
 | `metadata.tags` | Free-form strings |
 | `metadata.relationships` | Explicit relationships with other cloud resources |
-| `metadata.group` | Visual grouping in the resource graph (e.g. `infrastructure/networking`) |
+| `metadata.group` | The author's concern as a slash path (`infrastructure/networking`, `platform/certificates`), drawn as a tray inside the room its members live in; never affects deploy order, and a tray of one is not drawn |
 
 Platform-behavior signals live in `metadata.annotations`, never
 `metadata.labels`: labels are propagated onto the user's real cloud
@@ -42,6 +42,7 @@ resources as tags, so a platform key there would leak internal detail.
 
 | Annotation | Meaning |
 |---|---|
+| `planton.dev/connection` | The provider connection (by slug) this resource deploys through, and so the cloud account it lands in and is drawn inside; when absent, the environment's and then the organization's default connection for the provider applies |
 | `planton.dev/provisioner` | Which IaC engine deploys this resource: `pulumi`, `tofu`, or `terraform` (case-insensitive) |
 | `pulumi.planton.dev/stack.fqdn` | Pulumi stack as `organization/project/stack`; takes precedence over the three component annotations (`pulumi.planton.dev/organization`, `.../project`, `.../stack.name`) |
 | `tofu.planton.dev/backend.type` | Terraform/OpenTofu state backend type: `s3`, `gcs`, `azurerm`, `remote` (TFE-protocol state storage), `local` (key prefix matches the provisioner: `terraform.planton.dev/...` for terraform) |

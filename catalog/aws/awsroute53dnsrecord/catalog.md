@@ -50,7 +50,7 @@ spec:
   type: A
   ttl: 300
   values:
-    - "192.0.2.1"
+    - value: "192.0.2.1"
 ```
 
 ```shell

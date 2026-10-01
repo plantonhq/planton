@@ -31,7 +31,7 @@ already have.
 2. **Is there a login for the chart's cloud?**
 
    ```
-   planton connect aws detect --output json
+   planton connect aws detect -o json
    ```
 
    (`gcp`, `azure`, and `kubernetes` have the same verb.) Detection is the

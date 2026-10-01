@@ -63,3 +63,22 @@ func envelopeValue(manifest proto.Message, fieldName protoreflect.Name) string {
 	}
 	return manifest.ProtoReflect().Get(fd).String()
 }
+
+// StampEnvelope returns a copy of the manifest with a MISSING apiVersion or
+// kind set to the kind's schema constant -- what the platform stamps on write
+// before it validates the whole document. A present value is left as written
+// (EnvelopeMismatches reports a conflicting one), so validating the stamped
+// copy checks exactly the document the platform checks.
+func StampEnvelope(manifest proto.Message) proto.Message {
+	stamped := proto.Clone(manifest)
+	for _, fieldName := range []protoreflect.Name{"api_version", "kind"} {
+		fd := stamped.ProtoReflect().Descriptor().Fields().ByName(fieldName)
+		if fd == nil || envelopeValue(stamped, fieldName) != "" {
+			continue
+		}
+		if expected := envelopeConst(stamped, fieldName); expected != "" {
+			stamped.ProtoReflect().Set(fd, protoreflect.ValueOfString(expected))
+		}
+	}
+	return stamped
+}

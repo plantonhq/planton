@@ -96,6 +96,10 @@ planton connection authorization create \
   --environments staging,production
 ```
 
+A connection has one authorization, so `create` is refused when one already exists. To add an environment to an environment-scoped authorization, or to change its scope, delete it and create it again with the scope and full environment list you want. `--provider` takes any provider Planton connects to, including `vault` and `openfga`.
+
+A deployment into an environment the connection isn't authorized for is refused before anything runs, and the refusal carries the command: *"Nothing ran: environment staging may not use the aws connection aws-prod. Authorize it (planton connection auth create --provider aws --connection aws-prod --scope environment --environments staging), or make it the organization's (--scope organization), then run the job again."*
+
 ### List authorizations
 
 ```bash

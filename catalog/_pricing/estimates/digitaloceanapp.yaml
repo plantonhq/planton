@@ -12,7 +12,7 @@ metadata:
 spec:
   presets:
     - preset: 01-git-source-web
-      region_assumption: nyc3
+      region_assumption: nyc
       currency: USD
       hours_per_month: 730
       line_items:
@@ -30,7 +30,7 @@ spec:
         - outbound transfer beyond the instance's included monthly allowance bills 0.02 USD/GiB
       notes: Committed total is one basic-xxs instance-month (5.00 USD). Build minutes, automatic HTTPS, and the platform ingress are included.
     - preset: 02-container-image
-      region_assumption: nyc3
+      region_assumption: nyc
       currency: USD
       hours_per_month: 730
       line_items:

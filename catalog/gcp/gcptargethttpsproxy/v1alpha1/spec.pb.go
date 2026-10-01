@@ -93,7 +93,8 @@ type GcpTargetHttpsProxySpec struct {
 	UrlMap *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=url_map,json=urlMap,proto3" json:"url_map,omitempty"`
 	// Compute Engine SSL certificates presented to clients (1-15). Reference
 	// GcpManagedSslCertificate resources (the default kind), self-managed
-	// GcpSslCertificate resources via an explicit valueFrom.kind, or provide
+	// GcpSslCertificate resources via an explicit valueFrom.kind (both are
+	// declared candidates, so the self_link output fills in), or provide
 	// SSL certificate self-links directly — both certificate kinds share one
 	// API collection and attach identically. The load balancer picks the
 	// certificate matching the client's SNI hostname.
@@ -334,7 +335,7 @@ var File_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcptargethttpsproxy/v1alpha1/spec.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xea\x1c\n" +
+	"3catalog/gcp/gcptargethttpsproxy/v1alpha1/spec.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xac\x1d\n" +
 	"\x17GcpTargetHttpsProxySpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x87\x02\n" +
@@ -344,8 +345,8 @@ const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_rawDesc = "" +
 	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xd1\x01\n" +
 	"\x06region\x18\x0f \x01(\tB\xb8\x01\xbaH\xb4\x01\xba\x01\xb0\x01\n" +
 	"\fvalid_region\x12dregion must be a valid GCP region name such as us-central1, or empty for a global target HTTPS proxy\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12t\n" +
-	"\aurl_map\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd3\x17\x92\xd4a\x18status.outputs.self_linkR\x06urlMap\x12\x88\x01\n" +
-	"\x10ssl_certificates\x18\x05 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x05\x92\x01\x02\x10\x0f\x88\xd4a\xd4\x17\x92\xd4a\x18status.outputs.self_linkR\x0fsslCertificates\x12\xa6\x01\n" +
+	"\aurl_map\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd3\x17\x92\xd4a\x18status.outputs.self_linkR\x06urlMap\x12\xca\x01\n" +
+	"\x10ssl_certificates\x18\x05 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBk\xbaH\x05\x92\x01\x02\x10\x0f\x88\xd4a\xd4\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd4\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xa8\x18\x12\x18status.outputs.self_linkR\x0fsslCertificates\x12\xa6\x01\n" +
 	" certificate_manager_certificates\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\xc8\x17\x92\xd4a\x1fstatus.outputs.certificate_nameR\x1ecertificateManagerCertificates\x121\n" +
 	"\x0fcertificate_map\x18\a \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\x0ecertificateMap\x12t\n" +
 	"\n" +

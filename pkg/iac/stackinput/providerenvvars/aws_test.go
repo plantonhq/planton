@@ -58,7 +58,7 @@ func TestLoadAwsEnvVars_WebIdentity_Resolve_EmitsTempCreds(t *testing.T) {
 	}
 
 	env, err := loadAwsEnvVars(awsConfigYaml(t, cfg), true, "us-west-2",
-		Options{ResolveAwsWebIdentity: true}, resolve)
+		Options{Engine: EngineReadsEnvironment}, resolve)
 	require.NoError(t, err)
 
 	// The resource region wins over the connection region, and is what the exchange runs in.
@@ -70,7 +70,7 @@ func TestLoadAwsEnvVars_WebIdentity_Resolve_EmitsTempCreds(t *testing.T) {
 }
 
 func TestLoadAwsEnvVars_WebIdentity_NotResolved_RegionOnly(t *testing.T) {
-	// The pulumi path (ResolveAwsWebIdentity=false): the in-program builder owns the exchange,
+	// The pulumi path (EngineBuildsProviders): the in-program builder owns the exchange,
 	// so the loader must NOT call STS and must emit region only.
 	cfg := &awsprovider.AwsProviderConfig{
 		WebIdentity: &awsprovider.AwsWebIdentityProviderConfig{
@@ -80,7 +80,7 @@ func TestLoadAwsEnvVars_WebIdentity_NotResolved_RegionOnly(t *testing.T) {
 	}
 
 	env, err := loadAwsEnvVars(awsConfigYaml(t, cfg), true, "us-east-1",
-		Options{ResolveAwsWebIdentity: false}, failingResolver(t))
+		Options{Engine: EngineBuildsProviders}, failingResolver(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, "us-east-1", env["AWS_REGION"])
@@ -96,7 +96,7 @@ func TestLoadAwsEnvVars_StaticCredentials_WithSessionToken(t *testing.T) {
 	}
 
 	env, err := loadAwsEnvVars(awsConfigYaml(t, cfg), true, "us-east-2",
-		Options{ResolveAwsWebIdentity: true}, failingResolver(t))
+		Options{Engine: EngineReadsEnvironment}, failingResolver(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, "us-east-2", env["AWS_REGION"])
@@ -127,7 +127,7 @@ func TestLoadAwsEnvVars_RegionOnly_NoEmptyCredKeys(t *testing.T) {
 	cfg := &awsprovider.AwsProviderConfig{AccountId: "123456789012", Region: "ca-central-1"}
 
 	env, err := loadAwsEnvVars(awsConfigYaml(t, cfg), true, "",
-		Options{ResolveAwsWebIdentity: true}, failingResolver(t))
+		Options{Engine: EngineReadsEnvironment}, failingResolver(t))
 	require.NoError(t, err)
 
 	// resourceRegion was empty, so the connection region is the documented fallback.
@@ -142,7 +142,7 @@ func TestLoadAwsEnvVars_NoProviderConfig_RegionFromTarget(t *testing.T) {
 	// Standalone-CLI ambient case: no provider_config, but the empty provider block still needs
 	// a region, so AWS_REGION must come from the resource's spec.region.
 	env, err := loadAwsEnvVars(nil, false, "us-west-1",
-		Options{ResolveAwsWebIdentity: true}, failingResolver(t))
+		Options{Engine: EngineReadsEnvironment}, failingResolver(t))
 	require.NoError(t, err)
 
 	assert.Equal(t, "us-west-1", env["AWS_REGION"])
@@ -162,6 +162,6 @@ func TestLoadAwsEnvVars_WebIdentity_ResolverError_Propagates(t *testing.T) {
 	}
 
 	_, err := loadAwsEnvVars(awsConfigYaml(t, cfg), true, "us-west-2",
-		Options{ResolveAwsWebIdentity: true}, resolve)
+		Options{Engine: EngineReadsEnvironment}, resolve)
 	assert.Error(t, err)
 }

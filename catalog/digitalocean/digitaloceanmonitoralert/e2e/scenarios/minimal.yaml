@@ -4,6 +4,12 @@
 # fixture rides the e2e-prerequisites annotation and installs from that
 # kind's minimal scenario. Proves the lifecycle, the entities wiring, and
 # the alert_id output the verifier addresses the policy with.
+#
+# DigitalOcean delivers alert email only to VERIFIED members of the team
+# that owns the policy and rejects any other address at create time, so
+# the recipient is the account-specific PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL
+# (the operator's own verified address); the lane skips honestly when it
+# is unset.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanMonitorAlert
 metadata:
@@ -17,6 +23,7 @@ metadata:
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "DigitalOceanDroplet"
+    planton.dev/e2e-required-env: PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL
   tags:
     - planton-e2e
 spec:
@@ -32,4 +39,4 @@ spec:
         fieldPath: status.outputs.droplet_id
   alerts:
     emails:
-      - e2e@planton.cloud
+      - ${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL}

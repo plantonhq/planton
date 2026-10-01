@@ -21,9 +21,8 @@ This preset creates a named Firestore Native database with point-in-time recover
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID | GCP Console or `GcpProject` outputs |
-| `<location-id>` | Database location (e.g., `nam5`, `eur3`, `us-east1`) | [Firestore locations](https://cloud.google.com/firestore/docs/locations) |
-| `<database-name>` | Database name (4-63 chars, lowercase, hyphens) | Choose a descriptive name (e.g., `orders-db`) |
+| `us-east1` (`locationId`) | Database location (e.g., `nam5`, `eur3`, `us-east1`) | [Firestore locations](https://cloud.google.com/firestore/docs/locations) |
+| `orders` (`databaseName`) | Database name (4-63 chars, lowercase, hyphens) | Choose a descriptive name |
 
 ## Important Notes
 

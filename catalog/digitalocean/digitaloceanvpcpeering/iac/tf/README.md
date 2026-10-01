@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanVpcPeeringSpec` proto: `peerin
 
 ## Outputs
 
-Exactly the `DigitalOceanVpcPeeringStackOutputs` contract: `peering_id`, `status`.
+Exactly the `DigitalOceanVpcPeeringStackOutputs` contract: `peering_id`. The provider's `status` attribute is deliberately not exported (the resource waits for ACTIVE, so a stored status could only ever say ACTIVE and would go stale; live status belongs to whoever reads the API).
 
 ## Behavior notes
 

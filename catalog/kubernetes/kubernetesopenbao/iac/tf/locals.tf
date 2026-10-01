@@ -15,14 +15,18 @@ locals {
 
   # Chart constants: ports, mount paths (the config's stanzas and the
   # PVC/TLS mounts must agree).
-  api_port        = 8200
-  cluster_port    = 8201
-  data_mount_path = "/openbao/data"
-  tls_mount_path  = "/openbao/tls"
+  api_port         = 8200
+  cluster_port     = 8201
+  data_mount_path  = "/openbao/data"
+  tls_mount_path   = "/openbao/tls"
+  audit_mount_path = "/openbao/audit"
 
-  # Planton governance labels for module-created satellites (namespace,
-  # seal-credentials Secret) — never injected into the chart's own
-  # resources; Helm owns those.
+  # Planton governance labels: stamped on the module-created satellites
+  # (namespace, seal-credentials Secret) and on every server pod through
+  # the chart's own server.extraLabels -- so a log line, a metric or an
+  # alert from the vault names its organization and environment. The
+  # StatefulSet's selector is the chart's own fixed labels; these never
+  # reach it.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -70,7 +74,8 @@ locals {
   # ---------------------- synthesized server config ----------------------
   # The chart takes config as a raw HCL string written to a ConfigMap —
   # this module OWNS synthesizing it from typed fields (twin of
-  # bao_config.go). SENSITIVE-MATERIAL RULE: only NON-credential seal
+  # bao_config.go): listener, storage, seal, audit device, telemetry.
+  # SENSITIVE-MATERIAL RULE: only NON-credential seal
   # parameters render here; credential material rides env vars from the
   # module-owned Secret.
   ui_enabled      = coalesce(try(var.spec.ui_enabled, null), true)
@@ -189,6 +194,24 @@ locals {
     ]) : ""
   )
 
+  # Audit device (twin of the audit section in bao_config.go). OpenBao
+  # 2.4+ enables audit devices only from this file (the API refuses
+  # `bao audit enable`), reading it at start and on SIGHUP. One `file`
+  # device, named after its sink so switching sinks replaces the device
+  # instead of re-pointing it; `stdout` is the file device's own keyword
+  # for the process's standard output, and the file sink writes onto the
+  # audit volume (the spec refuses `file` without it).
+  audit_enabled   = try(var.spec.server.audit.enabled, false) == true
+  audit_file_sink = try(var.spec.server.audit.sink, "") == "file"
+  config_audit_block = local.audit_enabled ? join("\n", [
+    "audit \"file\" \"${local.audit_file_sink ? "file" : "stdout"}\" {",
+    "  description = \"${local.audit_file_sink ? "Audit records to the audit volume" : "Audit records to the server's standard output"}\"",
+    "  options {",
+    "    file_path = \"${local.audit_file_sink ? "${local.audit_mount_path}/audit.log" : "stdout"}\"",
+    "  }",
+    "}",
+  ]) : ""
+
   config_telemetry_block = local.metrics_enabled ? join("\n", [
     "telemetry {",
     "  prometheus_retention_time = \"30s\"",
@@ -204,6 +227,7 @@ locals {
     local.config_listener_block,
     local.config_storage_block,
     local.config_seal_block,
+    local.config_audit_block,
     local.config_telemetry_block,
   ]))}\n"
 
@@ -268,7 +292,8 @@ locals {
   # engine shape, never a two-arm conditional with different object
   # shapes (the HCL type-unification class).
   server_block_raw = {
-    dev = local.dev ? { enabled = true } : null
+    extraLabels = local.labels
+    dev         = local.dev ? { enabled = true } : null
     ha = local.dev ? null : { for k, v in {
       enabled  = true
       replicas = local.replicas
@@ -396,8 +421,9 @@ locals {
   # null unless the injector is on, and the prune drops it.
   injector_enabled = try(var.spec.injector.enabled, false)
   injector_block = { for k, v in {
-    enabled  = local.injector_enabled
-    replicas = local.injector_enabled && try(var.spec.injector.replicas, null) != null ? var.spec.injector.replicas : null
+    enabled     = local.injector_enabled
+    extraLabels = local.injector_enabled ? local.labels : null # the injector's pods name their organization and environment too
+    replicas    = local.injector_enabled && try(var.spec.injector.replicas, null) != null ? var.spec.injector.replicas : null
     webhook = local.injector_enabled && try(coalesce(var.spec.injector.failure_policy), "") != "" ? {
       failurePolicy = var.spec.injector.failure_policy
     } : null

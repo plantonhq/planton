@@ -5,10 +5,12 @@ metadata:
 spec:
   # Both address families import by the BARE ADDRESS (the resource id IS
   # the address; the importer restores region, urn, and -- when attached --
-  # the droplet). The assignment resources are never imported separately:
-  # their ids are synthetic timestamped values that can never match
-  # (recorded in aa_import/catalog.yaml), and assignment state is fully
-  # recoverable from the reservation itself.
+  # the droplet). The v6 assignment resource imports by "{ip},{droplet_id}"
+  # and re-derives its own synthetic id from the pair, so the ipv6-assigned
+  # scenario round-trips BOTH folded resources blind (live-proven
+  # 2026-09-17, clean plan, zero tolerated updates); the v4 arm never
+  # creates an assignment resource (the reservation's own droplet_id is the
+  # assignment).
   values:
     - name: reserved_ip_address
       derivations:
@@ -17,10 +19,12 @@ spec:
         DigitalOcean control panel -> Networking -> Reserved IPs (the
         address column), or `doctl compute reserved-ip list` /
         `doctl compute reserved-ipv6 list`.
-    # Placeholder for the v6 assignment resource's composite id -- resolvable
-    # only when the spec carries a literal droplet id (a reference resolves
-    # at deploy time, outside this map's reach), which is fine: the
-    # assignment can never round-trip anyway (see the catalog notes).
+    # The v6 assignment resource's composite id needs the droplet id. The
+    # spec's `droplet` is a reference in the shipped scenarios, and the
+    # round-trip reads the REFERENCE-RESOLVED manifest (the runner resolves
+    # references against the deployed fixtures before the component
+    # deploys), so `droplet.value` holds the numeric id at import time; a
+    # customer adopting by hand supplies it from the sources below.
     - name: droplet_id
       derivations:
         - from_spec_field: droplet.value

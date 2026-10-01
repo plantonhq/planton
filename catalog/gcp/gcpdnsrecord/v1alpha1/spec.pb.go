@@ -285,7 +285,9 @@ type GcpDnsRecordWrrPolicyItem struct {
 	// Static values (RRDATA) answered for this entry.
 	// If the zone has DNSSEC enabled, an entry may set only one of values or
 	// health_checked_targets; otherwise both may be combined.
-	Values []string `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+	// Each entry can be a literal or a reference to another resource's
+	// output, as the record's own values can.
+	Values []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
 	// Load-balancer targets health-checked for this entry (A/AAAA records
 	// only). Unhealthy targets are withdrawn from answers automatically.
 	HealthCheckedTargets *GcpDnsRecordHealthCheckedTargets `protobuf:"bytes,3,opt,name=health_checked_targets,json=healthCheckedTargets,proto3" json:"health_checked_targets,omitempty"`
@@ -330,7 +332,7 @@ func (x *GcpDnsRecordWrrPolicyItem) GetWeight() float64 {
 	return 0
 }
 
-func (x *GcpDnsRecordWrrPolicyItem) GetValues() []string {
+func (x *GcpDnsRecordWrrPolicyItem) GetValues() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Values
 	}
@@ -351,7 +353,9 @@ type GcpDnsRecordGeoPolicyItem struct {
 	// "europe-west3"). Queries are routed to the entry nearest the caller.
 	Location string `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
 	// Static values (RRDATA) answered for this location.
-	Values []string `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+	// Each entry can be a literal or a reference to another resource's
+	// output, as the record's own values can.
+	Values []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
 	// Load-balancer targets health-checked for this location (A/AAAA records
 	// only). Unhealthy targets are withdrawn from answers automatically.
 	HealthCheckedTargets *GcpDnsRecordHealthCheckedTargets `protobuf:"bytes,3,opt,name=health_checked_targets,json=healthCheckedTargets,proto3" json:"health_checked_targets,omitempty"`
@@ -396,7 +400,7 @@ func (x *GcpDnsRecordGeoPolicyItem) GetLocation() string {
 	return ""
 }
 
-func (x *GcpDnsRecordGeoPolicyItem) GetValues() []string {
+func (x *GcpDnsRecordGeoPolicyItem) GetValues() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Values
 	}
@@ -682,15 +686,15 @@ const file_catalog_gcp_gcpdnsrecord_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0eprimary_backup\x18\x04 \x01(\v2F.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordPrimaryBackupPolicyR\rprimaryBackup\x12x\n" +
 	"\fhealth_check\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xcf\x17\x92\xd4a\x18status.outputs.self_linkR\vhealthCheck:\xf1\x02\xbaH\xed\x02\x1a\xc3\x01\n" +
 	" routing_policy.exactly_one_style\x126exactly one of wrr, geo, or primary_backup must be set\x1ag(this.wrr.size() > 0 ? 1 : 0) + (this.geo.size() > 0 ? 1 : 0) + (has(this.primary_backup) ? 1 : 0) == 1\x1a\xa4\x01\n" +
-	"'routing_policy.geo_fencing_requires_geo\x12Henable_geo_fencing applies only to geolocation routing (set geo entries)\x1a/!this.enable_geo_fencing || this.geo.size() > 0\"\xed\x01\n" +
+	"'routing_policy.geo_fencing_requires_geo\x12Henable_geo_fencing applies only to geolocation routing (set geo entries)\x1a/!this.enable_geo_fencing || this.geo.size() > 0\"\xa1\x02\n" +
 	"\x19GcpDnsRecordWrrPolicyItem\x12.\n" +
-	"\x06weight\x18\x01 \x01(\x01B\x11\xbaH\x0e\xc8\x01\x01\x12\t)\x00\x00\x00\x00\x00\x00\x00\x00H\x00R\x06weight\x88\x01\x01\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x12}\n" +
+	"\x06weight\x18\x01 \x01(\x01B\x11\xbaH\x0e\xc8\x01\x01\x12\t)\x00\x00\x00\x00\x00\x00\x00\x00H\x00R\x06weight\x88\x01\x01\x12J\n" +
+	"\x06values\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x06values\x12}\n" +
 	"\x16health_checked_targets\x18\x03 \x01(\v2G.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargetsR\x14healthCheckedTargetsB\t\n" +
-	"\a_weight\"\xd6\x01\n" +
+	"\a_weight\"\x8a\x02\n" +
 	"\x19GcpDnsRecordGeoPolicyItem\x12\"\n" +
-	"\blocation\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\blocation\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x12}\n" +
+	"\blocation\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\blocation\x12J\n" +
+	"\x06values\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x06values\x12}\n" +
 	"\x16health_checked_targets\x18\x03 \x01(\v2G.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargetsR\x14healthCheckedTargets\"\x90\x03\n" +
 	"\x1fGcpDnsRecordPrimaryBackupPolicy\x12i\n" +
 	"\aprimary\x18\x01 \x01(\v2G.dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargetsB\x06\xbaH\x03\xc8\x01\x01R\aprimary\x12i\n" +
@@ -751,19 +755,21 @@ var file_catalog_gcp_gcpdnsrecord_v1alpha1_spec_proto_depIdxs = []int32{
 	3,  // 6: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordRoutingPolicy.geo:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordGeoPolicyItem
 	4,  // 7: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordRoutingPolicy.primary_backup:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordPrimaryBackupPolicy
 	7,  // 8: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordRoutingPolicy.health_check:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 9: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordWrrPolicyItem.health_checked_targets:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets
-	5,  // 10: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordGeoPolicyItem.health_checked_targets:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets
-	5,  // 11: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordPrimaryBackupPolicy.primary:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets
-	3,  // 12: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordPrimaryBackupPolicy.backup_geo:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordGeoPolicyItem
-	6,  // 13: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets.internal_load_balancers:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget
-	7,  // 14: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.ip_address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7,  // 15: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.network_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7,  // 16: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	7,  // 9: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordWrrPolicyItem.values:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 10: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordWrrPolicyItem.health_checked_targets:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets
+	7,  // 11: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordGeoPolicyItem.values:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 12: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordGeoPolicyItem.health_checked_targets:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets
+	5,  // 13: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordPrimaryBackupPolicy.primary:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets
+	3,  // 14: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordPrimaryBackupPolicy.backup_geo:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordGeoPolicyItem
+	6,  // 15: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordHealthCheckedTargets.internal_load_balancers:type_name -> dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget
+	7,  // 16: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.ip_address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 17: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.network_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 18: dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpdnsrecord_v1alpha1_spec_proto_init() }

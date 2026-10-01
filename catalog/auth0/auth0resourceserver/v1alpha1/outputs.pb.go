@@ -7,6 +7,7 @@
 package auth0resourceserverv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -64,9 +65,15 @@ type Auth0ResourceServerStackOutputs struct {
 	IsSystem string `protobuf:"bytes,12,opt,name=is_system,json=isSystem,proto3" json:"is_system,omitempty"`
 	// client_id is the associated client ID if one has been linked.
 	// Some resource servers may have an associated client for certain features.
-	ClientId      string `protobuf:"bytes,13,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	ClientId string `protobuf:"bytes,13,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	// third_party_client_default_grant_ids are the identifiers Auth0 assigned
+	// the default grants for third-party applications (cgr_...), keyed by
+	// subject type ("user", "client") -- one entry per
+	// spec.third_party_client_default_grants entry. Each grant imports by its
+	// id.
+	ThirdPartyClientDefaultGrantIds map[string]string `protobuf:"bytes,14,rep,name=third_party_client_default_grant_ids,json=thirdPartyClientDefaultGrantIds,proto3" json:"third_party_client_default_grant_ids,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields                   protoimpl.UnknownFields
+	sizeCache                       protoimpl.SizeCache
 }
 
 func (x *Auth0ResourceServerStackOutputs) Reset() {
@@ -190,11 +197,18 @@ func (x *Auth0ResourceServerStackOutputs) GetClientId() string {
 	return ""
 }
 
+func (x *Auth0ResourceServerStackOutputs) GetThirdPartyClientDefaultGrantIds() map[string]string {
+	if x != nil {
+		return x.ThirdPartyClientDefaultGrantIds
+	}
+	return nil
+}
+
 var File_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/auth0/auth0resourceserver/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\"\xa9\x04\n" +
+	"8catalog/auth0/auth0resourceserver/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\x1a\x1cshared/options/options.proto\"\xc9\x06\n" +
 	"\x1fAuth0ResourceServerStackOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1e\n" +
 	"\n" +
@@ -202,8 +216,8 @@ const file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDesc = ""
 	"identifier\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1f\n" +
 	"\vsigning_alg\x18\x04 \x01(\tR\n" +
-	"signingAlg\x12%\n" +
-	"\x0esigning_secret\x18\x05 \x01(\tR\rsigningSecret\x12%\n" +
+	"signingAlg\x12+\n" +
+	"\x0esigning_secret\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\rsigningSecret\x12%\n" +
 	"\x0etoken_lifetime\x18\x06 \x01(\tR\rtokenLifetime\x123\n" +
 	"\x16token_lifetime_for_web\x18\a \x01(\tR\x13tokenLifetimeForWeb\x120\n" +
 	"\x14allow_offline_access\x18\b \x01(\tR\x12allowOfflineAccess\x12b\n" +
@@ -212,7 +226,11 @@ const file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDesc = ""
 	" \x01(\tR\x0fenforcePolicies\x12#\n" +
 	"\rtoken_dialect\x18\v \x01(\tR\ftokenDialect\x12\x1b\n" +
 	"\tis_system\x18\f \x01(\tR\bisSystem\x12\x1b\n" +
-	"\tclient_id\x18\r \x01(\tR\bclientIdB\x84\x03\n" +
+	"\tclient_id\x18\r \x01(\tR\bclientId\x12\xc3\x01\n" +
+	"$third_party_client_default_grant_ids\x18\x0e \x03(\v2t.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.ThirdPartyClientDefaultGrantIdsEntryR\x1fthirdPartyClientDefaultGrantIds\x1aR\n" +
+	"$ThirdPartyClientDefaultGrantIdsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x84\x03\n" +
 	"2com.dev.planton.auth0.auth0resourceserver.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1;auth0resourceserverv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Auth0.Auth0resourceserver.V1alpha1\xca\x02.Dev\\Planton\\Auth0\\Auth0resourceserver\\V1alpha1\xe2\x02:Dev\\Planton\\Auth0\\Auth0resourceserver\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Auth0::Auth0resourceserver::V1alpha1b\x06proto3"
 
 var (
@@ -227,16 +245,18 @@ func file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDescGZIP()
 	return file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDescData
 }
 
-var file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_goTypes = []any{
 	(*Auth0ResourceServerStackOutputs)(nil), // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs
+	nil,                                     // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.ThirdPartyClientDefaultGrantIdsEntry
 }
 var file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.third_party_client_default_grant_ids:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackOutputs.ThirdPartyClientDefaultGrantIdsEntry
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_init() }
@@ -250,7 +270,7 @@ func file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDesc), len(file_catalog_auth0_auth0resourceserver_v1alpha1_outputs_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

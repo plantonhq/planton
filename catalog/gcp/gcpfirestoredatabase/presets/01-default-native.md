@@ -21,7 +21,6 @@ This preset creates the project's default Firestore Native database in the US mu
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID | GCP Console or `GcpProject` outputs |
 
 ## Important Notes
 

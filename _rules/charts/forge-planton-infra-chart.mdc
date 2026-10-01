@@ -555,7 +555,7 @@ go build -o /tmp/planton . && /tmp/planton chart validate charts/<provider>/<cha
 #    fields forbid characters an environment name may carry — GCP IAM
 #    custom-role IDs reject hyphens, for example) and length (env-prefixed
 #    names against per-field budgets). A hyphenated env probes both cheaply.
-/tmp/planton chart validate charts/<provider>/<chart-name> --env my-env
+/tmp/planton chart validate charts/<provider>/<chart-name> --set env=my-env
 ```
 
 What it proves:

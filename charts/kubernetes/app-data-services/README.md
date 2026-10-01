@@ -61,7 +61,7 @@ moment it lands.
 | `postgres_instances` | PostgreSQL instances (primary + replicas) | `1` | `2`–`3` for apps whose database must survive node loss |
 | `postgres_disk_size` | Volume per database instance | `10Gi` | Data growth (grows in place) |
 | `valkey_enabled` | Deploy the cache | `true` | The app only needs the database |
-| `valkey_password` | The cache's `default`-user password | `change-me` | **ALWAYS — the default exists only to validate** |
+| `valkey_password` | The cache's `default`-user password: a `$secret/` reference on Planton, the literal on a deploy without it | `$secret/app-data-services-valkey-password` | Create that secret first (`planton secret set app-data-services-valkey-password --string`), or point at your own, such as `$secret/@<env>/<slug>` |
 | `valkey_max_memory` | Cache dataset ceiling (LRU eviction above it) | `256mb` | Hot-set size; keep pod memory above it |
 | `valkey_disk_size` | Cache snapshot volume (warm restarts) | `2Gi` | Keep near `valkey_max_memory` |
 
@@ -84,7 +84,7 @@ moment it lands.
    database `database_name`, as the user of the same name.
 
 3. **Connect to the cache** at `<env>-<namespace>-cache.<namespace>.svc:6379`
-   with `AUTH <valkey_password>` — or read the password from the
+   with `AUTH <password>` (the value of the secret `valkey_password` names) — or read it from the
    `<env>-<namespace>-cache-auth` Secret (key `default`) instead of
    configuring it twice.
 

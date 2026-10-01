@@ -504,7 +504,7 @@ const file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_spec_proto_rawD
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12\xd4\x01\n" +
 	"\rchart_version\x18\x03 \x01(\tB\xa9\x01\xbaH\x9b\x01\xba\x01\x97\x01\n" +
-	"\x14chart_version_format\x12Schart version must be an exact semver like \"0.15.0\" — ranges are not reproducible\x1a*this.matches('^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$')\x8a\xa6\x1d\x060.15.0H\x00R\fchartVersion\x88\x01\x01\x12-\n" +
+	"\x14chart_version_format\x12Schart version must be an exact semver like \"0.15.0\" — ranges are not reproducible\x1a*this.matches('^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$')\x8a\xa6\x1d\x060.23.3H\x00R\fchartVersion\x88\x01\x01\x12-\n" +
 	"\breplicas\x18\x05 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\breplicas\x88\x01\x01\x126\n" +
 	"\x0fleader_election\x18\x06 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x0eleaderElection\x88\x01\x01\x12H\n" +
 	"\tresources\x18\a \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12\x8b\x01\n" +

@@ -3,7 +3,6 @@ package module
 import (
 	"strings"
 
-	"github.com/pkg/errors"
 	do "github.com/plantonhq/planton/catalog/digitalocean"
 	"github.com/pulumi/pulumi-digitalocean/sdk/v4/go/digitalocean"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -35,6 +34,10 @@ func intPtrFromUint32(p *uint32) pulumi.IntPtrInput {
 	return pulumi.IntPtr(v)
 }
 
+// destinationsSet reports whether an alert carries at least one email or
+// Slack destination. An empty destinations block is omitted rather than sent:
+// the provider applies destinations through a side-channel API call after the
+// app exists, and an empty call would clear whatever the API holds.
 func destinationsSet(d *do.DigitalOceanAppAlertDestinations) bool {
 	if d == nil {
 		return false
@@ -42,7 +45,12 @@ func destinationsSet(d *do.DigitalOceanAppAlertDestinations) bool {
 	return len(d.GetEmails()) > 0 || len(d.GetSlackWebhooks()) > 0
 }
 
-const destGap = "PARITY-EXCEPTION: alert destinations (emails / slack webhooks) are modeled and Terraform wires them; the Pulumi DigitalOcean SDK v4.49.0 has no destinations field on app or component alerts. Re-evaluate when the SDK exposes alert destinations."
+// secretString wraps a spec value the proto marks (sensitive) so Pulumi
+// encrypts it in stack state and masks it in previews. The SDK does not flag
+// Slack webhook URLs itself, so the module has to.
+func secretString(s string) pulumi.StringOutput {
+	return pulumi.ToSecret(pulumi.String(s)).(pulumi.StringOutput)
+}
 
 func envTriple(e *do.DigitalOceanAppEnvVar) (key, value, typ, scope string) {
 	key = e.GetKey()
@@ -142,15 +150,6 @@ func functionEnvs(envs []*do.DigitalOceanAppEnvVar) digitalocean.AppSpecFunction
 		})
 	}
 	return out
-}
-
-func componentAlerts(alerts []*do.DigitalOceanAppComponentAlert) error {
-	for _, a := range alerts {
-		if destinationsSet(a.GetDestinations()) {
-			return errors.New(destGap)
-		}
-	}
-	return nil
 }
 
 func healthCheck(h *do.DigitalOceanAppHealthCheck) *digitalocean.AppSpecServiceHealthCheckArgs {

@@ -310,6 +310,10 @@ Fields on other kinds that can point at this resource:
 | AzureVirtualHubConnection | `spec.remoteVirtualNetworkId` | `status.outputs.virtual_network_id` |
 | AzureVirtualNetworkPeering | `spec.virtualNetworkId` | `status.outputs.virtual_network_id` |
 | AzureVirtualNetworkPeering | `spec.remoteVirtualNetworkId` | `status.outputs.virtual_network_id` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.address_spaces` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `status.outputs.address_spaces` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `status.outputs.address_spaces` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `status.outputs.address_spaces` |
 
 ## See Also
 

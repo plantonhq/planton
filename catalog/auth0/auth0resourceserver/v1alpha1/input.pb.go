@@ -36,8 +36,11 @@ type Auth0ResourceServerStackInput struct {
 	Target *Auth0ResourceServer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider_config contains Auth0 API credentials for authentication.
 	// These credentials are used to authenticate with Auth0's Management API.
-	// The credentials should be from a Machine-to-Machine application with
-	// appropriate permissions (create:resource_servers, update:resource_servers, etc.).
+	// The credentials should be from a Machine-to-Machine application holding
+	// create:resource_servers, read:resource_servers, update:resource_servers and
+	// delete:resource_servers, and -- when the spec declares default grants for
+	// third-party applications -- create:client_grants, read:client_grants,
+	// update:client_grants and delete:client_grants.
 	ProviderConfig *auth0.Auth0ProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache

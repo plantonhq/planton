@@ -76,6 +76,8 @@ The governance rules for this execution — whether manual approval is required,
 
 If any of these four cannot be resolved — missing credentials, no registered module, no state backend configured — the Stack Job fails its preflight check and does not execute. The preflight report identifies exactly what is missing.
 
+A connection that exists but isn't [authorized](/docs/connections/environment-mappings) for the job's environment is refused the same way, before any resource runs, and the reason names the fix: *"Nothing ran: environment staging may not use the aws connection aws-prod. Authorize it (planton connection auth create --provider aws --connection aws-prod --scope environment --environments staging), or make it the organization's (--scope organization), then run the job again."*
+
 ## Two Deployment Paths
 
 ### Direct
@@ -168,14 +170,18 @@ planton stack-job preflight-checks --cloud-resource-kind <kind>
 planton stack-job stack-input <stack-job-id>
 ```
 
-The `--operation` flag on `create-stack-job` accepts: `refresh`, `preview`, `update`, `destroy`. The default is `preview`.
+The `--operation` flag on `create-stack-job` accepts: `refresh`, `preview`, `update`, `destroy`, `destroy_preview`. The default is `preview`. Any other value is refused as **Unknown Operation**, naming the valid ones, and no job is created.
+
+Every `stack-job` subcommand names its argument on its usage line (`<cloud-resource-id>` or `<stack-job-id>`), and `--help` shows an example.
+
+The summary printed when a job finishes names each operation by the engine that ran it: `tofu apply` and `tofu destroy` for OpenTofu (`terraform apply` for a resource set to Terraform), `pulumi up` and `pulumi destroy` for Pulumi.
 
 Additional flags for `create-stack-job`, `resume`, and `rerun`:
 
 - `--tail` / `-t` — Follow the job's progress events after creation
 - `--show-stack-summary` — Display the resource summary at completion (default: on)
 - `--show-stack-diff` — Display detailed diffs for changed resources
-- `--show-stack-outputs` — Display the stack outputs at completion (default: on)
+- `--show-stack-outputs` — Display the stack outputs at completion (default: on). A secret the resource generates shows as its `$secret/` reference; the value itself is kept in your secret store (see [Where Secrets Live](/docs/secrets/where-secrets-live#secrets-a-resource-generates))
 - `--version-message` / `-m` — A description for the job, similar to a commit message
 
 The `stack-job` command can also be invoked as `sj` for brevity.

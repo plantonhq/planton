@@ -1,9 +1,18 @@
 # Tag-targeted DigitalOceanMonitorAlert: no entity ids at all -- the
-# policy covers every Droplet carrying the tag, so no fixture is needed
-# (DigitalOcean creates tags implicitly, the dispositions ledger's recorded
-# judgment). Proves the tags-only targeting path and the enabled=false arm
-# (the policy is defined but silent, so a tag with no droplets never
-# pages anyone).
+# policy covers every Droplet carrying the tag, so no fixture is needed.
+# The tag names a run-scoped value no resource carries on purpose: the
+# alert API stores a tag as a selector and neither requires nor creates it
+# (measured live -- HTTP 200, and /v2/tags still has no such tag
+# afterward), unlike firewalls, which reject a tag no resource carries.
+# Proves the tags-only targeting path and the enabled=false arm (the
+# policy is defined but silent, so a tag with no droplets never pages
+# anyone).
+#
+# DigitalOcean delivers alert email only to VERIFIED members of the team
+# that owns the policy and rejects any other address at create time, so
+# the recipient is the account-specific PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL
+# (the operator's own verified address); the lane skips honestly when it
+# is unset.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanMonitorAlert
 metadata:
@@ -16,6 +25,7 @@ metadata:
     e2e-component: digitaloceanmonitoralert
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL
   tags:
     - planton-e2e
 spec:
@@ -29,4 +39,4 @@ spec:
     - planton-e2e-${E2E_RUN_ID}
   alerts:
     emails:
-      - e2e@planton.cloud
+      - ${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL}

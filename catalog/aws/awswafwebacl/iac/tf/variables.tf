@@ -249,7 +249,8 @@ variable "spec" {
       # "You can associate one logging destination to a web ACL" — is one).
       #
       # No default_kind is set because the destination can be any of three
-      # different resource types.
+      # different resource types; the three are declared as candidates, each
+      # with its ARN output.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       destination_arn = string
 

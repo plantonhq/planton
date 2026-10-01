@@ -7,6 +7,7 @@
 package azurecosmosdbaccountv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -254,27 +255,27 @@ var File_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azurecosmosdbaccount/v1alpha1/outputs.proto\x12/dev.planton.azure.azurecosmosdbaccount.v1alpha1\"\xe0\b\n" +
+	"9catalog/azure/azurecosmosdbaccount/v1alpha1/outputs.proto\x12/dev.planton.azure.azurecosmosdbaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xa8\t\n" +
 	" AzureCosmosdbAccountStackOutputs\x12.\n" +
 	"\x13cosmosdb_account_id\x18\x01 \x01(\tR\x11cosmosdbAccountId\x122\n" +
 	"\x15cosmosdb_account_name\x18\x02 \x01(\tR\x13cosmosdbAccountName\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12%\n" +
 	"\x0eread_endpoints\x18\x04 \x03(\tR\rreadEndpoints\x12'\n" +
-	"\x0fwrite_endpoints\x18\x05 \x03(\tR\x0ewriteEndpoints\x12\x1f\n" +
-	"\vprimary_key\x18\x06 \x01(\tR\n" +
-	"primaryKey\x12#\n" +
-	"\rsecondary_key\x18\a \x01(\tR\fsecondaryKey\x120\n" +
-	"\x14primary_readonly_key\x18\b \x01(\tR\x12primaryReadonlyKey\x124\n" +
-	"\x16secondary_readonly_key\x18\t \x01(\tR\x14secondaryReadonlyKey\x12A\n" +
+	"\x0fwrite_endpoints\x18\x05 \x03(\tR\x0ewriteEndpoints\x12%\n" +
+	"\vprimary_key\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
+	"primaryKey\x12)\n" +
+	"\rsecondary_key\x18\a \x01(\tB\x04\xa0\xa6\x1d\x01R\fsecondaryKey\x126\n" +
+	"\x14primary_readonly_key\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\x12primaryReadonlyKey\x12:\n" +
+	"\x16secondary_readonly_key\x18\t \x01(\tB\x04\xa0\xa6\x1d\x01R\x14secondaryReadonlyKey\x12G\n" +
 	"\x1dprimary_sql_connection_string\x18\n" +
-	" \x01(\tR\x1aprimarySqlConnectionString\x12E\n" +
-	"\x1fsecondary_sql_connection_string\x18\v \x01(\tR\x1csecondarySqlConnectionString\x12R\n" +
-	"&primary_readonly_sql_connection_string\x18\f \x01(\tR\"primaryReadonlySqlConnectionString\x12V\n" +
-	"(secondary_readonly_sql_connection_string\x18\r \x01(\tR$secondaryReadonlySqlConnectionString\x12I\n" +
-	"!primary_mongodb_connection_string\x18\x0e \x01(\tR\x1eprimaryMongodbConnectionString\x12M\n" +
-	"#secondary_mongodb_connection_string\x18\x0f \x01(\tR secondaryMongodbConnectionString\x12Z\n" +
-	"*primary_readonly_mongodb_connection_string\x18\x10 \x01(\tR&primaryReadonlyMongodbConnectionString\x12^\n" +
-	",secondary_readonly_mongodb_connection_string\x18\x11 \x01(\tR(secondaryReadonlyMongodbConnectionString\x122\n" +
+	" \x01(\tB\x04\xa0\xa6\x1d\x01R\x1aprimarySqlConnectionString\x12K\n" +
+	"\x1fsecondary_sql_connection_string\x18\v \x01(\tB\x04\xa0\xa6\x1d\x01R\x1csecondarySqlConnectionString\x12X\n" +
+	"&primary_readonly_sql_connection_string\x18\f \x01(\tB\x04\xa0\xa6\x1d\x01R\"primaryReadonlySqlConnectionString\x12\\\n" +
+	"(secondary_readonly_sql_connection_string\x18\r \x01(\tB\x04\xa0\xa6\x1d\x01R$secondaryReadonlySqlConnectionString\x12O\n" +
+	"!primary_mongodb_connection_string\x18\x0e \x01(\tB\x04\xa0\xa6\x1d\x01R\x1eprimaryMongodbConnectionString\x12S\n" +
+	"#secondary_mongodb_connection_string\x18\x0f \x01(\tB\x04\xa0\xa6\x1d\x01R secondaryMongodbConnectionString\x12`\n" +
+	"*primary_readonly_mongodb_connection_string\x18\x10 \x01(\tB\x04\xa0\xa6\x1d\x01R&primaryReadonlyMongodbConnectionString\x12d\n" +
+	",secondary_readonly_mongodb_connection_string\x18\x11 \x01(\tB\x04\xa0\xa6\x1d\x01R(secondaryReadonlyMongodbConnectionString\x122\n" +
 	"\x15identity_principal_id\x18\x12 \x01(\tR\x13identityPrincipalIdB\x8b\x03\n" +
 	"3com.dev.planton.azure.azurecosmosdbaccount.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azurecosmosdbaccount/v1alpha1;azurecosmosdbaccountv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azurecosmosdbaccount.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azurecosmosdbaccount\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azurecosmosdbaccount\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azurecosmosdbaccount::V1alpha1b\x06proto3"
 

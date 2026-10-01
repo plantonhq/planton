@@ -64,6 +64,29 @@ spec:
       description: "The platform(s) the image must be built for, e.g. linux/amd64 -- the deploy target's, supplied by the platform; empty builds for the build machine's own"
       default: ""
 
+    # An optional fact the platform supplies only because this pipeline
+    # declares it: one stable reference the build cache lives at (the image's
+    # repository, tag buildcache), so a build tagged per commit still reads
+    # the last build's layers. Empty keeps the task's own default.
+    - name: cache-image
+      type: string
+      description: "A stable reference for the build cache, e.g. registry/repo:buildcache -- supplied by the platform; empty keeps the default"
+      default: ""
+    # An optional fact the runner supplies only because this pipeline
+    # declares it: when the registry sign-in it minted for this build expires
+    # (Unix seconds), so a push refused after that moment says so.
+    - name: registry-sign-in-expires-at
+      type: string
+      description: "When the registry sign-in this build pushes with expires, as Unix seconds -- supplied by the runner; empty when it outlives any build"
+      default: ""
+    # An optional fact the platform supplies only because this pipeline
+    # declares it: the release's tag when this build is a tag release
+    # (v1.4.0), empty otherwise. The build task also names the image by it.
+    - name: git-tag
+      type: string
+      description: "The release's tag for a tag release, e.g. v1.4.0 -- supplied by the platform; empty for every other build"
+      default: ""
+
   workspaces:
     - name: source
       description: "Workspace where source code is cloned"
@@ -103,6 +126,12 @@ spec:
           value: ""
         - name: TARGET_PLATFORM
           value: "$(params.target-platform)"
+        - name: CACHE_IMAGE
+          value: "$(params.cache-image)"
+        - name: RELEASE_TAG
+          value: "$(params.git-tag)"
+        - name: REGISTRY_SIGN_IN_EXPIRES_AT
+          value: "$(params.registry-sign-in-expires-at)"
       workspaces:
         - name: source
           workspace: source

@@ -23,7 +23,8 @@ metadata:
   name: example-dodns-full
 spec:
   domainName: example.org
-  ipAddress: 203.0.113.10
+  ipAddress:
+    value: 203.0.113.10
   records:
     - name: "@"
       type: A

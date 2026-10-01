@@ -60,7 +60,7 @@ type AwsRdsClusterSpec struct {
 	// Name of an existing DB subnet group to place the cluster in, instead
 	// of providing subnet_ids. Changing the subnet group replaces the
 	// cluster.
-	DbSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
+	DbSubnetGroupName string `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
 	// Security groups attached to the cluster. Empty uses the VPC's
 	// default security group (the AWS default). Reference AwsSecurityGroup
 	// security_group_id outputs or pass literal SG IDs -- database ingress
@@ -403,11 +403,11 @@ func (x *AwsRdsClusterSpec) GetSubnetIds() []*v1.StringValueOrRef {
 	return nil
 }
 
-func (x *AwsRdsClusterSpec) GetDbSubnetGroupName() *v1.StringValueOrRef {
+func (x *AwsRdsClusterSpec) GetDbSubnetGroupName() string {
 	if x != nil {
 		return x.DbSubnetGroupName
 	}
-	return nil
+	return ""
 }
 
 func (x *AwsRdsClusterSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
@@ -1707,12 +1707,12 @@ var File_catalog_aws_awsrdscluster_v1alpha1_spec_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsrdscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsrdscluster/v1alpha1/spec.proto\x12&dev.planton.aws.awsrdscluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc5Z\n" +
+	"-catalog/aws/awsrdscluster/v1alpha1/spec.proto\x12&dev.planton.aws.awsrdscluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x92Z\n" +
 	"\x11AwsRdsClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12c\n" +
-	"\x14db_subnet_group_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x11dbSubnetGroupName\x12\x8b\x01\n" +
+	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12/\n" +
+	"\x14db_subnet_group_name\x18\x03 \x01(\tR\x11dbSubnetGroupName\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xf7\a\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12-\n" +
 	"\x12availability_zones\x18\x05 \x03(\tR\x11availabilityZones\x12!\n" +
 	"\fnetwork_type\x18\x06 \x01(\tR\vnetworkType\x12\x1f\n" +
@@ -1777,8 +1777,8 @@ const file_catalog_aws_awsrdscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1aauto_minor_version_upgrade\x18< \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x17autoMinorVersionUpgrade\x88\x01\x01\x12Z\n" +
 	"\ts3_import\x18= \x01(\v2=.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterS3ImportR\bs3Import\x12n\n" +
 	"\x10custom_endpoints\x18> \x03(\v2C.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterCustomEndpointR\x0fcustomEndpoints\x12l\n" +
-	"\x0factivity_stream\x18? \x01(\v2C.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterActivityStreamR\x0eactivityStream:\xa84\xbaH\xa44\x1a\xa7\x01\n" +
-	"\x10subnets_or_group\x12Rprovide at least two subnet_ids (distinct AZs) or an existing db_subnet_group_name\x1a?(this.subnet_ids.size() >= 2) || has(this.db_subnet_group_name)\x1a\xc2\x01\n" +
+	"\x0factivity_stream\x18? \x01(\v2C.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterActivityStreamR\x0eactivityStream:\xa94\xbaH\xa54\x1a\xa8\x01\n" +
+	"\x10subnets_or_group\x12Rprovide at least two subnet_ids (distinct AZs) or an existing db_subnet_group_name\x1a@(this.subnet_ids.size() >= 2) || this.db_subnet_group_name != ''\x1a\xc2\x01\n" +
 	"\x14password_xor_managed\x12dmaster_password cannot be set when manage_master_user_password is true -- pick one password strategy\x1aDthis.manage_master_user_password ? this.master_password == '' : true\x1a\xa9\x03\n" +
 	"'master_username_required_unless_derived\x12\xc4\x01master_username is required for a new cluster -- AWS rejects a blank username; only snapshot/point-in-time restores, replicas, and global-database secondaries inherit credentials from their source\x1a\xb6\x01this.master_username != '' || this.snapshot_identifier != '' || has(this.restore_to_point_in_time) || this.replication_source_identifier != '' || this.global_cluster_identifier != ''\x1a\x83\x02\n" +
 	",final_snapshot_id_required_when_not_skipping\x12\x8a\x01final_snapshot_identifier is required when skip_final_snapshot is false -- AWS refuses to delete the cluster without a final snapshot name\x1aFthis.skip_final_snapshot ? true : this.final_snapshot_identifier != ''\x1a\xda\x01\n" +
@@ -1916,31 +1916,30 @@ var file_catalog_aws_awsrdscluster_v1alpha1_spec_proto_goTypes = []any{
 }
 var file_catalog_aws_awsrdscluster_v1alpha1_spec_proto_depIdxs = []int32{
 	10, // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 1: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.db_subnet_group_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 2: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 3: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.instances:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterInstance
-	6,  // 4: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.serverless_v2_scaling:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterServerlessV2Scaling
-	7,  // 5: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.serverless_v1_scaling:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterServerlessV1Scaling
-	10, // 6: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.master_user_secret_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 7: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 8: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.iam_roles:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterIamRole
-	10, // 9: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 10: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.monitoring_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	8,  // 11: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.restore_to_point_in_time:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterRestoreToPointInTime
-	9,  // 12: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.parameters:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterParameter
-	3,  // 13: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.s3_import:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterS3Import
-	4,  // 14: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.custom_endpoints:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterCustomEndpoint
-	5,  // 15: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.activity_stream:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterActivityStream
-	10, // 16: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterInstance.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 17: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterInstance.monitoring_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 18: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterIamRole.role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 19: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterS3Import.ingestion_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 20: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterActivityStream.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	10, // 1: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 2: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.instances:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterInstance
+	6,  // 3: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.serverless_v2_scaling:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterServerlessV2Scaling
+	7,  // 4: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.serverless_v1_scaling:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterServerlessV1Scaling
+	10, // 5: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.master_user_secret_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 6: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 7: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.iam_roles:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterIamRole
+	10, // 8: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 9: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.monitoring_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8,  // 10: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.restore_to_point_in_time:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterRestoreToPointInTime
+	9,  // 11: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.parameters:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterParameter
+	3,  // 12: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.s3_import:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterS3Import
+	4,  // 13: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.custom_endpoints:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterCustomEndpoint
+	5,  // 14: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.activity_stream:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterActivityStream
+	10, // 15: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterInstance.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 16: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterInstance.monitoring_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 17: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterIamRole.role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 18: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterS3Import.ingestion_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 19: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterActivityStream.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // [20:20] is the sub-list for method output_type
+	20, // [20:20] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsrdscluster_v1alpha1_spec_proto_init() }

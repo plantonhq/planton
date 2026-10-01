@@ -123,16 +123,16 @@ least-privilege alias credentials.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureServiceBusDisasterRecoveryConfig, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureServiceBusDisasterRecoveryConfig, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.disaster_recovery_config_id` | `string` | The Azure Resource Manager ID of the disaster-recovery config (under the primary namespace). Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ServiceBus/namespaces/{ns}/disasterRecoveryConfigs/{alias} |
 | `status.outputs.alias_name` | `string` | The alias name -- the failover-stable DNS identity `{alias_name}.servicebus.windows.net`. |
-| `status.outputs.primary_connection_string_alias` | `string` | The primary connection string addressing the ALIAS -- what DR-aware clients hold. |
-| `status.outputs.secondary_connection_string_alias` | `string` | The secondary alias connection string -- the rotation partner. |
-| `status.outputs.default_primary_key` | `string` | The paired rule's primary key (the same key the alias connection string embeds). |
-| `status.outputs.default_secondary_key` | `string` | The paired rule's secondary key -- the rotation partner. |
+| `status.outputs.primary_connection_string_alias` | `string` (sensitive) | The primary connection string addressing the ALIAS -- what DR-aware clients hold. |
+| `status.outputs.secondary_connection_string_alias` | `string` (sensitive) | The secondary alias connection string -- the rotation partner. |
+| `status.outputs.default_primary_key` | `string` (sensitive) | The paired rule's primary key (the same key the alias connection string embeds). |
+| `status.outputs.default_secondary_key` | `string` (sensitive) | The paired rule's secondary key -- the rotation partner. |
 
 ## References
 

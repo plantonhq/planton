@@ -59,6 +59,36 @@ func TestResolveValueFromPath(t *testing.T) {
 			wantOk:    false,
 		},
 		{
+			name:      "one element of a string list output resolves",
+			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			fieldPath: "status.outputs.nameservers.0",
+			wantOk:    true,
+		},
+		{
+			name:      "a later element of a string list output resolves",
+			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			fieldPath: "status.outputs.nameservers.3",
+			wantOk:    true,
+		},
+		{
+			name:      "a string list output without an index is rejected",
+			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			fieldPath: "status.outputs.nameservers",
+			wantOk:    false,
+		},
+		{
+			name:      "descending past a string list element is rejected",
+			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			fieldPath: "status.outputs.nameservers.0.extra",
+			wantOk:    false,
+		},
+		{
+			name:      "indexing a plain string is rejected",
+			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			fieldPath: "status.outputs.zone_id.0",
+			wantOk:    false,
+		},
+		{
 			name:      "non-string terminal is rejected",
 			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
 			fieldPath: "status.outputs",

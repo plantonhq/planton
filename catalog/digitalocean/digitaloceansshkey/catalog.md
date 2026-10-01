@@ -63,6 +63,8 @@ These are the most important decisions when configuring an SSH key. Explore the 
 
 **`keyName` renames in place** -- The display name is the only field that updates without replacement.
 
+**One key body per account** -- DigitalOcean deduplicates on the public key material, not the name: a second resource embedding the same key fails at create with `SSH Key is already in use on your account`, whatever it is called. Register shared material once and reference that resource from every droplet or pool that needs it.
+
 ## Outputs and Dependencies
 
 ### What This Component Consumes

@@ -25,7 +25,11 @@ import (
 //     "status.", "spec.", or "metadata.");
 //   - segments resolve by exact proto field name first, then by a camelCase->snake_case
 //     fallback (chart authors write either form);
-//   - bracketed or bare integer segments index into repeated message fields;
+//   - bracketed or bare integer segments index into repeated fields: into a repeated
+//     message to descend further, or into a list of strings to name one element, which
+//     then ends the path (a zone's name servers referenced one per record as
+//     "status.outputs.nameservers.0"); a list of strings without an index is refused,
+//     since a reference feeds one string and the flattened outputs hold only elements;
 //   - a map field is addressed by KEY: the segment after it is the entry key (any
 //     non-empty string -- keys are runtime data, e.g. a load balancer's name-keyed
 //     pool-id outputs referenced as "status.outputs.backend_pool_ids.web"), never a
@@ -49,11 +53,22 @@ func ResolveValueFromPath(kind cloudresourcekind.CloudResourceKind, fieldPath st
 	for i := 0; i < len(segments); i++ {
 		seg := segments[i]
 		if isIndexSegment(seg) {
-			if fd == nil || !fd.IsList() || fd.Kind() != protoreflect.MessageKind {
-				return "cannot index into '" + seg + "' -- preceding field is not a repeated message"
+			if fd == nil || !fd.IsList() {
+				return "cannot index into '" + seg + "' -- preceding field is not a list"
 			}
-			current = fd.Message()
-			continue
+			if fd.Kind() == protoreflect.MessageKind {
+				current = fd.Message()
+				continue
+			}
+			// A list of plain values: the index names one element, and the element
+			// is the value -- nothing lies below it.
+			if i != len(segments)-1 {
+				return "cannot descend into element '" + seg + "' of the " + fd.Kind().String() + " list '" + string(fd.Name()) + "'"
+			}
+			if fd.Kind() != protoreflect.StringKind {
+				return "elements of '" + string(fd.Name()) + "' are " + fd.Kind().String() + ", expected string"
+			}
+			return ""
 		}
 
 		fd = current.Fields().ByName(protoreflect.Name(seg))
@@ -91,6 +106,9 @@ func ResolveValueFromPath(kind cloudresourcekind.CloudResourceKind, fieldPath st
 		}
 
 		if i < len(segments)-1 {
+			if fd.IsList() && fd.Kind() != protoreflect.MessageKind {
+				continue // the next segment must index one element; the index branch judges it
+			}
 			if fd.Kind() != protoreflect.MessageKind {
 				return "cannot descend into scalar field '" + seg + "'"
 			}
@@ -98,6 +116,9 @@ func ResolveValueFromPath(kind cloudresourcekind.CloudResourceKind, fieldPath st
 		}
 	}
 
+	if fd != nil && fd.IsList() && fd.Kind() != protoreflect.MessageKind {
+		return "field '" + string(fd.Name()) + "' is a list -- address one element by appending its index (e.g. '" + fieldPath + ".0')"
+	}
 	if fd == nil || fd.Kind() != protoreflect.StringKind {
 		kindName := "not a field"
 		if fd != nil {

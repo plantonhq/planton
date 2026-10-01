@@ -3,6 +3,14 @@
 # profile). Proves the full create/verify/destroy lifecycle, the
 # (cluster_id, user_name) identity outputs the verifier addresses the user
 # with, and the server-generated password/role outputs.
+#
+# `settings: {}` is deliberate: every PostgreSQL user comes back from
+# DigitalOcean with a settings object (`pg_allow_replication: false`), the
+# provider stores it at create as one empty settings block and never
+# refreshes it, so a manifest without the block plans its removal on the
+# first re-plan (a one-time server-side no-op, but a change). The empty
+# block mirrors what DigitalOcean stores and keeps the user idempotent from
+# the first apply. MySQL users must leave it out (see mysql-auth).
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseUser
 metadata:
@@ -21,6 +29,7 @@ spec:
   cluster:
     valueFrom:
       kind: DigitalOceanDatabaseCluster
-      name: planton-oss-e2e-digitaloceandatabasecluster-min
+      name: planton-oss-e2e-dodb-min
       fieldPath: status.outputs.cluster_id
   userName: pltn-e2e-dodbu-min
+  settings: {}

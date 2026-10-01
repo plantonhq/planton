@@ -13,6 +13,7 @@ import (
 	awsecrrepov1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecrrepo/v1alpha1"
 	awsiamrolev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsiamrole/v1alpha1"
 	awsroute53zonev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsroute53zone/v1alpha1"
+	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	awssubnetv1alpha1 "github.com/plantonhq/planton/catalog/aws/awssubnet/v1alpha1"
 	gcpcloudsqluserv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqluser/v1alpha1"
 	gcpgkenodepoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkenodepool/v1alpha1"
@@ -348,6 +349,23 @@ func TestProtoToVariablesTF_OneofScalarDefaultsToNull(t *testing.T) {
 	}
 	if !hasAttr(spec, "project_id", `optional(string, "")`) {
 		t.Errorf("flattened StringValueOrRef project_id must keep its \"\" default, got %q", attrValue(spec, "project_id"))
+	}
+}
+
+// TestProtoToVariablesTF_ExplicitPresenceConstraintIsNotPresence asserts that a
+// constraint on a field with explicit presence describes its value, never its
+// presence: protovalidate checks an unset proto3 `optional` field against
+// nothing, so a spec that leaves it unset must still satisfy var.spec. The
+// Auth0ResourceServer signing_secret (optional, string.min_len = 16) is the
+// field whose lane failed "attribute \"signing_secret\" is required" when this
+// rule read min_len as presence; identifier (no presence, min_len) stays bare.
+func TestProtoToVariablesTF_ExplicitPresenceConstraintIsNotPresence(t *testing.T) {
+	spec := extractBlock(generateVariables(t, &auth0resourceserverv1alpha1.Auth0ResourceServer{}), `variable "spec"`)
+	if !hasAttrPrefix(spec, "signing_secret", "optional(string") {
+		t.Errorf("an optional field with min_len must render optional(), got %q:\n%s", attrValue(spec, "signing_secret"), spec)
+	}
+	if !hasAttr(spec, "identifier", "string") {
+		t.Errorf("a presence-less field with min_len must stay bare, got %q:\n%s", attrValue(spec, "identifier"), spec)
 	}
 }
 

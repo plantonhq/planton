@@ -47,21 +47,23 @@ Navigate to **Variables** in the sidebar. Click **Create Variable** and provide:
 ### Using the CLI
 
 ```bash
-# List all variables in the organization
-planton service variables
+# List every variable in the organization, with its scope
+planton variable list
 
-# Filter variables by text
-planton service variables --filter "endpoint"
+# What one environment can read: its own variables and the organization's
+planton variable list --env production
 
-# Get the value of a specific variable
-planton service variables get-value --group my-config --name DATABASE_HOST
+# Create or update a variable (the value is positional)
+planton variable set database-host db.internal.example.com --env production
 
-# Create or update a variable (opens interactive YAML editor)
-planton service variables upsert
+# Read one value in a script (exit 0 found, 3 not found)
+planton variable get database-host --env production -o plain
 
 # Delete a variable
-planton service variables delete --group my-config --name DATABASE_HOST
+planton variable delete database-host --env production
 ```
+
+`planton variable list` reads every page, so the list is never cut off. Without `--env` it shows the whole organization; the saved context's environment never narrows it.
 
 ## Dynamic References
 
@@ -119,15 +121,13 @@ The `env-vars` command displays two tables — one for variables and one for sec
 
 The `dot-env` command writes `.env` and `.env_export` files to the current directory. The `--set` flag lets you override specific values for local development without modifying the actual variable.
 
-## Future Platform Integrations
+## Where Variables Are Read
 
-Variables are designed to become the universal source of truth for non-sensitive configuration across the entire Planton platform:
+Variables are the source of truth for non-sensitive configuration across the platform:
 
-**Connection fields** — Non-sensitive fields in [connections](/docs/connections) (such as AWS account IDs, GCP project IDs, or Azure tenant IDs) will support variable references. This means multiple connections can share common configuration — for example, an organization variable for the AWS account ID referenced by several AWS connections.
+**Connection fields** — Non-sensitive fields in [connections](/docs/connections) (such as AWS account IDs, regions, or an Auth0 tenant's domain) take a variable in place of a literal: `region: {variable: default-aws-region}`, or one entry of a variable group as `region: {variable: aws-defaults/region}`. Several connections can share one value, and a fact that a connection and your services both read is declared once. Connections read organization-scoped variables.
 
-**Cloud Resource inputs** — Any non-sensitive input field on a Cloud Resource will support variable references. Instead of duplicating a VPC ID or subnet name across multiple resource definitions, you store it as a variable and reference it. The value is resolved just-in-time before the deployment executes.
-
-These integrations are under active development. The specific details may evolve as the design matures, but the direction is clear: configuration values belong in Variables, not duplicated across resource definitions and connection configurations.
+**Cloud Resource inputs** — Any non-sensitive input field on a Cloud Resource takes a `$var/...` reference in place of a literal. Instead of duplicating a VPC ID or subnet name across multiple resource definitions, you store it as a variable and reference it. The value is resolved just-in-time before the deployment executes, and the field's own rules (a format, a length) are checked on the resolved value.
 
 ## Related Documentation
 

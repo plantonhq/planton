@@ -143,17 +143,22 @@ try {
     )
   );
   check(
-    'proof precedes explanations',
+    'customer proof follows product understanding and precedes FAQ',
     await page.evaluate(() => {
       const ids = [...document.querySelectorAll('main section')].map((e) =>
         e.getAttribute('aria-labelledby')
       );
       return (
-        ids.indexOf('proof-title') < ids.indexOf('infrastructure-title') &&
+        ids.indexOf('proof-title') > ids.indexOf('controls-title') &&
+        ids.indexOf('proof-title') < ids.indexOf('faq-title') &&
         ids.indexOf('architecture-title') < ids.indexOf('delivery-title')
       );
     })
   );
+  check('both customer portraits load with truthful attribution', await page.$$eval('section[aria-labelledby="proof-title"] blockquote', async cards => {
+    await Promise.all(cards.map(async card => { const img = card.querySelector('img'); img.loading = 'eager'; await img.decode(); }));
+    return cards.length === 2 && cards[0].textContent.includes('Rakesh Kandhi') && cards[1].textContent.includes('Balaji Borra') && cards.every(card => card.querySelector('img').naturalWidth > 0 && card.textContent.includes('TynyBay'));
+  }));
   await advance(4500);
   check('hero advances', await page.$eval('[data-hero-phase]', (e) => e.dataset.heroPhase === '1'));
   await page.hover('[data-hero-phase]');
@@ -192,6 +197,9 @@ try {
   await page.$eval('[data-hero-phase] button[aria-label^="Pause"]', (e) => e.click());
   await page.screenshot({ path: path.join(output, 'hero-animated-1366.png') });
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+  // matchMedia change delivery is asynchronous; wait for the observable state
+  // rather than racing the React update immediately after CDP emulation.
+  await page.waitForFunction(() => Number(document.querySelector('[data-hero-time]').dataset.heroTime) === 20, { polling: 100 });
   check(
     'runtime reduced motion completes hero',
     await page.$eval('[data-hero-time]', (e) => Number(e.dataset.heroTime) === 20)

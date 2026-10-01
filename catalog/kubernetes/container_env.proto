@@ -70,15 +70,20 @@ message EnvVar {
 /**
  * **SecretEnvVar** represents a single secret environment variable for a container.
  *
- * The value is either provided as a literal (which triggers automatic creation of a
- * Kubernetes Secret), referenced from an existing Kubernetes Secret, or resolved
- * from another Planton resource's output.
+ * The value is either given directly (the module writes it into a Kubernetes Secret the
+ * container reads), referenced from an existing Kubernetes Secret, or resolved from another
+ * Planton resource's output.
+ *
+ * `value` is a secret field: on Planton it takes only a reference to a managed secret
+ * (`$secret/<slug>`, or `$secret/@<env>/<slug>` for an environment's own), which the runner
+ * resolves at deploy, so the secret itself is never stored with the resource. A deploy without
+ * the platform takes the literal.
  *
  * Example (YAML):
  * ```yaml
  * secrets:
  *   - name: DATABASE_PASSWORD
- *     value: "my-password"
+ *     value: $secret/@prod/database-password
  *   - name: API_KEY
  *     secretRef:
  *       name: my-secrets
@@ -102,10 +107,10 @@ message SecretEnvVar {
   ];
 
   oneof source {
-    // Literal string value.
-    // A Kubernetes Secret is automatically created and the environment variable
-    // references that secret.
-    string value = 2;
+    // The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+    // deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+    // and the environment variable references that Secret.
+    string value = 2 [(dev.planton.shared.options.sensitive) = true];
 
     // Reference to a key within an existing Kubernetes Secret.
     KubernetesSecretKeyRef secret_ref = 3;
@@ -146,8 +151,9 @@ message EnvFromSource {
 /**
  * **ContainerEnv** groups all environment configuration for a container.
  *
- * Environment variables are separated into non-sensitive `variables` and sensitive `secrets`
- * to enable appropriate handling (e.g., masking in logs, encryption at rest). The `env_from`
+ * Environment variables are separated into non-sensitive `variables`, written into the pod
+ * spec, and sensitive `secrets`, which the module keeps in a Kubernetes Secret the container
+ * reads by reference and which on Planton hold only managed secret references. The `env_from`
  * field supports bulk import of all keys from ConfigMaps or Secrets.
  */
 message ContainerEnv {

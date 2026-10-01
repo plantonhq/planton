@@ -51,8 +51,8 @@ spec:
   type: A
   ttl: 300
   values:
-    - 192.0.2.1
-    - 192.0.2.2
+    - value: 192.0.2.1
+    - value: 192.0.2.2
 ```
 
 ### A Record with Zone Reference
@@ -72,7 +72,7 @@ spec:
   type: A
   ttl: 300
   values:
-    - 192.0.2.1
+    - value: 192.0.2.1
 ```
 
 ### Alias Record to ALB

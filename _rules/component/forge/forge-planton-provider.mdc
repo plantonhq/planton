@@ -113,6 +113,8 @@ Follow the pattern from existing providers. The proto file MUST include:
   - For **flat** providers: all fields at the top level (see `catalog/auth0/provider.proto`)
   - For **multi-method** providers: a `oneof credentials` block with sub-messages per method, plus common fields outside the oneof
 
+**Credential fields carry no `sensitive` annotation.** The option marks a secret inside a kind's spec, the manifest a person writes and the platform stores, so the platform can insist on a managed secret reference there. A provider config is never such a manifest: on Planton a connection stores its credentials as typed secret references and the runner builds the provider config in memory at deploy, and offline the config is the user's own file. So no reader would act on the annotation and no stored copy exists for it to protect, which is why the secret-coverage gate walks kind specs only. Document each credential field's secrecy in its comment instead ("highly sensitive; treat as a secret").
+
 **Pattern reference (flat):** `catalog/auth0/provider.proto`
 
 **Step 1.2 -- MODIFY `shared/cloudresourcekind/cloud_resource_provider.proto`**
@@ -257,7 +259,13 @@ func load<ProviderPascal>EnvVars(providerConfigYaml []byte) (map[string]string, 
 
 **Pattern reference (flat):** `pkg/iac/stackinput/providerenvvars/auth0.go`
 
-For flat providers, map each non-empty string field. For multi-method providers, switch on the `credentials` oneof case first, then handle common fields.
+For flat providers, map each non-empty string field with `putIfSet`, never a bare assignment: `TestEveryProviderBuilder_EmptyConfig_EmitsNoEmptyVariable` hands every provider's builder an empty config (`{}`), enumerated from the enum, and fails on any variable emitted with an empty value or any error. For multi-method providers, switch on the `credentials` oneof case first, then handle common fields.
+
+This loader is also the one place a credential guard can live. Provider configs are never validated against their proto rules on the deploy path (the runner and the CLI build the config and load it straight into env vars), so a check that must hold on every deploy -- a key that must belong to the mode the config declares (`stripe.go`) -- is Go in this loader, returning a refusal that names what was observed and the fix, and never echoes a secret. Keep an empty config passing: the missing credential is reported by whoever requires it.
+
+Add the new file (and its test) to `pkg/iac/stackinput/providerenvvars/BUILD.bazel`, with `//catalog/<provider_package>` in `deps`; gazelle ran during `make protos`, before this file existed.
+
+**A second credential plane rides `TF_VAR_*`.** When the provider config carries a credential the provider plugin itself does not read -- an S3-compatible key pair for the provider's object store (Cloudflare R2, DigitalOcean Spaces) that a module reads through a secondary provider -- emit it as the `TF_VAR_*` name of the sensitive, nullable variable the consuming modules declare in `iac/tf/credentials.tf`, and only when present (`putIfSet`). Terraform silently ignores a `TF_VAR_*` a module does not declare, so emitting it for every kind of the provider is safe. Never emit it as `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`: an S3 state backend authenticated from the environment reads those names too. References: `cloudflare.go` (R2), `digitalocean.go` (Spaces).
 
 **Step 4.2 -- MODIFY `pkg/iac/stackinput/providerenvvars/loader.go`**
 
@@ -273,9 +281,9 @@ Insert the case in the existing switch statement, maintaining alphabetical order
 
 ---
 
-### Phase 5: Provider Detection (2 files)
+### Phase 5: Provider Detection (4 files)
 
-**Goal:** Wire the provider into CLI guidance and config validation.
+**Goal:** Wire the provider into CLI guidance, config validation, display names and the credentials-required check.
 
 **Step 5.1 -- MODIFY `pkg/iac/stackinput/providerdetect/guidance.go`**
 
@@ -295,12 +303,22 @@ case cloudresourcekind.CloudResourceProvider_<provider_id>:
 **Step 5.2 -- MODIFY `pkg/iac/stackinput/providerdetect/validate.go`**
 
 1. Add the import: `<provider_alias> "github.com/plantonhq/planton/catalog/<provider_package>"`
-2. Add a case in `getProviderConfigProto()`:
+2. Add a case in `ProviderConfigProto()` -- the one provider-to-config-type map, which the `-p` validation and the provider-parity tooling's provider-config census both read:
 
 ```go
 case cloudresourcekind.CloudResourceProvider_<provider_id>:
     return new(<provider_alias>.<ProtoConfigName>), nil
 ```
+
+**Step 5.3 -- MODIFY `pkg/iac/stackinput/providerdetect/detect.go`**
+
+Add a case to `ProviderDisplayName()` returning `<ProviderDisplayName>`; without it, CLI messages print the raw enum name.
+
+**Step 5.4 -- MODIFY `pkg/iac/stackinput/stackinputproviderconfig/backend_options.go`**
+
+Add a case to `ValidateProviderConfig()` returning "<ProviderDisplayName> credentials required for resource '%s'. Provide credentials via provider_config in API request" when the provider cannot run without credentials (every provider except the few whose default path needs none).
+
+Add `//catalog/<provider_package>` to `pkg/iac/stackinput/providerdetect/BUILD.bazel` `deps`.
 
 ---
 
@@ -310,14 +328,14 @@ case cloudresourcekind.CloudResourceProvider_<provider_id>:
 
 Run the following build commands and fix any errors (retry up to 3 times per command):
 
-1. **Proto stubs compile** (from the repo root):
+1. **The touched packages compile** (from the repo root; name each package -- a `/...` pattern walks the whole tree and the repository's hooks refuse it):
    ```bash
-   go build ./catalog/<provider_package>/...
+   go build ./catalog/<provider_package> ./pkg/iac/stackinput/providerenvvars ./pkg/iac/stackinput/providerdetect ./pkg/iac/stackinput/stackinputproviderconfig
    ```
 
-2. **Stack input compiles:**
+2. **Their tests pass**, including the empty-config test every new builder is held to:
    ```bash
-   go build ./pkg/iac/stackinput/...
+   go test ./pkg/iac/stackinput/providerenvvars ./pkg/crkreflect
    ```
 
 If any build fails, identify the error, fix it, and retry. Common issues:
@@ -438,7 +456,9 @@ These files serve as the canonical patterns. When in doubt, read the Auth0 imple
 
 ### Provider Detection
 - `pkg/iac/stackinput/providerdetect/guidance.go` -- guidance switch functions
-- `pkg/iac/stackinput/providerdetect/validate.go` -- validation switch
+- `pkg/iac/stackinput/providerdetect/validate.go` -- `ProviderConfigProto()`
+- `pkg/iac/stackinput/providerdetect/detect.go` -- `ProviderDisplayName()`
+- `pkg/iac/stackinput/stackinputproviderconfig/backend_options.go` -- `ValidateProviderConfig()`
 
 ### Changelog
 - `_changelog/2025-12/2025-12-30-054629-auth0-provider-integration.md` -- Auth0 (flat)
@@ -463,7 +483,8 @@ Use this guide during Phase 0 to classify the provider:
 
 ## Notes
 
-- This rule is interactive -- it pauses at 2 checkpoints to confirm decisions with the user.
+- This rule is interactive -- it pauses at the Phase 0 checkpoint to confirm decisions with the user.
+- A provider with no Pulumi provider, or one proven on fewer engines, declares the engines its kinds run on in each kind's `kind_meta.provisioners` (see the component forge rule); nothing at the provider level records it.
 - The Terraform provider workspace path is used for research only; no files in it are modified.
 - Proto generation (`make protos`) must succeed before any Go code that imports the generated stubs.
 - The `BUILD.bazel` file may need gazelle updates after proto generation. Running `make protos` handles this via the `${BAZEL} run //:gazelle` step.

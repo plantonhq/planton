@@ -45,4 +45,5 @@ Secret in the cluster for a management handover.
 No `google_project_service` enablement — the Composer API is
 necessarily already on in the environment's project (a Secret cannot
 exist without an environment). The decoded material never appears in
-stack outputs, and both engines hold the data as a state secret.
+stack outputs. Pulumi holds the data as a state secret, and OpenTofu
+encrypts it with the whole state file when given an encryption key.

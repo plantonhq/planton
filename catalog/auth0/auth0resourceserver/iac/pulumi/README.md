@@ -1,152 +1,33 @@
-# Auth0 Resource Server Pulumi Module
+# Auth0ResourceServer — Pulumi Module
 
-This Pulumi module deploys an Auth0 Resource Server (API) using Go.
+Pulumi Go module that creates an Auth0 Resource Server (API), its scopes, and the default grants every third-party application gets on it.
 
-## Overview
+## What It Creates
 
-The module creates and configures an Auth0 Resource Server with:
-- API identifier (audience) configuration
-- Token settings (lifetime, signing algorithm, dialect)
-- Scope/permission definitions
-- RBAC enablement
-
-## Project Structure
-
-```
-.
-├── main.go           # Pulumi entry point
-├── Pulumi.yaml       # Stack configuration
-├── Makefile          # Convenience targets
-└── module/
-    ├── main.go       # Module orchestration
-    ├── locals.go     # Local variable computation
-    ├── resourceserver.go  # Resource server creation
-    └── outputs.go    # Stack exports
-```
+- `auth0.ResourceServer` — the API, in the tenant the provider's credential belongs to. Every setting but `allow_offline_access`, `skip_consent_for_verifiable_first_party_clients` and `enforce_policies` is sent only when the spec declares it; each access-policy block is sent only with its policy. Changing `identifier` replaces the API; destroy deletes it.
+- `auth0.ResourceServerScopes` — the API's authoritative scope list, when `spec.scopes` is non-empty.
+- `auth0.ClientGrant` — one per `spec.third_party_client_default_grants` entry, with `default_for` `third_party_clients`, this API's identifier as audience, and no client id. Named `<metadata.name>-default-grant-<subject_type>`; created after the scopes.
 
 ## Prerequisites
 
-1. **Pulumi CLI**: Install from https://www.pulumi.com/docs/install/
-2. **Go 1.21+**: Required for building the module
-3. **Auth0 Tenant**: An Auth0 tenant with M2M credentials
+- [Pulumi CLI](https://www.pulumi.com/docs/install/)
+- [Go 1.21+](https://golang.org/dl/)
+- Auth0 credentials (domain, client_id, client_secret) for an application holding `create:resource_servers`, `read:resource_servers`, `update:resource_servers` and `delete:resource_servers`, and the four `client_grants` scopes when default grants are declared (`../permissions.yaml`).
 
-## Configuration
+## Environment Variables
 
-### Environment Variables
+When `provider_config` is not set in the stack input, the module falls back to environment variables:
 
-```bash
-export AUTH0_DOMAIN="your-tenant.auth0.com"
-export AUTH0_CLIENT_ID="your-m2m-client-id"
-export AUTH0_CLIENT_SECRET="your-m2m-client-secret"
-```
+| Variable | Description |
+|---|---|
+| `AUTH0_DOMAIN` | Auth0 tenant domain |
+| `AUTH0_CLIENT_ID` | M2M application client ID |
+| `AUTH0_CLIENT_SECRET` | M2M application client secret |
 
-### Stack Input
+## Structure
 
-The module expects a `stack-input.yaml` file with the following structure:
-
-```yaml
-target:
-  api_version: auth0.planton.dev/v1alpha1
-  kind: Auth0ResourceServer
-  metadata:
-    name: my-api
-  spec:
-    identifier: https://api.example.com/
-    name: My API
-    signing_alg: RS256
-    token_lifetime: 86400
-    scopes:
-      - name: read:data
-        description: Read data
-provider_config:
-  domain: ${AUTH0_DOMAIN}
-  client_id: ${AUTH0_CLIENT_ID}
-  client_secret: ${AUTH0_CLIENT_SECRET}
-```
-
-## Usage
-
-### Initialize Stack
-
-```bash
-pulumi stack init dev
-```
-
-### Configure Stack Input
-
-```bash
-pulumi config set --path 'target.spec.identifier' 'https://api.example.com/'
-```
-
-Or use a stack input file with the Planton CLI.
-
-### Deploy
-
-```bash
-make up
-# or
-pulumi up --yes
-```
-
-### Preview Changes
-
-```bash
-make preview
-# or
-pulumi preview
-```
-
-### Destroy
-
-```bash
-make destroy
-# or
-pulumi destroy --yes
-```
-
-## Outputs
-
-After deployment, the following outputs are available:
-
-| Output | Description |
-|--------|-------------|
-| `id` | Auth0's internal resource server ID |
-| `identifier` | The API audience |
-| `name` | Display name |
-| `signing_alg` | Token signing algorithm |
-| `signing_secret` | HS256 signing secret (if applicable) |
-| `token_lifetime` | Token validity in seconds |
-| `token_lifetime_for_web` | Web token validity |
-| `allow_offline_access` | Refresh token setting |
-| `skip_consent_for_verifiable_first_party_clients` | Consent skip setting |
-| `enforce_policies` | RBAC enabled |
-| `token_dialect` | Token format |
-| `is_system` | System resource server flag |
-| `client_id` | Associated client ID |
-
-## Resources Created
-
-- `auth0:index/resourceServer:ResourceServer` - The API configuration
-- `auth0:index/resourceServerScopes:ResourceServerScopes` - API permissions (if scopes defined)
-
-## Error Handling
-
-Common issues:
-
-1. **Authentication failed**: Verify AUTH0_DOMAIN, AUTH0_CLIENT_ID, and AUTH0_CLIENT_SECRET
-2. **Insufficient permissions**: Ensure M2M app has resource server management scopes
-3. **Identifier exists**: Resource server identifiers must be unique per tenant
-
-## Testing
-
-Use the test manifest in `../../e2e/manifest.yaml`:
-
-```bash
-cd ../hack
-planton pulumi up --manifest manifest.yaml
-```
-
-## Related
-
-- [Auth0 APIs Documentation](https://auth0.com/docs/get-started/apis)
-- [Pulumi Auth0 Provider](https://www.pulumi.com/registry/packages/auth0/)
+- `module/locals.go` reads the spec; unset optional settings stay nil (never sent) -- the twin of `iac/tf/locals.tf`.
+- `module/resourceserver.go` builds the API's arguments (`resourceServerArgs`, a pure function of the spec) and its scopes. `signing_secret` is sent as a Pulumi secret.
+- `module/default_grants.go` declares the default grants (`defaultGrantArgs`, pure).
+- `module/outputs.go` exports the API and `third_party_client_default_grant_ids`, keyed by subject type.
+- `module/locals_test.go` pins that a spec declaring only its identifier sends none of the unmanaged settings and declares no grant.

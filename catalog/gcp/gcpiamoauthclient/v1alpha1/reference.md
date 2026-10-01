@@ -260,14 +260,14 @@ Deletion policy — one switch governs the client AND its credentials:
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: GcpIamOauthClient, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: GcpIamOauthClient, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.client_id` | `string` | The system-generated OAuth client ID applications present in OAuth flows (distinct from the user-chosen resource ID). |
 | `status.outputs.client_name` | `string` | The client's full resource name: projects/{project}/locations/{location}/oauthClients/{id}. |
 | `status.outputs.state` | `string` | The client's lifecycle state (e.g. "ACTIVE", "DELETED" during the 30-day soft-delete window). |
-| `status.outputs.client_secret` | `string` | The system-generated secret of the FIRST credential in spec.credentials (empty when no credentials are defined). The single-credential case is the operating norm — rotation adds a second credential and swaps consumers over, at which point the remaining credential is again the first. A live, long-lived credential — the engines mark it secret in state; feed it to consumers via valueFrom (e.g. into a GcpSecretManagerSecret initial_version), never by copy-paste. |
+| `status.outputs.client_secret` | `string` (sensitive) | The system-generated secret of the FIRST credential in spec.credentials (empty when no credentials are defined). The single-credential case is the operating norm — rotation adds a second credential and swaps consumers over, at which point the remaining credential is again the first. A live, long-lived credential — the engines mark it secret in state; feed it to consumers via valueFrom (e.g. into a GcpSecretManagerSecret initial_version), never by copy-paste. |
 
 ## References
 

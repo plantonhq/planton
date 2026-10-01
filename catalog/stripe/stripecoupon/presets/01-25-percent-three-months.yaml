@@ -1,0 +1,16 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeCoupon
+metadata:
+  name: launch-25
+  org: example-org
+  env: production
+spec:
+  name: Launch 25% off
+  percentOff: 25
+  duration: repeating
+  durationInMonths: 3
+  maxRedemptions: 500
+  appliesToProducts:
+    - valueFrom:
+        kind: StripeProduct
+        name: pro-plan

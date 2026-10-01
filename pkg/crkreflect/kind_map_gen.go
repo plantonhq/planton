@@ -12,11 +12,21 @@ import (
 	testcloudresourcegenericv1alpha2 "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha2"
 	testcloudresourcekubernetesv1alpha1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1"
 	auth0actionv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0action/v1alpha1"
+	auth0brandingv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0branding/v1alpha1"
 	auth0clientv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0client/v1alpha1"
+	auth0clientfrommetadatadocumentv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0clientfrommetadatadocument/v1alpha1"
 	auth0connectionv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0connection/v1alpha1"
+	auth0customdomainv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0customdomain/v1alpha1"
+	auth0customdomainverificationv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0customdomainverification/v1alpha1"
+	auth0emailproviderv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0emailprovider/v1alpha1"
+	auth0emailtemplatev1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0emailtemplate/v1alpha1"
 	auth0eventstreamv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0eventstream/v1alpha1"
+	auth0promptv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0prompt/v1alpha1"
+	auth0promptcustomtextv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0promptcustomtext/v1alpha1"
+	auth0promptscreenpartialsv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0promptscreenpartials/v1alpha1"
 	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	auth0rolev1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0role/v1alpha1"
+	auth0tenantsettingsv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0tenantsettings/v1alpha1"
 	auth0userv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0user/v1alpha1"
 	awsalbv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsalb/v1alpha1"
 	awsapigatewayaccountsettingsv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsapigatewayaccountsettings/v1alpha1"
@@ -794,6 +804,22 @@ import (
 	openfgaauthorizationmodelv1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgaauthorizationmodel/v1alpha1"
 	openfgarelationshiptuplev1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgarelationshiptuple/v1alpha1"
 	openfgastorev1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgastore/v1alpha1"
+	stripebillingmeterv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripebillingmeter/v1alpha1"
+	stripebillingportalconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripebillingportalconfiguration/v1alpha1"
+	stripecouponv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripecoupon/v1alpha1"
+	stripeentitlementfeaturev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeentitlementfeature/v1alpha1"
+	stripeeventdestinationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeeventdestination/v1alpha1"
+	stripepaymentlinkv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepaymentlink/v1alpha1"
+	stripepaymentmethodconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepaymentmethodconfiguration/v1alpha1"
+	stripepaymentmethoddomainv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepaymentmethoddomain/v1alpha1"
+	stripepricev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeprice/v1alpha1"
+	stripeproductv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeproduct/v1alpha1"
+	stripepromotioncodev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepromotioncode/v1alpha1"
+	striperadarvaluelistv1alpha1 "github.com/plantonhq/planton/catalog/stripe/striperadarvaluelist/v1alpha1"
+	stripeshippingratev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripeshippingrate/v1alpha1"
+	stripetaxratev1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripetaxrate/v1alpha1"
+	stripetaxregistrationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripetaxregistration/v1alpha1"
+	stripewebhookendpointv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripewebhookendpoint/v1alpha1"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
 )
@@ -814,13 +840,23 @@ var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAuth0Map = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_Auth0Action:         &auth0actionv1alpha1.Auth0Action{},
-	cloudresourcekind.CloudResourceKind_Auth0Client:         &auth0clientv1alpha1.Auth0Client{},
-	cloudresourcekind.CloudResourceKind_Auth0Connection:     &auth0connectionv1alpha1.Auth0Connection{},
-	cloudresourcekind.CloudResourceKind_Auth0EventStream:    &auth0eventstreamv1alpha1.Auth0EventStream{},
-	cloudresourcekind.CloudResourceKind_Auth0ResourceServer: &auth0resourceserverv1alpha1.Auth0ResourceServer{},
-	cloudresourcekind.CloudResourceKind_Auth0Role:           &auth0rolev1alpha1.Auth0Role{},
-	cloudresourcekind.CloudResourceKind_Auth0User:           &auth0userv1alpha1.Auth0User{},
+	cloudresourcekind.CloudResourceKind_Auth0Action:                     &auth0actionv1alpha1.Auth0Action{},
+	cloudresourcekind.CloudResourceKind_Auth0Branding:                   &auth0brandingv1alpha1.Auth0Branding{},
+	cloudresourcekind.CloudResourceKind_Auth0Client:                     &auth0clientv1alpha1.Auth0Client{},
+	cloudresourcekind.CloudResourceKind_Auth0ClientFromMetadataDocument: &auth0clientfrommetadatadocumentv1alpha1.Auth0ClientFromMetadataDocument{},
+	cloudresourcekind.CloudResourceKind_Auth0Connection:                 &auth0connectionv1alpha1.Auth0Connection{},
+	cloudresourcekind.CloudResourceKind_Auth0CustomDomain:               &auth0customdomainv1alpha1.Auth0CustomDomain{},
+	cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification:   &auth0customdomainverificationv1alpha1.Auth0CustomDomainVerification{},
+	cloudresourcekind.CloudResourceKind_Auth0EmailProvider:              &auth0emailproviderv1alpha1.Auth0EmailProvider{},
+	cloudresourcekind.CloudResourceKind_Auth0EmailTemplate:              &auth0emailtemplatev1alpha1.Auth0EmailTemplate{},
+	cloudresourcekind.CloudResourceKind_Auth0EventStream:                &auth0eventstreamv1alpha1.Auth0EventStream{},
+	cloudresourcekind.CloudResourceKind_Auth0Prompt:                     &auth0promptv1alpha1.Auth0Prompt{},
+	cloudresourcekind.CloudResourceKind_Auth0PromptCustomText:           &auth0promptcustomtextv1alpha1.Auth0PromptCustomText{},
+	cloudresourcekind.CloudResourceKind_Auth0PromptScreenPartials:       &auth0promptscreenpartialsv1alpha1.Auth0PromptScreenPartials{},
+	cloudresourcekind.CloudResourceKind_Auth0ResourceServer:             &auth0resourceserverv1alpha1.Auth0ResourceServer{},
+	cloudresourcekind.CloudResourceKind_Auth0Role:                       &auth0rolev1alpha1.Auth0Role{},
+	cloudresourcekind.CloudResourceKind_Auth0TenantSettings:             &auth0tenantsettingsv1alpha1.Auth0TenantSettings{},
+	cloudresourcekind.CloudResourceKind_Auth0User:                       &auth0userv1alpha1.Auth0User{},
 }
 
 var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
@@ -1620,6 +1656,25 @@ var ProviderOpenfgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OpenFgaStore:              &openfgastorev1alpha1.OpenFgaStore{},
 }
 
+var ProviderStripeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_StripeBillingMeter:               &stripebillingmeterv1alpha1.StripeBillingMeter{},
+	cloudresourcekind.CloudResourceKind_StripeBillingPortalConfiguration: &stripebillingportalconfigurationv1alpha1.StripeBillingPortalConfiguration{},
+	cloudresourcekind.CloudResourceKind_StripeCoupon:                     &stripecouponv1alpha1.StripeCoupon{},
+	cloudresourcekind.CloudResourceKind_StripeEntitlementFeature:         &stripeentitlementfeaturev1alpha1.StripeEntitlementFeature{},
+	cloudresourcekind.CloudResourceKind_StripeEventDestination:           &stripeeventdestinationv1alpha1.StripeEventDestination{},
+	cloudresourcekind.CloudResourceKind_StripePaymentLink:                &stripepaymentlinkv1alpha1.StripePaymentLink{},
+	cloudresourcekind.CloudResourceKind_StripePaymentMethodConfiguration: &stripepaymentmethodconfigurationv1alpha1.StripePaymentMethodConfiguration{},
+	cloudresourcekind.CloudResourceKind_StripePaymentMethodDomain:        &stripepaymentmethoddomainv1alpha1.StripePaymentMethodDomain{},
+	cloudresourcekind.CloudResourceKind_StripePrice:                      &stripepricev1alpha1.StripePrice{},
+	cloudresourcekind.CloudResourceKind_StripeProduct:                    &stripeproductv1alpha1.StripeProduct{},
+	cloudresourcekind.CloudResourceKind_StripePromotionCode:              &stripepromotioncodev1alpha1.StripePromotionCode{},
+	cloudresourcekind.CloudResourceKind_StripeRadarValueList:             &striperadarvaluelistv1alpha1.StripeRadarValueList{},
+	cloudresourcekind.CloudResourceKind_StripeShippingRate:               &stripeshippingratev1alpha1.StripeShippingRate{},
+	cloudresourcekind.CloudResourceKind_StripeTaxRate:                    &stripetaxratev1alpha1.StripeTaxRate{},
+	cloudresourcekind.CloudResourceKind_StripeTaxRegistration:            &stripetaxregistrationv1alpha1.StripeTaxRegistration{},
+	cloudresourcekind.CloudResourceKind_StripeWebhookEndpoint:            &stripewebhookendpointv1alpha1.StripeWebhookEndpoint{},
+}
+
 var ToMessageMap = merge(
 	ProviderTestMap,
 	ProviderAuth0Map,
@@ -1630,4 +1685,5 @@ var ToMessageMap = merge(
 	ProviderGcpMap,
 	ProviderKubernetesMap,
 	ProviderOpenfgaMap,
+	ProviderStripeMap,
 )

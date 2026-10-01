@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripetaxrate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/options/options.proto";
+
+// StripeTaxRateSpec declares a manual tax rate -- VAT at 19% in Germany, a state sales tax -- that
+// invoices, subscriptions, Checkout sessions and payment links apply when the account calculates
+// tax itself rather than with Stripe Tax.
+//
+// A tax rate's percentage and whether it is inclusive can never change in Stripe. Changing either
+// REPLACES the rate: Planton deactivates the old one and creates the new one. Its name,
+// description, country, state, jurisdiction, tax type, active and metadata update in place.
+//
+// One owner per object: declare a tax rate here only if nothing else creates or edits it.
+//
+// Stripe never deletes a tax rate. Destroy deactivates it (active = false): it can't be added to
+// anything new, and it still applies to the subscriptions and invoices that already use it. A rate
+// that cannot be read makes the plan fail (the provider does not treat a missing rate as gone);
+// remove it from state and apply again.
+//
+// The key needs "Tax Rates" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/billing/taxes/tax-rates
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/tax_rate
+message StripeTaxRateSpec {
+  // display_name is the tax's short name as customers see it on invoices and receipts ("VAT",
+  // "Sales tax"). It updates in place.
+  string display_name = 1 [(buf.validate.field).required = true];
+
+  // percentage is the rate, 0 to 100 ("19" is 19%). Changing it REPLACES the rate.
+  double percentage = 2 [(buf.validate.field).double = {
+    gte: 0
+    lte: 100
+  }];
+
+  // inclusive is whether the tax is already included in the amount it applies to (true), or
+  // added on top of it (false). Changing it REPLACES the rate.
+  bool inclusive = 3;
+
+  // country is the two-letter ISO country code the tax applies in ("DE"). It updates in place.
+  string country = 4 [(buf.validate.field).cel = {
+    id: "spec.country.format"
+    message: "country is a two-letter ISO country code in capitals, such as DE"
+    expression: "this == '' || this.matches('^[A-Z]{2}$')"
+  }];
+
+  // state is the ISO 3166-2 subdivision code the tax applies in, without the country prefix
+  // ("NY" for New York). It updates in place.
+  string state = 5;
+
+  // jurisdiction is the tax authority's name, shown on invoices for the account's records. It
+  // updates in place.
+  string jurisdiction = 6;
+
+  // description is a note about the rate for the account's team, hidden from customers. It
+  // updates in place.
+  string description = 7;
+
+  // tax_type is the kind of tax. Unset, Stripe records none. It updates in place.
+  TaxType tax_type = 8 [(buf.validate.field).enum.defined_only = true];
+
+  // active is whether the rate can be added to new invoices, subscriptions and sessions. Setting
+  // it false deactivates the rate without destroying the resource; it still applies wherever it
+  // is already used.
+  optional bool active = 9 [(dev.planton.shared.options.default) = "true"];
+
+  // metadata is a set of key-value pairs stored on the rate. It updates in place.
+  map<string, string> metadata = 10;
+
+  // TaxType is the kind of tax a rate is. These are the values the pinned provider accepts.
+  enum TaxType {
+    tax_type_unspecified = 0;
+    amusement_tax = 1;
+    communications_tax = 2;
+    gst = 3;
+    hst = 4;
+    igst = 5;
+    jct = 6;
+    lease_tax = 7;
+    pst = 8;
+    qst = 9;
+    retail_delivery_fee = 10;
+    rst = 11;
+    sales_tax = 12;
+    service_tax = 13;
+    vat = 14;
+  }
+}

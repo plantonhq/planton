@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingmeter.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripebillingmeter/v1alpha1/outputs.proto";
+import "catalog/stripe/stripebillingmeter/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeBillingMeter is a component that declares a usage meter -- the event the application
+// sends for each unit of use and how those events add up -- with alerts on usage thresholds.
+//
+// Only the display name changes in place; anything else replaces the meter, and every metered
+// price on it. Destroy deactivates the meter. Alerts are forgotten on removal or destroy: they
+// stay active in Stripe.
+//
+// Use cases:
+// - Bill per API request, per GB, or per seat-hour with a metered StripePrice that names the meter
+// - Hand the application its event name by reference, so the name it sends and the name the meter
+//   counts never drift
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeBillingMeter
+// metadata:
+//   name: api-requests
+//   org: my-organization
+// spec:
+//   displayName: API requests
+//   eventName: api_requests
+//   defaultAggregation:
+//     formula: sum
+// ```
+message StripeBillingMeter {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeBillingMeter" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeBillingMeter'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the event name, how events add up, and the alerts.
+  StripeBillingMeterSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the meter as created, populated after deployment.
+  StripeBillingMeterStatus status = 5;
+}
+
+// StripeBillingMeterStatus represents the current state of a StripeBillingMeter resource.
+// Populated by the deployment system.
+message StripeBillingMeterStatus {
+  // outputs contains the stack outputs: the meter's id, event name, status and alert ids.
+  StripeBillingMeterStackOutputs outputs = 1;
+}

@@ -262,6 +262,9 @@ func (v *CnpgClusterVerifier) VerifyExists(ctx context.Context, kubeconfig strin
 	}
 
 	if v.BackupProof {
+		if err := v.proveArchivingIntoOwnSeries(ctx, kubeconfig); err != nil {
+			return err
+		}
 		if err := v.proveBackupCompleted(ctx, kubeconfig); err != nil {
 			return err
 		}
@@ -388,6 +391,60 @@ func cnpgPsqlDB(ctx context.Context, kubeconfig, namespace, podName, database, s
 // phase Completed — the immediate ScheduledBackup fires one on creation,
 // and Completed means the plugin actually wrote a base backup into the
 // object store (WAL archiving is a precondition the plugin enforces).
+// proveArchivingIntoOwnSeries is THE SERIES PROOF: (1) the Cluster's WAL
+// archiver files into a series of this install's own, the backup
+// ObjectStore's name plus the first 8 characters of its UID, which a
+// reinstall mints afresh; (2) the Backup the series starts from carries that
+// series; (3) the ContinuousArchiving condition turns True. Barman refuses
+// to archive into a series holding another PostgreSQL system's history and
+// the refusal is quiet, so (3) is the check that fails when a reinstall
+// reuses its predecessor's series ("Expected empty archive"), long before
+// the data volume fills.
+func (v *CnpgClusterVerifier) proveArchivingIntoOwnSeries(ctx context.Context, kubeconfig string) error {
+	uid, err := kubectlGetJSONPath(ctx, kubeconfig, "objectstores.barmancloud.cnpg.io", v.ClusterName, v.Namespace, "{.metadata.uid}")
+	if err != nil {
+		return errors.Wrapf(err, "reading the backup ObjectStore %q", v.ClusterName)
+	}
+	if len(uid) < 8 {
+		return errors.Errorf("the backup ObjectStore %q reports UID %q, too short to name a series", v.ClusterName, uid)
+	}
+	wantSeries := v.ClusterName + "-" + uid[:8]
+
+	gotSeries, err := kubectlGetJSONPath(ctx, kubeconfig, "cluster.postgresql.cnpg.io", v.ClusterName, v.Namespace,
+		"{.spec.plugins[?(@.isWALArchiver==true)].parameters.serverName}")
+	if err != nil {
+		return errors.Wrap(err, "reading the WAL archiver's series")
+	}
+	if gotSeries != wantSeries {
+		return errors.Errorf("the WAL archiver files into series %q, but this install's series is %q (the backup ObjectStore's name plus the first 8 characters of its UID) -- a series shared across installs is refused by Barman", gotSeries, wantSeries)
+	}
+
+	startSeries, err := kubectlGetJSONPath(ctx, kubeconfig, "backups.postgresql.cnpg.io", v.ClusterName+"-series-start", v.Namespace,
+		"{.metadata.annotations.planton\\.ai/backup-series}")
+	if err != nil {
+		return errors.Wrap(err, "reading the Backup the series starts from")
+	}
+	if startSeries != wantSeries {
+		return errors.Errorf("the series-start Backup %q carries series %q, not this install's %q -- the new series would have no base backup of its own", v.ClusterName+"-series-start", startSeries, wantSeries)
+	}
+	fmt.Printf("  [verify] archiving into this install's own series %q\n", wantSeries)
+
+	deadline := time.Now().Add(5 * time.Minute)
+	var status, message string
+	for time.Now().Before(deadline) {
+		status, _ = kubectlGetJSONPath(ctx, kubeconfig, "cluster.postgresql.cnpg.io", v.ClusterName, v.Namespace,
+			"{.status.conditions[?(@.type==\"ContinuousArchiving\")].status}")
+		if status == "True" {
+			fmt.Printf("  [verify] ContinuousArchiving True -- WAL is reaching the store\n")
+			return nil
+		}
+		message, _ = kubectlGetJSONPath(ctx, kubeconfig, "cluster.postgresql.cnpg.io", v.ClusterName, v.Namespace,
+			"{.status.conditions[?(@.type==\"ContinuousArchiving\")].message}")
+		time.Sleep(10 * time.Second)
+	}
+	return errors.Errorf("cluster %q never reported ContinuousArchiving True (last status %q: %s) -- WAL is not reaching the store and will accumulate on the data volume until it fills; \"Expected empty archive\" in the plugin's log means the series already holds another cluster's history", v.ClusterName, status, message)
+}
+
 func (v *CnpgClusterVerifier) proveBackupCompleted(ctx context.Context, kubeconfig string) error {
 	fmt.Printf("  [verify] waiting for a Completed base backup of cluster %q\n", v.ClusterName)
 	deadline := time.Now().Add(6 * time.Minute)

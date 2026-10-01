@@ -133,8 +133,14 @@ After creation, the service details page provides three tabs:
 ## Using the CLI
 
 ```bash
-# Register a service interactively from a project directory
-planton service register
+# Register (or update) a service from its service.yaml; the whole manifest is validated before anything is sent
+planton service register -f service.yaml
+
+# Read the stored record back (YAML, or -o json)
+planton service get my-service
+
+# See how the local service.yaml differs from the stored record before registering it
+planton diff -f service.yaml
 
 # Deploy an image you built into one environment, from the service's configuration
 planton service deploy my-service --env dev --image ghcr.io/acme/my-service:1.4.2
@@ -147,6 +153,9 @@ planton service runs my-service
 
 # Start a build by hand
 planton service run my-service --branch main
+
+# Release a tag by hand, exactly as if it had just been pushed
+planton service run my-service --tag v1.4.0
 
 # View deployment history
 planton service deployments my-service

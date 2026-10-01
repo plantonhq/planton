@@ -163,7 +163,7 @@ func TestControlPlaneDeployment_GithubDeclaration(t *testing.T) {
 	if envMap["GITHUB_WEBHOOKS_REACHABLE"] != strconv.FormatBool(false) {
 		t.Errorf("the one-host variable follows github.com's declared verdict (unreachable here), got %q", envMap["GITHUB_WEBHOOKS_REACHABLE"])
 	}
-	if envMap["PLANTON_CONNECT_METHODAVAILABILITY_HOSTLOGIN_AVAILABILITY"] != "available" {
+	if envMap["PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY"] != "available" {
 		t.Error("host login declared on renders available")
 	}
 	if _, present := envMap["GITHUB_CHECKS_DETAILS_URL_FORMAT"]; present {
@@ -185,7 +185,7 @@ func TestControlPlaneDeployment_GithubDeclaration(t *testing.T) {
 
 	plain := ControlPlaneDeployment(testControlPlaneConfig())
 	plainEnv := envVarMap(plain.Spec.Template.Spec.Containers[0].Env)
-	if _, present := plainEnv["PLANTON_CONNECT_METHODAVAILABILITY_HOSTLOGIN_AVAILABILITY"]; present {
+	if _, present := plainEnv["PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY"]; present {
 		t.Error("host login undeclared renders nothing: the platform's own default is off")
 	}
 }

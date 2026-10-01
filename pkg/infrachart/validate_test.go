@@ -5,6 +5,10 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"google.golang.org/protobuf/proto"
+
+	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
 )
 
 // The end-to-end tests exercise the full gate against the permanent _test
@@ -359,7 +363,7 @@ spec:
 `,
 	})
 	report := mustValidate(t, dir, Options{})
-	requireError(t, report, "spec validation failed")
+	requireError(t, report, "schema validation failed")
 }
 
 func TestValidateMissingMetadataNameIsAnError(t *testing.T) {
@@ -551,5 +555,118 @@ func assertContains(t *testing.T, got, want string) {
 	t.Helper()
 	if !strings.Contains(got, want) {
 		t.Errorf("%q does not mention %q", got, want)
+	}
+}
+
+// The whole document is validated, the way the install does, not only its
+// spec: a metadata rule (here the slug alphabet) that the spec-only check
+// never ran passed offline and was refused by the server.
+func TestValidateMetadataViolationIsAnError(t *testing.T) {
+	dir := writeChart(t, map[string]string{
+		"a.yaml": `---
+apiVersion: _test.planton.dev/v1alpha2
+kind: TestCloudResourceGeneric
+metadata:
+  name: "a"
+  slug: Not_A_Slug
+spec:
+  requiredRef:
+    value: literal
+`,
+	})
+	report := mustValidate(t, dir, Options{})
+	requireError(t, report, "A slug is lowercase letters and digits joined by single hyphens")
+}
+
+// The reported case, byte for byte: a lifecycle policy written as a YAML
+// block scalar (`|`) at the end of the file keeps its trailing newline on the
+// server, and the catalog's rule refuses a policy that does not end with its
+// closing brace. The offline render used to drop the file's final newline, so
+// the scalar lost its own and the chart passed here.
+func TestValidateBlockScalarPolicyFailsExactlyAsInstallDoes(t *testing.T) {
+	ecr := func(indicator string) string {
+		return `apiVersion: aws.planton.dev/v1alpha1
+kind: AwsEcrRegistrySettings
+metadata:
+  name: planton-e2e-service-path
+spec:
+  region: us-east-1
+  repositoryCreationTemplates:
+    - prefix: planton-e2e
+      appliedFor:
+        - CREATE_ON_PUSH
+      lifecyclePolicy: ` + indicator + `
+        {"rules": [{"rulePriority": 1, "selection": {"tagStatus": "any", "countType": "sinceImagePushed", "countUnit": "days", "countNumber": 1}, "action": {"type": "expire"}}]}
+`
+	}
+
+	kept := mustValidate(t, writeChart(t, map[string]string{"ecr.yaml": ecr("|")}), Options{})
+	requireError(t, kept, "lifecycle_policy must be a valid JSON lifecycle policy document")
+
+	stripped := mustValidate(t, writeChart(t, map[string]string{"ecr.yaml": ecr("|-")}), Options{})
+	if stripped.HasErrors() {
+		t.Fatalf("a block-stripped policy is accepted by install and must pass here: %v", issueMessages(stripped, SeverityError))
+	}
+}
+
+// A host adds its own rules over each rendered document (the Planton CLI adds
+// where secrets may go): a host finding is an error on that document, and a
+// host check runs only on a document whose schema passed, the order the
+// platform applies them in.
+func TestValidateRunsHostDocumentChecksAfterTheSchema(t *testing.T) {
+	var seen []string
+	check := func(doc proto.Message) []string {
+		name := metadatareflect.ExtractMetadata(doc).GetName()
+		seen = append(seen, name)
+		return []string{"host finding on " + name}
+	}
+	dir := writeChart(t, map[string]string{
+		"ok.yaml": validNode,
+		"bad.yaml": `---
+apiVersion: _test.planton.dev/v1alpha2
+kind: TestCloudResourceGeneric
+metadata:
+  name: "bad"
+spec:
+  displayName: hello
+`,
+	})
+	report := mustValidate(t, dir, Options{DocumentChecks: []DocumentCheck{check}})
+	requireError(t, report, "host finding on dev-node-b")
+	for _, name := range seen {
+		if name == "bad" {
+			t.Fatalf("a host check must not run on a document whose schema failed")
+		}
+	}
+}
+
+// A host that resolves reference tokens before anything deploys (the Planton
+// CLI and its `$secret/` references) names them, and a schema rule written
+// about the literal -- here the binary data's base64 pattern -- is set aside
+// for the token instead of failing the chart. Without the host's grammar the
+// same chart fails the rule, because the backendless deploy takes literals.
+func TestValidateDefersARuleOnAHostToken(t *testing.T) {
+	dir := writeChart(t, map[string]string{
+		"secret.yaml": `---
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesSecret
+metadata:
+  name: runner-ca
+spec:
+  name: runner-ca
+  namespace:
+    value: builds
+  opaque:
+    binaryData:
+      ca.crt: $secret/runner-ca
+`,
+	})
+	isToken := func(value string) bool { return strings.HasPrefix(value, "$secret/") }
+
+	requireError(t, mustValidate(t, dir, Options{}), "schema validation failed")
+
+	report := mustValidate(t, dir, Options{IsDeferredToken: isToken})
+	if errs := issueMessages(report, SeverityError); len(errs) > 0 {
+		t.Fatalf("a rule on a host token must be set aside, got: %v", errs)
 	}
 }

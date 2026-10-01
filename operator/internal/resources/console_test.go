@@ -8,7 +8,7 @@ import (
 )
 
 func TestConsoleDeployment_Image(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	deploy := ConsoleDeployment(cfg)
 
 	expected := ConsoleDefaultImageRepo + ":v1.0.0"
@@ -20,7 +20,8 @@ func TestConsoleDeployment_Image(t *testing.T) {
 
 func TestConsoleDeployment_ImageOverride(t *testing.T) {
 	cfg := ConsoleConfig{
-		CRName: "planton", Namespace: "default", Version: "v1.0.0",
+		Resources: Effective(SizingConsole, nil),
+		CRName:    "planton", Namespace: "default", Version: "v1.0.0",
 		Replicas: 1, ImageRepository: "nginx", ImageTag: "1.27-alpine",
 	}
 	deploy := ConsoleDeployment(cfg)
@@ -33,7 +34,7 @@ func TestConsoleDeployment_ImageOverride(t *testing.T) {
 }
 
 func TestConsoleDeployment_APIEndpoint(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	deploy := ConsoleDeployment(cfg)
 	envs := deploy.Spec.Template.Spec.Containers[0].Env
 
@@ -61,7 +62,7 @@ func TestConsoleDeployment_APIEndpoint(t *testing.T) {
 // process.env.HOSTNAME, which Kubernetes sets to the pod name -> pod IP only, refusing
 // loopback and breaking kubectl port-forward. Regression guard.
 func TestConsoleDeployment_BindsAllInterfaces(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	deploy := ConsoleDeployment(cfg)
 	envs := deploy.Spec.Template.Spec.Containers[0].Env
 
@@ -80,7 +81,7 @@ func TestConsoleDeployment_BindsAllInterfaces(t *testing.T) {
 }
 
 func TestConsoleDeployment_Ports(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	deploy := ConsoleDeployment(cfg)
 	ports := deploy.Spec.Template.Spec.Containers[0].Ports
 	if len(ports) != 1 {
@@ -97,7 +98,7 @@ func TestConsoleDeployment_Ports(t *testing.T) {
 // render (proves the app boots); steady-state probes ride the cheap health
 // endpoint with patient thresholds.
 func TestConsoleDeployment_HTTPProbes(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	deploy := ConsoleDeployment(cfg)
 	container := deploy.Spec.Template.Spec.Containers[0]
 
@@ -144,7 +145,7 @@ func TestConsoleDeployment_HTTPProbes(t *testing.T) {
 // confusingly (the Postgres/identity lesson). No CPU limit: renders are
 // bursty and throttling recreates the slowness probes then punish.
 func TestConsoleDeployment_ResourceFloor(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1, Resources: Effective(SizingConsole, nil)}
 	res := ConsoleDeployment(cfg).Spec.Template.Spec.Containers[0].Resources
 
 	if res.Requests.Cpu().IsZero() || res.Requests.Memory().IsZero() {
@@ -160,7 +161,8 @@ func TestConsoleDeployment_ResourceFloor(t *testing.T) {
 
 func TestConsoleDeployment_ExternalConfig(t *testing.T) {
 	cfg := ConsoleConfig{
-		CRName: "planton", Namespace: "default", Version: "v1.0.0",
+		Resources: Effective(SizingConsole, nil),
+		CRName:    "planton", Namespace: "default", Version: "v1.0.0",
 		Replicas: 1, ExternalConfigSecretName: "console-config",
 	}
 	deploy := ConsoleDeployment(cfg)
@@ -178,7 +180,8 @@ func TestConsoleDeployment_ExternalConfig(t *testing.T) {
 func TestConsoleDeployment_PublicURL(t *testing.T) {
 	const publicURL = "https://planton.example.com"
 	cfg := ConsoleConfig{
-		CRName: "planton", Namespace: "default", Version: "v1.0.0",
+		Resources: Effective(SizingConsole, nil),
+		CRName:    "planton", Namespace: "default", Version: "v1.0.0",
 		Replicas: 1, PublicURL: publicURL,
 	}
 	deploy := ConsoleDeployment(cfg)
@@ -199,7 +202,7 @@ func TestConsoleDeployment_PublicURL(t *testing.T) {
 // deployment shape always (the same fact the control plane boots with), the
 // native gRPC address only when the component says the front door routes it.
 func TestConsoleDeployment_DeviceDiscoveryFacts(t *testing.T) {
-	base := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1,
+	base := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1,
 		PublicURL: "https://planton.example.com"}
 
 	env := consoleEnv(ConsoleDeployment(base))
@@ -227,7 +230,7 @@ func consoleEnv(deploy *appsv1.Deployment) map[string]string {
 }
 
 func TestConsoleDeployment_NoNextAuthURLWithoutIngress(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	deploy := ConsoleDeployment(cfg)
 	for _, e := range deploy.Spec.Template.Spec.Containers[0].Env {
 		if e.Name == "NEXTAUTH_URL" {
@@ -245,7 +248,8 @@ func TestConsoleDeployment_IdentityWiring(t *testing.T) {
 	const realm = "planton"
 	const internalIssuer = "http://planton-identity.default.svc.cluster.local/idp/realms/planton"
 	cfg := ConsoleConfig{
-		CRName: "planton", Namespace: "default", Version: "v1.0.0",
+		Resources: Effective(SizingConsole, nil),
+		CRName:    "planton", Namespace: "default", Version: "v1.0.0",
 		Replicas:  1,
 		PublicURL: "http://planton.example.com",
 		Identity: &ConsoleIdentityConfig{
@@ -292,7 +296,7 @@ func TestConsoleDeployment_IdentityWiring(t *testing.T) {
 }
 
 func TestConsoleDeployment_NoIdentityEnvWithoutIdentity(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	deploy := ConsoleDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 	for _, name := range []string{"IDP_PROVIDER", "IAM_ISSUER_URL", "IAM_CLIENT_ID", "NEXTAUTH_SECRET"} {
@@ -308,7 +312,7 @@ func TestConsoleDeployment_NoIdentityEnvWithoutIdentity(t *testing.T) {
 // had no reader in the console; injecting it again would be dead config
 // masquerading as a working off switch.
 func TestConsoleDeployment_NoBillingKillSwitches(t *testing.T) {
-	cfg := ConsoleConfig{CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
+	cfg := ConsoleConfig{Resources: Effective(SizingConsole, nil), CRName: "planton", Namespace: "default", Version: "v1.0.0", Replicas: 1}
 	envMap := envVarMap(ConsoleDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
 
 	for _, name := range []string{"BILLING_ALERT_ENABLED", "BILLING_ENFORCEMENT_ENABLED"} {

@@ -101,7 +101,7 @@ func originCaCertificate(
 	if generatedPrivateKey != nil {
 		ctx.Export(OpPrivateKey, pulumi.ToSecret(generatedPrivateKey.PrivateKeyPem))
 	} else {
-		ctx.Export(OpPrivateKey, pulumi.String(""))
+		ctx.Export(OpPrivateKey, pulumi.ToSecret(pulumi.String("")))
 	}
 
 	return nil

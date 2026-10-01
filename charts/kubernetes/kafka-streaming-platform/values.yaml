@@ -146,12 +146,14 @@ params:
 
   - name: kafka_ui_password
     description: >
-      Login password for the console account. MUST BE CHANGED — the
-      default exists only so a fresh render validates; deploying it as-is
-      leaves the console (and the cluster credential it holds) behind a
-      known password. The platform materializes it into a Secret-backed
-      environment variable; it never lands in rendered chart values.
-    value: change-me
+      Login password for the console account. The platform materializes
+      it into a Secret-backed environment variable; it never lands in
+      rendered chart values.
+      On Planton the value is a reference to a managed secret, resolved at deploy
+      so the password is never stored with the project: create it with
+      `planton secret set kafka-streaming-platform-ui-password --string` (or name an environment's own as
+      `$secret/@<env>/<slug>`). A deploy without the platform takes the literal.
+    value: $secret/kafka-streaming-platform-ui-password
 
   # ── Kafka Connect ────────────────────────────────────────────────────────
   - name: connect_enabled

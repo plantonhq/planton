@@ -1,6 +1,6 @@
 # DigitalOcean VPC -- Pulumi Module
 
-Deploys a `digitalocean:index/vpc:Vpc` from a `DigitalOceanVpc` stack input: the VPC's name from `metadata.name`, the region, an optional description, and an optional immutable IP range. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`, which carries the complete provider argument surface -- no PARITY-EXCEPTION guards. (The SDK renames the VPC's `urn` attribute to `VpcUrn`; the module exports it under the contract's `urn` key.)
+Deploys a `digitalocean:index/vpc:Vpc` from a `DigitalOceanVpc` stack input: the VPC's name from `metadata.name`, the region, an optional description, and an optional immutable IP range. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface -- no PARITY-EXCEPTION guards. (The SDK renames the VPC's `urn` attribute to `VpcUrn`; the module exports it under the contract's `urn` key.)
 
 ## Module structure
 

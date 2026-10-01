@@ -40,6 +40,15 @@ despite the schema marking it optional). A surface modeled from the schema alone
 every offline gate and be categorically undeployable live. When the doc page and schema
 disagree, the doc page plus a live probe is the truth to model.
 
+**Extending a kind that manages live objects keeps unset unmanaged.** Every field the
+update adds has presence, and both modules send it only when the spec sets it, so an
+object deployed before the update previews no change. That holds only for provider
+arguments with a computed value: an optional argument the provider does not compute is
+planned for removal whenever the spec leaves it unset and the object holds a value.
+Find each one in the provider schema, measure it with the blind-import round-trip
+(`PLANTON_E2E_IMPORT_ROUNDTRIP=1`), and name it in the field comment and the GUIDE's
+adoption section: an adopted object declares its live value.
+
 ## Improve this workflow as you use it (NON-NEGOTIABLE)
 
 If updating a component required knowledge this rule or its flow rules did not give you — an undocumented mechanism you had to reverse-engineer, a wrong or misleading implication, a missing step, or a stale path — amend this rule, the relevant flow rule, or `architecture/component.md` in the same session, as timeless guidance (never naming a project or a task), so the next agent never has to re-learn it. The workflow is expected to get sharper with every use.
@@ -511,10 +520,14 @@ Based on scenario:
   override them) and commonly diverge -- e.g. a Terraform `locals.tf` that
   merges only `{ Name }` with labels while the Pulumi module applies the
   `awstagkeys` identity set WITHOUT `Name`, so the same manifest tags the
-  resource differently per engine. No offline gate flags this (tags are not
-  stack outputs). When touching an older kind, diff the two engines' tag
-  maps against the current convention and converge both in the same
-  session.
+  resource differently per engine. Tags are not stack outputs, so only the
+  tag guards catch this: `hack/guards/ensure_cross_engine_tag_keys.sh`
+  (AWS key sets) and `hack/guards/ensure_cross_engine_azure_tag_values.sh`
+  (Azure keys and values -- `resource_kind` is the lowercased
+  CloudResourceKind enum name as a literal in `locals.tf`, and `resource_id`
+  is written only when `metadata.id` is set, never the name). When touching
+  an older kind, diff the two engines' tag maps against the current
+  convention and converge both in the same change.
 - **Never read a proto oneof through an interface assertion in module code**:
   asserting `x.Source.(interface{ GetValue() string })` compiles and silently
   matches NOTHING — generated oneof wrapper structs carry plain fields, not
@@ -536,7 +549,12 @@ Based on scenario:
   (`t == "a" ? {…} : t == "b" ? {…} : null`) selecting between differently
   shaped objects is the same failure wearing a oneof costume: render ONE
   object literal carrying every arm's keys (each key gated on its arm,
-  `null` otherwise) and null-prune it; and `merge(concat(cond ? [{…}] : [], …)...)`
+  `null` otherwise) and null-prune it. When the two branches happen to be
+  convertible (an object literal against a null-pruned for-expression),
+  the ternary does NOT fail at plan -- it unifies both to `map(string)`, and
+  a chart that copies the values into the workload's config hands it a
+  quoted `"true"` (Loki's and Tempo's `s3forcepathstyle`, refused at start
+  and seen only as a Helm install timing out); and `merge(concat(cond ? [{…}] : [], …)...)`
   silently UNIFIES primitive-only sibling objects into `map(string)` — the
   ternary converts each tuple to a list, and concat's element-type
   unification then coerces numbers and booleans to strings
@@ -762,6 +780,21 @@ Based on scenario:
   declares the user without the password, the presets drop their
   placeholder passwords, and the import map gains the by-value row below.
   Reference shapes: `KubernetesValkey`, `KubernetesNeo4j`, `KubernetesNats`.
+- **A module-owned Secret the workload reads only at start carries a
+  checksum on the pod template.** Env variables and most config files are
+  read once, at process start; nothing rolls a Deployment or StatefulSet
+  when the Secret behind them changes, so a rotated `sensitive` value sits
+  unused until someone restarts the pods. Stamp the pods with
+  `checksum/credentials`: the SHA-256 of the Secret's data as JSON with
+  sorted keys (Go `json.Marshal` of the map, OpenTofu
+  `sha256(jsonencode(map))` -- byte-identical, so both engines stamp the
+  same value), wherever the chart takes pod annotations. The apply that
+  writes the new value then rolls the workload onto it. Skip it only when
+  the workload re-reads the value on every use (Alertmanager's `_file`
+  credentials), and say so where the Secret is built. A module test pins
+  that a changed value changes the checksum and an unchanged one does not.
+  Reference shapes: `KubernetesGrafana` (sign-in), `KubernetesLoki` and
+  `KubernetesTempo` (the r2 arm).
 - **A module-generated credential (`random_password`) is import-mappable —
   by VALUE, with two mandatory guards**: the random provider keeps no
   cloud-side state, so its import ID is the password value itself, read
@@ -901,7 +934,36 @@ Based on scenario:
   CRDs at startup (a webhook that fatals until its CRD is served blocks
   its Deployment await, and skipping only Deployments moves the
   deadlock to the webhook Service's endpoints await; verified live).
-  The E2E verifier owns rollout readiness in both engines.
+- **Done means serving: an operator kind reports success only when the
+  operator can serve the resources it defines — the E2E verifier
+  CONFIRMS that, it never supplies it.** The workloads group cannot
+  await its rollout (above), so when the operator's custom resources are
+  admitted by a webhook the operator registers at RUNTIME (not a
+  document of the bundle), the module ends with a READINESS GATE after
+  the CRD group: a stand-in ConfigMap, the same on both engines, whose
+  creation waits until the operator Deployments rolled out AND a
+  server-side dry run of one of its resources comes back admitted with
+  the webhook's defaults filled in. Rollout alone is not enough —
+  measured on the Tekton operator, defaulting went live 5–10s after both
+  Deployments reported available. Terraform runs the gate as the
+  stand-in's create-time `local-exec` provisioner (`force_new`, so a
+  failure or a release move gates again); Pulumi as a `BeforeCreate`
+  resource hook with `ReplaceOnChanges(*)` + `DeleteBeforeReplace` (a
+  BEFORE hook: a failing after-hook still records the resource on newer
+  engines, so the next run would skip the gate). The script is one text
+  under the cross-engine script parity guard, carried through the
+  environment so the deploy log shows one line, and needs `kubectl` on
+  PATH (the Planton runner image carries it). The stand-in depends on
+  the CRD group, so a destroy deletes it first and the teardown order is
+  untouched. The verifier asks the same question FIRST and with no
+  wait, and the kind carries a scenario that holds the operator's pods
+  off a node until 60s into the deploy (a node pool that starts empty),
+  so a module that reports done early fails its own lane. An operator
+  that registers no admission webhook needs no gate — its resources are
+  stored as written and reconciled once it starts — and its module says
+  so where the gate would be. Reference: KubernetesTektonOperator
+  (`iac/tf/readiness_gate.tf`, `iac/pulumi/module/readiness_gate.go`,
+  `e2e/scenarios/cold-node-pool.yaml`).
 - **CONFIG-ONLY attributes (delete-waits, cascade modes, lifecycle
   knobs) DEGRADE to defaults in any freshly-imported state — never let
   correctness ride an attribute the importer cannot read back without a
@@ -1604,8 +1666,10 @@ conventions). A rename keeps the enum **number** — only the name changes every
 5. **Both IaC modules — watch the identity-tag asymmetry.** The Pulumi module derives
    the `resource-kind` identity tag from the enum (`CloudResourceKind_<Kind>.String()`),
    so it renames itself; the Terraform module hardcodes the kind string in `locals.tf`
-   (`"planton.dev/resource-kind" = "<Kind>"`) and MUST be updated by hand or the two
-   engines silently diverge on tag parity. Also update module comments and Go type
+   (`"planton.dev/resource-kind" = "<Kind>"`; on Azure, `"resource_kind" = "<kind>"`,
+   the enum name lowercased) and MUST be updated by hand or the two engines diverge on
+   tag parity (for Azure, `hack/guards/ensure_cross_engine_azure_tag_values.sh` refuses
+   the stale literal). Also update module comments and Go type
    references (the generated stubs rename with the protos).
 6. **Docs**: component `README.md` H1 (the kind name), `catalog.md` H1 (the display
    name — this drives the public catalog slug and sidebar label), `GUIDE.md`,
@@ -1655,7 +1719,11 @@ reuse, not in any single annotation — so sweep by message: for every message c
 
 **What it does:**
 1. Establishes the correct target from the producing kind's `outputs.proto` (never from
-   memory): the output field must exist and hold the referenced value's name. When NO
+   memory): the output field must exist and hold the referenced value's name. A reference
+   to a named object points at the output that publishes the object's name
+   (`status.outputs.secret_name`), never at `metadata.name`: that is the Planton resource's
+   name, and a kind with its own `spec.name` can name its object differently
+   (`pkg/refcheck` refuses it). When NO
    catalog kind produces the value (e.g. a bring-your-own HTTP Basic credential), the
    honest fix is a message with NO default annotation — a bare `StringValueOrRef` is an
    established shape; never point a default at a kind that merely lives nearby.

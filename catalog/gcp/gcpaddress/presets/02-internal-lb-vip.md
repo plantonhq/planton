@@ -20,9 +20,9 @@ This preset reserves a regional internal IP address with the `SHARED_LOADBALANCE
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID | GCP Console or `GcpProject` outputs |
-| `<your-address-name>` | Name for this address resource | Choose a descriptive name (e.g., `ilb-vip`) |
-| `<your-region>` | GCP region | Must match the ILB region |
+| `my-gcp-project-123` | GCP project ID | GCP Console or `GcpProject` outputs |
+| `ilb-vip` (`addressName`) | Name for this address resource | Choose a descriptive name |
+| `us-central1` (`region`) | GCP region | Must match the ILB region |
 
 ## Related Presets
 

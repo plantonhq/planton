@@ -52,6 +52,8 @@ Cloud Resources support five primary operations:
 
 The distinction between destroy and purge matters for compliance and auditing. Destroy leaves a record of what existed and when it was torn down. Purge removes all traces.
 
+A destroy reads only what it destroys. A `$secret/` or `$var/` reference the resource was deployed with that has since been deleted does not stop the destroy: the job names the references it could not read and tears the resource down. And a destroy that empties the stack removes the state it left behind -- the state object in your bucket, or a Pulumi stack with its backups -- and the job says so (`state removed: <key>`); a Terraform Cloud workspace or a Pulumi Cloud stack is kept, holding its history, and a backend that refuses the delete keeps the state, with its reason.
+
 <!-- SCREENSHOT: Cloud Resource detail page
   Page: /[org]/cloud-resource/[env]/[resourceKind]/[resourceName]
   Action: Show a deployed Cloud Resource with status and spec visible
@@ -106,6 +108,15 @@ planton create -f manifest.yaml
 # Get a Cloud Resource by ID
 planton get cloud-resource <cloud-resource-id>
 
+# Read one back as its manifest (kind, metadata, spec, status with outputs)
+planton get AwsVpc production-vpc -o yaml
+
+# The same resource inside the platform's CloudResource wrapper
+planton get AwsVpc production-vpc -o yaml --envelope
+
+# Compare a local manifest with what is stored, before applying it
+planton diff -f vpc.yaml
+
 # List Cloud Resources
 planton list cloud-resource
 
@@ -132,6 +143,10 @@ planton pulumi import <cloud-resource> --type <type> --name <name> --id <provide
 planton terraform import <cloud-resource> --address <address> --id <provider-id>
 planton tofu import <cloud-resource> --address <address> --id <provider-id>
 ```
+
+`planton get <Kind> <name> -o yaml` prints the resource as you write it, in the same YAML as every manifest: camelCase keys, with its outputs under `status.outputs` (for example `status.outputs.vpcId`). You can edit that output and apply it again. `-o json` prints proto field names (`status.outputs.vpc_id`).
+
+`planton diff -f <manifest>` compares one local manifest with the record it would apply to, leaving status and the platform's own stamps out. It prints a unified diff and exits 1 when they differ, and exits 0 when applying would change nothing; `-o json` gives the list of changed fields. When nothing is stored under the manifest's name it prints **Nothing Stored Yet** and exits 3. It takes one manifest per file.
 
 ## Related Documentation
 

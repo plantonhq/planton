@@ -25,10 +25,13 @@ const (
 // provisioning a DigitalOcean uptime check.
 type DigitalOceanUptimeCheckStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// UUID of the uptime check (the API identity, and the import id). The
-	// composed alert rows import as "{check_id},{alert_id}"; alert ids are
-	// found via the API or the console, they are not stack outputs.
-	CheckId       string `protobuf:"bytes,1,opt,name=check_id,json=checkId,proto3" json:"check_id,omitempty"`
+	// UUID of the uptime check (the API identity, and the import id).
+	CheckId string `protobuf:"bytes,1,opt,name=check_id,json=checkId,proto3" json:"check_id,omitempty"`
+	// UUIDs of the composed alert rows, keyed by "<row index>-<alert name>" --
+	// the same key both provisioners address each alert resource by. Each row
+	// imports as "{check_id},{alert_id}", and this map is where the second
+	// half comes from, so a blind import needs no lookup.
+	AlertIds      map[string]string `protobuf:"bytes,2,rep,name=alert_ids,json=alertIds,proto3" json:"alert_ids,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -70,13 +73,24 @@ func (x *DigitalOceanUptimeCheckStackOutputs) GetCheckId() string {
 	return ""
 }
 
+func (x *DigitalOceanUptimeCheckStackOutputs) GetAlertIds() map[string]string {
+	if x != nil {
+		return x.AlertIds
+	}
+	return nil
+}
+
 var File_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/digitalocean/digitaloceanuptimecheck/v1alpha1/outputs.proto\x129dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1\"@\n" +
+	"Ccatalog/digitalocean/digitaloceanuptimecheck/v1alpha1/outputs.proto\x129dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1\"\x89\x02\n" +
 	"#DigitalOceanUptimeCheckStackOutputs\x12\x19\n" +
-	"\bcheck_id\x18\x01 \x01(\tR\acheckIdB\xca\x03\n" +
+	"\bcheck_id\x18\x01 \x01(\tR\acheckId\x12\x89\x01\n" +
+	"\talert_ids\x18\x02 \x03(\v2l.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputs.AlertIdsEntryR\balertIds\x1a;\n" +
+	"\rAlertIdsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xca\x03\n" +
 	"=com.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1B\fOutputsProtoP\x01Zrgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanuptimecheck/v1alpha1;digitaloceanuptimecheckv1alpha1\xa2\x02\x04DPDD\xaa\x029Dev.Planton.Digitalocean.Digitaloceanuptimecheck.V1alpha1\xca\x029Dev\\Planton\\Digitalocean\\Digitaloceanuptimecheck\\V1alpha1\xe2\x02EDev\\Planton\\Digitalocean\\Digitaloceanuptimecheck\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Digitalocean::Digitaloceanuptimecheck::V1alpha1b\x06proto3"
 
 var (
@@ -91,16 +105,18 @@ func file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_ra
 	return file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_rawDescData
 }
 
-var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_goTypes = []any{
 	(*DigitalOceanUptimeCheckStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputs
+	nil, // 1: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputs.AlertIdsEntry
 }
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputs.alert_ids:type_name -> dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputs.AlertIdsEntry
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_init() }
@@ -114,7 +130,7 @@ func file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_in
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_rawDesc), len(file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_outputs_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

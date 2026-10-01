@@ -28,9 +28,11 @@ var namespacedBundleKinds = map[string]bool{
 // JOSDK (Quarkus Operator SDK) operator crash-loops at startup until
 // the k8s.keycloak.org CRDs are served, so awaiting its rollout here
 // would deadlock the chain. Everything converges once the CRDs land
-// (kubelet backoff restarts the pod); the component's E2E verifier owns
-// rollout readiness. The Terraform twin sets wait_for_rollout = false
-// on the same group for the same reason.
+// (kubelet backoff restarts the pod), and no readiness gate is needed:
+// the operator registers no admission webhook, so a Keycloak resource
+// applied before it runs is stored as written and reconciled once it
+// starts. The Terraform twin sets wait_for_rollout = false on the same
+// group for the same reason.
 func skipAwaitTransformation() func(state map[string]interface{}, opts ...pulumi.ResourceOption) {
 	return func(state map[string]interface{}, _ ...pulumi.ResourceOption) {
 		metadata, _ := state["metadata"].(map[string]interface{})

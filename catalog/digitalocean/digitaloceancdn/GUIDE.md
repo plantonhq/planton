@@ -20,7 +20,7 @@ The TTL applies endpoint-wide -- there are no per-path rules on DigitalOcean's C
 
 ## Deleting the endpoint is a traffic event
 
-Destroy tears down edge delivery immediately: the endpoint hostname stops serving and custom-domain CNAMEs dangle. The origin bucket and its content are untouched -- consumers can fall back to the bucket's own domain if they know it. Re-point DNS before destroying when a custom domain fronts real traffic.
+Destroy tears down edge delivery immediately: the endpoint hostname stops serving and custom-domain CNAMEs dangle. The origin bucket and its content are untouched -- consumers can fall back to the bucket's own domain if they know it. Re-point DNS before destroying when a custom domain fronts real traffic. The API forgets the endpoint fast -- it answers 404 within two seconds of the delete (measured) -- so a refresh right after a destroy reads a clean absence.
 
 ## What is deliberately NOT here
 

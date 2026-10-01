@@ -17,7 +17,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  loadBalancerName: pltn-e2e-dolb-min
+  loadBalancerName: pltn-e2e-dolb-min-${E2E_RUN_ID}
   region: nyc3
   forwardingRules:
     - entryPort: 80

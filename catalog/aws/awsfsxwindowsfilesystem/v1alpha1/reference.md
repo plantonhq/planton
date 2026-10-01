@@ -109,7 +109,7 @@ spec:
 | `spec.selfManagedActiveDirectory.dnsIps` | `[]string` | yes |  |  |
 | `spec.selfManagedActiveDirectory.username` | `string` |  |  |  |
 | `spec.selfManagedActiveDirectory.password` | `string` (sensitive) |  |  |  |
-| `spec.selfManagedActiveDirectory.domainJoinServiceAccountSecretArn` | `string \| valueFrom` |  |  |  |
+| `spec.selfManagedActiveDirectory.domainJoinServiceAccountSecretArn` | `string \| valueFrom` |  |  | AwsSecretsManagerSecret (`status.outputs.secret_arn`) |
 | `spec.selfManagedActiveDirectory.fileSystemAdministratorsGroup` | `string` |  | `Domain Admins` |  |
 | `spec.selfManagedActiveDirectory.organizationalUnitDistinguishedName` | `string` |  |  |  |
 | `spec.aliases` | `[]string` |  |  |  |
@@ -359,9 +359,12 @@ ARN of an AWS Secrets Manager secret containing the service account
 credentials for domain join. Mutually exclusive with `username`/`password`.
 
 The secret must contain a JSON object with "username" and "password" keys.
-This is the recommended approach for production deployments.
+This is the recommended approach for production deployments. A valueFrom
+defaults to an AwsSecretsManagerSecret and reads its
+status.outputs.secret_arn.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: AwsSecretsManagerSecret (`status.outputs.secret_arn`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: AwsSecretsManagerSecret, name: <that resource's name>, fieldPath: status.outputs.secret_arn}} -- a bare string does not parse
 
 ### spec.selfManagedActiveDirectory.fileSystemAdministratorsGroup
 
@@ -593,6 +596,7 @@ Fields that can point at another resource's outputs:
 | `spec.preferredSubnetId` | AwsSubnet | `status.outputs.subnet_id` |
 | `spec.securityGroupIds` | AwsSecurityGroup | `status.outputs.security_group_id` |
 | `spec.kmsKeyId` | AwsKmsKey | `status.outputs.key_arn` |
+| `spec.selfManagedActiveDirectory.domainJoinServiceAccountSecretArn` | AwsSecretsManagerSecret | `status.outputs.secret_arn` |
 | `spec.auditLogConfiguration.auditLogDestination` | AwsCloudwatchLogGroup | `status.outputs.log_group_arn` |
 
 ## See Also

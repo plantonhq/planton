@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
@@ -824,3 +825,83 @@ func TestResolveDependencies_SubstituteEntryShapeAndPresence(t *testing.T) {
 		t.Fatalf("expected the missing-substitute rejection, got %v", err)
 	}
 }
+
+// A prerequisite of another provider installs from ITS provider's catalog: an
+// Auth0 verification whose scenario composes a Cloudflare DNS record resolves
+// the record's own registry prerequisite (the Cloudflare zone) under
+// catalog/cloudflare, never under the component's provider.
+func TestResolveDependencies_CrossProviderPrerequisiteUsesItsOwnProvider(t *testing.T) {
+	repoRoot := t.TempDir()
+	domainProfile := writeManifest(t, repoRoot, "catalog/auth0/auth0customdomain/e2e/prerequisite.yaml")
+	zoneProfile := writeManifest(t, repoRoot, "catalog/cloudflare/cloudflarednszone/e2e/prerequisite.yaml")
+	recordRel := "catalog/auth0/auth0customdomainverification/e2e/fixtures/verification-record.yaml"
+	recordAbs := writeAzureScenario(t, repoRoot, recordRel, "CloudflareDnsRecord", "")
+	scenario := writeAzureScenario(t, repoRoot, "scenario.yaml", "Auth0CustomDomainVerification", recordRel)
+
+	deps, err := ResolveDependencies(repoRoot, "auth0", "auth0customdomainverification", scenario)
+	if err != nil {
+		t.Fatalf("ResolveDependencies: %v", err)
+	}
+	got := make([]string, len(deps))
+	for i, d := range deps {
+		got[i] = d.KindSlug
+	}
+	want := []string{"auth0customdomain", "cloudflarednszone", "cloudflarednsrecord"}
+	if strings.Join(got, ",") != strings.Join(want, ",") {
+		t.Fatalf("dependency order = %v, want %v", got, want)
+	}
+	if deps[0].ManifestPath != domainProfile {
+		t.Errorf("same-provider prerequisite manifest = %q, want %q", deps[0].ManifestPath, domainProfile)
+	}
+	if deps[1].ManifestPath != zoneProfile {
+		t.Errorf("cross-provider prerequisite manifest = %q, want %q", deps[1].ManifestPath, zoneProfile)
+	}
+	if deps[2].ManifestPath != recordAbs {
+		t.Errorf("extra instance manifest = %q, want %q", deps[2].ManifestPath, recordAbs)
+	}
+}
+
+// A dependency deploys from its own provider's module directory and is
+// verified by its own provider's harness: the component's harness for a
+// same-provider kind, the registered one for another provider's kind, and a
+// plain refusal naming the fix when none is registered.
+func TestDependencyHarness_RoutesByTheKindsProvider(t *testing.T) {
+	componentHarness := &recordingHarness{}
+	cloudflareHarness := &recordingHarness{}
+	t.Cleanup(func() { delete(dependencyHarnesses, "cloudflare") })
+
+	got, providerDir, err := dependencyHarness("auth0", "auth0customdomain", componentHarness)
+	if err != nil || got != componentHarness || providerDir != "auth0" {
+		t.Fatalf("same-provider dependency: harness %v, provider %q, err %v; want the component's harness under auth0", got, providerDir, err)
+	}
+
+	if _, _, err := dependencyHarness("auth0", "cloudflarednsrecord", componentHarness); err == nil ||
+		!strings.Contains(err.Error(), "RegisterDependencyHarness") {
+		t.Fatalf("unregistered cross-provider dependency: err %v, want a refusal naming RegisterDependencyHarness", err)
+	}
+
+	RegisterDependencyHarness("cloudflare", cloudflareHarness)
+	got, providerDir, err = dependencyHarness("auth0", "cloudflarednsrecord", componentHarness)
+	if err != nil || got != cloudflareHarness || providerDir != "cloudflare" {
+		t.Fatalf("registered cross-provider dependency: harness %v, provider %q, err %v; want the cloudflare harness", got, providerDir, err)
+	}
+	if cloudflareHarness.setups != 1 {
+		t.Errorf("cross-provider harness set up %d times, want once on first use", cloudflareHarness.setups)
+	}
+	if _, _, err := dependencyHarness("auth0", "cloudflarednszone", componentHarness); err != nil {
+		t.Fatalf("second cross-provider dependency: %v", err)
+	}
+	if cloudflareHarness.setups != 1 {
+		t.Errorf("cross-provider harness set up %d times after reuse, want once", cloudflareHarness.setups)
+	}
+}
+
+// recordingHarness is a provider.Harness that counts its setups.
+type recordingHarness struct{ setups int }
+
+func (h *recordingHarness) Setup(context.Context) error    { h.setups++; return nil }
+func (h *recordingHarness) Teardown(context.Context) error { return nil }
+func (h *recordingHarness) VerifyDeployed(context.Context, string, map[string]interface{}) error {
+	return nil
+}
+func (h *recordingHarness) VerifyDestroyed(context.Context, string) error { return nil }

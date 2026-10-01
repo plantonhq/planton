@@ -372,7 +372,10 @@ droplet_tag.
 
 (Optional) A Droplet tag: every Droplet carrying it is attached, and
 membership follows the tag automatically as Droplets come and go.
-Mutually exclusive with droplet_ids.
+The tag does not have to exist yet -- DigitalOcean stores it as a
+selector and accepts a tag no Droplet carries (unlike a firewall, which
+rejects an unknown tag); the balancer serves nothing until a Droplet in
+its region picks up the tag. Mutually exclusive with droplet_ids.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"maxLen":"255"}}
 
@@ -712,6 +715,7 @@ Fields on other kinds that can point at this resource:
 | DigitalOceanFirewall | `spec.outboundRules[].destinationLoadBalancerUids` | `status.outputs.load_balancer_id` |
 | DigitalOceanLoadBalancer | `spec.targetLoadBalancerIds` | `status.outputs.load_balancer_id` |
 | DigitalOceanMonitorAlert | `spec.loadBalancerIds` | `status.outputs.load_balancer_id` |
+| DigitalOceanProject | `spec.resources` | `status.outputs.urn` |
 
 ## See Also
 

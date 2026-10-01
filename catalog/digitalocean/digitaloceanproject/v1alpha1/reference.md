@@ -62,7 +62,7 @@ spec:
 | `spec.purpose` | `string` |  | `Web Application` |  |
 | `spec.environment` | `string` |  |  |  |
 | `spec.isDefault` | `bool` |  |  |  |
-| `spec.resources` | `[]string \| valueFrom` |  |  |  |
+| `spec.resources` | `[]string \| valueFrom` |  |  | DigitalOceanDroplet (`status.outputs.urn`), DigitalOceanLoadBalancer (`status.outputs.urn`), DigitalOceanKubernetesCluster (`status.outputs.urn`), DigitalOceanVolume (`status.outputs.urn`), DigitalOceanBucket (`status.outputs.urn`), DigitalOceanDnsZone (`status.outputs.urn`), DigitalOceanVpc (`status.outputs.urn`), DigitalOceanReservedIp (`status.outputs.urn`) |
 
 ## Field Details
 
@@ -88,11 +88,13 @@ Human-friendly name of the project, shown in the DigitalOcean console.
 
 (Optional) The purpose of the project. DigitalOcean recognizes a set of
 standard purposes (for example "Web Application", "Website or blog",
-"Service or API") and stores anything else prefixed as "Other: <text>",
-which it strips again on read -- so any free text round-trips cleanly.
-A value that itself starts with "Other:" is rejected here: the API
-would double-prefix it and the read-back would never match, leaving a
-permanent diff no provisioner can converge.
+"Service or API") and stores anything else prefixed as "Other: <text>";
+the provider strips that prefix on read, so any free text round-trips
+cleanly. A value that itself starts with "Other:" is rejected here:
+DigitalOcean keeps exactly one prefix and re-capitalizes the rest
+("Other: probe" is stored as "Other: Probe"), the provider then strips
+the prefix, and the read-back ("Probe") can never equal what was
+written -- a permanent diff no provisioner can converge.
 
 - default: `Web Application`
 - rule: must not start with "Other:" -- DigitalOcean adds that prefix itself for non-standard purposes
@@ -130,13 +132,16 @@ contains. Every DigitalOcean resource exposes a URN of the form
 Use a literal URN, or reference the producing resource's urn stack
 output with an explicit valueFrom.kind -- the list is polymorphic
 across kinds (droplets, load balancers, buckets, domains, ...), so no
-single default kind applies and each reference names its own.
+single default kind applies and each reference names its own. The
+catalog kinds that publish a urn are declared as candidates below; any
+other member (a domain, an unmanaged resource) enters as a literal URN.
 A resource can belong to exactly one project: listing it here moves it
 from wherever it was, and removing it from the list moves it back to
 the account's default project (nothing is ever destroyed by membership
 changes). When the list is left empty entirely, membership is not
 managed and out-of-band assignments are left untouched.
 
+- references: DigitalOceanDroplet (`status.outputs.urn`), DigitalOceanLoadBalancer (`status.outputs.urn`), DigitalOceanKubernetesCluster (`status.outputs.urn`), DigitalOceanVolume (`status.outputs.urn`), DigitalOceanBucket (`status.outputs.urn`), DigitalOceanDnsZone (`status.outputs.urn`), DigitalOceanVpc (`status.outputs.urn`), DigitalOceanReservedIp (`status.outputs.urn`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ## Outputs
@@ -148,6 +153,22 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanProj
 | `status.outputs.project_id` | `string` | UUID of the project (the API identity, and the import id). |
 | `status.outputs.owner_uuid` | `string` | UUID of the account or team that owns the project. |
 | `status.outputs.owner_id` | `string` | Numeric id of the account or team that owns the project. |
+| `status.outputs.resource_urns` | `[]string` | URNs of the resources DigitalOcean reports as members of the project after apply (for example "do:droplet:12345"), sorted. When the spec's resources list is set this is the membership the project holds; when it is left empty membership is unmanaged and the list reflects whatever the account has assigned out of band. |
+
+## References
+
+Fields that can point at another resource's outputs:
+
+| Field | Kind | Output |
+|---|---|---|
+| `spec.resources` | DigitalOceanDroplet | `status.outputs.urn` |
+| `spec.resources` | DigitalOceanLoadBalancer | `status.outputs.urn` |
+| `spec.resources` | DigitalOceanKubernetesCluster | `status.outputs.urn` |
+| `spec.resources` | DigitalOceanVolume | `status.outputs.urn` |
+| `spec.resources` | DigitalOceanBucket | `status.outputs.urn` |
+| `spec.resources` | DigitalOceanDnsZone | `status.outputs.urn` |
+| `spec.resources` | DigitalOceanVpc | `status.outputs.urn` |
+| `spec.resources` | DigitalOceanReservedIp | `status.outputs.urn` |
 
 ## Referenced By
 

@@ -57,7 +57,7 @@ These are the most important decisions when configuring a VPC. Explore the full 
 
 **Region** -- The `region` field is create-time only, and every resource placed in this VPC must be in the same region. Cross-region private connectivity does not come from this kind -- it comes from VPC peering or from routing over the public network with TLS -- so a workload that spans regions needs one VPC per region with non-overlapping ranges, designed up front so future peering stays possible.
 
-**Regional defaults** -- Whether a VPC is the region's DEFAULT is computed by DigitalOcean and cannot be set here. Treat the default VPC as the untyped landing zone and this kind's VPCs as the deliberate ones: wire every resource's `vpc` reference explicitly instead of relying on regional defaults.
+**Regional defaults** -- Whether a VPC is the region's DEFAULT is computed by DigitalOcean and cannot be set here. Treat the default VPC as the untyped landing zone and this kind's VPCs as the deliberate ones: wire every resource's `vpc` reference explicitly instead of relying on regional defaults. One trap: in a region with no VPC yet, the first VPC created becomes the default and cannot be deleted, so a destroy of it fails -- seed the region's default (or create any resource there without a `vpc`) before declaring your first deliberate VPC in a new region.
 
 **Teardown order** -- DigitalOcean refuses to delete a VPC that still contains resources. Tear environments down in dependency order -- workloads, then load balancers and databases, then the VPC last.
 

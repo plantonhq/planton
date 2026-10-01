@@ -1,12 +1,23 @@
-# Kafka cluster fixture -- the shared Kafka fixture for BOTH B-wave Kafka
-# kinds (this topic kind and DigitalOceanDatabaseKafkaSchema reference this
-# same file), deployed as a manifest-path prerequisite because the kinds'
+# Kafka cluster fixture -- the shared Kafka fixture for BOTH Kafka kinds
+# (this topic kind and DigitalOceanDatabaseKafkaSchema reference this same
+# file), deployed as a manifest-path prerequisite because the kinds'
 # registry prerequisite installs a PostgreSQL cluster and Kafka needs its
 # own engine. Kafka is the catalog's most expensive fixture class: a
 # 3-node minimum (API-enforced) at the smallest Kafka-eligible size,
 # ~10 minutes to provision. Because both Kafka kinds deploy THIS instance
 # (same name), their proof lanes must run SERIALLY, never in parallel --
 # recorded in both kinds' profiles.
+#
+# The version and the size are POINT-IN-TIME values read from
+# `GET /v2/databases/options` (`options.kafka.versions` and
+# `options.kafka.layouts[num_nodes=3].sizes`), not from the generic
+# PostgreSQL size list: Kafka's smallest eligible size is one step above
+# the smallest database size (measured 2026-09-17: `db-s-2vcpu-2gb` is NOT
+# offered for Kafka; `db-s-2vcpu-4gb` is the smallest; versions offered
+# were 3.9 and 4.2). Re-check both before a lane when a create answers
+# `422 invalid cluster engine version` or a size/layout error. The cluster
+# name carries the run id because DigitalOcean's cluster names are
+# account-unique and a delete returns before the cluster is gone.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
@@ -22,9 +33,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-do-kafka-fx
+  clusterName: pltn-e2e-do-kafka-fx-${E2E_RUN_ID}
   engine: kafka
-  engineVersion: "3.8"
+  engineVersion: "4.2"
   region: nyc3
-  sizeSlug: db-s-2vcpu-2gb
+  sizeSlug: db-s-2vcpu-4gb
   nodeCount: 3

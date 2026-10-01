@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azureexpressrouteport.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureExpressRoutePortStackOutputs** captures the outputs of
 // provisioning an ExpressRoute Port. The per-link facility facts
 // (router, interface, patch panel, rack) are what you hand to the
@@ -74,5 +76,5 @@ message AzureExpressRoutePortStackOutputs {
   // subscription redeems one to be built on this port. Marked sensitive
   // in both engines.
   // Example valueFrom fieldPath: status.outputs.authorization_keys.partner-team
-  map<string, string> authorization_keys = 19;
+  map<string, string> authorization_keys = 19 [(dev.planton.shared.options.sensitive) = true];
 }

@@ -312,6 +312,23 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 			}
 		}
 	}
+	// ---- sign-in (auth.google / auth.generic_oauth) -------------------------------------------------
+	// Non-secret provider settings join grafana.ini; each client secret
+	// rides envValueFrom into the module-owned Secret (signin.go). The
+	// pod carries the Secret's fingerprint because Grafana reads it only
+	// at start: a rotated secret changes the pod template, so the next
+	// apply rolls Grafana onto it.
+	if s := locals.SignIn; s != nil {
+		for section, settings := range s.Ini {
+			ini[section] = settings
+		}
+		for name, source := range s.EnvValueFrom {
+			envValueFrom[name] = source
+		}
+		values["podAnnotations"] = map[string]interface{}{
+			vars.CredentialsChecksumAnnotation: credentialsChecksum(s.SecretData),
+		}
+	}
 	if len(ini) > 0 {
 		values["grafana.ini"] = ini
 	}
@@ -363,7 +380,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 		}
 	}
 
-	// ---- env wiring (database + datasource credentials) --------------------------------------------------
+	// ---- env wiring (database, datasource and sign-in credentials) ---------------------------------------
 	if len(env) > 0 {
 		values["env"] = env
 	}

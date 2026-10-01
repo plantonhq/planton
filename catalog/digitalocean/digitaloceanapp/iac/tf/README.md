@@ -21,7 +21,7 @@ module "app" {
 
   spec = {
     app_name = "demo-app"
-    region   = "nyc3"
+    region   = "nyc"
     services = [
       {
         name = "web"
@@ -58,4 +58,4 @@ Enum strings that are empty or end in `_unspecified` are omitted. Image `registr
 | `live_domain` | Live hostname without scheme |
 | `active_deployment_id` | Currently live deployment UUID |
 
-See the kind [README](../../README.md) and [GUIDE](../../GUIDE.md) for the spec, including Pulumi-only gaps that Terraform does wire (VPC, maintenance, liveness probes, ingress authority/secure_header, alert destinations).
+See the kind [README](../../README.md) and [GUIDE](../../GUIDE.md) for the spec, including the two arms only this engine wires at the current Pulumi SDK (service/worker liveness probes and ingress `secure_header`).

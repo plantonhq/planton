@@ -13,9 +13,7 @@ spec:
   tls:
     type: cert_manager
     certManagerIssuer:
-      kind: cluster_issuer
-      name:
-        valueFrom:
-          kind: KubernetesClusterIssuer
-          name: "<your-cluster-issuer>"
-          fieldPath: status.outputs.cluster_issuer_name
+      clusterIssuer:
+        name:
+          valueFrom:
+            name: "<your-cluster-issuer>"

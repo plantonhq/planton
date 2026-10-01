@@ -85,9 +85,9 @@ spec:
   certificates:
     type: cert_manager
     certManagerIssuer:
-      kind: cluster_issuer
-      name:
-        value: hack-cluster-issuer
+      clusterIssuer:
+        name:
+          value: hack-cluster-issuer
   httpTimeoutMs: 5000
   priorityClassName: system-cluster-critical
   nodeSelector:
@@ -156,9 +156,11 @@ spec:
 | `spec.podIdentity.gcpWorkloadIdentity.serviceAccountEmail` | `string` |  |  |  |
 | `spec.certificates` | `KubernetesKedaCertificates` |  |  |  |
 | `spec.certificates.type` | `string` |  | `operator` |  |
-| `spec.certificates.certManagerIssuer` | `KubernetesKedaCertManagerIssuer` |  |  |  |
-| `spec.certificates.certManagerIssuer.kind` | `enum` |  | `issuer` |  |
-| `spec.certificates.certManagerIssuer.name` | `string \| valueFrom` | yes |  | KubernetesIssuer (`status.outputs.issuer_name`) |
+| `spec.certificates.certManagerIssuer` | `CertManagerIssuerRef` |  |  |  |
+| `spec.certificates.certManagerIssuer.issuer` | `CertManagerNamespacedIssuerRef` |  |  |  |
+| `spec.certificates.certManagerIssuer.issuer.name` | `string \| valueFrom` | yes |  | KubernetesIssuer (`status.outputs.issuer_name`) |
+| `spec.certificates.certManagerIssuer.clusterIssuer` | `CertManagerClusterIssuerRef` |  |  |  |
+| `spec.certificates.certManagerIssuer.clusterIssuer.name` | `string \| valueFrom` | yes |  | KubernetesClusterIssuer (`status.outputs.cluster_issuer_name`) |
 | `spec.httpTimeoutMs` | `int32` |  | `3000` |  |
 | `spec.priorityClassName` | `string` |  |  |  |
 | `spec.nodeSelector` | `map<string, string>` |  |  |  |
@@ -554,35 +556,49 @@ the cluster).
 
 ### spec.certificates.certManagerIssuer
 
-`KubernetesKedaCertManagerIssuer`
+`CertManagerIssuerRef`
 
 cert-manager issuer that signs KEDA's certificates (type cert_manager).
 Empty = the chart generates its own self-signed CA + Issuer chain.
 
-### spec.certificates.certManagerIssuer.kind
+The grain is the arm: `issuer` (a namespaced Issuer in the installation
+namespace) or `cluster_issuer` (a cluster-scoped ClusterIssuer).
 
-`enum` · optional (explicit presence)
+- rule: An issuer is required -- choose 'issuer' (a namespaced Issuer in the installation namespace) or 'cluster_issuer' (a cluster-scoped ClusterIssuer)
 
-Issuer grain: a namespaced Issuer (must live in the installation
-namespace) or a cluster-scoped ClusterIssuer.
+### spec.certificates.certManagerIssuer.issuer
 
-- default: `issuer`
+`CertManagerNamespacedIssuerRef`
 
-Allowed values (use exactly as shown):
+A namespaced Issuer in the installation namespace, by name.
 
-- `issuer` -- Namespaced Issuer in the installation namespace.
-- `cluster_issuer` -- Cluster-scoped ClusterIssuer.
-
-### spec.certificates.certManagerIssuer.name
+### spec.certificates.certManagerIssuer.issuer.name
 
 `string | valueFrom` · required
 
-Name of the Issuer / ClusterIssuer that signs KEDA's certificates.
-References the matching Planton kind's output by default.
+Issuer name. Accepts a literal name or a reference to a KubernetesIssuer
+resource.
 
 - references: KubernetesIssuer (`status.outputs.issuer_name`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesIssuer, name: <that resource's name>, fieldPath: status.outputs.issuer_name}} -- a bare string does not parse
+
+### spec.certificates.certManagerIssuer.clusterIssuer
+
+`CertManagerClusterIssuerRef`
+
+A cluster-scoped ClusterIssuer, by name.
+
+### spec.certificates.certManagerIssuer.clusterIssuer.name
+
+`string | valueFrom` · required
+
+ClusterIssuer name. Accepts a literal name or a reference to a
+KubernetesClusterIssuer resource.
+
+- references: KubernetesClusterIssuer (`status.outputs.cluster_issuer_name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesClusterIssuer, name: <that resource's name>, fieldPath: status.outputs.cluster_issuer_name}} -- a bare string does not parse
 
 ### spec.httpTimeoutMs
 
@@ -704,7 +720,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.certificates.certManagerIssuer.name` | KubernetesIssuer | `status.outputs.issuer_name` |
+| `spec.certificates.certManagerIssuer.issuer.name` | KubernetesIssuer | `status.outputs.issuer_name` |
+| `spec.certificates.certManagerIssuer.clusterIssuer.name` | KubernetesClusterIssuer | `status.outputs.cluster_issuer_name` |
 
 ## See Also
 

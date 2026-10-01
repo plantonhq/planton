@@ -52,11 +52,11 @@ spec:
 | `spec.annotations` | `map<string, string>` |  |  |  |
 | `spec.immutable` | `bool` |  |  |  |
 | `spec.opaque` | `KubernetesSecretOpaqueData` |  |  |  |
-| `spec.opaque.data` | `map<string, string>` |  |  |  |
-| `spec.opaque.binaryData` | `map<string, string>` |  |  |  |
+| `spec.opaque.data` | `map<string, string>` (sensitive) |  |  |  |
+| `spec.opaque.binaryData` | `map<string, string>` (sensitive) |  |  |  |
 | `spec.tls` | `KubernetesSecretTlsData` |  |  |  |
 | `spec.tls.tlsCrt` | `string` | yes |  |  |
-| `spec.tls.tlsKey` | `string` | yes |  |  |
+| `spec.tls.tlsKey` | `string` (sensitive) | yes |  |  |
 | `spec.dockerConfigJson` | `KubernetesSecretDockerConfigJsonData` |  |  |  |
 | `spec.dockerConfigJson.registryServer` | `string` | yes |  |  |
 | `spec.dockerConfigJson.username` | `string` | yes |  |  |
@@ -64,9 +64,9 @@ spec:
 | `spec.dockerConfigJson.email` | `string` |  |  |  |
 | `spec.basicAuth` | `KubernetesSecretBasicAuthData` |  |  |  |
 | `spec.basicAuth.username` | `string` | yes |  |  |
-| `spec.basicAuth.password` | `string` | yes |  |  |
+| `spec.basicAuth.password` | `string` (sensitive) | yes |  |  |
 | `spec.sshAuth` | `KubernetesSecretSshAuthData` |  |  |  |
-| `spec.sshAuth.sshPrivateKey` | `string` | yes |  |  |
+| `spec.sshAuth.sshPrivateKey` | `string` (sensitive) | yes |  |  |
 | `spec.serviceAccountToken` | `KubernetesSecretServiceAccountTokenData` |  |  |  |
 | `spec.serviceAccountToken.serviceAccountName` | `string \| valueFrom` | yes |  | KubernetesServiceAccount (`spec.name`) |
 
@@ -127,30 +127,31 @@ Maps to Kubernetes secret type "Opaque".
 
 ### spec.opaque.data
 
-`map<string, string>`
+`map<string, string>` · sensitive
 
-Key-value pairs of secret data.
-Values are plain strings (Kubernetes stringData semantics); Kubernetes stores them
-base64-encoded at rest. Use `binary_data` for values that are not valid UTF-8.
+Key-value pairs of secret data. Each value is a secret field: on Planton it takes only a
+reference to a managed secret (`$secret/<slug>`, or `$secret/<slug>/<key>` for one key of a
+key-value secret), which the runner resolves at deploy, so the secret itself is never stored
+with the resource; a deploy without the platform takes the literal. The resolved values are
+plain strings (Kubernetes stringData semantics), which Kubernetes stores base64-encoded at
+rest. Use `binary_data` for values that are not valid UTF-8.
 
 ### spec.opaque.binaryData
 
-`map<string, string>`
+`map<string, string>` · sensitive
 
 Binary secret entries with base64-encoded values — the exact wire form the Kubernetes
 API uses for `data` in YAML manifests. Use this for payloads that are not valid UTF-8
 (keystores, certificates in binary form, serialized blobs). Keys must not overlap with
 `data` keys: both maps merge into the same underlying Secret data.
 
-A value may also be a downstream platform's secret or variable reference token
-(`$secret/...`, `$var/...`) in place of the literal: the platform resolves the token to
-the stored value before the module runs, and the stored value is then the base64 the
-module writes. Without this arm a private key or a CA bundle held in the platform's
-secret store could never reach this field, because a reference is the only form a
-secret is ever allowed to take in a manifest. The literal arm keeps refusing malformed
-base64 before any apply.
+Each value is a secret field: on Planton it takes only a reference to a managed secret
+(`$secret/...`) in place of the literal. The platform checks the base64 rule on the value
+the reference resolves to, before the module runs, and the stored value is then the base64
+the module writes. A deploy without the platform takes the literal, and the rule refuses
+malformed base64 before any apply.
 
-- rule: {"map":{"keys":{"string":{"maxLen":"253","pattern":"^[-._a-zA-Z0-9]+$"}},"values":{"string":{"pattern":"^(?:\\$(?:secret|var)/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$"}}}}
+- rule: {"map":{"keys":{"string":{"maxLen":"253","pattern":"^[-._a-zA-Z0-9]+$"}},"values":{"string":{"pattern":"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"}}}}
 
 ### spec.tls
 
@@ -170,10 +171,11 @@ Stored as the "tls.crt" key in the Kubernetes Secret.
 
 ### spec.tls.tlsKey
 
-`string` · required
+`string` · required · sensitive
 
-PEM-encoded TLS private key.
-Stored as the "tls.key" key in the Kubernetes Secret.
+PEM-encoded TLS private key, and a secret field: on Planton only a `$secret/<slug>`
+reference to the managed secret that holds it (a deploy without the platform takes the
+literal). Stored as the "tls.key" key in the Kubernetes Secret.
 
 - rule: {"string":{"minLen":"1"}}
 
@@ -234,10 +236,11 @@ Stored as the "username" key in the Kubernetes Secret.
 
 ### spec.basicAuth.password
 
-`string` · required
+`string` · required · sensitive
 
-Password for basic authentication.
-Stored as the "password" key in the Kubernetes Secret.
+Password for basic authentication, and a secret field: on Planton only a `$secret/<slug>`
+reference to the managed secret that holds it (a deploy without the platform takes the
+literal). Stored as the "password" key in the Kubernetes Secret.
 
 - rule: {"string":{"minLen":"1"}}
 
@@ -250,10 +253,11 @@ Maps to Kubernetes secret type "kubernetes.io/ssh-auth".
 
 ### spec.sshAuth.sshPrivateKey
 
-`string` · required
+`string` · required · sensitive
 
-PEM-encoded SSH private key.
-Stored as the "ssh-privatekey" key in the Kubernetes Secret.
+PEM-encoded SSH private key, and a secret field: on Planton only a `$secret/<slug>`
+reference to the managed secret that holds it (a deploy without the platform takes the
+literal). Stored as the "ssh-privatekey" key in the Kubernetes Secret.
 
 - rule: {"string":{"minLen":"1"}}
 
@@ -316,19 +320,19 @@ Fields on other kinds that can point at this resource:
 | KubernetesJob | `spec.pod.imagePullSecrets` | `spec.name` |
 | KubernetesKarapace | `spec.httpAuthentication.basic.secretName` | `status.outputs.secret_name` |
 | KubernetesListenerSet | `spec.listeners[].tls.certificateRefs[].name` | `status.outputs.secret_name` |
-| KubernetesMetricsServer | `spec.tls.existingSecretName` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.transportTls.caSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.config.securityConfigSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.config.adminSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.security.config.adminCredentialsSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.dashboards.opensearchCredentialsSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.monitoring.monitoringUserSecret` | `metadata.name` |
-| KubernetesOpenSearch | `spec.keystore[].secret` | `metadata.name` |
-| KubernetesRabbitMq | `spec.tls.caSecretName` | `metadata.name` |
+| KubernetesMetricsServer | `spec.tls.existingSecretName` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.transportTls.caSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.config.securityConfigSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.config.adminSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.security.config.adminCredentialsSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.dashboards.opensearchCredentialsSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.monitoring.monitoringUserSecret` | `status.outputs.secret_name` |
+| KubernetesOpenSearch | `spec.keystore[].secret` | `status.outputs.secret_name` |
+| KubernetesRabbitMq | `spec.tls.caSecretName` | `status.outputs.secret_name` |
 | KubernetesServiceAccount | `spec.imagePullSecrets` | `spec.name` |
-| KubernetesSolr | `spec.security.basicAuthSecret` | `metadata.name` |
-| KubernetesSolrOperator | `spec.mtls.clientCertSecret` | `metadata.name` |
-| KubernetesSolrOperator | `spec.mtls.caCertSecret` | `metadata.name` |
+| KubernetesSolr | `spec.security.basicAuthSecret` | `status.outputs.secret_name` |
+| KubernetesSolrOperator | `spec.mtls.clientCertSecret` | `status.outputs.secret_name` |
+| KubernetesSolrOperator | `spec.mtls.caCertSecret` | `status.outputs.secret_name` |
 | KubernetesStatefulSet | `spec.pod.imagePullSecrets` | `spec.name` |
 
 ## See Also

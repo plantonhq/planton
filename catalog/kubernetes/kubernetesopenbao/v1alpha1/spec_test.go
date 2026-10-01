@@ -21,6 +21,8 @@ func int32Ptr(i int32) *int32 { return &i }
 func strPtr(s string) *string { return &s }
 func boolPtr(b bool) *bool    { return &b }
 
+func auditSink(s KubernetesOpenBaoAudit_Sink) *KubernetesOpenBaoAudit_Sink { return &s }
+
 func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value},
@@ -81,6 +83,7 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 					Limits:   &kubernetes.CpuMemory{Cpu: "1", Memory: "1Gi"},
 				},
 				AuditStorage: &KubernetesOpenBaoVolume{Size: strPtr("5Gi")},
+				Audit:        &KubernetesOpenBaoAudit{Enabled: true, Sink: auditSink(KubernetesOpenBaoAudit_file)},
 				LogLevel:     strPtr("debug"),
 				LogFormat:    strPtr("json"),
 				Scheduling: &KubernetesOpenBaoScheduling{
@@ -208,6 +211,29 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 				Storage:      postgresqlByReference(),
 				AuditStorage: &KubernetesOpenBaoVolume{Size: strPtr("5Gi")},
 			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("an audit device to stdout (the default sink) should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Audit: &KubernetesOpenBaoAudit{Enabled: true}}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("an audit device to a file on the audit volume should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{
+				AuditStorage: &KubernetesOpenBaoVolume{Size: strPtr("5Gi")},
+				Audit:        &KubernetesOpenBaoAudit{Enabled: true, Sink: auditSink(KubernetesOpenBaoAudit_file)},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a disabled audit device naming the file sink needs no volume and should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Audit: &KubernetesOpenBaoAudit{Sink: auditSink(KubernetesOpenBaoAudit_file)}}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("dev mode beside a disabled audit block should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Dev: &KubernetesOpenBaoDevMode{}, Audit: &KubernetesOpenBaoAudit{}}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -713,6 +739,20 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 				}},
 			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an audit device to a file without an audit volume should be refused, naming the volume to declare", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Audit: &KubernetesOpenBaoAudit{Enabled: true, Sink: auditSink(KubernetesOpenBaoAudit_file)}}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("no volume holds the file — declare server.auditStorage"))
+		})
+
+		ginkgo.It("dev mode beside an enabled audit device should be refused, saying dev reads no configuration file", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Dev: &KubernetesOpenBaoDevMode{}, Audit: &KubernetesOpenBaoAudit{Enabled: true}}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("Dev mode reads no configuration file"))
 		})
 
 		ginkgo.It("an audit volume size without a unit suffix should be invalid", func() {

@@ -13,7 +13,12 @@
 # shape in Pulumi modules, and rejects legacy pulumi.planton.dev annotations
 # in canonical e2e manifests. Static, no network.
 #
-# See hack/guards/ensure_cross_engine_tag_keys.sh for the full contract.
+# The Azure step holds both engines to the same identity tag keys AND values:
+# resource_kind is the kind's CloudResourceKind enum name lowercased, and
+# resource_id is written only when the resource has an id (no name fallback).
+#
+# See hack/guards/ensure_cross_engine_tag_keys.sh and
+# hack/guards/ensure_cross_engine_azure_tag_values.sh for the full contracts.
 # =============================================================================
 
 name: lint.cross-engine-tags
@@ -24,6 +29,8 @@ on:
       - 'catalog/**/iac/**'
       - 'catalog/**/e2e/manifest.yaml'
       - 'hack/guards/ensure_cross_engine_tag_keys.sh'
+      - 'hack/guards/ensure_cross_engine_azure_tag_values.sh'
+      - 'shared/cloudresourcekind/cloud_resource_kind.proto'
       - '.github/workflows/lint.cross-engine-tags.yaml'
   push:
     branches:
@@ -32,6 +39,8 @@ on:
       - 'catalog/**/iac/**'
       - 'catalog/**/e2e/manifest.yaml'
       - 'hack/guards/ensure_cross_engine_tag_keys.sh'
+      - 'hack/guards/ensure_cross_engine_azure_tag_values.sh'
+      - 'shared/cloudresourcekind/cloud_resource_kind.proto'
       - '.github/workflows/lint.cross-engine-tags.yaml'
   workflow_dispatch: {}
 
@@ -50,3 +59,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify cross-engine identity-tag key sets
         run: bash ./hack/guards/ensure_cross_engine_tag_keys.sh
+      - name: Verify cross-engine Azure identity-tag keys and values
+        run: bash ./hack/guards/ensure_cross_engine_azure_tag_values.sh

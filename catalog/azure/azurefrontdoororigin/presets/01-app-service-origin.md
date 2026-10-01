@@ -29,4 +29,4 @@ routes by), certificate-name checking stays on, and ports stay 80/443.
 | --- | --- | --- |
 | `<origin-group-resource-name>` | The AzureFrontDoorOriginGroup's Planton resource name | Your Front Door composition |
 | `originName` (example value) | 2-90 chars -- rename to your convention | Your naming convention |
-| `<app-name>` | The App Service's name | Your App Service resource |
+| `<web-app-resource-name>` | The AzureLinuxWebApp whose default hostname the origin targets | Your App Service resource |

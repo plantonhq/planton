@@ -73,6 +73,14 @@ NOTES
   `sensitive = true` on the Terraform output. Never apply this exception to material the
   MODULE generates (keys/PEMs the module creates do not belong in outputs at all).
 - Keep field names stable; other modules/tests reference these outputs downstream.
+- A resource's live STATUS or health is never an output. Outputs are identity and wiring
+  surfaces (ids, hostnames, endpoints, ARNs); a status captured at apply time goes stale
+  the moment the cloud changes it (a member fails, a cluster upgrades, a pool scales), and a
+  stale "active" in stored outputs is worse than no value. Health belongs to whoever reads
+  it live -- the E2E verifier asserts it from the API, a console reads it on demand. The
+  same holds for volatile metrics (utilization, timestamps) and for member/child ids that
+  churn by design (autoscaled droplets): consumers address such fleets through tags or
+  selectors, not through an output that is wrong an hour later.
 - Export the ids of IMPLICIT sub-resources that other kinds target, constructed from
   the parent's id when the provider offers no readback -- ARM/cloud APIs often hang
   capabilities off a sub-resource nothing materializes explicitly (e.g. a storage

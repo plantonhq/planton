@@ -212,8 +212,8 @@ func Resources(ctx *pulumi.Context, stackInput *azuremanagedredisv1alpha1.AzureM
 	ctx.Export(OpHostname, createdInstance.Hostname)
 	ctx.Export(OpDatabaseId, databaseId)
 	ctx.Export(OpPort, databasePort)
-	ctx.Export(OpPrimaryAccessKey, primaryAccessKey)
-	ctx.Export(OpSecondaryAccessKey, secondaryAccessKey)
+	ctx.Export(OpPrimaryAccessKey, pulumi.ToSecret(primaryAccessKey))
+	ctx.Export(OpSecondaryAccessKey, pulumi.ToSecret(secondaryAccessKey))
 	ctx.Export(OpIdentityPrincipalId, identityPrincipalId)
 
 	return nil

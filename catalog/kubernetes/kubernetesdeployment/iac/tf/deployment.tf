@@ -15,9 +15,9 @@ resource "kubernetes_deployment_v1" "this" {
     labels    = local.final_labels
   }
 
-  # Probe timing fields and replica counts echo back from the API server with
-  # defaulted values; without waiting disabled the provider would flag them as
-  # perpetual diffs when HPA takes over scaling.
+  # The apply waits for the rollout it starts, and fails when the new pods
+  # never become ready. An apply that changes nothing starts no rollout and
+  # does not wait, so it cannot notice a rollout an earlier apply left failing.
   wait_for_rollout = true
 
   spec {
@@ -266,7 +266,7 @@ resource "kubernetes_deployment_v1" "this" {
           for_each = local.init_containers
           content {
             name              = init_container.value.name
-            image             = "${init_container.value.image.repo}:${init_container.value.image.tag}"
+            image             = join("", [init_container.value.image.repo, init_container.value.image.tag != "" ? ":${init_container.value.image.tag}" : "", init_container.value.image.digest != "" ? "@${init_container.value.image.digest}" : ""])
             image_pull_policy = try(init_container.value.image_pull_policy, "") != "" ? init_container.value.image_pull_policy : null
             command           = length(try(init_container.value.command, [])) > 0 ? init_container.value.command : null
             args              = length(try(init_container.value.args, [])) > 0 ? init_container.value.args : null
@@ -363,7 +363,7 @@ resource "kubernetes_deployment_v1" "this" {
           for_each = local.all_containers
           content {
             name              = container.value.name
-            image             = "${container.value.image.repo}:${container.value.image.tag}"
+            image             = join("", [container.value.image.repo, container.value.image.tag != "" ? ":${container.value.image.tag}" : "", container.value.image.digest != "" ? "@${container.value.image.digest}" : ""])
             image_pull_policy = try(container.value.image_pull_policy, "") != "" ? container.value.image_pull_policy : null
             command           = length(try(container.value.command, [])) > 0 ? container.value.command : null
             args              = length(try(container.value.args, [])) > 0 ? container.value.args : null

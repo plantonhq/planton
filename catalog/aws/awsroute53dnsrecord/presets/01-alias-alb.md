@@ -19,7 +19,7 @@ This preset creates a Route53 alias record pointing to an Application Load Balan
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<route53-hosted-zone-id>` | ID of your Route53 hosted zone | AWS Route53 console or `AwsRoute53Zone` status outputs |
-| `<your-domain.com>` | Domain or subdomain to point to the ALB (e.g., `example.com` or `app.example.com`) | Your domain registrar or DNS provider |
+| `app.example.com` | Domain or subdomain to point to the ALB (e.g., `example.com` or `app.example.com`) | Your domain registrar or DNS provider |
 | `<alb-dns-name>` | DNS name of the ALB (e.g., `my-alb-123456.us-east-1.elb.amazonaws.com`) | AWS EC2 console or `AwsAlb` status outputs (`load_balancer_dns_name`) |
 | `<alb-hosted-zone-id>` | Hosted zone ID of the ALB (AWS service zone, not your Route53 zone) | AWS EC2 console or `AwsAlb` status outputs (`load_balancer_hosted_zone_id`) |
 

@@ -7,7 +7,6 @@ Terraform IaC module for notification webhook destinations.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareNotificationWebhookSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_notification_policy_webhooks
 outputs.tf    — webhook_id, type
 ```

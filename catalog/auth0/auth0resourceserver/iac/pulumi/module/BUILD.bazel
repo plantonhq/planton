@@ -1,8 +1,9 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
     srcs = [
+        "default_grants.go",
         "locals.go",
         "main.go",
         "outputs.go",
@@ -15,5 +16,18 @@ go_library(
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["locals_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/auth0/auth0resourceserver/v1alpha1",
+        "//shared",
+        "@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@org_golang_google_protobuf//proto",
     ],
 )

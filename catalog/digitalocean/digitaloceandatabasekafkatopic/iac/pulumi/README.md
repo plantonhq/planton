@@ -14,7 +14,7 @@ Provisions a topic on a DigitalOcean managed Kafka cluster -- the complete `digi
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseKafkaTopicStackOutputs` contract: `cluster_id`, `topic_name`, `state`.
+Exactly the `DigitalOceanDatabaseKafkaTopicStackOutputs` contract: `cluster_id`, `topic_name`. The SDK's `State` property is deliberately not exported (an apply-time snapshot of an asynchronous create goes stale; live state belongs to whoever reads the API).
 
 ## Behavior notes
 

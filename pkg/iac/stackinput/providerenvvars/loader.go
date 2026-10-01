@@ -2,10 +2,12 @@ package providerenvvars
 
 import (
 	"os"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/crkreflect"
 	"github.com/plantonhq/planton/pkg/iac/provider/aws/awswebidentity"
+	"github.com/plantonhq/planton/pkg/iac/provider/gcp/gcpwebidentity"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubeconfig"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"gopkg.in/yaml.v3"
@@ -34,14 +36,9 @@ type Options struct {
 	// Required for Kubernetes provider.
 	FileCacheLoc string
 
-	// ResolveAwsWebIdentity, when true, makes the AWS loader perform the STS
-	// AssumeRoleWithWebIdentity exchange for keyless (oidc) provider
-	// configs and emit the resulting short-lived credentials as AWS_* env vars. The
-	// tofu/terraform execution path sets this (its HCL `provider "aws" {}` block is empty, so
-	// credentials must arrive via env vars); the pulumi path leaves it false because its
-	// in-program builder owns provider auth -- resolving here would trigger a wasteful STS
-	// call whose output is shadowed by the state-backend keys anyway.
-	ResolveAwsWebIdentity bool
+	// Engine names the IaC engine these variables are for. It decides only what a keyless
+	// (web-identity) configuration becomes, and it has no default: see Engine.
+	Engine Engine
 
 	// KubeContext selects the kubeconfig context for a Kubernetes deploy (the
 	// --kube-context flag, else the manifest's context label). It is exported
@@ -49,6 +46,53 @@ type Options struct {
 	// the Pulumi provider getter all read. Empty means the kubeconfig's
 	// current context.
 	KubeContext string
+}
+
+// Engine is how the IaC engine consuming these variables authenticates its providers.
+//
+// It matters for keyless (web-identity) configurations alone, and there it is the whole
+// difference. An engine that reads credentials only from its environment must be handed the
+// keyless credential in that form, while an engine that builds its providers in the program owns
+// the exchange itself and must be handed nothing, or the job pays for an exchange whose result is
+// shadowed. The zero value is deliberately neither: a keyless configuration reaching a caller that
+// never said which engine it is gets a refusal, never a deploy left to whatever ambient identity
+// the machine holds, which is exactly the harm keyless connections exist to prevent. Stored-key
+// and runner-mode configurations read the same on every engine and ignore it.
+type Engine int
+
+const (
+	engineUnset Engine = iota
+	// EngineReadsEnvironment is OpenTofu and Terraform: the catalog modules' provider blocks are
+	// empty, so a keyless configuration becomes the credential the provider reads -- a short-lived
+	// credential exchanged here (AWS, Google Cloud) or the federated token the provider exchanges
+	// itself (Azure).
+	EngineReadsEnvironment
+	// EngineBuildsProviders is Pulumi: the program's provider builders read provider_config and
+	// perform every keyless exchange, so a keyless configuration adds no credential variable here.
+	EngineBuildsProviders
+)
+
+// keylessResolvers are the exchanges an environment-reading engine needs, injected so a test never
+// reaches a cloud.
+type keylessResolvers struct {
+	aws awswebidentity.CredentialResolver
+	gcp gcpwebidentity.TokenResolver
+}
+
+var cloudResolvers = keylessResolvers{aws: awswebidentity.ResolveCredentials, gcp: gcpwebidentity.ResolveAccessToken}
+
+// keylessExchangeTimeout bounds each keyless exchange done for an environment-reading engine. The
+// exchange runs once, before any engine command; the ceiling protects the stack job from a hung
+// token endpoint. A fresh context.Background() is used rather than a caller's so the public
+// providerenvvars and tofumodule signatures stay stable; the minted token's own short lifetime
+// bounds the credential independently.
+const keylessExchangeTimeout = 60 * time.Second
+
+// errEngineUnset refuses a keyless configuration whose caller did not name its engine.
+func errEngineUnset(provider string) error {
+	return errors.Errorf("a keyless %s configuration reached the provider environment without naming its engine: "+
+		"set Options.Engine (EngineReadsEnvironment for OpenTofu and Terraform, EngineBuildsProviders for Pulumi); "+
+		"a keyless credential is never left to the machine's ambient identity", provider)
 }
 
 // GetEnvVarsWithOptions takes stack input YAML and options, returns provider-specific environment variables.
@@ -84,12 +128,12 @@ func GetEnvVarsWithOptions(stackInputYaml string, opts Options) (map[string]stri
 	// 6. AWS is handled here -- NOT in loadProviderEnvVars -- because the AWS tofu modules ship
 	//    an empty `provider "aws" {}` block, so both region and credentials are injection-driven:
 	//    AWS_REGION is a RESOURCE property that must be emitted even when there is no
-	//    provider_config (the standalone-CLI ambient case), and keyless connections require an
-	//    STS exchange. Every other provider keeps the simple provider_config -> env-var mapping.
+	//    provider_config (the standalone-CLI ambient case), and a keyless connection's STS
+	//    exchange runs in that region. Every other provider keeps the provider_config -> env-var
+	//    mapping of loadProviderEnvVars.
 	if provider == cloudresourcekind.CloudResourceProvider_aws {
 		resourceRegion := extractTargetSpecRegion(stackInputMap)
-		return loadAwsEnvVars(providerConfigYaml, hasProviderConfig, resourceRegion, opts,
-			awswebidentity.ResolveCredentials)
+		return loadAwsEnvVars(providerConfigYaml, hasProviderConfig, resourceRegion, opts, cloudResolvers.aws)
 	}
 
 	// 7. Kubernetes without a provider_config is the ambient workflow, and it
@@ -117,7 +161,7 @@ func GetEnvVarsWithOptions(stackInputYaml string, opts Options) (map[string]stri
 	}
 
 	// 8. Load provider_config and convert to env vars based on provider
-	envVars, err := loadProviderEnvVars(providerConfigYaml, provider, opts)
+	envVars, err := loadProviderEnvVars(providerConfigYaml, provider, opts, cloudResolvers)
 	if err != nil {
 		return nil, err
 	}
@@ -173,18 +217,30 @@ func extractTargetSpecRegion(stackInputMap map[string]interface{}) string {
 	return region
 }
 
+// putIfSet adds key to env only when value is non-empty. An empty variable is not an unset one:
+// the runner appends these after its own environment and the last duplicate wins, so an empty
+// value would erase what the runner's machine holds (its ambient identity, in runner mode).
+func putIfSet(env map[string]string, key, value string) {
+	if value != "" {
+		env[key] = value
+	}
+}
+
 // loadProviderEnvVars loads the provider config YAML and returns environment variables based on the provider type.
 // AWS is intentionally absent here -- it is handled in GetEnvVarsWithOptions (region injection + STS exchange).
-func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.CloudResourceProvider, opts Options) (map[string]string, error) {
+func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.CloudResourceProvider, opts Options,
+	resolvers keylessResolvers) (map[string]string, error) {
 	switch provider {
 	case cloudresourcekind.CloudResourceProvider_openfga:
 		return loadOpenFgaEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_gcp:
-		return loadGcpEnvVars(providerConfigYaml)
+		return loadGcpEnvVars(providerConfigYaml, opts, resolvers.gcp)
 	case cloudresourcekind.CloudResourceProvider_azure:
-		return loadAzureEnvVars(providerConfigYaml)
+		return loadAzureEnvVars(providerConfigYaml, opts)
 	case cloudresourcekind.CloudResourceProvider_auth0:
 		return loadAuth0EnvVars(providerConfigYaml)
+	case cloudresourcekind.CloudResourceProvider_stripe:
+		return loadStripeEnvVars(providerConfigYaml)
 	case cloudresourcekind.CloudResourceProvider_kubernetes:
 		return loadKubernetesEnvVars(providerConfigYaml, opts.FileCacheLoc)
 	case cloudresourcekind.CloudResourceProvider_cloudflare:

@@ -237,6 +237,14 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpTargetHttpsProxy | `spec.sslCertificates` | `status.outputs.self_link` |
+
 ## See Also
 
 - [Overview](../README.md)

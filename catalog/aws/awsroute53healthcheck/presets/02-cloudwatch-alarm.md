@@ -20,7 +20,7 @@ This preset creates a health check that mirrors a CloudWatch alarm's state inste
 | --- | --- | --- |
 | `<aws-region>` | Region for provider API calls | Your deployment region |
 | `<alarm-name>` | The CloudWatch alarm to mirror | CloudWatch console or your AwsCloudwatchAlarm resource |
-| `<alarm-region>` | The region the alarm lives in | Where the alarm was created |
+| `us-east-1` (`cloudwatchAlarmRegion`) | The region the alarm lives in | Where the alarm was created |
 
 ## Related Presets
 

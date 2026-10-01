@@ -62,7 +62,7 @@ spec:
 |---|---|---|---|---|
 | `spec.resourceGroup` | `string \| valueFrom` | yes |  | AzureResourceGroup (`status.outputs.resource_group_name`) |
 | `spec.recoveryVaultName` | `string \| valueFrom` | yes |  | AzureRecoveryServicesVault (`status.outputs.recovery_services_vault_name`) |
-| `spec.sourceStorageAccountId` | `string \| valueFrom` | yes |  | AzureBackupContainerStorageAccount (`status.outputs.storage_account_id`) |
+| `spec.sourceStorageAccountId` | `string \| valueFrom` | yes |  | AzureBackupContainerStorageAccount (`status.outputs.storage_account_id`), AzureStorageAccount (`status.outputs.storage_account_id`) |
 | `spec.sourceFileShareName` | `string \| valueFrom` | yes |  | AzureStorageShare (`status.outputs.share_name`) |
 | `spec.backupPolicyId` | `string \| valueFrom` | yes |  | AzureBackupPolicyFileShare (`status.outputs.backup_policy_id`) |
 
@@ -103,10 +103,10 @@ reference targets the account's vault REGISTRATION
 registered) so the registration deploys before this protection --
 the reference carries both the value and the dependency edge. For
 accounts registered outside the catalog, pass the account's ARM
-ID as a literal (or reference AzureStorageAccount explicitly with
-valueFrom kind + fieldPath). Fixed at creation.
+ID as a literal (or a valueFrom naming AzureStorageAccount, a declared
+candidate whose storage_account_id output fills in). Fixed at creation.
 
-- references: AzureBackupContainerStorageAccount (`status.outputs.storage_account_id`)
+- references: AzureBackupContainerStorageAccount (`status.outputs.storage_account_id`), AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureBackupContainerStorageAccount, name: <that resource's name>, fieldPath: status.outputs.storage_account_id}} -- a bare string does not parse
 
@@ -152,6 +152,7 @@ Fields that can point at another resource's outputs:
 | `spec.resourceGroup` | AzureResourceGroup | `status.outputs.resource_group_name` |
 | `spec.recoveryVaultName` | AzureRecoveryServicesVault | `status.outputs.recovery_services_vault_name` |
 | `spec.sourceStorageAccountId` | AzureBackupContainerStorageAccount | `status.outputs.storage_account_id` |
+| `spec.sourceStorageAccountId` | AzureStorageAccount | `status.outputs.storage_account_id` |
 | `spec.sourceFileShareName` | AzureStorageShare | `status.outputs.share_name` |
 | `spec.backupPolicyId` | AzureBackupPolicyFileShare | `status.outputs.backup_policy_id` |
 

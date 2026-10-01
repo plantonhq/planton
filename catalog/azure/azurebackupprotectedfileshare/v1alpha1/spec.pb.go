@@ -61,8 +61,8 @@ type AzureBackupProtectedFileShareSpec struct {
 	// registered) so the registration deploys before this protection --
 	// the reference carries both the value and the dependency edge. For
 	// accounts registered outside the catalog, pass the account's ARM
-	// ID as a literal (or reference AzureStorageAccount explicitly with
-	// valueFrom kind + fieldPath). Fixed at creation.
+	// ID as a literal (or a valueFrom naming AzureStorageAccount, a declared
+	// candidate whose storage_account_id output fills in). Fixed at creation.
 	SourceStorageAccountId *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=source_storage_account_id,json=sourceStorageAccountId,proto3" json:"source_storage_account_id,omitempty"`
 	// The file share to protect, by NAME (3-63 lowercase letters,
 	// digits and hyphens -- the share's own naming rule). The share
@@ -146,11 +146,11 @@ var File_catalog_azure_azurebackupprotectedfileshare_v1alpha1_spec_proto protore
 
 const file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurebackupprotectedfileshare/v1alpha1/spec.proto\x128dev.planton.azure.azurebackupprotectedfileshare.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x98\x06\n" +
+	"?catalog/azure/azurebackupprotectedfileshare/v1alpha1/spec.proto\x128dev.planton.azure.azurebackupprotectedfileshare.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xed\x06\n" +
 	"!AzureBackupProtectedFileShareSpec\x12\x8c\x01\n" +
 	"\x0eresource_group\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x0f\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12\x9e\x01\n" +
-	"\x13recovery_vault_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB:\xbaH\x03\xc8\x01\x01\x88\xd4a\xff\x10\x92\xd4a+status.outputs.recovery_services_vault_nameR\x11recoveryVaultName\x12\x9f\x01\n" +
-	"\x19source_storage_account_id\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB0\xbaH\x03\xc8\x01\x01\x88\xd4a\xa5\x11\x92\xd4a!status.outputs.storage_account_idR\x16sourceStorageAccountId\x12\x91\x01\n" +
+	"\x13recovery_vault_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB:\xbaH\x03\xc8\x01\x01\x88\xd4a\xff\x10\x92\xd4a+status.outputs.recovery_services_vault_nameR\x11recoveryVaultName\x12\xf4\x01\n" +
+	"\x19source_storage_account_id\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x84\x01\xbaH\x03\xc8\x01\x01\x88\xd4a\xa5\x11\x92\xd4a!status.outputs.storage_account_id\xa2\xd4a&\b\xa5\x11\x12!status.outputs.storage_account_id\xa2\xd4a&\b\xd9\x0f\x12!status.outputs.storage_account_idR\x16sourceStorageAccountId\x12\x91\x01\n" +
 	"\x16source_file_share_name\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xab\x10\x92\xd4a\x19status.outputs.share_nameR\x13sourceFileShareName\x12\x8c\x01\n" +
 	"\x10backup_policy_id\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\x82\x11\x92\xd4a\x1fstatus.outputs.backup_policy_idR\x0ebackupPolicyIdB\xc7\x03\n" +
 	"<com.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1B\tSpecProtoP\x01Zwgithub.com/plantonhq/planton/catalog/azure/azurebackupprotectedfileshare/v1alpha1;azurebackupprotectedfilesharev1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Azure.Azurebackupprotectedfileshare.V1alpha1\xca\x028Dev\\Planton\\Azure\\Azurebackupprotectedfileshare\\V1alpha1\xe2\x02DDev\\Planton\\Azure\\Azurebackupprotectedfileshare\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Azure::Azurebackupprotectedfileshare::V1alpha1b\x06proto3"

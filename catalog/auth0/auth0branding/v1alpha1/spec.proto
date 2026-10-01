@@ -1,0 +1,551 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0branding.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/options/options.proto";
+
+// Auth0BrandingSpec manages how the Universal Login of the Auth0 tenant the
+// provider connection's credential belongs to looks, in two layers:
+//
+// - The tenant's branding: the logo, favicon, primary color, page background
+//   and font every login, signup, reset and consent page shares, and the page
+//   template (universal_login_template) the login box renders inside -- your
+//   own HTML around Auth0's widget.
+// - The theme (theme): the look of the login box itself -- button and input
+//   shapes, the full color palette, font sizes, the page layout and the logo's
+//   placement -- set without writing CSS.
+//
+// Unset fields are NOT MANAGED: the module never sends them, and the tenant keeps
+// whatever it carries. Two exceptions, because Auth0 treats their absence as a
+// value: removing font_url after it was applied clears the font, and removing
+// universal_login_template deletes the page template. A theme, once declared, is
+// sent whole: every block the spec leaves out is sent at Auth0's default, so the
+// theme always matches the declaration. A tenant has one theme: declaring one
+// adopts and overwrites a theme the tenant already carries (for example one
+// made in the dashboard).
+//
+// Destroy: Auth0 has no delete for the tenant's branding. Destroying this
+// resource deletes the theme, deletes the page template whenever the tenant has
+// a custom domain (whether or not this resource set one), and leaves the
+// last-applied logo, favicon, colors and font in place.
+//
+// Plans: branding and the theme are on every plan, the Free plan included. The
+// page template needs a custom domain on the tenant (Auth0CustomDomain, verified
+// by Auth0CustomDomainVerification); Auth0 refuses it on the canonical domain.
+//
+// The credential needs read:branding, update:branding and delete:branding, and
+// read:custom_domains (the provider checks for a custom domain on every read)
+// on the tenant's Management API (iac/permissions.yaml).
+//
+// https://auth0.com/docs/customize/login-pages/universal-login/customize-themes
+// https://auth0.com/docs/customize/login-pages/universal-login/customize-templates
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/branding
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/branding_theme
+message Auth0BrandingSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.at_least_one_setting"
+    message: "configure at least one branding setting or a theme -- an Auth0Branding resource that manages nothing would deploy nothing"
+    expression: "this.logo_url != '' || this.favicon_url != '' || has(this.colors) || this.font_url != '' || this.universal_login_template != '' || has(this.theme)"
+  };
+
+  // logo_url is the URL of the logo every Universal Login page shows (Auth0
+  // recommends 150 x 150 pixels, PNG or SVG). It takes precedence over the
+  // tenant's picture_url (Auth0TenantSettings) on the login pages. The theme's
+  // widget.logo_url, when set, overrides it inside the login box.
+  string logo_url = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // favicon_url is the URL of the icon browsers show in the tab of every
+  // Universal Login page.
+  string favicon_url = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // colors are the primary color and page background the pages share.
+  Auth0BrandingColors colors = 3;
+
+  // font_url is the URL of a custom font file (for example a .woff2) the
+  // pages load. Unset, Auth0's default font is used. The theme's fonts.font_url,
+  // when set, applies to the login box.
+  string font_url = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // universal_login_template is the full page template, a Liquid HTML document
+  // the login box renders inside: your header, footer, stylesheets and scripts
+  // around Auth0's widget. It must contain both {%- auth0:head -%} (inside
+  // <head>, where Auth0 injects its styles and scripts) and
+  // {%- auth0:widget -%} (where the login box renders). Requires a custom domain
+  // on the tenant; Auth0 refuses a template on the canonical domain. Removing it
+  // returns the pages to Auth0's default page.
+  string universal_login_template = 5 [(buf.validate.field).cel = {
+    id: "spec.universal_login_template.tags"
+    message: "universal_login_template must contain both {%- auth0:head -%} (inside <head>) and {%- auth0:widget -%} (where the login box renders) -- Auth0 cannot render the page without them"
+    expression: "this == '' || (this.contains('{%- auth0:head -%}') && this.contains('{%- auth0:widget -%}'))"
+  }];
+
+  // theme is the no-code look of the login box. Declared, it is applied whole:
+  // blocks and fields left out are sent at Auth0's defaults.
+  Auth0BrandingTheme theme = 6;
+}
+
+// Auth0BrandingColors are the colors every Universal Login page shares.
+message Auth0BrandingColors {
+  // primary is the accent of buttons and links, a hex color (for example
+  // "#0059d6"). The theme's colors, when declared, style the login box itself.
+  string primary = 1 [(buf.validate.field).cel = {
+    id: "spec.colors.primary.hex"
+    message: "colors.primary is a hex color such as #0059d6"
+    expression: "this == '' || this.matches('^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$')"
+  }];
+
+  // page_background is the background of the page around the login box: a hex
+  // color (for example "#000000"), or Auth0's gradient JSON
+  // ({"type":"linear-gradient","start":"#000000","end":"#333333","angle_deg":35}).
+  string page_background = 2;
+}
+
+// Auth0BrandingTheme is the no-code theme of the login box. Every field carries
+// Auth0's default, so a theme declared with only the fields that matter styles
+// the rest exactly as Auth0 would.
+message Auth0BrandingTheme {
+  // display_name is the theme's name in the Auth0 dashboard.
+  string display_name = 1;
+
+  // borders shape the buttons, inputs and the login box.
+  Auth0BrandingThemeBorders borders = 2;
+
+  // colors are the login box's full palette.
+  Auth0BrandingThemeColors colors = 3;
+
+  // fonts are the login box's typography.
+  Auth0BrandingThemeFonts fonts = 4;
+
+  // page_background is the page around the login box.
+  Auth0BrandingThemePageBackground page_background = 5;
+
+  // widget is the login box itself: its logo, header alignment and social
+  // buttons.
+  Auth0BrandingThemeWidget widget = 6;
+
+  // identifiers controls how identifier fields (email, phone, username) are
+  // shown. Available only on tenants where Auth0 has enabled the feature. Once
+  // applied it can be changed but not removed: removing the block leaves the
+  // last-applied values in place.
+  Auth0BrandingThemeIdentifiers identifiers = 7;
+}
+
+// Auth0BrandingThemeBorders shape the buttons, inputs and the login box.
+message Auth0BrandingThemeBorders {
+  // buttons_style is the buttons' corner shape: "pill", "rounded" or "sharp".
+  optional string buttons_style = 1 [
+    (dev.planton.shared.options.default) = "rounded",
+    (buf.validate.field).string = {
+      in: [
+        "pill",
+        "rounded",
+        "sharp"
+      ]
+    }
+  ];
+
+  // button_border_radius is the buttons' corner radius, 1 to 10.
+  optional double button_border_radius = 2 [
+    (dev.planton.shared.options.default) = "3",
+    (buf.validate.field).double = {
+      gte: 1
+      lte: 10
+    }
+  ];
+
+  // button_border_weight is the buttons' border width, 0 to 10.
+  optional double button_border_weight = 3 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).double = {
+      gte: 0
+      lte: 10
+    }
+  ];
+
+  // inputs_style is the inputs' corner shape: "pill", "rounded" or "sharp".
+  optional string inputs_style = 4 [
+    (dev.planton.shared.options.default) = "rounded",
+    (buf.validate.field).string = {
+      in: [
+        "pill",
+        "rounded",
+        "sharp"
+      ]
+    }
+  ];
+
+  // input_border_radius is the inputs' corner radius, 0 to 10.
+  optional double input_border_radius = 5 [
+    (dev.planton.shared.options.default) = "3",
+    (buf.validate.field).double = {
+      gte: 0
+      lte: 10
+    }
+  ];
+
+  // input_border_weight is the inputs' border width, 0 to 3.
+  optional double input_border_weight = 6 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).double = {
+      gte: 0
+      lte: 3
+    }
+  ];
+
+  // show_widget_shadow draws a shadow under the login box.
+  optional bool show_widget_shadow = 7 [(dev.planton.shared.options.default) = "true"];
+
+  // widget_corner_radius is the login box's corner radius, 0 to 50.
+  optional double widget_corner_radius = 8 [
+    (dev.planton.shared.options.default) = "5",
+    (buf.validate.field).double = {
+      gte: 0
+      lte: 50
+    }
+  ];
+
+  // widget_border_weight is the login box's border width, 0 to 10.
+  optional double widget_border_weight = 9 [
+    (dev.planton.shared.options.default) = "0",
+    (buf.validate.field).double = {
+      gte: 0
+      lte: 10
+    }
+  ];
+}
+
+// Auth0BrandingThemeColors is the login box's palette. Each color is a hex
+// color (for example "#635dff"; three or six digits).
+message Auth0BrandingThemeColors {
+  // base_focus_color outlines the focused field or button.
+  optional string base_focus_color = 1 [
+    (dev.planton.shared.options.default) = "#635dff",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // base_hover_color is the hover state of buttons and links.
+  optional string base_hover_color = 2 [
+    (dev.planton.shared.options.default) = "#000000",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // body_text is the color of body copy.
+  optional string body_text = 3 [
+    (dev.planton.shared.options.default) = "#1e212a",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // captcha_widget_theme is the captcha's theme: "auto" (follows the page),
+  // "dark" or "light".
+  optional string captcha_widget_theme = 4 [
+    (dev.planton.shared.options.default) = "auto",
+    (buf.validate.field).string = {
+      in: [
+        "auto",
+        "dark",
+        "light"
+      ]
+    }
+  ];
+
+  // error is the color of error messages and error borders.
+  optional string error = 5 [
+    (dev.planton.shared.options.default) = "#d03c38",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // header is the color of the login box's title.
+  optional string header = 6 [
+    (dev.planton.shared.options.default) = "#1e212a",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // icons is the color of icons.
+  optional string icons = 7 [
+    (dev.planton.shared.options.default) = "#65676e",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // input_background is the fill of input fields.
+  optional string input_background = 8 [
+    (dev.planton.shared.options.default) = "#ffffff",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // input_border is the border of input fields.
+  optional string input_border = 9 [
+    (dev.planton.shared.options.default) = "#c9cace",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // input_filled_text is the color of text a person typed.
+  optional string input_filled_text = 10 [
+    (dev.planton.shared.options.default) = "#000000",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // input_labels_placeholders is the color of field labels and placeholders.
+  optional string input_labels_placeholders = 11 [
+    (dev.planton.shared.options.default) = "#65676e",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // links_focused_components is the color of links and focused components.
+  optional string links_focused_components = 12 [
+    (dev.planton.shared.options.default) = "#635dff",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // primary_button is the fill of the primary button.
+  optional string primary_button = 13 [
+    (dev.planton.shared.options.default) = "#635dff",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // primary_button_label is the text of the primary button.
+  optional string primary_button_label = 14 [
+    (dev.planton.shared.options.default) = "#ffffff",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // secondary_button_border is the border of secondary buttons.
+  optional string secondary_button_border = 15 [
+    (dev.planton.shared.options.default) = "#c9cace",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // secondary_button_label is the text of secondary buttons.
+  optional string secondary_button_label = 16 [
+    (dev.planton.shared.options.default) = "#1e212a",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // success is the color of success messages.
+  optional string success = 17 [
+    (dev.planton.shared.options.default) = "#13a688",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // widget_background is the fill of the login box.
+  optional string widget_background = 18 [
+    (dev.planton.shared.options.default) = "#ffffff",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // widget_border is the border of the login box.
+  optional string widget_border = 19 [
+    (dev.planton.shared.options.default) = "#c9cace",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+}
+
+// Auth0BrandingThemeFonts is the login box's typography. Each text style's size
+// is a percentage of reference_text_size.
+message Auth0BrandingThemeFonts {
+  // font_url is the URL of a custom font file for the login box. Empty, the
+  // box uses the page's font.
+  string font_url = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // links_style is how links are drawn: "normal" or "underlined".
+  optional string links_style = 2 [
+    (dev.planton.shared.options.default) = "normal",
+    (buf.validate.field).string = {
+      in: [
+        "normal",
+        "underlined"
+      ]
+    }
+  ];
+
+  // reference_text_size is the base text size in pixels, 12 to 24; every text
+  // style's size is a percentage of it.
+  optional double reference_text_size = 3 [
+    (dev.planton.shared.options.default) = "16",
+    (buf.validate.field).double = {
+      gte: 12
+      lte: 24
+    }
+  ];
+
+  // body_text styles body copy (default 87.5% of the reference size).
+  Auth0BrandingThemeTextStyle body_text = 4;
+
+  // buttons_text styles button labels (default 100%).
+  Auth0BrandingThemeTextStyle buttons_text = 5;
+
+  // input_labels styles field labels (default 100%).
+  Auth0BrandingThemeTextStyle input_labels = 6;
+
+  // links styles links (default 87.5%, bold).
+  Auth0BrandingThemeTextStyle links = 7;
+
+  // subtitle styles the subtitle (default 87.5%).
+  Auth0BrandingThemeTextStyle subtitle = 8;
+
+  // title styles the title (default 150%). Auth0 accepts 75 to 150 for the
+  // title's size.
+  Auth0BrandingThemeTextStyle title = 9 [(buf.validate.field).cel = {
+    id: "spec.theme.fonts.title.size"
+    message: "fonts.title.size must be between 75 and 150 (a percentage of reference_text_size)"
+    expression: "!has(this.size) || (this.size >= 75.0 && this.size <= 150.0)"
+  }];
+}
+
+// Auth0BrandingThemeTextStyle is one text style of the login box. Unset fields
+// take the style's Auth0 default (see the field that holds it).
+message Auth0BrandingThemeTextStyle {
+  // bold draws the text in bold.
+  optional bool bold = 1;
+
+  // size is the text size as a percentage of reference_text_size, 0 to 150.
+  optional double size = 2 [(buf.validate.field).double = {
+    gte: 0
+    lte: 150
+  }];
+}
+
+// Auth0BrandingThemePageBackground is the page around the login box.
+message Auth0BrandingThemePageBackground {
+  // background_color is the page's color, a hex color.
+  optional string background_color = 1 [
+    (dev.planton.shared.options.default) = "#000000",
+    (buf.validate.field).string.pattern = "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+  ];
+
+  // background_image_url is the URL of an image covering the page.
+  string background_image_url = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // page_layout places the login box: "center", "left" or "right".
+  optional string page_layout = 3 [
+    (dev.planton.shared.options.default) = "center",
+    (buf.validate.field).string = {
+      in: [
+        "center",
+        "left",
+        "right"
+      ]
+    }
+  ];
+}
+
+// Auth0BrandingThemeWidget is the login box itself.
+message Auth0BrandingThemeWidget {
+  // header_text_alignment aligns the title: "center", "left" or "right".
+  optional string header_text_alignment = 1 [
+    (dev.planton.shared.options.default) = "center",
+    (buf.validate.field).string = {
+      in: [
+        "center",
+        "left",
+        "right"
+      ]
+    }
+  ];
+
+  // logo_height is the logo's height in pixels, 1 to 100.
+  optional double logo_height = 2 [
+    (dev.planton.shared.options.default) = "52",
+    (buf.validate.field).double = {
+      gte: 1
+      lte: 100
+    }
+  ];
+
+  // logo_position places the logo: "center", "left", "right", or "none" to
+  // hide it.
+  optional string logo_position = 3 [
+    (dev.planton.shared.options.default) = "center",
+    (buf.validate.field).string = {
+      in: [
+        "center",
+        "left",
+        "right",
+        "none"
+      ]
+    }
+  ];
+
+  // logo_url is the URL of the logo inside the login box. Empty, the box shows
+  // the branding's logo_url.
+  string logo_url = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // social_buttons_layout places the social sign-in buttons: "bottom" or
+  // "top".
+  optional string social_buttons_layout = 5 [
+    (dev.planton.shared.options.default) = "bottom",
+    (buf.validate.field).string = {
+      in: [
+        "bottom",
+        "top"
+      ]
+    }
+  ];
+}
+
+// Auth0BrandingThemeIdentifiers controls how identifier fields are shown.
+message Auth0BrandingThemeIdentifiers {
+  // login_display shows the identifier fields "unified" (one field that takes
+  // email, phone or username) or "separate" (one field each).
+  string login_display = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "unified",
+        "separate"
+      ]
+    }
+  ];
+
+  // otp_autocomplete lets browsers fill one-time codes from the device.
+  bool otp_autocomplete = 2;
+
+  // phone_display is how phone numbers are shown.
+  Auth0BrandingThemePhoneDisplay phone_display = 3 [(buf.validate.field).required = true];
+}
+
+// Auth0BrandingThemePhoneDisplay is how phone numbers are shown.
+message Auth0BrandingThemePhoneDisplay {
+  // formatting formats numbers "international" (+1 555 0100) or "regional"
+  // ((555) 0100).
+  string formatting = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "international",
+        "regional"
+      ]
+    }
+  ];
+
+  // masking hides part of a number: "mask_digits", "hide_country_code" or
+  // "show_all".
+  string masking = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "mask_digits",
+        "hide_country_code",
+        "show_all"
+      ]
+    }
+  ];
+}

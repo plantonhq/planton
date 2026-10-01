@@ -10,7 +10,7 @@ package dev.planton.azure.azurednszone.v1alpha1;
 // addresses records by zone name and resource group, not by ARM id.
 // `zone_id` is the ARM-id seam consumed by kinds that watch or manage the
 // zone as a whole (Front Door custom-domain validation, AKS web-app
-// routing). `name_servers` is the delegation handoff: the four hosts to
+// routing). `nameservers` is the delegation handoff: the four hosts to
 // configure at the domain registrar.
 message AzureDnsZoneStackOutputs {
   // The Azure Resource Manager ID of the DNS zone.
@@ -30,7 +30,7 @@ message AzureDnsZoneStackOutputs {
   // "ns1-05.azure-dns.com."). The zone only answers the internet once
   // these are configured at the domain's registrar, or as NS records in
   // the parent zone for subdomain delegation.
-  repeated string name_servers = 4;
+  repeated string nameservers = 4;
 
   // The maximum number of record sets this zone can hold -- Azure's
   // per-zone capacity limit (10000 by default; higher by support

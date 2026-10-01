@@ -3,6 +3,15 @@ kind: ComponentE2EProfile
 metadata:
   name: auth0resourceserver
 spec:
+  # The access policy, the default grants for third-party applications and
+  # the other settings every plan offers are proven by the minimal and
+  # third-party-access scenarios on both engines; the settings that need the
+  # Enterprise plan with the Highly Regulated Identity add-on (token
+  # encryption, mTLS, transactional authorization) or an Early Access feature
+  # (anonymous sessions, Online Refresh Tokens, authorization policies) are
+  # proven offline by the e2e manifest's plan and preview only. The
+  # credential holds the resource_servers and client_grants scopes of
+  # iac/permissions.yaml.
   tier: 1
   status: green
   validated_provisioners:

@@ -53,7 +53,14 @@ the new primary automatically.
 
 - **Backups are plugin-based** — the backup block renders a Barman Cloud
   `ObjectStore` resource plus the Cluster's plugin wiring (WAL archiving
-  starts immediately) and one `ScheduledBackup` per declared schedule.
+  starts immediately), the on-demand `Backup` its series starts from, and
+  one `ScheduledBackup` per declared schedule.
+- **Every install archives into a backup series of its own** —
+  `<name>-<8 characters of the ObjectStore's UID>` unless `server_name`
+  names one — so a database destroyed and recreated from the same
+  declaration never collides with its predecessor's archive (Barman
+  refuses that quietly, and WAL would fill the volume). The series is the
+  `backup_server_name` output.
   CloudNativePG's built-in object-store support is deprecated upstream
   and deliberately not modeled. The Barman Cloud plugin
   (KubernetesCnpgBarmanCloudPlugin) must be on the cluster, in the
@@ -118,9 +125,10 @@ the new primary automatically.
   blanked); enable only when something genuinely needs superuser SQL
 - **`spec.backup`**: the `object_store` (destination path + S3 / GCS /
   Azure-Blob backend with keyless XOR declared-key credentials, WAL and
-  base-backup tuning), `retention_policy` (`30d` / `8w` / `6m`), and
-  `schedules` — six-field cron (seconds first), `immediate` for
-  protection from day one
+  base-backup tuning), `retention_policy` (`30d` / `8w` / `6m`),
+  `schedules` — six-field cron (seconds first), `immediate` to take a
+  schedule's first backup at once — and `server_name`, the series to
+  continue (empty = one unique to the install)
 - **`spec.workload_identity`**: keyless cloud identity for the instance
   pods' ServiceAccount — pair with the backup block's keyless arm (table
   below)
@@ -297,7 +305,7 @@ spec:
         s3:
           region: us-west-2
           keyless: true
-      source_server_name: orders-db
+      source_server_name: orders-db-7f3a9c21 # the source's backup_server_name output
       recovery_target:
         target_time: "2026-07-20T06:00:00Z" # PITR — omit for full recovery
       # The recovered data carries the source's roles and passwords. Name

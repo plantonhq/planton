@@ -14,7 +14,7 @@ func exportOutputs(ctx *pulumi.Context, client *auth0.Client, locals *Locals) er
 	ctx.Export("client_id", client.ClientId)
 	ctx.Export("name", client.Name)
 	ctx.Export("application_type", client.AppType)
-	ctx.Export("signing_keys", client.SigningKeys)
+	ctx.Export("signing_keys", pulumi.Unsecret(client.SigningKeys))
 	ctx.Export("allowed_clients", client.AllowedClients)
 
 	// Look up the created client to access computed-only attributes
@@ -22,7 +22,7 @@ func exportOutputs(ctx *pulumi.Context, client *auth0.Client, locals *Locals) er
 	lookupResult := auth0.LookupClientOutput(ctx, auth0.LookupClientOutputArgs{
 		ClientId: client.ClientId,
 	})
-	ctx.Export("client_secret", lookupResult.ClientSecret())
+	ctx.Export("client_secret", pulumi.ToSecret(lookupResult.ClientSecret()))
 	ctx.Export("token_endpoint_auth_method", lookupResult.TokenEndpointAuthMethod())
 
 	return nil

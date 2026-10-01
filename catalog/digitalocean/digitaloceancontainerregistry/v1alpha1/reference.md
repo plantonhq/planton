@@ -139,7 +139,7 @@ re-mints the credential in place.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanContainerRegistry, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanContainerRegistry, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -147,7 +147,7 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanCont
 | `status.outputs.server_url` | `string` | The registry host, always "registry.digitalocean.com". |
 | `status.outputs.endpoint` | `string` | The full endpoint for docker push/pull, i.e. "registry.digitalocean.com/<registry_name>". |
 | `status.outputs.region` | `string` | Region slug where the registry is hosted (reported by DigitalOcean, which also covers the case where the region was left unset and DigitalOcean chose one). |
-| `status.outputs.docker_credentials` | `string` | Base64-encoded Docker `config.json` for this registry -- a SECRET. Populated only when the spec's docker_credentials block is set; empty otherwise. |
+| `status.outputs.docker_credentials` | `string` (sensitive) | Base64-encoded Docker `config.json` for this registry -- a SECRET. Populated only when the spec's docker_credentials block is set; empty otherwise. |
 | `status.outputs.credential_expiration_time` | `string` | RFC 3339 timestamp at which the minted docker credentials expire. Populated only when the spec's docker_credentials block is set; empty otherwise. |
 
 ## See Also

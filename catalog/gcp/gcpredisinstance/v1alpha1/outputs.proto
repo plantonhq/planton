@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpredisinstance.v1alpha1;
 
+import "shared/options/options.proto";
+
 // GcpRedisInstanceStackOutputs captures observable values produced after
 // provisioning a Memorystore for Redis instance.
 message GcpRedisInstanceStackOutputs {
@@ -29,7 +31,7 @@ message GcpRedisInstanceStackOutputs {
   // Only populated when auth_enabled is true.
   // This value is generated and rotated by GCP automatically.
   // Treat as a secret -- do not log or expose in UIs.
-  string auth_string = 6;
+  string auth_string = 6 [(dev.planton.shared.options.sensitive) = true];
 
   // PEM-encoded CA certificates protecting the server endpoint.
   // Only populated when transit_encryption_mode is SERVER_AUTHENTICATION.

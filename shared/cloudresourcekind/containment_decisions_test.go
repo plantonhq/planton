@@ -73,8 +73,19 @@ func TestExtensionNumbersArePinned(t *testing.T) {
 	if n := options.E_DiagramLabel.TypeDescriptor().Number(); n != 60006 {
 		t.Fatalf("diagram_label extension number changed: got %d, want 60006", n)
 	}
-	if n := foreignkeyv1.E_ContainmentExempt.TypeDescriptor().Number(); n != 200003 {
-		t.Fatalf("containment_exempt extension number changed: got %d, want 200003", n)
+	for _, pin := range []struct {
+		name string
+		got  protoreflect.FieldNumber
+		want protoreflect.FieldNumber
+	}{
+		{"default_kind", foreignkeyv1.E_DefaultKind.TypeDescriptor().Number(), 200001},
+		{"default_kind_field_path", foreignkeyv1.E_DefaultKindFieldPath.TypeDescriptor().Number(), 200002},
+		{"containment_exempt", foreignkeyv1.E_ContainmentExempt.TypeDescriptor().Number(), 200003},
+		{"candidate", foreignkeyv1.E_Candidate.TypeDescriptor().Number(), 200004},
+	} {
+		if pin.got != pin.want {
+			t.Fatalf("%s extension number changed: got %d, want %d", pin.name, pin.got, pin.want)
+		}
 	}
 }
 

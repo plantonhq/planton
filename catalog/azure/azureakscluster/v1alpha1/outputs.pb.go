@@ -7,6 +7,7 @@
 package azureaksclusterv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -234,7 +235,7 @@ var File_catalog_azure_azureakscluster_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azureakscluster/v1alpha1/outputs.proto\x12*dev.planton.azure.azureakscluster.v1alpha1\"\xe0\x05\n" +
+	"4catalog/azure/azureakscluster/v1alpha1/outputs.proto\x12*dev.planton.azure.azureakscluster.v1alpha1\x1a\x1cshared/options/options.proto\"\xe6\x05\n" +
 	"\x1bAzureAksClusterStackOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12!\n" +
@@ -245,8 +246,8 @@ const file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"portalFqdn\x12&\n" +
 	"\x0foidc_issuer_url\x18\x06 \x01(\tR\roidcIssuerUrl\x12.\n" +
 	"\x13node_resource_group\x18\a \x01(\tR\x11nodeResourceGroup\x123\n" +
-	"\x16node_resource_group_id\x18\b \x01(\tR\x13nodeResourceGroupId\x12-\n" +
-	"\x12cluster_kubeconfig\x18\t \x01(\tR\x11clusterKubeconfig\x12A\n" +
+	"\x16node_resource_group_id\x18\b \x01(\tR\x13nodeResourceGroupId\x123\n" +
+	"\x12cluster_kubeconfig\x18\t \x01(\tB\x04\xa0\xa6\x1d\x01R\x11clusterKubeconfig\x12A\n" +
 	"\x1dcluster_identity_principal_id\x18\n" +
 	" \x01(\tR\x1aclusterIdentityPrincipalId\x12;\n" +
 	"\x1akubelet_identity_object_id\x18\v \x01(\tR\x17kubeletIdentityObjectId\x12;\n" +

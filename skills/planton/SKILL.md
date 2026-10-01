@@ -163,9 +163,8 @@ has the full protocol):
 Assume the cost-minimized development shape -- cheap to run, cheap to
 reshape, honest to upgrade. Region unstated? The org's dominant region
 from what you found, else a sensible default. Every assumption goes into
-the ASSUMPTION REGISTER you present after building (Phase 4a) -- an
-assumption silently taken is a bug; an assumption named is an invitation
-to refine.
+the ASSUMPTION REGISTER you present after building (Phase 4a) -- an assumption
+silently taken is a bug; an assumption named is an invitation to refine.
 
 ### Phase 1 -- Plan (read-only)
 
@@ -235,8 +234,7 @@ the person's register as the work grows (`references/craft.personalization.md`).
    and `values.org` are always available -- users never define them.
 5. Wire dependencies with `valueFrom` references -- never paste literal
    IDs, never expose a param for a value another resource produces.
-   References cross chart boundaries
-   (`references/infra.dependencies.md`).
+   References cross chart boundaries (`references/infra.dependencies.md`).
 6. **Chart contains any `Kubernetes*` kind?** Read
    `references/infra.kubernetes-on-cluster.md` BEFORE writing those
    manifests -- the one decision is whether the cluster is IN this chart.
@@ -347,8 +345,8 @@ shared state and needs the user's explicit go-ahead:
   (`references/infra.config-references.md`).
 - **Cluster-scoped, shared-by-design components live in the shared chart**
   -- operators, CRDs, controllers (Istio, cert-manager, external-dns)
-  belong there exactly once, never in a per-environment app chart
-  (`references/cloud.kubernetes-architecture.md`).
+  belong there exactly once; a Planton service's own workload and route
+  live on the service (`references/cloud.kubernetes-architecture.md`).
 - **Platform constructs are building blocks, never curriculum.** Names
   like InfraChart belong in manifests, not your prose, unless asked.
 - **Connection wiring follows one rule: annotate when the cluster is in
@@ -429,6 +427,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.dependencies.md` | Wiring resources together, in-chart and ACROSS charts; the references-before-params check; valueFrom or relationships |
 | `references/infra.config-references.md` | A field needs a credential or operator-managed config value; the `$var`/`$secret` grammar; which field a secret reference may go in (sensitive fields, and the secret home a viewer-readable field names) and why; looking up or creating secrets and variables |
 | `references/infra.kubernetes-on-cluster.md` | The chart has Kubernetes-kind resources; wiring workloads to a cluster |
+| `references/infra.diagrams.md` | How the platform draws what you author (account rooms, placement, lines, `metadata.group` trays); choosing a reference, `runs_on`, or a dedicated component with the picture in mind; predicting the picture |
 | `references/infra.environments.md` | The user mentions environments; how many clusters; cross-env connection authorization |
 | `references/infra.build-contract.md` | Parsing build output; exit codes; CI usage; endpoint pinning; the wire channel |
 | `references/infra.issue-catalog.md` | A build failed and you need the fix pattern for an error |
@@ -439,7 +438,8 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.workspace-postures.md` | The folder-identity check's full choreography: workspaces, checkouts, loose manifests and SETS, the canvas rules, and the application-repository posture a coding agent works in |
 | `references/infra.worked-example.md` | The full shape of a small chart in one place; checking your layout against a known-good one |
 | `references/cloud.aws-architecture.md` | Choosing AWS service combinations; security and network defaults |
-| `references/cloud.kubernetes-architecture.md` | What runs on the cluster: the Istio/external-dns paved road; the shared-infra vs environment-chart split |
+| `references/cloud.kubernetes-architecture.md` | What runs on the cluster: the Istio/external-dns paved road; the shared-infra vs environment-chart split; why a Planton service's own workload and route sit on the service, never in a chart |
+| `references/cloud.kubernetes-observability.md` | The person wants monitoring, alerting or observability on a cluster: the order (stack per cluster, delivery, outside heartbeat, then the hub), who gets woken, composing typed alert delivery with `$secret/` credentials, and proving it with a fired alert and a stopped Alertmanager |
 | `references/cloud.exploration.md` | Running aws/kubectl/planton commands against real clouds; the read-only and mutation rules |
 
 ### Service delivery (`service.*`)
@@ -449,7 +449,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/service.connecting-github-and-registries.md` | A service needs GitHub or a registry connected, a clone/push failed on a connection, or the person asks how to connect them: the two GitHub identities (the machine's sign-in vs an App) and what each can do, the two registry credential arms (a trusted connection vs stored keys), the detected cards and `planton connect github|registry detect`, the verify doors, every sentence and its remedy |
 | `references/service.detection-first-registration.md` | Registering by letting the platform read the repository: the detect + proposed-Service response, presenting the proposal, the confirm-once apply |
 | `references/service.push-to-register.md` | Registering by committing a `service.yaml`; why a pushed manifest did or didn't land; the default-branch and own-repository laws |
-| `references/service.external-ci.md` | Keyless CI: workload identity bindings, the `planton iam federate` exchange, registering and deploying from a CI step, the Planton GitHub Action, walking a federation refusal |
+| `references/service.external-ci.md` | Keyless CI: trusted workflows (workload identity bindings and their provisioned accounts), the `planton iam federate` exchange, registering and deploying from a CI step, the Planton GitHub Action, reading a refused run from its recorded cause and fixing it |
 | `references/service.offline-deploy.md` | Deploying services with NO Planton backend: offline-clean kustomize authoring, the offline deploy verb and its exit codes, the GitHub Action's offline mode, the gh-driven CI/CD setup journey, verify-before-ready |
 | `references/service.building-on-your-laptop.md` | A service on a LOCAL instance (Planton Desktop): the build cluster and its `planton local build-cluster` verbs and how to read each status line, the repository watch as why a laptop run starts, the sign-in as the only credential, the commit status (never a check), the desktop banner, the measured costs, every laptop failure sentence with its next step, what never to propose on a laptop |
 | `references/service.reading-a-run.md` | Reading one run and reporting it in the user's words: build vs delivery shapes, status vocabulary, per-task errors, gates, mirrored external CI runs |
@@ -468,7 +468,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/service.serving-domains-targets.md` | Per-target carrier truths (worker, ingress, HTTPRoute, Cloud Run domain mapping, ECS/ALB) and the remediation ladder for a failed `domain_serving` check |
 | `references/service.serving-domains-custom.md` | Anything outside `{label}.{env-domain}`: apex, arbitrary FQDNs, multi-host, CDN fronting -- composed-infrastructure recipes with `valueFrom` bridges |
 | `references/service.local-env-vars.md` | Running a service locally with real config (`planton service env run\|pull\|check`), dev flavors, `.env.local` layering |
-| `references/service.configuring-deployments.md` | Reading and changing what a service is DECLARED to deploy: the two writers, the surgical get-then-apply loop, target environments, the deployments switch |
+| `references/service.configuring-deployments.md` | Reading and changing what a service is DECLARED to deploy: the two writers, the surgical get-then-apply loop, which resources sit on the service and which on an infra project ("if this service were deleted, should it go too?" -- its route, workload, and own ConfigMaps yes; the shared gateway, zone, and namespace no), the three-step move of a route out of an infra project, target environments, the deployments switch |
 | `references/service.kustomize-authoring.md` | Moving a service's configuration into its repository (eject/init/checkout), the `_kustomize` tree conventions |
 | `references/service.preview-environments.md` | Per-pull-request preview environments: the opt-in, the previews tree, the one-call preview read, teardown |
 | `references/service.delete-cascade.md` | Retiring a service: the destroy-then-delete cascade, the retain-resources arm, the protected-environment refusal |
@@ -497,4 +497,4 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/craft.cost-transparency.md` | The monthly cost picture from the catalog's verified estimates; honesty rules for money; saving levers |
 | `references/craft.filing-platform-gaps.md` | Planton fell short of a need; filing the gap as a GitHub issue |
 | `references/catalog.availability.md` | Which kinds an organization's catalog policy disables; the check-design-disclose law |
-| `references/catalog.component-grounding.md` | Discovering kinds and reading component schemas; explain vs the catalog pack |
+| `references/catalog.component-grounding.md` | Discovering kinds and reading component schemas; explain vs the catalog pack; what a field DOES -- the modules at `catalog/<provider>/<component>/iac/` (tf and pulumi) are the last rung of truth, and when they disagree with the contract the module is what runs |

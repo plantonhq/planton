@@ -57,7 +57,7 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 | `cluster_id` | The cluster UUID (import id for `digitalocean_database_cluster`) |
 | `connection_uri` | Full public connection URI (sensitive) |
 | `host` / `port` | Public connection endpoint |
-| `database_user` / `database_password` | Default user credentials (sensitive) |
+| `database_user` / `database_password` | Default user credentials (the password is sensitive) |
 | `private_host` / `private_uri` | Private-network endpoint (URI sensitive) |
 | `database_name` | Default database name |
 | `ui_host` / `ui_port` / `ui_uri` / `ui_database` / `ui_user` / `ui_password` | OpenSearch Dashboards details (OpenSearch only; URI/password sensitive) |
@@ -67,3 +67,4 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 - `sql_mode` and `eviction_policy` are passed only when set; the provider rejects them at plan time on engines they don't apply to (the spec's validation rules prevent that pairing earlier).
 - `storage_size_mib` is only rendered when `storage_gib` is set, so growing `size_slug` without a custom storage value correctly adopts the new slug's default disk.
 - Changing `engine_version` performs an in-place major upgrade; changing `region` performs a live migration. See the kind [GUIDE](../../GUIDE.md).
+- Tags are `spec.tags` plus the six standard Planton labels rendered as `key:value` strings (the identical set the Pulumi module applies). DigitalOcean caps the comma-joined tag string at 255 characters (measured 2026-09-17), so the resource carries a `precondition` against `local.tags_combined_budget` that fails the plan with the exact arithmetic before anything is created — the same number and message as the Pulumi module.

@@ -1,0 +1,21 @@
+# The verification email customized, read back, and disabled on destroy.
+# The email provider is installed first by the harness from the registry's
+# prerequisites edge (e2e/prerequisites/auth0emailprovider.yaml). No
+# result_url is set: Auth0 refuses it on non-enterprise tenants created on
+# or after May 5, 2026. Auth0 cannot delete a template, so destroy disables
+# it and the next run takes the same template over again.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailTemplate
+metadata:
+  name: e2e-verify-email
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN,PLANTON_E2E_AUTH0_RESEND_API_KEY
+spec:
+  template: verify_email
+  from: Planton E2E <e2e@${E2E_ENV:PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN}>
+  subject: Verify your email for Planton E2E
+  body: |
+    <html><body><p>Confirm {{ user.email }} for Planton E2E: <a href="{{ url }}">verify your email</a>.</p></body></html>
+  urlLifetimeInSeconds: 3600

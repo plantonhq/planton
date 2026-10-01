@@ -28,8 +28,8 @@ spec:
   type: A
   ttl: 60
   values:
-    - 192.0.2.10
-    - 192.0.2.11
+    - value: 192.0.2.10
+    - value: 192.0.2.11
   setIdentifier: canary
   routingPolicy:
     weighted:

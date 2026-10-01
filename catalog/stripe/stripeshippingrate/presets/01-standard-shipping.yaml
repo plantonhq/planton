@@ -1,0 +1,23 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeShippingRate
+metadata:
+  name: standard-shipping
+  org: example-org
+  env: production
+spec:
+  displayName: Standard
+  fixedAmount:
+    amount: 500
+    currency: usd
+    currencyOptions:
+      eur:
+        amount: 450
+  deliveryEstimate:
+    minimum:
+      unit: business_day
+      value: 3
+    maximum:
+      unit: business_day
+      value: 5
+  taxBehavior: exclusive
+  taxCode: txcd_92010001

@@ -1,0 +1,43 @@
+# Tagged, region-pinned, VPC-joined droplet fixture for the `full`
+# scenario's tag-targeting arm. Three things about it are deliberate:
+#
+# - It carries the tag the balancer targets (`pltn-e2e-dolb-web`). The
+#   load-balancer API ACCEPTS a tag no resource carries (measured live: the
+#   create succeeds, `tag` is stored as a selector, no tag object is
+#   created, and `droplet_ids` stays empty), so a memberless tag would
+#   deploy fine and prove nothing. A real member behind the tag is the
+#   proof that tag targeting works.
+# - It is pinned to nyc3, the scenario's region. Backend Droplets must be
+#   in the balancer's region, and the Droplet kind's standard install
+#   fixture deliberately omits the region (DigitalOcean picks one with
+#   capacity), so the standard fixture cannot serve here.
+# - It joins the same VPC fixture the balancer joins. A regional balancer
+#   reaches its members over the VPC, which is the topology a customer
+#   actually runs; the VPC is already in the scenario's prerequisite chain,
+#   so the reference below resolves before this droplet deploys.
+apiVersion: digital-ocean.planton.dev/v1alpha1
+kind: DigitalOceanDroplet
+metadata:
+  name: planton-oss-e2e-digitaloceanloadbalancer-droplet-fixture
+  id: planton-oss-e2e-digitaloceanloadbalancer-droplet-fixture
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: digitaloceanloadbalancer
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  dropletName: pltn-e2e-dolb-droplet-fx
+  region: nyc3
+  size: s-1vcpu-1gb
+  image: ubuntu-24-04-x64
+  vpc:
+    valueFrom:
+      kind: DigitalOceanVpc
+      name: planton-oss-e2e-digitaloceanvpc-prereq
+      fieldPath: status.outputs.vpc_id
+  tags:
+    - pltn-e2e-dolb-web

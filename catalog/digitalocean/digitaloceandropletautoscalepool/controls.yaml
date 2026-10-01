@@ -26,7 +26,7 @@ spec:
       evidence:
         type: spec_default
         reference: Members join the referenced VPC (or the region's default VPC when unset) and get private networking there; DigitalOcean gives every member a public IPv4 as well -- restrict reachability with a DigitalOceanFirewall targeting the pool's tags.
-      notes: The provider's public_networking toggle is dead on write at the pin (never sent -- excluded from the spec), so members always have public addresses; the enforceable control is firewalling, not address suppression.
+      notes: dropletTemplate.publicNetworking defaults to on; an explicit false creates members with no public interface (VPC-only). Firewalling by pool tag remains the enforceable ingress control either way.
     - control_id: restricted-ingress
       status: configurable
       field_path: droplet_template.tags

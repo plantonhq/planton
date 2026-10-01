@@ -85,10 +85,14 @@ func buildPeers(peers []*kubernetesnetworkpolicyv1alpha1.KubernetesNetworkPolicy
 		}
 		if p.GetIpBlock() != nil {
 			ipBlockArgs := &kubernetesnetworkingv1.IPBlockArgs{
-				Cidr: pulumi.String(p.GetIpBlock().GetCidr()),
+				Cidr: pulumi.String(p.GetIpBlock().GetCidr().GetValue()),
 			}
-			if len(p.GetIpBlock().GetExcept()) > 0 {
-				ipBlockArgs.Except = pulumi.ToStringArray(p.GetIpBlock().GetExcept())
+			if except := p.GetIpBlock().GetExcept(); len(except) > 0 {
+				ranges := make([]string, 0, len(except))
+				for _, r := range except {
+					ranges = append(ranges, r.GetValue())
+				}
+				ipBlockArgs.Except = pulumi.ToStringArray(ranges)
 			}
 			peerArgs.IpBlock = ipBlockArgs
 		}

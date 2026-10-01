@@ -4,7 +4,7 @@ metadata:
   name: my-container-app
 spec:
   appName: my-container-app
-  region: nyc3
+  region: nyc
   services:
     - name: web
       image:

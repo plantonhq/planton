@@ -42,8 +42,9 @@ spec:
       data_checksums: true
   backup:
     object_store:
-      # One destination path per cluster — two clusters writing the same
-      # path corrupt each other's archives.
+      # Each install archives into a backup series of its own beneath this
+      # path (the backup_server_name output), so a recreate never collides
+      # with its predecessor's archive.
       destination_path: s3://<pg-backups-bucket>/prod-db
       s3:
         region: <aws-region>

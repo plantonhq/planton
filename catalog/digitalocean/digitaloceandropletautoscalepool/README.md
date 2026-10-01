@@ -42,11 +42,14 @@ Deploy with either provisioner; both produce identical resources and outputs.
 | Output | Description |
 |---|---|
 | `pool_id` | UUID of the autoscale pool (its API identity and import id) |
-| `status` | Pool health at apply time ("active" once the pool and every member are provisioned) |
+
+The pool's health is deliberately not an output: a status captured at apply time goes stale the moment DigitalOcean changes it. Read live health from the control panel or `GET /v2/droplets/autoscale/{pool_id}`.
 
 ## Behavior worth knowing
 
 - **DESTROY DESTROYS THE MEMBERS.** The API's only delete for a pool is the dangerous variant that terminates every member droplet. There is no keep-the-droplets teardown.
+- **The first destroy reports an error DigitalOcean has already accepted.** At the current provider the delete waiter does not expect the pool's `deleting` status and fails 5-6 seconds in, while DigitalOcean finishes deleting the pool and its members regardless. Terraform: run destroy again. Pulumi: `pulumi refresh`, then destroy. Tracked upstream as [digitalocean/terraform-provider-digitalocean#1605](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1605); details in the GUIDE.
+- **Unset `vpc` means the region's default VPC, sent explicitly.** Both modules look it up and send its UUID so the plan matches what DigitalOcean reads back.
 - **Every member bills.** Members are real droplets at the template size's hourly rate -- a static pool bills `target_instances` around the clock.
 - **Create waits for the whole pool.** The provider polls until the pool AND every member reach active (up to 15 minutes).
 - **Dynamic scaling needs the agent.** Utilization metrics come from the droplet monitoring agent (`withDropletAgent`); a dynamic pool without it scales blind on memory.

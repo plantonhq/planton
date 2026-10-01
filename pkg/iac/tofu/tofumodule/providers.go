@@ -9,18 +9,18 @@ import (
 // It delegates to the IaC-agnostic providerenvvars package which determines the correct provider
 // based on the target's api_version/kind and loads only the relevant provider configuration.
 func GetProviderConfigEnvVars(stackInputYaml, fileCacheLoc, kubeContext string) ([]string, error) {
-	// ResolveAwsWebIdentity is set here because this is the tofu/terraform execution boundary:
-	// the AWS modules' `provider "aws" {}` block is empty, so keyless connections must have
-	// their web-identity JWT exchanged for temporary credentials and injected as AWS_* env
-	// vars. The pulumi path calls GetEnvVarsWithOptions directly and leaves this false.
+	// EngineReadsEnvironment is named here because this is the tofu/terraform execution boundary:
+	// the catalog modules' provider blocks are empty, so a keyless connection's credential must
+	// arrive as environment variables (exchanged for AWS and Google Cloud, the federated token for
+	// Azure). The pulumi path calls GetEnvVarsWithOptions directly and names EngineBuildsProviders.
 	// KubeContext rides the same options: the loader exports it as KUBE_CTX
 	// beside the kubeconfig it resolves (a connection's rendered file, or the
 	// operator's own kubeconfig when there is no connection), so one seam owns
 	// every name the kubernetes and helm providers read.
 	providerConfigEnvVars, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{
-		FileCacheLoc:          fileCacheLoc,
-		ResolveAwsWebIdentity: true,
-		KubeContext:           kubeContext,
+		FileCacheLoc: fileCacheLoc,
+		Engine:       providerenvvars.EngineReadsEnvironment,
+		KubeContext:  kubeContext,
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get provider env vars from stack input")

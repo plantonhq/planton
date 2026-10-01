@@ -7,7 +7,6 @@ Terraform IaC module for Gateway DNS locations.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustDnsLocationSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_dns_location
 outputs.tf    — location_id, doh_subdomain, ip
 ```

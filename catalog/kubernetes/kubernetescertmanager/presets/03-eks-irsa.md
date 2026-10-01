@@ -16,7 +16,7 @@ This preset installs cert-manager with IAM Roles for Service Accounts (IRSA) con
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<your-irsa-role-arn>` | IAM role ARN with Route53 permissions | AWS Console > IAM > Roles |
+| `<account-id>` / `<cert-manager-dns01-role>` | The IAM role with Route53 permissions, as `arn:aws:iam::<account-id>:role/<cert-manager-dns01-role>` | AWS Console > IAM > Roles |
 
 ## Related Presets
 

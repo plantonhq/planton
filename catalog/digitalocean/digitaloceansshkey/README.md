@@ -38,6 +38,7 @@ Deploy with either provisioner; both produce identical resources and outputs.
 - **Deleting a key never touches droplets created with it.** They keep the key in their `authorized_keys`; deletion only stops NEW droplets from selecting it.
 - **Imports take the numeric id only.** A fingerprint does not work as an import id even though droplets accept fingerprints as key references.
 - **Malformed keys fail at apply, not validation.** DigitalOcean validates the material server-side; the spec enforces only presence.
+- **One key body per account.** DigitalOcean deduplicates on the material, not the name -- a second resource embedding the same public key fails with `SSH Key is already in use on your account`. Register shared material once and reference it.
 
 ## Module layout
 

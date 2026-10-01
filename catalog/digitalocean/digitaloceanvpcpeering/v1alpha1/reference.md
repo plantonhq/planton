@@ -88,7 +88,6 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanVpcP
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.peering_id` | `string` | UUID of the VPC peering connection (the resource's API identity and its import id). |
-| `status.outputs.status` | `string` | Lifecycle status of the peering as reported by DigitalOcean at apply time. DigitalOcean reports statuses in UPPERCASE (PROVISIONING, ACTIVE, DELETING); the module waits for ACTIVE before exporting. |
 
 ## References
 

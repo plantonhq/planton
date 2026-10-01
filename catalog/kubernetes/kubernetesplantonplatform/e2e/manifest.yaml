@@ -46,8 +46,17 @@ spec:
                 value: replace-with-the-token-secret
         retention_policy: 30d
         schedule: "0 0 2 * * *"
+      # A limit raised alone keeps the operator's default requests.
+      resources:
+        limits:
+          memory: 4Gi
     redis:
       storage_size: 2Gi
+      # The dataset ceiling stays under the store's raised limit.
+      max_memory: 1536mb
+      resources:
+        limits:
+          memory: 2Gi
   ingress:
     enabled: true
     hostname: planton.example.com
@@ -119,6 +128,15 @@ spec:
     tekton_pipelines: auto
     postgres_backup_plugin: auto
   control_plane:
+    resources:
+      limits:
+        memory: 8Gi
     replicas: 1
   console:
     replicas: 1
+  temporal:
+    history:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi

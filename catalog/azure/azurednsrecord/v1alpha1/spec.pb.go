@@ -169,11 +169,14 @@ type AzureDnsRecordSpec struct {
 	// zone's name servers (e.g. "team" NS records pointing at the
 	// team.example.com zone's assigned servers). The zone's own apex NS
 	// records are Azure-managed -- do not declare them. Set exactly one
-	// payload field on this spec.
-	Ns []string `protobuf:"bytes,13,rep,name=ns,proto3" json:"ns,omitempty"`
+	// payload field on this spec. Each entry can be a literal or a reference
+	// to the child zone's name-server output, so the delegation follows the
+	// zone through a recreate.
+	Ns []*v1.StringValueOrRef `protobuf:"bytes,13,rep,name=ns,proto3" json:"ns,omitempty"`
 	// Pointer hostnames for reverse DNS (IP-to-name, in in-addr.arpa /
-	// ip6.arpa zones). Set exactly one payload field on this spec.
-	Ptr           []string `protobuf:"bytes,14,rep,name=ptr,proto3" json:"ptr,omitempty"`
+	// ip6.arpa zones). Set exactly one payload field on this spec. Each entry
+	// can be a literal or a reference to another resource's hostname output.
+	Ptr           []*v1.StringValueOrRef `protobuf:"bytes,14,rep,name=ptr,proto3" json:"ptr,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -292,14 +295,14 @@ func (x *AzureDnsRecordSpec) GetTxt() []*v1.StringValueOrRef {
 	return nil
 }
 
-func (x *AzureDnsRecordSpec) GetNs() []string {
+func (x *AzureDnsRecordSpec) GetNs() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Ns
 	}
 	return nil
 }
 
-func (x *AzureDnsRecordSpec) GetPtr() []string {
+func (x *AzureDnsRecordSpec) GetPtr() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Ptr
 	}
@@ -310,8 +313,10 @@ func (x *AzureDnsRecordSpec) GetPtr() []string {
 type AzureDnsARecord struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The IPv4 addresses this name answers with. Multiple addresses
-	// round-robin. Mutually exclusive with target_resource_id.
-	Addresses []string `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
+	// round-robin. Mutually exclusive with target_resource_id. Each entry can
+	// be a literal or a reference to another resource's address output (a
+	// public IP, a load balancer's frontend).
+	Addresses []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
 	// Alias target: the ARM ID of an Azure resource whose IPv4 address
 	// this record should track automatically (a Public IP, a Traffic
 	// Manager profile, another record set). Reference the resource's ARM-id
@@ -353,7 +358,7 @@ func (*AzureDnsARecord) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurednsrecord_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDnsARecord) GetAddresses() []string {
+func (x *AzureDnsARecord) GetAddresses() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Addresses
 	}
@@ -372,8 +377,9 @@ type AzureDnsAaaaRecord struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The IPv6 addresses this name answers with (e.g. "2001:db8::1" --
 	// Azure normalizes the compressed form). Multiple addresses
-	// round-robin. Mutually exclusive with target_resource_id.
-	Addresses []string `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
+	// round-robin. Mutually exclusive with target_resource_id. Each entry can
+	// be a literal or a reference to another resource's address output.
+	Addresses []*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
 	// Alias target: the ARM ID of an Azure resource whose IPv6 address this
 	// record should track automatically. Reference the resource's ARM-id
 	// output with an explicit valueFrom -- no kind dominates alias targets,
@@ -413,7 +419,7 @@ func (*AzureDnsAaaaRecord) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurednsrecord_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AzureDnsAaaaRecord) GetAddresses() []string {
+func (x *AzureDnsAaaaRecord) GetAddresses() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Addresses
 	}
@@ -501,8 +507,9 @@ type AzureDnsMxEntry struct {
 	// secondary. 0 is legal (and used by the "null MX" no-mail convention).
 	Preference *int32 `protobuf:"varint,1,opt,name=preference,proto3,oneof" json:"preference,omitempty"`
 	// The mail server hostname (e.g. "mail.example.com" or
-	// "aspmx.l.google.com").
-	Exchange      string `protobuf:"bytes,2,opt,name=exchange,proto3" json:"exchange,omitempty"`
+	// "aspmx.l.google.com"), a literal or a reference to another resource's
+	// hostname output.
+	Exchange      *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=exchange,proto3" json:"exchange,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -544,11 +551,11 @@ func (x *AzureDnsMxEntry) GetPreference() int32 {
 	return 0
 }
 
-func (x *AzureDnsMxEntry) GetExchange() string {
+func (x *AzureDnsMxEntry) GetExchange() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Exchange
 	}
-	return ""
+	return nil
 }
 
 // One service endpoint in an SRV record set.
@@ -564,8 +571,9 @@ type AzureDnsSrvEntry struct {
 	// The TCP/UDP port the service listens on (e.g. 5060 for SIP).
 	Port *int32 `protobuf:"varint,3,opt,name=port,proto3,oneof" json:"port,omitempty"`
 	// The hostname providing the service (e.g. "sip.example.com"). Must be
-	// a hostname with its own A/AAAA record, never an IP address.
-	Target        string `protobuf:"bytes,4,opt,name=target,proto3" json:"target,omitempty"`
+	// a hostname with its own A/AAAA record, never an IP address. A literal or
+	// a reference to another resource's hostname output.
+	Target        *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=target,proto3" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -621,11 +629,11 @@ func (x *AzureDnsSrvEntry) GetPort() int32 {
 	return 0
 }
 
-func (x *AzureDnsSrvEntry) GetTarget() string {
+func (x *AzureDnsSrvEntry) GetTarget() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Target
 	}
-	return ""
+	return nil
 }
 
 // One certificate-authority authorization in a CAA record set.
@@ -700,7 +708,7 @@ var File_catalog_azure_azurednsrecord_v1alpha1_spec_proto protoreflect.FileDescr
 
 const file_catalog_azure_azurednsrecord_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/azure/azurednsrecord/v1alpha1/spec.proto\x12)dev.planton.azure.azurednsrecord.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbe\x0f\n" +
+	"0catalog/azure/azurednsrecord/v1alpha1/spec.proto\x12)dev.planton.azure.azurednsrecord.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x8a\x10\n" +
 	"\x12AzureDnsRecordSpec\x12\x8c\x01\n" +
 	"\x0eresource_group\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x0f\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12x\n" +
 	"\tzone_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd4\x0f\x92\xd4a\x18status.outputs.zone_nameR\bzoneName\x12\x9e\x03\n" +
@@ -717,38 +725,41 @@ const file_catalog_azure_azurednsrecord_v1alpha1_spec_proto_rawDesc = "" +
 	"\x03srv\x18\n" +
 	" \x03(\v2;.dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsSrvEntryR\x03srv\x12M\n" +
 	"\x03caa\x18\v \x03(\v2;.dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCaaEntryR\x03caa\x12D\n" +
-	"\x03txt\x18\f \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x03txt\x12\x1c\n" +
-	"\x02ns\x18\r \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x02ns\x12\x1e\n" +
-	"\x03ptr\x18\x0e \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x03ptr\x1a7\n" +
+	"\x03txt\x18\f \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x03txt\x12B\n" +
+	"\x02ns\x18\r \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x02ns\x12D\n" +
+	"\x03ptr\x18\x0e \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x03ptr\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xba\x03\xbaH\xb6\x03\x1a\xb3\x03\n" +
 	"$azure_dns_record_exactly_one_payload\x12ySet exactly one record payload -- a, aaaa, cname, mx, srv, caa, txt, ns, or ptr -- the payload determines the record type\x1a\x8f\x02(has(this.a) ? 1 : 0) + (has(this.aaaa) ? 1 : 0) + (has(this.cname) ? 1 : 0) + (this.mx.size() > 0 ? 1 : 0) + (this.srv.size() > 0 ? 1 : 0) + (this.caa.size() > 0 ? 1 : 0) + (this.txt.size() > 0 ? 1 : 0) + (this.ns.size() > 0 ? 1 : 0) + (this.ptr.size() > 0 ? 1 : 0) == 1B\x0e\n" +
-	"\f_ttl_seconds\"\xce\x03\n" +
-	"\x0fAzureDnsARecord\x12*\n" +
-	"\taddresses\x18\x01 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02x\x01R\taddresses\x12`\n" +
+	"\f_ttl_seconds\"\xf9\x04\n" +
+	"\x0fAzureDnsARecord\x12\xd4\x01\n" +
+	"\taddresses\x18\x01 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x81\x01\xbaH~\xba\x01{\n" +
+	"!azure_dns_a_record_addresses_ipv4\x12'each literal address is an IPv4 address\x1a-this.all(v, !has(v.value) || v.value.isIp(4))R\taddresses\x12`\n" +
 	"\x12target_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x10targetResourceId:\xac\x02\xbaH\xa8\x02\x1a\xa5\x02\n" +
-	"&azure_dns_a_record_addresses_xor_alias\x12\xa7\x01Provide either literal IPv4 addresses or an alias target_resource_id, not both and not neither -- an alias record delegates its answer to the referenced Azure resource\x1aQ(this.addresses.size() > 0 ? 1 : 0) + (has(this.target_resource_id) ? 1 : 0) == 1\"\xd5\x03\n" +
-	"\x12AzureDnsAaaaRecord\x12+\n" +
-	"\taddresses\x18\x01 \x03(\tB\r\xbaH\n" +
-	"\x92\x01\a\"\x05r\x03\x80\x01\x01R\taddresses\x12`\n" +
+	"&azure_dns_a_record_addresses_xor_alias\x12\xa7\x01Provide either literal IPv4 addresses or an alias target_resource_id, not both and not neither -- an alias record delegates its answer to the referenced Azure resource\x1aQ(this.addresses.size() > 0 ? 1 : 0) + (has(this.target_resource_id) ? 1 : 0) == 1\"\x83\x05\n" +
+	"\x12AzureDnsAaaaRecord\x12\xd8\x01\n" +
+	"\taddresses\x18\x01 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x85\x01\xbaH\x81\x01\xba\x01~\n" +
+	"$azure_dns_aaaa_record_addresses_ipv6\x12'each literal address is an IPv6 address\x1a-this.all(v, !has(v.value) || v.value.isIp(6))R\taddresses\x12`\n" +
 	"\x12target_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x10targetResourceId:\xaf\x02\xbaH\xab\x02\x1a\xa8\x02\n" +
 	")azure_dns_aaaa_record_addresses_xor_alias\x12\xa7\x01Provide either literal IPv6 addresses or an alias target_resource_id, not both and not neither -- an alias record delegates its answer to the referenced Azure resource\x1aQ(this.addresses.size() > 0 ? 1 : 0) + (has(this.target_resource_id) ? 1 : 0) == 1\"\xd6\x03\n" +
 	"\x13AzureDnsCnameRecord\x12H\n" +
 	"\x05value\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x05value\x12`\n" +
 	"\x12target_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x10targetResourceId:\x92\x02\xbaH\x8e\x02\x1a\x8b\x02\n" +
-	"&azure_dns_cname_record_value_xor_alias\x12\x97\x01Provide either the target hostname in value or an alias target_resource_id, not both and not neither -- a CNAME answers with exactly one canonical name\x1aG(has(this.value) ? 1 : 0) + (has(this.target_resource_id) ? 1 : 0) == 1\"~\n" +
+	"&azure_dns_cname_record_value_xor_alias\x12\x97\x01Provide either the target hostname in value or an alias target_resource_id, not both and not neither -- a CNAME answers with exactly one canonical name\x1aG(has(this.value) ? 1 : 0) + (has(this.target_resource_id) ? 1 : 0) == 1\"\xae\x02\n" +
 	"\x0fAzureDnsMxEntry\x123\n" +
 	"\n" +
 	"preference\x18\x01 \x01(\x05B\x0e\xbaH\v\xc8\x01\x01\x1a\x06\x18\xff\xff\x03(\x00H\x00R\n" +
-	"preference\x88\x01\x01\x12'\n" +
-	"\bexchange\x18\x02 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x18\xfd\x01R\bexchangeB\r\n" +
-	"\v_preference\"\xdf\x01\n" +
+	"preference\x88\x01\x01\x12\xd6\x01\n" +
+	"\bexchange\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x85\x01\xbaH\x81\x01\xba\x01{\n" +
+	"\x1dazure_dns_mx_exchange_max_len\x12,a literal hostname is at most 253 characters\x1a,!has(this.value) || this.value.size() <= 253\xc8\x01\x01R\bexchangeB\r\n" +
+	"\v_preference\"\x8e\x03\n" +
 	"\x10AzureDnsSrvEntry\x12/\n" +
 	"\bpriority\x18\x01 \x01(\x05B\x0e\xbaH\v\xc8\x01\x01\x1a\x06\x18\xff\xff\x03(\x00H\x00R\bpriority\x88\x01\x01\x12+\n" +
 	"\x06weight\x18\x02 \x01(\x05B\x0e\xbaH\v\xc8\x01\x01\x1a\x06\x18\xff\xff\x03(\x00H\x01R\x06weight\x88\x01\x01\x12'\n" +
-	"\x04port\x18\x03 \x01(\x05B\x0e\xbaH\v\xc8\x01\x01\x1a\x06\x18\xff\xff\x03(\x00H\x02R\x04port\x88\x01\x01\x12#\n" +
-	"\x06target\x18\x04 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x18\xfd\x01R\x06targetB\v\n" +
+	"\x04port\x18\x03 \x01(\x05B\x0e\xbaH\v\xc8\x01\x01\x1a\x06\x18\xff\xff\x03(\x00H\x02R\x04port\x88\x01\x01\x12\xd1\x01\n" +
+	"\x06target\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x84\x01\xbaH\x80\x01\xba\x01z\n" +
+	"\x1cazure_dns_srv_target_max_len\x12,a literal hostname is at most 253 characters\x1a,!has(this.value) || this.value.size() <= 253\xc8\x01\x01R\x06targetB\v\n" +
 	"\t_priorityB\t\n" +
 	"\a_weightB\a\n" +
 	"\x05_port\"\xbe\x01\n" +
@@ -803,16 +814,22 @@ var file_catalog_azure_azurednsrecord_v1alpha1_spec_proto_depIdxs = []int32{
 	6,  // 7: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsRecordSpec.srv:type_name -> dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsSrvEntry
 	7,  // 8: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsRecordSpec.caa:type_name -> dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCaaEntry
 	9,  // 9: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsRecordSpec.txt:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 10: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsARecord.target_resource_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 11: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsAaaaRecord.target_resource_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 12: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCnameRecord.value:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 13: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCnameRecord.target_resource_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 14: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCaaEntry.tag:type_name -> dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCaaTag
-	15, // [15:15] is the sub-list for method output_type
-	15, // [15:15] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	9,  // 10: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsRecordSpec.ns:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 11: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsRecordSpec.ptr:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 12: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsARecord.addresses:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 13: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsARecord.target_resource_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 14: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsAaaaRecord.addresses:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 15: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsAaaaRecord.target_resource_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 16: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCnameRecord.value:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 17: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCnameRecord.target_resource_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 18: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsMxEntry.exchange:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 19: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsSrvEntry.target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 20: dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCaaEntry.tag:type_name -> dev.planton.azure.azurednsrecord.v1alpha1.AzureDnsCaaTag
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_catalog_azure_azurednsrecord_v1alpha1_spec_proto_init() }

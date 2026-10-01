@@ -132,8 +132,10 @@ message DigitalOceanDropletAutoscalePoolTemplate {
   ];
 
   // (Optional) The VPC every member joins. Use a literal VPC UUID or a
-  // reference to a DigitalOceanVpc resource. When unset, DigitalOcean
-  // places members in the region's default VPC.
+  // reference to a DigitalOceanVpc resource. When unset, members join the
+  // region's default VPC -- both provisioners look that VPC up and send it
+  // explicitly, because DigitalOcean reports it back on every read and an
+  // implicit value would otherwise re-plan on every apply.
   dev.planton.shared.foreignkey.v1.StringValueOrRef vpc = 5 [
     (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanVpc,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
@@ -165,4 +167,11 @@ message DigitalOceanDropletAutoscalePoolTemplate {
 
   // (Optional) Cloud-init user data executed on each member's first boot.
   string user_data = 10;
+
+  // (Optional) Public networking is enabled on every member by default; set
+  // explicit false so members are created with NO public network interface
+  // (reachable only inside the pool's VPC -- put them behind a load balancer
+  // that already exists). Unset defers to DigitalOcean's default. Changing it
+  // replaces the pool.
+  optional bool public_networking = 11;
 }

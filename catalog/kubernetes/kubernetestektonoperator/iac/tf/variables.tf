@@ -58,5 +58,6 @@ variable "spec" {
       toleration_seconds = optional(number)
     })), [])
     image_pull_secrets = optional(list(string), [])
+    image_registry     = optional(string, "")
   })
 }

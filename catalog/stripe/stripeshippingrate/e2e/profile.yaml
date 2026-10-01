@@ -1,0 +1,13 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripeshippingrate
+spec:
+  # Proven live on OpenTofu against the test sandbox: free and multi-currency
+  # rates, blind import (other-currency amounts are read back only when
+  # expanded), and destroy deactivating the rate, which stays in the sandbox.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - tofu
+  timeout_minutes: 5

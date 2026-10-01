@@ -5,7 +5,6 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -14,15 +13,6 @@ const (
 	ConsoleDefaultImageRepo = DefaultImageRegistry + "/" + ConsoleImageSlug
 	consoleContainerPort    = 3000
 	consoleServicePort      = 80
-
-	// The console's sizing (the same lesson as Postgres and the identity
-	// server): without a request the console can be CPU/memory-starved on a
-	// busy node into failing its own probes; without a memory limit it can be
-	// OOM-killed confusingly. No CPU limit -- page renders are bursty and
-	// throttling them recreates the slowness the probes then punish.
-	consoleCPURequest    = "250m"
-	consoleMemoryRequest = "512Mi"
-	consoleMemoryLimit   = "2Gi"
 
 	// consoleHealthzPath is the console's purpose-built health endpoint: no
 	// auth, no data fetch, no React render -- it answers as long as the
@@ -47,6 +37,10 @@ type ConsoleConfig struct {
 	ImageRepository          string
 	ImageTag                 string
 	ExternalConfigSecretName string
+
+	// Resources is the container's effective sizing (SizingConsole in the
+	// registry, merged with the spec's override by the component).
+	Resources corev1.ResourceRequirements
 
 	// PublicURL is the browser-facing front-door URL: the ingress hostname
 	// URL, or the gateway's localhost port-forward URL. The browser calls
@@ -234,7 +228,7 @@ func ConsoleDeployment(cfg ConsoleConfig) *appsv1.Deployment {
 						Ports:     []corev1.ContainerPort{{Name: "http", ContainerPort: consoleContainerPort, Protocol: corev1.ProtocolTCP}},
 						Env:       envVars,
 						EnvFrom:   envFrom,
-						Resources: consoleResources(),
+						Resources: mustBeSized(SizingConsole, cfg.Resources),
 						// Startup is the ONE moment a full page render is the
 						// right check -- it proves the app genuinely boots
 						// (build intact, env sane), and a kill on persistent
@@ -332,18 +326,4 @@ func ConsoleService(crName, namespace string, ownerRef *metav1.OwnerReference) *
 	}
 
 	return svc
-}
-
-// consoleResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func consoleResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(consoleCPURequest),
-			corev1.ResourceMemory: resource.MustParse(consoleMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(consoleMemoryLimit),
-		},
-	}
 }

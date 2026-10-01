@@ -40,9 +40,12 @@ locals {
 
   namespace = var.spec.namespace
 
-  # Resource-identity labels stamped on the module-created satellites
-  # (the namespace — never injected into the chart's own resources; Helm
-  # owns those).
+  # Resource-identity labels: stamped on the module-created satellites
+  # (the namespace) and on every pod the chart runs, through the chart's
+  # own pod-label values (server.podLabels, web.podLabels,
+  # admintools.podLabels, schema.podLabels) -- so a log line, a metric or
+  # an alert from any Temporal pod names its organization and environment.
+  # The chart's selectors are its own fixed labels; these never reach them.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -451,6 +454,7 @@ locals {
         namespaceDefaults   = local.namespace_defaults_block
         metrics             = var.spec.service_monitor_enabled ? { serviceMonitor = { enabled = true } } : null
         image               = local.rendered_images.server
+        podLabels           = local.labels # every server service's pods (frontend, history, matching, worker)
       } : k => v if v != null && v != {}
     },
     local.scheduling_block
@@ -468,6 +472,7 @@ locals {
       image        = local.web_ui_enabled ? local.rendered_images.web_ui : null
       nodeSelector = local.web_ui_enabled ? try(local.scheduling_block.nodeSelector, null) : null
       tolerations  = local.web_ui_enabled ? try(local.scheduling_block.tolerations, null) : null
+      podLabels    = local.web_ui_enabled ? local.labels : null
     } : k => v if v != null && v != {}
   }
 
@@ -478,8 +483,9 @@ locals {
   admintools_block = merge(
     {
       for k, v in {
-        enabled = local.admin_tools_enabled ? null : false
-        image   = local.rendered_images.admin_tools
+        enabled   = local.admin_tools_enabled ? null : false
+        image     = local.rendered_images.admin_tools
+        podLabels = local.admin_tools_enabled ? local.labels : null
       } : k => v if v != null
     },
     local.scheduling_block
@@ -496,6 +502,10 @@ locals {
       server     = local.server_block
       web        = local.web_block
       admintools = local.admintools_block
+      # The schema-setup and namespace Jobs' pods (the chart reads only
+      # podLabels from this block here; the Jobs themselves are enabled by
+      # the datastores' manageSchema).
+      schema = { podLabels = local.labels }
 
       # 1.29-image compatibility shims: OFF at this pin (the chart
       # defaults both ON for Temporal 1.29 images; our pin runs 1.31+).

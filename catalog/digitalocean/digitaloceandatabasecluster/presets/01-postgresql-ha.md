@@ -20,4 +20,4 @@ This preset creates a production-grade PostgreSQL database cluster with three no
 ## Related Presets
 
 - **02-postgresql-dev** -- Use instead for dev/test where HA and VPC are unnecessary
-- **03-redis** -- Use for caching workloads instead of relational data
+- **03-valkey** -- Use for caching workloads instead of relational data

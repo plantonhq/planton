@@ -1,12 +1,4 @@
 locals {
-  # Resource naming
-  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-healthcheck")
-
-  # Labels
-  labels = merge({
-    "name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
   # The converter emits header values as list WRAPPERS ({values = [...]}) --
   # the provider wants a plain map of string lists, so unwrap here. Empty
   # strings and empty containers are dropped rather than sent.

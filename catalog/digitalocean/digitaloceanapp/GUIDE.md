@@ -4,7 +4,13 @@ Judgment calls that matter when you run App Platform apps in production.
 
 ## The app name is short on purpose
 
-`spec.appName` is 2–32 characters. That is the provider's limit, not a Planton invention. DNS-friendly names only (`a-z`, `0-9`, hyphens). Changing the name replaces the app.
+`spec.appName` is 2–32 characters matching `^[a-z][a-z0-9-]{0,30}[a-z0-9]$` -- starts with a letter, ends with a letter or digit. That is the API's rule, not a Planton invention (it answers `name in body should match ...` otherwise), and every component name follows the same rule; validation enforces it on each name field so a bad name fails in seconds instead of minutes into a deploy. The app name must also be unique across every app in the account: the API's validate-only `POST /v2/apps/propose` reports a taken name as `app_name_available: false`, and the create fails.
+
+Renaming an app is an in-place update, not a replacement -- but the default `<name>-<hash>.ondigitalocean.app` hostname carries the name, so the app's URL changes with it. Anything that calls the app by that hostname breaks until it is updated; put a custom domain in front when the URL must survive a rename.
+
+## Regions are datacenter groups, not droplet slugs
+
+`spec.region` takes an App Platform region group: `nyc`, `ams`, `fra`, `sfo`, `sgp`, `blr`, `tor`, `lon`, `syd`, `atl`, `ric`, `mkc` (the list is `GET /v2/apps/regions`). `nyc` covers the nyc1 and nyc3 datacenters; App Platform picks within the group. The API accepts a droplet slug such as `nyc3` but stores `nyc`, so a spec that said `nyc3` would re-plan on every apply -- which is why the field is typed with the group slugs and cannot say `nyc3`. When the app must sit beside a VPC or a database, match the group that contains their datacenter (a `nyc3` VPC goes with an `nyc` app).
 
 ## Instance sizes are free-form slugs
 
@@ -24,18 +30,23 @@ When `autoscaling` is set, leave `instanceCount` unset. App Platform ignores a f
 
 `termination.drainSeconds` is an HTTP connection drain. Workers and jobs reject it. They honor `gracePeriodSeconds` only.
 
-## Terraform vs Pulumi at the current Pulumi SDK (v4.49.0)
+## Terraform vs Pulumi
 
-These fields are real on the spec and Terraform wires them. Pulumi fails the apply with a loud `PARITY-EXCEPTION` if they are set, until the SDK grows the matching args:
+Both provisioners deploy the whole spec -- `vpc`, `maintenance`, ingress `authorityExact` matches, `ingress.secureHeader`, service and worker `livenessHealthCheck`, and alert destinations included. The one behavioral difference is the alert-destinations read-back below, which is a provider trait, not a wiring gap.
 
-- `spec.vpc`
-- `spec.maintenance`
-- service/worker `livenessHealthCheck`
-- `spec.ingress.secureHeader`
-- `spec.ingress.rule.match.authority` (`authorityExact`)
-- alert destinations (emails / Slack) — Terraform's alert block carries them; Pulumi's alert args do not
+## Readiness versus liveness
 
-Use Terraform for those arms, or omit them on Pulumi stacks.
+A service's `healthCheck` is App Platform's readiness probe: while it fails, the component receives no traffic. `livenessHealthCheck` on a service or worker is the restart probe: when it fails `failureThreshold` times in a row, App Platform restarts the container. Point liveness at a cheap, dependency-free path -- a probe that touches the database restarts a healthy container every time the database hiccups. Both use the same field shape; `initialDelaySeconds` matters most on liveness, because a probe that starts before the process is listening restarts it in a loop.
+
+## Alert destinations are write-only on the provider -- a perpetual diff on Terraform
+
+Email and Slack destinations on app-level and component alerts are applied through a separate API call after the app spec is saved, and the provider never reads them back into state (a provider defect at v2.99.1, unchanged through v2.101.1, tracked as [digitalocean/terraform-provider-digitalocean#1606](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1606); measured live: a refreshed plan proposed `+ destinations` on both alerts of a freshly applied app). Because any `spec` difference is an App update, **every Terraform apply with destinations set re-sends the spec and triggers a new deployment**. Pulumi shows the same diff only after a `pulumi refresh`; a plain `pulumi up` stays quiet. An import of an existing app never restores destinations.
+
+Until the provider reads destinations back: set them on Pulumi stacks, or leave them unset on Terraform -- DigitalOcean then notifies the team's default address -- and manage recipients in the control panel. Whatever you set, emails must belong to verified team members; the API rejects the call otherwise.
+
+## Secret environment variables re-plan on Terraform
+
+`envs[].secret` values come back from the API encrypted. Terraform stores the encrypted form and compares it with your plaintext on the next plan, so every apply shows the secret as changed and redeploys the app (upstream digitalocean/terraform-provider-digitalocean#869). This is the provider's documented behaviour, not a Planton bug. Pulumi is affected only after a refresh. If you run Terraform with secret envs, expect the diff, or move the secret into a bind or a managed secret store the app reads at runtime.
 
 ## Deprecated App Spec surfaces are not modeled
 
@@ -49,9 +60,9 @@ Per-component `routes` / `cors` and the old top-level `domains` list are schema-
 
 `spec.domains[].zone` can reference a DigitalOceanDnsZone. The zone must already exist; App Platform will not create DNS for you. Omit domains to use the default `ondigitalocean.app` hostname.
 
-## `projectId` places the app in a project
+## `projectId` places the app in a project, once
 
-`spec.projectId` can reference a DigitalOceanProject (its `project_id` output) or carry a literal project UUID. Leave it unset and the app lands in the account's default project.
+`spec.projectId` can reference a DigitalOceanProject (its `project_id` output) or carry a literal project UUID. Leave it unset and the app lands in the account's default project. Set it once, at creation: the provider marks it ForceNew, so moving an app to another project destroys and recreates it -- new UUID, new default hostname.
 
 ## Pulling from DigitalOcean Container Registry
 

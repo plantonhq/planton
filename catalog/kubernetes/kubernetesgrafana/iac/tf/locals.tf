@@ -110,7 +110,86 @@ locals {
     if try(ds.basic_auth, null) != null
   }
 
+  # ---- sign-in (auth.google / auth.generic_oauth) --------------------------
+  # Twin of the Pulumi module's signin.go. Non-secret provider settings
+  # join grafana.ini; each client secret goes into the module-owned
+  # `<name>-sso` Secret (main.tf) and reaches Grafana as
+  # GF_AUTH_<PROVIDER>_CLIENT_SECRET, which overrides the ini key, so the
+  # secret never enters the ConfigMap the chart renders grafana.ini into.
+  sign_in_google  = try(var.spec.auth.google, null)
+  sign_in_generic = try(var.spec.auth.generic_oauth, null)
+  sign_in_enabled = local.sign_in_google != null || local.sign_in_generic != null
+  sso_secret_name = "${local.release_name}-sso"
+
+  sso_secret_data = merge(
+    local.sign_in_google != null ? { "google-client-secret" = local.sign_in_google.client_secret } : {},
+    local.sign_in_generic != null ? { "generic-oauth-client-secret" = local.sign_in_generic.client_secret } : {}
+  )
+
+  sign_in_env_value_from = merge(
+    local.sign_in_google != null ? {
+      GF_AUTH_GOOGLE_CLIENT_SECRET = {
+        secretKeyRef = { name = local.sso_secret_name, key = "google-client-secret" }
+      }
+    } : {},
+    local.sign_in_generic != null ? {
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET = {
+        secretKeyRef = { name = local.sso_secret_name, key = "generic-oauth-client-secret" }
+      }
+    } : {}
+  )
+
+  sign_in_ini = {
+    for k, v in {
+      "auth.google" = local.sign_in_google == null ? null : {
+        for gk, gv in {
+          enabled             = true
+          client_id           = local.sign_in_google.client_id
+          allow_sign_up       = local.sign_in_google.allow_sign_up == null ? true : local.sign_in_google.allow_sign_up
+          allowed_domains     = length(local.sign_in_google.allowed_domains) > 0 ? join(" ", local.sign_in_google.allowed_domains) : null
+          hosted_domain       = local.sign_in_google.hosted_domain != "" ? local.sign_in_google.hosted_domain : null
+          auto_login          = local.sign_in_google.auto_login ? true : null
+          role_attribute_path = local.sign_in_google.role_attribute_path != "" ? local.sign_in_google.role_attribute_path : null
+          # Grafana ships [auth.google] with skip_org_role_sync = true, which
+          # silently ignores role_attribute_path; a declared mapping applies.
+          skip_org_role_sync    = local.sign_in_google.role_attribute_path != "" ? false : null
+          role_attribute_strict = local.sign_in_google.role_attribute_strict ? true : null
+        } : gk => gv if gv != null
+      }
+      "auth.generic_oauth" = local.sign_in_generic == null ? null : {
+        for ok, ov in {
+          enabled               = true
+          name                  = try(coalesce(local.sign_in_generic.name), "OAuth")
+          client_id             = local.sign_in_generic.client_id
+          auth_url              = local.sign_in_generic.auth_url
+          token_url             = local.sign_in_generic.token_url
+          api_url               = local.sign_in_generic.api_url
+          scopes                = join(" ", length(local.sign_in_generic.scopes) > 0 ? local.sign_in_generic.scopes : ["openid", "email", "profile"])
+          allow_sign_up         = local.sign_in_generic.allow_sign_up == null ? true : local.sign_in_generic.allow_sign_up
+          use_pkce              = local.sign_in_generic.use_pkce == null ? true : local.sign_in_generic.use_pkce
+          email_attribute_path  = local.sign_in_generic.email_attribute_path != "" ? local.sign_in_generic.email_attribute_path : null
+          login_attribute_path  = local.sign_in_generic.login_attribute_path != "" ? local.sign_in_generic.login_attribute_path : null
+          name_attribute_path   = local.sign_in_generic.name_attribute_path != "" ? local.sign_in_generic.name_attribute_path : null
+          role_attribute_path   = local.sign_in_generic.role_attribute_path != "" ? local.sign_in_generic.role_attribute_path : null
+          skip_org_role_sync    = local.sign_in_generic.role_attribute_path != "" ? false : null
+          groups_attribute_path = local.sign_in_generic.groups_attribute_path != "" ? local.sign_in_generic.groups_attribute_path : null
+          allowed_groups        = length(local.sign_in_generic.allowed_groups) > 0 ? join(" ", local.sign_in_generic.allowed_groups) : null
+          allowed_domains       = length(local.sign_in_generic.allowed_domains) > 0 ? join(" ", local.sign_in_generic.allowed_domains) : null
+          role_attribute_strict = local.sign_in_generic.role_attribute_strict ? true : null
+          auto_login            = local.sign_in_generic.auto_login ? true : null
+        } : ok => ov if ov != null
+      }
+      # Once the manifest declares sign-in it owns sign-in: settings saved
+      # through Administration > Authentication live in Grafana's database
+      # and override grafana.ini and the environment. Grafana skips empty
+      # values when it layers custom configuration over its defaults, so
+      # the list that replaces the default names no provider.
+      sso_settings = local.sign_in_enabled ? { configurable_providers = "none" } : null
+    } : k => v if v != null
+  }
+
   env_value_from = merge(
+    local.sign_in_env_value_from,
     local.database_declared ? {
       GF_DATABASE_PASSWORD = {
         secretKeyRef = {
@@ -287,7 +366,15 @@ locals {
       plugins              = length(var.spec.plugins) > 0 ? var.spec.plugins : null
       shadowBundledPlugins = length(var.spec.plugins) > 0 ? true : null
 
-      "grafana.ini" = length(local.grafana_ini) > 0 ? local.grafana_ini : null
+      "grafana.ini" = length(merge(local.grafana_ini, local.sign_in_ini)) > 0 ? merge(local.grafana_ini, local.sign_in_ini) : null
+
+      # Grafana reads the sign-in Secret only at start: the fingerprint of
+      # its data changes the pod template when a secret rotates, so the
+      # next apply rolls Grafana onto it. sha256(jsonencode(map)) is what
+      # the Pulumi twin's credentialsChecksum computes, byte for byte.
+      podAnnotations = local.sign_in_enabled ? {
+        "checksum/credentials" = sha256(jsonencode(local.sso_secret_data))
+      } : null
 
       # Credentials ride the chart's own existingSecret wiring — it
       # injects GF_SMTP_USER / GF_SMTP_PASSWORD from the referenced

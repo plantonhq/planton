@@ -7,6 +7,7 @@
 package gcpiamoauthclientv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -108,13 +109,13 @@ var File_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpiamoauthclient_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpiamoauthclient/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpiamoauthclient.v1alpha1\"\x98\x01\n" +
+	"4catalog/gcp/gcpiamoauthclient/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpiamoauthclient.v1alpha1\x1a\x1cshared/options/options.proto\"\x9e\x01\n" +
 	"\x1dGcpIamOauthClientStackOutputs\x12\x1b\n" +
 	"\tclient_id\x18\x01 \x01(\tR\bclientId\x12\x1f\n" +
 	"\vclient_name\x18\x02 \x01(\tR\n" +
 	"clientName\x12\x14\n" +
-	"\x05state\x18\x03 \x01(\tR\x05state\x12#\n" +
-	"\rclient_secret\x18\x04 \x01(\tR\fclientSecretB\xea\x02\n" +
+	"\x05state\x18\x03 \x01(\tR\x05state\x12)\n" +
+	"\rclient_secret\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecretB\xea\x02\n" +
 	".com.dev.planton.gcp.gcpiamoauthclient.v1alpha1B\fOutputsProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpiamoauthclient/v1alpha1;gcpiamoauthclientv1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpiamoauthclient.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpiamoauthclient\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpiamoauthclient\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpiamoauthclient::V1alpha1b\x06proto3"
 
 var (

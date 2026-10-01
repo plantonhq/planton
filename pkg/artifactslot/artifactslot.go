@@ -17,7 +17,7 @@
 //   - a SINGULAR annotated field is unconditional: the kind models one
 //     injectable container;
 //   - a subpath resolving to a repo+tag MESSAGE receives the reference
-//     split (tag and digest grammars both parse); a string subpath
+//     split -- repo, tag, and the digest into its own leaf; a string subpath
 //     receives it whole.
 //
 // The hosted control plane keeps its authored injectors; an agreement
@@ -36,30 +36,31 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-// Reference is a parsed container image reference: `host/path:tag` or
-// `host/path@digest`. Build lanes compose colon-tag references; external
-// artifacts may arrive digest-pinned, so both grammars parse. A bare
-// repository parses with an empty tag.
+// Reference is a parsed container image reference: `host/path:tag`,
+// `host/path@digest`, or both -- `host/path:tag@digest`, the form a build
+// Planton ran stamps, the tag its readable name and the digest what runs. A
+// bare repository parses with an empty tag.
 type Reference struct {
-	Repo string
-	Tag  string
+	Repo   string
+	Tag    string
+	Digest string
 	// Raw is the reference exactly as given — what string slots receive.
 	Raw string
 }
 
-// ParseReference splits an image reference on its digest '@' first, else
-// on the last ':' AFTER the last '/' (a colon in the registry host's port
-// is not a tag separator).
+// ParseReference splits an image reference: its digest after the '@' first,
+// then the tag on the last ':' AFTER the last '/' of what remains (a colon in
+// the registry host's port is not a tag separator).
 func ParseReference(reference string) Reference {
+	name, digest := reference, ""
 	if at := strings.IndexByte(reference, '@'); at >= 0 {
-		return Reference{Repo: reference[:at], Tag: reference[at+1:], Raw: reference}
+		name, digest = reference[:at], reference[at+1:]
 	}
-	lastSlash := strings.LastIndexByte(reference, '/')
-	lastColon := strings.LastIndexByte(reference, ':')
-	if lastColon > lastSlash {
-		return Reference{Repo: reference[:lastColon], Tag: reference[lastColon+1:], Raw: reference}
+	repo, tag := name, ""
+	if lastColon := strings.LastIndexByte(name, ':'); lastColon > strings.LastIndexByte(name, '/') {
+		repo, tag = name[:lastColon], name[lastColon+1:]
 	}
-	return Reference{Repo: reference, Tag: "", Raw: reference}
+	return Reference{Repo: repo, Tag: tag, Digest: digest, Raw: reference}
 }
 
 // versionMaxLength is the version slots' shared grammar ceiling (the
@@ -200,7 +201,7 @@ func setImageAtSubpath(container protoreflect.Message, subpath string, ref Refer
 		current.Set(leaf, protoreflect.ValueOfString(ref.Raw))
 		return true, nil
 	case leaf.Message() != nil:
-		// A repo+tag message (the Kubernetes ContainerImage shape): the
+		// A repo+tag message (the Kubernetes workload image shape): the
 		// reference is written SPLIT. Blank-fill checks the repo half.
 		image := current.Mutable(leaf).Message()
 		repoField := image.Descriptor().Fields().ByName("repo")
@@ -211,8 +212,17 @@ func setImageAtSubpath(container protoreflect.Message, subpath string, ref Refer
 		if blankFillOnly && image.Get(repoField).String() != "" {
 			return false, nil
 		}
+		digestField := image.Descriptor().Fields().ByName("digest")
+		if digestField == nil && ref.Digest != "" {
+			return false, errors.Errorf("image leaf %s has no digest field, so %q cannot be written without losing its digest",
+				image.Descriptor().FullName(), ref.Raw)
+		}
 		image.Set(repoField, protoreflect.ValueOfString(ref.Repo))
 		image.Set(tagField, protoreflect.ValueOfString(ref.Tag))
+		if digestField != nil {
+			// Written even when empty: a new build's reference replaces an authored pin.
+			image.Set(digestField, protoreflect.ValueOfString(ref.Digest))
+		}
 		return true, nil
 	default:
 		return false, errors.Errorf("image leaf %q on %s is neither a string nor a repo+tag message", leafName, current.Descriptor().FullName())

@@ -14,4 +14,4 @@ Provisions an additional user on a DigitalOcean managed database cluster -- the 
 
 - The spec's singular `settings` message wraps into the SDK's one-element settings array (mirroring the Terraform module's single dynamic block).
 - ACLs are write-only upstream; the configuration is the source of truth.
-- The bridged SDK secret-flags `password`/`access_cert`/`access_key` from the provider's sensitive marks.
+- `password` and `access_key` are exported as secrets; `access_cert` (the public half) is unwrapped from the bridged SDK's secret flag.

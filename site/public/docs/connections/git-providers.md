@@ -87,6 +87,20 @@ Advantages of the App identity:
 3. For an App, GitHub asks you to install it; for the sign-in, you confirm the account.
 4. The connection's page shows **Verify Sign-In**: press it and read **Confirmed — GitHub attributes this sign-in to priya-dev**, or the exact sentence explaining what to fix.
 
+### Your Own GitHub App: Webhook URL and Secret
+
+With **Your Own GitHub App**, GitHub sends the App's pushes and pull requests to whatever Webhook URL the App holds, so the App's settings must point at Planton. The wizard's App step shows the **Webhook URL** to copy into them.
+
+Where GitHub can reach Planton (hosted Planton, or a self-hosted install with a public address), a webhook is the only way pushes arrive. Planton acts only on a delivery whose signature proves it came from your App, since an unsigned "push" could come from anyone who can reach the address. So the connection needs a **webhook secret**:
+
+- The wizard's **Webhook Security** step generates one and stores it as a Planton secret. Paste the same value into the App's **Webhook secret** field on GitHub, beside the Webhook URL, with **Active** ticked.
+- A connection made without one (through `planton apply`, say) is refused, naming the receiver and the fix.
+- A delivery Planton cannot verify is refused whole: no build starts, and no `service.yaml` registers a service.
+
+**Verify** on the connection's page also reports where GitHub sends the App's pushes. It says whether the App's Webhook URL points at this Planton and whether the App subscribes to push events, and names the setting to change if not. GitHub never reveals whether the webhook is ticked **Active** or which secret it signs with, so only the App's **Recent Deliveries** page on GitHub proves those.
+
+Where GitHub cannot reach Planton (a laptop, or a server behind a firewall), no secret is asked for: Planton reads pushes from GitHub's API instead, and the wizard skips the webhook step.
+
 ### Connecting via the CLI
 
 ```bash

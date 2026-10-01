@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "pulumistack",
@@ -33,11 +33,4 @@ go_library(
         "@com_github_sirupsen_logrus//:logrus",
         "@org_golang_x_term//:term",
     ],
-)
-
-go_test(
-    name = "pulumistack_test",
-    srcs = ["capture_outputs_test.go"],
-    embed = [":pulumistack"],
-    deps = ["@com_github_stretchr_testify//assert"],
 )

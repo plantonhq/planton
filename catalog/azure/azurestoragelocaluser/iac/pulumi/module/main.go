@@ -109,8 +109,8 @@ func Resources(ctx *pulumi.Context, stackInput *azurestoragelocaluserv1alpha1.Az
 	ctx.Export(OpLocalUserId, createdLocalUser.ID())
 	ctx.Export(OpUserName, createdLocalUser.Name)
 	ctx.Export(OpSftpUsername, pulumi.Sprintf("%s.%s", storageAccountName, spec.UserName))
-	ctx.Export(OpSid, createdLocalUser.Sid)
-	ctx.Export(OpPassword, createdLocalUser.Password)
+	ctx.Export(OpSid, pulumi.Unsecret(createdLocalUser.Sid))
+	ctx.Export(OpPassword, pulumi.ToSecret(createdLocalUser.Password))
 	ctx.Export(OpStorageAccountName, pulumi.String(storageAccountName))
 
 	return nil

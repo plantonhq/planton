@@ -1,0 +1,45 @@
+# Auth0 Branding Test Manifest
+# This file is used for testing the Auth0Branding component.
+#
+# Applying it REWRITES the look of every login page of the tenant the
+# credential belongs to: run it only against a test tenant nobody signs in to.
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: the test tenant's domain (e.g., your-test-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - read:branding
+#    - update:branding
+#    - delete:branding
+#    - read:custom_domains
+
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Branding
+metadata:
+  name: test-branding
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # The logo and favicon every Universal Login page shows
+  logoUrl: https://assets.example.com/logo.png
+  faviconUrl: https://assets.example.com/favicon.png
+
+  # The accent of buttons and links, and the page around the login box
+  colors:
+    primary: "#0059d6"
+    pageBackground: "#000000"
+
+  # The login box's own look; every field left out is sent at Auth0's default
+  theme:
+    displayName: Test Theme
+    borders:
+      buttonsStyle: pill
+    colors:
+      primaryButton: "#0059d6"
+    widget:
+      logoPosition: left

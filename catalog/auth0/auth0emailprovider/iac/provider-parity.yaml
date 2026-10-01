@@ -1,0 +1,71 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# auth0 provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The provider carries every service's credentials in one flat credentials
+# block and its settings in one settings block, with a name choosing the
+# service. The spec splits them into one arm per service, each holding only
+# what that service uses: the arm chosen is the name, and each arm's fields
+# land on the flat arguments below. api_key and region are shared by several
+# services, so each fans in from every arm that carries it.
+
+resources:
+  auth0_email_provider:
+    mappings:
+      # smtp
+      - spec: spec.smtp.host
+        arg: credentials.smtp_host
+      - spec: spec.smtp.port
+        arg: credentials.smtp_port
+      - spec: spec.smtp.user
+        arg: credentials.smtp_user
+      - spec: spec.smtp.password
+        arg: credentials.smtp_pass
+      - spec: spec.smtp.headers
+        arg: settings.headers
+      # ses
+      - spec: spec.ses.access_key_id
+        arg: credentials.access_key_id
+      - spec: spec.ses.secret_access_key
+        arg: credentials.secret_access_key
+      - spec: spec.ses.region
+        arg: credentials.region
+      - spec: spec.ses.configuration_set_name
+        arg: settings.message.configuration_set_name
+      # sendgrid
+      - spec: spec.sendgrid.api_key
+        arg: credentials.api_key
+      # sparkpost
+      - spec: spec.sparkpost.api_key
+        arg: credentials.api_key
+      - spec: spec.sparkpost.region
+        arg: credentials.region
+      # mailgun
+      - spec: spec.mailgun.api_key
+        arg: credentials.api_key
+      - spec: spec.mailgun.domain
+        arg: credentials.domain
+      - spec: spec.mailgun.region
+        arg: credentials.region
+      # mandrill
+      - spec: spec.mandrill.api_key
+        arg: credentials.api_key
+      - spec: spec.mandrill.view_content_link
+        arg: settings.message.view_content_link
+      # azure_cs
+      - spec: spec.azure_cs.connection_string
+        arg: credentials.azure_cs_connection_string
+      # ms365
+      - spec: spec.ms365.tenant_id
+        arg: credentials.ms365_tenant_id
+      - spec: spec.ms365.client_id
+        arg: credentials.ms365_client_id
+      - spec: spec.ms365.client_secret
+        arg: credentials.ms365_client_secret
+    exclusions:
+      - arg: name
+        reason: derived by the module from the service arm the spec sets (smtp, ses, sendgrid, sparkpost, mailgun, mandrill, azure_cs, ms365 or custom); the arm, not a free-text name, is how the spec chooses the service

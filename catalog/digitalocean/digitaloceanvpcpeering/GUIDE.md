@@ -24,4 +24,4 @@ Creates wait for ACTIVE and deletes ride out DigitalOcean's transient 403 respon
 
 ## What is deliberately NOT here
 
-Route filtering and per-CIDR rules (no provider surface -- droplet firewalls own per-host restriction); cross-region cost knobs (peerings are free, cross-region included); and `created_at` as an output (the provider renders it in Go's non-standard time format, not RFC 3339 -- consumers should read the peering's lifecycle from `status`).
+Route filtering and per-CIDR rules (no provider surface -- droplet firewalls own per-host restriction); cross-region cost knobs (peerings are free, cross-region included); and `created_at` or `status` as outputs (the provider renders `created_at` in Go's non-standard time format, not RFC 3339; a status captured at apply time can only ever say ACTIVE and goes stale the moment DigitalOcean moves the peering -- read the lifecycle live from `GET /v2/vpcs/peerings/{id}` or the control panel).

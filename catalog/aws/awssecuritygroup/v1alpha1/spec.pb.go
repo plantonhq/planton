@@ -203,7 +203,8 @@ type SecurityGroupRule struct {
 	// for intra-cluster traffic (nodes of one cluster talking to each other).
 	SelfReference bool `protobuf:"varint,9,opt,name=self_reference,json=selfReference,proto3" json:"self_reference,omitempty"`
 	// description is an optional explanation of this specific rule,
-	// aiding in clarity and maintenance. Max 255 chars.
+	// aiding in clarity and maintenance. Max 255 chars, from the same character
+	// set AWS allows in a group description.
 	Description   string `protobuf:"bytes,10,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -313,18 +314,19 @@ var File_catalog_aws_awssecuritygroup_v1alpha1_spec_proto protoreflect.FileDescr
 
 const file_catalog_aws_awssecuritygroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awssecuritygroup/v1alpha1/spec.proto\x12)dev.planton.aws.awssecuritygroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc0\b\n" +
+	"0catalog/aws/awssecuritygroup/v1alpha1/spec.proto\x12)dev.planton.aws.awssecuritygroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xfe\t\n" +
 	"\x14AwsSecurityGroupSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12o\n" +
-	"\x06vpc_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xf8\a\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x84\x01\n" +
-	"\vdescription\x18\x03 \x01(\tBb\xbaH_\xba\x01Y\n" +
-	"\x18description_length_check\x12*Description must not exceed 255 characters\x1a\x11size(this) <= 255\xc8\x01\x01R\vdescription\x12V\n" +
+	"\x06vpc_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xf8\a\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\xc2\x02\n" +
+	"\vdescription\x18\x03 \x01(\tB\x9f\x02\xbaH\x9b\x02\xba\x01Y\n" +
+	"\x18description_length_check\x12*Description must not exceed 255 characters\x1a\x11size(this) <= 255\xba\x01\xb8\x01\n" +
+	"\x19description_charset_check\x12aAWS allows only letters, digits, spaces and ._-:/()#,@[]+=&;{}!$* in a security group description\x1a8this.matches('^[0-9A-Za-z_ .:/()#,@\\\\[\\\\]+=&;{}!$*-]*$')\xc8\x01\x01R\vdescription\x12V\n" +
 	"\aingress\x18\x04 \x03(\v2<.dev.planton.aws.awssecuritygroup.v1alpha1.SecurityGroupRuleR\aingress\x12T\n" +
 	"\x06egress\x18\x05 \x03(\v2<.dev.planton.aws.awssecuritygroup.v1alpha1.SecurityGroupRuleR\x06egress\x123\n" +
 	"\x16revoke_rules_on_delete\x18\x06 \x01(\bR\x13revokeRulesOnDelete\x12\x80\x01\n" +
 	"\x12additional_vpc_ids\x18\a \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xf8\a\x92\xd4a\x15status.outputs.vpc_idR\x10additionalVpcIds:\xa8\x03\xbaH\xa4\x03\x1a\xd0\x01\n" +
 	"\x1fingress_rules_use_source_groups\x12kingress rules take source_security_group_ids -- destination_security_group_ids applies only to egress rules\x1a@this.ingress.all(r, size(r.destination_security_group_ids) == 0)\x1a\xce\x01\n" +
-	"#egress_rules_use_destination_groups\x12kegress rules take destination_security_group_ids -- source_security_group_ids applies only to ingress rules\x1a:this.egress.all(r, size(r.source_security_group_ids) == 0)\"\xe9\a\n" +
+	"#egress_rules_use_destination_groups\x12kegress rules take destination_security_group_ids -- source_security_group_ids applies only to ingress rules\x1a:this.egress.all(r, size(r.source_security_group_ids) == 0)\"\xb1\t\n" +
 	"\x11SecurityGroupRule\x12\"\n" +
 	"\bprotocol\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bprotocol\x121\n" +
 	"\tfrom_port\x18\x02 \x01(\x05B\x14\xbaH\x11\x1a\x0f\x18\xff\xff\x03(\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01R\bfromPort\x12-\n" +
@@ -336,10 +338,11 @@ const file_catalog_aws_awssecuritygroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\x19source_security_group_ids\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xf7\a\x92\xd4a status.outputs.security_group_idR\x16sourceSecurityGroupIds\x12\xa2\x01\n" +
 	"\x1edestination_security_group_ids\x18\a \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xf7\a\x92\xd4a status.outputs.security_group_idR\x1bdestinationSecurityGroupIds\x12D\n" +
 	"\x0fprefix_list_ids\x18\b \x03(\tB\x1c\xbaH\x19\x92\x01\x16\x18\x01\"\x12r\x102\x0e^pl-[0-9a-f]+$R\rprefixListIds\x12%\n" +
-	"\x0eself_reference\x18\t \x01(\bR\rselfReference\x12\x8b\x01\n" +
+	"\x0eself_reference\x18\t \x01(\bR\rselfReference\x12\xd3\x02\n" +
 	"\vdescription\x18\n" +
-	" \x01(\tBi\xbaHf\xba\x01c\n" +
-	"\x1drule_description_length_check\x12/Rule description must not exceed 255 characters\x1a\x11size(this) <= 255R\vdescription:\xd4\x01\xbaH\xd0\x01\x1a\xcd\x01\n" +
+	" \x01(\tB\xb0\x02\xbaH\xac\x02\xba\x01c\n" +
+	"\x1drule_description_length_check\x12/Rule description must not exceed 255 characters\x1a\x11size(this) <= 255\xba\x01\xc2\x01\n" +
+	"\x1erule_description_charset_check\x12fAWS allows only letters, digits, spaces and ._-:/()#,@[]+=&;{}!$* in a security group rule description\x1a8this.matches('^[0-9A-Za-z_ .:/()#,@\\\\[\\\\]+=&;{}!$*-]*$')R\vdescription:\xd4\x01\xbaH\xd0\x01\x1a\xcd\x01\n" +
 	"\x17all_protocol_ports_zero\x12Kwhen protocol is '-1' (all protocols), from_port and to_port must both be 0\x1ae(this.protocol == '-1' || this.protocol == 'all') ? (this.from_port == 0 && this.to_port == 0) : trueB\xe0\x02\n" +
 	"-com.dev.planton.aws.awssecuritygroup.v1alpha1B\tSpecProtoP\x01Z[github.com/plantonhq/planton/catalog/aws/awssecuritygroup/v1alpha1;awssecuritygroupv1alpha1\xa2\x02\x04DPAA\xaa\x02)Dev.Planton.Aws.Awssecuritygroup.V1alpha1\xca\x02)Dev\\Planton\\Aws\\Awssecuritygroup\\V1alpha1\xe2\x025Dev\\Planton\\Aws\\Awssecuritygroup\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Aws::Awssecuritygroup::V1alpha1b\x06proto3"
 

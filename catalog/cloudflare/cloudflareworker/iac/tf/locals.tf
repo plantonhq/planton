@@ -1,12 +1,18 @@
 locals {
   script_name = var.spec.worker_name
 
-  # Script source: inline content, else the R2 bundle body. A worker may instead
-  # be a pure static site (assets only, no script) — in that case content and
-  # main_module are null so the provider treats it as an assets-only Worker.
+  # Script source: inline content, else the R2 bundle's bytes (decoded from
+  # body_base64; a Worker script is UTF-8 text). A worker may instead be a pure
+  # static site (assets only, no script) — in that case content and main_module
+  # are null so the provider treats it as an assets-only Worker.
   use_bundle     = var.spec.r2_bundle != null
   has_script     = var.spec.content != "" || local.use_bundle
-  script_content = local.has_script ? (var.spec.content != "" ? var.spec.content : data.aws_s3_object.bundle[0].body) : null
+  script_content = local.has_script ? (var.spec.content != "" ? var.spec.content : base64decode(data.aws_s3_object.bundle[0].body_base64)) : null
+
+  # The R2 S3-compatible endpoint the bundle read signs against: the connection's
+  # override when it carries one, else the endpoint of the Worker's own account.
+  r2_endpoint = coalesce(var.r2_endpoint, "https://${var.spec.account_id}.r2.cloudflarestorage.com")
+
   # body_part marks service-worker syntax and is mutually exclusive with
   # main_module (CEL). When body_part is set we omit main_module even if the
   # recommended default ("index.js") is present in variables.tf.
@@ -180,7 +186,7 @@ locals {
 
   exports = try(var.spec.exports, null) != null && length(try(var.spec.exports, {})) > 0 ? {
     for k, v in var.spec.exports : k => {
-      type = v.type
+      type  = v.type
       cache = try(v.cache, null) != null ? { enabled = v.cache.enabled } : null
     }
   } : null

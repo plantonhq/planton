@@ -3,25 +3,60 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandroplet
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is name + size + image only, with
-  # NO region and NO vpc (proves the region-unset path where DigitalOcean
-  # chooses, and the region-default-VPC path); `full` composes the VPC
-  # fixture via the e2e-prerequisites annotation (the spec's vpc is
-  # OPTIONAL, so the fixture is never a registry edge) plus weekly backups
-  # with a policy window, monitoring and web-console agents, IPv6, tags,
-  # cloud-init user data, graceful shutdown, and an explicit resize_disk.
-  # Deliberately not in the live lanes: ssh_keys (a DigitalOceanSshKey
-  # fixture can be composed through the typed reference; the scenario has
-  # not yet been grown to carry one), volume_ids (needs a DigitalOceanVolume fixture -- rides that
-  # kind's wave), gpu_partition_mode (GPU sizes are the expensive class AND
-  # a Pulumi SDK v4.49.0 gap), and public_networking=false (Pulumi SDK gap;
-  # it would also blind the verifier's public-IPv4 assertion). Droplets
-  # create in about a minute and the smallest slug bills ~$0.009/hour, so a
-  # full two-scenario dual-engine sweep costs pennies.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip (Terraform lane):
+  # `minimal` (name + size + image only -- DigitalOcean chose the region,
+  # the droplet landed in that region's default VPC and exported it as
+  # vpc_uuid; the live status was active and the public IPv4 matched the
+  # output) and `full` (the VPC fixture by reference via the
+  # e2e-prerequisites annotation -- the spec's vpc is OPTIONAL, so never a
+  # registry edge -- plus monitoring and web-console agents, IPv6, tags,
+  # cloud-init user data, graceful shutdown, resize_disk=false). The `full`
+  # round-trip is the live proof that ssh_keys / user_data / droplet_agent
+  # are IGNORED after creation in both engines: all three are ForceNew and
+  # never read back, so without that guard the first post-import plan was a
+  # droplet REPLACE. graceful_shutdown re-applies in place (config-only) and
+  # resize_disk reads back true from the importer (write-normalized), both
+  # declared tolerances. Droplets create in ~40s; the smallest slug bills
+  # ~$0.009/hour, so the whole dual-engine sweep costs pennies.
+  #
+  # Deliberately NOT in the live lanes:
+  # - enableBackups + backupPolicy: PROVIDER DEFECT at the pin. The provider
+  #   reads `backups` from the droplet's `features` list, which DigitalOcean's
+  #   current backup system no longer populates (live-probed: backups ARE
+  #   enabled per GET /v2/droplets/{id}/backups/policy, the feature never
+  #   appears), so a backups-on droplet re-plans on every apply and can never
+  #   pass the idempotency gate. Upstream
+  #   digitalocean/terraform-provider-digitalocean#1525; unblock = a provider
+  #   release that reads backup state from the policy endpoint, then a pin
+  #   bump. The kind's docs tell customers the noise is harmless.
+  # - ssh_keys: a DigitalOceanSshKey fixture (proven kind) can be composed
+  #   through the typed reference; no scenario carries one yet.
+  # - volume_ids: needs a DigitalOceanVolume fixture (proven kind) -- an
+  #   attachment scenario is the natural home, composing it by reference.
+  # - gpu_partition_mode: both engines wire it; GPU sizes are the expensive
+  #   class and the field means nothing on a non-GPU size -- prove when an
+  #   owner funds a GPU droplet lane.
+  #
+  # public_networking=false is PROVEN on both engines by its own `private`
+  # scenario (2026-09-18, Pulumi at bridge v4.79.1 / provider v2.100.1,
+  # Terraform at provider v2.101.0): DEPLOY 45 s / 39 s, IDEMPOTENCY PASS on
+  # both, the ipv4_address output empty by contract (4/6 outputs populated)
+  # and the verifier asserting the live droplet has NO public IPv4 (an empty
+  # claim is a claim) while ipv4_address_private matched the live private
+  # address inside the region's default VPC; the Terraform round-trip was
+  # LOSSLESS -- the provider's Read sets public_networking from the live
+  # droplet, so the blind import read `false` back and the plan proposed
+  # nothing with zero tolerances (no catalog tolerance exists or is needed).
+  # Pulumi re-proven on `full` the same day: DEPLOY 40 s, IDEMPOTENCY PASS,
+  # DESTROY 54 s, every phase first run.
+  #
+  # Account residue the `minimal` scenario leaves by design: an unset region
+  # lands wherever DigitalOcean has capacity, and a region with no default
+  # VPC yet gets one created on the fly (default-tor1, -blr1, -lon1, -sfo2
+  # appeared this way in one session) -- undeletable, free, DigitalOcean's
+  # own naming.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

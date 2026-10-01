@@ -16,9 +16,11 @@ import (
 type Locals struct {
 	Spec *kubernetesvalkeyv1alpha1.KubernetesValkeySpec
 
-	// Resource-identity labels stamped on the module-created satellites
-	// (namespace, the auth Secret — never injected into the chart's own
-	// resources; Helm owns those).
+	// Resource-identity labels: stamped on the module-created satellites
+	// (namespace, the auth Secret) and on every Valkey pod through the
+	// chart's own podLabels -- so a log line, a metric or an alert from it
+	// names its organization and environment. The chart's selector is its
+	// own fixed labels (valkey.selectorLabels); these never reach it.
 	Labels map[string]string
 
 	// Namespace Valkey installs into (resolved literal from the spec's

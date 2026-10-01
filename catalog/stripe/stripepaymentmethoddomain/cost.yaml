@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripepaymentmethoddomain
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for registering a payment method domain: every account, sandboxes included, can register them (docs.stripe.com/payments/payment-methods/pmd-registration)."
+  notes: "Wallet payments are priced like any payment on the method's own rate (stripe.com/pricing); the registration itself costs nothing."

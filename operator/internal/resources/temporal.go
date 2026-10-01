@@ -16,32 +16,38 @@ const (
 	TemporalVisibilityDB     = "temporal_visibility"
 	TemporalPostgresDriver   = "postgres12"
 
-	// Temporal's sizing, chosen here rather than left to the chart (which
-	// ships none for any of its six workloads). Read live on a one-node
-	// install: history ~375Mi (it holds the mutable state and its caches),
-	// matching ~145Mi, frontend ~90Mi, worker ~60Mi, the web UI and the
-	// admin tools a few Mi each. One default for the four server services
-	// with history sized above it; the web UI, the admin tools, and the
-	// one-shot schema Jobs small. No CPU limit anywhere: a workflow burst is
-	// never throttled (requests-only, the house pattern).
-	temporalServerCPURequest       = "50m"
-	temporalServerMemoryRequest    = "128Mi"
-	temporalServerMemoryLimit      = "512Mi"
-	temporalHistoryCPURequest      = "100m"
-	temporalHistoryMemoryRequest   = "256Mi"
-	temporalHistoryMemoryLimit     = "1Gi"
+	// The size of Temporal's auxiliary workloads -- the web UI, the admin
+	// tools, and the one-shot schema Jobs -- fixed rather than registered
+	// (sizing.go): a few Mi each live, none of them carrying the platform's
+	// load, so one small size in the house pattern serves them all. The four
+	// server services are sized from the registry, each on its own.
 	temporalAuxiliaryCPURequest    = "10m"
 	temporalAuxiliaryMemoryRequest = "32Mi"
 	temporalAuxiliaryMemoryLimit   = "256Mi"
 )
+
+// TemporalHelmOptions is everything the chart's values are rendered from.
+type TemporalHelmOptions struct {
+	CRName    string
+	Namespace string
+
+	// The four server services' effective sizing (SizingTemporalFrontend,
+	// -History, -Matching, and -Worker in the registry, each merged with its
+	// own override by the component).
+	Frontend corev1.ResourceRequirements
+	History  corev1.ResourceRequirements
+	Matching corev1.ResourceRequirements
+	Worker   corev1.ResourceRequirements
+}
 
 // TemporalHelmValues builds the Helm values map for rendering the Temporal
 // chart. The PostgreSQL connection details come from the shared connection
 // seam; Temporal's own schema job creates its two databases (the
 // createDatabase toggle below), which is why the connection user must be able
 // to CREATE DATABASE.
-func TemporalHelmValues(crName, namespace string) map[string]any {
-	conn := PostgreSQLConnection(crName, namespace)
+func TemporalHelmValues(opts TemporalHelmOptions) map[string]any {
+	crName := opts.CRName
+	conn := PostgreSQLConnection(crName, opts.Namespace)
 
 	sqlConfig := func(database string) map[string]any {
 		return map[string]any{
@@ -73,12 +79,14 @@ func TemporalHelmValues(crName, namespace string) map[string]any {
 					"visibility": sqlConfig(TemporalVisibilityDB),
 				},
 			},
-			// The chart applies server.resources to every service that does
-			// not name its own; history names its own, above the default.
-			"resources": helmResourceValues(temporalServerResources()),
-			"history": map[string]any{
-				"resources": helmResourceValues(temporalHistoryResources()),
-			},
+			// Every service names its own resources: the chart's fallback,
+			// server.resources, REPLACES a service's block rather than
+			// merging with it, so a shared block could not size one service
+			// without restating it for the rest.
+			"frontend": map[string]any{"resources": helmResourceValues(mustBeSized(SizingTemporalFrontend, opts.Frontend))},
+			"history":  map[string]any{"resources": helmResourceValues(mustBeSized(SizingTemporalHistory, opts.History))},
+			"matching": map[string]any{"resources": helmResourceValues(mustBeSized(SizingTemporalMatching, opts.Matching))},
+			"worker":   map[string]any{"resources": helmResourceValues(mustBeSized(SizingTemporalWorker, opts.Worker))},
 		},
 
 		"schema": map[string]any{
@@ -101,6 +109,32 @@ func TemporalHelmValues(crName, namespace string) map[string]any {
 	}
 }
 
+// TemporalServerService is one of the chart's four server services: its own
+// Deployment, sized by its own field.
+type TemporalServerService struct {
+	// Name is the chart's name for the service (frontend, history,
+	// matching, worker).
+	Name string
+	// SizedBy is the registry path that sizes it.
+	SizedBy string
+}
+
+// TemporalServerServices are the four server services the chart renders, in
+// the order a client meets them: the frontend first (the one clients dial and
+// the one readiness waits on), then the services behind it.
+var TemporalServerServices = []TemporalServerService{
+	{Name: "frontend", SizedBy: SizingTemporalFrontend},
+	{Name: "history", SizedBy: SizingTemporalHistory},
+	{Name: "matching", SizedBy: SizingTemporalMatching},
+	{Name: "worker", SizedBy: SizingTemporalWorker},
+}
+
+// TemporalServiceDeploymentName returns the Deployment the chart renders for
+// one server service: the release name, then the service's.
+func TemporalServiceDeploymentName(crName, service string) string {
+	return fmt.Sprintf("%s-temporal-%s", crName, service)
+}
+
 // TemporalFrontendServiceName returns the Kubernetes Service name for the
 // Temporal frontend, which is the primary gRPC endpoint applications connect to.
 func TemporalFrontendServiceName(crName string) string {
@@ -120,36 +154,8 @@ func TemporalFrontendEndpoint(crName, namespace string) string {
 		TemporalFrontendServiceName(crName), namespace, TemporalFrontendGRPCPort)
 }
 
-// temporalServerResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func temporalServerResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(temporalServerCPURequest),
-			corev1.ResourceMemory: resource.MustParse(temporalServerMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(temporalServerMemoryLimit),
-		},
-	}
-}
-
-// temporalHistoryResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func temporalHistoryResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(temporalHistoryCPURequest),
-			corev1.ResourceMemory: resource.MustParse(temporalHistoryMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(temporalHistoryMemoryLimit),
-		},
-	}
-}
-
-// temporalAuxiliaryResources is the container sizing every install gets (the constants
-// above carry the reasoning).
+// temporalAuxiliaryResources is the auxiliary workloads' fixed size (the
+// constants above carry the reasoning).
 func temporalAuxiliaryResources() corev1.ResourceRequirements {
 	return corev1.ResourceRequirements{
 		Requests: corev1.ResourceList{

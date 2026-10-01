@@ -1,0 +1,26 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0clientfrommetadatadocument
+spec:
+  # Auth0 registers the application by fetching a Client ID Metadata Document
+  # from the public internet, so a lane needs a document the operator hosts
+  # at an https URL (PLANTON_E2E_AUTH0_CIMD_URL) whose client_id is exactly
+  # that URL, with client_name, grant_types [authorization_code,
+  # refresh_token], an https redirect_uri and token_endpoint_auth_method
+  # "none". The tenant must allow CIMD registration: the harness installs
+  # Auth0TenantSettings first from the registry's prerequisites edge, in the
+  # consumer-scoped shape under e2e/prerequisites/, which rewrites that one
+  # setting on the tenant -- so the lanes run only on a dedicated test tenant
+  # (AUTH0_DOMAIN / AUTH0_CLIENT_ID / AUTH0_CLIENT_SECRET, the credential
+  # holding the clients scopes of iac/permissions.yaml and
+  # read:tenant_settings / update:tenant_settings). The repository serves
+  # such a document at e2e/auth0/fixtures/cimd-client.json. Run the scenarios
+  # one after the other: Auth0 keys registrations by the document's URL, so
+  # two lanes at once would register the same application.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 5

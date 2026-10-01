@@ -63,9 +63,24 @@ Filter your own store by `managed-by=planton` to see exactly what Planton manage
 
 The moment a secret is created, its record captures the **remote identity**: the real rendered name, the logical path, and a deep link to the secret in your provider's own console. The console detail page, `planton secret describe`, and agent tools all surface it. Share the deep link with a teammate who has provider IAM access and they can read or update the value right in the provider console — out-of-band edits are first-class (see [Version History](/docs/secrets/versions)).
 
+## Secrets a Resource Generates
+
+Some resources create a credential when they deploy: an Auth0 application's client secret, an AWS IAM user's secret access key, a container registry's admin password, a database's connection string. Planton stores each one in your organization's secret store the moment the deploy finishes, before the value leaves your runner, and the resource's outputs carry a reference instead of the value:
+
+```
+$secret/@prod/auth0-client-outputs-checkout/client_secret
+```
+
+- **One key-value secret per resource**, named `<kind>-outputs-<resource>`, in the resource's environment, with one key per secret output. It is labeled as managed by Planton for that resource, and its page links back to it.
+- **A re-deploy adds a version only when a value changed**, so the secret's history shows real rotations, not every deploy.
+- **Another resource reads it with `valueFrom`**, exactly as it reads any output. The reference travels, and the runner resolves it at deploy, so the value reaches the workload and nowhere else. Because the value is a secret, a `valueFrom` of a secret output belongs in a sensitive field (a workload's `env.secrets`, for example); written into a plain field it is refused, naming the field.
+- **Deleting the resource deletes its secret.** While another resource still reads it, the delete is refused with the reader named; destroy or re-point the reader first, or delete with the force flag.
+
+Which outputs are secrets is declared in each component's schema: the reference pages mark them `(sensitive)` in the Outputs table.
+
 ## What Planton's Own Database Holds
 
-Metadata only: the secret's name, scope, backend binding, remote identity, version authorship records, and the read-audit trail. **Never the value.** A full copy of Planton's database yields no secret values for provider-backed secrets — they are in your store, under your IAM, and nowhere else.
+Metadata only: the secret's name, scope, backend binding, remote identity, version authorship records, and the read-audit trail. **Never the value**, including for secrets a resource generates: its outputs, its deploy records and the saved inputs of every resource that reads it hold only the reference. A full copy of Planton's database yields no secret values for provider-backed secrets — they are in your store, under your IAM, and nowhere else.
 
 ## Related Documentation
 

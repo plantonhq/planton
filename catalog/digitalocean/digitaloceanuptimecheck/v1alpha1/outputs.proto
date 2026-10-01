@@ -5,8 +5,12 @@ package dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1;
 // DigitalOceanUptimeCheckStackOutputs captures the key outputs after
 // provisioning a DigitalOcean uptime check.
 message DigitalOceanUptimeCheckStackOutputs {
-  // UUID of the uptime check (the API identity, and the import id). The
-  // composed alert rows import as "{check_id},{alert_id}"; alert ids are
-  // found via the API or the console, they are not stack outputs.
+  // UUID of the uptime check (the API identity, and the import id).
   string check_id = 1;
+
+  // UUIDs of the composed alert rows, keyed by "<row index>-<alert name>" --
+  // the same key both provisioners address each alert resource by. Each row
+  // imports as "{check_id},{alert_id}", and this map is where the second
+  // half comes from, so a blind import needs no lookup.
+  map<string, string> alert_ids = 2;
 }

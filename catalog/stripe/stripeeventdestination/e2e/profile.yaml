@@ -1,0 +1,15 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripeeventdestination
+spec:
+  # Proven live on OpenTofu against the test sandbox: thin and snapshot
+  # webhook destinations, blind import (the url is read back only with include),
+  # a delete in the Dashboard recovered by forgetting it, and destroy deleting
+  # it. EventBridge and Event Grid destinations need a real cloud account on the
+  # receiving side and are not run.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - tofu
+  timeout_minutes: 5

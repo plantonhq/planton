@@ -72,7 +72,7 @@ The module consumes `GcpIdentityPlatformConfigStackInput`:
 | Output Key | Type | Description |
 |------------|------|-------------|
 | `config_name` | string | `projects/{project}/config` |
-| `api_key` | string | The auto-provisioned client SDK API key (secret-marked in state) |
+| `api_key` | string | The auto-provisioned client SDK API key (not a secret; ships inside client apps) |
 | `firebase_subdomain` | string | The project's default hosted sign-in domain |
 
 ## Behavior Notes

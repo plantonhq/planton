@@ -1,0 +1,41 @@
+# Auth0 Email Provider Test Manifest
+# This file is used for testing the Auth0EmailProvider component.
+#
+# Applying it REPLACES the email provider of the tenant the credential
+# belongs to: run it only against a test tenant whose emails nobody relies
+# on.
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: the test tenant's domain (e.g., your-test-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - read:email_provider
+#    - create:email_provider
+#    - update:email_provider
+#    - delete:email_provider
+#
+# 3. A sending domain verified with the email service, and an organization
+#    secret holding the service's API key.
+
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailProvider
+metadata:
+  name: test-email-provider
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # The sender of every email the tenant sends, on the verified domain
+  defaultFromAddress: Acme <no-reply@acme.com>
+
+  # Resend, through its SMTP interface
+  smtp:
+    host: smtp.resend.com
+    port: 587
+    user: resend
+    # A Resend API key with sending access, by secret reference
+    password: $secret/resend-api-key

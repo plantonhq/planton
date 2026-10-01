@@ -183,7 +183,7 @@ func TestPlanBackup_FreshInstallWaitsForThePlugin(t *testing.T) {
 
 func TestPlanBackup_RunningDatabaseAttachesLiveAndNamesTheRestart(t *testing.T) {
 	p := &PostgreSQL{}
-	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 
 	// Plugin not serving yet: the Cluster keeps running without it.
 	c := fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(false), keysSecret(resources.ObjectStoreKeyAccessKeyID, resources.ObjectStoreKeySecretAccessKey))
@@ -271,7 +271,7 @@ func TestPlanBackup_PluginInstallErrorHoldsAFreshInstallAndSparesARunningDatabas
 	// A fresh fake: the first attempt applied the objects before the Issuer,
 	// and a cluster that already carries the Deployment takes the readiness
 	// arm instead of the install arm.
-	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 	plan, err = p.planBackup(context.Background(), refusingCluster(), planton, existing)
 	if err != nil {
 		t.Fatal(err)
@@ -283,7 +283,7 @@ func TestPlanBackup_PluginInstallErrorHoldsAFreshInstallAndSparesARunningDatabas
 
 func TestPlanBackup_MissingCredentialsOnARunningDatabaseIsFailingInWordsAndRendersNoStore(t *testing.T) {
 	p := &PostgreSQL{}
-	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 	c := fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(true), keysSecret(resources.ObjectStoreKeyAccessKeyID))
 	plan, err := p.planBackup(context.Background(), c, backupPlatform(true, ""), existing)
 	if err != nil {
@@ -412,7 +412,7 @@ func TestPlanBackup_RecoveryOnARunningDatabaseIsExplainedNotApplied(t *testing.T
 		ObjectStore: v1.ObjectStoreSpec{DestinationPath: "s3://bucket/platform", S3: &v1.S3ObjectStoreSpec{}},
 		ServerName:  "planton-postgres-deadbeef",
 	}
-	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 	c := fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(true), keysSecret(resources.ObjectStoreKeyAccessKeyID, resources.ObjectStoreKeySecretAccessKey))
 	plan, err := p.planBackup(context.Background(), c, planton, existing)
 	if err != nil {
@@ -431,10 +431,11 @@ func TestPlanBackup_RecoveryOnARunningDatabaseIsExplainedNotApplied(t *testing.T
 
 func TestKeepLiveBootstrap(t *testing.T) {
 	desired := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{
-		CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi",
+		Resources: resources.Effective(resources.SizingPostgreSQL, nil),
+		CRName:    "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi",
 		Recovery: &resources.PostgreSQLClusterRecovery{ObjectStoreName: "src", ServerName: "srv"},
 	})
-	live := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+	live := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 	keepLiveBootstrap(desired, live)
 	if _, found, _ := unstructured.NestedMap(desired.Object, "spec", "bootstrap", "initdb"); !found {
 		t.Error("the live initdb bootstrap must be kept")
@@ -447,7 +448,8 @@ func TestKeepLiveBootstrap(t *testing.T) {
 
 func clusterWithStatus(conditions []any, status map[string]any) *unstructured.Unstructured {
 	c := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{
-		CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi",
+		Resources: resources.Effective(resources.SizingPostgreSQL, nil),
+		CRName:    "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi",
 		Backup: &resources.PostgreSQLClusterBackup{ObjectStoreName: "planton-postgres", ServerName: "planton-postgres-1a2b3c4d"},
 	})
 	st := map[string]any{"conditions": conditions}
@@ -464,7 +466,7 @@ func TestRefreshBackupStatus(t *testing.T) {
 	archivingFalse := []any{map[string]any{"type": "ContinuousArchiving", "status": "False", "message": "AccessDenied: the bucket refused the key"}}
 
 	t.Run("no plugin on the cluster yet: provisional stands", func(t *testing.T) {
-		plain := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+		plain := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 		got := p.refreshBackupStatus(context.Background(), fakeCluster(t), planton, plain, provisional)
 		if got != provisional {
 			t.Errorf("got %+v", got)
@@ -472,7 +474,8 @@ func TestRefreshBackupStatus(t *testing.T) {
 	})
 	t.Run("a restored database names its source, plugin or not", func(t *testing.T) {
 		restored := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{
-			CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi",
+			Resources: resources.Effective(resources.SizingPostgreSQL, nil),
+			CRName:    "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi",
 			Recovery: &resources.PostgreSQLClusterRecovery{ObjectStoreName: "planton-postgres-recovery-source", ServerName: "planton-postgres-deadbeef"},
 		})
 		got := p.refreshBackupStatus(context.Background(), fakeCluster(t), planton, restored, provisional)
@@ -482,7 +485,7 @@ func TestRefreshBackupStatus(t *testing.T) {
 		if got.State != provisional.State || got.Message != provisional.Message {
 			t.Errorf("a recovery-only database still carries the provisional backup status: %+v", got)
 		}
-		plain := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+		plain := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 		if got := p.refreshBackupStatus(context.Background(), fakeCluster(t), planton, plain, provisional); got.RestoredFrom != "" {
 			t.Errorf("a database created empty was restored from nothing: %q", got.RestoredFrom)
 		}

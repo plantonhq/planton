@@ -88,7 +88,7 @@ the cluster is up.
 | `schema_registry_enabled` | Deploy Karapace | `true` | Schemas are governed elsewhere |
 | `kafka_ui_enabled` | Deploy the management console | `true` | Console access is not wanted |
 | `kafka_ui_username` | Console login user | `admin` | Naming conventions |
-| `kafka_ui_password` | Console login password | `change-me` | **ALWAYS — the default exists only to validate** |
+| `kafka_ui_password` | Console login password: a `$secret/` reference on Planton, the literal on a deploy without it | `$secret/kafka-streaming-platform-ui-password` | Create that secret first (`planton secret set kafka-streaming-platform-ui-password --string`), or point at your own, such as `$secret/@<env>/<slug>` |
 | `connect_enabled` | Deploy Kafka Connect | `false` | You have connectors to run |
 | `mirror_enabled` | Deploy the MirrorMaker 2 migration arm | `false` | Migrating an existing cluster in |
 | `mirror_source_bootstrap_servers` | Source cluster address | placeholder | **ALWAYS when mirroring** |
@@ -125,8 +125,8 @@ the cluster is up.
    kubectl -n kafka port-forward svc/<env>-kafka-ui 8080:80
    ```
 
-   Log in with `kafka_ui_username` / `kafka_ui_password` — which you
-   changed from the default before deploying.
+   Log in with `kafka_ui_username` and the password held in the secret
+   `kafka_ui_password` names.
 
 4. **Register the first schema.** Point any Schema Registry client at the
    Karapace endpoint (the registry resource's `endpoint` output) — the

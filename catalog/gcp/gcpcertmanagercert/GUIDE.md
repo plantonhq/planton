@@ -30,7 +30,8 @@ Unlike `GcpSslCertificate` (fully ForceNew), this resource PATCHes
 replacement, no proxy repointing. If you operate self-managed
 certificates and rotation pain is real, migrating them into this kind
 deletes the whole create-before-destroy dance. The private key is
-sensitive: encrypted in state on both engines, never in outputs.
+sensitive: encrypted in Pulumi state, encrypted with the whole OpenTofu
+state file when it has an encryption key, and never in outputs.
 
 ## Scope and location are create-time decisions
 

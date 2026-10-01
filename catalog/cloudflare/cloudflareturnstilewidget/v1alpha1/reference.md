@@ -129,12 +129,12 @@ cannot be changed after creation. Leave empty to use the provider default
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: CloudflareTurnstileWidget, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: CloudflareTurnstileWidget, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.sitekey` | `string` | The public site key. Embed this in the page's frontend Turnstile widget. |
-| `status.outputs.secret` | `string` | The secret key used server-side to validate tokens via /siteverify. Sensitive — exported as a secret so a Worker or backend can reference it. |
+| `status.outputs.secret` | `string` (sensitive) | The secret key used server-side to validate tokens via /siteverify. Sensitive — exported as a secret so a Worker or backend can reference it. |
 | `status.outputs.created_on` | `string` | RFC3339 timestamp of when the widget was created. |
 | `status.outputs.modified_on` | `string` | RFC3339 timestamp of when the widget was last modified. |
 

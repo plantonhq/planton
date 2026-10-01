@@ -1,19 +1,19 @@
 package outputs
 
 import (
+	"strings"
+
 	"google.golang.org/protobuf/proto"
 )
 
 // CaptureResult carries a stack's outputs captured after a successful apply,
 // in every shape a consumer needs: the engine-decoded raw map, the dotted-key
-// flattening, the kind's typed StackOutputs proto, and per-output sensitivity.
+// flattening, the kind's typed StackOutputs proto, and which outputs the
+// kind's schema declares secrets.
 //
-// Sensitivity is tracked per TOP-LEVEL output name (the granularity both
-// engines report at: tofu's output envelope carries a `sensitive` flag per
-// output; pulumi masks whole outputs in its plain `stack output --json` form).
-// Renderers MUST consult it before printing: captured values include secrets
-// by design — resolving downstream references needs the real values — so the
-// leak boundary is rendering, not capture.
+// Captured values include the real secrets, because resolving a downstream
+// reference on this machine needs them, so rendering is the leak boundary:
+// every renderer consults IsSensitive before printing a value.
 type CaptureResult struct {
 	// Raw is the engine-decoded output map: output name -> JSON-decoded value.
 	Raw map[string]interface{}
@@ -26,23 +26,20 @@ type CaptureResult struct {
 	// outputs message or the transform was skipped.
 	Typed proto.Message
 
-	// Sensitive marks top-level output names whose values must never render
-	// in terminal or log output.
-	Sensitive map[string]bool
+	// Secrets is the kind's schema marks (see SecretOutputs): top-level
+	// stack-outputs field name -> whether it is a secret.
+	Secrets map[string]bool
 }
 
-// IsSensitive reports whether a flat (dotted) key belongs to a sensitive
-// top-level output. A dotted key inherits its root output's sensitivity.
+// IsSensitive reports whether a flat (dotted) key must never render. A dotted
+// key inherits its top-level output's mark, and a key the schema does not
+// declare (a customized module's extra output) is sensitive too: nothing says
+// it is safe to print.
 func (r *CaptureResult) IsSensitive(flatKey string) bool {
-	if r == nil || len(r.Sensitive) == 0 {
-		return false
+	if r == nil {
+		return true
 	}
-	root := flatKey
-	for i := 0; i < len(flatKey); i++ {
-		if flatKey[i] == '.' {
-			root = flatKey[:i]
-			break
-		}
-	}
-	return r.Sensitive[root]
+	root, _, _ := strings.Cut(flatKey, ".")
+	secret, declared := r.Secrets[strings.ReplaceAll(root, "-", "_")]
+	return secret || !declared
 }

@@ -16,17 +16,6 @@ func loadBalancer(
 ) (*digitalocean.LoadBalancer, error) {
 	spec := locals.DigitalOceanLoadBalancer.Spec
 
-	// Pulumi SDK v4.49.0 gaps: these spec fields are modeled and the
-	// Terraform module wires them, but the SDK has no matching inputs on
-	// LoadBalancer. Fail loudly on a meaningful set (proto zero values
-	// pass) rather than silently dropping configuration.
-	if spec.SubnetUuid != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.subnet_uuid is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no subnet_uuid field on LoadBalancer. Re-evaluate when the SDK exposes subnet_uuid.")
-	}
-	if spec.Ip != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.ip (BYOIP input) is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 exposes Ip only as a computed output. Re-evaluate when the SDK accepts ip as a create-time input.")
-	}
-
 	args := &digitalocean.LoadBalancerArgs{
 		Name:                         pulumi.String(spec.LoadBalancerName),
 		RedirectHttpToHttps:          pulumi.Bool(spec.RedirectHttpToHttps),
@@ -43,6 +32,15 @@ func loadBalancer(
 	}
 	if spec.Vpc != nil && spec.Vpc.GetValue() != "" {
 		args.VpcUuid = pulumi.StringPtr(spec.Vpc.GetValue())
+	}
+	// VPC subnet placement (the spec's CEL rule requires vpc alongside it) and
+	// the bring-your-own address, both create-time and both sent only when
+	// the manifest states them -- the Terraform module's null coalescing.
+	if spec.SubnetUuid != "" {
+		args.SubnetUuid = pulumi.StringPtr(spec.SubnetUuid)
+	}
+	if spec.Ip != "" {
+		args.Ip = pulumi.StringPtr(spec.Ip)
 	}
 	if spec.Size != "" {
 		args.Size = pulumi.StringPtr(spec.Size)

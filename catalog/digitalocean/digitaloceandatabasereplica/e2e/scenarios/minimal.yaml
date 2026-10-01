@@ -1,15 +1,23 @@
 # Minimal DigitalOceanDatabaseReplica: a same-region, same-size read
 # replica of the PostgreSQL cluster registry prerequisite. Proves the full
-# create/verify/destroy lifecycle (the verifier waits on status online and
-# asserts host/port and the UUID-vs-composite replica_id contract). Region
+# create/verify/destroy lifecycle (the provider's create blocks until the
+# replica reads `online`; the verifier then asserts that status once, plus
+# host/port and the UUID-vs-composite replica_id contract). Region
 # and size are explicit BY DESIGN -- the spec requires them (the provider's
 # omitted-value drift class is unrepresentable), so "inherit the primary"
 # is written out literally here.
+#
+# The metadata name uses the kind's id prefix (`dodbrep`), the catalog's
+# shape for long kind names: DigitalOcean caps a replica's combined tags
+# (joined by commas) at 255 characters -- the same rule as the primary's
+# create -- and the six Planton label tags carry this name twice
+# (`planton-ai_name:` and `planton-ai_id:`); the full kind name here would
+# have joined to 257. This name joins to 217.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseReplica
 metadata:
-  name: planton-oss-e2e-digitaloceandatabasereplica-min
-  id: planton-oss-e2e-digitaloceandatabasereplica-min
+  name: planton-oss-e2e-dodbrep-min
+  id: planton-oss-e2e-dodbrep-min
   org: planton-oss
   env: e2e
   labels:
@@ -23,7 +31,7 @@ spec:
   cluster:
     valueFrom:
       kind: DigitalOceanDatabaseCluster
-      name: planton-oss-e2e-digitaloceandatabasecluster-min
+      name: planton-oss-e2e-dodb-min
       fieldPath: status.outputs.cluster_id
   replicaName: pltn-e2e-dodbrep-min
   region: nyc3

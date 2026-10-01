@@ -42,7 +42,7 @@ peerings.
 | --- | --- | --- |
 | `<spoke-vnet-resource-name>` | Planton metadata name of the spoke `AzureVirtualNetwork` | Your spoke network stack |
 | `<hub-vnet-resource-name>` | Planton metadata name of the hub `AzureVirtualNetwork` | Your hub network stack |
-| `<peering-name>` | Peering name within the spoke (e.g. `spoke1-to-hub`) | Your naming convention |
+| `spoke1-to-hub` (`name`) | Peering name within the spoke (reciprocal of the hub's) | Your naming convention |
 
 ## Pair With
 

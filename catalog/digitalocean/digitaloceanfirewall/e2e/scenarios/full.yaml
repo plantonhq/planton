@@ -1,9 +1,13 @@
 # Full-surface DigitalOceanFirewall: proves LIVE droplet targeting through
 # the droplet_ids reference (the Droplet fixture rides the e2e-prerequisites
 # annotation -- droplet targeting is OPTIONAL on the kind, so it is never a
-# registry edge) plus tag targeting (DigitalOcean creates tags implicitly
-# when first referenced) and rule-level tag sources. Rule-level droplet /
-# kubernetes / load balancer sources are deferred arms -- see profile.yaml.
+# registry edge) plus tag targeting and a rule-level tag source. The tag
+# arms name the fixture Droplet's own Planton identity tag: the API rejects
+# a firewall naming a tag that does not exist yet ("422 tag ... does not
+# exist" -- firewalls never create tags; Droplets do), so the one tag a
+# fresh account is guaranteed to carry at this point is one the fixture
+# Droplet created. Rule-level droplet / kubernetes / load balancer sources
+# are deferred arms -- see profile.yaml.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanFirewall
 metadata:
@@ -27,7 +31,7 @@ spec:
         name: planton-oss-e2e-digitaloceandroplet-min
         fieldPath: status.outputs.droplet_id
   tags:
-    - pltn-e2e-dofw-${E2E_RUN_ID}
+    - planton-ai_name:planton-oss-e2e-digitaloceandroplet-min
   inboundRules:
     - protocol: tcp
       portRange: "443"
@@ -39,7 +43,7 @@ spec:
       sourceAddresses:
         - 192.0.2.0/24
       sourceTags:
-        - pltn-e2e-dofw-${E2E_RUN_ID}
+        - planton-ai_name:planton-oss-e2e-digitaloceandroplet-min
   outboundRules:
     - protocol: tcp
       portRange: all

@@ -1027,9 +1027,9 @@ const file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_spec_proto_ra
 	"\bno_proxy\x18\x03 \x03(\tR\anoProxy\"x\n" +
 	"&KubernetesGhaRunnerScaleSetProxyServer\x12\x18\n" +
 	"\x03url\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03url\x124\n" +
-	"\x16credential_secret_name\x18\x02 \x01(\tR\x14credentialSecretName\"\xfd\x01\n" +
-	"*KubernetesGhaRunnerScaleSetGithubServerTls\x12x\n" +
-	"\x0fconfig_map_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xaa\x1f\x92\xd4a\rmetadata.nameR\rconfigMapName\x12!\n" +
+	"\x16credential_secret_name\x18\x02 \x01(\tR\x14credentialSecretName\"\x8e\x02\n" +
+	"*KubernetesGhaRunnerScaleSetGithubServerTls\x12\x88\x01\n" +
+	"\x0fconfig_map_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xaa\x1f\x92\xd4a\x1dstatus.outputs.configmap_nameR\rconfigMapName\x12!\n" +
 	"\x03key\x18\x02 \x01(\tB\n" +
 	"\x8a\xa6\x1d\x06ca.crtH\x00R\x03key\x88\x01\x01\x12*\n" +
 	"\x11runner_mount_path\x18\x03 \x01(\tR\x0frunnerMountPathB\x06\n" +

@@ -84,7 +84,7 @@ func TestStorageRender_Valkey(t *testing.T) {
 // be a volume the archive does not cover.
 func TestStorageRender_OpenBAO_NoVolume(t *testing.T) {
 	objs, err := RenderHelmChart(LoadOpenBAOChart(), "test-openbao", "default",
-		OpenBAOHelmValues(OpenBAOHelmOptions{CRName: "test", Namespace: "default", StoragePasswordSecretName: PostgreSQLVaultRoleSecretName("test")}))
+		OpenBAOHelmValues(OpenBAOHelmOptions{Resources: Effective(SizingOpenBAO, nil), CRName: "test", Namespace: "default", StoragePasswordSecretName: PostgreSQLVaultRoleSecretName("test")}))
 	if err != nil {
 		t.Fatalf("failed to render chart: %v", err)
 	}
@@ -104,11 +104,11 @@ func TestStorageRender_OpenBAO_NoVolume(t *testing.T) {
 // size key), so both mode arms are proven against the rendered claim.
 func TestStorageRender_Neo4j(t *testing.T) {
 	pinned := renderedVolumeClaims(t, LoadNeo4jChart(), "test-neo4j",
-		Neo4jHelmValues("test", "800Gi", "trident"))
+		Neo4jHelmValues("test", "800Gi", "trident", Effective(SizingNeo4j, nil)))
 	assertAllClaims(t, pinned, "trident", "800Gi")
 
 	unpinned := renderedVolumeClaims(t, LoadNeo4jChart(), "test-neo4j",
-		Neo4jHelmValues("test", "20Gi", ""))
+		Neo4jHelmValues("test", "20Gi", "", Effective(SizingNeo4j, nil)))
 	assertAllClaims(t, unpinned, "", "20Gi")
 }
 
@@ -117,7 +117,8 @@ func TestStorageRender_Neo4j(t *testing.T) {
 // omits the class when unpinned -- the CNPG webhook rejects an empty string).
 func TestStorageRender_PostgreSQLCluster(t *testing.T) {
 	pinned := NewPostgreSQLCluster(PostgreSQLClusterOptions{
-		CRName: "test", Namespace: "default", Instances: 1,
+		Resources: Effective(SizingPostgreSQL, nil),
+		CRName:    "test", Namespace: "default", Instances: 1,
 		StorageSize: "800Gi", StorageClassName: "trident",
 	})
 	storage, _, _ := unstructured.NestedMap(pinned.Object, "spec", "storage")
@@ -129,7 +130,8 @@ func TestStorageRender_PostgreSQLCluster(t *testing.T) {
 	}
 
 	unpinned := NewPostgreSQLCluster(PostgreSQLClusterOptions{
-		CRName: "test", Namespace: "default", Instances: 1, StorageSize: "10Gi",
+		Resources: Effective(SizingPostgreSQL, nil),
+		CRName:    "test", Namespace: "default", Instances: 1, StorageSize: "10Gi",
 	})
 	storage, _, _ = unstructured.NestedMap(unpinned.Object, "spec", "storage")
 	if _, exists := storage["storageClass"]; exists {

@@ -14,4 +14,5 @@ spec:
     priority: 10
     weight: 5
     port: 5060
-    target: <service-hostname>
+    target:
+      value: <service-hostname>

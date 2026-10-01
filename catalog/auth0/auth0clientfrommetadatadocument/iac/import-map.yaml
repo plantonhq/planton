@@ -1,0 +1,18 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0clientfrommetadatadocument
+spec:
+  # An application registered from a metadata document imports by the id
+  # Auth0 assigned it (tpc_...), which a prior deploy reports as its client_id
+  # output. The document's URL is not the import id: it is the client_id the
+  # application presents in sign-in flows, not its Management API id.
+  values:
+    - name: client_id
+      derivations:
+        - from_stack_output: client_id
+      where_to_find: >-
+        Auth0 dashboard -> Applications -> Applications (the application's
+        Client ID on its Settings tab, tpc_...), or
+        `GET /api/v2/clients?external_client_id=<the document's URL>` on the
+        Management API (the client_id field of the entry).

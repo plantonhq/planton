@@ -469,6 +469,7 @@ Fields on other kinds that can point at this resource:
 | AwsCloudwatchCompositeAlarm | `spec.insufficientDataActions` | `status.outputs.topic_arn` |
 | AwsConfigRecorder | `spec.deliveryChannel.snsTopicArn` | `status.outputs.topic_arn` |
 | AwsCostAnomalyMonitor | `spec.subscriptions[].subscribers[].address` | `status.outputs.topic_arn` |
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.topic_arn` |
 | AwsMemcachedElasticache | `spec.notificationTopicArn` | `status.outputs.topic_arn` |
 | AwsMemorydbCluster | `spec.snsTopicArn` | `status.outputs.topic_arn` |
 | AwsRedisElasticache | `spec.notificationTopicArn` | `status.outputs.topic_arn` |

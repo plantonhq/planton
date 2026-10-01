@@ -13,6 +13,7 @@ spec:
   alerts:
     - alertName: homepage-down
       type: down_global
+      period: 2m
       notifications:
         emails:
           - ops@example.com

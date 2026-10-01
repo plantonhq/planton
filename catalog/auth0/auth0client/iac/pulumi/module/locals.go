@@ -10,7 +10,10 @@ type Locals struct {
 	Auth0Client *auth0clientv1alpha1.Auth0Client
 
 	// Core client configuration
+	// ClientName is the resource's identity (the Pulumi resource name);
+	// DisplayName is the application's name as people see it.
 	ClientName      string
+	DisplayName     string
 	ApplicationType string
 	Description     string
 	LogoUri         string
@@ -88,6 +91,10 @@ func initializeLocals(ctx *pulumi.Context, stackInput *auth0clientv1alpha1.Auth0
 
 	// Core configuration
 	locals.ClientName = metadata.Name
+	locals.DisplayName = metadata.Name
+	if spec.Name != "" {
+		locals.DisplayName = spec.Name
+	}
 	locals.ApplicationType = spec.ApplicationType
 	locals.Description = spec.Description
 	locals.LogoUri = spec.LogoUri

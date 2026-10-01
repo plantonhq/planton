@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const site = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export function createPreviewServer() {
   const root = path.join(site, 'out');
-  const types = { '.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2', '.json':'application/json' };
+  const types = { '.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.jpeg':'image/jpeg', '.webp':'image/webp', '.vtt':'text/vtt', '.svg':'image/svg+xml', '.woff2':'font/woff2', '.json':'application/json' };
   return http.createServer((req,res) => {
     let requested;
     try { requested = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); } catch { res.writeHead(400).end(); return; }

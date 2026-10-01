@@ -86,7 +86,8 @@ variable "spec" {
       self_reference = optional(bool, false)
 
       # description is an optional explanation of this specific rule,
-      # aiding in clarity and maintenance. Max 255 chars.
+      # aiding in clarity and maintenance. Max 255 chars, from the same character
+      # set AWS allows in a group description.
       description = optional(string, "")
     })), [])
 
@@ -148,7 +149,8 @@ variable "spec" {
       self_reference = optional(bool, false)
 
       # description is an optional explanation of this specific rule,
-      # aiding in clarity and maintenance. Max 255 chars.
+      # aiding in clarity and maintenance. Max 255 chars, from the same character
+      # set AWS allows in a group description.
       description = optional(string, "")
     })), [])
 

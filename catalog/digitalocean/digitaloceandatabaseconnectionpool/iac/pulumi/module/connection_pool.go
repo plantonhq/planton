@@ -47,9 +47,9 @@ func connectionPool(
 	ctx.Export(OpHost, createdPool.Host)
 	ctx.Export(OpPrivateHost, createdPool.PrivateHost)
 	ctx.Export(OpPort, createdPool.Port)
-	ctx.Export(OpUri, createdPool.Uri)
-	ctx.Export(OpPrivateUri, createdPool.PrivateUri)
-	ctx.Export(OpPassword, createdPool.Password)
+	ctx.Export(OpUri, pulumi.ToSecret(createdPool.Uri))
+	ctx.Export(OpPrivateUri, pulumi.ToSecret(createdPool.PrivateUri))
+	ctx.Export(OpPassword, pulumi.ToSecret(createdPool.Password))
 
 	return createdPool, nil
 }

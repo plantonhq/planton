@@ -1,0 +1,16 @@
+# The verification of the lane's custom domain, deployed as a prerequisite
+# AFTER the CNAME that proves control of it (the scenario lists the record
+# fixture first), so the default-domain scenario sets a domain Auth0 has
+# verified.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomainVerification
+metadata:
+  name: e2e-sign-in-domain-verification
+  org: e2e-org
+  env: testing
+spec:
+  customDomainId:
+    valueFrom:
+      kind: Auth0CustomDomain
+      name: e2e-sign-in-domain
+      fieldPath: status.outputs.id

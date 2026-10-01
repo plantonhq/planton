@@ -201,11 +201,14 @@
   margin-top: 32px;
 }
 .quotes blockquote {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   padding-left: 22px;
   border-left: 2px solid var(--hp-line);
 }
 .quotes blockquote p {
+  flex: 1;
   font-size: 17px;
   line-height: 1.8;
   color: var(--hp-secondary);
@@ -213,10 +216,22 @@
 .quotes footer {
   margin-top: 20px;
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 14px;
   font-size: 14px;
   color: var(--hp-secondary);
+}
+.quotePortrait {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.quoteAttribution {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 .quotes footer strong {
   font-size: 15px;

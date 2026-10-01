@@ -75,7 +75,6 @@ go_library(
         "//pkg/refcheck",
         "//pkg/secretcoverage",
         "//pkg/setdeploy",
-        "//shared",
         "//shared/cloudresourcekind",
         "//shared/iac/pulumi",
         "//shared/iac/terraform",
@@ -96,6 +95,7 @@ go_test(
     deps = [
         "//internal/cli/version",
         "@com_github_spf13_cobra//:cobra",
+        "@com_github_spf13_pflag//:pflag",
         "@io_k8s_sigs_yaml//:yaml",
     ],
 )

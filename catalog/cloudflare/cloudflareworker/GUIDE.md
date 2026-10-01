@@ -4,9 +4,15 @@ A Worker is a script that runs on Cloudflare's edge, plus everything that hangs 
 
 ## Pick a source
 
-- **Inline `content`** for a small ES module. The two live E2E scenarios use this.
+- **Inline `content`** for a small ES module. The minimal and observability E2E scenarios use this. It needs nothing but the Cloudflare API token.
 - **`r2Bundle`** for a CI-built artifact. `bucket` is a CloudflareR2Bucket reference (or a literal name); the module fetches the object and deploys it.
 - **`assets`** alone for a static site. Combine it with a script for a full-stack app.
+
+## An R2 bundle needs the connection's R2 keys
+
+Both engines read the bundle through R2's S3-compatible API, and that API is signed with an R2 access key pair, never with the Cloudflare API token. Give the Cloudflare connection an R2 key pair with Object Read on the bundle bucket; Planton hands it to Pulumi through the provider config and to OpenTofu as `TF_VAR_r2_access_key_id` / `TF_VAR_r2_secret_access_key`. Binding a Worker to a bucket (`r2Buckets`) needs no keys at all — only building the script from one does.
+
+The bundle's declared Content-Type does not matter: the modules read the object's raw bytes, so a file uploaded as `application/javascript` deploys exactly as one uploaded as `text/javascript`. An empty object stops the deploy with an error naming it, instead of shipping a Worker with no code.
 
 `bodyPart` marks service-worker syntax. `mainModule` marks ES-module syntax. Do not set both.
 

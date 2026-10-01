@@ -3,22 +3,49 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabasekafkaschema
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map with the importer exclusion, presets, README/catalog/GUIDE).
-  # Live dual-engine proof has not yet run. ONE scenario: `minimal` IS the
-  # kind's total surface (all four arguments required, all create-only) --
-  # an Avro subject on the SHARED Kafka manifest-path fixture that lives in
-  # the DigitalOceanDatabaseKafkaTopic kind's folder. The lane deploys TWO
-  # clusters (the PostgreSQL registry prerequisite plus the Kafka fixture).
-  # SERIALIZATION: the shared fixture means this kind's lanes and the
-  # topic kind's lanes must run serially, never in parallel.
-  # Import round-trip: EXCLUDED (recorded in the import map) -- the
-  # upstream importer is broken at the pin (restores only cluster_id,
-  # never the subject). Watch item for the proof lane: schema evolution is
-  # destroy+recreate that DROPS all subject versions -- verify the destroy
-  # phase leaves no registry residue.
+  # green: proven live on BOTH engines (2026-09-17), the one scenario
+  # (`minimal` IS the kind's total surface -- all four arguments required,
+  # all create-only), every phase including the idempotency gate. The lane
+  # rides the kind's OWN General Purpose Kafka fixture (`gd-2vcpu-8gb` x 3,
+  # ~9.5-11 min to create, ~$0.30/hour) plus the PostgreSQL registry
+  # prerequisite (~5 min); the GP plan is not a cost choice: DigitalOcean's
+  # schema registry exists only on General Purpose Kafka plans (a Basic
+  # cluster answers every registry call 412 and refuses to enable it, 422
+  # "not supported for current plan"), and a fresh GP cluster comes with
+  # the registry ENABLED. Registering the subject takes ~10-17 s; the
+  # subject 404s within two seconds of the DELETE.
+  # What the lanes proved beyond existence: the registry stores every
+  # Avro/JSON schema in canonical form (keys sorted, no whitespace) and the
+  # provider's Read stores that text verbatim, so both modules canonicalize
+  # JSON-typed schemas before sending -- the scenario's schema is written
+  # in human key order (type, name, fields) on purpose and Terraform's
+  # REFRESHED idempotency plan read "No changes". Protobuf schemas are sent
+  # verbatim and the registry reformats them (measured: a blank line after
+  # the syntax line), so a protobuf subject re-plans a replacement on
+  # every refreshed Terraform plan -- a recorded provider caveat on the
+  # GUIDE, not a deferral (no protobuf scenario: the class is measured and
+  # documented, and a lane would only prove the known replacement).
+  # Import round-trip: the type is declared `not_importable_upstream_reason`
+  # in aa_import/catalog.yaml (the importer restores only cluster_id at
+  # the pin), so the Terraform lane skipped the import and the
+  # reconcile-apply RE-REGISTERED the subject -- a registry-side no-op
+  # (an identical re-register answers 201 with the same schema id and
+  # version, measured). Re-evaluate on any provider pin bump.
+  # SERIALIZATION with the topic kind is no longer required (the two kinds
+  # deploy differently named fixtures), but Kafka lanes are still run one
+  # at a time for the account's database quota and the machine.
+  # Deferred arms: schema evolution is destroy+recreate upstream and drops
+  # all versions -- the GUIDE steers customers to their producers' registry
+  # client for evolution; the runner has no update phase.
+  #
+  # Pulumi re-proven 2026-09-19 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `minimal`: the GP Kafka fixture and the PG registry
+  # prerequisite 10m27s, DEPLOY 20 s, IDEMPOTENCY PASS (the canonicalized
+  # JSON schema stable at the new bridge), VERIFY-RES PASS, DESTROY 13 s,
+  # VERIFY-CLN PASS, first run.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
   timeout_minutes: 45

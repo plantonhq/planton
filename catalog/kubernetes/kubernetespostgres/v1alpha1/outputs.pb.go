@@ -61,8 +61,14 @@ type KubernetesPostgresStackOutputs struct {
 	// Name of the superuser credential Secret (`<name>-superuser`) —
 	// populated only when superuser access is enabled, empty otherwise.
 	SuperuserSecretName string `protobuf:"bytes,10,opt,name=superuser_secret_name,json=superuserSecretName,proto3" json:"superuser_secret_name,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// The backup series this cluster archives into — the folder beneath
+	// the backup destination path holding its base backups and WAL
+	// (`backup.server_name`, or `<name>-<8 characters>` unique to this
+	// install). A recovery names it as `source_server_name`. Empty when
+	// no backup is declared.
+	BackupServerName string `protobuf:"bytes,11,opt,name=backup_server_name,json=backupServerName,proto3" json:"backup_server_name,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *KubernetesPostgresStackOutputs) Reset() {
@@ -165,11 +171,18 @@ func (x *KubernetesPostgresStackOutputs) GetSuperuserSecretName() string {
 	return ""
 }
 
+func (x *KubernetesPostgresStackOutputs) GetBackupServerName() string {
+	if x != nil {
+		return x.BackupServerName
+	}
+	return ""
+}
+
 var File_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetespostgres/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetespostgres.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xf3\x03\n" +
+	"<catalog/kubernetes/kubernetespostgres/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetespostgres.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xa1\x04\n" +
 	"\x1eKubernetesPostgresStackOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12\x1d\n" +
@@ -183,7 +196,8 @@ const file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_rawDesc 
 	"\x0fusername_secret\x18\b \x01(\v2+.dev.planton.kubernetes.KubernetesSecretKeyR\x0eusernameSecret\x12T\n" +
 	"\x0fpassword_secret\x18\t \x01(\v2+.dev.planton.kubernetes.KubernetesSecretKeyR\x0epasswordSecret\x122\n" +
 	"\x15superuser_secret_name\x18\n" +
-	" \x01(\tR\x13superuserSecretNameB\x9b\x03\n" +
+	" \x01(\tR\x13superuserSecretName\x12,\n" +
+	"\x12backup_server_name\x18\v \x01(\tR\x10backupServerNameB\x9b\x03\n" +
 	"6com.dev.planton.kubernetes.kubernetespostgres.v1alpha1B\fOutputsProtoP\x01Zfgithub.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1;kubernetespostgresv1alpha1\xa2\x02\x04DPKK\xaa\x022Dev.Planton.Kubernetes.Kubernetespostgres.V1alpha1\xca\x022Dev\\Planton\\Kubernetes\\Kubernetespostgres\\V1alpha1\xe2\x02>Dev\\Planton\\Kubernetes\\Kubernetespostgres\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Kubernetes::Kubernetespostgres::V1alpha1b\x06proto3"
 
 var (

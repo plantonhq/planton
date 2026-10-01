@@ -1,12 +1,4 @@
 locals {
-  # Resource naming
-  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-zone-settings")
-
-  # Labels
-  labels = merge({
-    "name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
   zone_id = var.spec.zone_id
 
   # On/off toggles: null = not managed (never sent); true/false = "on"/"off".

@@ -1,0 +1,16 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0ClientFromMetadataDocument
+metadata:
+  name: my-mcp-client
+  org: example-org
+  env: production
+spec:
+  # Example document URL (https-validated field) -- replace with the URL the
+  # MCP client serves its Client ID Metadata Document from.
+  externalClientId: https://mcp-client.example.com/.well-known/oauth-client-metadata
+  # Bump after the client's owner changes the document, to make Auth0 fetch it again.
+  externalClientIdVersion: 1
+  # Declared so Terraform never proposes clearing the document's description.
+  description: MCP client for the team's tools
+  # Auth0's default for third-party applications, stated so a review sees it.
+  redirectionPolicy: open_redirect_protection

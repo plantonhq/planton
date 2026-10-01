@@ -52,4 +52,11 @@ message KubernetesPostgresStackOutputs {
   // Name of the superuser credential Secret (`<name>-superuser`) —
   // populated only when superuser access is enabled, empty otherwise.
   string superuser_secret_name = 10;
+
+  // The backup series this cluster archives into — the folder beneath
+  // the backup destination path holding its base backups and WAL
+  // (`backup.server_name`, or `<name>-<8 characters>` unique to this
+  // install). A recovery names it as `source_server_name`. Empty when
+  // no backup is declared.
+  string backup_server_name = 11;
 }

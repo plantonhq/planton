@@ -43,15 +43,22 @@ planton search connections                # provider connections (which clouds/c
 planton connection authorization list     # which connections which envs may use
 planton secret list -o json               # managed secrets ("env" field = scope)
 planton variable list -o json             # managed variables ("env" field = scope)
+planton secret list --env <env> -o json   # what <env> can read: its own + the org's
+planton infra state-backend list -o json  # state backends, with each one's ENCRYPTION (get <slug>
+                                          # for one, its key and phase; exit 3 = none)
+planton infra state-backend rekey <slug>  # change the key (--key-source ...), rotate
+                                          # Planton's passphrase, or resume a change
 planton catalog search --server           # the catalog MINUS what the org's catalog
                                           # policy disables (offline default shows all;
                                           # see catalog-availability.md)
 ```
 
 The secret/variable lists ground `$var`/`$secret` references before you write
-them (`config-references.md`); `-o json` matters because only the JSON
-records carry each entry's `env`, which decides the reference form. Creating
-one (`planton secret set` / `planton variable set`) is a mutation — one
+them (`config-references.md`); `-o json` matters because the JSON records
+carry each entry's `env`, which decides the reference form. A list is every
+record (never cut off); only a typed `--env` narrows it, to that
+environment's records plus the organization's. Creating one
+(`planton secret set` / `planton variable set`) is a mutation — one
 confirmation, same as any other.
 
 `planton env list` includes pull-request PREVIEW environments
@@ -112,7 +119,12 @@ planton get stack-job <sj_id> -o json
 planton infra stack-job stream-progress-events <sj_id>   # tail the engine output directly
 ```
 
-Typical reading of `status` output: a node with result `failed` and a
+Typical reading of `status` output: a `REASON` starting "Nothing ran:
+environment <env> may not use the <provider> connection <slug>" is a missing
+connection authorization — no stack job started and nothing in the cloud
+changed (the follow says "Refused before any resource ran"); the sentence
+carries the `planton connection auth create …` fix, a mutation to confirm.
+A node with result `failed` and a
 `REASON` mentioning "No provider connection available" or
 "kubernetes-provider-connection … not found" is the wiring class — fix per
 `kubernetes-on-cluster.md` / `issue-catalog.md`. A failure naming cloud
@@ -142,6 +154,60 @@ canvas and file tree; it lives inside your folder, so it is inside your
 filesystem boundary. Clean it up when the diagnosis ends if the user asked
 for tidy folders; otherwise it is harmless working memory.
 
+## Reading back and comparing a manifest
+
+```
+planton get <Kind> <name> -o yaml            # a cloud resource AS ITS MANIFEST: kind, metadata
+                                             # (id included), spec, status.outputs; camelCase keys
+planton get <Kind> <name> -o yaml --envelope # the stored CloudResource wrapper instead
+planton service get <slug> [-o json]         # the service's stored record (the service.yaml shape)
+planton diff -f <manifest>                   # the local file vs what is stored for it
+planton validate -f <manifest>               # offline check; every document in the file
+```
+
+`get -o yaml` uses the manifest dialect (camelCase: `status.outputs.vpcId`);
+`-o json` uses proto field names (`status.outputs.vpc_id`). Read a key by
+the name the chosen format prints. A secret output reads as its `$secret/`
+reference, never the value.
+
+`diff -f` takes one manifest per file, leaves status and platform stamps out,
+and answers by exit code: 0 applying would change nothing, 1 they differ (a
+unified diff; `-o json` gives `differs` and `changes[]`), 3 "Nothing Stored
+Yet". It is read-only — the check before proposing an apply.
+
+Two refusal banners, two owners: **Manifest Isn't Valid** is the CLI's own
+offline check (`apply`, `service register`, `validate`) refusing a file
+before sending it — fix the field it names (`validate` on a multi-document
+file names the document: "document 2 of 2 (name): …"); **Request Refused** is the server
+refusing a request as invalid, nothing changed — relay its reason.
+
+## What changed, and who changed it
+
+```
+planton activity --since 24h -o json            # the organization's feed, newest first
+planton activity --env prod --attention -o json # what failed or waits for approval in prod
+planton activity --mine --since 7d -o json      # the person's own changes
+planton activity <Kind> <name> -o json          # one resource's activity
+planton history <Kind> <name>                   # one resource's field-by-field versions
+```
+
+`activity` is the answer to "what changed", "what broke" and "who touched
+it": one card per change a person, their CI, or the Assistant made, with
+who, what, when, and how its run ended. Platform housekeeping never appears,
+and every card is trimmed to what the signed-in person may open, so an empty
+page is "nothing you may see in this view", never a refusal. It covers the
+whole organization; `--env` narrows only when passed. Windows (`--since`,
+`--until`) take `24h`, `7d`, `30d`, any `<n>h` or `<n>d`, or an RFC 3339
+moment; `--area` takes `infrastructure`, `services_pipelines`,
+`connections_credentials`, `configuration_secrets` or
+`organization_members`. Each card's `spec.source` names the run behind it:
+read a failed service run's logs or a stack job from there, and a
+configuration change's diff with `history <version-id>`. Lead a summary with
+the `--attention` cards, then the rest by area, naming people and resources.
+If `planton activity` is an unknown command, the CLI is older than this
+feature: tell the person to update it (`brew upgrade planton`) and stop,
+rather than piecing the answer together from other commands.
+
 ## Watching a running deploy (humans; agents prefer snapshots)
 
 ```
@@ -151,6 +217,19 @@ planton infra pipeline stream-status <id>   # status lines until terminal
 
 Streams block until the pipeline finishes — in a session, prefer polling
 `status` between other work over holding a stream open.
+
+## Reading a value in a script
+
+A lookup that finds nothing is an answer with its own exit code, and its
+sentence goes to stderr, so stdout carries only a value that exists:
+
+```
+v=$(planton variable get db-host -o plain)   # exit 0 found, 3 not found, 1 could not ask
+planton secret get db-password --reveal -o plain   # same contract; so do env get and planton get <Kind> <id>
+```
+
+Branch on 3 for "not declared" (create it, or fall back) and treat 1 as a
+failure to reach or ask the instance -- never parse the banner's words.
 
 ## On a self-hosted instance
 
@@ -177,5 +256,6 @@ front doors and `login --local` (`self-hosted.front-doors-and-the-cli.md`,
 
 Any resource, any kind: `planton get <kind> <id> -o json` (e.g.
 `get infra-pipeline`, `get cloud-resource`, `get stack-job`) and
-`planton search by-resource-kind <kind>` for kinds without a noun-scoped
-list. The noun-scoped verbs above are the preferred, discoverable path.
+`planton search [text] --kind <kind>` (a platform kind: `service`,
+`variable`, `cloud_resource`, …) for kinds without a noun-scoped list. The
+noun-scoped verbs above are the preferred, discoverable path.

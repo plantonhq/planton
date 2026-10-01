@@ -289,7 +289,7 @@ Mutable in place.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: GcpServiceAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: GcpServiceAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -297,7 +297,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpServiceAccoun
 | `status.outputs.member` | `string` | The IAM member string for this service account: "serviceAccount:<email>". Feed this directly into IAM grants (GcpProjectIamMember's member field) — it is the exact format GCP IAM policies expect, so no string assembly is needed. |
 | `status.outputs.unique_id` | `string` | The stable, unique numeric ID GCP assigns to the service account. Unlike the email, it is never reused if the account is deleted and recreated — use it where a tamper-proof identity reference matters (e.g. audit tooling). |
 | `status.outputs.name` | `string` | The fully-qualified resource name: projects/<project>/serviceAccounts/<email>. Used by APIs that address the service account as a resource (key management, IAM policy on the service account itself, Workload Identity bindings). |
-| `status.outputs.key_base64` | `string` | Base64-encoded private key, populated only when spec.user_managed_key requested the generate flow (empty for keyless accounts and for the public_key_data upload flow). This is a live, long-lived credential — the engines mark it secret in state; handle it like a password and prefer keyless patterns entirely. |
+| `status.outputs.key_base64` | `string` (sensitive) | Base64-encoded private key, populated only when spec.user_managed_key requested the generate flow (empty for keyless accounts and for the public_key_data upload flow). This is a live, long-lived credential — the engines mark it secret in state; handle it like a password and prefer keyless patterns entirely. |
 
 ## References
 

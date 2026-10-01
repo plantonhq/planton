@@ -2,6 +2,7 @@ package verify
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/digitalocean/godo"
 	pkgerrors "github.com/pkg/errors"
@@ -46,7 +47,7 @@ func (v *databaseFirewallVerifier) VerifyAbsent(ctx context.Context, client *god
 		return pkgerrors.Wrapf(err, "digitaloceandatabasefirewall verify-absent failed for cluster %q", id)
 	}
 	if len(rules) > 0 {
-		return pkgerrors.Errorf("digitaloceandatabasefirewall on cluster %q still has %d rules after destroy (destroy must clear the set)", id, len(rules))
+		return &StillExistsError{Component: "digitaloceandatabasefirewall", ID: id, Detail: fmt.Sprintf("still has %d rules after destroy (destroy must clear the set)", len(rules))}
 	}
 	return nil
 }

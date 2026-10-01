@@ -51,6 +51,12 @@ type WorkloadRef struct {
 	// namespace (a shared sub-operator's controller); the objects an
 	// explanation names then carry it too, so `kubectl describe` lands.
 	Namespace string
+
+	// SizedBy is the spec field that sizes the workload
+	// (resources.ComponentSizing's path), so an out-of-memory kill names the
+	// exact limit to raise. Empty for a workload the platform's spec does not
+	// size (a shared sub-operator's controller).
+	SizedBy string
 }
 
 // DeploymentRef, StatefulSetRef, and PostgresClusterRef build the reference
@@ -58,6 +64,12 @@ type WorkloadRef struct {
 func DeploymentRef(name string) WorkloadRef      { return WorkloadRef{Kind: "Deployment", Name: name} }
 func StatefulSetRef(name string) WorkloadRef     { return WorkloadRef{Kind: "StatefulSet", Name: name} }
 func PostgresClusterRef(name string) WorkloadRef { return WorkloadRef{Kind: "Cluster", Name: name} }
+
+// Sized returns the reference naming the spec field that sizes the workload.
+func (w WorkloadRef) Sized(path string) WorkloadRef {
+	w.SizedBy = path
+	return w
+}
 
 // In returns the reference for the same workload in another namespace.
 func (w WorkloadRef) In(namespace string) WorkloadRef {
@@ -105,13 +117,8 @@ func (b *Base) explainWorkload(ctx context.Context, c client.Client, namespace s
 	if workload.Namespace != "" {
 		namespace = workload.Namespace
 	}
-	selector, conditions, found := workloadSelector(ctx, c, namespace, workload)
+	pods, selector, conditions, found := workloadPods(ctx, c, namespace, workload)
 	if !found {
-		return nil
-	}
-
-	var pods corev1.PodList
-	if err := c.List(ctx, &pods, client.InNamespace(namespace), client.MatchingLabels(selector)); err != nil {
 		return nil
 	}
 
@@ -120,10 +127,26 @@ func (b *Base) explainWorkload(ctx context.Context, c client.Client, namespace s
 	var events corev1.EventList
 	_ = c.List(ctx, &events, client.InNamespace(namespace))
 
-	if expl := explainPendingClaims(pods.Items, selector, claims.Items, storageFactsReader(ctx, c), events.Items); expl != nil {
+	if expl := explainPendingClaims(pods, selector, claims.Items, storageFactsReader(ctx, c), events.Items); expl != nil {
 		return expl
 	}
-	return classifyUnreadyWorkload(pods.Items, conditions, events.Items, time.Now())
+	return classifyUnreadyWorkload(pods, conditions, events.Items, time.Now(), workload.SizedBy)
+}
+
+// workloadPods reads the workload's pods, its label selector, and its own
+// conditions -- the facts both the not-ready and the Ready answer start from.
+// found is false when the workload or its pods cannot be read; a caller then
+// has nothing more specific to say.
+func workloadPods(ctx context.Context, c client.Client, namespace string, workload WorkloadRef) ([]corev1.Pod, map[string]string, []appsv1.DeploymentCondition, bool) {
+	selector, conditions, found := workloadSelector(ctx, c, namespace, workload)
+	if !found {
+		return nil, nil, nil, false
+	}
+	var pods corev1.PodList
+	if err := c.List(ctx, &pods, client.InNamespace(namespace), client.MatchingLabels(selector)); err != nil {
+		return nil, nil, nil, false
+	}
+	return pods.Items, selector, conditions, true
 }
 
 // workloadSelector returns the label selector the workload's pods carry and
@@ -174,7 +197,7 @@ func stringField(m map[string]any, key string) string {
 // facts support nothing more specific than "still deploying". Pods are read
 // newest first: during a rollout the newest pod's trouble is the one that
 // matters, and an old pod that is fine says nothing about the new template.
-func classifyUnreadyWorkload(pods []corev1.Pod, conditions []appsv1.DeploymentCondition, events []corev1.Event, now time.Time) *Explanation {
+func classifyUnreadyWorkload(pods []corev1.Pod, conditions []appsv1.DeploymentCondition, events []corev1.Event, now time.Time, sizedBy string) *Explanation {
 	sorted := make([]corev1.Pod, len(pods))
 	copy(sorted, pods)
 	sort.SliceStable(sorted, func(i, j int) bool {
@@ -185,7 +208,7 @@ func classifyUnreadyWorkload(pods []corev1.Pod, conditions []appsv1.DeploymentCo
 	// before any pod-level verdict: a pull failure on the new pod beats the
 	// old pod's healthy-but-terminating state.
 	for i := range sorted {
-		if expl := explainContainers(&sorted[i]); expl != nil {
+		if expl := explainContainers(&sorted[i], sizedBy); expl != nil {
 			return expl
 		}
 	}
@@ -213,7 +236,7 @@ func classifyUnreadyWorkload(pods []corev1.Pod, conditions []appsv1.DeploymentCo
 
 // explainContainers reads the container statuses of one pod, init containers
 // first (a failing init container blocks everything after it).
-func explainContainers(pod *corev1.Pod) *Explanation {
+func explainContainers(pod *corev1.Pod, sizedBy string) *Explanation {
 	all := append(append([]corev1.ContainerStatus{}, pod.Status.InitContainerStatuses...), pod.Status.ContainerStatuses...)
 	object := podObject(pod)
 
@@ -255,14 +278,7 @@ func explainContainers(pod *corev1.Pod) *Explanation {
 			continue
 		}
 		if last.Reason == "OOMKilled" {
-			return &Explanation{
-				Reason: v1.ComponentReasonOutOfMemory,
-				Object: object,
-				Message: fmt.Sprintf(
-					"container %q of pod %s was killed for exceeding its memory limit%s (%d restarts) -- "+
-						"raise the component's memory limit in its resources, or give the node more memory",
-					cs.Name, pod.Name, memoryLimitClause(pod, cs.Name), cs.RestartCount),
-			}
+			return outOfMemory(pod, cs, "", sizedBy)
 		}
 		crashLooping := cs.State.Waiting != nil && cs.State.Waiting.Reason == "CrashLoopBackOff"
 		if crashLooping || cs.RestartCount > 0 && last.ExitCode != 0 {
@@ -517,6 +533,29 @@ func podReady(pod *corev1.Pod) bool {
 		}
 	}
 	return false
+}
+
+// outOfMemory is the one sentence for a container killed for exceeding its
+// memory limit, whichever state its component is in now; after says what has
+// happened since, when that is known (the Ready answer's "at <time> and is
+// serving again").
+func outOfMemory(pod *corev1.Pod, cs corev1.ContainerStatus, after, sizedBy string) *Explanation {
+	return &Explanation{
+		Reason: v1.ComponentReasonOutOfMemory,
+		Object: podObject(pod),
+		Message: fmt.Sprintf(
+			"container %q of pod %s was killed for exceeding its memory limit%s%s (%d restarts) -- %s",
+			cs.Name, pod.Name, memoryLimitClause(pod, cs.Name), after, cs.RestartCount, memoryRemedy(sizedBy)),
+	}
+}
+
+// memoryRemedy is the fix for an out-of-memory kill: the exact field when the
+// platform's spec sizes the workload, the node otherwise.
+func memoryRemedy(sizedBy string) string {
+	if sizedBy == "" {
+		return "give the node more memory"
+	}
+	return "raise " + sizedBy + ".limits.memory (the other quantities keep their defaults), or give the node more memory"
 }
 
 // memoryLimitClause names the container's memory limit when the pod declares

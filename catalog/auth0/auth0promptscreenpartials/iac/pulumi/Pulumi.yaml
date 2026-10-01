@@ -1,0 +1,6 @@
+# Auth0PromptScreenPartials Pulumi Module
+# This module manages the HTML fragments one Universal Login prompt inserts on its screens.
+name: auth0-prompt-screen-partials
+runtime:
+  name: go
+description: Pulumi module for Auth0PromptScreenPartials component

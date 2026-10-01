@@ -53,6 +53,8 @@ Amazon's managed container registry. The natural choice for ECS and EKS deployme
 | Region | The AWS region where the ECR registry is hosted |
 | Credential | An AWS connection you already trust, or an IAM access key pair with ECR push permissions, stored as secrets |
 
+ECR refuses a push to a repository that doesn't exist, and Planton creates none: give each service a repository named by its image repository path, or declare a create-on-push repository creation template (`AwsEcrRegistrySettings`) for a prefix your services share, and ECR creates each one on its first push.
+
 ### Azure Container Registry (ACR)
 
 Microsoft's managed container registry. Pairs with AKS and Azure Container Apps deployments.
@@ -86,7 +88,7 @@ GitHub's container registry, tightly integrated with GitHub Packages.
 1. Navigate to **Connections** and click the **Container Registry** card under Artifact Stores.
 2. **You Already Trust These** lists the registries your connections reach — *GHCR as priya-dev · via GitHub connection github-account-priya-dev*, *ECR us-east-1 for 123456789012 · via AWS connection aws-profile-acme-dev*. Fill in anything the connection cannot know (a region, a repository name) on the card, and click **Use This Registry**. Planton writes the connection and proves it: the runner derives the credential once and the registry accepts it, or you read the exact sentence saying why not.
 3. Or choose **Set Up Manually**: pick the provider, answer **Credential** (**A Connection You Already Trust** or **Stored Keys**), and provide the fields listed above.
-4. On the completed screen — and on the connection's page any time after — **Verify This Registry** asks the registry to accept the derived credential right now.
+4. On the completed screen — and on the connection's page any time after — **Verify This Registry** (or `planton connect registry verify <slug>` from a terminal) asks the registry to accept the derived credential right now, and then whether it would accept a push: ACR's push grant (AcrPush, not AcrPull), Artifact Registry's repository and the Writer role on it, JFrog's Docker repository key, a GHCR token's `write:packages` scope. The verdict says what was established: **Push Proven** names who may push where; **Push Not Proven Yet** is ECR, which answers a push grant only for a named repository — name one under **Verify a Repository** (or pass `--repository`) to prove it; **Push Not Verifiable** is honesty about what the registry cannot answer (a GitHub package owner's setting), with why and a door to where that setting lives; a refusal names what to create or grant, with the command that does it on its own line to copy; **Registry Could Not Be Reached** names the runner that tried, and asks you to retry once its network path is open. Each build asks ECR before it builds, too: a repository that does not exist (with no create-on-push template covering it) or an identity without the push actions fails the build at once, naming what to create or grant.
 
 <!-- SCREENSHOT: You Already Trust These
   Page: /orgs/{org}/connections/create/container-registry

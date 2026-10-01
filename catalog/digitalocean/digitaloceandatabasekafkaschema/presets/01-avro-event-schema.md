@@ -10,7 +10,7 @@ This preset registers an Avro record schema for a topic's message values, follow
 ## Key Configuration Choices
 
 - **`subjectName: orders-value`** -- the `<topic>-value` convention is what standard serializers look up; keys get a sibling `<topic>-key` subject if keyed with structured data.
-- **Single-line schema string** -- the definition is compared verbatim (no normalization), so a machine-formatted one-liner keeps the manifest byte-stable.
+- **Single-line schema string** -- a readability choice only: both provisioners render Avro into the registry's canonical form (keys sorted, no whitespace) before sending, so key order and formatting never count as a change.
 - **Avro** -- the registry also accepts `json` and `protobuf`.
 
 ## What You Get

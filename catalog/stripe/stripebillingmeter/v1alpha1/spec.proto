@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingmeter.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// StripeBillingMeterSpec declares a usage meter: the event name the application sends to Stripe
+// for each unit of use (an API request, a GB stored), how those events add up per customer, and
+// alerts when a customer's usage crosses a threshold. A metered StripePrice names the meter to
+// bill what it counts.
+//
+// Only the display name can change in Stripe. Changing the event name, time window, customer
+// mapping, aggregation or value key REPLACES the meter: Planton deactivates the old one and
+// creates the new one, and every metered price that references it is replaced with it. The
+// application must then send the new meter's events, so read the event name from
+// status.outputs.event_name by reference rather than repeating it.
+//
+// Destroy deactivates the meter (status inactive): it stops accepting events and Stripe keeps it.
+// A meter that cannot be read makes the plan fail (the provider does not treat a missing meter
+// as gone); remove it from state and apply again.
+//
+// Alerts are forgotten, not deleted: Stripe's alerts can't be updated or deleted through the
+// provider, so changing an alert replaces it and leaves the old one active in Stripe, and
+// removing an alert or destroying the meter leaves every alert active. Archive a stale alert in
+// the Dashboard, or with Stripe's archive call (POST /v1/billing/alerts/{id}/archive).
+//
+// The key needs "Billing Meters" write, and "Alerts" write when alerts are declared
+// (iac/permissions.yaml).
+//
+// https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/billing_meter
+message StripeBillingMeterSpec {
+  // display_name is the meter's name in the Dashboard and on invoices ("API requests"). It is the
+  // only field that updates in place.
+  string display_name = 1 [(buf.validate.field).required = true];
+
+  // event_name is the name the application sends with each usage event ("api_requests").
+  // Changing it REPLACES the meter.
+  string event_name = 2 [(buf.validate.field).required = true];
+
+  // default_aggregation is how the events in a billing period add up to the usage billed.
+  // Changing it REPLACES the meter.
+  StripeBillingMeterDefaultAggregation default_aggregation = 3 [(buf.validate.field).required = true];
+
+  // customer_mapping is where in each event Stripe finds the customer. Unset, Stripe reads the
+  // stripe_customer_id payload key. Changing it REPLACES the meter.
+  StripeBillingMeterCustomerMapping customer_mapping = 4;
+
+  // value_settings is where in each event Stripe finds the amount of use. Unset, Stripe reads the
+  // value payload key. Changing it REPLACES the meter.
+  StripeBillingMeterValueSettings value_settings = 5;
+
+  // event_time_window is the period events are pre-aggregated over for reporting. Unset, events
+  // are not pre-aggregated. Changing it REPLACES the meter.
+  EventTimeWindow event_time_window = 6 [(buf.validate.field).enum.defined_only = true];
+
+  // alerts notify the account (a billing.alert.triggered event) when a customer's usage on this
+  // meter reaches a threshold. Each is keyed by its title, unique within the meter. An alert
+  // can't be changed: changing one creates a new alert and leaves the old one active in Stripe,
+  // and removing one (or destroying the meter) leaves it active too.
+  repeated StripeBillingMeterAlert alerts = 7;
+
+  option (buf.validate.message).cel = {
+    id: "spec.alerts.unique_title"
+    message: "each alert has its own title: rename or remove the repeated one"
+    expression: "this.alerts.all(a, this.alerts.filter(b, b.title == a.title).size() == 1)"
+  };
+
+  // EventTimeWindow is the period a meter's events are pre-aggregated over.
+  enum EventTimeWindow {
+    event_time_window_unspecified = 0;
+    day = 1;
+    hour = 2;
+  }
+}
+
+// StripeBillingMeterDefaultAggregation is how a meter's events add up.
+message StripeBillingMeterDefaultAggregation {
+  // formula is the aggregation.
+  Formula formula = 1 [
+    (buf.validate.field).enum.defined_only = true,
+    (buf.validate.field).enum.not_in = 0
+  ];
+
+  // Formula is how a meter's events add up over a billing period.
+  enum Formula {
+    formula_unspecified = 0;
+    // count counts the events.
+    count = 1;
+    // sum adds up the events' values.
+    sum = 2;
+    // last takes the last event's value.
+    last = 3;
+  }
+}
+
+// StripeBillingMeterCustomerMapping is where Stripe finds the customer in each event.
+message StripeBillingMeterCustomerMapping {
+  // event_payload_key is the payload key that holds the Stripe customer id
+  // ("stripe_customer_id"). Stripe maps by customer id, the only mapping it offers.
+  string event_payload_key = 1 [(buf.validate.field).required = true];
+}
+
+// StripeBillingMeterValueSettings is where Stripe finds the amount of use in each event.
+message StripeBillingMeterValueSettings {
+  // event_payload_key is the payload key that holds the numeric value ("value", "bytes").
+  string event_payload_key = 1 [(buf.validate.field).required = true];
+}
+
+// StripeBillingMeterAlert is a usage threshold on the meter. Stripe sends billing.alert.triggered
+// when a customer's usage reaches it.
+message StripeBillingMeterAlert {
+  // title is the alert's name, shown in the Dashboard and in the event, unique within the meter.
+  // It keys the alert: changing it creates a new alert and leaves the old one active in Stripe.
+  string title = 1 [(buf.validate.field).required = true];
+
+  // gte is the usage, in the meter's units, at which the alert fires.
+  int64 gte = 2 [(buf.validate.field).int64.gt = 0];
+
+  // customer limits the alert to one customer's usage (cus_...). Unset, it watches every
+  // customer.
+  string customer = 3 [(buf.validate.field).cel = {
+    id: "alert.customer.format"
+    message: "customer is a Stripe customer id (cus_...)"
+    expression: "this == '' || this.startsWith('cus_')"
+  }];
+
+  // recurrence is how often the alert can fire. Unset, one_time: once per customer, the only
+  // recurrence Stripe offers.
+  Recurrence recurrence = 4 [(buf.validate.field).enum.defined_only = true];
+
+  // Recurrence is how often an alert can fire.
+  enum Recurrence {
+    recurrence_unspecified = 0;
+    // one_time fires once per customer.
+    one_time = 1;
+  }
+}

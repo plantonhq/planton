@@ -203,7 +203,7 @@ To find the ALB's DNS name (which you need to access the sample service):
 planton get AwsAlb production-alb -o yaml
 ```
 
-Look for `status.outputs.load_balancer_dns_name` in the output. This is the AWS-generated DNS name for the load balancer, something like `production-alb-1234567890.us-east-1.elb.amazonaws.com`.
+Look for `status.outputs.loadBalancerDnsName` in the output (`planton get` prints camelCase keys, like every manifest). This is the AWS-generated DNS name for the load balancer, something like `production-alb-1234567890.us-east-1.elb.amazonaws.com`.
 
 Verify the sample nginx service is running:
 

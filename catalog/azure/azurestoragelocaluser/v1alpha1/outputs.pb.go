@@ -7,6 +7,7 @@
 package azurestoragelocaluserv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -22,11 +23,9 @@ const (
 )
 
 // **AzureStorageLocalUserStackOutputs** captures the outputs of
-// provisioning a storage local user. The sid and password outputs carry
-// SECRET-BEARING material (the password is the user's login secret; the
-// SID identifies the principal in Azure Files ACLs) -- treat any surface
-// that renders stack outputs accordingly, and hand the password to the
-// partner over a secure channel.
+// provisioning a storage local user. The password is the user's login
+// secret: Planton keeps it in the organization's secret store, and the output
+// holds a reference -- hand the password to the partner over a secure channel.
 type AzureStorageLocalUserStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The local user's Azure Resource Manager ID.
@@ -40,8 +39,9 @@ type AzureStorageLocalUserStackOutputs struct {
 	// {account-name}.blob.core.windows.net on port 22.
 	SftpUsername string `protobuf:"bytes,3,opt,name=sftp_username,json=sftpUsername,proto3" json:"sftp_username,omitempty"`
 	// The user's unique Security Identifier (SID) -- Azure generates it at
-	// creation; Azure Files NTFS-style ACLs reference principals by SID.
-	// Secret-bearing by Azure's own classification.
+	// creation; Azure Files NTFS-style ACLs reference principals by SID. An
+	// identifier, not a credential: it authenticates nothing on its own, so it is
+	// a public output even though the provider marks the attribute sensitive.
 	Sid string `protobuf:"bytes,4,opt,name=sid,proto3" json:"sid,omitempty"`
 	// The Azure-generated SSH password -- returned EXACTLY ONCE, at the
 	// creation that enabled ssh_password_enabled (empty when password
@@ -132,13 +132,13 @@ var File_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurestoragelocaluser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurestoragelocaluser/v1alpha1/outputs.proto\x120dev.planton.azure.azurestoragelocaluser.v1alpha1\"\xe9\x01\n" +
+	":catalog/azure/azurestoragelocaluser/v1alpha1/outputs.proto\x120dev.planton.azure.azurestoragelocaluser.v1alpha1\x1a\x1cshared/options/options.proto\"\xef\x01\n" +
 	"!AzureStorageLocalUserStackOutputs\x12\"\n" +
 	"\rlocal_user_id\x18\x01 \x01(\tR\vlocalUserId\x12\x1b\n" +
 	"\tuser_name\x18\x02 \x01(\tR\buserName\x12#\n" +
 	"\rsftp_username\x18\x03 \x01(\tR\fsftpUsername\x12\x10\n" +
-	"\x03sid\x18\x04 \x01(\tR\x03sid\x12\x1a\n" +
-	"\bpassword\x18\x05 \x01(\tR\bpassword\x120\n" +
+	"\x03sid\x18\x04 \x01(\tR\x03sid\x12 \n" +
+	"\bpassword\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x120\n" +
 	"\x14storage_account_name\x18\x06 \x01(\tR\x12storageAccountNameB\x92\x03\n" +
 	"4com.dev.planton.azure.azurestoragelocaluser.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azurestoragelocaluser/v1alpha1;azurestoragelocaluserv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azurestoragelocaluser.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azurestoragelocaluser\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azurestoragelocaluser\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azurestoragelocaluser::V1alpha1b\x06proto3"
 

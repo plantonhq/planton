@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0promptscreenpartials.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// Auth0PromptScreenPartialsSpec manages the HTML fragments one Universal Login
+// prompt inserts on its screens, on the tenant the provider connection's
+// credential belongs to.
+//
+// Each screen offers named insertion points; a partial is an HTML fragment (it
+// may use Liquid and read the prompt's context) rendered at one of them. This
+// resource owns the prompt's whole set: a screen or insertion point the spec
+// leaves out renders nothing, and destroying the resource removes every partial
+// of the prompt. Form fields a partial adds are submitted with the form and
+// reach Actions as custom prompt fields.
+//
+// Auth0 accepts partials only on a tenant with a custom domain and a page
+// template: without either it refuses them (403 "requires at least one custom
+// domain", then 403 "requires a page template"). Deploy an Auth0CustomDomain
+// first (it need not be verified), then an Auth0Branding that sets
+// universal_login_template. They render only with the Universal Login
+// experience "new".
+//
+// The credential needs read:prompts and update:prompts on the tenant's
+// Management API (iac/permissions.yaml).
+//
+// https://auth0.com/docs/customize/login-pages/universal-login/customize-signup-and-login-prompts
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt_screen_partials
+message Auth0PromptScreenPartialsSpec {
+  // prompt_type is the prompt whose screens the partials extend. It is the
+  // resource's identity in Auth0: changing it manages another prompt, so treat
+  // it as fixed and declare a second resource for a second prompt.
+  string prompt_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "login-id",
+        "login",
+        "login-password",
+        "signup",
+        "signup-id",
+        "signup-password",
+        "login-passwordless",
+        "customized-consent",
+        "passkeys",
+        "confirmation"
+      ]
+    }
+  ];
+
+  // screen_partials are the partials of each of the prompt's screens, one entry
+  // per screen.
+  repeated Auth0PromptScreenPartial screen_partials = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).cel = {
+      id: "spec.screen_partials.unique_screens"
+      message: "each screen appears once in screen_partials -- put all of a screen's insertion points in its one entry"
+      expression: "this.all(a, this.exists_one(b, a.screen_name == b.screen_name))"
+    }
+  ];
+}
+
+// Auth0PromptScreenPartial is the partials of one screen.
+message Auth0PromptScreenPartial {
+  // screen_name is the screen the partials render on (for example "login",
+  // "signup-id"), one of the prompt's screens.
+  string screen_name = 1 [(buf.validate.field).required = true];
+
+  // insertion_points are the fragments and where they render.
+  Auth0PromptInsertionPoints insertion_points = 2 [(buf.validate.field).required = true];
+}
+
+// Auth0PromptInsertionPoints are the HTML fragments of one screen, each rendered
+// at its named place. At least one is set.
+message Auth0PromptInsertionPoints {
+  option (buf.validate.message).cel = {
+    id: "spec.insertion_points.at_least_one"
+    message: "set at least one insertion point -- a screen entry with no fragments renders nothing"
+    expression: "this.form_content != '' || this.form_content_start != '' || this.form_content_end != '' || this.form_footer_start != '' || this.form_footer_end != '' || this.secondary_actions_start != '' || this.secondary_actions_end != ''"
+  };
+
+  // form_content replaces the form's own fields area -- use only to rebuild the form.
+  string form_content = 1;
+
+  // form_content_start renders at the start of the form, above its fields.
+  string form_content_start = 2;
+
+  // form_content_end renders at the end of the form, below its fields and above the submit button.
+  string form_content_end = 3;
+
+  // form_footer_start renders at the start of the form's footer.
+  string form_footer_start = 4;
+
+  // form_footer_end renders at the end of the form's footer.
+  string form_footer_end = 5;
+
+  // secondary_actions_start renders before the secondary actions (the links below the form).
+  string secondary_actions_start = 6;
+
+  // secondary_actions_end renders after the secondary actions.
+  string secondary_actions_end = 7;
+}

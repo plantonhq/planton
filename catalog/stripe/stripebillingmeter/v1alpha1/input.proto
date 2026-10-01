@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingmeter.v1alpha1;
+
+import "catalog/stripe/provider.proto";
+import "catalog/stripe/stripebillingmeter/v1alpha1/api.proto";
+
+// StripeBillingMeterStackInput is the input to the StripeBillingMeter IaC module.
+// It contains the target resource and the Stripe provider configuration.
+message StripeBillingMeterStackInput {
+  // target is the StripeBillingMeter resource to be deployed.
+  StripeBillingMeter target = 1;
+
+  // provider_config contains the Stripe key, its mode, and optionally the Connect account to act
+  // on. The key needs "Billing Meters" write, and "Alerts" write for alerts.
+  dev.planton.stripe.StripeProviderConfig provider_config = 2;
+}

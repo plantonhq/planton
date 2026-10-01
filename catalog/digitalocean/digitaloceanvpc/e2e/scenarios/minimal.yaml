@@ -3,8 +3,8 @@
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanVpc
 metadata:
-  name: planton-oss-e2e-digitaloceanvpc-min
-  id: planton-oss-e2e-digitaloceanvpc-min
+  name: planton-oss-e2e-digitaloceanvpc-min-${E2E_RUN_ID}
+  id: planton-oss-e2e-digitaloceanvpc-min-${E2E_RUN_ID}
   org: planton-oss
   env: e2e
   labels:

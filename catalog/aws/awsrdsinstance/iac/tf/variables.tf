@@ -30,7 +30,6 @@ variable "spec" {
 
     # Name of an existing DB subnet group to place the instance in,
     # instead of providing subnet_ids.
-    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     db_subnet_group_name = optional(string, "")
 
     # Security groups attached to the instance. Empty uses the VPC's

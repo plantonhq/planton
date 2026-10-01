@@ -7,9 +7,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ResourceChecker can test whether a Management API resource exists.
+// ResourceChecker can test whether a Management API resource exists, and read
+// it when a verifier must judge what it holds (a custom domain's status).
 type ResourceChecker interface {
 	ResourceExists(path string) (bool, error)
+	// ReadResource returns the resource's JSON body and whether it exists.
+	ReadResource(path string) (map[string]interface{}, bool, error)
 }
 
 // Verifier checks Auth0 resources for a single component type.
@@ -19,8 +22,19 @@ type Verifier interface {
 	// IDOutput names the stack output that carries the resource's Management
 	// API identifier. Most kinds report it as "id"; a kind whose identifier
 	// has its own name in the API (a user's user_id) says so here rather
-	// than duplicating the value under a second output.
+	// than duplicating the value under a second output. A tenant's settings
+	// have no identifier -- the tenant is the object -- so their verifier
+	// returns "" and receives an empty id.
 	IDOutput() string
+}
+
+// OptionalIDVerifier is implemented by a verifier whose id output may be
+// empty on a successful deploy: the object is the tenant's own (its
+// branding), and the output names an optional companion the spec may or may
+// not create (the branding's theme). The verifier then receives an empty id
+// and checks the tenant's object alone.
+type OptionalIDVerifier interface {
+	IDOutputOptional() bool
 }
 
 // defaultIDOutput is the output name every kind reports its identifier
@@ -81,6 +95,24 @@ var verifiers = map[string]Verifier{
 	"auth0eventstream":    &apiPathVerifier{component: "auth0eventstream", pathFormat: "event-streams/%s"},
 	"auth0role":           &apiPathVerifier{component: "auth0role", pathFormat: "roles/%s"},
 	"auth0user":           &apiPathVerifier{component: "auth0user", pathFormat: "users/%s", idOutput: "user_id"},
+	"auth0customdomain":   &apiPathVerifier{component: "auth0customdomain", pathFormat: "custom-domains/%s"},
+
+	// An application registered from its Client ID Metadata Document is an
+	// ordinary client of the tenant once registered, read by its client id.
+	"auth0clientfrommetadatadocument": &apiPathVerifier{
+		component:  "auth0clientfrommetadatadocument",
+		pathFormat: "clients/%s",
+		idOutput:   "client_id",
+	},
+
+	"auth0customdomainverification": &customDomainVerificationVerifier{},
+	"auth0tenantsettings":           &tenantSettingsVerifier{},
+	"auth0branding":                 &brandingVerifier{},
+	"auth0prompt":                   &promptVerifier{},
+	"auth0promptcustomtext":         &promptCustomTextVerifier{},
+	"auth0promptscreenpartials":     &promptScreenPartialsVerifier{},
+	"auth0emailprovider":            &emailProviderVerifier{},
+	"auth0emailtemplate":            &emailTemplateVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if unknown.

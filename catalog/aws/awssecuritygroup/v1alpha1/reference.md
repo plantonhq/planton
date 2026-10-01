@@ -112,6 +112,7 @@ in place, so changing it forces group replacement.
 Example: "Allows inbound HTTP and SSH for web tier"
 
 - rule: Description must not exceed 255 characters
+- rule: AWS allows only letters, digits, spaces and ._-:/()#,@[]+=&;{}!$* in a security group description
 - rule: {"required":true}
 
 ### spec.ingress
@@ -218,9 +219,11 @@ for intra-cluster traffic (nodes of one cluster talking to each other).
 `string`
 
 description is an optional explanation of this specific rule,
-aiding in clarity and maintenance. Max 255 chars.
+aiding in clarity and maintenance. Max 255 chars, from the same character
+set AWS allows in a group description.
 
 - rule: Rule description must not exceed 255 characters
+- rule: AWS allows only letters, digits, spaces and ._-:/()#,@[]+=&;{}!$* in a security group rule description
 
 ### spec.egress
 
@@ -329,9 +332,11 @@ for intra-cluster traffic (nodes of one cluster talking to each other).
 `string`
 
 description is an optional explanation of this specific rule,
-aiding in clarity and maintenance. Max 255 chars.
+aiding in clarity and maintenance. Max 255 chars, from the same character
+set AWS allows in a group description.
 
 - rule: Rule description must not exceed 255 characters
+- rule: AWS allows only letters, digits, spaces and ._-:/()#,@[]+=&;{}!$* in a security group rule description
 
 ### spec.revokeRulesOnDelete
 

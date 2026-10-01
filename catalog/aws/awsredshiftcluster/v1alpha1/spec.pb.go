@@ -56,7 +56,7 @@ type AwsRedshiftClusterSpec struct {
 	// Name of an existing Redshift subnet group to place the cluster in,
 	// instead of providing subnet_ids. Changing the subnet group replaces
 	// the cluster.
-	ClusterSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=cluster_subnet_group_name,json=clusterSubnetGroupName,proto3" json:"cluster_subnet_group_name,omitempty"`
+	ClusterSubnetGroupName string `protobuf:"bytes,3,opt,name=cluster_subnet_group_name,json=clusterSubnetGroupName,proto3" json:"cluster_subnet_group_name,omitempty"`
 	// Security groups attached to the cluster (the cluster's
 	// vpc_security_group_ids). Empty uses the VPC's default security
 	// group (the AWS default). Reference AwsSecurityGroup
@@ -320,11 +320,11 @@ func (x *AwsRedshiftClusterSpec) GetSubnetIds() []*v1.StringValueOrRef {
 	return nil
 }
 
-func (x *AwsRedshiftClusterSpec) GetClusterSubnetGroupName() *v1.StringValueOrRef {
+func (x *AwsRedshiftClusterSpec) GetClusterSubnetGroupName() string {
 	if x != nil {
 		return x.ClusterSubnetGroupName
 	}
-	return nil
+	return ""
 }
 
 func (x *AwsRedshiftClusterSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
@@ -1332,12 +1332,12 @@ var File_catalog_aws_awsredshiftcluster_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_aws_awsredshiftcluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsredshiftcluster/v1alpha1/spec.proto\x12+dev.planton.aws.awsredshiftcluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9bC\n" +
+	"2catalog/aws/awsredshiftcluster/v1alpha1/spec.proto\x12+dev.planton.aws.awsredshiftcluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe8B\n" +
 	"\x16AwsRedshiftClusterSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12m\n" +
-	"\x19cluster_subnet_group_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x16clusterSubnetGroupName\x12\x8b\x01\n" +
+	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x129\n" +
+	"\x19cluster_subnet_group_name\x18\x03 \x01(\tR\x16clusterSubnetGroupName\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xf7\a\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12+\n" +
 	"\x11availability_zone\x18\x05 \x01(\tR\x10availabilityZone\x12O\n" +
 	"$availability_zone_relocation_enabled\x18\x06 \x01(\bR!availabilityZoneRelocationEnabled\x12/\n" +
@@ -1384,8 +1384,8 @@ const file_catalog_aws_awsredshiftcluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\fusage_limits\x18* \x03(\v2I.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterUsageLimitR\vusageLimits\x12{\n" +
 	"\x11scheduled_actions\x18+ \x03(\v2N.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterScheduledActionR\x10scheduledActions\x12z\n" +
 	"\x11endpoint_accesses\x18, \x03(\v2M.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAccessR\x10endpointAccesses\x12\x8d\x01\n" +
-	"\x17endpoint_authorizations\x18- \x03(\v2T.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAuthorizationR\x16endpointAuthorizations:\xa8&\xbaH\xa4&\x1a\xb1\x01\n" +
-	"\x10subnets_or_group\x12Wprovide at least two subnet_ids (distinct AZs) or an existing cluster_subnet_group_name\x1aD(this.subnet_ids.size() >= 2) || has(this.cluster_subnet_group_name)\x1a\x99\x01\n" +
+	"\x17endpoint_authorizations\x18- \x03(\v2T.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAuthorizationR\x16endpointAuthorizations:\xa9&\xbaH\xa5&\x1a\xb2\x01\n" +
+	"\x10subnets_or_group\x12Wprovide at least two subnet_ids (distinct AZs) or an existing cluster_subnet_group_name\x1aE(this.subnet_ids.size() >= 2) || this.cluster_subnet_group_name != ''\x1a\x99\x01\n" +
 	"\n" +
 	"port_range\x12Nport must be between 1115 and 65535 when set -- 0 keeps the AWS default (5439)\x1a;this.port == 0 || (this.port >= 1115 && this.port <= 65535)\x1a\xd0\x01\n" +
 	"\x15number_of_nodes_range\x12^number_of_nodes must be between 1 and 128 when set -- 0 keeps the AWS default (1, single-node)\x1aWthis.number_of_nodes == 0 || (this.number_of_nodes >= 1 && this.number_of_nodes <= 128)\x1a\xb8\x01\n" +
@@ -1499,29 +1499,28 @@ var file_catalog_aws_awsredshiftcluster_v1alpha1_spec_proto_goTypes = []any{
 }
 var file_catalog_aws_awsredshiftcluster_v1alpha1_spec_proto_depIdxs = []int32{
 	9,  // 0: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 1: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.cluster_subnet_group_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 2: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 3: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.elastic_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 4: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.master_password_secret_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 5: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 6: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.iam_roles:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 7: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.default_iam_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 8: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.logging:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterLogging
-	2,  // 9: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.snapshot_copy:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSnapshotCopy
-	3,  // 10: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.parameters:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterParameter
-	4,  // 11: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.usage_limits:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterUsageLimit
-	5,  // 12: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.scheduled_actions:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterScheduledAction
-	7,  // 13: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.endpoint_accesses:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAccess
-	8,  // 14: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.endpoint_authorizations:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAuthorization
-	9,  // 15: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterScheduledAction.iam_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	6,  // 16: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterScheduledAction.resize_cluster:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterResizeAction
-	9,  // 17: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAccess.vpc_security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 18: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAuthorization.vpc_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	19, // [19:19] is the sub-list for method output_type
-	19, // [19:19] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	9,  // 1: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 2: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.elastic_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 3: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.master_password_secret_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 4: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 5: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.iam_roles:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 6: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.default_iam_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 7: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.logging:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterLogging
+	2,  // 8: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.snapshot_copy:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSnapshotCopy
+	3,  // 9: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.parameters:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterParameter
+	4,  // 10: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.usage_limits:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterUsageLimit
+	5,  // 11: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.scheduled_actions:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterScheduledAction
+	7,  // 12: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.endpoint_accesses:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAccess
+	8,  // 13: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterSpec.endpoint_authorizations:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAuthorization
+	9,  // 14: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterScheduledAction.iam_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6,  // 15: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterScheduledAction.resize_cluster:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterResizeAction
+	9,  // 16: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAccess.vpc_security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 17: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAuthorization.vpc_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsredshiftcluster_v1alpha1_spec_proto_init() }

@@ -196,7 +196,7 @@ spec:
 | `spec.resources.requests.memory` | `string` |  |  |  |
 | `spec.security` | `KubernetesSolrSecurity` |  |  |  |
 | `spec.security.authenticationType` | `string` |  |  |  |
-| `spec.security.basicAuthSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
+| `spec.security.basicAuthSecret` | `string \| valueFrom` |  |  | KubernetesSecret (`status.outputs.secret_name`) |
 | `spec.security.probesRequireAuth` | `bool` |  |  |  |
 | `spec.security.bootstrapSecurityJson` | `KubernetesSolrSecretKeyRef` |  |  |  |
 | `spec.security.bootstrapSecurityJson.name` | `string` | yes |  |  |
@@ -585,8 +585,8 @@ writes their credentials to `<name>-solrcloud-basic-auth`
 Solr's security API, update the Secret too — the operator locks
 itself out otherwise (upstream contract).
 
-- references: KubernetesSecret (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesSecret (`status.outputs.secret_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecret, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
 
 ### spec.security.probesRequireAuth
 
@@ -1148,7 +1148,7 @@ Fields that can point at another resource's outputs:
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
 | `spec.zookeeper.provided.persistence.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.storage.persistent.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
-| `spec.security.basicAuthSecret` | KubernetesSecret | `metadata.name` |
+| `spec.security.basicAuthSecret` | KubernetesSecret | `status.outputs.secret_name` |
 
 ## See Also
 

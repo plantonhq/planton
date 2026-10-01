@@ -40,5 +40,5 @@ The `spec` object includes: `sign_in` (email/phone/anonymous arms with explicit-
 | Name | Description |
 |------|-------------|
 | `config_name` | `projects/{project}/config` |
-| `api_key` | The auto-provisioned client SDK API key (sensitive) |
+| `api_key` | The auto-provisioned client SDK API key (not a secret; ships inside client apps) |
 | `firebase_subdomain` | The project's default hosted sign-in domain |

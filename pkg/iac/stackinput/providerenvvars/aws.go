@@ -2,20 +2,11 @@ package providerenvvars
 
 import (
 	"context"
-	"time"
 
 	"github.com/pkg/errors"
 	awsprovider "github.com/plantonhq/planton/catalog/aws"
 	"github.com/plantonhq/planton/pkg/iac/provider/aws/awswebidentity"
 )
-
-// awsWebIdentityExchangeTimeout bounds the synchronous STS exchange done on the tofu path.
-// The exchange is a single AssumeRoleWithWebIdentity run once,
-// before any tofu command; this ceiling protects the stack job from a hung STS endpoint. We use
-// a fresh context.Background() rather than threading a caller context so the public
-// providerenvvars/tofumodule signatures stay stable (keeping this change wholly within
-// planton); the minted JWT's own short TTL bounds credential validity independently.
-const awsWebIdentityExchangeTimeout = 60 * time.Second
 
 // loadAwsEnvVars builds the AWS provider environment variables from the resolved provider config.
 // The AWS tofu/terraform modules ship an empty `provider "aws" {}` block, so BOTH region and
@@ -24,10 +15,11 @@ const awsWebIdentityExchangeTimeout = 60 * time.Second
 //   - AWS_REGION is always set from the resource's region (the connection region in
 //     provider_config is only a fallback) -- region is a resource property, mirroring how the
 //     pulumi builders take the resource's spec.Region rather than the connection's.
-//   - web identity + ResolveAwsWebIdentity -> exchange the JWT via STS and emit the resulting
+//   - web identity, EngineReadsEnvironment -> exchange the JWT via STS and emit the resulting
 //     temporary AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_SESSION_TOKEN (the tofu path).
-//   - web identity + !ResolveAwsWebIdentity -> region only; the pulumi in-program builder owns
+//   - web identity, EngineBuildsProviders -> region only; the pulumi in-program builder owns
 //     the exchange, so emitting (shadowed) creds here would be wasteful.
+//   - web identity, no engine named -> refused (see Engine).
 //   - static keys -> emit them, including AWS_SESSION_TOKEN for temporary (ASIA) credentials.
 //   - neither -> region only; the provider resolves credentials from the ambient chain.
 //
@@ -61,14 +53,18 @@ func loadAwsEnvVars(providerConfigYaml []byte, hasProviderConfig bool, resourceR
 
 	switch {
 	case config.GetWebIdentity() != nil:
-		if !opts.ResolveAwsWebIdentity {
+		switch opts.Engine {
+		case EngineBuildsProviders:
 			// Pulumi path: the in-program builder performs the exchange; nothing to inject here.
-			break
+			return envVars, nil
+		case EngineReadsEnvironment:
+		default:
+			return nil, errEngineUnset("AWS")
 		}
 		if err := awswebidentity.Validate(config.GetWebIdentity()); err != nil {
 			return nil, err
 		}
-		ctx, cancel := context.WithTimeout(context.Background(), awsWebIdentityExchangeTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), keylessExchangeTimeout)
 		defer cancel()
 		creds, err := resolve(ctx, region, config.GetWebIdentity())
 		if err != nil {

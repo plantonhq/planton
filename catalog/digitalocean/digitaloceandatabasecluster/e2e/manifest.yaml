@@ -25,7 +25,7 @@ metadata:
 spec:
   clusterName: example-mysql
   engine: mysql
-  engineVersion: "8"
+  engineVersion: "8.4"
   region: nyc3
   sizeSlug: db-s-2vcpu-4gb
   nodeCount: 2

@@ -1,0 +1,71 @@
+# THE alert-delivery proof: typed notifications reach a person, and never
+# carry a customer's name. The verifier deploys an in-cluster sink that
+# stands in for Discord's webhook endpoint and an outside heartbeat monitor
+# (`notification-sink` in this namespace), then proves:
+#   - the Watchdog heartbeat arrives every 30s with its bearer token;
+#   - `amtool check-config` accepts the configuration Alertmanager loaded;
+#   - a synthetic page-class alert carrying customer-like labels
+#     (`namespace=acme-corp`, a description naming it) reaches the pager
+#     webhook with its token AND, because the pager route continues into
+#     the catch-all channel route after it, the Discord channel, titled
+#     "[e2e] notification-proof: E2ENotificationProof" with no trace of
+#     "acme" (the root receiver alone would never see a claimed alert);
+#   - a rotated credential is picked up with no restart.
+# The phone receiver is routed on an alert that never fires: it keeps the
+# Pushover rendering under check-config without calling Pushover's API.
+# Every literal below is a test value the verifier knows; a real manifest
+# holds managed-secret references ($secret/<slug>) here.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesKubePrometheusStack
+metadata:
+  name: e2e-kps-notify
+spec:
+  namespace:
+    value: e2e-kps-notify
+  create_namespace: true
+  prometheus:
+    disk_size: 5Gi
+  alertmanager:
+    disk_size: 1Gi
+    notifications:
+      receivers:
+        - name: channel
+          discord:
+            - webhook_url:
+                value: http://notification-sink.e2e-kps-notify.svc.cluster.local:8080/discord
+        - name: pager
+          webhook:
+            - url: http://notification-sink.e2e-kps-notify.svc.cluster.local:8080/pager
+              bearer_token:
+                value: e2e-pager-token
+        - name: phone
+          pushover:
+            - token:
+                value: e2e-pushover-token
+              user_key:
+                value: e2e-pushover-user
+      route:
+        receiver: channel
+        group_wait: 5s
+        routes:
+          - matchers:
+              - label: alertname
+                value: E2ENeverFires
+            receiver: phone
+          - matchers:
+              - label: severity
+                value: page
+            receiver: pager
+            continue_matching: true
+          - matchers:
+              - label: alertname
+                operator: matches_regex
+                value: .+
+            receiver: channel
+      heartbeat:
+        url: http://notification-sink.e2e-kps-notify.svc.cluster.local:8080/heartbeat/e2e
+        bearer_token:
+          value: e2e-heartbeat-token
+        interval: 30s
+  grafana:
+    enabled: false

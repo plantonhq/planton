@@ -27,6 +27,7 @@ func (co *Console) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sc
 
 	cfg := resources.ConsoleConfig{
 		CRName:    planton.Name,
+		Resources: resources.EffectiveFor(resources.SizingConsole, &planton.Spec),
 		Namespace: planton.Namespace,
 		Version:   planton.Spec.Version,
 		OwnerRef:  ownerRef,
@@ -88,11 +89,12 @@ func (co *Console) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sc
 	if err != nil {
 		return Result{}, fmt.Errorf("checking Console readiness: %w", err)
 	}
+	workload := DeploymentRef(deployName).Sized(resources.SizingConsole)
 	if !ready {
 		log.Info("Console not ready")
-		return co.NotReady(ctx, c, planton.Namespace, DeploymentRef(deployName), "Waiting for Console Deployment"), nil
+		return co.NotReady(ctx, c, planton.Namespace, workload, "Waiting for Console Deployment"), nil
 	}
 
 	log.Info("Console ready")
-	return Result{Ready: true, Message: "Console healthy"}, nil
+	return co.Ready(ctx, c, planton.Namespace, "Console healthy", workload), nil
 }

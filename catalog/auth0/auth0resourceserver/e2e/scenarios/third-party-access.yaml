@@ -1,0 +1,36 @@
+# An API third-party applications reach only through default grants: users
+# need a grant (the default one, for third-party applications), applications
+# acting for themselves need one too, and every third-party application gets
+# read:items on a person's behalf and read:items for itself without a grant
+# of its own. The lane proves the access policy, both default grants and
+# their ids (third_party_client_default_grant_ids, keyed user and client) on
+# both engines, and that destroy deletes the grants with the API.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0ResourceServer
+metadata:
+  name: e2e-api-third-party
+  org: e2e-org
+  env: testing
+spec:
+  identifier: https://e2e-api-third-party.planton.dev/
+  name: E2E Third-Party Access API
+  signingAlg: RS256
+  skipConsentForVerifiableFirstPartyClients: true
+  scopes:
+    - name: read:items
+      description: Read access to items
+    - name: write:items
+      description: Write access to items
+  subjectTypeAuthorization:
+    user:
+      policy: require_client_grant
+    client:
+      policy: require_client_grant
+  thirdPartyClientDefaultGrants:
+    - subjectType: user
+      scopes:
+        - read:items
+        - write:items
+    - subjectType: client
+      scopes:
+        - read:items

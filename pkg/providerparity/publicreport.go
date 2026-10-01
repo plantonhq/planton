@@ -17,8 +17,8 @@
 //     kind -- against the named pin. Claim language stays "built for 100%
 //     Terraform parity" until every kind is accounted AND proven.
 //   - PROVEN comes only from the E2E profiles (the tree's record of live
-//     dual-engine runs), joined mechanically in e2eproof.go. A kind is
-//     proven when its profile is green with both provisioners validated.
+//     runs), joined mechanically in e2eproof.go. A kind is proven when its
+//     profile is green with every module it ships exercised (E2EProof.Proven).
 //
 // Each page embeds its own generation parameters (provider and GA schema)
 // in the header comment, so the drift gate regenerates every committed page
@@ -139,8 +139,8 @@ and every provider resource carries exactly one recorded disposition --
 omission is a decision, never an accident. This page is the measurement,
 generated from the same accounting that gates the repository's CI. It makes
 no achieved-parity claim: a kind counts as PROVEN only when live end-to-end
-runs pass on both IaC engines, and the tables below show exactly how far
-that has progressed.
+runs pass on every IaC engine it runs on, and the tables below show exactly
+how far that has progressed.
 
 `, providerTitle, acc.CloudProvider, acc.GASchema, providerTitle)
 
@@ -247,7 +247,7 @@ that has progressed.
 	b.WriteString("resources must be matched to a spec field, mapped by recorded judgment, or\n")
 	b.WriteString("excluded with a recorded reason -- and every spec field must reach provider\n")
 	b.WriteString("surface. **Accounted** means both directions hold with zero unexplained\n")
-	b.WriteString("gaps. **Proven** means live end-to-end runs passed on both IaC engines.\n\n")
+	b.WriteString("gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.\n\n")
 	fmt.Fprintf(&b, "**%d of %d kinds are at total accounting; %d proven live.**\n\n", accounted, len(acc.Kinds), proven)
 	b.WriteString("| Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |\n")
 	b.WriteString("|---|---|---|---|---|---|---|---|\n")

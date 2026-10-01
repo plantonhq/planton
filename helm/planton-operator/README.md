@@ -79,8 +79,12 @@ kubectl get plantonplatform -n planton -w
 Or declare it as a Helm release with proven defaults:
 
 ```bash
-helm install planton oci://ghcr.io/plantonhq/charts/planton --namespace planton
+helm install planton oci://ghcr.io/plantonhq/charts/planton --namespace planton \
+  --set platform.spec.version=<release>
 ```
+
+The one required value is the platform release: the chart pins none, and the
+operator refuses a release below its floor.
 
 ### Publishing Planton at a URL
 
@@ -249,6 +253,13 @@ raise no Event; a fresh install's control plane takes about two minutes to answe
 health check and Temporal's pods restart until its schema job finishes -- both read as
 the wait they are. When the message prints a `kubectl logs` command, that log is the
 component's own account.
+
+A component can read `Ready` with reason `OutOfMemory`: one of its containers was killed
+for exceeding its memory limit and is serving again. The message says when, and names the
+field to raise (for example `spec.controlPlane.resources.limits.memory`); it stays until
+a new pod replaces the one that was killed, which raising the limit does, and a Normal
+`ComponentRecovered` Event marks the moment it clears. A kill the pod recovered from in a
+minute is the warning before an outage, so it never reads as `Healthy`.
 
 ## CRD Management
 

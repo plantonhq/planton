@@ -462,6 +462,7 @@ Fields on other kinds that can point at this resource:
 | AwsBedrockKnowledgeBase | `spec.dataSources[].salesforce.credentialsSecretArn` | `status.outputs.secret_arn` |
 | AwsBedrockKnowledgeBase | `spec.dataSources[].sharepoint.credentialsSecretArn` | `status.outputs.secret_arn` |
 | AwsEcrRegistrySettings | `spec.pullThroughCacheRules[].credentialArn` | `status.outputs.secret_arn` |
+| AwsFsxWindowsFileSystem | `spec.selfManagedActiveDirectory.domainJoinServiceAccountSecretArn` | `status.outputs.secret_arn` |
 | AwsRdsProxy | `spec.auth[].secretArn` | `status.outputs.secret_arn` |
 
 ## See Also

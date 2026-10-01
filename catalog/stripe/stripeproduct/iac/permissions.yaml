@@ -1,0 +1,29 @@
+# Least-privilege permissions the IaC runner's Stripe key needs to provision, update, and
+# destroy this component with the official module. Stripe authenticates with a restricted API
+# key whose permissions are a Read or Write choice per resource on the Dashboard's restricted-key
+# form (Write includes Read); the stripe/stripe provider (0.3.0, iac/tf/provider.tf) sends it as
+# a bearer token. Resource names are the form's labels. Every group is `derived` (static analysis
+# of the module and the provider's calls, cited in notes) until a live run under a key built from
+# exactly this file upgrades it to `proven` -- Stripe's refusal names the missing permission, so
+# that run also proves each label.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: stripeproduct
+spec:
+  stripe:
+    groups:
+      - purpose: ManageProduct
+        permissions:
+          - resource: Products
+            access: write
+        provenance: derived
+        notes: The module (iac/tf/main.tf) manages stripe_product. The provider creates it with POST /v1/products, reads it with GET /v1/products/{id}, updates it with POST /v1/products/{id}, and archives it on destroy with POST /v1/products/{id} (active=false) (terraform-provider-stripe internal/provider/resources/resource_stripe_product.go); POST is Write, which includes the Read the refresh needs.
+      - purpose: GrantEntitlementFeatures
+        permissions:
+          - resource: Entitlements
+            access: write
+        provenance: derived
+        condition:
+          spec_field_set: features
+        notes: One stripe_product_feature per features entry attaches an entitlement feature. The provider creates the link with POST /v1/products/{product}/features, reads it with GET /v1/products/{product}/features/{id}, and deletes it with DELETE /v1/products/{product}/features/{id} (terraform-provider-stripe internal/provider/resources/resource_stripe_product_feature.go). Whether Stripe files these calls under Products or Entitlements on the restricted-key form is not documented; the least-privilege run proves the label.

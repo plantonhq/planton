@@ -1,0 +1,14 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptCustomText
+metadata:
+  name: e2e-login-en
+  org: e2e-org
+  env: testing
+spec:
+  prompt: login
+  language: en
+  screens:
+    login:
+      texts:
+        title: Welcome back
+        description: Log in to Planton E2E to continue to ${clientName}.

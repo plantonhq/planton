@@ -3,6 +3,8 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1;
 
 import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetes.proto";
+import "catalog/kubernetes/options.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
 import "shared/options/options.proto";
 
@@ -200,10 +202,11 @@ message KubernetesPlantonPlatformSpec {
    * Runners outside this cluster — a developer's laptop deploying with the
    * cloud sign-in already on it, an appliance in another network — pulling
    * this platform's deploy work. OFF by default. Rides the front door:
-   * the deploy queue is routed through the platform hostname beside the
-   * native gRPC API, so it needs a Gateway API front door (ingress with a
-   * gateway_ref); on any other door the capability stays closed and the
-   * platform's status says why. The in-cluster runner is unaffected.
+   * such a runner reaches its work through the control plane on the
+   * platform hostname's native gRPC address, so it needs a Gateway API front
+   * door (ingress with a gateway_ref); on any other door the capability
+   * stays closed and the platform's status says why. The in-cluster runner
+   * is unaffected.
    */
   KubernetesPlantonPlatformRemoteRunners remote_runners = 18;
 
@@ -256,6 +259,19 @@ message KubernetesPlantonPlatformSpec {
     message: "bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager"
     expression: "!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled"
   };
+
+  /**
+   * Sizes Temporal, the platform's job engine, one server service at a time.
+   * History holds workflow state and is the one that grows. Requires a
+   * planton-operator chart >= 0.23.0.
+   */
+  KubernetesPlantonPlatformTemporal temporal = 21;
+
+  /**
+   * Sizes OpenFGA, the platform's authorization engine. Requires a
+   * planton-operator chart >= 0.23.0.
+   */
+  KubernetesPlantonPlatformOpenFga openfga = 22;
 }
 
 /**
@@ -460,14 +476,16 @@ message KubernetesPlantonPlatformEmailResend {
  */
 message KubernetesPlantonPlatformRemoteRunners {
   /**
-   * Open the deploy queue to runners outside the cluster and advertise the
-   * front door's address to them. Platform default: false — an install that
-   * has not chosen this keeps its queue in-cluster, and a runner asking to
-   * enroll from outside is refused with the reason, never handed an address
-   * it cannot reach. What opens: the queue's workflow service, over TLS,
-   * without authentication of its own (the posture the hosted platform
-   * carries for its remote runners); the queue's administrative service
-   * never leaves the cluster.
+   * Admit runners outside the cluster and advertise the front door's address
+   * to them. Platform default: false — an install that has not chosen this
+   * admits only its in-cluster runner, and a runner asking to enroll from
+   * outside is refused with the reason, never handed an address it cannot
+   * reach. What is exposed: nothing of the deploy queue itself, which never
+   * leaves the cluster. The control plane answers a remote runner's work
+   * calls on the queue's behalf, authenticating the runner's own key on
+   * every call and admitting it only to its own two queues, the work
+   * dispatched to it, and the tasks it polled; any other caller, and any
+   * other queue method, is refused with one sentence saying why.
    */
   optional bool enabled = 1 [(dev.planton.shared.options.default) = "false"];
 }
@@ -646,6 +664,31 @@ message KubernetesPlantonPlatformPostgresql {
    * without them.
    */
   KubernetesPlantonPlatformPostgresqlRecoverFrom recover_from = 5;
+
+  /**
+   * The platform database (each instance)'s CPU and memory. Unset, it runs the operator's measured
+   * default: 250m CPU and 512Mi memory requested, a 2Gi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * With one instance, a change restarts the only database: the platform is
+   * unavailable for about a minute. With replicas, CloudNativePG switches
+   * over.
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 6 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "2Gi"}
+    requests: {
+      cpu: "250m"
+      memory: "512Mi"
+    }
+  }];
 }
 
 /**
@@ -1082,6 +1125,46 @@ message KubernetesPlantonPlatformRedis {
    * StorageClass override for the cache volume.
    */
   string storage_class_name = 2;
+
+  /**
+   * The redis-protocol store (Valkey)'s CPU and memory. Unset, it runs the operator's measured
+   * default: 100m CPU and 256Mi memory requested, a 1Gi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * Its memory limit must stay above max_memory, the dataset ceiling:
+   * Valkey needs headroom for its append-only rewrite and client buffers.
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 4 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "1Gi"}
+    requests: {
+      cpu: "100m"
+      memory: "256Mi"
+    }
+  }];
+
+  /**
+   * The store's dataset ceiling, in Valkey's own units ("768mb", "2gb";
+   * k, m and g are powers of 1000, kb, mb and gb powers of 1024). Unset, the
+   * operator uses 768mb under the default 1Gi limit. Raise it together with
+   * resources.limits.memory: a ceiling at or above the limit is refused
+   * before anything changes. Requires a planton-operator chart >= 0.23.0.
+   */
+  string max_memory = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "redis.max_memory_size"
+      message: "max_memory is a Valkey size like \"768mb\" or \"2gb\""
+      expression: "this.matches('^[0-9]+(b|kb|mb|gb|k|m|g)?$')"
+    }
+  ];
 }
 
 /**
@@ -1307,6 +1390,28 @@ message KubernetesPlantonPlatformGateway {
       lte: 65535
     }
   ];
+
+  /**
+   * The front-door gateway's CPU and memory. Unset, it runs the operator's measured
+   * default: 50m CPU and 64Mi memory requested, a 256Mi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 2 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "256Mi"}
+    requests: {
+      cpu: "50m"
+      memory: "64Mi"
+    }
+  }];
 }
 
 /**
@@ -1332,6 +1437,30 @@ message KubernetesPlantonPlatformIdentity {
       expression: "this.matches('^[^@ ]+@[^@ ]+\\\\.[^@ ]+$')"
     }
   ];
+
+  /**
+   * The identity server's CPU and memory. Unset, it runs the operator's measured
+   * default: 250m CPU and 512Mi memory requested, a 1536Mi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * A JVM whose first boot imports the realm; its recovery job takes the
+   * same size.
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 3 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "1536Mi"}
+    requests: {
+      cpu: "250m"
+      memory: "512Mi"
+    }
+  }];
 }
 
 /**
@@ -1502,6 +1631,29 @@ message KubernetesPlantonPlatformRunner {
    * image under spec.image_registry at spec.version.
    */
   KubernetesPlantonPlatformImage image = 6;
+
+  /**
+   * The in-cluster runner's CPU and memory. Unset, it runs the operator's measured
+   * default: 100m CPU and 512Mi memory requested, a 2Gi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * The OpenTofu and Pulumi engines it runs count against its memory.
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 7 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "2Gi"}
+    requests: {
+      cpu: "100m"
+      memory: "512Mi"
+    }
+  }];
 }
 
 /**
@@ -1603,6 +1755,30 @@ message KubernetesPlantonPlatformVault {
     message: "vault.enabled: false opts out of the bundled secrets manager — remove auto_unseal, init_secret_name, and service_account_annotations, or re-enable the vault"
     expression: "!has(this.enabled) || this.enabled || (!has(this.auto_unseal) && this.init_secret_name == '' && size(this.service_account_annotations) == 0)"
   };
+
+  /**
+   * The vault (OpenBAO)'s CPU and memory. Unset, it runs the operator's measured
+   * default: 50m CPU and 128Mi memory requested, a 512Mi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * A restart seals it; the operator unseals it again, so a change is a
+   * brief gap for secret reads.
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 8 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "512Mi"}
+    requests: {
+      cpu: "50m"
+      memory: "128Mi"
+    }
+  }];
 }
 
 /**
@@ -1834,6 +2010,30 @@ message KubernetesPlantonPlatformGraph {
    * StorageClass override for the graph volume.
    */
   string storage_class_name = 3;
+
+  /**
+   * The graph database (Neo4j)'s CPU and memory. Unset, it runs the operator's measured
+   * default: 1000m CPU and 2Gi memory requested, a 2Gi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * Its chart refuses requests under 500m CPU or 2Gi memory; the operator
+   * refuses them first, naming the field.
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 4 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "2Gi"}
+    requests: {
+      cpu: "1000m"
+      memory: "2Gi"
+    }
+  }];
 }
 
 /**
@@ -1938,6 +2138,31 @@ message KubernetesPlantonPlatformControlPlane {
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.pattern = "^v\\d+\\.\\d+\\.\\d+$"
   ];
+
+  /**
+   * The control plane's CPU and memory. Unset, it runs the operator's measured
+   * default: 250m CPU and 1Gi memory requested, a 6Gi memory limit (the
+   * heaviest parallel-deploy wave measured, 4.52Gi, plus 25%), no CPU limit (a
+   * limit throttles cold starts, so the operator never sets one; set one if
+   * your cluster's policy requires it).
+   * The control plane is a JVM whose heap is 60% of this memory limit, so
+   * raising the limit raises the heap; parallel deploys are what grow it.
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 6 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "6Gi"}
+    requests: {
+      cpu: "250m"
+      memory: "1Gi"
+    }
+  }];
 }
 
 /**
@@ -1962,6 +2187,28 @@ message KubernetesPlantonPlatformConsole {
    * injected into the console as environment variables.
    */
   string external_config_secret_name = 3;
+
+  /**
+   * The web console's CPU and memory. Unset, it runs the operator's measured
+   * default: 250m CPU and 512Mi memory requested, a 2Gi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 4 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "2Gi"}
+    requests: {
+      cpu: "250m"
+      memory: "512Mi"
+    }
+  }];
 }
 
 /**
@@ -1978,4 +2225,86 @@ message KubernetesPlantonPlatformImage {
    * Image tag. Empty = spec.version.
    */
   string tag = 2;
+}
+
+/**
+ * Sizes Temporal's four server services, each its own Deployment. One message
+ * serves all four and their measured defaults differ, so each service field
+ * carries its own default size (default_container_resources) rather than the
+ * shared message's resources field. Unset, each runs that default.
+ */
+message KubernetesPlantonPlatformTemporal {
+  // The gateway clients and workers connect to.
+  KubernetesPlantonPlatformTemporalService frontend = 1 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "512Mi"}
+    requests: {
+      cpu: "50m"
+      memory: "128Mi"
+    }
+  }];
+
+  // Owns workflow state and its caches: the service that grows.
+  KubernetesPlantonPlatformTemporalService history = 2 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "1Gi"}
+    requests: {
+      cpu: "100m"
+      memory: "256Mi"
+    }
+  }];
+
+  // Manages task queues and dispatches work.
+  KubernetesPlantonPlatformTemporalService matching = 3 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "512Mi"}
+    requests: {
+      cpu: "50m"
+      memory: "128Mi"
+    }
+  }];
+
+  // Runs Temporal's own system workflows.
+  KubernetesPlantonPlatformTemporalService worker = 4 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "512Mi"}
+    requests: {
+      cpu: "50m"
+      memory: "128Mi"
+    }
+  }];
+}
+
+// One Temporal server service's size.
+message KubernetesPlantonPlatformTemporalService {
+  /**
+   * The service's CPU and memory; its default is on the service's field in
+   * KubernetesPlantonPlatformTemporal. Every quantity is merged on its own
+   * with that default: a quantity set here wins, one left unset keeps the
+   * default. A request above its limit is refused before anything changes.
+   * Changing it rolls the service's pods. Requires a planton-operator chart
+   * >= 0.23.0.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 1;
+}
+
+// Sizes OpenFGA, the authorization engine.
+message KubernetesPlantonPlatformOpenFga {
+  /**
+   * The authorization engine (OpenFGA)'s CPU and memory. Unset, it runs the operator's measured
+   * default: 50m CPU and 64Mi memory requested, a 256Mi memory limit, no
+   * CPU limit (a limit throttles cold starts, so the operator never sets one;
+   * set one if your cluster's policy requires it).
+   * Every quantity is merged on its own with the operator's default: a
+   * quantity set here wins, one left unset keeps the default, so raising one
+   * limit never means restating the numbers beside it. A request above its
+   * limit is refused before anything changes, naming the field. The sizes in
+   * effect are reported in the platform's status.components.<component>.sizing.
+   * Changing it rolls the component's pods. Requires a planton-operator chart
+   * >= 0.23.0: an older operator's definition drops the field without a word,
+   * which the status's sizing then shows as the default.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 1 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {memory: "256Mi"}
+    requests: {
+      cpu: "50m"
+      memory: "64Mi"
+    }
+  }];
 }

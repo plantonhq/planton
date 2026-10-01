@@ -3,6 +3,9 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "postgresql",
     srcs = [
+        "backup.go",
+        "backupList.go",
+        "backupPatch.go",
         "cluster.go",
         "clusterList.go",
         "clusterPatch.go",

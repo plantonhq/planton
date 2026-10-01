@@ -78,7 +78,7 @@ func registry(
 	} else {
 		// Both provisioners export the full outputs contract; unconfigured
 		// credentials surface as empty strings, identically on both engines.
-		ctx.Export(OpDockerCredentials, pulumi.String(""))
+		ctx.Export(OpDockerCredentials, pulumi.ToSecret(pulumi.String("")))
 		ctx.Export(OpCredentialExpirationTime, pulumi.String(""))
 	}
 

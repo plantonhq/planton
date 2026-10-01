@@ -23,3 +23,13 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: Covers kubectl_manifest.tekton_config (Terraform, server-side apply) and the Pulumi twin in tekton_config.go -- the single CLUSTER-SCOPED TektonConfig CR, always named "config" (the operator's webhook requires that fixed name and allows exactly one per cluster). Every component workload, Service, RBAC object, and the target namespace itself is created by the OPERATOR under its own identity, never by the runner. The delete blocks up to 15 minutes while the operator processes the TektonInstallerSet finalizers and tears the components down -- which is why this resource must be destroyed BEFORE the KubernetesTektonOperator.
+      - api_groups:
+          - operator.tekton.dev
+        resources:
+          - tektonconfigs
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the TektonConfig in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

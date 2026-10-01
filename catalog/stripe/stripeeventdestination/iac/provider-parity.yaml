@@ -1,0 +1,25 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# azure_event_grid is a nested attribute, which distills to a single provider
+# argument; fan-in mappings record the spec leaves it realizes. The spec's
+# destination is a oneof of three blocks, and the block set IS the type.
+resources:
+  stripe_v2_core_event_destination:
+    mappings:
+      - spec: spec.azure_event_grid.azure_subscription_id
+        arg: azure_event_grid
+      - spec: spec.azure_event_grid.azure_resource_group_name
+        arg: azure_event_grid
+      - spec: spec.azure_event_grid.azure_region
+        arg: azure_event_grid
+    exclusions:
+      - arg: type
+        reason: derived by the module from the destination block the spec sets (webhook_endpoint, amazon_eventbridge or azure_event_grid) -- a separate type field could only contradict the block
+      - arg: include
+        reason: write-only and without effect -- the provider always asks for the webhook signing secret at create, and never stores or re-sends include on a later read

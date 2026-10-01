@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestorageaccount.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureStorageAccountStackOutputs** captures the outputs of provisioning
 // an Azure Storage Account: the ARM identity other resources reference, the
 // per-service endpoints applications connect to, and the account's access
@@ -85,26 +87,26 @@ message AzureStorageAccountStackOutputs {
   // (role assignments against storage_account_id) and reference this
   // key only where a consumer genuinely requires key auth (e.g. a
   // Function App's storage binding).
-  string primary_access_key = 18;
+  string primary_access_key = 18 [(dev.planton.shared.options.sensitive) = true];
 
   // The account's SECOND shared access key -- exists so consumers can
   // roll from one key to the other without downtime. The same handling
   // guidance as primary_access_key applies.
-  string secondary_access_key = 19;
+  string secondary_access_key = 19 [(dev.planton.shared.options.sensitive) = true];
 
   // A ready-to-use connection string carrying the account name and the
   // PRIMARY access key. Same secret-handling guidance as the keys.
-  string primary_connection_string = 20;
+  string primary_connection_string = 20 [(dev.planton.shared.options.sensitive) = true];
 
   // The connection string carrying the SECONDARY access key.
-  string secondary_connection_string = 21;
+  string secondary_connection_string = 21 [(dev.planton.shared.options.sensitive) = true];
 
   // A blob-service-only connection string (primary key + blob
   // endpoint) -- what some SDKs and app settings expect.
-  string primary_blob_connection_string = 22;
+  string primary_blob_connection_string = 22 [(dev.planton.shared.options.sensitive) = true];
 
   // The blob-service-only connection string on the secondary key.
-  string secondary_blob_connection_string = 23;
+  string secondary_blob_connection_string = 23 [(dev.planton.shared.options.sensitive) = true];
 
   // The principal (object) ID of the account's system-assigned
   // identity, populated only when the identity type includes

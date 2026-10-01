@@ -24,4 +24,4 @@ spec:
       name: planton-oss-e2e-azure-fixture-pdns
   name: db
   a:
-    - "10.0.0.5"
+    - value: "10.0.0.5"

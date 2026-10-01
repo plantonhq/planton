@@ -39,9 +39,11 @@ locals {
 
   namespace = var.spec.namespace
 
-  # Resource-identity labels stamped on the module-created satellites
-  # (namespace, the auth Secret — never injected into the chart's own
-  # resources; Helm owns those).
+  # Resource-identity labels: stamped on the module-created satellites
+  # (namespace, the auth Secret) and on every Valkey pod through the
+  # chart's own podLabels -- so a log line, a metric or an alert from it
+  # names its organization and environment. The chart's selector is its
+  # own fixed labels (valkey.selectorLabels); these never reach it.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -138,6 +140,19 @@ locals {
     } : k => v if v != null && length(v) > 0
   }
 
+  # ---- probes ---------------------------------------------------------------
+  # The chart ships readinessProbe disabled, so a pod that is starting or
+  # still loading its dataset would join the Service at once; it is always on
+  # here. Every probe the chart renders execs `valkey-cli ping`, which
+  # presents no client certificate: under mutual TLS (tls-auth-clients yes)
+  # each probe fails the handshake and the kubelet restarts the pod in a
+  # loop. There all three probes are a TCP connect to the container port the
+  # chart names `tcp`. The chart takes customProbe as the whole probe,
+  # dropping its timing values, so the probes run on Kubernetes' defaults,
+  # which are the chart's. Twin of the Pulumi module's probe block.
+  mutual_tls       = try(var.spec.tls.enabled, false) && try(var.spec.tls.require_client_certificate, false)
+  tcp_socket_probe = { tcpSocket = { port = "tcp" } }
+
   # ---- typed chart values (twin of the Pulumi module's buildHelmValues) --
   helm_values = {
     for k, v in {
@@ -147,6 +162,9 @@ locals {
       # `<name>-headless`, and the replication read Service as
       # `<name>-read`, which is exactly what the stack outputs promise.
       fullnameOverride = local.release_name
+
+      # Every pod names its organization and environment (the labels local).
+      podLabels = local.labels
 
       # Chart defaults: docker.io / valkey/valkey at the chart's app
       # version.
@@ -226,6 +244,15 @@ locals {
         serverKey                = "tls.key"
         caPublicKey              = "ca.crt"
       } : null
+
+      startupProbe  = local.mutual_tls ? { customProbe = local.tcp_socket_probe } : null
+      livenessProbe = local.mutual_tls ? { customProbe = local.tcp_socket_probe } : null
+      readinessProbe = {
+        for rk, rv in {
+          enabled     = true
+          customProbe = local.mutual_tls ? local.tcp_socket_probe : null
+        } : rk => rv if rv != null
+      }
 
       service = try(var.spec.service, null) == null ? null : {
         for sk, sv in {

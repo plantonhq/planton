@@ -119,8 +119,14 @@ message AwsRoute53DnsRecordSpec {
   //   - TXT: text values (e.g. ["v=spf1 include:_spf.google.com ~all"])
   // Each value is at most 4,000 characters (AWS's per-value limit).
   // Mutually exclusive with alias_target — a record is standard or alias,
-  // never both.
-  repeated string values = 6 [(buf.validate.field).repeated.items.string.max_len = 4000];
+  // never both. Each entry can be a literal or a reference to another
+  // resource's output — a load balancer's address, a zone's name server for
+  // a delegation, a domain-verification record's value.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef values = 6 [(buf.validate.field).cel = {
+    id: "values.max_len"
+    message: "each literal value is at most 4000 characters (AWS's per-value limit)"
+    expression: "this.all(v, !has(v.value) || v.value.size() <= 4000)"
+  }];
 
   // Alias target for A/AAAA alias records: point this name at an AWS
   // resource (ALB, NLB, CloudFront, S3 website, API Gateway, another record

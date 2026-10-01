@@ -981,8 +981,9 @@ func (x *KubernetesPostgresImport) GetSchemaOnly() bool {
 // segment come back. Live-proven on GKE: rows written before AND after
 // the base backup were both present in the recovered database. The
 // recovered cluster needs its own `workload_identity` (its ServiceAccount
-// is named after IT, so a Workload Identity binding per cluster) and, if
-// it declares `backup`, its own destination path (see `destination_path`).
+// is named after IT, so a Workload Identity binding per cluster). If it
+// declares `backup`, it archives into a series of its own (see
+// `backup.server_name`), so it may share the source's destination path.
 // Recovery is a one-time bootstrap: once the cluster exists this block is
 // inert, and a wrong `source_server_name` or store surfaces as a cluster
 // that never leaves the bootstrap phase. Like the backup block, recovery
@@ -995,14 +996,18 @@ type KubernetesPostgresBootstrapRecovery struct {
 	// The object store holding the source cluster's backups. Rendered as a
 	// SECOND Barman Cloud ObjectStore resource (`<name>-recovery-source`)
 	// — recovery reads from here while the backup block (if any) writes
-	// the new cluster's own backups elsewhere. Never point both at the
-	// same destination path: the new cluster would overwrite the archive
-	// it restored from.
+	// the new cluster's own backups into a series of its own. Both may
+	// name the same destination path: series are folders beneath it, and
+	// the new cluster's series is never the one it restored from.
 	ObjectStore *KubernetesPostgresObjectStore `protobuf:"bytes,1,opt,name=object_store,json=objectStore,proto3" json:"object_store,omitempty"`
 	// *
-	// Name the SOURCE cluster's data is stored under in the object store
-	// (its Cluster name, unless its backups declared a server_name
-	// override).
+	// The backup series the SOURCE cluster archived into — the folder
+	// beneath its destination path that holds its base backups and WAL.
+	// Copy it from the source's `backup_server_name` output: the source's
+	// `backup.server_name` when it declared one, otherwise
+	// `<source-name>-<8 characters>` unique to that install. A series the
+	// store does not hold surfaces as a cluster that never leaves the
+	// bootstrap phase.
 	SourceServerName string `protobuf:"bytes,2,opt,name=source_server_name,json=sourceServerName,proto3" json:"source_server_name,omitempty"`
 	// *
 	// Stop replaying WAL at a point in time instead of recovering
@@ -1576,10 +1581,34 @@ type KubernetesPostgresBackup struct {
 	RetentionPolicy string `protobuf:"bytes,2,opt,name=retention_policy,json=retentionPolicy,proto3" json:"retention_policy,omitempty"`
 	// *
 	// Scheduled base backups (each rendered as a ScheduledBackup
-	// resource). At least one schedule is what makes point-in-time
-	// recovery real — WAL alone cannot be replayed without a base backup
-	// to start from.
-	Schedules     []*KubernetesPostgresBackupSchedule `protobuf:"bytes,3,rep,name=schedules,proto3" json:"schedules,omitempty"`
+	// resource). Every series also starts with one on-demand base backup
+	// of its own (see `server_name`), so a new series is restorable from
+	// its first minute; schedules keep it restorable to a recent point
+	// and bound how much WAL a recovery replays.
+	Schedules []*KubernetesPostgresBackupSchedule `protobuf:"bytes,3,rep,name=schedules,proto3" json:"schedules,omitempty"`
+	// *
+	// The backup SERIES: the folder beneath `destination_path` this
+	// cluster's base backups and WAL are filed under (Barman's server
+	// name). Barman refuses to archive into a series that already holds
+	// another PostgreSQL system's history, and the refusal is quiet: the
+	// cluster reports healthy while its ContinuousArchiving condition
+	// stays false, WAL piles up on the data volume, and the volume
+	// eventually fills and stops the database.
+	//
+	// Empty (the default) = a series unique to this install:
+	// `<name>-<first 8 characters of the backup ObjectStore's UID>`.
+	// Destroying and recreating the cluster from the same declaration
+	// therefore archives into a fresh series, while the previous series
+	// stays in the store, restorable. Importing a live cluster keeps its
+	// ObjectStore and so its series. Deleting only the Cluster resource by
+	// hand and re-applying reuses the series; declare a new name then.
+	//
+	// Name a series only to continue a specific one, for example when
+	// adopting a cluster that already archives under its plain name.
+	// Every series starts with an on-demand base backup
+	// (`<name>-series-start`), taken when the series is born. The
+	// effective series is the `backup_server_name` output.
+	ServerName    string `protobuf:"bytes,4,opt,name=server_name,json=serverName,proto3" json:"server_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1633,6 +1662,13 @@ func (x *KubernetesPostgresBackup) GetSchedules() []*KubernetesPostgresBackupSch
 		return x.Schedules
 	}
 	return nil
+}
+
+func (x *KubernetesPostgresBackup) GetServerName() string {
+	if x != nil {
+		return x.ServerName
+	}
+	return ""
 }
 
 // *
@@ -1743,14 +1779,11 @@ type KubernetesPostgresObjectStore struct {
 	// `s3://bucket/path` for S3, Cloudflare R2, and every S3-compatible
 	// store, `gs://bucket/path` for GCS, and
 	// `https://<account>.blob.core.windows.net/<container>/<path>` for
-	// Azure Blob. WAL and base backups are stored under separate folders
-	// beneath it. One path per PostgreSQL cluster, FOREVER: Barman refuses
-	// to archive into a path already holding another cluster's WAL (a
-	// cluster recreated under the same path after a failed attempt, or a
-	// recovered cluster backing up to the path it restored from), and the
-	// failure is quiet — the cluster reports healthy while the
-	// ContinuousArchiving condition stays false and no backup ever lands
-	// (live-caught). A recovered cluster's own backups go to a NEW path.
+	// Azure Blob. Each backup series is a folder beneath it (see
+	// `backup.server_name`), holding its base backups and WAL; a path may
+	// therefore be shared by several clusters and by every install of one
+	// cluster, since each install archives into a series of its own. For
+	// a recovery source, the path the source cluster archived under.
 	DestinationPath string `protobuf:"bytes,1,opt,name=destination_path,json=destinationPath,proto3" json:"destination_path,omitempty"`
 	// *
 	// Object-store backend. Exactly one arm; the arm's credential posture
@@ -2845,7 +2878,7 @@ var File_catalog_kubernetes_kubernetespostgres_v1alpha1_spec_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetespostgres_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetespostgres/v1alpha1/spec.proto\x122dev.planton.kubernetes.kubernetespostgres.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd8\x11\n" +
+	"9catalog/kubernetes/kubernetespostgres/v1alpha1/spec.proto\x122dev.planton.kubernetes.kubernetespostgres.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xee\x16\n" +
 	"\x16KubernetesPostgresSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12/\n" +
@@ -2878,7 +2911,8 @@ const file_catalog_kubernetes_kubernetespostgres_v1alpha1_spec_proto_rawDesc = "
 	"\x0fupdate_strategy\x18\x12 \x01(\v2T.dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresUpdateStrategyR\x0eupdateStrategy\x12,\n" +
 	"\n" +
 	"enable_pdb\x18\x13 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\tenablePdb\x88\x01\x01\x12x\n" +
-	"\x12image_pull_secrets\x18\x14 \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecretsB\f\n" +
+	"\x12image_pull_secrets\x18\x14 \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets:\x93\x05\xbaH\x8f\x05\x1a\x8c\x05\n" +
+	"+spec.backup.server_name_not_recovery_source\x12\xbf\x02backup.server_name names the series this cluster restores from (bootstrap.recovery.source_server_name) under the same destination_path — Barman refuses to archive into a series holding another cluster's history; leave backup.server_name empty so this cluster archives into a series of its own, or name a different one\x1a\x9a\x02!has(this.backup) || this.backup.server_name == '' || !has(this.bootstrap) || !has(this.bootstrap.recovery) || this.backup.server_name != this.bootstrap.recovery.source_server_name || this.backup.object_store.destination_path != this.bootstrap.recovery.object_store.destination_pathB\f\n" +
 	"\n" +
 	"_instancesB\r\n" +
 	"\v_enable_pdb\"\xbf\x03\n" +
@@ -2987,13 +3021,16 @@ const file_catalog_kubernetes_kubernetespostgres_v1alpha1_spec_proto_rawDesc = "
 	"\x10connection_limit\x18\r \x01(\x03B\x16\xbaH\r\"\v(\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01\x8a\xa6\x1d\x02-1H\x01R\x0fconnectionLimit\x88\x01\x01:\xd2\x01\xbaH\xce\x01\x1a\xcb\x01\n" +
 	"\x1fspec.roles.password_xor_disable\x12wpassword and disable_password are mutually exclusive — a role cannot both have a managed password and a NULL password\x1a/!(this.password != '' && this.disable_password)B\t\n" +
 	"\a_ensureB\x13\n" +
-	"\x11_connection_limit\"\x8a\x05\n" +
+	"\x11_connection_limit\"\xb3\a\n" +
 	"\x18KubernetesPostgresBackup\x12|\n" +
 	"\fobject_store\x18\x01 \x01(\v2Q.dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresObjectStoreB\x06\xbaH\x03\xc8\x01\x01R\vobjectStore\x12\xe8\x01\n" +
 	"\x10retention_policy\x18\x02 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xb4\x01\n" +
 	"\x1cspec.backup.retention_format\x12bretention_policy must be a positive number of days, weeks, or months — e.g. '30d', '8w', or '6m'\x1a0this == '' || this.matches('^[1-9][0-9]*[dwm]$')R\x0fretentionPolicy\x12\x84\x02\n" +
 	"\tschedules\x18\x03 \x03(\v2T.dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresBackupScheduleB\x8f\x01\xbaH\x8b\x01\xba\x01\x87\x01\n" +
-	"\"spec.backup.schedules.unique_names\x12*each backup schedule needs a distinct name\x1a5this.all(s1, this.exists_one(s2, s1.name == s2.name))R\tschedules\"\x82\x06\n" +
+	"\"spec.backup.schedules.unique_names\x12*each backup schedule needs a distinct name\x1a5this.all(s1, this.exists_one(s2, s1.name == s2.name))R\tschedules\x12\xa6\x02\n" +
+	"\vserver_name\x18\x04 \x01(\tB\x84\x02\xbaH\x80\x02\xba\x01\xfc\x01\n" +
+	"\x1espec.backup.server_name_format\x12\x83\x01server_name is a lowercase DNS label of at most 63 characters (letters, numbers, hyphens) — it names a folder in the object store\x1aTthis == '' || (this.size() <= 63 && this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'))R\n" +
+	"serverName\"\x82\x06\n" +
 	" KubernetesPostgresBackupSchedule\x12\xbd\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xa8\x01\xbaH\xa4\x01\xba\x01\x9d\x01\n" +
 	"!spec.backup.schedules.name_format\x12Gschedule name must be a lowercase DNS label (letters, numbers, hyphens)\x1a/this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$')\xc8\x01\x01R\x04name\x12\x99\x02\n" +

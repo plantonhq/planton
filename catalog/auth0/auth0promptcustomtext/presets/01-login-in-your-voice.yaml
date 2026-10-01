@@ -1,0 +1,17 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptCustomText
+metadata:
+  name: login-en
+  org: example-org
+  env: production
+spec:
+  prompt: login
+  language: en
+  screens:
+    login:
+      texts:
+        title: Welcome back
+        description: Log in to Planton to continue to ${clientName}.
+        signupActionText: New to Planton?
+        wrong-credentials: That email and password don't match. Try again, or reset your password.
+        user-blocked: Your account is blocked after too many attempts. Write to support@planton.ai to unblock it.

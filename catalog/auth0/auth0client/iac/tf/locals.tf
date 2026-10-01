@@ -7,7 +7,10 @@ locals {
   # caller omits them; `coalesce` rejects null AND empty values ("no non-null,
   # non-empty-string arguments"), so a client that omits e.g. description failed at
   # plan. Use a null-test instead so the empty default is honored without erroring.
-  client_name      = var.metadata.name
+  client_name = var.metadata.name
+  # The name people see (the login page, consent screens, the dashboard):
+  # spec.name, else the resource's name.
+  display_name     = try(var.spec.name, null) != null && try(var.spec.name, "") != "" ? var.spec.name : var.metadata.name
   application_type = var.spec.application_type
   description      = var.spec.description != null ? var.spec.description : ""
   logo_uri         = var.spec.logo_uri

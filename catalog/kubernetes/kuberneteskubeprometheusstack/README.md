@@ -93,9 +93,10 @@ pre-loaded with the matching dashboards.
 
 ### Common
 
-- **`spec.chart_version`**: chart pin (default `87.19.1`, pairing
-  Prometheus Operator v0.92.1); CRD upgrades do NOT ride chart bumps
-  — see `crd_upgrade_job`
+- **`spec.chart_version`**: chart pin (default `91.8.2`, pairing
+  Prometheus Operator v0.94.1); CRD upgrades do NOT ride chart bumps
+  — see `crd_upgrade_job` (a stack installed on an older pin needs it
+  for the apply that moves it to this one)
 - **`spec.prometheus`**: replicas (HA duplication, not sharding),
   `retention` / `retention_size`, `disk_size` + `storage_class`,
   `resources` (memory scales with active series), `external_labels`
@@ -103,8 +104,11 @@ pre-loaded with the matching dashboards.
   `remote_write`, `enable_remote_write_receiver`,
   `additional_scrape_configs` (the exotic-SD seam), scheduling
 - **`spec.alertmanager`**: enabled, replicas (3 = quorum HA),
-  retention, disk_size, `config_yaml` (route/receivers — reference
-  webhook URLs/API keys via `_file` fields, never inline)
+  retention, disk_size, `notifications` (typed delivery: Discord,
+  Pushover and webhook receivers, a routing tree, a dead-man's-switch
+  heartbeat; every credential a managed-secret reference the module
+  mounts from its own Secret), or `config_yaml` for integrations not
+  typed yet (never inline a credential there)
 - **`spec.grafana`**: enabled (default true), `admin_secret`
   (existing) or chart-generated credentials in `<name>-grafana`,
   `default_dashboards_enabled`, storage, resources

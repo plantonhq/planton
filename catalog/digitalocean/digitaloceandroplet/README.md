@@ -13,14 +13,14 @@ The spec maps one-to-one onto DigitalOcean's droplet:
 | `size` | Size slug (`s-1vcpu-1gb`, `g-8vcpu-32gb`, ...); changing it resizes the droplet |
 | `image` | OS image slug, custom image ID, or snapshot ID; create-only |
 | `vpc` | Optional VPC placement — a literal UUID or a reference to a `DigitalOceanVpc`; omit to use the region's default |
-| `sshKeys` | SSH key IDs or fingerprints injected at create — the standard access path; create-only |
+| `sshKeys` | SSH key IDs or fingerprints injected at create — the standard access path; applied at creation only, later edits ignored |
 | `enableIpv6` | Public IPv6 networking (disabling later forces recreation) |
-| `enableBackups` / `backupPolicy` | Automated backups and their daily/weekly window (plan, weekday, hour) |
+| `enableBackups` / `backupPolicy` | Automated backups and their daily/weekly window (plan, weekday, hour); see the known provider diff below |
 | `monitoring` | The DigitalOcean monitoring agent (enhanced graphs, alert policies); create-only |
-| `dropletAgent` | The web-console agent: unset lets DigitalOcean decide per image, explicit values are enforced; create-only |
+| `dropletAgent` | The web-console agent: unset lets DigitalOcean decide per image, explicit values are enforced; applied at creation only, later edits ignored |
 | `volumeIds` | Block storage volumes to attach, by literal UUID or `DigitalOceanVolume` reference |
 | `tags` | Tags — how firewalls and load balancers target droplet groups |
-| `userData` | Cloud-init script executed on first boot (max 32 KiB); create-only, stored hashed |
+| `userData` | Cloud-init script executed on first boot (max 32 KiB); applied at creation only, later edits ignored, stored hashed |
 | `gracefulShutdown` | ACPI power-off (letting the OS flush) before destroy, instead of immediate power-off |
 | `resizeDisk` | Whether a size change also grows the disk permanently (DigitalOcean defaults ON; `false` keeps resizes reversible) |
 | `publicNetworking` | Explicit `false` creates a droplet with no public network interface at all; create-only |
@@ -60,11 +60,13 @@ Both provisioners export the identical output set:
 
 ## Behavior worth knowing
 
-- **SSH keys are create-only.** They must already be registered on the DigitalOcean account (`doctl compute ssh-key list`); changing them recreates the droplet. Set them at create — a droplet without keys falls back to a root password email.
-- **Most identity fields force recreation**: `image`, `region`, `vpc`, `sshKeys`, `userData`, `monitoring`, `dropletAgent`, `publicNetworking`, `gpuPartitionMode`. `dropletName`, `size`, `tags`, `volumeIds`, and backups update in place.
+- **SSH keys are create-only.** They must already be registered on the DigitalOcean account (`doctl compute ssh-key list`). Set them at create — a droplet without keys falls back to a root password email.
+- **`sshKeys`, `userData`, and `dropletAgent` are applied at creation only and later edits are ignored.** The API never reports them back and the provider's only response to a change is to recreate the droplet; both provisioners skip changes to them instead, so a manifest edit never silently replaces a running machine and adopting an existing droplet is safe. To run new cloud-init or inject different keys, replace the droplet deliberately.
+- **The remaining identity fields force recreation**: `image`, `region`, `vpc`, `monitoring`, `publicNetworking`, `gpuPartitionMode`. `dropletName`, `size`, `tags`, `volumeIds`, and backups update in place.
+- **`enableBackups: true` re-plans on every apply (provider defect, harmless).** Backups are really enabled and the policy really applied, but the provider reads the on/off state from the droplet's `features` list, which DigitalOcean no longer populates for backups; every plan shows `backups: false → true` and every apply sends a no-op enable. Check `GET /v2/droplets/{id}/backups/policy` for the truth. Upstream: [#1525](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1525).
 - **`resizeDisk` defaults ON provider-side.** A disk-growing resize is permanent — you can never pick a smaller disk afterward. Set `false` to scale CPU/RAM reversibly.
 - **Disabling IPv6 on a running droplet recreates it**; enabling it updates in place.
-- **Pulumi SDK v4.49.0 cannot express `publicNetworking: false` or `gpuPartitionMode`.** The Pulumi module fails loudly if they are set; Terraform wires them. See the [GUIDE](GUIDE.md).
+- **`publicNetworking: false` and `gpuPartitionMode` deploy on both provisioners.** Both are create-only; `gpuPartitionMode` only means anything on a GPU size. See the [GUIDE](GUIDE.md).
 
 ---
 

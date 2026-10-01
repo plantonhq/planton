@@ -4,8 +4,8 @@ metadata:
   name: kuberneteskubeprometheusstack
 spec:
   tier: 2
-  # Rebuilt from the retired standalone-Prometheus slot against chart
-  # 87.19.1. The stack is the heaviest tier-2 kind (operator + Prometheus +
+  # Proven against chart 91.8.2 (Prometheus Operator v0.94.1). The stack
+  # is the heaviest tier-2 kind (operator + Prometheus +
   # Alertmanager + Grafana + two exporters in one release) — the timeout
   # is sized for the operator reconciling the StatefulSets after the
   # release's own resources are up.

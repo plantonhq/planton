@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefunctionapp.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureFunctionAppStackOutputs** captures the outputs of provisioning an
 // Azure Linux Function App.
 //
@@ -82,5 +84,5 @@ message AzureFunctionAppStackOutputs {
   // while basic-auth publishing is enabled -- treat it like an admin
   // password (disable the basic-auth toggles to revoke the surface
   // entirely).
-  string site_credential_password = 11;
+  string site_credential_password = 11 [(dev.planton.shared.options.sensitive) = true];
 }

@@ -91,6 +91,18 @@ spec:
     redis:
       storageSize: 1Gi
 
+  # Sizing: every component runs the operator's measured default (reported in
+  # status.components.<component>.sizing). A resources field changes only the
+  # quantities it names; the rest keep their defaults. Resizing rolls the
+  # component's pods.
+  # controlPlane:
+  #   resources:
+  #     limits: {memory: 6Gi}          # the heap is 60% of this limit
+  # temporal:
+  #   history:
+  #     resources:
+  #       requests: {cpu: 250m}
+
   # External access -- a friction ladder, each step one field up from the last:
   #   (nothing)                        -> the built-in front-door gateway:
   #                                       console + API + sign-in on ONE

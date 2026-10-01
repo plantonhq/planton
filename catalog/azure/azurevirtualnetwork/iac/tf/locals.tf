@@ -1,14 +1,11 @@
 locals {
-  resource_id = (
-    var.metadata.id != null && var.metadata.id != ""
-    ? var.metadata.id
-    : var.metadata.name
-  )
-
+  # Identity tags -- the same keys and values the Pulumi module writes.
+  # resource_kind is the CloudResourceKind enum name lowercased, spelled as
+  # that exact literal; resource_id is added (id_tag below) only when the
+  # resource has an id, never with the name as a stand-in.
   base_tags = {
     "resource"      = "true"
-    "resource_id"   = local.resource_id
-    "resource_kind" = "azure_virtual_network"
+    "resource_kind" = "azurevirtualnetwork"
     "resource_name" = var.metadata.name
   }
 
@@ -20,10 +17,14 @@ locals {
     var.metadata.env != null && var.metadata.env != ""
   ) ? { "environment" = var.metadata.env } : {}
 
+  id_tag = (
+    var.metadata.id != null && var.metadata.id != ""
+  ) ? { "resource_id" = var.metadata.id } : {}
+
   # Metadata-derived tags first, then the user's spec tags merged over them:
   # user tags deliberately win so an org's governance conventions (cost
   # center, owner) can override the derived values where they collide.
-  final_tags = merge(local.base_tags, local.org_tag, local.env_tag, var.spec.tags)
+  final_tags = merge(local.base_tags, local.org_tag, local.env_tag, local.id_tag, var.spec.tags)
 
   # Map the spec enum's name string to ARM's enforcement value. null keeps
   # the encryption block absent entirely (ARM's default: encryption off),

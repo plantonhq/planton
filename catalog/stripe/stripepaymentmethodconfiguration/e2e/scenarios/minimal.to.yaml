@@ -1,0 +1,21 @@
+# The second act of minimal: Link turned on. A method's preference updates the
+# configuration in place.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodConfiguration
+metadata:
+  name: e2e-pmc-minimal
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  card:
+    preference: "on"
+  link:
+    preference: "on"
+  applePay:
+    preference: "on"
+  applePayLater:
+    preference: "off"

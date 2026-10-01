@@ -23,12 +23,11 @@ output "identity_tenant_id" {
   value       = try(azurerm_function_app_flex_consumption.main.identity[0].tenant_id, "")
 }
 
+# The verification ID is published in a DNS TXT record. The provider marks
+# the attribute sensitive; nonsensitive() unwraps it.
 output "custom_domain_verification_id" {
   description = "The custom domain verification ID for DNS TXT record verification"
-  value       = azurerm_function_app_flex_consumption.main.custom_domain_verification_id
-  # azurerm marks this attribute sensitive (it proves domain ownership), so
-  # the output must be sensitive too or OpenTofu rejects the configuration.
-  sensitive = true
+  value       = nonsensitive(azurerm_function_app_flex_consumption.main.custom_domain_verification_id)
 }
 
 output "kind" {
@@ -41,13 +40,11 @@ output "possible_outbound_ip_addresses" {
   value       = azurerm_function_app_flex_consumption.main.possible_outbound_ip_address_list
 }
 
+# The username is not a secret. The provider marks the whole site_credential
+# block sensitive; nonsensitive() unwraps it.
 output "site_credential_name" {
   description = "The site-level publishing credential's username (Kudu/SCM basic auth)"
-  value       = try(azurerm_function_app_flex_consumption.main.site_credential[0].name, "")
-  # azurerm marks the whole site_credential block sensitive (the name is
-  # half of a working credential), so this output must be sensitive too or
-  # OpenTofu rejects the configuration outright.
-  sensitive = true
+  value       = try(nonsensitive(azurerm_function_app_flex_consumption.main.site_credential[0].name), "")
 }
 
 output "site_credential_password" {

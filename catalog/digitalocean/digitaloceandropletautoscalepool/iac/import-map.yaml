@@ -15,4 +15,4 @@ spec:
         - from_stack_output: pool_id
       where_to_find: >-
         DigitalOcean control panel -> Droplets -> Autoscale pools -> the
-        pool's Settings, or the API (GET /v2/droplets/autoscale_pools).
+        pool's Settings, or the API (GET /v2/droplets/autoscale).

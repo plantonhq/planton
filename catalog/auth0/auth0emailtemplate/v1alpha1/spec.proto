@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0emailtemplate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/options/options.proto";
+
+// Auth0EmailTemplateSpec manages one of the emails the Auth0 tenant the provider
+// connection's credential belongs to sends.
+//
+// The template sends through the tenant's email provider (Auth0EmailProvider);
+// without one, Auth0 refuses custom templates. The subject and body are Liquid
+// templates that read the email's context: {{ user.name }}, {{ user.email }},
+// {{ url }} (the action link), {{ application.name }}, {{ friendly_name }}
+// (the tenant's name) and the rest of Auth0's template variables.
+//
+// Auth0 cannot delete a template: destroying the resource disables it, and the
+// tenant sends Auth0's default email again.
+//
+// The credential needs read:email_templates, create:email_templates and
+// update:email_templates on the tenant's Management API (iac/permissions.yaml).
+//
+// https://auth0.com/docs/customize/email/email-templates
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_template
+message Auth0EmailTemplateSpec {
+  // template is the email this resource customizes. It is the resource's
+  // identity in Auth0, so treat it as fixed.
+  // - "verify_email" / "verify_email_by_code": confirm an address, by link or
+  //   by code
+  // - "reset_email" / "reset_email_by_code": reset a password, by link or by
+  //   code
+  // - "welcome_email": sent after the first verification
+  // - "blocked_account": sent when brute-force protection blocks an account
+  // - "stolen_credentials": sent when breached-password detection finds a match
+  // - "enrollment_email": invites a person to enroll in multi-factor
+  // - "mfa_oob_code": the multi-factor code sent by email
+  // - "user_invitation": an organization invitation
+  // - "async_approval": an asynchronous authorization request
+  // - "auth_email_by_code": a passwordless sign-in code
+  // - "change_password", "password_reset": legacy reset templates, kept for
+  //   tenants that still send them
+  string template = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "verify_email",
+        "verify_email_by_code",
+        "reset_email",
+        "reset_email_by_code",
+        "welcome_email",
+        "blocked_account",
+        "stolen_credentials",
+        "enrollment_email",
+        "mfa_oob_code",
+        "user_invitation",
+        "change_password",
+        "password_reset",
+        "async_approval",
+        "auth_email_by_code"
+      ]
+    }
+  ];
+
+  // from is the sender of this email ("Acme <no-reply@acme.com>"), overriding
+  // the provider's default_from_address.
+  string from = 2 [(buf.validate.field).required = true];
+
+  // subject is the email's subject line, a Liquid template.
+  string subject = 3 [(buf.validate.field).required = true];
+
+  // body is the email's HTML body, a Liquid template.
+  string body = 4 [(buf.validate.field).required = true];
+
+  // syntax is the template language of subject and body. "liquid" is the only
+  // language Auth0 renders.
+  optional string syntax = 5 [
+    (dev.planton.shared.options.default) = "liquid",
+    (buf.validate.field).string = {
+      in: ["liquid"]
+    }
+  ];
+
+  // result_url is where the person lands after acting on the email's link
+  // (Auth0's "Redirect To"), an http(s) URL or a Liquid template of one (for
+  // example "{{ application.callback_domain }}/welcome"). Unset, Auth0 shows its
+  // own result page. Two limits:
+  // - Auth0 refuses a custom value (403 "Customizations for resultUrl are not
+  //   allowed for non-enterprise tenants") on non-Enterprise tenants created on
+  //   or after May 5, 2026.
+  // - Under Universal Login, reset_email ignores it; where a person lands after
+  //   a reset is chosen by a password-reset-post-challenge Action.
+  string result_url = 6 [(buf.validate.field).cel = {
+    id: "spec.result_url.format"
+    message: "result_url is an http(s) URL or a Liquid template of one, such as {{ application.callback_domain }}/welcome"
+    expression: "this == '' || this.startsWith('https://') || this.startsWith('http://') || this.startsWith('{{')"
+  }];
+
+  // url_lifetime_in_seconds is how long the email's link works, for the
+  // templates that carry one (verification, password change, blocked account).
+  // Unset, Auth0's default applies: 432,000 seconds (five days).
+  optional int32 url_lifetime_in_seconds = 7 [(buf.validate.field).int32.gt = 0];
+
+  // enabled turns this template on. Disabled, the tenant sends Auth0's default
+  // email for it.
+  optional bool enabled = 8 [(dev.planton.shared.options.default) = "true"];
+
+  // include_email_in_redirect appends the person's email address to result_url
+  // as a query parameter.
+  optional bool include_email_in_redirect = 9;
+}

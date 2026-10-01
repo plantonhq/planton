@@ -13,14 +13,16 @@ package dev.planton.iac.componentpermissions.v1;
 // Two permission vocabularies live here. The IAM-statement providers
 // (aws/gcp/azure) and Kubernetes express least privilege as policy
 // material -- statements, permission groups, RBAC rules. The
-// token-scoped providers (cloudflare/digital_ocean/auth0) authenticate
-// with a bearer credential whose least-privilege story is the credential's
-// OWN composition: Cloudflare tokens are built from named permission
-// groups, DigitalOcean tokens from named scopes, and an Auth0
+// token-scoped providers (cloudflare/digital_ocean/auth0/stripe)
+// authenticate with a bearer credential whose least-privilege story is the
+// credential's OWN composition: Cloudflare tokens are built from named
+// permission groups, DigitalOcean tokens from named scopes, an Auth0
 // machine-to-machine client from the Management API scopes its grant
-// carries. Their sections declare exactly what a least-privilege runner
+// carries, and a Stripe restricted key from a Read or Write choice per
+// resource. Their sections declare exactly what a least-privilege runner
 // credential is built from, in the provider's own vocabulary, held to the
-// provider's own inventory by the conformance gates.
+// provider's own inventory by the conformance gates where the provider
+// publishes one (Stripe does not; see StripePermissions).
 message ComponentPermissionsSpec {
   AwsPermissions aws = 1;
   GcpPermissions gcp = 2;
@@ -29,6 +31,7 @@ message ComponentPermissionsSpec {
   CloudflarePermissions cloudflare = 5;
   DigitalOceanPermissions digital_ocean = 6;
   Auth0Permissions auth0 = 7;
+  StripePermissions stripe = 8;
 }
 
 // Provenance says how a permission entry was established.
@@ -280,6 +283,50 @@ message Auth0ScopeGroup {
   string notes = 4;
   // Absent: every deployment of the component needs this entry.
   PermissionCondition condition = 5;
+}
+
+// StripePermissions is the least-privilege credential material for the
+// runner's Stripe access: a restricted API key (rk_test_... or rk_live_...),
+// whose permissions are a None, Read, or Write choice per resource on the
+// Dashboard's restricted-key form. Write implies Read, and Stripe refuses a
+// call the key lacks with a message that names the missing permission
+// ("Permission denied... Enabling Prices Read"). An account's standard
+// secret key grants everything and is never least privilege.
+//
+// Stripe publishes no machine-readable inventory of those resources -- its
+// restricted-key docs describe the form, and no API lists it -- so the
+// conformance gate holds entries to their structure and spelling, not to an
+// inventory. The resource names are the Dashboard's labels, and a live run
+// under a key built from exactly these entries is what upgrades them from
+// derived to proven.
+message StripePermissions {
+  repeated StripePermissionGroup groups = 1;
+}
+
+// StripePermissionGroup is one coherent set of restricted-key permissions.
+message StripePermissionGroup {
+  // What the group covers, in the same spirit as a GCP group purpose
+  // (e.g. "ManageWebhookEndpoint").
+  string purpose = 1;
+  // The resource permissions, one per resource.
+  repeated StripeResourcePermission permissions = 2;
+  Provenance provenance = 3;
+  // For derived entries: which module resources this group covers and the
+  // API endpoints the derivation stands on (GET is Read; POST and DELETE
+  // are Write, per Stripe's restricted-key docs).
+  string notes = 4;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 5;
+}
+
+// StripeResourcePermission is one resource's row on the restricted-key form.
+message StripeResourcePermission {
+  // The resource as the Dashboard's restricted-key form labels it
+  // (e.g. "Webhook Endpoints", "Customer portal").
+  string resource = 1;
+  // The access level in the form's own spelling: "read" or "write"
+  // ("write" includes read; "none" is expressed by leaving the resource out).
+  string access = 2;
 }
 
 // KubernetesPermissions is the least-privilege RBAC material for the

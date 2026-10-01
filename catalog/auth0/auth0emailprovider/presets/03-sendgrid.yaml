@@ -1,0 +1,12 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailProvider
+metadata:
+  name: email-provider
+  org: example-org
+  env: production
+spec:
+  defaultFromAddress: Planton <no-reply@planton.ai>
+  sendgrid:
+    # A SendGrid API key restricted to Mail Send, by reference to an
+    # organization secret -- never a literal.
+    apiKey: $secret/sendgrid-api-key

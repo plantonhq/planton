@@ -65,4 +65,17 @@ resource "digitalocean_droplet" "this" {
 
   # Cloud-init user data (create-only, hash-stored).
   user_data = local.user_data
+
+  # ssh_keys, user_data, and droplet_agent are applied at creation ONLY and
+  # never read back by the API; the provider marks all three ForceNew. Left
+  # unguarded, a manifest edit to any of them -- or adopting an existing
+  # droplet whose manifest carries them -- would plan a destroy-and-recreate
+  # of a running machine (its disk and its IP with it). They have no meaning
+  # after first boot, so later changes are ignored here, exactly as the
+  # Pulumi module's IgnoreChanges does; the spec field comments tell
+  # manifest authors the same. To re-run cloud-init or change the injected
+  # keys, replace the droplet deliberately.
+  lifecycle {
+    ignore_changes = [ssh_keys, user_data, droplet_agent]
+  }
 }

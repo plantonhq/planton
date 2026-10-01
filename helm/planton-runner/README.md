@@ -2,9 +2,8 @@
 
 Deploy [Planton Runner](https://github.com/plantonhq/planton) to any Kubernetes cluster.
 
-The Planton Runner is an agent that connects to the Planton control plane via a secure
-mTLS reverse tunnel to execute cloud operations and IaC workflows on behalf of your
-organization. The chart carries a **runner token**: on first boot the runner presents it
+The Planton Runner is an agent that connects out to the Planton control plane to execute
+cloud operations and IaC workflows on behalf of your organization. The chart carries a **runner token**: on first boot the runner presents it
 to the control plane's public join door, registers itself under its name, and receives
 its own individually revocable identity. The token only ever authorizes joining -- it is
 never the runner's identity, and one token can enroll many runners, each with its own
@@ -231,17 +230,24 @@ The runner makes only **outbound** connections. No Ingress or public Service is 
 ```
 Runner Pod (your cluster)
   ├─ join + gRPC + TLS ──► control plane API  (enrollment, secrets, variables)
-  └─ mTLS tunnel       ──► tunnel server      (cloud operations requests)
+  ├─ gRPC + TLS        ──► control plane API  (deploy and build work: polls, replies, heartbeats)
+  └─ mTLS tunnel       ──► tunnel server      (cloud operations; only where the instance runs one)
 ```
 
 On first boot the runner joins the control plane with its token and receives its
-identity document -- the runner's identity, mTLS certificates, API key, and endpoint
-configuration, minted server-side and delivered only to the runner. It persists the
-document on the pod's writable identity volume (`/var/lib/planton-runner`), so
-container restarts reuse it; a recreated pod re-joins. The runner then maintains a
-persistent reverse tunnel through which the Planton control plane sends cloud
-operations requests, and makes authenticated gRPC calls to the control plane API to
-resolve secrets and variables at runtime.
+identity document -- the runner's identity, its API key, its endpoints and, where the
+instance runs a runner tunnel, the tunnel's certificates -- minted server-side and
+delivered only to the runner. It persists the document on the pod's writable identity
+volume (`/var/lib/planton-runner`), so container restarts reuse it; a recreated pod
+re-joins.
+
+The runner pulls its deploy and build work from the control plane at the same address
+as its API calls, with its own key. The job queue itself never leaves the platform's
+cluster: the control plane checks every work call against the runner's registration,
+admitting it only to its own two queues, the work dispatched to it, and the tasks it
+polled, and refuses anything else with one sentence the runner's log prints. Where the
+instance runs a runner tunnel, the runner also holds a reverse tunnel open, through
+which the control plane sends cloud operations requests.
 
 With builds enabled there is one additional, **cluster-internal** listener: Tekton posts
 pipeline CloudEvents to the runner's webhook through the chart's ClusterIP Service. No

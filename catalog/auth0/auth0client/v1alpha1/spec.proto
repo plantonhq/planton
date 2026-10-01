@@ -52,6 +52,16 @@ message Auth0ClientSpec {
   // Maximum 140 characters.
   string description = 2 [(buf.validate.field).string = {max_len: 140}];
 
+  // name is the application's name as people see it: on the Universal Login
+  // page ("Log in to <tenant> to continue to <name>"), on consent screens, and
+  // in the tenant's dashboard. When omitted, the application is named after
+  // the resource (metadata.name), as before.
+  //
+  // metadata.name stays the resource's identity: every reference to this
+  // client (valueFrom, state) reads it, so it remains a stable slug, while this
+  // name is presentation and changes in place without replacing the client.
+  string name = 30;
+
   // logo_uri is the URL of the application's logo.
   // This is displayed on the consent page and login page.
   // Must be a valid HTTPS URL to an image file.

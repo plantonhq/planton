@@ -97,7 +97,7 @@ The referenced cluster must run the `kafka` engine; a literal cluster UUID is ac
 
 ### What This Component Provides
 
-After provisioning, `status.outputs` carries the topic's identity pair -- `cluster_id` and `topic_name`, both echoes of resolved inputs -- plus `state`, DigitalOcean's provisioning state at apply time (a snapshot, not a live guarantee, since topic creation is asynchronous). DigitalOcean mints no standalone topic id: the (cluster, name) pair is the identity. Producers and consumers connect through the cluster's connection outputs -- host, port, and credentials from its users -- and address the topic by name; there is no output here for downstream Cloud Resources to wire.
+After provisioning, `status.outputs` carries the topic's identity pair -- `cluster_id` and `topic_name`, both echoes of resolved inputs. DigitalOcean mints no standalone topic id: the (cluster, name) pair is the identity. The topic's provisioning state is deliberately not an output: creation is asynchronous and a state captured at apply time goes stale, so anyone who needs it reads it live from the API (`GET /v2/databases/{cluster_id}/topics/{name}`), which is also how the E2E verifier asserts it. Producers and consumers connect through the cluster's connection outputs -- host, port, and credentials from its users -- and address the topic by name; there is no output here for downstream Cloud Resources to wire.
 
 ## Common Patterns
 

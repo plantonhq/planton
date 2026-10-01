@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0promptscreenpartials
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for screen partials, but they are gated on a custom domain: partials render only inside a Universal Login page template (Auth0Branding's universal_login_template), and page templates require a custom domain (auth0.com/docs/customize/login-pages/universal-login/customize-signup-and-login-prompts). The Free plan includes one custom domain with Auth0-managed certificates, at no charge once a card is on file (auth0.com/docs/customize/custom-domains)."
+  notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). Partials change what a sign-in screen shows and collects, never what a sign-in costs."

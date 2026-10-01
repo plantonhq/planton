@@ -1,0 +1,24 @@
+# One prompt with several screens, in a language other than English: the
+# reset-password prompt's request, email-sent and success screens re-worded in
+# French (Canada). All three render into one document Auth0 replaces whole,
+# and destroy returns every screen of the prompt to Auth0's default French.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptCustomText
+metadata:
+  name: e2e-reset-password-fr-ca
+  org: e2e-org
+  env: testing
+spec:
+  prompt: reset-password
+  language: fr-CA
+  screens:
+    reset-password-request:
+      texts:
+        title: Mot de passe oublié?
+        buttonText: Continuer
+    reset-password-email:
+      texts:
+        title: Vérifiez vos courriels
+    reset-password-success:
+      texts:
+        description: Votre mot de passe a été modifié.

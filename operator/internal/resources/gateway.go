@@ -6,7 +6,6 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -29,14 +28,6 @@ const (
 	gatewayContainerPort = 8080
 	gatewayServicePort   = 80
 
-	// The front door's sizing: nginx proxying one platform's traffic is a
-	// small, steady workload. A request so it schedules honestly, a memory
-	// limit so a buffer leak cannot take the node, no CPU limit so a burst of
-	// console traffic is never throttled (requests-only, the house pattern).
-	gatewayCPURequest    = "50m"
-	gatewayMemoryRequest = "64Mi"
-	gatewayMemoryLimit   = "256Mi"
-
 	// GatewayConfigKey is the data key of the nginx config TEMPLATE in the
 	// ConfigMap. It is a template (mounted under /etc/nginx/templates) rather
 	// than a literal conf.d file because the image's entrypoint substitutes
@@ -56,6 +47,10 @@ type GatewayConfig struct {
 
 	ImageRepository string
 	ImageTag        string
+
+	// Resources is the container's effective sizing (SizingGateway in the
+	// registry, merged with the spec's override by the component).
+	Resources corev1.ResourceRequirements
 
 	// ConfigHash rolls the pod when the rendered nginx config changes
 	// (nginx only reads its config at startup).
@@ -253,7 +248,7 @@ func GatewayDeployment(cfg GatewayConfig) *appsv1.Deployment {
 					Containers: []corev1.Container{{
 						Name:      "gateway",
 						Image:     fmt.Sprintf("%s:%s", imageRepo, imageTag),
-						Resources: gatewayResources(),
+						Resources: mustBeSized(SizingGateway, cfg.Resources),
 						Env: []corev1.EnvVar{{
 							// Opt-in switch for the image's 15-local-resolvers
 							// entrypoint script: without it NGINX_LOCAL_RESOLVERS
@@ -355,19 +350,5 @@ func gatewayLabels(crName string) map[string]string {
 		"app.kubernetes.io/instance":   crName,
 		"app.kubernetes.io/managed-by": ManagedByLabel,
 		"app.kubernetes.io/component":  "networking",
-	}
-}
-
-// gatewayResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func gatewayResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(gatewayCPURequest),
-			corev1.ResourceMemory: resource.MustParse(gatewayMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(gatewayMemoryLimit),
-		},
 	}
 }

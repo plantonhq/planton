@@ -11,8 +11,10 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//catalog/azure/azurednsrecord/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/azure/pulumiazureprovider",
         "//shared/cloudresourcekind",
+        "//shared/foreignkey/v1:foreignkey",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure/dns",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",

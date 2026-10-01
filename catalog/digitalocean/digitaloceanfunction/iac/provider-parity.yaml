@@ -2,12 +2,16 @@
 # provider v2.99.1. The provider has no standalone Functions resource; this
 # kind deploys one functions component inside an app. Every other component
 # family on digitalocean_app is excluded as another kind's surface
-# (DigitalOceanApp). The functions slice is mapped onto spec.function.
+# (DigitalOceanApp). The functions slice is mapped onto spec.function; the
+# app's own name is spec.app_name (the API validates it 2-32 chars and
+# account-unique, which a Planton metadata name cannot satisfy).
 resources:
   digitalocean_app:
     mappings:
       - spec: spec
         arg: spec
+      - spec: spec.app_name
+        arg: spec.name
       - spec: spec.function_name
         arg: spec.function.name
       - spec: spec.git
@@ -33,8 +37,6 @@ resources:
       - spec: spec.envs.secret
         arg: spec.function.env.value
     exclusions:
-      - arg: spec.name
-        reason: wired by the module from metadata.name -- the App Platform app name is the Function's Planton identity, never separate spec surface
       - arg: spec.function.env.type
         reason: synthesized from the env oneof -- plaintext maps to GENERAL, secret maps to SECRET
       - arg: spec.service

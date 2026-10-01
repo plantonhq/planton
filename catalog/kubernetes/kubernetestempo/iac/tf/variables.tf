@@ -21,6 +21,16 @@ variable "spec" {
     # Exactly one storage backend. Absent = local.
     storage = optional(object({
       local = optional(object({}))
+      # The r2 arm; references arrive resolved to their values.
+      r2 = optional(object({
+        account_id   = string
+        jurisdiction = optional(string, "")
+        bucket       = string
+        credentials = object({
+          access_key_id     = string
+          secret_access_key = string
+        })
+      }))
       s3 = optional(object({
         bucket           = string
         endpoint         = string

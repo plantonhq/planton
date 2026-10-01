@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1;
 
+import "shared/options/options.proto";
+
 // CloudflareOriginCaCertificateStackOutputs captures the outputs after issuing an
 // Origin CA certificate.
 message CloudflareOriginCaCertificateStackOutputs {
@@ -16,7 +18,7 @@ message CloudflareOriginCaCertificateStackOutputs {
   // module generated the key (i.e. when `spec.csr` was omitted); empty when a
   // user-supplied CSR was used. Sensitive — exported as a secret so a downstream
   // origin can mount it without the key ever living in plaintext.
-  string private_key = 3;
+  string private_key = 3 [(dev.planton.shared.options.sensitive) = true];
 
   // RFC3339 timestamp of when the certificate expires.
   string expires_on = 4;

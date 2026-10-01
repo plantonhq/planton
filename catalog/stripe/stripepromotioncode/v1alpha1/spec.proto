@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripepromotioncode.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// StripePromotionCodeSpec declares a code customers type to redeem a StripeCoupon -- LAUNCH25 in
+// Checkout, the customer portal or a payment link -- with its own limits: first-time customers
+// only, a minimum order, an expiry, a redemption cap, or one customer.
+//
+// Everything that shapes who may redeem the code is fixed in Stripe. Changing the coupon, code,
+// customer, expiry, redemption limit or restrictions REPLACES the promotion code: Planton
+// deactivates the old one and creates the new one. Active and metadata update in place.
+//
+// A code's expiry can't be later than its coupon's redeem_by, and its redemption limit can't
+// exceed the coupon's max_redemptions (Stripe's API reference); Stripe refuses either at apply.
+//
+// One owner per object: declare a code here only if nothing else creates or edits it.
+//
+// Stripe never deletes a promotion code. Destroy deactivates it (active = false): nobody can
+// redeem it, discounts already applied stay. A code only has to be unique among active codes, so
+// the same code can be declared again later. A code that cannot be read makes the plan fail (the
+// provider does not treat a missing code as gone); remove it from state and apply again.
+//
+// The key needs "Promotion Codes" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/billing/subscriptions/coupons#promotion-codes
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/promotion_code
+message StripePromotionCodeSpec {
+  // coupon is the coupon the code redeems. Reference a StripeCoupon. Changing it REPLACES the
+  // code.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef coupon = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = StripeCoupon,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id"
+  ];
+
+  // code is what customers type, up to 500 letters, digits and dashes ("LAUNCH25"). Regardless of
+  // case, it is unique among the account's active codes for each customer. Unset, Stripe generates
+  // one (read it from status.outputs.code). Changing it REPLACES the code.
+  string code = 2 [(buf.validate.field).cel = {
+    id: "spec.code.format"
+    message: "code is up to 500 letters (a-z, A-Z), digits (0-9) and dashes (-), with no spaces"
+    expression: "this == '' || this.matches('^[a-zA-Z0-9-]{1,500}$')"
+  }];
+
+  // customer limits the code to one customer (cus_...). Unset, any customer can redeem it.
+  // Changing it REPLACES the code.
+  string customer = 3 [(buf.validate.field).cel = {
+    id: "spec.customer.format"
+    message: "customer is a Stripe customer id (cus_...)"
+    expression: "this == '' || this.startsWith('cus_')"
+  }];
+
+  // customer_account limits the code to one customer that is a Stripe account (an Accounts v2
+  // customer) instead of a customer object. Set customer or customer_account, not both. Changing
+  // it REPLACES the code.
+  string customer_account = 4;
+
+  // expires_at is the moment after which the code can no longer be redeemed, in Unix seconds
+  // (1798761599 is 2026-12-31T23:59:59Z; on Linux `date -u -d 2026-12-31T23:59:59Z +%s` computes
+  // one). It can't be later than the coupon's redeem_by, and Stripe refuses one more than five
+  // years ahead. Changing it REPLACES the code.
+  optional int64 expires_at = 5 [(buf.validate.field).int64.gt = 0];
+
+  // max_redemptions is how many times the code can be redeemed. It can't exceed the coupon's
+  // max_redemptions. Unset, no limit beyond the coupon's. Changing it REPLACES the code.
+  optional int64 max_redemptions = 6 [(buf.validate.field).int64.gte = 1];
+
+  // restrictions limit which orders the code applies to. Changing them REPLACES the code.
+  StripePromotionCodeRestrictions restrictions = 7;
+
+  // active is whether the code can be redeemed. Setting it false deactivates the code without
+  // destroying the resource; setting it true again reactivates it, if no other active code has
+  // taken the same code meanwhile.
+  optional bool active = 8 [(dev.planton.shared.options.default) = "true"];
+
+  // metadata is a set of key-value pairs stored on the code. It updates in place.
+  map<string, string> metadata = 9;
+
+  option (buf.validate.message).cel = {
+    id: "spec.one_customer"
+    message: "a code is limited to one customer: set customer or customer_account, not both"
+    expression: "this.customer == '' || this.customer_account == ''"
+  };
+}
+
+// StripePromotionCodeRestrictions limit which orders a promotion code applies to.
+message StripePromotionCodeRestrictions {
+  // first_time_transaction limits the code to customers who have never paid before.
+  optional bool first_time_transaction = 1;
+
+  // minimum_amount is the smallest order total the code applies to, in the smallest unit of
+  // minimum_amount_currency.
+  optional int64 minimum_amount = 2 [(buf.validate.field).int64.gt = 0];
+
+  // minimum_amount_currency is the lowercase three-letter ISO code of minimum_amount ("usd").
+  string minimum_amount_currency = 3 [(buf.validate.field).cel = {
+    id: "restrictions.minimum_amount_currency.format"
+    message: "minimum_amount_currency is a lowercase three-letter ISO code, such as usd"
+    expression: "this == '' || this.matches('^[a-z]{3}$')"
+  }];
+
+  // currency_options are minimum_amount in other currencies, keyed by lowercase currency code
+  // ("eur"). They can't be declared on the pinned Stripe provider, and validation refuses them:
+  // Stripe returns a code's other-currency minimums only when a read expands them, the provider
+  // never expands, and so every create that sets them fails after Stripe has made the code.
+  map<string, int64> currency_options = 4 [(buf.validate.field).map = {
+    keys: {
+      string: {pattern: "^[a-z]{3}$"}
+    }
+    values: {
+      int64: {gt: 0}
+    }
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "restrictions.minimum_amount_with_currency"
+    message: "minimum_amount and minimum_amount_currency go together: set both, or neither"
+    expression: "has(this.minimum_amount) == (this.minimum_amount_currency != '')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "restrictions.currency_options_not_held"
+    message: "minimums in other currencies can't be declared yet: the pinned Stripe provider never reads them back (Stripe returns them only when a read expands them), so every create with them fails; set minimum_amount in one currency"
+    expression: "size(this.currency_options) == 0"
+  };
+}

@@ -7,6 +7,7 @@
 package azurerediscachev1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -199,7 +200,7 @@ var File_catalog_azure_azurerediscache_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurerediscache/v1alpha1/outputs.proto\x12*dev.planton.azure.azurerediscache.v1alpha1\"\x90\x04\n" +
+	"4catalog/azure/azurerediscache/v1alpha1/outputs.proto\x12*dev.planton.azure.azurerediscache.v1alpha1\x1a\x1cshared/options/options.proto\"\xa8\x04\n" +
 	"\x1bAzureRedisCacheStackOutputs\x12$\n" +
 	"\x0eredis_cache_id\x18\x01 \x01(\tR\fredisCacheId\x12(\n" +
 	"\x10redis_cache_name\x18\x02 \x01(\tR\x0eredisCacheName\x12\x16\n" +
@@ -207,12 +208,12 @@ const file_catalog_azure_azurerediscache_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x13resource_group_name\x18\x04 \x01(\tR\x11resourceGroupName\x12\x1a\n" +
 	"\bhostname\x18\x05 \x01(\tR\bhostname\x12\x12\n" +
 	"\x04port\x18\x06 \x01(\x05R\x04port\x12\x19\n" +
-	"\bssl_port\x18\a \x01(\x05R\asslPort\x12,\n" +
-	"\x12primary_access_key\x18\b \x01(\tR\x10primaryAccessKey\x120\n" +
-	"\x14secondary_access_key\x18\t \x01(\tR\x12secondaryAccessKey\x12:\n" +
+	"\bssl_port\x18\a \x01(\x05R\asslPort\x122\n" +
+	"\x12primary_access_key\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\x10primaryAccessKey\x126\n" +
+	"\x14secondary_access_key\x18\t \x01(\tB\x04\xa0\xa6\x1d\x01R\x12secondaryAccessKey\x12@\n" +
 	"\x19primary_connection_string\x18\n" +
-	" \x01(\tR\x17primaryConnectionString\x12>\n" +
-	"\x1bsecondary_connection_string\x18\v \x01(\tR\x19secondaryConnectionString\x122\n" +
+	" \x01(\tB\x04\xa0\xa6\x1d\x01R\x17primaryConnectionString\x12D\n" +
+	"\x1bsecondary_connection_string\x18\v \x01(\tB\x04\xa0\xa6\x1d\x01R\x19secondaryConnectionString\x122\n" +
 	"\x15identity_principal_id\x18\f \x01(\tR\x13identityPrincipalIdB\xe8\x02\n" +
 	".com.dev.planton.azure.azurerediscache.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/azure/azurerediscache/v1alpha1;azurerediscachev1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Azure.Azurerediscache.V1alpha1\xca\x02*Dev\\Planton\\Azure\\Azurerediscache\\V1alpha1\xe2\x026Dev\\Planton\\Azure\\Azurerediscache\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Azure::Azurerediscache::V1alpha1b\x06proto3"
 

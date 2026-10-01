@@ -1,6 +1,7 @@
 package artifactslot
 
 import (
+	"strings"
 	"testing"
 
 	awsecstaskdefinitionv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecstaskdefinition/v1alpha1"
@@ -80,7 +81,7 @@ func TestInject_KubernetesDeploymentSplitAndVersion(t *testing.T) {
 		Spec: &kubernetesdeploymentv1alpha1.KubernetesDeploymentSpec{
 			Container: &kubernetesdeploymentv1alpha1.KubernetesDeploymentContainer{
 				App: &kubernetes.WorkloadContainer{
-					Image: &kubernetes.ContainerImage{Repo: "authored", Tag: "old"},
+					Image: &kubernetes.WorkloadContainerImage{Repo: "authored", Tag: "old", Digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
 				},
 			},
 		},
@@ -101,25 +102,50 @@ func TestInject_KubernetesDeploymentSplitAndVersion(t *testing.T) {
 	}
 }
 
-// Digest references keep their digest as the tag half of the split —
-// mirroring the hosted injector's parse exactly.
+// A digest reference writes its digest into the digest leaf, never into the
+// tag: "repo:tag@sha256:…" keeps the tag as the build's readable name and pins
+// the digest, and a bare "repo@sha256:…" leaves the tag empty. A reference
+// without a digest clears an authored one, so the new build is what runs.
 func TestInject_KubernetesDigestReference(t *testing.T) {
-	manifest := &kubernetesdeploymentv1alpha1.KubernetesDeployment{
-		Spec: &kubernetesdeploymentv1alpha1.KubernetesDeploymentSpec{
-			Container: &kubernetesdeploymentv1alpha1.KubernetesDeploymentContainer{
-				App: &kubernetes.WorkloadContainer{},
+	const digest = "sha256:b5e2a1c0d9f8e7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2"
+	for reference, want := range map[string]*kubernetes.WorkloadContainerImage{
+		"ghcr.io/acme/x:a743940@" + digest:       {Repo: "ghcr.io/acme/x", Tag: "a743940", Digest: digest},
+		"ghcr.io/acme/x@" + digest:               {Repo: "ghcr.io/acme/x", Digest: digest},
+		"registry:5000/acme/x:a743940@" + digest: {Repo: "registry:5000/acme/x", Tag: "a743940", Digest: digest},
+		"ghcr.io/acme/x:a743940":                 {Repo: "ghcr.io/acme/x", Tag: "a743940"},
+	} {
+		manifest := &kubernetesdeploymentv1alpha1.KubernetesDeployment{
+			Spec: &kubernetesdeploymentv1alpha1.KubernetesDeploymentSpec{
+				Container: &kubernetesdeploymentv1alpha1.KubernetesDeploymentContainer{
+					App: &kubernetes.WorkloadContainer{Image: &kubernetes.WorkloadContainerImage{Digest: "sha256:" + strings.Repeat("0", 64)}},
+				},
 			},
-		},
+		}
+		if _, err := Inject(manifest, reference, ""); err != nil {
+			t.Fatalf("inject %s: %v", reference, err)
+		}
+		got := manifest.Spec.Container.App.Image
+		if got.Repo != want.Repo || got.Tag != want.Tag || got.Digest != want.Digest {
+			t.Errorf("%s: split = %q / %q / %q, want %q / %q / %q", reference, got.Repo, got.Tag, got.Digest, want.Repo, want.Tag, want.Digest)
+		}
+		if manifest.Spec.GetVersion() != "" {
+			t.Fatal("no branch means no version stamp")
+		}
 	}
-	if _, err := Inject(manifest, "ghcr.io/acme/x@sha256:deadbeef", ""); err != nil {
-		t.Fatalf("inject: %v", err)
-	}
-	image := manifest.Spec.Container.App.Image
-	if image.Repo != "ghcr.io/acme/x" || image.Tag != "sha256:deadbeef" {
-		t.Fatalf("split = %q / %q", image.Repo, image.Tag)
-	}
-	if manifest.Spec.GetVersion() != "" {
-		t.Fatal("no branch means no version stamp")
+}
+
+func TestParseReference_ReadsTagAndDigest(t *testing.T) {
+	const digest = "sha256:" + "c0ffee"
+	for reference, want := range map[string]Reference{
+		"ghcr.io/acme/x:a743940@" + digest: {Repo: "ghcr.io/acme/x", Tag: "a743940", Digest: digest},
+		"ghcr.io/acme/x@" + digest:         {Repo: "ghcr.io/acme/x", Digest: digest},
+		"localhost:5000/x":                 {Repo: "localhost:5000/x"},
+		"localhost:5000/x:1":               {Repo: "localhost:5000/x", Tag: "1"},
+	} {
+		got := ParseReference(reference)
+		if got.Repo != want.Repo || got.Tag != want.Tag || got.Digest != want.Digest || got.Raw != reference {
+			t.Errorf("%s: got %+v", reference, got)
+		}
 	}
 }
 
@@ -139,17 +165,17 @@ func TestInject_NoSlotKindIsHonestNoOp(t *testing.T) {
 }
 
 func TestParseReference(t *testing.T) {
-	cases := []struct{ in, repo, tag string }{
-		{"ghcr.io/acme/app:1.2.3", "ghcr.io/acme/app", "1.2.3"},
-		{"ghcr.io/acme/app@sha256:abc", "ghcr.io/acme/app", "sha256:abc"},
-		{"localhost:5000/app:v1", "localhost:5000/app", "v1"},
-		{"localhost:5000/app", "localhost:5000/app", ""},
-		{"nginx", "nginx", ""},
+	cases := []struct{ in, repo, tag, digest string }{
+		{"ghcr.io/acme/app:1.2.3", "ghcr.io/acme/app", "1.2.3", ""},
+		{"ghcr.io/acme/app@sha256:abc", "ghcr.io/acme/app", "", "sha256:abc"},
+		{"localhost:5000/app:v1", "localhost:5000/app", "v1", ""},
+		{"localhost:5000/app", "localhost:5000/app", "", ""},
+		{"nginx", "nginx", "", ""},
 	}
 	for _, tc := range cases {
 		got := ParseReference(tc.in)
-		if got.Repo != tc.repo || got.Tag != tc.tag {
-			t.Errorf("%q -> %q/%q, want %q/%q", tc.in, got.Repo, got.Tag, tc.repo, tc.tag)
+		if got.Repo != tc.repo || got.Tag != tc.tag || got.Digest != tc.digest {
+			t.Errorf("%q -> %q/%q/%q, want %q/%q/%q", tc.in, got.Repo, got.Tag, got.Digest, tc.repo, tc.tag, tc.digest)
 		}
 	}
 }

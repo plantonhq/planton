@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/outputs.proto";
+import "catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// Auth0ClientFromMetadataDocument is a component that registers an application
+// in an Auth0 tenant from its Client ID Metadata Document -- a JSON file the
+// application's owner hosts at an https URL. Auth0 fetches the document and
+// registers the application from it: the path an MCP client takes to onboard
+// itself, with no shared secret to hand over.
+//
+// The document owns the application's name, redirect URIs, logo and keys; the
+// spec sets what the tenant decides over them -- token lifetimes, refresh-token
+// rotation, origins, the redirect policy, organizations, metadata. Auth0 assigns
+// the application a Management API id (status.outputs.client_id) that client
+// grants and domain-level connections work with.
+//
+// Use cases:
+// - Onboard an MCP client to the APIs your tenant protects
+// - Register a partner integration that manages its own metadata and keys
+// - Hold a registered client's token lifetimes and rotation in code
+//
+// Example manifest:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0ClientFromMetadataDocument
+// metadata:
+//   name: mcp-client
+//   org: my-organization
+// spec:
+//   externalClientId: https://mcp-client.example.com/.well-known/oauth-client-metadata
+// ```
+message Auth0ClientFromMetadataDocument {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0ClientFromMetadataDocument" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0ClientFromMetadataDocument'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the registration within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the document's URL and the settings the tenant sets over it.
+  Auth0ClientFromMetadataDocumentSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the application as Auth0 registered it, populated after
+  // deployment.
+  Auth0ClientFromMetadataDocumentStatus status = 5;
+}
+
+// Auth0ClientFromMetadataDocumentStatus represents the current state of an
+// Auth0ClientFromMetadataDocument resource. Populated by the deployment system.
+message Auth0ClientFromMetadataDocumentStatus {
+  // outputs contains the stack outputs: the registered application's id, what
+  // Auth0 took from the document, and the document's validation result.
+  Auth0ClientFromMetadataDocumentStackOutputs outputs = 1;
+}

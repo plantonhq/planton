@@ -2,11 +2,18 @@
 # end to end plus eviction_policy (valid only on the caching engines --
 # the spec's CEL rule and the provider's plan-time check agree). Single
 # node on the cheapest slug; no VPC.
+# The cluster name carries the run id: cluster names are unique per account
+# (the API answers 422 "cluster name is not available"), and a delete returns
+# before the cluster is gone, so a re-run must never reuse the previous name.
+# The metadata name uses the kind's id prefix (`dodb`), the catalog's shape
+# for long kind names: DigitalOcean caps a database cluster's combined tags
+# (joined by commas) at 255 characters, and the six Planton label tags carry
+# this name twice -- the full kind name would have joined to 263.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
-  name: planton-oss-e2e-digitaloceandatabasecluster-valkey
-  id: planton-oss-e2e-digitaloceandatabasecluster-valkey
+  name: planton-oss-e2e-dodb-valkey
+  id: planton-oss-e2e-dodb-valkey
   org: planton-oss
   env: e2e
   labels:
@@ -17,7 +24,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-dodb-valkey
+  clusterName: pltn-e2e-dodb-valkey-${E2E_RUN_ID}
   engine: valkey
   engineVersion: "8"
   region: nyc3

@@ -375,14 +375,16 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesPostgres: the CloudNativePG naming contract — the
-			// three traffic services, the rw endpoint, and the credential
+			// three traffic services, the rw endpoint, the credential
 			// Secret handles (nested objects that flatten to
-			// password_secret.name etc.).
+			// password_secret.name etc.), and the backup series a recovery
+			// names as its source.
 			name: "KubernetesPostgres",
 			kind: cloudresourcekind.CloudResourceKind_KubernetesPostgres,
 			rawOutputs: map[string]interface{}{
 				"namespace":             "team-alpha",
 				"cluster_name":          "orders-db",
+				"backup_server_name":    "orders-db-7f3a9c21",
 				"rw_service":            "orders-db-rw",
 				"ro_service":            "orders-db-ro",
 				"r_service":             "orders-db-r",
@@ -402,6 +404,7 @@ func TestStackOutputsConformance(t *testing.T) {
 				"namespace", "cluster_name", "rw_service", "ro_service",
 				"r_service", "kube_endpoint", "port_forward_command",
 				"superuser_secret_name", "password_secret", "username_secret",
+				"backup_server_name",
 			},
 		},
 		{
@@ -1633,13 +1636,22 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesTektonOperator: the release manifest's fixed
-			// namespace — the one handle the manifest-bundle install exports.
+			// namespace, the registry Tekton's images are pulled from, and
+			// the per-build images every TaskRun pod pulls.
 			name: "KubernetesTektonOperator",
 			kind: cloudresourcekind.CloudResourceKind_KubernetesTektonOperator,
 			rawOutputs: map[string]interface{}{
-				"namespace": "tekton-operator",
+				"namespace":               "tekton-operator",
+				"image_registry":          "ghcr.io",
+				"entrypoint_image":        "ghcr.io/tektoncd/pipeline/entrypoint-bff0a22da108bc2f16c818c97641a296:v1.12.0@sha256:3ec960b07abd85604242e146092e72f11be8787452c2a20d12a37fdee4a666e2",
+				"nop_image":               "ghcr.io/tektoncd/pipeline/nop-8eac7c133edad5df719dc37b36b62482:v1.12.0@sha256:f89fb760b05fdef6895290e524d992b66ede72546622d5028b0406a9bea36d2f",
+				"workingdirinit_image":    "ghcr.io/tektoncd/pipeline/workingdirinit-0c558922ec6a1b739e550e349f2d5fc1:v1.12.0@sha256:11031cbed2b8ddbb5af0947a5e0c997ba7cd3da5f309ddfa76e58f5418868d71",
+				"sidecarlogresults_image": "ghcr.io/tektoncd/pipeline/sidecarlogresults-7501c6a20d741631510a448b48ab098f:v1.12.0@sha256:8b61bdcad62a99e7b15f9dc92690ea39f49be2c5a1c9f428a0aac712f349543d",
 			},
-			mustPopulate: []string{"namespace"},
+			mustPopulate: []string{
+				"namespace", "image_registry", "entrypoint_image", "nop_image",
+				"workingdirinit_image", "sidecarlogresults_image",
+			},
 		},
 		{
 			// KubernetesTekton: the resolved installation handles — target
@@ -8527,7 +8539,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureDnsZone: zone_name (with resource_group_name) is the join
 			// key AzureDnsRecord addresses record sets through; zone_id is
 			// the ARM seam for kinds watching the zone (Front Door custom
-			// domains, AKS web-app routing); name_servers is the registrar
+			// domains, AKS web-app routing); nameservers is the registrar
 			// delegation handoff.
 			name: "AzureDnsZone",
 			kind: cloudresourcekind.CloudResourceKind_AzureDnsZone,
@@ -8535,12 +8547,12 @@ func TestStackOutputsConformance(t *testing.T) {
 				"zone_id":                   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dns-rg/providers/Microsoft.Network/dnsZones/example.com",
 				"zone_name":                 "example.com",
 				"resource_group_name":       "dns-rg",
-				"name_servers":              []interface{}{"ns1-05.azure-dns.com.", "ns2-05.azure-dns.net.", "ns3-05.azure-dns.org.", "ns4-05.azure-dns.info."},
+				"nameservers":               []interface{}{"ns1-05.azure-dns.com.", "ns2-05.azure-dns.net.", "ns3-05.azure-dns.org.", "ns4-05.azure-dns.info."},
 				"max_number_of_record_sets": 10000,
 			},
 			mustPopulate: []string{
 				"zone_id", "zone_name", "resource_group_name",
-				"name_servers", "max_number_of_record_sets",
+				"nameservers", "max_number_of_record_sets",
 			},
 		},
 		{
@@ -9502,6 +9514,42 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{
 				"user_id", "email", "username", "name", "nickname", "picture",
 				"connection_name", "password",
+			},
+		},
+		{
+			// Auth0CustomDomain: the domain's identity and state, and the DNS
+			// record that proves control of it -- the three dns_record_* fields a
+			// DNS record kind composes, picked by one rule in both engines.
+			name: "Auth0CustomDomain",
+			kind: cloudresourcekind.CloudResourceKind_Auth0CustomDomain,
+			rawOutputs: map[string]interface{}{
+				"id":                 "cd_0123456789abcdef",
+				"domain":             "id.example.com",
+				"status":             "pending_verification",
+				"origin_domain_name": "example-cd-abc123.edge.tenants.eu.auth0.com",
+				"dns_record_name":    "id.example.com",
+				"dns_record_type":    "CNAME",
+				"dns_record_value":   "example-cd-abc123.edge.tenants.eu.auth0.com",
+			},
+			mustPopulate: []string{
+				"id", "domain", "status", "origin_domain_name",
+				"dns_record_name", "dns_record_type", "dns_record_value",
+			},
+		},
+		{
+			// Auth0CustomDomainVerification: the verified domain, read back by
+			// id, and the self-managed proxy's key (empty, and still mapped, for
+			// an Auth0-managed domain).
+			name: "Auth0CustomDomainVerification",
+			kind: cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification,
+			rawOutputs: map[string]interface{}{
+				"custom_domain_id":   "cd_0123456789abcdef",
+				"domain":             "id.example.com",
+				"origin_domain_name": "example-cd-abc123.edge.tenants.eu.auth0.com",
+				"cname_api_key":      "c2VsZi1tYW5hZ2VkLXByb3h5LWtleQ",
+			},
+			mustPopulate: []string{
+				"custom_domain_id", "domain", "origin_domain_name", "cname_api_key",
 			},
 		},
 	}

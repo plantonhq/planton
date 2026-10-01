@@ -22,5 +22,5 @@ This preset creates an empty zonal Premium SSD data disk -- the production defau
 | --- | --- | --- |
 | `<azure-region>` | Azure region (must match the attaching VM's region) | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<workload>-data` | A name describing the DATA, not the VM | Your naming convention |
-| `<zone>` | The availability zone ("1", "2", or "3") matching the VM | Your zone layout |
+| `workload-data` (`name`) | A name describing the DATA, not the VM | Your naming convention |
+| `"1"` (`zone`) | The availability zone ("1", "2", or "3") matching the VM | Your zone layout |

@@ -7,6 +7,7 @@
 package gcpeventarctriggerv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -94,10 +95,10 @@ var File_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpeventarctrigger_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpeventarctrigger/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpeventarctrigger.v1alpha1\"\xab\x01\n" +
+	"5catalog/gcp/gcpeventarctrigger/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpeventarctrigger.v1alpha1\x1a\x1cshared/options/options.proto\"\xb1\x01\n" +
 	"\x1eGcpEventarcTriggerStackOutputs\x12!\n" +
-	"\ftrigger_name\x18\x01 \x01(\tR\vtriggerName\x12G\n" +
-	" partner_channel_activation_token\x18\x02 \x01(\tR\x1dpartnerChannelActivationToken\x12\x1d\n" +
+	"\ftrigger_name\x18\x01 \x01(\tR\vtriggerName\x12M\n" +
+	" partner_channel_activation_token\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x1dpartnerChannelActivationToken\x12\x1d\n" +
 	"\n" +
 	"trigger_id\x18\x03 \x01(\tR\ttriggerIdB\xf1\x02\n" +
 	"/com.dev.planton.gcp.gcpeventarctrigger.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcpeventarctrigger/v1alpha1;gcpeventarctriggerv1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcpeventarctrigger.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcpeventarctrigger\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcpeventarctrigger\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcpeventarctrigger::V1alpha1b\x06proto3"

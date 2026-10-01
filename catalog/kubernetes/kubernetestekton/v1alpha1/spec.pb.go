@@ -53,6 +53,10 @@ const (
 // KubernetesTektonOperator resource before this one — without a
 // running operator the finalizers strand and deletion hangs.
 //
+// IMAGES: every component image comes from where the operator is told
+// to pull it — set KubernetesTektonOperator's `image_registry` to pull
+// them all from a mirror; this declaration names no images.
+//
 // EXPOSURE: when the dashboard is installed (profile `all`) its
 // Service stays ClusterIP; expose it via first-class kinds
 // (KubernetesIngress, Gateway API kinds) over the exported service
@@ -353,9 +357,11 @@ type KubernetesTektonPipeline struct {
 	// *
 	// URL that receives CloudEvents for every TaskRun/PipelineRun
 	// lifecycle change (e.g.
-	// "http://receiver.ci.svc.cluster.local/events"). KNOW THIS: Tekton
-	// supports exactly ONE cluster-global sink — every pipeline in
-	// every namespace reports here. Multi-tenant clusters that need
+	// "http://receiver.ci.svc.cluster.local/events"), written as the
+	// `sink` of Tekton's `config-events` ConfigMap (format `tektonv1`)
+	// through the TektonConfig's pipeline.options.configMaps. KNOW
+	// THIS: Tekton supports exactly ONE cluster-global sink — every
+	// pipeline in every namespace reports here. Multi-tenant clusters that need
 	// per-team routing put a fan-out service at this URL and route
 	// downstream (the event carries its source namespace).
 	CloudEventsSinkUrl string `protobuf:"bytes,1,opt,name=cloud_events_sink_url,json=cloudEventsSinkUrl,proto3" json:"cloud_events_sink_url,omitempty"`

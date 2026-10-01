@@ -59,6 +59,54 @@ you must, keep the divergence minimal, ensure it does NOT change the stack outpu
 a `# PARITY-EXCEPTION:` comment here AND a matching `// PARITY-EXCEPTION:` in the Pulumi
 module stating what differs and why. An undocumented divergence is a defect.
 
+NO UNTRACKED INLINE OBJECTS: never set a provider argument that creates a second object inside
+the resource (a `*_data` block such as `default_price_data` or `product_data`). The provider
+keeps no resource for that object, so destroy leaves it live, a change to it forces a surprise
+replacement, and its drift is never detected. The object is its own kind (or a folded resource
+this module manages with its own block), composed by reference; the provider-parity manifest
+excludes the inline argument with that reason.
+
+A CHANGE THE PROVIDER ACCEPTS BUT CAN'T SEND FORCES A REPLACEMENT: some provider arguments plan an
+in-place update the vendor's API can never apply (Stripe's payment link can't change a line
+item's price; its update call has no price field), and some are write-only, so a change plans
+nothing at all (the same link's line-item quantity). Either way the change is dropped silently
+or shows as a pending change forever. The module holds those values in a `terraform_data`
+tracker and puts `replace_triggered_by = [terraform_data.<tracker>]` on the resource, with
+`create_before_destroy` when the object's id or address is something other resources read by
+reference. The provider-parity manifest judges the tracker `internal`, and the provider's import
+catalog records `terraform_data` with `not_importable_upstream_reason`: an imported tracker has no
+input, so the first apply after an import would replace the imported object; left out, it is
+simply created. The spec field says in plain words that a change replaces the object. Prove it
+with offline plans against a seeded state: unchanged plans nothing, each tracked change plans a
+replacement, every other change stays in place, and a state without the tracker plans only the
+tracker's creation.
+
+The same tracker serves a value the provider can't READ BACK. Some vendors leave fields out of
+an object they return unless the read asks to expand them (Stripe's "includable" fields: a
+coupon's products and other-currency amounts, a price's other-currency amounts, a shipping rate's
+other-currency amounts, a portal's switchable products). A provider that never expands keeps a
+deployed object's configured value, so a plain deploy plans clean, but a blind import holds
+nothing, and the first plan after it re-sends the value or replaces the object. Read the
+provider's Read for its expand list, then probe the vendor once with and without expanding, and
+let the update path decide:
+- the field updates in place and re-sending it is a no-op: the provider's import catalog
+  declares it in `write_normalized_attributes` (a dotted sub-path when it is one leaf of a block),
+  with the reason, and the live round trip proves the reconcile-apply;
+- the field forces a replacement, or the vendor refuses re-sending it (Stripe refuses a new amount
+  for a currency a coupon already has): `lifecycle.ignore_changes` on the field plus the tracker,
+  so a blind import adopts the object untouched and a change still replaces it. `ignore_changes`
+  alone would silently drop every later change, and a tolerance can never cover a replacement;
+- the provider rejects its own create because the vendor's answer omits the field ("inconsistent
+  result after apply"): nothing in the module can hold it, so the kind can't offer the field on
+  that pin, and the gap goes to the product owner, never into a placeholder.
+
+A value the vendor normalizes on write (Stripe stores a Radar list's string, email and country
+values in lower case) is sent already normalized, keyed by the value as declared, or the
+provider rejects its own result after create. A default the vendor fills in when a block is
+omitted (a billing meter's payload keys) is sent explicitly with the vendor's own default, for
+the same reason. Both are found only by a live run; record each as "verified live" in the module
+comment beside the code that answers it.
+
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
    ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the existing
@@ -153,6 +201,17 @@ NOTES
   are required") but come from code you never wrote. A RELATIVE `--module-dir`
   also fails (the generated tfvars path resolves against the wrong root). Both
   paths absolute, always.
+- **A field with explicit presence is `optional(...)` in variables.tf, whatever its
+  value constraints.** A proto3 `optional` field (or a oneof member) is validated only
+  when it is set, so a `min_len` on it describes the value, never presence; a bare
+  attribute makes every spec that leaves it unset fail with "attribute X is required".
+  The generator (`isRequiredField`) follows this; a hand-written variables.tf must too.
+- **Send exactly what the Pulumi module sends.** Where the Pulumi module omits an
+  argument whose spec value is the proto3 zero value (an empty string, a zero
+  number), the Terraform module sends `null` for it (`var.spec.x != "" ? var.spec.x :
+  null`), so both engines leave the provider's own value in place. Forwarding the zero
+  value sends it: a provider refuses an empty string for a set of allowed values
+  ("expected X to be one of [...], got "), or applies it.
 - **Variable validations on nullable optional objects must guard with `try()`:**
   HCL's `||` evaluates BOTH operands (it does not short-circuit), so a validation
   shaped `var.spec.block == null || length(var.spec.block.field) > 0` fails at
@@ -178,6 +237,34 @@ NOTES
   source, referencing it as `data.google_project.this[0]`. This also mirrors the
   Pulumi side's only-when-needed `GetClientConfig` lookup, keeping the engines'
   resolution behavior identical.
+- **A provider the default deploy never uses must still configure with nothing but
+  the connection's own credential.** OpenTofu and Terraform configure EVERY provider
+  a module references, even when the only block reading through it has `count = 0`
+  -- typically a secondary S3-compatible provider that reads an object store the
+  connection reaches with a separate key pair (R2, Spaces). The AWS provider refuses
+  to configure without SOME credential source even with every `skip_*` flag set, so
+  a module that declares it unconditionally fails for every customer whose runner
+  holds no AWS credential. The shape: the real key pair arrives as sensitive,
+  nullable variables in `iac/tf/credentials.tf`, fed by the provider-environment
+  loader (`pkg/iac/stackinput/providerenvvars`) as `TF_VAR_*`; on the path that
+  reads through the provider it gets those variables, and on every other path a
+  fixed placeholder key pair, which with the skip flags makes no network call and
+  signs nothing. Never a provider-level `for_each` (Terraform cannot load a module
+  that uses one, and every module serves both engines), and never `AWS_*`
+  environment variables for a non-AWS credential (an S3 state backend
+  authenticated from the environment reads the same names). `tofu validate` never
+  configures a provider, and a live lane passes whenever the machine running it
+  happens to hold the credential, so only a plan run with ONLY the connection's
+  variables in the environment catches this: the credential-isolated plan guards in
+  `pkg/iac/tofu/tofumodule` (`PLANTON_TF_PLAN_GUARDS=1`) are the shape to copy.
+  Exemplar: CloudflareWorker's `aws.r2` provider.
+- **Read object-store content as bytes, never through a "readable types" shortcut.**
+  `aws_s3_object`'s plain `body` is filled only for a short list of Content-Types
+  (`text/*`, `application/json`, ...; NOT `application/javascript`), so content an
+  upload tool typed differently reads back empty without an error. Set
+  `download_body = true`, decode `body_base64`, and refuse an empty object in a
+  `postcondition` that names it (the Pulumi twin: `DownloadBody` + `BodyBase64` and
+  an `errors.Errorf`).
 - **Outputs surfacing provider-`Sensitive` attributes MUST carry `sensitive = true`.**
   OpenTofu rejects the whole configuration at plan time ("Output refers to
   sensitive values") when a root output references any attribute the provider
@@ -188,6 +275,19 @@ NOTES
   kinds). Check the provider schema's `Sensitive:` flag for every attribute an
   output touches -- `terraform validate` does NOT catch this class; only a
   plan does.
+- **Provider budgets on module-derived values are `lifecycle { precondition }`
+  blocks on the resource, twins of the Pulumi module's guard.** When a service
+  caps something the module itself assembles (a derived name, the composed tag
+  set including the Planton labels), the author cannot see the final value and
+  no spec rule can compute it, so the module checks it before anything renders:
+  a `local.<thing>_budget` naming the measured number (comment carries the date
+  and the API's own error text), a local computing the FINAL value sent (after
+  `distinct()`, after label rendering), and a precondition whose
+  `error_message` interpolates the budget, the offending total, and the
+  author's levers -- the same number and the same words as the Pulumi module's
+  `errors.Errorf`. Measure the boundary live (pass at N, fail at N+1) before
+  writing the number. Exemplars: the Superset chart's name budget; the
+  DigitalOcean database cluster's 255-character combined-tags budget.
 - **Dispatch-pattern outputs coalesce PER ATTRIBUTE, never per resource.**
   When one kind count-gates between several provider resources (an
   exactly-one-of scope or mode discriminator selecting among variants with

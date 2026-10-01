@@ -39,7 +39,11 @@ locals {
   # Resource-identity labels stamped on every module-created object
   # (namespace, Cluster, ObjectStores, ScheduledBackups, credential
   # Secrets). CloudNativePG derives ITS objects' identity from the Cluster
-  # name; these labels tie the whole family back to the Planton resource.
+  # name; these labels tie the whole family back to the Planton resource,
+  # and the Cluster's inheritedMetadata hands them to every object the
+  # operator creates -- the instance pods above all, so a log line, a
+  # metric or an alert from the database names its organization and
+  # environment.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -71,6 +75,7 @@ locals {
   # (never engine-generated suffixes) so the import recipes can derive
   # them blind and both engines agree byte-for-byte.
   backup_object_store_name       = local.cluster_name
+  series_start_backup_name       = "${local.cluster_name}-series-start"
   recovery_object_store_name     = "${local.cluster_name}-recovery-source"
   backup_creds_secret_name       = "${local.cluster_name}-backup-creds"
   recovery_creds_secret_name     = "${local.cluster_name}-recovery-creds"
@@ -580,6 +585,10 @@ locals {
         instances = coalesce(try(var.spec.instances, null), 1)
         imageName = try(var.spec.image_name, "") != "" ? var.spec.image_name : null
 
+        # The operator stamps these on every object it creates (the
+        # instance pods, their volumes, the Services).
+        inheritedMetadata = { labels = local.labels }
+
         storage    = local.storage_body
         walStorage = local.wal_storage_body
         resources  = local.resources_body
@@ -601,10 +610,16 @@ locals {
         # archiver is what starts continuous archiving into the ObjectStore.
         # PLUGIN-BASED, deliberately: CloudNativePG's in-tree barmanObjectStore
         # backup method is deprecated upstream and not modeled here.
+        # serverName names the backup series (the ObjectStore CRD forbids
+        # it, so it rides the Cluster's plugin entry); every Backup of the
+        # cluster, scheduled or on demand, files into the same series.
         plugins = local.backup != null ? [{
           name          = local.barman_cloud_plugin_name
           isWALArchiver = true
-          parameters    = { barmanObjectName = local.backup_object_store_name }
+          parameters = {
+            barmanObjectName = local.backup_object_store_name
+            serverName       = local.backup_server_name
+          }
         }] : null
 
         serviceAccountTemplate = length(local.workload_identity_annotations) > 0 ? {
@@ -629,6 +644,50 @@ locals {
           for s in var.spec.image_pull_secrets : { name = s }
         ] : null
       } : k => v if v != null
+    }
+  }
+
+  # ---- the backup series ----------------------------------------------------------
+  # The folder beneath the destination path this install's base backups and
+  # WAL are filed under (Barman's server name). A declared
+  # backup.server_name is used as is. Otherwise the series is
+  # `<cluster>-<first 8 characters of the backup ObjectStore's UID>`: the
+  # ObjectStore is created with the install, before the Cluster, so a
+  # destroy and recreate from the same declaration archives into a fresh
+  # series, and an imported cluster keeps its ObjectStore and so its series.
+  # Barman refuses to archive into a series that holds another PostgreSQL
+  # system's history, and the refusal is quiet (archiving stops, the
+  # instances stay healthy, WAL fills the volume), which is why the series
+  # is never simply the cluster's name. The Pulumi twin is
+  # backupServerName.
+  backup_server_name = local.backup == null ? "" : (
+    try(local.backup.server_name, "") != "" ? local.backup.server_name :
+    "${local.cluster_name}-${substr(one(kubectl_manifest.backup_object_store[*].uid), 0, 8)}"
+  )
+
+  # The on-demand Backup every series starts from: WAL without a base backup
+  # cannot be replayed, so taking one when the series is born makes it
+  # restorable from its first minute, whatever the schedules say. The series
+  # rides it as an annotation and the resource is force_new, so a new series
+  # takes a new base backup and an unchanged one never re-runs. Deleting a
+  # Backup resource leaves its stored objects in the bucket; the retention
+  # policy prunes them.
+  series_start_backup_manifest = {
+    apiVersion = "postgresql.cnpg.io/v1"
+    kind       = "Backup"
+    metadata = {
+      name        = local.series_start_backup_name
+      namespace   = local.namespace
+      labels      = local.labels
+      annotations = { "planton.ai/backup-series" = local.backup_server_name }
+    }
+    spec = {
+      cluster = { name = local.cluster_name }
+      method  = "plugin"
+      pluginConfiguration = {
+        name       = local.barman_cloud_plugin_name
+        parameters = { barmanObjectName = local.backup_object_store_name }
+      }
     }
   }
 

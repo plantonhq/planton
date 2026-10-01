@@ -45,7 +45,6 @@ spec:
   cluster:
     value: "fb7d9b81-fe06-4ee5-87f1-b9efc5af46fd"
   size: s-4vcpu-8gb
-  nodeCount: 3
   autoScale: true
   minNodes: 2
   maxNodes: 6
@@ -78,11 +77,11 @@ These are the most important decisions when configuring a node pool. Explore the
 
 **Sizing** -- The `size` field sets every node's CPU and memory. Changing it later replaces the whole pool (nodes are recreated), so plan capacity classes as separate pools rather than resizing one in place.
 
-**Fixed vs. autoscaled** -- A fixed pool holds exactly `nodeCount` nodes. With `autoScale: true`, `nodeCount` is only the initial count and DigitalOcean's cluster-autoscaler moves it between `minNodes` and `maxNodes`; the live count drifting is normal and produces no configuration diff.
+**Fixed vs. autoscaled** -- A fixed pool holds exactly `nodeCount` nodes. With `autoScale: true`, leave `nodeCount` out (the manifest is rejected if you set both): the pool starts at `minNodes` and DigitalOcean's cluster-autoscaler moves the count between `minNodes` and `maxNodes`. The provider writes the live count back into `node_count` on every read, so a stated count would be re-applied against the autoscaler on every update; sending none is what keeps the drift diff-free.
 
 **Labels and taints** -- Labels make the pool targetable from Kubernetes (nodeSelector, affinity); taints keep untolerating pods off. Pair them for dedicated pools: a taint alone isolates, a label alone only attracts.
 
-**GPU partitioning** -- `gpuPartitionMode` splits supported AMD GPU sizes into partitions. It is create-time-only in effect: changing it replaces the pool. Currently Terraform-only (Pulumi SDK gap; the Pulumi provisioner fails loudly if set).
+**GPU partitioning** -- `gpuPartitionMode` splits supported AMD GPU sizes into partitions. It is create-time-only in effect: changing it replaces the pool. Both provisioners deploy it.
 
 ## Outputs and Dependencies
 
@@ -100,10 +99,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 |--------|-------------|----------------------|
 | `node_pool_id` | The pool's UUID | Import addressing, pool-scoped automation |
 | `cluster_id` | The owning cluster's UUID (echoes the resolved `cluster` input) | Anything addressing the pool through the cluster API, which needs both ids |
-| `node_ids` | DOKS node object UUIDs of the current members | Node-level automation against the DOKS API |
-| `droplet_ids` | Integer ids of the Droplets backing the nodes | Firewall rules and other Droplet-scoped wiring |
 
-No other catalog kind consumes these outputs through typed references today -- a node pool is a leaf of the dependency graph. They exist for API addressing and Droplet-scoped automation; with autoscaling on, `node_ids` and `droplet_ids` are a snapshot from provisioning time, not a live membership list.
+No other catalog kind consumes these outputs through typed references today -- a node pool is a leaf of the dependency graph. The pool's node and Droplet ids are deliberately not outputs: DOKS replaces nodes by design (the autoscaler adds and removes them, upgrades and auto-repair recycle them), so a list captured at apply time is wrong the next time the pool changes shape, and a firewall wired to it would silently miss every later node. Droplet-scoped wiring goes through the pool's `tags`, which DigitalOcean applies to every current and future node.
 
 ## Common Patterns
 

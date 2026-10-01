@@ -473,7 +473,7 @@ groups by them. Updatable in place.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureContainerRegistry, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureContainerRegistry, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -481,7 +481,7 @@ Reference an output from another manifest as `valueFrom: {kind: AzureContainerRe
 | `status.outputs.container_registry_name` | `string` | The name of the registry. |
 | `status.outputs.login_server` | `string` | The registry's login server -- the hostname images are tagged with and pulled from, e.g. "myregistry.azurecr.io". |
 | `status.outputs.admin_username` | `string` | The admin account's username (the registry name), populated only when admin_user_enabled is true. |
-| `status.outputs.admin_password` | `string` | One of the admin account's two rotatable passwords, populated only when admin_user_enabled is true. Static credential material -- prefer Entra-based authentication wherever the consumer supports it. |
+| `status.outputs.admin_password` | `string` (sensitive) | One of the admin account's two rotatable passwords, populated only when admin_user_enabled is true. Static credential material -- prefer Entra-based authentication wherever the consumer supports it. |
 | `status.outputs.system_assigned_identity_principal_id` | `string` | The principal (object) ID of the registry's system-assigned identity, populated only when the identity type includes SYSTEM_ASSIGNED. Grant this principal roles to let the registry act on other resources. |
 | `status.outputs.data_endpoint_host_names` | `[]string` | The dedicated regional data-endpoint hostnames (home region plus each geo-replication), populated only when data_endpoint_enabled is true -- the exact hostnames an egress firewall must allowlist. |
 

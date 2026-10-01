@@ -50,6 +50,7 @@ func (g *Gateway) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 
 	cfg := resources.GatewayConfig{
 		CRName:     planton.Name,
+		Resources:  resources.EffectiveFor(resources.SizingGateway, &planton.Spec),
 		Namespace:  planton.Namespace,
 		OwnerRef:   ownerRef,
 		ConfigHash: hex.EncodeToString(configHash[:]),
@@ -77,17 +78,17 @@ func (g *Gateway) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	if err != nil {
 		return Result{}, fmt.Errorf("checking Gateway readiness: %w", err)
 	}
+	workload := DeploymentRef(resources.GatewayDeploymentName(planton.Name)).Sized(resources.SizingGateway)
 	if !ready {
 		log.Info("Gateway not ready")
-		return g.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.GatewayDeploymentName(planton.Name)),
-			"Waiting for the front-door gateway Deployment"), nil
+		return g.NotReady(ctx, c, planton.Namespace, workload, "Waiting for the front-door gateway Deployment"), nil
 	}
 
 	log.Info("Gateway ready")
 	// The status IS the instruction: nobody should have to compose the
 	// port-forward command (its local port is load-bearing -- sign-in URLs
 	// are pinned to it).
-	return Result{Ready: true, Message: fmt.Sprintf(
+	return g.Ready(ctx, c, planton.Namespace, fmt.Sprintf(
 		"Front door ready; open %s after running: %s",
-		url, resources.GatewayPortForwardCommand(planton.Name, planton.Namespace, gatewayLocalPort(planton)))}, nil
+		url, resources.GatewayPortForwardCommand(planton.Name, planton.Namespace, gatewayLocalPort(planton))), workload), nil
 }

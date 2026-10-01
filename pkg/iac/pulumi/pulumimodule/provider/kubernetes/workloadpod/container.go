@@ -7,13 +7,25 @@
 package workloadpod
 
 import (
-	"fmt"
-
 	kubernetesv1 "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/containerenv"
 	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
+
+// ImageReference renders a workload image as Kubernetes reads it:
+// repo[:tag][@digest]. With a digest, Kubernetes pulls exactly that build and
+// the tag stays as its readable name.
+func ImageReference(image *kubernetesv1.WorkloadContainerImage) string {
+	ref := image.GetRepo()
+	if tag := image.GetTag(); tag != "" {
+		ref += ":" + tag
+	}
+	if digest := image.GetDigest(); digest != "" {
+		ref += "@" + digest
+	}
+	return ref
+}
 
 // BuildContainer converts one WorkloadContainer into Pulumi container args.
 //
@@ -32,9 +44,8 @@ func BuildContainer(spec *kubernetesv1.WorkloadContainer, defaultName string, en
 	}
 
 	args := corev1.ContainerArgs{
-		Name: pulumi.String(name),
-		Image: pulumi.String(fmt.Sprintf("%s:%s",
-			spec.Image.Repo, spec.Image.Tag)),
+		Name:    pulumi.String(name),
+		Image:   pulumi.String(ImageReference(spec.GetImage())),
 		Env:     corev1.EnvVarArray(containerenv.BuildEnvVars(spec.Env, envSecretName)),
 		EnvFrom: containerenv.BuildEnvFrom(spec.Env),
 	}

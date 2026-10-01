@@ -1,0 +1,6 @@
+# Auth0PromptCustomText Pulumi Module
+# This module manages the words one Universal Login prompt shows in one language.
+name: auth0-prompt-custom-text
+runtime:
+  name: go
+description: Pulumi module for Auth0PromptCustomText component

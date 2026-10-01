@@ -114,6 +114,52 @@ variable "spec" {
         })), [])
         priority_class_name = optional(string, "")
       }))
+      # Typed alert delivery. Every credential arrives already resolved from
+      # a managed-secret reference (the tfvars generation flattens each
+      # StringValueOrRef to its string).
+      notifications = optional(object({
+        receivers = list(object({
+          name = string
+          discord = optional(list(object({
+            webhook_url = string
+          })), [])
+          pushover = optional(list(object({
+            token    = string
+            user_key = string
+            priority = optional(string)
+          })), [])
+          webhook = optional(list(object({
+            url          = string
+            bearer_token = optional(string, "")
+          })), [])
+        }))
+        route = object({
+          receiver        = string
+          group_by        = optional(list(string), [])
+          group_wait      = optional(string, "")
+          group_interval  = optional(string, "")
+          repeat_interval = optional(string, "")
+          routes = optional(list(object({
+            matchers = list(object({
+              label    = string
+              operator = optional(string)
+              value    = optional(string, "")
+            }))
+            receiver          = string
+            continue_matching = optional(bool, false)
+            repeat_interval   = optional(string, "")
+          })), [])
+        })
+        heartbeat = optional(object({
+          url          = string
+          bearer_token = optional(string, "")
+          interval     = optional(string)
+        }))
+        message = optional(object({
+          environment_label = optional(string)
+          component_label   = optional(string)
+        }))
+      }))
     }))
     grafana = optional(object({
       enabled = optional(bool)

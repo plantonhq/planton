@@ -838,14 +838,14 @@ Unspecified applies false.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureDataFactoryIntegrationRuntime, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureDataFactoryIntegrationRuntime, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.integration_runtime_id` | `string` | The integration runtime's Azure Resource Manager ID ({factory_id}/integrationRuntimes/{name}) -- the same ID shape for all three flavors. |
 | `status.outputs.integration_runtime_name` | `string` | The integration runtime's name -- what linked services, data flow activities, and the SSIS proxy resolve against. |
-| `status.outputs.primary_authorization_key` | `string` | The primary authorization key a self-hosted agent uses to join this runtime. Populated only for a PRIMARY self_hosted runtime (Azure issues no keys for the managed flavors or for a linked registration). SECRET -- Azure returns it readable, so the catalog treats it as sensitive even though the provider does not. |
-| `status.outputs.secondary_authorization_key` | `string` | The secondary authorization key (for key rotation). Populated only for a PRIMARY self_hosted runtime. SECRET. |
+| `status.outputs.primary_authorization_key` | `string` (sensitive) | The primary authorization key a self-hosted agent uses to join this runtime. Populated only for a PRIMARY self_hosted runtime (Azure issues no keys for the managed flavors or for a linked registration). SECRET -- Azure returns it readable, so the catalog treats it as sensitive even though the provider does not. |
+| `status.outputs.secondary_authorization_key` | `string` (sensitive) | The secondary authorization key (for key rotation). Populated only for a PRIMARY self_hosted runtime. SECRET. |
 
 ## References
 

@@ -85,7 +85,8 @@ These are the most important decisions when configuring metrics-server. Explore 
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesSecret** | `tls.existingSecretName` | `metadata.name` |
-| **KubernetesIssuer** | `tls.certManagerIssuer.name` | `status.outputs.issuer_name` |
+| **KubernetesIssuer** | `tls.certManagerIssuer.issuer.name` | `status.outputs.issuer_name` |
+| **KubernetesClusterIssuer** | `tls.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 
 ### What This Component Provides
 

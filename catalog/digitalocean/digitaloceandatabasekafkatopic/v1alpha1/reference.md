@@ -100,7 +100,9 @@ spec:
 The Kafka database cluster to create the topic in. Use a literal
 cluster UUID or a reference to a DigitalOceanDatabaseCluster resource
 (the cluster must run the kafka engine -- DigitalOcean rejects topic
-calls on other engines). Changing it replaces the topic.
+calls on other engines). Any Kafka plan works, Basic included (unlike
+the schema registry, which needs a General Purpose plan). Changing it
+replaces the topic.
 
 - references: DigitalOceanDatabaseCluster (`status.outputs.cluster_id`)
 - rule: {"required":true}
@@ -272,9 +274,11 @@ the log compactor considers the partition, 0.0 to 1.0.
 
 (Optional) Minimum number of in-sync replicas that must acknowledge a
 write when the producer uses acks=all. This is the config block's only
-leaf the provider defaults locally (to 1) instead of reading the server
-value back -- leaving it unset always writes 1, even if the server was
-tuned differently out-of-band.
+leaf the provider defaults on the WRITE side (to 1): whenever this
+config message is present and the leaf is unset, 1 is sent, even if
+the server was tuned differently out-of-band. The value IS read back
+from the server afterwards (measured 2026-09-17: a topic created with
+2 read 2 back on every plan), so a set value never drifts.
 
 - rule: {"int32":{"gte":1}}
 
@@ -335,7 +339,6 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanData
 |---|---|---|
 | `status.outputs.cluster_id` | `string` | UUID of the Kafka database cluster the topic lives in. |
 | `status.outputs.topic_name` | `string` | Name of the Kafka topic (its API identity within the cluster). |
-| `status.outputs.state` | `string` | Provisioning state of the topic as reported by DigitalOcean at apply time (e.g. active). Topic creation is asynchronous, so this is a snapshot, not a live guarantee. |
 
 ## References
 

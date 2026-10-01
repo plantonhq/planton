@@ -307,15 +307,15 @@ metadata tags (user values win on key conflicts).
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureEventgridTopic, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureEventgridTopic, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.topic_id` | `string` | The topic's Azure Resource Manager ID. |
 | `status.outputs.topic_name` | `string` | The topic's name (also the first label of its endpoint hostname). |
 | `status.outputs.endpoint` | `string` | The HTTPS endpoint publishers POST events to (https://{name}.{region}.eventgrid.azure.net/api/events). |
-| `status.outputs.primary_access_key` | `string` | The primary access key publishers authenticate with (the aeg-sas-key header). Inert while local_auth_enabled is false. |
-| `status.outputs.secondary_access_key` | `string` | The secondary access key -- the rotation partner: move publishers here, regenerate the primary, move back. |
+| `status.outputs.primary_access_key` | `string` (sensitive) | The primary access key publishers authenticate with (the aeg-sas-key header). Inert while local_auth_enabled is false. |
+| `status.outputs.secondary_access_key` | `string` (sensitive) | The secondary access key -- the rotation partner: move publishers here, regenerate the primary, move back. |
 | `status.outputs.identity_principal_id` | `string` | The principal ID of the topic's system-assigned identity (empty when no identity is configured) -- grant this on delivery targets that use identity-based access. |
 
 ## References

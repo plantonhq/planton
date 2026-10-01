@@ -124,19 +124,20 @@ func IsNamespacedKind(kind string) bool {
 
 // helmResourceValues turns a typed ResourceRequirements into the values shape
 // every chart the operator renders reads under its `resources` key
-// ({requests: {cpu, memory}, limits: {cpu, memory}}). Unset quantities are
-// omitted, never rendered as empty strings, so "no CPU limit" stays exactly
-// that -- the house pattern is requests for both, a memory limit, and no CPU
-// limit. One conversion, so a component's sizing is declared once as typed
-// Kubernetes quantities whether it renders a Deployment or a chart.
+// ({requests: {cpu: ..., memory: ...}, limits: {memory: ...}}). Every quantity
+// the requirements carry is rendered -- an adopter's CPU limit or ephemeral
+// storage reaches the chart exactly as it reaches a typed Deployment -- and
+// unset quantities are omitted, never rendered as empty strings, so "no CPU
+// limit" stays exactly that. One conversion, so a component's sizing is
+// declared once as typed Kubernetes quantities whether it renders a
+// Deployment or a chart.
 func helmResourceValues(r corev1.ResourceRequirements) map[string]any {
 	toValues := func(list corev1.ResourceList) map[string]any {
 		out := map[string]any{}
-		if q, ok := list[corev1.ResourceCPU]; ok && !q.IsZero() {
-			out["cpu"] = q.String()
-		}
-		if q, ok := list[corev1.ResourceMemory]; ok && !q.IsZero() {
-			out["memory"] = q.String()
+		for name, q := range list {
+			if !q.IsZero() {
+				out[string(name)] = q.String()
+			}
 		}
 		return out
 	}

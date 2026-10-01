@@ -18,7 +18,6 @@ This preset creates an Azure Subnet delegated to PostgreSQL Flexible Server. Del
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<your-resource-group-name>` | Resource group containing the VNet | Azure portal or `AzureResourceGroup` status outputs |
 | `<vnet-resource-id>` | Full ARM resource ID of the parent VNet | Azure portal or `AzureVirtualNetwork` status outputs |
 
 ## Related Presets

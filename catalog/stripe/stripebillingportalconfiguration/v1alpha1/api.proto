@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingportalconfiguration.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripebillingportalconfiguration/v1alpha1/outputs.proto";
+import "catalog/stripe/stripebillingportalconfiguration/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeBillingPortalConfiguration is a component that declares what Stripe's customer portal
+// lets a customer do: cancel, update payment methods and details, see invoices.
+//
+// It creates a configuration of its own and never adopts the account's default; the application
+// names its id (status.outputs.id) when it opens a portal session. Stripe never deletes a
+// configuration: destroy deactivates it, and Stripe keeps it forever.
+//
+// Use cases:
+// - Let customers cancel at the end of the period, with a reason
+// - Let customers cancel at once with a credit for unused time, and manage their cards
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeBillingPortalConfiguration
+// metadata:
+//   name: customer-portal
+//   org: my-organization
+// spec:
+//   name: Customer portal
+//   features:
+//     invoiceHistory:
+//       enabled: true
+//     paymentMethodUpdate:
+//       enabled: true
+//     subscriptionCancel:
+//       enabled: true
+//       mode: at_period_end
+//   businessProfile:
+//     privacyPolicyUrl: https://example.com/privacy
+//     termsOfServiceUrl: https://example.com/terms
+// ```
+message StripeBillingPortalConfiguration {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeBillingPortalConfiguration" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeBillingPortalConfiguration'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains what the portal lets a customer do.
+  StripeBillingPortalConfigurationSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the configuration as created, populated after deployment.
+  StripeBillingPortalConfigurationStatus status = 5;
+}
+
+// StripeBillingPortalConfigurationStatus represents the current state of a
+// StripeBillingPortalConfiguration resource. Populated by the deployment system.
+message StripeBillingPortalConfigurationStatus {
+  // outputs contains the stack outputs: the configuration's id and state.
+  StripeBillingPortalConfigurationStackOutputs outputs = 1;
+}

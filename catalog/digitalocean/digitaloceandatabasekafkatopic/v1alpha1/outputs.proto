@@ -6,15 +6,22 @@ package dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1;
 // provisioning a Kafka topic. DigitalOcean has no standalone topic id --
 // the (cluster, topic name) pair IS the identity -- so both halves are
 // exported for consumers and verification tooling.
+//
+// The topic's provisioning state is deliberately NOT an output: a state
+// captured at apply time goes stale the moment DigitalOcean changes it
+// (topic creation is asynchronous, and a topic can later degrade), and a
+// stale "active" in stored outputs is worse than no value. Live state is
+// read from the API by whoever needs it -- the E2E verifier asserts it that
+// way.
 message DigitalOceanDatabaseKafkaTopicStackOutputs {
+  // Retired: `state` (an apply-time provisioning snapshot). Never reuse
+  // the number or the name.
+  reserved 3;
+  reserved "state";
+
   // UUID of the Kafka database cluster the topic lives in.
   string cluster_id = 1;
 
   // Name of the Kafka topic (its API identity within the cluster).
   string topic_name = 2;
-
-  // Provisioning state of the topic as reported by DigitalOcean at apply
-  // time (e.g. active). Topic creation is asynchronous, so this is a
-  // snapshot, not a live guarantee.
-  string state = 3;
 }

@@ -1,0 +1,26 @@
+# The tenant's default domain set to a verified custom domain: the custom
+# domain, its Cloudflare CNAME (another provider's prerequisite), and its
+# verification deploy first, in that order, and the default reads the
+# verification's domain. Only the default is managed here, so the tenant's
+# name, logo and support contacts are not touched. Destroy leaves the default
+# in place (Auth0 cannot unset one), and the custom domain's own teardown
+# follows.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: e2e-tenant-default-domain
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT,PLANTON_E2E_AUTH0_DNS_ZONE_ID
+    planton.dev/e2e-prerequisites: Auth0CustomDomain,catalog/auth0/auth0customdomainverification/e2e/fixtures/verification-record.yaml,catalog/auth0/auth0tenantsettings/e2e/fixtures/verified-domain.yaml
+    # The verification record lives in a real, delegated zone the fixture names
+    # by id (PLANTON_E2E_AUTH0_DNS_ZONE_ID): it already exists, so the DNS
+    # record's own zone prerequisite is neither created nor destroyed.
+    planton.dev/e2e-resident-prerequisites: CloudflareDnsZone
+spec:
+  defaultCustomDomain:
+    valueFrom:
+      kind: Auth0CustomDomainVerification
+      name: e2e-sign-in-domain-verification
+      fieldPath: status.outputs.domain

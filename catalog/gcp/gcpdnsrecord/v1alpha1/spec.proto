@@ -163,7 +163,9 @@ message GcpDnsRecordWrrPolicyItem {
   // Static values (RRDATA) answered for this entry.
   // If the zone has DNSSEC enabled, an entry may set only one of values or
   // health_checked_targets; otherwise both may be combined.
-  repeated string values = 2;
+  // Each entry can be a literal or a reference to another resource's
+  // output, as the record's own values can.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef values = 2;
 
   // Load-balancer targets health-checked for this entry (A/AAAA records
   // only). Unhealthy targets are withdrawn from answers automatically.
@@ -177,7 +179,9 @@ message GcpDnsRecordGeoPolicyItem {
   string location = 1 [(buf.validate.field).required = true];
 
   // Static values (RRDATA) answered for this location.
-  repeated string values = 2;
+  // Each entry can be a literal or a reference to another resource's
+  // output, as the record's own values can.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef values = 2;
 
   // Load-balancer targets health-checked for this location (A/AAAA records
   // only). Unhealthy targets are withdrawn from answers automatically.

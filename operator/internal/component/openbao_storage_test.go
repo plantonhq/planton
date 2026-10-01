@@ -15,7 +15,7 @@ import (
 // an applied database lets the server render.
 
 func vaultCluster(managedRolesStatus map[string]any) *unstructured.Unstructured {
-	cluster := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+	cluster := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{Resources: resources.Effective(resources.SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 	if managedRolesStatus != nil {
 		_ = unstructured.SetNestedMap(cluster.Object, managedRolesStatus, "status", "managedRolesStatus")
 	}

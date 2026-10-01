@@ -33,7 +33,7 @@ spec:
       evidence:
         type: spec_default
         reference: "enforce_policies defaults to false (spec.proto); set true, Auth0 evaluates role and permission assignments during login and enforces its built-in RBAC for this API. Pair it with a token_dialect ending in _authz (access_token_authz or rfc9068_profile_authz) so granted permissions appear as token claims, and define the grantable permissions in scopes."
-      notes: WHO may manage this object itself is governed at the Auth0 tenant level -- Management API tokens scoped with the resource_servers scopes (documented in iac/permissions.yaml) and dashboard admin roles. The roles that feed the RBAC evaluation are authored by the auth0role kind.
+      notes: "Which applications may get a token for the API at all is its access policy, subject_type_authorization -- per subject type, allow_all, require_client_grant (a grant per application caps its scopes; Auth0's least-privilege recommendation) or deny_all -- and third_party_client_default_grants sets the ceiling every third-party application gets. WHO may manage this object itself is governed at the Auth0 tenant level -- Management API tokens scoped with the resource_servers and client_grants scopes (documented in iac/permissions.yaml) and dashboard admin roles. The roles that feed the RBAC evaluation are authored by the auth0role kind."
     - control_id: workload-identity
       status: not_applicable
       notes: The resource server holds no credentials and authenticates to nothing -- it is the AUDIENCE others authenticate to. The credential the IaC runner presents is the provider connection's concern, documented in iac/permissions.yaml; no spec field selects between static and federated auth.
@@ -43,7 +43,7 @@ spec:
       evidence:
         type: spec_default
         reference: "signing_alg empty means RS256 (spec.proto), the asymmetric, recommended posture where only Auth0 holds the signing key; HS256 opts into a symmetric shared secret that every verifier must hold -- a possessor of that secret can mint valid tokens. PS256 (RSA-PSS) is the third accepted value; the spec validation admits nothing else."
-      notes: token_lifetime (default 86400s) and token_lifetime_for_web (default 7200s) bound how long an issued token stays valid; allow_offline_access (default false) keeps refresh tokens off unless deliberately enabled.
+      notes: "token_lifetime (default 86400s) and token_lifetime_for_web (default 7200s) bound how long an issued token stays valid; allow_offline_access (default false) keeps refresh tokens off unless deliberately enabled. proof_of_possession (dpop or mtls) replaces bearer tokens with sender-constrained ones a thief cannot replay, and token_encryption (a JWE to the API's public key) keeps the token's claims unreadable to anyone but the API; both are unset (unmanaged) by default."
     - control_id: strong-user-auth
       status: not_applicable
       notes: "A resource server is an API audience and scope definition -- it signs nobody in and carries no end-user credential surface. Credential strength for the tenant's end users (password policy, brute-force protection, MFA) lives on the tenant's connections: the auth0connection kind carries that stance."

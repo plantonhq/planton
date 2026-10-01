@@ -1,0 +1,65 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: auth0tenantsettings
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: Tenant settings (a name, a logo URL, support contacts, session lifetimes, OAuth switches, an error page, flags) inside Auth0's SaaS control plane, none of them secret; their storage is Auth0's provider-managed posture, with no encryption seam in this spec.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest at this component's level to key (see enc-at-rest); Auth0 exposes no customer-managed-key surface on tenant settings.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The settings terminate no connections; the Management API calls that write them travel to Auth0's HTTPS-only API. The spec's mtls block (Enterprise plan with the Highly Regulated Identity add-on) publishes the tenant's mutual-TLS endpoint aliases for clients that authenticate with a certificate -- client authentication on top of TLS, not a choice of whether traffic is encrypted.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The presentation settings are shown publicly by design (the login page's name, logo and support contacts); the settings expose no endpoint of their own. flags.enable_dynamic_client_registration opens the tenant's /oidc/register endpoint to anyone -- the spec comment states it -- but that is the tenant's Authentication API, which is public by nature.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network surface exists to filter (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The object receives no HTTP requests; Auth0's own login and API edge is Auth0's provider-managed posture. flags.disable_clickjack_protection_headers can remove the anti-framing headers from classic Universal Login prompts; unset, the tenant keeps them as it has them.
+    - control_id: rbac
+      status: not_applicable
+      notes: WHO may change the tenant's settings is governed at the Auth0 tenant level -- Management API tokens scoped with read:tenant_settings and update:tenant_settings (iac/permissions.yaml) and dashboard admin roles -- with no per-setting access-control surface in this spec.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The settings hold no credentials and authenticate to nothing; the credential the IaC runner presents is the provider connection's concern (iac/permissions.yaml).
+    - control_id: no-legacy-auth
+      status: configurable
+      field_path: flags.allow_legacy_ro_grant_types
+      evidence:
+        type: spec_default
+        reference: "Unset, each legacy path keeps the tenant's value; declared false, the modules turn it off through auth0_tenant's flags block (iac/tf/main.tf, iac/pulumi/module/tenant.go): flags.allow_legacy_ro_grant_types (the /oauth/ro endpoint), flags.allow_legacy_delegation_grant_types (/delegation), flags.allow_legacy_tokeninfo_endpoint (/tokeninfo), flags.enable_idtoken_api2 (ID tokens authorizing Management API calls) and flags.enable_legacy_profile (full profiles in ID tokens). Each spec comment says to keep it false unless an old integration needs it."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: Credential strength -- password policy, brute-force protection, MFA factors -- lives on the tenant's connections and MFA configuration, outside this spec. The spec shapes re-authentication (session_lifetime, idle_session_lifetime, session_cookie) and lets a post-login Action choose MFA factors (customize_mfa_in_postlogin_action), but sets no credential requirement of its own.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Changes to tenant settings are Management API operations captured in Auth0's tenant logs (exported, where wanted, by the auth0eventstream kind).
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the modules expose a metrics surface for tenant settings.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The managed settings are declaratively re-creatable from the manifest, so the manifest is the recovery point; settings the spec leaves unset are not managed and are Auth0's to keep.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure; availability of the login page is Auth0's SaaS platform posture.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: Destroying this resource deletes nothing -- Auth0 has no delete for tenant settings, and the provider's destroy only forgets them, leaving the last-applied values in place; the tenant itself cannot be deleted through the Management API.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software of its own to patch; Universal Login is Auth0's SaaS, patched by Auth0. sandbox_version chooses the Node.js runtime the tenant's extensibility scripts run on, which Auth0 maintains.

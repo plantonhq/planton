@@ -11,7 +11,9 @@
 // everything except the surfaces the platform feeds and reads. Severity
 // follows what actually breaks a deployment — a mismatch that fails every
 // deploy is an error; one that fails only for particular configurations, or
-// merely goes unused, is a warning.
+// merely goes unused, is a warning. A module that would print a secret the
+// schema declares (a generated credential exported in the clear) is an error
+// too: it leaks on every deployment.
 package moduleverify
 
 import (
@@ -115,6 +117,11 @@ func Verify(in Input) (*Result, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+	// A module for an engine the kind does not run on is not a module of that
+	// kind, however well it satisfies the contract otherwise.
+	if err := provisioner.Require(kind, prov); err != nil {
+		return nil, err
 	}
 
 	result := &Result{

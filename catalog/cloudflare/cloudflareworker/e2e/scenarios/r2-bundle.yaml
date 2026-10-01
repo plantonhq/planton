@@ -1,0 +1,51 @@
+# R2-bundle CloudflareWorker scenario: the script source is a pre-built bundle
+# read from R2 through its S3-compatible API, on both engines.
+#
+# The lane deploys as the Cloudflare harness's `connection-with-r2` identity,
+# so both engines receive the R2 key pair the way a console deploy delivers
+# it (Pulumi through provider_config.r2, OpenTofu through TF_VAR_r2_*), never
+# from ambient AWS_* credentials.
+#
+# The bundle is e2e/fixtures/r2-bundle/index.js, served as
+# application/javascript -- the type the storage provider's plain `body`
+# attribute leaves empty, so this scenario proves the modules read raw bytes.
+# It lives in an owner-arranged bucket: Cloudflare refuses to delete a
+# non-empty bucket, so a per-run bucket fixture cannot hold it. The one-time
+# arrangement, on the e2e account:
+#   1. an R2 bucket, exported as PLANTON_E2E_CLOUDFLARE_R2_BUNDLE_BUCKET;
+#   2. an R2 API token with Object Read & Write on that bucket only, its key
+#      pair exported as PLANTON_E2E_CLOUDFLARE_R2_ACCESS_KEY_ID and
+#      PLANTON_E2E_CLOUDFLARE_R2_SECRET_ACCESS_KEY;
+#   3. the fixture placed at e2e/cloudflareworker/index.js in that bucket:
+#        curl --fail --aws-sigv4 "aws:amz:auto:s3" \
+#          --user "$PLANTON_E2E_CLOUDFLARE_R2_ACCESS_KEY_ID:$PLANTON_E2E_CLOUDFLARE_R2_SECRET_ACCESS_KEY" \
+#          -H "Content-Type: application/javascript" \
+#          -T catalog/cloudflare/cloudflareworker/e2e/fixtures/r2-bundle/index.js \
+#          "https://$PLANTON_E2E_CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com/$PLANTON_E2E_CLOUDFLARE_R2_BUNDLE_BUCKET/e2e/cloudflareworker/index.js"
+# Without the arrangement the lane skips (planton.dev/e2e-required-env).
+apiVersion: cloudflare.planton.dev/v1alpha1
+kind: CloudflareWorker
+metadata:
+  name: planton-oss-e2e-cloudflareworker-r2-bundle
+  id: planton-oss-e2e-cloudflareworker-r2-bundle
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: cloudflareworker
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-identity: connection-with-r2
+    planton.dev/e2e-required-env: PLANTON_E2E_CLOUDFLARE_R2_ACCESS_KEY_ID,PLANTON_E2E_CLOUDFLARE_R2_SECRET_ACCESS_KEY,PLANTON_E2E_CLOUDFLARE_R2_BUNDLE_BUCKET
+  tags:
+    - planton-e2e
+spec:
+  accountId: ${E2E_ENV:PLANTON_E2E_CLOUDFLARE_ACCOUNT_ID}
+  workerName: e2e-cfw-r2b-${E2E_RUN_ID}
+  r2Bundle:
+    bucket:
+      value: ${E2E_ENV:PLANTON_E2E_CLOUDFLARE_R2_BUNDLE_BUCKET}
+    path: e2e/cloudflareworker/index.js
+  compatibilityDate: "2025-01-15"
+  workersDev:
+    enabled: true

@@ -95,16 +95,20 @@ type DigitalOceanVolumeSpec struct {
 	// DigitalOcean caps volume size at 16 TiB (larger requests fail at the API).
 	SizeGib uint32 `protobuf:"varint,4,opt,name=size_gib,json=sizeGib,proto3" json:"size_gib,omitempty"`
 	// (Optional) The initial filesystem to format the volume with at creation time.
-	// Create-only: DigitalOcean formats the volume once and never reports this argument back
-	// (the resulting filesystem is observable through the separate computed attributes).
-	// Leave unset (unformatted) to format the volume yourself from the Droplet.
+	// Applied at creation ONLY: DigitalOcean formats the volume once and never reports this
+	// argument back (the resulting filesystem is observable through the separate computed
+	// attributes), and both IaC modules ignore later edits -- changing it on an existing volume
+	// neither reformats nor replaces the volume, which is what keeps an adopted (imported) volume's
+	// data safe when the manifest still describes how it was formatted. To reformat, create a new
+	// volume. Leave unset (unformatted) to format the volume yourself from the Droplet.
 	FilesystemType DigitalOceanVolumeFilesystemType `protobuf:"varint,5,opt,name=filesystem_type,json=filesystemType,proto3,enum=dev.planton.digitalocean.digitaloceanvolume.v1alpha1.DigitalOceanVolumeFilesystemType" json:"filesystem_type,omitempty"`
 	// (Optional) The filesystem label applied when the volume is formatted at creation time
-	// (e.g. "data"). Only meaningful together with `filesystem_type`. Create-only, and never
-	// reported back by the API.
+	// (e.g. "data"). Only meaningful together with `filesystem_type`. Applied at creation ONLY
+	// and never reported back by the API; later edits are ignored, exactly like `filesystem_type`.
 	InitialFilesystemLabel string `protobuf:"bytes,8,opt,name=initial_filesystem_label,json=initialFilesystemLabel,proto3" json:"initial_filesystem_label,omitempty"`
 	// (Optional) A volume snapshot ID to create this volume from. The new volume inherits the
-	// snapshot's region and minimum size. Create-only, and never reported back by the API.
+	// snapshot's region and minimum size. Applied at creation ONLY and never reported back by the
+	// API; later edits are ignored (a different snapshot means a different volume -- create one).
 	SnapshotId string `protobuf:"bytes,6,opt,name=snapshot_id,json=snapshotId,proto3" json:"snapshot_id,omitempty"`
 	// (Optional) Tags applied to the volume. Both provisioners apply the union of these tags and
 	// the standard Planton labels. Tags may contain letters, numbers, colons, dashes, and

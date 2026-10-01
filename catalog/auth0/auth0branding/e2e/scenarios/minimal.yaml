@@ -1,0 +1,11 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Branding
+metadata:
+  name: e2e-branding
+  org: e2e-org
+  env: testing
+spec:
+  logoUrl: https://assets.example.com/logo.png
+  colors:
+    primary: "#0059d6"
+    pageBackground: "#000000"

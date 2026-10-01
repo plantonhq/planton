@@ -31,13 +31,16 @@ resource "digitalocean_uptime_alert" "alerts" {
   name     = each.value.alert_name
   type     = each.value.type
 
-  # Milliseconds for latency, days before expiry for ssl_expiry; down and
-  # down_global carry no threshold (an unset value is sent as the API's
-  # accepted zero).
-  threshold = each.value.threshold
+  # Milliseconds for latency, days before expiry for ssl_expiry, and the
+  # API's fixed 1 for down / down_global (see locals.tf -- the spec forbids
+  # authoring those, so the module supplies what DigitalOcean will store).
+  threshold = local.alert_threshold[each.key]
 
-  comparison = each.value.comparison != "" ? each.value.comparison : null
-  period     = each.value.period != "" ? each.value.period : null
+  # Authored for latency; the API's fixed less_than for every other type.
+  comparison = local.alert_comparison[each.key]
+
+  # Required by the API for every alert type (spec-required, never null).
+  period = each.value.period
 
   notifications {
     email = each.value.notifications.emails

@@ -243,6 +243,7 @@ spec:
 | `spec.container.app.image` | `WorkloadContainerImage` | yes |  |  |
 | `spec.container.app.image.repo` | `string` |  |  |  |
 | `spec.container.app.image.tag` | `string` |  |  |  |
+| `spec.container.app.image.digest` | `string` |  |  |  |
 | `spec.container.app.imagePullPolicy` | `string` |  |  |  |
 | `spec.container.app.command` | `[]string` |  |  |  |
 | `spec.container.app.args` | `[]string` |  |  |  |
@@ -276,7 +277,7 @@ spec:
 | `spec.container.app.env.variables[].resourceFieldRef.divisor` | `string` |  |  |  |
 | `spec.container.app.env.secrets` | `[]SecretEnvVar` |  |  |  |
 | `spec.container.app.env.secrets[].name` | `string` | yes |  |  |
-| `spec.container.app.env.secrets[].value` | `string` |  |  |  |
+| `spec.container.app.env.secrets[].value` | `string` (sensitive) |  |  |  |
 | `spec.container.app.env.secrets[].secretRef` | `KubernetesSecretKeyRef` |  |  |  |
 | `spec.container.app.env.secrets[].secretRef.namespace` | `string` |  |  |  |
 | `spec.container.app.env.secrets[].secretRef.name` | `string` | yes |  |  |
@@ -457,6 +458,7 @@ spec:
 | `spec.container.sidecars[].image` | `WorkloadContainerImage` | yes |  |  |
 | `spec.container.sidecars[].image.repo` | `string` |  |  |  |
 | `spec.container.sidecars[].image.tag` | `string` |  |  |  |
+| `spec.container.sidecars[].image.digest` | `string` |  |  |  |
 | `spec.container.sidecars[].imagePullPolicy` | `string` |  |  |  |
 | `spec.container.sidecars[].command` | `[]string` |  |  |  |
 | `spec.container.sidecars[].args` | `[]string` |  |  |  |
@@ -490,7 +492,7 @@ spec:
 | `spec.container.sidecars[].env.variables[].resourceFieldRef.divisor` | `string` |  |  |  |
 | `spec.container.sidecars[].env.secrets` | `[]SecretEnvVar` |  |  |  |
 | `spec.container.sidecars[].env.secrets[].name` | `string` | yes |  |  |
-| `spec.container.sidecars[].env.secrets[].value` | `string` |  |  |  |
+| `spec.container.sidecars[].env.secrets[].value` | `string` (sensitive) |  |  |  |
 | `spec.container.sidecars[].env.secrets[].secretRef` | `KubernetesSecretKeyRef` |  |  |  |
 | `spec.container.sidecars[].env.secrets[].secretRef.namespace` | `string` |  |  |  |
 | `spec.container.sidecars[].env.secrets[].secretRef.name` | `string` | yes |  |  |
@@ -680,6 +682,7 @@ spec:
 | `spec.pod.initContainers[].image` | `WorkloadContainerImage` | yes |  |  |
 | `spec.pod.initContainers[].image.repo` | `string` |  |  |  |
 | `spec.pod.initContainers[].image.tag` | `string` |  |  |  |
+| `spec.pod.initContainers[].image.digest` | `string` |  |  |  |
 | `spec.pod.initContainers[].imagePullPolicy` | `string` |  |  |  |
 | `spec.pod.initContainers[].command` | `[]string` |  |  |  |
 | `spec.pod.initContainers[].args` | `[]string` |  |  |  |
@@ -713,7 +716,7 @@ spec:
 | `spec.pod.initContainers[].env.variables[].resourceFieldRef.divisor` | `string` |  |  |  |
 | `spec.pod.initContainers[].env.secrets` | `[]SecretEnvVar` |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].name` | `string` | yes |  |  |
-| `spec.pod.initContainers[].env.secrets[].value` | `string` |  |  |  |
+| `spec.pod.initContainers[].env.secrets[].value` | `string` (sensitive) |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].secretRef` | `KubernetesSecretKeyRef` |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].secretRef.namespace` | `string` |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].secretRef.name` | `string` | yes |  |  |
@@ -1065,7 +1068,7 @@ pod-wide — on `pod.image_registries` (the login itself) or `pod.image_pull_sec
 (a Secret declared beside the workload), or on the ServiceAccount the pod runs as.
 
 - rule: Image repo is required — the repository half of the image reference (e.g. "nginx" or "ghcr.io/acme/api")
-- rule: Image tag is required — pin a version (e.g. "1.27.1"); avoid "latest" for anything you intend to roll back
+- rule: Image tag or digest is required — pin a version (e.g. "1.27.1") or an exact build ("sha256:…"); avoid "latest" for anything you intend to roll back
 - rule: {"required":true}
 
 ### spec.container.app.image.repo
@@ -1079,6 +1082,17 @@ The repository of the image (e.g. "nginx" or "ghcr.io/acme/checkout").
 `string`
 
 The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
+
+### spec.container.app.image.digest
+
+`string`
+
+The image's content digest ("sha256:" and 64 lowercase hex characters), when
+the container runs one exact build. Kubernetes pulls by the digest and ignores
+the tag; to run a different tag, clear the digest. A build Planton runs
+stamps it, so a deployment runs the image the build produced.
+
+- rule: Image digest must be "sha256:" followed by 64 lowercase hex characters
 
 ### spec.container.app.imagePullPolicy
 
@@ -2013,9 +2027,35 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `Auth0TenantSettings`
+- `Auth0CustomDomain`
+- `Auth0CustomDomainVerification`
+- `Auth0Branding` -- 8010–8015: how the tenant's Universal Login looks, reads and mails -- branding and theme, the login flow, each prompt's words and screen partials, the email service and each email.
+- `Auth0Prompt`
+- `Auth0PromptCustomText`
+- `Auth0PromptScreenPartials`
+- `Auth0EmailProvider`
+- `Auth0EmailTemplate`
+- `Auth0ClientFromMetadataDocument`
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
+- `StripeEventDestination`
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeCoupon`
+- `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
+- `StripeEntitlementFeature`
+- `StripeShippingRate`
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
+- `StripeBillingMeter`
+- `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
 ### spec.container.app.env.variables[].valueFrom.env
 
@@ -2125,11 +2165,11 @@ The environment variable name.
 
 ### spec.container.app.env.secrets[].value
 
-`string`
+`string` · sensitive
 
-Literal string value.
-A Kubernetes Secret is automatically created and the environment variable
-references that secret.
+The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+and the environment variable references that Secret.
 
 ### spec.container.app.env.secrets[].secretRef
 
@@ -2964,9 +3004,35 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `Auth0TenantSettings`
+- `Auth0CustomDomain`
+- `Auth0CustomDomainVerification`
+- `Auth0Branding` -- 8010–8015: how the tenant's Universal Login looks, reads and mails -- branding and theme, the login flow, each prompt's words and screen partials, the email service and each email.
+- `Auth0Prompt`
+- `Auth0PromptCustomText`
+- `Auth0PromptScreenPartials`
+- `Auth0EmailProvider`
+- `Auth0EmailTemplate`
+- `Auth0ClientFromMetadataDocument`
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
+- `StripeEventDestination`
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeCoupon`
+- `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
+- `StripeEntitlementFeature`
+- `StripeShippingRate`
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
+- `StripeBillingMeter`
+- `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
 ### spec.container.app.env.secrets[].valueFrom.env
 
@@ -4152,7 +4218,7 @@ pod-wide — on `pod.image_registries` (the login itself) or `pod.image_pull_sec
 (a Secret declared beside the workload), or on the ServiceAccount the pod runs as.
 
 - rule: Image repo is required — the repository half of the image reference (e.g. "nginx" or "ghcr.io/acme/api")
-- rule: Image tag is required — pin a version (e.g. "1.27.1"); avoid "latest" for anything you intend to roll back
+- rule: Image tag or digest is required — pin a version (e.g. "1.27.1") or an exact build ("sha256:…"); avoid "latest" for anything you intend to roll back
 - rule: {"required":true}
 
 ### spec.container.sidecars[].image.repo
@@ -4166,6 +4232,17 @@ The repository of the image (e.g. "nginx" or "ghcr.io/acme/checkout").
 `string`
 
 The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
+
+### spec.container.sidecars[].image.digest
+
+`string`
+
+The image's content digest ("sha256:" and 64 lowercase hex characters), when
+the container runs one exact build. Kubernetes pulls by the digest and ignores
+the tag; to run a different tag, clear the digest. A build Planton runs
+stamps it, so a deployment runs the image the build produced.
+
+- rule: Image digest must be "sha256:" followed by 64 lowercase hex characters
 
 ### spec.container.sidecars[].imagePullPolicy
 
@@ -5100,9 +5177,35 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `Auth0TenantSettings`
+- `Auth0CustomDomain`
+- `Auth0CustomDomainVerification`
+- `Auth0Branding` -- 8010–8015: how the tenant's Universal Login looks, reads and mails -- branding and theme, the login flow, each prompt's words and screen partials, the email service and each email.
+- `Auth0Prompt`
+- `Auth0PromptCustomText`
+- `Auth0PromptScreenPartials`
+- `Auth0EmailProvider`
+- `Auth0EmailTemplate`
+- `Auth0ClientFromMetadataDocument`
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
+- `StripeEventDestination`
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeCoupon`
+- `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
+- `StripeEntitlementFeature`
+- `StripeShippingRate`
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
+- `StripeBillingMeter`
+- `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
 ### spec.container.sidecars[].env.variables[].valueFrom.env
 
@@ -5212,11 +5315,11 @@ The environment variable name.
 
 ### spec.container.sidecars[].env.secrets[].value
 
-`string`
+`string` · sensitive
 
-Literal string value.
-A Kubernetes Secret is automatically created and the environment variable
-references that secret.
+The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+and the environment variable references that Secret.
 
 ### spec.container.sidecars[].env.secrets[].secretRef
 
@@ -6051,9 +6154,35 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `Auth0TenantSettings`
+- `Auth0CustomDomain`
+- `Auth0CustomDomainVerification`
+- `Auth0Branding` -- 8010–8015: how the tenant's Universal Login looks, reads and mails -- branding and theme, the login flow, each prompt's words and screen partials, the email service and each email.
+- `Auth0Prompt`
+- `Auth0PromptCustomText`
+- `Auth0PromptScreenPartials`
+- `Auth0EmailProvider`
+- `Auth0EmailTemplate`
+- `Auth0ClientFromMetadataDocument`
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
+- `StripeEventDestination`
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeCoupon`
+- `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
+- `StripeEntitlementFeature`
+- `StripeShippingRate`
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
+- `StripeBillingMeter`
+- `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
 ### spec.container.sidecars[].env.secrets[].valueFrom.env
 
@@ -7358,7 +7487,7 @@ pod-wide — on `pod.image_registries` (the login itself) or `pod.image_pull_sec
 (a Secret declared beside the workload), or on the ServiceAccount the pod runs as.
 
 - rule: Image repo is required — the repository half of the image reference (e.g. "nginx" or "ghcr.io/acme/api")
-- rule: Image tag is required — pin a version (e.g. "1.27.1"); avoid "latest" for anything you intend to roll back
+- rule: Image tag or digest is required — pin a version (e.g. "1.27.1") or an exact build ("sha256:…"); avoid "latest" for anything you intend to roll back
 - rule: {"required":true}
 
 ### spec.pod.initContainers[].image.repo
@@ -7372,6 +7501,17 @@ The repository of the image (e.g. "nginx" or "ghcr.io/acme/checkout").
 `string`
 
 The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
+
+### spec.pod.initContainers[].image.digest
+
+`string`
+
+The image's content digest ("sha256:" and 64 lowercase hex characters), when
+the container runs one exact build. Kubernetes pulls by the digest and ignores
+the tag; to run a different tag, clear the digest. A build Planton runs
+stamps it, so a deployment runs the image the build produced.
+
+- rule: Image digest must be "sha256:" followed by 64 lowercase hex characters
 
 ### spec.pod.initContainers[].imagePullPolicy
 
@@ -8306,9 +8446,35 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `Auth0TenantSettings`
+- `Auth0CustomDomain`
+- `Auth0CustomDomainVerification`
+- `Auth0Branding` -- 8010–8015: how the tenant's Universal Login looks, reads and mails -- branding and theme, the login flow, each prompt's words and screen partials, the email service and each email.
+- `Auth0Prompt`
+- `Auth0PromptCustomText`
+- `Auth0PromptScreenPartials`
+- `Auth0EmailProvider`
+- `Auth0EmailTemplate`
+- `Auth0ClientFromMetadataDocument`
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
+- `StripeEventDestination`
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeCoupon`
+- `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
+- `StripeEntitlementFeature`
+- `StripeShippingRate`
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
+- `StripeBillingMeter`
+- `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
 ### spec.pod.initContainers[].env.variables[].valueFrom.env
 
@@ -8418,11 +8584,11 @@ The environment variable name.
 
 ### spec.pod.initContainers[].env.secrets[].value
 
-`string`
+`string` · sensitive
 
-Literal string value.
-A Kubernetes Secret is automatically created and the environment variable
-references that secret.
+The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+and the environment variable references that Secret.
 
 ### spec.pod.initContainers[].env.secrets[].secretRef
 
@@ -9257,9 +9423,35 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
-- `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
+- `Auth0TenantSettings`
+- `Auth0CustomDomain`
+- `Auth0CustomDomainVerification`
+- `Auth0Branding` -- 8010–8015: how the tenant's Universal Login looks, reads and mails -- branding and theme, the login flow, each prompt's words and screen partials, the email service and each email.
+- `Auth0Prompt`
+- `Auth0PromptCustomText`
+- `Auth0PromptScreenPartials`
+- `Auth0EmailProvider`
+- `Auth0EmailTemplate`
+- `Auth0ClientFromMetadataDocument`
+- `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing.
+- `StripeEventDestination`
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
+- `StripePaymentMethodDomain`
+- `StripeRadarValueList`
+- `StripeProduct`
+- `StripePrice` -- A price always belongs to a product (its product field is required), so the product deploys first.
+- `StripeCoupon`
+- `StripePromotionCode` -- A promotion code always redeems a coupon (its coupon field is required), so the coupon deploys first.
+- `StripeEntitlementFeature`
+- `StripeShippingRate`
+- `StripeTaxRate` -- Tax rate and tax registration share the initials "tr", so each takes Stripe's own id prefix with its vowels dropped (txr_, taxreg_).
+- `StripeTaxRegistration`
+- `StripeBillingMeter`
+- `StripePaymentLink` -- A payment link always sells at least one price (line_items is required), so the price deploys first.
 
 ### spec.pod.initContainers[].env.secrets[].valueFrom.env
 

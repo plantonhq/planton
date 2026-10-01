@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
@@ -95,10 +96,7 @@ func appendRefEdge(fd protoreflect.FieldDescriptor, refMsg protoreflect.Message,
 	if !ok || ref.GetValueFrom() == nil {
 		return
 	}
-	kind := ref.GetValueFrom().GetKind()
-	if kind == cloudresourcekind.CloudResourceKind_unspecified && fd.Options() != nil {
-		kind, _ = proto.GetExtension(fd.Options(), foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
-	}
+	kind := refannotations.Of(fd).EffectiveKind(ref.GetValueFrom().GetKind())
 	*edges = append(*edges, RefEdge{
 		FieldPath:  fieldPath,
 		TargetKind: kind,

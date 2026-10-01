@@ -1,0 +1,49 @@
+# Alerted DigitalOceanApp: one HTTP service from a public Docker Hub
+# image carrying an app-level deployment alert and a component CPU alert.
+# Proves the alert-rule wiring on both engines and that both rule families
+# read back cleanly under the idempotency gate.
+#
+# Deliberately NO alert destinations. The provider applies them through a
+# side call after the app exists but never reads them back into state
+# (measured 2026-09-16: a refreshed plan proposed `+ destinations` on both
+# alerts forever, and any spec diff triggers a new deployment; tracked as
+# digitalocean/terraform-provider-digitalocean#1606), so a lane
+# that set them could never pass the gate honestly. The arm is a recorded
+# provider-defect deferral on the profile; both modules still wire it.
+#
+# appName carries ${E2E_RUN_ID}: App Platform app names are unique across
+# the account and capped at 32 characters. 19 + 10 = 29.
+apiVersion: digital-ocean.planton.dev/v1alpha1
+kind: DigitalOceanApp
+metadata:
+  name: planton-oss-e2e-digitaloceanapp-alrt
+  id: planton-oss-e2e-digitaloceanapp-alrt
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: digitaloceanapp
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  appName: pltn-e2e-doapp-alrt-${E2E_RUN_ID}
+  region: nyc
+  services:
+    - name: web
+      image:
+        registryType: docker_hub
+        registry: library
+        repository: nginx
+        tag: latest
+      instanceSizeSlug: basic-xxs
+      instanceCount: 1
+      httpPort: 80
+      alerts:
+        - rule: cpu_utilization
+          operator: greater_than
+          window: five_minutes
+          value: 85
+  alerts:
+    - rule: deployment_failed

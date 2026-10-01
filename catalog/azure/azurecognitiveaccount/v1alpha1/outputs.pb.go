@@ -7,6 +7,7 @@
 package azurecognitiveaccountv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -151,13 +152,13 @@ var File_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurecognitiveaccount/v1alpha1/outputs.proto\x120dev.planton.azure.azurecognitiveaccount.v1alpha1\"\x83\x06\n" +
+	":catalog/azure/azurecognitiveaccount/v1alpha1/outputs.proto\x120dev.planton.azure.azurecognitiveaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\x8f\x06\n" +
 	"!AzureCognitiveAccountStackOutputs\x120\n" +
 	"\x14cognitive_account_id\x18\x01 \x01(\tR\x12cognitiveAccountId\x124\n" +
 	"\x16cognitive_account_name\x18\x02 \x01(\tR\x14cognitiveAccountName\x12\x1a\n" +
-	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12,\n" +
-	"\x12primary_access_key\x18\x04 \x01(\tR\x10primaryAccessKey\x120\n" +
-	"\x14secondary_access_key\x18\x05 \x01(\tR\x12secondaryAccessKey\x12P\n" +
+	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x122\n" +
+	"\x12primary_access_key\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10primaryAccessKey\x126\n" +
+	"\x14secondary_access_key\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\x12secondaryAccessKey\x12P\n" +
 	"%system_assigned_identity_principal_id\x18\x06 \x01(\tR!systemAssignedIdentityPrincipalId\x12\x94\x01\n" +
 	"\x11rai_blocklist_ids\x18\a \x03(\v2h.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiBlocklistIdsEntryR\x0fraiBlocklistIds\x12\x8b\x01\n" +
 	"\x0erai_policy_ids\x18\b \x03(\v2e.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiPolicyIdsEntryR\fraiPolicyIds\x1aB\n" +

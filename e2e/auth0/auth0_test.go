@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
 	auth0e2e "github.com/plantonhq/planton/catalog/auth0/aa_e2e"
+	cloudflaree2e "github.com/plantonhq/planton/catalog/cloudflare/aa_e2e"
 	"github.com/plantonhq/planton/e2e/framework/discovery"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/e2e/framework/runner"
@@ -55,8 +57,17 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 
+	// A custom domain's verification waits for a DNS record, a Cloudflare
+	// kind: the runner deploys that prerequisite from the Cloudflare catalog
+	// and verifies it with this harness, set up (CLOUDFLARE_API_TOKEN) only
+	// when a scenario that composes it runs.
+	runner.RegisterDependencyHarness("cloudflare", cloudflaree2e.NewHarness())
+
 	code := m.Run()
 
+	if err := runner.TeardownDependencyHarnesses(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "warning: failed to teardown dependency harnesses: %v\n", err)
+	}
 	if err := testHarness.Teardown(ctx); err != nil {
 		fmt.Fprintf(os.Stderr, "warning: failed to teardown Auth0 harness: %v\n", err)
 	}
@@ -115,6 +126,96 @@ func TestAuth0Role_Terraform(t *testing.T) { runAllScenariosForComponent(t, "aut
 func TestAuth0User_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0user", "pulumi") }
 func TestAuth0User_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0user", "terraform") }
 
+// --- Auth0 Tenant Settings ---
+
+func TestAuth0TenantSettings_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0tenantsettings", "pulumi")
+}
+func TestAuth0TenantSettings_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0tenantsettings", "terraform")
+}
+
+// --- Auth0 Custom Domain ---
+
+func TestAuth0CustomDomain_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0customdomain", "pulumi")
+}
+func TestAuth0CustomDomain_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0customdomain", "terraform")
+}
+
+// --- Auth0 Custom Domain Verification ---
+
+func TestAuth0CustomDomainVerification_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0customdomainverification", "pulumi")
+}
+func TestAuth0CustomDomainVerification_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0customdomainverification", "terraform")
+}
+
+// --- Auth0 Branding ---
+
+func TestAuth0Branding_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0branding", "pulumi")
+}
+func TestAuth0Branding_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0branding", "terraform")
+}
+
+// --- Auth0 Prompt ---
+
+func TestAuth0Prompt_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0prompt", "pulumi")
+}
+func TestAuth0Prompt_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0prompt", "terraform")
+}
+
+// --- Auth0 Prompt Custom Text ---
+
+func TestAuth0PromptCustomText_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptcustomtext", "pulumi")
+}
+func TestAuth0PromptCustomText_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptcustomtext", "terraform")
+}
+
+// --- Auth0 Prompt Screen Partials ---
+
+func TestAuth0PromptScreenPartials_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptscreenpartials", "pulumi")
+}
+func TestAuth0PromptScreenPartials_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptscreenpartials", "terraform")
+}
+
+// --- Auth0 Email Provider ---
+
+func TestAuth0EmailProvider_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailprovider", "pulumi")
+}
+func TestAuth0EmailProvider_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailprovider", "terraform")
+}
+
+// --- Auth0 Email Template ---
+
+func TestAuth0EmailTemplate_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailtemplate", "pulumi")
+}
+func TestAuth0EmailTemplate_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailtemplate", "terraform")
+}
+
+// --- Auth0 Client From Metadata Document ---
+
+func TestAuth0ClientFromMetadataDocument_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0clientfrommetadatadocument", "pulumi")
+}
+func TestAuth0ClientFromMetadataDocument_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0clientfrommetadatadocument", "terraform")
+}
+
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an Auth0 component.
 func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	t.Helper()
@@ -163,6 +264,19 @@ func runAllScenariosForComponent(t *testing.T, component, engine string) {
 func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
 	t.Helper()
 
+	// Scenarios needing owner-arranged external context (the
+	// e2e-required-env annotation -- for Auth0, a parent domain for custom
+	// domains and the Cloudflare zone that serves it) skip honestly where the
+	// environment does not carry the arrangement; unset tokens would
+	// otherwise fail expansion loudly, turning a deferral into a false
+	// failure.
+	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
+		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
+	} else if len(missing) > 0 {
+		t.Skipf("scenario %s/%s needs owner-arranged environment variables that are unset: %s (per %s)",
+			component, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
+	}
+
 	tc := &provider.ComponentTestContext{
 		Component:    component,
 		Provider:     "auth0",
@@ -172,8 +286,9 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 		RepoRoot:     repoRoot,
 		RunID:        runID,
 		T:            t,
-		// Dependencies always deploy via Pulumi — even for Terraform
-		// scenarios — so the backend URL must be set unconditionally.
+		// A prerequisite deploys on Pulumi whenever its kind has a Pulumi
+		// module, as these kinds do — even for Terraform scenarios — so the
+		// backend URL must be set unconditionally.
 		// Leaving it empty makes the dependency stacks fall back to the
 		// machine's ambient `pulumi login` backend, coupling the run to
 		// stale developer state.

@@ -16,9 +16,11 @@ import (
 type Locals struct {
 	Spec *kubernetesopenfgav1alpha1.KubernetesOpenFgaSpec
 
-	// Resource-identity labels stamped on the module-created satellites
-	// (the namespace and the authn-keys Secret — never injected into the
-	// chart's own resources; Helm owns those).
+	// Resource-identity labels: stamped on the module-created satellites
+	// (the namespace and the authn-keys Secret) and on every OpenFGA pod
+	// through the chart's own podExtraLabels -- so a log line, a metric or
+	// an alert from it names its organization and environment. The chart's
+	// selector is its own fixed labels; these never reach it.
 	Labels map[string]string
 
 	// Namespace the server installs into (resolved literal from the

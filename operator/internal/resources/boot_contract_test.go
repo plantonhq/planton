@@ -137,6 +137,8 @@ func fullControlPlaneConfig() ControlPlaneConfig {
 		CloudOpsSecretName: "planton-runner-cloudops",
 		Provisioner:        "tofu",
 		DirectDialHost:     "planton-runner.default.svc.cluster.local",
+		// Builds on: the build-routing seed's names render only then.
+		BuildEnabled: true,
 	}
 	cfg.RemoteRunners = &RemoteRunnersBinding{PlantonAPIEndpoint: "planton.example.com:443"}
 	vault := OpenBAOConnection("planton", "default")
@@ -172,6 +174,10 @@ func fullControlPlaneConfig() ControlPlaneConfig {
 	cfg.WebIdentity = &WebIdentityBinding{IssuerURL: "https://planton.example.com", Offered: false, ClosedReason: "fixture reason"}
 	cfg.GithubWebhooks = &GithubWebhooksBinding{Reachable: false, ReceiverURL: "https://planton.example.com/webhooks/github"}
 	cfg.Console = &ConsoleBinding{URL: "https://planton.example.com"}
+	// Host login on: its availability name renders only when declared.
+	github := exampleGithubBinding()
+	github.HostLogin = true
+	cfg.Github = github
 	return cfg
 }
 
@@ -185,6 +191,7 @@ func fullConsoleConfig() ConsoleConfig {
 	return ConsoleConfig{
 		CRName: "planton", Namespace: "default", Version: "v1.0.0",
 		Replicas:                 1,
+		Resources:                Effective(SizingConsole, nil),
 		ExternalConfigSecretName: "planton-console-extra-config",
 		PublicURL:                "http://planton.example.com",
 		GRPCEndpoint:             "planton.example.com:80",

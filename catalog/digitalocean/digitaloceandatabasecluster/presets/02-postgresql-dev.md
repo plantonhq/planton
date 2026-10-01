@@ -25,4 +25,4 @@ This preset creates a single-node PostgreSQL database for development and testin
 ## Related Presets
 
 - **01-postgresql-ha** -- Use for production workloads requiring HA and VPC isolation
-- **03-redis** -- Use for caching instead of relational storage
+- **03-valkey** -- Use for caching instead of relational storage

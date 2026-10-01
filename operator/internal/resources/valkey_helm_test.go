@@ -19,7 +19,7 @@ func valkeyTestOptions(crName, storageSize, storageClass string) ValkeyHelmOptio
 		StorageClass:    storageClass,
 		MaxMemory:       ValkeyDefaultMaxMemory,
 		MaxMemoryPolicy: ValkeyDefaultMaxMemoryPolicy,
-		Resources:       ValkeyDefaultResources(),
+		Resources:       Effective(SizingRedis, nil),
 	}
 }
 
@@ -160,12 +160,13 @@ func TestValkeyRender_ResourceFloorReachesTheContainer(t *testing.T) {
 	memReq, _, _ := unstructured.NestedString(container, "resources", "requests", "memory")
 	memLim, _, _ := unstructured.NestedString(container, "resources", "limits", "memory")
 	_, cpuLimited, _ := unstructured.NestedString(container, "resources", "limits", "cpu")
-	if cpuReq != valkeyDefaultCPURequest || memReq != valkeyDefaultMemoryRequest {
+	def := ComponentSizing[SizingRedis].Default
+	if cpuReq != def.Requests.Cpu().String() || memReq != def.Requests.Memory().String() {
 		t.Errorf("expected requests %s/%s on the container, got %s/%s (the chart's preset must not win)",
-			valkeyDefaultCPURequest, valkeyDefaultMemoryRequest, cpuReq, memReq)
+			def.Requests.Cpu(), def.Requests.Memory(), cpuReq, memReq)
 	}
-	if memLim != valkeyDefaultMemoryLimit {
-		t.Errorf("expected the memory limit %s on the container, got %q", valkeyDefaultMemoryLimit, memLim)
+	if memLim != def.Limits.Memory().String() {
+		t.Errorf("expected the memory limit %s on the container, got %q", def.Limits.Memory(), memLim)
 	}
 	if cpuLimited {
 		t.Error("CPU must not be limited (requests-only, the house pattern)")

@@ -1,6 +1,6 @@
 # Auth0 Resource Server (API)
 
-Deploys an Auth0 Resource Server — the API definition that applications request access tokens for, carrying the audience identifier, token signing and lifetime settings, scope definitions, and optional RBAC policy enforcement. The identifier doubles as the OAuth 2.0 `audience` parameter and is permanent: it cannot be changed after creation. Scopes managed here are authoritative — each apply sets the API's complete scope list.
+Deploys an Auth0 Resource Server — the API definition that applications request access tokens for, carrying the audience identifier, token signing and lifetime settings, scope definitions, optional RBAC policy enforcement, the access policy that decides which applications may get a token at all, and the default grants every third-party application gets. The identifier doubles as the OAuth 2.0 `audience` parameter and is permanent: it cannot be changed after creation. Scopes managed here are authoritative — each apply sets the API's complete scope list.
 
 ## What Gets Created
 
@@ -8,6 +8,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Auth0 Resource Server** — the API registered in the tenant with the specified identifier (audience), signing algorithm, token lifetimes, and access-control settings
 - **Resource Server Scopes** — created only when `scopes` is non-empty; an authoritative scope set that makes the API's permission list exactly match the spec on every apply
+- **Default Grants for Third-Party Applications** — one client grant per `thirdPartyClientDefaultGrants` entry (one per subject type), naming no application: every third-party application gets its scopes on this API
 
 ## Before You Deploy
 
@@ -18,7 +19,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Auth0 Account
 
-- **Management API scopes** — the M2M application behind the Provider Connection needs `create:resource_servers`, `read:resource_servers`, `update:resource_servers`, and `delete:resource_servers`. The scopes resource rides the same four — no additional scope family is involved.
+- **Management API scopes** — the M2M application behind the Provider Connection needs `create:resource_servers`, `read:resource_servers`, `update:resource_servers`, and `delete:resource_servers`. The scopes resource rides the same four. Default grants for third-party applications add `create:client_grants`, `read:client_grants`, `update:client_grants`, and `delete:client_grants`.
+- **A plan that includes the advanced token settings you use** — token encryption, mTLS proof of possession and transactional authorization need the Enterprise plan with the Highly Regulated Identity add-on; anonymous-session settings are an Enterprise Early Access feature. Everything else works on every plan.
 - **A unique API identifier** (audience URI) not already registered in the tenant. Identifiers cannot be changed after creation, so choose a stable URI like `https://api.example.com/` before deploying.
 
 ## Deploy
@@ -67,6 +69,12 @@ These are the most important decisions when configuring an Auth0 Resource Server
 
 **Token dialect** — `tokenDialect` picks between two base formats — `access_token` (standard Auth0 JWT) and `rfc9068_profile` (IETF JWT Access Token Profile, for ecosystems that require the standard `at+jwt` shape) — and the `_authz` suffix on either variant embeds RBAC permissions in the token payload.
 
+**Who can get a token** — `subjectTypeAuthorization` sets the API's access policy separately for tokens that act for a person (`user`: `allow_all`, `require_client_grant`, `deny_all`) and tokens an application gets for itself (`client`: `require_client_grant`, `deny_all`). `require_client_grant` is Auth0's least-privilege recommendation, but it locks out every application without a grant, so deploy the grants with it. Third-party applications need a grant under every policy.
+
+**Default grants for third-party applications** — `thirdPartyClientDefaultGrants` gives every third-party application the same scopes on this API without a grant of its own: the way to open an API to partners, AI agents and MCP clients that register themselves through Dynamic Client Registration or a Client ID Metadata Document. A grant made for one application (Auth0 Application `apiGrants`) takes precedence.
+
+**Adopting an existing API** — Unset means unmanaged, so an imported API keeps what it has for everything the spec leaves out, except `allowOfflineAccess`, `skipConsentForVerifiableFirstPartyClients` and `enforcePolicies` (always sent) and the few settings the field reference marks — declare their live values before the first apply.
+
 **Scopes are authoritative** — When `scopes` is set, each apply makes it the API's complete permission list: removing an entry deletes that scope from the API, and any role permission or client grant built on it stops granting access. Follow the `action:resource` naming pattern (`read:users`, `write:orders`) and prefer granular scopes over a coarse `admin` — scope descriptions are what users see on consent screens.
 
 ## Outputs and Dependencies
@@ -84,6 +92,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `identifier` | The API identifier (audience) | Auth0 Client `apiGrants[].audience`, Auth0 Role `permissions[].resourceServerIdentifier` |
 | `id` | Auth0's internal resource server ID | Management API automation against this API |
 | `signing_secret` | Token-signing secret, populated only for HS256 | Backend token verification for HS256 APIs — treat as a credential |
+| `third_party_client_default_grant_ids` | The default grants' ids (`cgr_...`), keyed by subject type | Importing and auditing the grants |
 
 ## Common Patterns
 
@@ -93,7 +102,10 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 **Machine-to-machine API** — The identifier serves as the audience that M2M clients request via the client-credentials flow, with each client's allowed scopes granted through Auth0 Client `apiGrants`. Keep `allowOfflineAccess` off — M2M clients re-authenticate with their credentials and have no use for refresh tokens.
 
+**MCP server API** — An API an MCP server exposes: people reach it through third-party MCP clients holding the default `user` grant, and no application gets a token for itself. Start from the **MCP Server API** preset.
+
 ## Works With
 
 - [**Auth0 Application (Client)**](/cloud-catalog/auth0-client) — the applications authorized to call this API; each `apiGrants` entry references this audience with the scopes granted to that client
 - [**Auth0 Role**](/cloud-catalog/auth0-role) — groups this API's scopes into assignable access tiers; each role permission references the audience and a scope defined here
+- [**Auth0 Tenant Settings**](/cloud-catalog/auth0-tenant-settings) — the tenant-level half of opening an API to third-party applications, such as dynamic client registration

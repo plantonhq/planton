@@ -1,0 +1,9 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Prompt
+metadata:
+  name: e2e-prompt
+  org: e2e-org
+  env: testing
+spec:
+  universalLoginExperience: new
+  identifierFirst: true

@@ -1,0 +1,23 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# auth0 provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# auth0_branding's two single-argument blocks are flattened to one spec field
+# each, named for what they are on the tenant: the font block's url is
+# font_url, and the universal_login block's body is universal_login_template.
+# The theme is its own provider resource, instantiated by spec.theme; its
+# arguments match their spec fields by exact name under that root.
+
+resources:
+  auth0_branding:
+    mappings:
+      - spec: spec.font_url
+        arg: font.url
+      - spec: spec.universal_login_template
+        arg: universal_login.body
+  auth0_branding_theme:
+    specRoot: spec.theme

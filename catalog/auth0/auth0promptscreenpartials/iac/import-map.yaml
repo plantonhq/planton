@@ -1,0 +1,16 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0promptscreenpartials
+spec:
+  # A prompt's partials import by the prompt's name alone -- the resource's
+  # identity in Auth0, read from the spec, so the id derives blind.
+  values:
+    - name: prompt_type
+      derivations:
+        - from_spec_field: prompt_type
+      where_to_find: >-
+        The prompt the partials extend (login-id, signup, ...) -- Auth0
+        dashboard -> Branding -> Universal Login -> Customize partials (the
+        prompt's screens), or `GET /api/v2/prompts/{prompt}/partials` on the
+        Management API.

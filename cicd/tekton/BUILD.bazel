@@ -24,4 +24,5 @@ go_test(
     srcs = ["content_test.go"],
     data = glob(["testdata/**"]),
     embed = [":tekton"],
+    deps = ["@io_k8s_sigs_yaml//:yaml"],
 )

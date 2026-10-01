@@ -62,7 +62,7 @@ spec:
 |---|---|---|---|---|
 | `spec.region` | `string` | yes |  |  |
 | `spec.subnetIds` | `[]string \| valueFrom` |  |  | AwsSubnet (`status.outputs.subnet_id`) |
-| `spec.neptuneSubnetGroupName` | `string \| valueFrom` |  |  |  |
+| `spec.neptuneSubnetGroupName` | `string` |  |  |  |
 | `spec.securityGroupIds` | `[]string \| valueFrom` |  |  | AwsSecurityGroup (`status.outputs.security_group_id`) |
 | `spec.availabilityZones` | `[]string` |  |  |  |
 | `spec.port` | `int32` |  |  |  |
@@ -141,13 +141,11 @@ point neptune_subnet_group_name at an existing group.
 
 ### spec.neptuneSubnetGroupName
 
-`string | valueFrom`
+`string`
 
 Name of an existing Neptune subnet group to place the cluster in,
 instead of providing subnet_ids. Changing the subnet group replaces
 the cluster.
-
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.securityGroupIds
 

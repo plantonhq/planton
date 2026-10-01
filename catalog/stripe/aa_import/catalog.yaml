@@ -1,0 +1,116 @@
+apiVersion: iac.planton.dev/v1
+kind: ProviderImportCatalog
+metadata:
+  name: stripe
+spec:
+  # Import-ID formats per Stripe resource type, as the stripe/stripe provider
+  # (0.3.0) reads them. The FORMAT lives here (provider knowledge, shared by
+  # every component); which concrete value fills each {placeholder} lives in
+  # the owning component's import-map.yaml. Correctness is machine-proven by
+  # the E2E import round-trip (deploy a fixture, set state aside, re-import
+  # blind, plan must show zero diff) -- never by review alone.
+  #
+  # Every Stripe resource here imports by its plain Stripe id (the provider
+  # passes the import id through as `id`), except a product's feature link,
+  # which imports as "<product id>/<link id>". Stripe kinds run on OpenTofu
+  # only, so no Pulumi type is declared.
+  resource_types:
+    # --- Account and delivery ---------------------------------------------------
+    # An imported webhook endpoint carries no signing secret: Stripe returns it
+    # only at creation, so the round-trip's zero-diff plan never compares it.
+    - terraform_type: stripe_webhook_endpoint
+      id_format: "{webhook_endpoint_id}"
+    - terraform_type: stripe_billing_portal_configuration
+      id_format: "{billing_portal_configuration_id}"
+    - terraform_type: stripe_payment_method_configuration
+      id_format: "{payment_method_configuration_id}"
+    # An imported event destination carries no signing secret, and one of type
+    # amazon_eventbridge has no region in state (the API never returns it), so
+    # its first apply after import replaces it.
+    #
+    # A webhook destination's url reads back empty after import: the v2 API
+    # returns webhook_endpoint.url only when a read asks for it with `include`,
+    # and the provider reads with the include list in state, which an import
+    # leaves empty (a deployed destination keeps the configured url instead).
+    # The first apply after import sends the same url again, a no-op on
+    # Stripe's side, so the sub-path is tolerated and every sibling stays under
+    # the zero-diff oracle (verified live: only this sub-path drifted).
+    - terraform_type: stripe_v2_core_event_destination
+      id_format: "{event_destination_id}"
+      write_normalized_attributes:
+        - webhook_endpoint.url
+    - terraform_type: stripe_payment_method_domain
+      id_format: "{payment_method_domain_id}"
+    - terraform_type: stripe_radar_value_list
+      id_format: "{radar_value_list_id}"
+    - terraform_type: stripe_radar_value_list_item
+      id_format: "{radar_value_list_item_id}"
+
+    # --- Catalog and pricing ----------------------------------------------------
+    - terraform_type: stripe_product
+      id_format: "{product_id}"
+    - terraform_type: stripe_product_feature
+      id_format: "{product_id}/{product_feature_id}"
+    # Stripe leaves currency_options out of a price it returns unless the read
+    # expands it, and the provider expands only tiers (verified live). A price's
+    # other currencies update in place, so the first apply after import sends
+    # the same amounts again, a no-op, and currency_options is tolerated. Every
+    # other price field forces a replacement and stays under the oracle.
+    - terraform_type: stripe_price
+      id_format: "{price_id}"
+      write_normalized_attributes:
+        - currency_options
+    - terraform_type: stripe_entitlements_feature
+      id_format: "{entitlements_feature_id}"
+    # Stripe leaves currency_options and applies_to out of a coupon it returns
+    # unless the read expands them, and the provider never expands (verified
+    # live: a plain GET omits both, an expanded one returns them). A coupon
+    # imported blind therefore holds neither, and neither can be tolerated:
+    # applies_to forces a replacement, and re-sending an existing currency's
+    # amount is refused by Stripe. The coupon module ignores both after create
+    # and carries them in a tracker instead (below).
+    - terraform_type: stripe_coupon
+      id_format: "{coupon_id}"
+    - terraform_type: stripe_promotion_code
+      id_format: "{promotion_code_id}"
+    # Stripe leaves fixed_amount.currency_options out of a shipping rate it
+    # returns unless the read expands it, and the provider never expands
+    # (verified live). The first apply after import sends the same amounts
+    # again, in place and a no-op, so the sub-path is tolerated and the rest
+    # of fixed_amount stays under the oracle.
+    - terraform_type: stripe_shipping_rate
+      id_format: "{shipping_rate_id}"
+      write_normalized_attributes:
+        - fixed_amount.currency_options
+    - terraform_type: stripe_tax_rate
+      id_format: "{tax_rate_id}"
+    # A registration imports by its own id; the provider's delete only
+    # forgets it, so a round trip leaves the imported registration in Stripe
+    # either way.
+    - terraform_type: stripe_tax_registration
+      id_format: "{tax_registration_id}"
+    - terraform_type: stripe_billing_meter
+      id_format: "{billing_meter_id}"
+    # An alert imports by its own id; the provider's delete only forgets it,
+    # so a round trip leaves the imported alert active in Stripe either way.
+    - terraform_type: stripe_billing_alert
+      id_format: "{billing_alert_id}"
+    # An imported payment link has no line-item quantities in state: the
+    # provider marks them write-only and never stores them.
+    - terraform_type: stripe_payment_link
+      id_format: "{payment_link_id}"
+    # A module's tracker, OpenTofu's built-in terraform_data. It holds nothing
+    # in Stripe; it exists so a change the provider can't send or can't read
+    # back still replaces the object: the payment link's line items (a price
+    # or quantity the provider accepts and never sends), and the coupon's
+    # products and other-currency amounts (which Stripe never returns to the
+    # provider's read, and refuses to change for an existing currency).
+    - terraform_type: terraform_data
+      not_importable_upstream_reason: >-
+        terraform_data is OpenTofu's built-in store, not a Stripe object: it
+        accepts an import id but never its input, so an imported tracker would
+        hold nothing and the first apply after import would replace the
+        imported object it guards (a payment link gets a new address, a coupon
+        a new id). Left out of the import, the tracker is created on that
+        first apply and the object is untouched (the round trip's only
+        re-create).

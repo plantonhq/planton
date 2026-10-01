@@ -2,13 +2,32 @@
 # lane leaves at defaults -- an enabled control-plane firewall, a
 # maintenance policy (the day leaf the old collapsed string could not
 # express), cluster-autoscaler tuning, an explicit surge_upgrade, the
-# routing-agent addon (the ONE addon block the Pulumi SDK v4.49.0 carries;
-# the other eight are Terraform-only until the SDK grows them), and a
-# default pool exercising labels, a taint, pool tags, and autoscaling.
-# Deliberately absent: highly_available (cost), the Pulumi-gap arms (sso,
-# isolated_workers, worker_subnet_uuid, gpu_partition_mode, non-routing
-# addons), and custom subnets (create-only CIDRs add no verify value over
-# the offline plan).
+# three addon toggles that need no GPU hardware, and a default pool
+# exercising labels, a taint, pool tags, and autoscaling.
+# The addon toggles each assert a value that DIFFERS from the version's
+# default, so a module that silently dropped a block could not pass: the
+# routing agent and the peer-to-peer OCI registry plugin are ON, the
+# CoreDNS autoscaler is OFF. The version is "1.36" because the P2P registry
+# plugin exists only there -- DigitalOcean refuses a 1.35 create carrying it
+# with a validation 422 ("p2p-oci-registry is only supported on DOKS
+# v1.36.0-do.2 or later"; measured, nothing created) -- and on 1.36 the
+# CoreDNS autoscaler defaults ON, which is why the explicit false is the
+# real assertion here (on 1.35 it would have been the explicit true).
+# The autoscaled default pool states NO nodeCount: on 1.36 the addon pods
+# did not fit one s-1vcpu-2gb node and the autoscaler grew the pool to two
+# within minutes of creation, and the provider wrote that live count back
+# into node_count -- with a stated count of 1 both engines then planned
+# `node_count 2 -> 1` against the autoscaler (the idempotency gate's
+# catch). Sending no count is the contract; the pool starts at minNodes.
+# Deliberately absent, each with its unblock on the profile:
+# highly_available (cost), sso (needs an OIDC issuer), isolated_workers
+# (needs a NAT gateway on the VPC and bills dedicated hardware),
+# worker_subnet_uuid (needs a VPC subnet the catalog has no kind for),
+# gpu_partition_mode and the GPU addons (GPU droplets are the expensive
+# arm), and custom subnets (create-only CIDRs add no verify value over the
+# offline plan).
+# clusterName carries ${E2E_RUN_ID} and kubernetesVersion is a minor prefix
+# for the reasons the minimal scenario's header gives.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanKubernetesCluster
 metadata:
@@ -24,9 +43,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-doks-hard
+  clusterName: pltn-e2e-doks-hard-${E2E_RUN_ID}
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.36"
   vpc:
     valueFrom:
       kind: DigitalOceanVpc
@@ -50,11 +69,17 @@ spec:
       - least-waste
   routingAgent:
     enabled: true
+  p2pOciRegistryPlugin:
+    enabled: true
+  corednsAutoscaler:
+    enabled: false
   tags:
     - planton-e2e
   defaultNodePool:
     size: s-1vcpu-2gb
-    nodeCount: 1
+    # No nodeCount: with autoScale on, the pool starts at minNodes and the
+    # autoscaler owns the count (a stated count would fight it -- see the
+    # header).
     autoScale: true
     minNodes: 1
     maxNodes: 2

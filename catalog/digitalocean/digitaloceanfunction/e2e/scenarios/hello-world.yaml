@@ -1,8 +1,15 @@
 # Public-git hello-world DigitalOceanFunction. Clones DigitalOcean's
 # sample-functions-nodejs-helloworld over HTTPS with no linked GitHub
-# account. sourceDirectory is packages (the tree that contains
-# project.yml). Proves source is actually sent, and the function_id /
-# https_endpoint / default_hostname outputs.
+# account. sourceDirectory is deliberately unset: that repo keeps
+# project.yml at its root (DigitalOcean's own deploy template for it uses
+# the root too), and leaving the field unset proves both engines omit
+# source_dir rather than send an empty string. Proves source is actually
+# sent, the app builds, and the function_id / https_endpoint /
+# default_hostname outputs.
+#
+# appName carries ${E2E_RUN_ID}: App Platform app names are unique across
+# the account and capped at 32 characters, so a fixed name would collide
+# with a stalled or concurrent lane. 20 + 10 (run id + engine suffix) = 30.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanFunction
 metadata:
@@ -18,9 +25,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  appName: pltn-e2e-dofn-hello-${E2E_RUN_ID}
   functionName: hello
-  region: nyc3
+  region: nyc
   git:
     repoCloneUrl: https://github.com/digitalocean/sample-functions-nodejs-helloworld.git
     branch: master
-  sourceDirectory: packages

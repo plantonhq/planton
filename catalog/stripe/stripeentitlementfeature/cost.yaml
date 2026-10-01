@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripeentitlementfeature
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for entitlement features: every account with Billing, sandboxes included, can create them (docs.stripe.com/billing/entitlements)."
+  notes: "Stripe bills by payment volume and product usage (stripe.com/pricing), never by the features an account defines. What a feature costs is on the application side: the entitlement checks it makes."

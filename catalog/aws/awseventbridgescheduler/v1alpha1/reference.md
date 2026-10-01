@@ -78,7 +78,7 @@ spec:
 | `spec.flexibleTimeWindow.mode` | `string` |  |  |  |
 | `spec.flexibleTimeWindow.maximumWindowInMinutes` | `int32` |  |  |  |
 | `spec.target` | `AwsEventBridgeScheduleTarget` | yes |  |  |
-| `spec.target.arn` | `string \| valueFrom` | yes |  |  |
+| `spec.target.arn` | `string \| valueFrom` | yes |  | AwsLambda (`status.outputs.function_arn`), AwsSqsQueue (`status.outputs.queue_arn`), AwsEcsCluster (`status.outputs.cluster_arn`), AwsKinesisStream (`status.outputs.stream_arn`), AwsStepFunction (`status.outputs.state_machine_arn`), AwsEventBridgeBus (`status.outputs.bus_arn`), AwsSagemakerPipeline (`status.outputs.pipeline_arn`), AwsEventBridgeApiDestination (`status.outputs.api_destination_arn`), AwsSnsTopic (`status.outputs.topic_arn`) |
 | `spec.target.roleArn` | `string \| valueFrom` | yes |  | AwsIamRole (`status.outputs.role_arn`) |
 | `spec.target.input` | `string` |  |  |  |
 | `spec.target.deadLetterQueueArn` | `string \| valueFrom` |  |  | AwsSqsQueue (`status.outputs.queue_arn`) |
@@ -282,7 +282,8 @@ Kinesis stream, Step Functions state machine, EventBridge bus,
 SageMaker pipeline, API destination, or any of the universal-
 target API ARNs. No single kind dominates, so references here
 carry NO default kind - in manifests, a valueFrom on this field
-must state its kind explicitly.
+must state its kind explicitly. The catalog kinds a target usually is
+are declared as candidates, each with its ARN output.
 
 Containment-exempt: the target is what the schedule INVOKES, never
 where the schedule lives -- a schedule belongs to its schedule group.
@@ -290,6 +291,7 @@ A target that is a container (an ECS cluster, an event bus) would
 otherwise pull the schedule inside it; on a diagram the schedule
 stands in its group with a line to what it fires.
 
+- references: AwsLambda (`status.outputs.function_arn`), AwsSqsQueue (`status.outputs.queue_arn`), AwsEcsCluster (`status.outputs.cluster_arn`), AwsKinesisStream (`status.outputs.stream_arn`), AwsStepFunction (`status.outputs.state_machine_arn`), AwsEventBridgeBus (`status.outputs.bus_arn`), AwsSagemakerPipeline (`status.outputs.pipeline_arn`), AwsEventBridgeApiDestination (`status.outputs.api_destination_arn`), AwsSnsTopic (`status.outputs.topic_arn`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
@@ -677,6 +679,15 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.kmsKeyArn` | AwsKmsKey | `status.outputs.key_arn` |
+| `spec.target.arn` | AwsLambda | `status.outputs.function_arn` |
+| `spec.target.arn` | AwsSqsQueue | `status.outputs.queue_arn` |
+| `spec.target.arn` | AwsEcsCluster | `status.outputs.cluster_arn` |
+| `spec.target.arn` | AwsKinesisStream | `status.outputs.stream_arn` |
+| `spec.target.arn` | AwsStepFunction | `status.outputs.state_machine_arn` |
+| `spec.target.arn` | AwsEventBridgeBus | `status.outputs.bus_arn` |
+| `spec.target.arn` | AwsSagemakerPipeline | `status.outputs.pipeline_arn` |
+| `spec.target.arn` | AwsEventBridgeApiDestination | `status.outputs.api_destination_arn` |
+| `spec.target.arn` | AwsSnsTopic | `status.outputs.topic_arn` |
 | `spec.target.roleArn` | AwsIamRole | `status.outputs.role_arn` |
 | `spec.target.deadLetterQueueArn` | AwsSqsQueue | `status.outputs.queue_arn` |
 | `spec.target.ecsParameters.taskDefinitionArn` | AwsEcsTaskDefinition | `status.outputs.task_definition_arn` |

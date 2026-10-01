@@ -1,0 +1,19 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0promptscreenpartials
+spec:
+  # A prompt has ONE set of partials, and applying this component changes what
+  # everyone signing in through the tenant sees on that prompt: the lanes run
+  # only on a dedicated test tenant (AUTH0_DOMAIN / AUTH0_CLIENT_ID /
+  # AUTH0_CLIENT_SECRET, the credential holding read:prompts, update:prompts
+  # and the branding and custom_domains scopes), one lane at a time. Auth0
+  # accepts partials only with a custom domain and a page template, so each
+  # scenario brings both (PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT; the tenant
+  # needs a verified card on file for the domain).
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 5

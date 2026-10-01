@@ -26,6 +26,9 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	neo4j := map[string]interface{}{
 		"name":    locals.Neo4JName,
 		"edition": locals.Edition,
+		// The server pod and the chart's objects carry the resource's
+		// identity labels.
+		"labels": stringMapToInterface(locals.Labels),
 	}
 
 	// The chart's own shape for license acceptance is the STRING "yes"/"no"

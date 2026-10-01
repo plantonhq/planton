@@ -61,7 +61,7 @@ volumeIds:
 ## Behavior worth knowing
 
 - **Size only grows** — the provider rejects a shrink at plan time; DigitalOcean caps volumes at 16 TiB.
-- **Formatting happens exactly once** — `filesystemType`, `initialFilesystemLabel`, and `snapshotId` act at creation and are never reported back by the API; after import they stay empty in state.
+- **Formatting happens exactly once** — `filesystemType`, `initialFilesystemLabel`, and `snapshotId` act at creation and are never reported back by the API; after import they stay empty in state, and both modules ignore later edits to them, so an adopted volume's first apply is a no-op instead of a data-destroying replacement.
 - **Description is create-only** — at the current provider pin, editing it replaces the volume. Write it right the first time.
 - **One Droplet at a time** — DigitalOcean volumes attach to a single Droplet; regional, not zonal.
 - **Volumes import by UUID** — the `volume_id` output is the resource identity.

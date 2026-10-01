@@ -9,10 +9,15 @@
 // denylist filters the common look-alikes, and the proto `sensitive_exempt_reason`
 // escape hatch covers the residue with an auditable justification.
 //
-// Runtime descriptors carry no doc comments, so this is name-only by necessity.
+// Runtime descriptors carry no doc comments, so the heuristic reads names only: the
+// field's own name, and -- for the few generic names a secret entry uses for its payload
+// ("value", "data") -- the name of the message that declares it (see LooksSensitive).
 package secretcoverage
 
-import "strings"
+import (
+	"strings"
+	"unicode"
+)
 
 // compoundTokens span snake_case word boundaries, so they are matched against the
 // field name with underscores removed (e.g. "api_key" -> "apikey"). Only tokens
@@ -24,6 +29,7 @@ var compoundTokens = []string{
 	"connectionstring",
 	"signingkey",
 	"encryptionkey",
+	"tlskey",
 }
 
 // wordTokens match when contained in any snake_case segment ("client_secret" has
@@ -86,6 +92,58 @@ var trailingDenylist = map[string]bool{
 // flips the meaning (a public key/token is not a secret).
 var segmentDenylist = map[string]bool{
 	"public": true,
+}
+
+// secretEntryPayloadFields are the generic names a secret entry gives the field that
+// carries its payload. On their own they say nothing ("value" is every scalar's name), so
+// they count only inside a message whose name declares it a secret (see LooksSensitive).
+var secretEntryPayloadFields = map[string]bool{
+	"value":       true,
+	"data":        true,
+	"binary_data": true,
+}
+
+// LooksSensitive reports whether a field looks like it holds a secret value, reading its
+// name in the context of the message that declares it. A secret-bearing name is enough
+// (LooksSensitiveByName); beyond that, the payload field of a secret entry -- a "value",
+// "data" or "binary_data" field of a message whose name carries the word "Secret"
+// (SecretEnvVar, Auth0ActionSecret, KubernetesSecretOpaqueData) -- is the secret itself.
+// The rule codifies the catalog's own convention: every such field holds secret material,
+// and a message that merely describes one (a rotation schedule's "value") takes the
+// `sensitive_exempt_reason` hatch. The word must stand whole: "Secrets" (a secret store's
+// name, as in ExternalSecretsStore) does not count.
+func LooksSensitive(messageName, fieldName string) bool {
+	if LooksSensitiveByName(fieldName) {
+		return true
+	}
+	return secretEntryPayloadFields[strings.ToLower(fieldName)] && namesASecret(messageName)
+}
+
+// namesASecret reports whether a CamelCase message name carries "Secret" as a whole word.
+func namesASecret(messageName string) bool {
+	for _, word := range camelWords(messageName) {
+		if word == "Secret" {
+			return true
+		}
+	}
+	return false
+}
+
+// camelWords splits a CamelCase name at each upper-case letter that starts a new word
+// ("Auth0ActionSecret" -> Auth0, Action, Secret).
+func camelWords(name string) []string {
+	var words []string
+	start := 0
+	for i, r := range name {
+		if i > start && unicode.IsUpper(r) {
+			words = append(words, name[start:i])
+			start = i
+		}
+	}
+	if start < len(name) {
+		words = append(words, name[start:])
+	}
+	return words
 }
 
 // LooksSensitiveByName reports whether a proto field name matches the

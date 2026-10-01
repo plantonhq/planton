@@ -20,6 +20,7 @@ const (
 func testIdentityConfig() IdentityConfig {
 	return IdentityConfig{
 		CRName:          testIdentityRealm,
+		Resources:       Effective(SizingIdentity, nil),
 		Namespace:       "default",
 		Realm:           testIdentityRealm,
 		PublicURL:       "http://planton.example.com",

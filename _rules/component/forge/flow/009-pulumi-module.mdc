@@ -80,12 +80,26 @@ EXPORTING OUTPUTS -- APPLYT TYPING IS A DEPLOY-TIME TRAP
   ("applier's first input parameter must be assignable from string, got *string") --
   no offline gate catches it. `go doc` the SDK type to confirm Output vs PtrOutput
   before writing the applier.
-- Values nested in computed LIST/POINTER attributes (e.g. a connection endpoint the
-  SDK models as `XEndpointArrayOutput`) do not need an ApplyT either: `Index(...)`
-  returns the zero value when out of range and `Elem()` dereferences a Ptr output to
-  its zero value when nil, so a chain like
-  `created.Endpoints.Index(pulumi.Int(0)).Address().Elem()` is a stable, panic-free
-  export shape.
+- `pulumi.All(a, b).ApplyT(func(args []interface{}) T {...})` returns an UNTYPED
+  `AnyOutput` whatever `T` is, so a second applier chained onto it must take
+  `interface{}`; a `func(T)` applier there panics at deploy ("applier's first input
+  parameter must be assignable from interface {}"). Derive each exported value from
+  the `All` directly, with an applier that returns a primitive the SDK types (`string`
+  gives `StringOutput`), and assert that type.
+- Run the program under Pulumi's mocks in a module test (`pulumi.RunErr` with
+  `pulumi.WithMocks`, answering the resource's computed attributes; the
+  `catalog/auth0/auth0customdomain/iac/pulumi/module/main_test.go` pattern). Applier
+  typing is checked when the program registers its exports, so this is the one offline
+  check that catches every trap in this section.
+- Values nested in computed LIST/POINTER attributes need care. `Elem()` dereferences
+  a Ptr output to its zero value when nil, and the Pulumi SDK's own built-in arrays
+  (`pulumi.StringArrayOutput`) return the zero value from an out-of-range `Index(...)`.
+  A PROVIDER-GENERATED array output (`XEndpointArrayOutput`, `GetTenantFlagArrayOutput`)
+  indexes without a bounds check and PANICS on an empty list at deploy ("index out of
+  range [0] with length 0"; live-caught on a data source whose block list was empty).
+  Read an element of a provider-generated list that can be empty with one applier on
+  the parent output that checks the length and returns a Ptr (`func(r X) *string`),
+  never with `Index`.
 - NESTED-BLOCK ARGS: assign the VALUE `XArgs{...}` struct to an `XPtrInput` field
   directly -- the codegen'd value type implements the Ptr interface. Do NOT wrap it
   in the SDK's `XPtr(&XArgs{...})` helper for resource inputs: the wrapper's element
@@ -138,6 +152,20 @@ HANDLING OPTIONAL FIELDS WITH DEFAULTS
   engine plans a destructive replacement or fights the service, while the other engine
   silently no-ops — an audit-only divergence no offline gate catches. Document the
   "false means leave it to the provider" contract on the spec field.
+- **PROVIDER BUDGETS ON MODULE-DERIVED VALUES: check them in the module, in BOTH engines,
+  with one constant and one message.** When a service caps something the module itself
+  assembles -- a name it derives from `metadata.name`, a tag set it composes from the
+  spec plus the Planton labels -- the manifest author cannot see the final value and a
+  spec rule cannot compute it, so the module owns the check: a package-level constant
+  naming the measured budget (with the date and the API's own error text in its comment),
+  a computation on the FINAL value actually sent (after dedup, after label rendering), and
+  an `errors.Errorf` before the resource is created that states the budget, the offending
+  total, and the levers the author has (a shorter name or id, fewer entries). Mirror the
+  exact same constant and message in the Terraform module as a `lifecycle { precondition }`
+  on the resource -- the two are twins and say so in their comments. A budget guessed from
+  documentation is not a budget: measure the boundary live (pass at N, fail at N+1) before
+  writing the number. Exemplars: the Superset chart's name budget; the DigitalOcean
+  database cluster's 255-character combined-tags budget.
 - **ENUM WIRE MAPS: map the UNSPECIFIED row to the default wire value whenever
   unspecified is legal.** A Go `map[Enum]string` lookup on a missing key silently
   returns `""`, and `pulumi.String("")` SENDS the empty string — the provider rejects it

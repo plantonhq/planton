@@ -115,6 +115,23 @@ var _ = ginkgo.Describe("AwsSecurityGroupSpec Custom Validation Tests", func() {
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept descriptions using every character AWS allows", func() {
+			input := validMinimalSpec()
+			allowed := "Web tier 0-9 a_z A.Z :/()#,@[]+=&;{}!$*"
+			input.Spec.Description = allowed
+			input.Spec.Ingress = []*SecurityGroupRule{
+				{
+					Protocol:    "tcp",
+					FromPort:    443,
+					ToPort:      443,
+					Ipv4Cidrs:   []string{"10.0.0.0/16"},
+					Description: allowed,
+				},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept rules referencing other security groups", func() {
 			input := validMinimalSpec()
 			input.Spec.Ingress = []*SecurityGroupRule{
@@ -224,6 +241,32 @@ var _ = ginkgo.Describe("AwsSecurityGroupSpec Custom Validation Tests", func() {
 			input.Spec.Description = string(long)
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).ToNot(gomega.BeNil())
+		})
+
+		// AWS refuses the create call for any other character, so an
+		// apostrophe that passes validation fails only at apply.
+		ginkgo.It("should fail when the group description carries a character AWS refuses", func() {
+			input := validMinimalSpec()
+			input.Spec.Description = "Team's web tier"
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("in a security group description"))
+		})
+
+		ginkgo.It("should fail when a rule description carries a character AWS refuses", func() {
+			input := validMinimalSpec()
+			input.Spec.Ingress = []*SecurityGroupRule{
+				{
+					Protocol:    "tcp",
+					FromPort:    443,
+					ToPort:      443,
+					Ipv4Cidrs:   []string{"10.0.0.0/16"},
+					Description: "Team's HTTPS",
+				},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("in a security group rule description"))
 		})
 
 		ginkgo.It("should fail when vpc_id is missing", func() {

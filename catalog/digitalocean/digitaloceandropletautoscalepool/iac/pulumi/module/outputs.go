@@ -1,10 +1,9 @@
 package module
 
 const (
-	// OpPoolId is the autoscale pool's UUID (its API identity and import
-	// id).
+	// OpPoolId is the pool's UUID (its API identity and import id). The
+	// pool's health is deliberately not exported: an apply-time status goes
+	// stale the moment DigitalOcean changes it, so live health is read from
+	// the API, never from stored outputs.
 	OpPoolId = "pool_id"
-	// OpStatus is the pool's health status at apply time ("active" once
-	// the pool and every member droplet are provisioned).
-	OpStatus = "status"
 )

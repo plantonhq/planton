@@ -37,7 +37,8 @@ Deploy with either provisioner; both produce identical resources and outputs.
 | Output | Description |
 |---|---|
 | `peering_id` | UUID of the peering connection (its API identity and import id) |
-| `status` | Lifecycle status at apply time (UPPERCASE; the module waits for ACTIVE) |
+
+The peering's lifecycle status is not an output: both provisioners wait for ACTIVE before the apply succeeds, so a stored value could only ever say ACTIVE and would go stale once DigitalOcean moved the peering. Read it live from the control panel's Peering connections tab or `GET /v2/vpcs/peerings/{id}` (statuses are UPPERCASE: PROVISIONING, ACTIVE, DELETING).
 
 ## Behavior worth knowing
 

@@ -77,10 +77,7 @@ message AzureFunctionAppFlexConsumptionStackOutputs {
   // The site-level publishing credential's username (the Kudu/SCM
   // basic-auth user). Paired with site_credential_password; only usable
   // while webdeploy_publish_basic_authentication_enabled is true.
-  // Marked sensitive because azurerm marks the whole site_credential
-  // block Sensitive -- the name is half of a working deploy credential,
-  // so annotation-driven surfaces must mask it mechanically.
-  string site_credential_name = 9 [(dev.planton.shared.options.sensitive) = true];
+  string site_credential_name = 9;
 
   // The site-level publishing credential's password. SECRET-BEARING:
   // anyone holding it can deploy code to the app over Web Deploy/SCM

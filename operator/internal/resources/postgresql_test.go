@@ -9,6 +9,7 @@ import (
 
 func TestNewPostgreSQLCluster_GVK(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "ns",
 		Instances:   1,
@@ -29,6 +30,7 @@ func TestNewPostgreSQLCluster_GVK(t *testing.T) {
 
 func TestNewPostgreSQLCluster_NameAndNamespace(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "my-planton",
 		Namespace:   "planton-system",
 		Instances:   1,
@@ -45,6 +47,7 @@ func TestNewPostgreSQLCluster_NameAndNamespace(t *testing.T) {
 
 func TestNewPostgreSQLCluster_SpecFields(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "default",
 		Instances:   3,
@@ -77,6 +80,7 @@ func TestNewPostgreSQLCluster_SpecFields(t *testing.T) {
 // {cluster}-superuser Secret is the credential every consumer references.
 func TestNewPostgreSQLCluster_SuperuserAccessEnabled(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "default",
 		Instances:   1,
@@ -94,6 +98,7 @@ func TestNewPostgreSQLCluster_SuperuserAccessEnabled(t *testing.T) {
 // an empty class means "disable dynamic provisioning".
 func TestNewPostgreSQLCluster_StorageClass(t *testing.T) {
 	pinned := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "default",
 		Instances:   1,
@@ -107,6 +112,7 @@ func TestNewPostgreSQLCluster_StorageClass(t *testing.T) {
 	}
 
 	unpinned := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "default",
 		Instances:   1,
@@ -123,6 +129,7 @@ func TestNewPostgreSQLCluster_StorageClass(t *testing.T) {
 // plane's boot).
 func TestNewPostgreSQLCluster_ConnectionHeadroom(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "default",
 		Instances:   1,
@@ -144,6 +151,7 @@ func TestNewPostgreSQLCluster_ResourceFloor(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
 		CRName:      "test",
 		Namespace:   "default",
+		Resources:   Effective(SizingPostgreSQL, nil),
 		Instances:   1,
 		StorageSize: "10Gi",
 	})
@@ -166,6 +174,7 @@ func TestNewPostgreSQLCluster_ResourceFloor(t *testing.T) {
 // declared list to drift from the app's canonical, migration-derived set.
 func TestNewPostgreSQLCluster_BootstrapInitDB(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "default",
 		Instances:   1,
@@ -187,6 +196,7 @@ func TestNewPostgreSQLCluster_BootstrapInitDB(t *testing.T) {
 // database must already be waiting.
 func TestNewPostgreSQLCluster_OpenFGADatabaseBornWithCluster(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		Resources:   Effective(SizingPostgreSQL, nil),
 		CRName:      "test",
 		Namespace:   "default",
 		Instances:   1,
@@ -231,13 +241,14 @@ func TestPostgreSQLHost(t *testing.T) {
 // cluster-wide privilege, its password in a basic-auth Secret CloudNativePG
 // reconciles onto the instance. No role, no managed block at all.
 func TestNewPostgreSQLCluster_ManagedRoles(t *testing.T) {
-	plain := NewPostgreSQLCluster(PostgreSQLClusterOptions{CRName: "test", Namespace: "default", Instances: 1, StorageSize: "10Gi"})
+	plain := NewPostgreSQLCluster(PostgreSQLClusterOptions{Resources: Effective(SizingPostgreSQL, nil), CRName: "test", Namespace: "default", Instances: 1, StorageSize: "10Gi"})
 	if _, found, _ := unstructured.NestedMap(plain.Object, "spec", "managed"); found {
 		t.Error("a cluster with no consumer roles must carry no managed block")
 	}
 
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
-		CRName: "test", Namespace: "default", Instances: 1, StorageSize: "10Gi",
+		Resources: Effective(SizingPostgreSQL, nil),
+		CRName:    "test", Namespace: "default", Instances: 1, StorageSize: "10Gi",
 		ManagedRoles: []PostgreSQLManagedRole{{Name: PostgreSQLVaultRole, PasswordSecretName: "test-postgres-openbao"}},
 	})
 	roles, found, _ := unstructured.NestedSlice(obj.Object, "spec", "managed", "roles")

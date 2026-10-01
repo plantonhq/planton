@@ -34,15 +34,24 @@ const (
 // silently do nothing.
 type DigitalOceanFunctionSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Functions component name inside the app.
-	FunctionName string                                       `protobuf:"bytes,1,opt,name=function_name,json=functionName,proto3" json:"function_name,omitempty"`
-	Region       digitalocean.DigitalOceanRegion              `protobuf:"varint,2,opt,name=region,proto3,enum=dev.planton.digitalocean.DigitalOceanRegion" json:"region,omitempty"`
-	Git          *digitalocean.DigitalOceanAppGitSource       `protobuf:"bytes,3,opt,name=git,proto3" json:"git,omitempty"`
-	Github       *digitalocean.DigitalOceanAppGithubSource    `protobuf:"bytes,4,opt,name=github,proto3" json:"github,omitempty"`
-	Gitlab       *digitalocean.DigitalOceanAppGitlabSource    `protobuf:"bytes,5,opt,name=gitlab,proto3" json:"gitlab,omitempty"`
-	Bitbucket    *digitalocean.DigitalOceanAppBitbucketSource `protobuf:"bytes,6,opt,name=bitbucket,proto3" json:"bitbucket,omitempty"`
-	// Directory inside the repo that contains project.yml and the packages
-	// tree, for example packages/api.
+	// Functions component name inside the app. The App Platform API enforces
+	// ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ on every component name (2-32 chars,
+	// starts with a letter, ends with a letter or digit) and rejects the
+	// whole app spec otherwise, so the same rule is enforced here.
+	FunctionName string `protobuf:"bytes,1,opt,name=function_name,json=functionName,proto3" json:"function_name,omitempty"`
+	// App Platform region group, for example nyc (never a droplet slug such
+	// as nyc3 -- the API would store nyc and the plan would never settle).
+	Region    digitalocean.DigitalOceanAppRegion           `protobuf:"varint,2,opt,name=region,proto3,enum=dev.planton.digitalocean.DigitalOceanAppRegion" json:"region,omitempty"`
+	Git       *digitalocean.DigitalOceanAppGitSource       `protobuf:"bytes,3,opt,name=git,proto3" json:"git,omitempty"`
+	Github    *digitalocean.DigitalOceanAppGithubSource    `protobuf:"bytes,4,opt,name=github,proto3" json:"github,omitempty"`
+	Gitlab    *digitalocean.DigitalOceanAppGitlabSource    `protobuf:"bytes,5,opt,name=gitlab,proto3" json:"gitlab,omitempty"`
+	Bitbucket *digitalocean.DigitalOceanAppBitbucketSource `protobuf:"bytes,6,opt,name=bitbucket,proto3" json:"bitbucket,omitempty"`
+	// Directory inside the repo that contains project.yml (App Platform reads
+	// runtime, memory, timeout, and schedules from it). Leave unset when
+	// project.yml is at the repository root -- DigitalOcean's own hello-world
+	// sample is laid out that way. Set it only when project.yml lives in a
+	// subdirectory, for example functions/api. A wrong directory fails the
+	// App Platform build minutes into the deploy, never at validation.
 	SourceDirectory string                                        `protobuf:"bytes,7,opt,name=source_directory,json=sourceDirectory,proto3" json:"source_directory,omitempty"`
 	Envs            []*digitalocean.DigitalOceanAppEnvVar         `protobuf:"bytes,8,rep,name=envs,proto3" json:"envs,omitempty"`
 	Alerts          []*digitalocean.DigitalOceanAppComponentAlert `protobuf:"bytes,9,rep,name=alerts,proto3" json:"alerts,omitempty"`
@@ -50,8 +59,19 @@ type DigitalOceanFunctionSpec struct {
 	// (Optional) The project the functions app is created in. Reference a
 	// DigitalOceanProject resource (the default wiring resolves its
 	// project_id output) or pass a literal project UUID. When unset, the app
-	// lands in the account's default project.
-	ProjectId     *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	// lands in the account's default project. Create-only: the provider marks
+	// project_id ForceNew, so changing it destroys and recreates the app.
+	ProjectId *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	// Name of the App Platform app that hosts the functions component. This is
+	// spec.name on digitalocean_app: 2-32 chars, ^[a-z][a-z0-9-]{0,30}[a-z0-9]$,
+	// and unique across every app in the DigitalOcean account (the API answers
+	// "name in body should be at most 32 chars long" / "app_name_available:
+	// false" otherwise). It is a spec field, never derived from metadata.name,
+	// because Planton names are longer than 32 chars and unique only within an
+	// org/env. Renaming updates the app in place; the default
+	// <name>-<hash>.ondigitalocean.app hostname carries the name, so the URL
+	// changes with it.
+	AppName       string `protobuf:"bytes,13,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -93,11 +113,11 @@ func (x *DigitalOceanFunctionSpec) GetFunctionName() string {
 	return ""
 }
 
-func (x *DigitalOceanFunctionSpec) GetRegion() digitalocean.DigitalOceanRegion {
+func (x *DigitalOceanFunctionSpec) GetRegion() digitalocean.DigitalOceanAppRegion {
 	if x != nil {
 		return x.Region
 	}
-	return digitalocean.DigitalOceanRegion(0)
+	return digitalocean.DigitalOceanAppRegion(0)
 }
 
 func (x *DigitalOceanFunctionSpec) GetGit() *digitalocean.DigitalOceanAppGitSource {
@@ -163,26 +183,34 @@ func (x *DigitalOceanFunctionSpec) GetProjectId() *v1.StringValueOrRef {
 	return nil
 }
 
+func (x *DigitalOceanFunctionSpec) GetAppName() string {
+	if x != nil {
+		return x.AppName
+	}
+	return ""
+}
+
 var File_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/digitalocean/digitaloceanfunction/v1alpha1/spec.proto\x126dev.planton.digitalocean.digitaloceanfunction.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc8\t\n" +
-	"\x18DigitalOceanFunctionSpec\x121\n" +
-	"\rfunction_name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18 R\ffunctionName\x12L\n" +
-	"\x06region\x18\x02 \x01(\x0e2,.dev.planton.digitalocean.DigitalOceanRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12D\n" +
+	"=catalog/digitalocean/digitaloceanfunction/v1alpha1/spec.proto\x126dev.planton.digitalocean.digitaloceanfunction.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa8\n" +
+	"\n" +
+	"\x18DigitalOceanFunctionSpec\x12Q\n" +
+	"\rfunction_name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\ffunctionName\x12O\n" +
+	"\x06region\x18\x02 \x01(\x0e2/.dev.planton.digitalocean.DigitalOceanAppRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12D\n" +
 	"\x03git\x18\x03 \x01(\v22.dev.planton.digitalocean.DigitalOceanAppGitSourceR\x03git\x12M\n" +
 	"\x06github\x18\x04 \x01(\v25.dev.planton.digitalocean.DigitalOceanAppGithubSourceR\x06github\x12M\n" +
 	"\x06gitlab\x18\x05 \x01(\v25.dev.planton.digitalocean.DigitalOceanAppGitlabSourceR\x06gitlab\x12V\n" +
-	"\tbitbucket\x18\x06 \x01(\v28.dev.planton.digitalocean.DigitalOceanAppBitbucketSourceR\tbitbucket\x125\n" +
-	"\x10source_directory\x18\a \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fsourceDirectory\x12C\n" +
+	"\tbitbucket\x18\x06 \x01(\v28.dev.planton.digitalocean.DigitalOceanAppBitbucketSourceR\tbitbucket\x12)\n" +
+	"\x10source_directory\x18\a \x01(\tR\x0fsourceDirectory\x12C\n" +
 	"\x04envs\x18\b \x03(\v2/.dev.planton.digitalocean.DigitalOceanAppEnvVarR\x04envs\x12O\n" +
 	"\x06alerts\x18\t \x03(\v27.dev.planton.digitalocean.DigitalOceanAppComponentAlertR\x06alerts\x12b\n" +
 	"\x10log_destinations\x18\n" +
 	" \x03(\v27.dev.planton.digitalocean.DigitalOceanAppLogDestinationR\x0flogDestinations\x12u\n" +
 	"\n" +
-	"project_id\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xa6'\x92\xd4a\x19status.outputs.project_idR\tprojectId:\xc0\x02\xbaH\xbc\x02\x1a\xb9\x02\n" +
+	"project_id\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xa6'\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12G\n" +
+	"\bapp_name\x18\r \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\aappName:\xc0\x02\xbaH\xbc\x02\x1a\xb9\x02\n" +
 	"\x13function_one_source\x12\xa9\x01set exactly one source: git, github, gitlab, or bitbucket. Use git with a public clone URL when the DigitalOcean account has no linked GitHub/GitLab/Bitbucket connection\x1av(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) == 1J\x04\b\v\x10\fB\xb2\x03\n" +
 	":com.dev.planton.digitalocean.digitaloceanfunction.v1alpha1B\tSpecProtoP\x01Zlgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanfunction/v1alpha1;digitaloceanfunctionv1alpha1\xa2\x02\x04DPDD\xaa\x026Dev.Planton.Digitalocean.Digitaloceanfunction.V1alpha1\xca\x026Dev\\Planton\\Digitalocean\\Digitaloceanfunction\\V1alpha1\xe2\x02BDev\\Planton\\Digitalocean\\Digitaloceanfunction\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Digitalocean::Digitaloceanfunction::V1alpha1b\x06proto3"
 
@@ -201,7 +229,7 @@ func file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_rawDescG
 var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_goTypes = []any{
 	(*DigitalOceanFunctionSpec)(nil),                    // 0: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec
-	(digitalocean.DigitalOceanRegion)(0),                // 1: dev.planton.digitalocean.DigitalOceanRegion
+	(digitalocean.DigitalOceanAppRegion)(0),             // 1: dev.planton.digitalocean.DigitalOceanAppRegion
 	(*digitalocean.DigitalOceanAppGitSource)(nil),       // 2: dev.planton.digitalocean.DigitalOceanAppGitSource
 	(*digitalocean.DigitalOceanAppGithubSource)(nil),    // 3: dev.planton.digitalocean.DigitalOceanAppGithubSource
 	(*digitalocean.DigitalOceanAppGitlabSource)(nil),    // 4: dev.planton.digitalocean.DigitalOceanAppGitlabSource
@@ -212,7 +240,7 @@ var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_goTypes =
 	(*v1.StringValueOrRef)(nil),                         // 9: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.region:type_name -> dev.planton.digitalocean.DigitalOceanRegion
+	1, // 0: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.region:type_name -> dev.planton.digitalocean.DigitalOceanAppRegion
 	2, // 1: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
 	3, // 2: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
 	4, // 3: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource

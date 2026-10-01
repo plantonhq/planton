@@ -1,0 +1,105 @@
+# In-cluster S3-compatible object store for the Postgres backup lane: a
+# single-node SeaweedFS (master, volume, filer and its S3 gateway in one
+# process) plus a one-shot bucket-provisioning Job, carried as one
+# KubernetesManifest fixture. The cluster's backup ObjectStore points at the
+# `s3` Service, so WAL archiving and a real base backup are provable on the
+# kind cluster with no cloud account. The Job retries (backoffLimit) until
+# the gateway answers. The access key pair is a fixed test identity declared
+# in the gateway's config below — nothing here is a real secret.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesManifest
+metadata:
+  name: e2e-postgres-s3
+spec:
+  namespace:
+    value: e2e-postgres-s3
+  create_namespace: true
+  manifest_yaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: s3-identities
+    data:
+      s3.json: |
+        {"identities":[{"name":"e2e","credentials":[{"accessKey":"e2e-access-key","secretKey":"e2e-secret-key"}],"actions":["Admin","Read","List","Tagging","Write"]}]}
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: s3
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: e2e-postgres-s3
+      template:
+        metadata:
+          labels:
+            app: e2e-postgres-s3
+        spec:
+          containers:
+            - name: seaweedfs
+              image: chrislusf/seaweedfs:4.00
+              args:
+                - server
+                - -dir=/data
+                - -s3
+                - -s3.port=9000
+                - -s3.config=/etc/seaweedfs/s3.json
+              ports:
+                - containerPort: 9000
+              volumeMounts:
+                - name: identities
+                  mountPath: /etc/seaweedfs
+                - name: data
+                  mountPath: /data
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+          volumes:
+            - name: identities
+              configMap:
+                name: s3-identities
+            - name: data
+              emptyDir: {}
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: s3
+    spec:
+      selector:
+        app: e2e-postgres-s3
+      ports:
+        - port: 9000
+          targetPort: 9000
+    ---
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: s3-make-bucket
+    spec:
+      backoffLimit: 20
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: aws
+              image: amazon/aws-cli:2.27.50
+              args:
+                - --endpoint-url
+                - http://s3.e2e-postgres-s3.svc.cluster.local:9000
+                - s3
+                - mb
+                - s3://pg-backups
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  value: e2e-access-key
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: e2e-secret-key
+                - name: AWS_DEFAULT_REGION
+                  value: us-east-1

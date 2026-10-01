@@ -67,13 +67,17 @@ params:
     description: >
       Password for the cache's "default" ACL user — authentication is ON
       by default because an open cache is readable and writable by
-      anything that reaches its Service. MUST BE CHANGED — the default is
-      a placeholder, not a credential. Declared on both sides by design:
+      anything that reaches its Service. Declared on both sides by design:
       the cache enforces it, and Harbor's module materializes the same
       value into its own credential Secret (the Harbor chart's fixed
       REDIS_PASSWORD key contract cannot consume Valkey's
       keyed-by-username Secret by reference).
-    value: change-me
+      On Planton the value is a reference to one key of the install's
+      credentials secret, resolved at deploy so the credential is never
+      stored with the project (the README's "Before you install" creates the
+      secret with every key at once). A deploy without the platform takes
+      the literal.
+    value: $secret/software-supply-chain-credentials/valkey-password
 
   - name: valkey_max_memory
     description: >
@@ -102,20 +106,45 @@ params:
   - name: s3_access_key
     description: >
       The S3 access key ID the registry presents to the object store —
-      declared on both sides by design (the store's identity document and
+      declared on both sides by design (the store's identity Secret and
       Harbor's storage credentials render from this one value, so the
-      pairing can never drift). MUST BE CHANGED, and use LETTERS ONLY
-      (compensate with length, 20+ characters): credential values that
-      pass through config parsers crash servers intermittently on
-      structural characters like digits-first, #, $, or braces.
-    value: registryaccesskeychangeme
+      pairing can never drift). Use LETTERS ONLY (compensate with length,
+      20+ characters): credential values that pass through config parsers
+      crash servers intermittently on structural characters like
+      digits-first, #, $, or braces.
+      On Planton the value is a reference to one key of the install's
+      credentials secret, resolved at deploy so the credential is never
+      stored with the project (the README's "Before you install" creates the
+      secret with every key at once). A deploy without the platform takes
+      the literal.
+    value: $secret/software-supply-chain-credentials/s3-access-key
 
   - name: s3_secret_key
     description: >
       The S3 secret access key paired with s3_access_key — same
-      both-sides contract, same rules: MUST BE CHANGED, LETTERS ONLY,
-      length is the entropy (40+ characters).
-    value: registrysecretaccesskeychangemepleasenow
+      both-sides contract, same rules: LETTERS ONLY, length is the entropy
+      (40+ characters).
+      On Planton the value is a reference to one key of the install's
+      credentials secret, resolved at deploy so the credential is never
+      stored with the project (the README's "Before you install" creates the
+      secret with every key at once). A deploy without the platform takes
+      the literal.
+    value: $secret/software-supply-chain-credentials/s3-secret-key
+
+  - name: s3_identities_config
+    description: >
+      The object store's S3 identities document — a JSON object naming
+      the registry's identity with s3_access_key and s3_secret_key, which
+      the store's gateway reads from the chart's identity Secret. It
+      carries the key pair, so it is a secret of its own; it must name the
+      same pair as the two keys above (the README builds all three from
+      one generated pair).
+      On Planton the value is a reference to one key of the install's
+      credentials secret, resolved at deploy so the credential is never
+      stored with the project (the README's "Before you install" creates the
+      secret with every key at once). A deploy without the platform takes
+      the literal.
+    value: $secret/software-supply-chain-credentials/s3-identities
 
   # ── Pipelines ────────────────────────────────────────────────────────────
   - name: tekton_enabled

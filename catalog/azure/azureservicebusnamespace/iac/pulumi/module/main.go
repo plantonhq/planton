@@ -132,10 +132,10 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusnamespacev1alpha1
 	ctx.Export(OpNamespaceId, createdNamespace.ID())
 	ctx.Export(OpNamespaceName, createdNamespace.Name)
 	ctx.Export(OpEndpoint, createdNamespace.Endpoint)
-	ctx.Export(OpDefaultPrimaryConnectionString, createdNamespace.DefaultPrimaryConnectionString)
-	ctx.Export(OpDefaultSecondaryConnectionString, createdNamespace.DefaultSecondaryConnectionString)
-	ctx.Export(OpDefaultPrimaryKey, createdNamespace.DefaultPrimaryKey)
-	ctx.Export(OpDefaultSecondaryKey, createdNamespace.DefaultSecondaryKey)
+	ctx.Export(OpDefaultPrimaryConnectionString, pulumi.ToSecret(createdNamespace.DefaultPrimaryConnectionString))
+	ctx.Export(OpDefaultSecondaryConnectionString, pulumi.ToSecret(createdNamespace.DefaultSecondaryConnectionString))
+	ctx.Export(OpDefaultPrimaryKey, pulumi.ToSecret(createdNamespace.DefaultPrimaryKey))
+	ctx.Export(OpDefaultSecondaryKey, pulumi.ToSecret(createdNamespace.DefaultSecondaryKey))
 	// Empty unless SYSTEM_ASSIGNED is enabled -- mirrors the TF module's
 	// try(identity[0].principal_id, "").
 	ctx.Export(OpIdentityPrincipalId, createdNamespace.Identity.PrincipalId().ApplyT(func(principalId *string) string {

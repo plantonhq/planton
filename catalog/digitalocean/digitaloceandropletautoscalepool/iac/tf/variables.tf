@@ -36,6 +36,7 @@ variable "spec" {
       with_droplet_agent = optional(bool, false)
       ipv6 = optional(bool, false)
       user_data = optional(string, "")
+      public_networking = optional(bool)
     })
   })
 }

@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripeentitlementfeature
+spec:
+  # A feature imports by its Stripe id (feat_...), which a prior deploy reports as its id output.
+  values:
+    - name: entitlements_feature_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Product catalog -> Features (the feature's id, feat_..., on its detail
+        page), or `GET /v1/entitlements/features` (the id of the entry whose lookup_key matches).

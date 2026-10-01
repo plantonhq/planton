@@ -1,0 +1,40 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# transform_quantity and currency_options.tiers are nested attributes, which
+# distill to single provider arguments; fan-in mappings record every spec leaf
+# each realizes. The spec models a customer-chosen amount as the message being
+# present, so the provider's enabled flag is the module's, and it models the
+# other currencies as a map keyed by currency, which the module writes into
+# each entry's key.
+resources:
+  stripe_price:
+    mappings:
+      - spec: spec.transform_quantity.divide_by
+        arg: transform_quantity
+      - spec: spec.transform_quantity.round
+        arg: transform_quantity
+      - spec: spec.currency_options.tiers.up_to
+        arg: currency_options.tiers
+      - spec: spec.currency_options.tiers.flat_amount
+        arg: currency_options.tiers
+      - spec: spec.currency_options.tiers.flat_amount_decimal
+        arg: currency_options.tiers
+      - spec: spec.currency_options.tiers.unit_amount
+        arg: currency_options.tiers
+      - spec: spec.currency_options.tiers.unit_amount_decimal
+        arg: currency_options.tiers
+    exclusions:
+      - arg: currency_options.key
+        reason: the currency is the key of the spec's currency_options map, which the module writes into each entry's key -- not a field of its own
+      - arg: custom_unit_amount.enabled
+        reason: set by the module to true whenever spec.custom_unit_amount is present -- the spec models a customer-chosen amount as the message's presence, so there is no enabled flag to contradict it
+      - arg: currency_options.custom_unit_amount.enabled
+        reason: set by the module to true whenever an option's custom_unit_amount is present -- presence is the switch, as on the price itself
+      - arg: product_data
+        reason: creates a second object (a product) inside the price that the module could neither track nor archive -- destroy would leave it active; the product is a StripeProduct the price references

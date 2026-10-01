@@ -1,0 +1,12 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripebillingportalconfiguration
+spec:
+  # A portal configuration imports by its Stripe id (bpc_...), which a prior deploy reports as its id output.
+  values:
+    - name: billing_portal_configuration_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        `GET /v1/billing_portal/configurations` (the id field of the configuration, bpc_...); the Dashboard's portal settings page edits the default configuration only.

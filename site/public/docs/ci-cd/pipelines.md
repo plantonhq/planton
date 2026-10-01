@@ -59,6 +59,8 @@ This sequential model exists for a reason: each environment can depend on the pr
 
 By default, pushes to the service's default branch trigger a pipeline. You can configure additional branches in the pipeline settings — only pushes to configured branches will trigger builds.
 
+A service that should never walk every environment from a branch push sets `build.triggers.disableTriggerBranches: true` (**Tags and Mapped Branches Only** on the Branches row of **Build Triggers**). No branch starts its promotion walk, and an empty branch list no longer falls back to the default branch. Tag pushes still release, and every branch mapped to an environment in `deploy.branchDeployments` still builds and deploys into its one environment; a push to any other branch is skipped, with the reason on the record. This is the shape for a service released by tags, or by merging between mapped branches. The setting cannot sit beside a list of trigger branches, which it contradicts.
+
 ### Pull Requests
 
 Pull request pipelines can be configured independently for two levels:
@@ -80,7 +82,11 @@ PR pipelines trigger when the pull request targets a configured branch.
 
 Tag-triggered pipelines follow the same two levels — build only, or build and deploy. When tag pipelines are enabled, you can filter which tags trigger them using glob patterns (for example, `v*` or `release-*`). If no patterns are specified, all tags trigger.
 
-For tag-triggered builds, the container image is tagged with the Git tag name (for example, `v1.0.0`) instead of the commit SHA.
+For tag-triggered builds, the platform's Dockerfile and Buildpacks builders push the image under its commit SHA like every build, and also under the tag name (for example, `v1.0.0`) on the same digest, so the registry itself answers which image a release is. The run records the release tag beside the image, and `planton follow` says `Also tagged v1.0.0`. A Git tag an image tag cannot carry — image tags allow letters, digits, `_`, `.` and `-`, up to 128 characters, so `release/1.4` is not one — is pushed under its commit only, and the build says so:
+
+```text
+The release tag release/1.4 isn't a valid image tag (letters, digits, '_', '.' and '-', up to 128), so the image is pushed under its commit only.
+```
 
 ### Manual Triggers
 
@@ -95,9 +101,20 @@ planton service run my-service --branch main --commit a3f4c2b
 
 # Build and deploy into exactly one environment (no promotion walk)
 planton service run my-service --branch main --deploy-env dev
+
+# Release a tag, exactly as if it had just been pushed
+planton service run my-service --tag v1.4.0
 ```
 
-In the web console, the **Trigger Pipeline** button on the Pipelines tab opens a dialog where you select the branch.
+`--tag` runs a tag release: it builds the tagged commit and walks every environment in promotion order, gates included, just as the tag push would have. It is its own choice — it cannot be combined with `--branch` or `--commit` — and it is refused when the service's tag triggers are off or when the tag matches none of its tag patterns. A service with no trigger branch has no default branch head to fall back on, so a run naming nothing is refused with the command to use instead:
+
+```text
+service 'my-service' has no trigger branch to build by default, so name what to run: planton service run my-service --tag <tag> (or --branch <branch>)
+```
+
+A branch, tag or commit the repository does not have is refused naming it and the repository.
+
+In the web console, the **Run** button on the service's **Runs** tab opens the same choice: the trigger branch's head by default, another branch, or — when the service's tag triggers are on — **Release a Tag**, picked from the repository's tags that the service's patterns accept, newest first (type to narrow, or name a tag the list doesn't show). For a service with no trigger branch there is no head to build by default, so the dialog opens on the tag (or, with tags off, the branch) and waits for one to be named.
 
 ## Controlling Pipeline Behavior
 
@@ -196,6 +213,7 @@ GitHub Actions can also be the deploy platform itself: the published Deploy Acti
 
 - [What is a Service?](/docs/ci-cd/what-is-a-service) — Service configuration including pipeline settings
 - [Deploy from GitHub Actions](/docs/ci-cd/deploy-from-github-actions) — The published Deploy Action, offline and connected
+- [Trusted Workflows](/docs/ci-cd/trusted-workflows) — Let a repository's workflows register and deploy with no stored key
 - [Build Methods](/docs/ci-cd/build-methods) — How artifacts are built during the build stage
 - [Self-Managed Pipelines](/docs/ci-cd/self-managed-pipelines) — Custom Tekton pipeline definitions
 - [Deployment Targets](/docs/ci-cd/deployment-targets) — Where the deploy stage provisions resources

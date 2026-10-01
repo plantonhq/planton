@@ -1,0 +1,62 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: auth0promptcustomtext
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The words of one prompt in one language inside Auth0's SaaS control plane, shown publicly on the login pages and none of them secret; their storage is Auth0's provider-managed posture, with no encryption seam in this spec.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest at this component's level to key (see enc-at-rest); Auth0 exposes no customer-managed-key surface on custom text.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The custom text terminates no connections; the Management API calls that write it travel to Auth0's HTTPS-only API.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The words are shown publicly by design, on the tenant's login pages; they expose no endpoint of their own.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network surface exists to filter (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The object receives no HTTP requests; Auth0's own login and API edge is Auth0's provider-managed posture.
+    - control_id: rbac
+      status: not_applicable
+      notes: WHO may change the login pages' words is governed at the Auth0 tenant level -- Management API tokens scoped with read:prompts and update:prompts (iac/permissions.yaml) and dashboard admin roles -- with no per-prompt access-control surface in this spec.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The custom text holds no credentials and authenticates to nothing; the credential the IaC runner presents is the provider connection's concern (iac/permissions.yaml).
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: Words carry no credential path of their own.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The custom text changes what the login pages say, never how a person proves who they are; credential strength lives on the tenant's connections and multi-factor policy.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Changes to custom text are Management API operations captured in Auth0's tenant logs (exported, where wanted, by the auth0eventstream kind).
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the modules expose a metrics surface for custom text.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The prompt's whole custom text in the language is declared in the manifest and re-created from it, so the manifest is the recovery point.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure; availability of the login page is Auth0's SaaS platform posture.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: Destroying this resource returns the prompt to Auth0's default words in that language -- a visible change, never a loss of data, and re-applied from the manifest. There is no deletion-protection surface on custom text.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software of its own to patch; Universal Login is Auth0's SaaS, patched by Auth0.

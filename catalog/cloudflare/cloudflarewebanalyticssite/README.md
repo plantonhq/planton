@@ -48,8 +48,8 @@
 | Field | Description |
 |-------|-------------|
 | `site_tag` | The Cloudflare-assigned site tag (its identity in every RUM API path) |
-| `site_token` | The beacon's measurement token (secret-marked in these outputs) |
-| `snippet` | The ready-to-embed script tag (carries the token; secret-marked) |
+| `site_token` | The beacon's measurement token |
+| `snippet` | The ready-to-embed script tag (carries the token) |
 | `ruleset_id` | The parent object the measurement rules live under |
 
 ## Example Manifest

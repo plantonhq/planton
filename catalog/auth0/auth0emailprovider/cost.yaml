@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0emailprovider
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for an email provider and gates it on no plan: every tenant, the Free plan included, can send through its own service (auth0.com/docs/customize/email/smtp-email-providers). Without one, the tenant sends through Auth0's built-in provider, which is limited to 10 emails per minute, always sends from no-reply@auth0user.net, and cannot use custom email templates."
+  notes: "The real spend lives in two places outside this component: the tenant subscription (Auth0 bills by plan tier plus monthly active users, auth0.com/pricing), and the sending service the spec's arm names -- Resend, Amazon SES, SendGrid, SparkPost, Mailgun, Mandrill, Azure Communication Services or Microsoft 365 -- which bills its own volume on its own plan. The custom arm adds the Action that sends, which Auth0 does not meter separately."

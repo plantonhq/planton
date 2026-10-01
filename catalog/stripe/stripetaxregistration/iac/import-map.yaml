@@ -1,0 +1,14 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripetaxregistration
+spec:
+  # A registration imports by its Stripe id (taxreg_...), which a prior deploy reports as its id
+  # output. The manifest must carry the registration's own start date, country and options, or
+  # the first apply moves the start date or replaces the registration.
+  values:
+    - name: tax_registration_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        `GET /v1/tax/registrations` lists the account's registrations with their ids (taxreg_...), country and options; the Stripe Dashboard's Tax registrations page shows the same registrations by place.

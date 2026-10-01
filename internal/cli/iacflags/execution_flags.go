@@ -26,8 +26,9 @@ func AddExecutionFlags(cmd *cobra.Command) {
 	cmd.PersistentFlags().StringToString(string(flag.Set), map[string]string{},
 		"override resource manifest values using key=value pairs")
 
-	cmd.PersistentFlags().Bool(string(flag.LocalModule), false,
-		"Use the local planton repository to derive the module directory")
+	// --local-module is not declared here: it is a root persistent flag
+	// (root.RegisterPersistentFlags), and a second declaration on the command
+	// would hide the root's -- the person types one, the handler reads the other.
 }
 
 // AddKubeContextFlag registers --kube-context, the one flag every engine

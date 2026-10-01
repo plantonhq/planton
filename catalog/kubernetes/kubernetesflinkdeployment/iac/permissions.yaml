@@ -36,3 +36,23 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubectl_manifest.flinkdeployment (Terraform, server-side apply) and the Pulumi twin's untyped CustomResource in flinkdeployment_cr.go -- the single flink.apache.org/v1beta1 FlinkDeployment CR. The JobManager, TaskManagers, and Services are created by the OPERATOR under its own identity, not by the runner. Deletion cascades in the Background so the operator's finalizer owns the teardown.
+      - api_groups:
+          - flink.apache.org
+        resources:
+          - flinkdeployments
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the FlinkDeployment in flinkdeployment_cr.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

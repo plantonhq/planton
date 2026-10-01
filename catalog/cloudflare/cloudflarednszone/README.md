@@ -10,7 +10,7 @@ Cloudflare DNS provides authoritative DNS served from a global anycast network, 
 
 - **Global Anycast DNS**: authoritative DNS from a worldwide edge network
 - **Zone types**: full, partial (CNAME setup), secondary, and internal zones
-- **Inline records at full depth**: all 21 record types managed with the zone — simple records via `content`, structured records (SRV, CAA, TLSA, LOC, …) via typed data blocks, plus per-record tags, settings, and private routing. Records with independent lifecycles are better modeled as standalone CloudflareDnsRecord resources; the surface is identical.
+- **Inline records at full depth**: all 21 record types managed with the zone — simple records via `content` (a literal, or a reference to another resource's output), structured records (SRV, CAA, TLSA, LOC, …) via typed data blocks, plus per-record tags, settings, and private routing. Records with independent lifecycles are better modeled as standalone CloudflareDnsRecord resources; the surface is identical.
 - **Folded DNS settings**: CNAME flattening, zone mode, SOA, nameserver set, and NS TTL
 - **DNSSEC**: enable Cloudflare zone signing and export the DS material for your registrar
 - **Zone hold**: block the zone's hostname (and optionally subdomains) from being added as a zone in any other Cloudflare account
@@ -55,11 +55,13 @@ spec:
   records:
     - name: "@"
       type: A
-      content: "203.0.113.50"
+      content:
+        value: "203.0.113.50"
       proxied: true
     - name: "@"
       type: MX
-      content: mail.example.com
+      content:
+        value: mail.example.com
       priority: 10
 ```
 
@@ -80,7 +82,8 @@ spec:
         priority: 10
         weight: 5
         port: 5060
-        target: sip.example.com
+        target:
+          value: sip.example.com
     - name: "@"
       type: CAA
       caa:

@@ -29,5 +29,5 @@ spec:
     sshKeys:
       - valueFrom:
           kind: DigitalOceanSshKey
-          name: planton-oss-e2e-digitaloceansshkey-min
+          name: planton-oss-e2e-digitaloceansshkey-prereq
           fieldPath: status.outputs.ssh_key_id

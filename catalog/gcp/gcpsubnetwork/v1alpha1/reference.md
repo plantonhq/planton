@@ -544,6 +544,14 @@ Fields on other kinds that can point at this resource:
 | GcpTpuVm | `spec.networkConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpTpuVm | `spec.networkConfigs[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpVertexAiNotebook | `spec.networkInterface.subnet` | `status.outputs.subnetwork_self_link` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.ip_cidr_range` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.secondary_ranges` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `status.outputs.ip_cidr_range` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `status.outputs.secondary_ranges` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `status.outputs.ip_cidr_range` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `status.outputs.secondary_ranges` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `status.outputs.ip_cidr_range` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `status.outputs.secondary_ranges` |
 
 ## See Also
 

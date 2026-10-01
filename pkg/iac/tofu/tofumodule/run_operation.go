@@ -83,9 +83,12 @@ func RunOperation(
 
 	// If JSON output, stream stdout line-by-line (see streamCommandJSONOutput for
 	// the read-before-Wait ordering that avoids a "file already closed" race).
-	// The JSON consumer owns its own diagnostics (each is an engine event).
+	// The JSON consumer receives the engine's diagnostics as events; a failure
+	// the engine raises before its JSON stream starts exists only on stderr,
+	// so a failed command carries that text too.
 	if isJsonOutput {
-		return streamCommandJSONOutput(binaryName, cmd, jsonLogEventsChan)
+		err := streamCommandJSONOutput(binaryName, cmd, jsonLogEventsChan)
+		return failure.Annotate(withStderr(err, diagnostics.String()), diagnostics.String())
 	}
 
 	// Otherwise stream stdout directly to the console.

@@ -10,7 +10,7 @@
 # kubeconfig environment contract).
 
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.3" # startswith() and lifecycle preconditions (image_registry)
 
   required_providers {
     kubectl = {

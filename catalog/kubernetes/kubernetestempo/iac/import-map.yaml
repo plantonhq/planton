@@ -5,9 +5,10 @@ metadata:
 spec:
   # Tempo installs as one Helm release NAMED AFTER metadata.name
   # (fullnameOverride pins the Service the same way), plus the optional
-  # anchor namespace. Object-store credentials are REFERENCES to existing
-  # Secrets (never chart-owned) — they travel with the referenced Secrets,
-  # so there are no Secret rows here.
+  # anchor namespace and, when storage.r2 is declared, the
+  # module-materialized `<name>-r2-credentials` key-pair Secret
+  # (count-indexed). The other arms' object-store credentials are
+  # REFERENCES to existing Secrets — they travel with those Secrets.
   values:
     - name: release_name
       derivations:
@@ -22,6 +23,24 @@ spec:
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column).
+    # ── the module-materialized r2 credentials Secret ────────────────────
+    # Deterministic name "<metadata.name>-r2-credentials"; count-indexed
+    # (present only when storage.r2 is declared), so the scoped suffix
+    # derivation serves it.
+    - name: secret_name
+      tofu_resource_name: r2_credentials
+      derivations:
+        - from_metadata_name_suffix: "-r2-credentials"
+      where_to_find: >-
+        Always "<resource-name>-r2-credentials" when declared —
+        `kubectl get secrets -n <namespace>` (keys access-key-id, secret-access-key).
+    - name: secret_namespace
+      tofu_resource_name: r2_credentials
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:

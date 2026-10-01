@@ -83,7 +83,7 @@ does, its host and password references being the ordering.
 | `postgres_disk_size` | Volume size per instance | `10Gi` | Authorization tuples ramp with usage |
 | `keycloak_hostname` | Public base URL tokens are minted for (full URL) | `https://auth.example.com` | **MUST change** — the placeholder deploys but mints tokens for a domain you do not own |
 | `keycloak_instances` | Keycloak replicas (auto-clustering) | `1` | `2+` for HA once the platform is critical-path |
-| `openfga_preshared_api_key` | The API key OpenFGA clients present | `change-me` | **MUST change** — the placeholder is not a credential |
+| `openfga_preshared_api_key` | The API key OpenFGA clients present: a `$secret/` reference on Planton, the literal on a deploy without it | `$secret/identity-and-access-platform-openfga-key` | Create that secret first (`planton secret set identity-and-access-platform-openfga-key --string`), or point at your own, such as `$secret/@<env>/<slug>` |
 | `openbao_storage` | Where the vault keeps its data: `raft` (its own volume, Raft snapshots for backup) or `postgresql` (this chart's database — no volume, one database backup covers the whole triad, no snapshots) | `raft` | The database is the platform's backed-up truth and the vault belongs inside that boundary |
 | `openbao_replicas` | OpenBao server replicas (on Raft, odd numbers only make sense above 1; on PostgreSQL any second replica is a warm standby) | `1` | `3` once the cluster has the nodes and secrets are critical-path; on Raft `5` survives two member losses |
 | `openbao_disk_size` | OpenBao Raft data volume (per replica; unused on `postgresql`) | `10Gi` | Aggressive audit/snapshot schedules |
@@ -122,7 +122,7 @@ does, its host and password references being the ordering.
    ```bash
    kubectl -n identity port-forward svc/<env>-openfga 8080:8080 &
    curl -X POST localhost:8080/stores \
-     -H "Authorization: Bearer <your openfga_preshared_api_key>" \
+     -H "Authorization: Bearer <the key held in the openfga_preshared_api_key secret>" \
      -H "Content-Type: application/json" -d '{"name":"platform"}'
    ```
 
@@ -181,9 +181,9 @@ does, its host and password references being the ordering.
 - **Scaling OpenFGA:** the servers are stateless — raise `replicas` on
   the deployed resource; the database is the shared truth. Its `3`
   default already rides one Service.
-- **API-key rotation (OpenFGA):** update `openfga_preshared_api_key` on
-  the deployed resource — the module rewrites the authn-keys Secret and
-  rolls the servers. Declare two keys during a rotation window (old +
+- **API-key rotation (OpenFGA):** write a new version of the secret
+  `openfga_preshared_api_key` names and redeploy — the module rewrites the
+  authn-keys Secret and rolls the servers. Declare two keys during a rotation window (old +
   new) so clients migrate without downtime.
 
 ---

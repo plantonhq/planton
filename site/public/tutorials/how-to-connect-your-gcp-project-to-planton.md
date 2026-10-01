@@ -105,10 +105,10 @@ This creates a file named `sa-key.json` in your current directory containing the
 
 ### Step 4: Store the Key as an Org-Level Secret
 
-Use the `planton secret set` command with the `--from-file` flag to store the JSON key file as a Planton secret. The slug you choose here (`gcp-sa-key` in this example) is what you will reference in the connection manifest.
+Use `planton secret set` with `--string`, reading the JSON key file from standard input, to store it as one single-value Planton secret. The slug you choose here (`gcp-sa-key` in this example) is what you will reference in the connection manifest.
 
 ```bash
-planton secret set gcp-sa-key --from-file value=./sa-key.json
+planton secret set gcp-sa-key --string < ./sa-key.json
 ```
 
 After the secret is stored in config-manager, delete the local key file so it does not remain on disk:

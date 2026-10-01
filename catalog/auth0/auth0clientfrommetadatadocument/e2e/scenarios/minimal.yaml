@@ -1,0 +1,24 @@
+# An application registered from its metadata document alone, then deleted.
+# Nothing is declared over the document, so the lane proves the registration,
+# the outputs Auth0 takes from the document (name, callbacks, grant types)
+# and the validation outputs on both engines, a second plan with no change,
+# and the real delete.
+#
+# The document is one the operator hosts (PLANTON_E2E_AUTH0_CIMD_URL). The
+# tenant's CIMD registration is turned on by the Auth0TenantSettings
+# prerequisite (e2e/prerequisites/auth0tenantsettings.yaml).
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0ClientFromMetadataDocument
+metadata:
+  name: e2e-mcp-client
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CIMD_URL
+    planton.dev/e2e-import-roundtrip-skip: >-
+      The document sets a description and this spec declares none; the
+      provider has no computed value for it, so a blind import plans to clear
+      it (the adoption rule the spec's description comment states, measured
+      here). The full-settings scenario declares it and proves the recipe.
+spec:
+  externalClientId: ${E2E_ENV:PLANTON_E2E_AUTH0_CIMD_URL}

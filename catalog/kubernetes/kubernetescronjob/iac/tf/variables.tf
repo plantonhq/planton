@@ -30,6 +30,7 @@ variable "spec" {
           image = object({
             repo = optional(string, "")
             tag = optional(string, "")
+            digest = optional(string, "")
           })
           image_pull_policy = optional(string, "")
           command = optional(list(string), [])
@@ -291,6 +292,7 @@ variable "spec" {
           image = object({
             repo = optional(string, "")
             tag = optional(string, "")
+            digest = optional(string, "")
           })
           image_pull_policy = optional(string, "")
           command = optional(list(string), [])
@@ -563,6 +565,7 @@ variable "spec" {
           image = object({
             repo = optional(string, "")
             tag = optional(string, "")
+            digest = optional(string, "")
           })
           image_pull_policy = optional(string, "")
           command = optional(list(string), [])

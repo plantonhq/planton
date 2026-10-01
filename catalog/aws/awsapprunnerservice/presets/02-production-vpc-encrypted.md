@@ -27,9 +27,7 @@ This preset creates a production-grade App Runner service with private ECR image
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `imageIdentifier` | Your private ECR image path -- the preset ships a format-valid example (`123456789012.dkr.ecr.us-east-1.amazonaws.com/my-api:v1.0.0`); replace account, region, repo, and tag with your own | AWS ECR Console |
-| `<region>` | AWS region (e.g., `us-east-1`) | Your deployment region |
-| `<repo>` | ECR repository name | AWS ECR Console |
-| `<tag>` | Image tag (e.g., `v1.0.0`, `latest`) | Your CI/CD pipeline |
+| `<aws-region>` | AWS region (e.g., `us-east-1`) | Your deployment region |
 | `<ecr-access-role>` | Name of the `AwsIamRole` granting ECR pull access | Your resource graph |
 | `<application-port>` | Port your app listens on (e.g., `8080`) | Your Dockerfile or app config |
 | `<instance-role>` | Name of the `AwsIamRole` for runtime AWS API access | Your resource graph |

@@ -7,7 +7,8 @@ var vars = struct {
 	// local: the TektonConfig surface the KubernetesTekton kind renders
 	// is designed against this release's operator API. Always an exact
 	// release TAG, never a branch — tag pinning keeps installs
-	// reproducible.
+	// reproducible. Moving it moves the image table too (images.go): a
+	// test and both engines refuse a table read from another release.
 	OperatorRelease string
 
 	// Namespace is the fixed installation namespace. The release
@@ -21,6 +22,11 @@ var vars = struct {
 	OperatorDeploymentName string
 	WebhookDeploymentName  string
 
+	// LifecycleContainerName is the operator Deployment's container that
+	// reconciles the components and reads the IMAGE_* variables naming
+	// their images; image_registry appends its entries there.
+	LifecycleContainerName string
+
 	// ConfigDefaultsConfigMapName is the manifest ConfigMap whose
 	// AUTOINSTALL_COMPONENTS key the module ALWAYS patches to "false":
 	// the operator must never race the KubernetesTekton declaration for
@@ -33,13 +39,19 @@ var vars = struct {
 	// against — deleted with this resource (cascade warning on the
 	// spec).
 	TektonConfigCrdName string
+	// ReadinessGateConfigMapName is the module's own stand-in whose
+	// creation waits for the operator to serve (readiness_gate.go); the
+	// Terraform twin's readiness_gate_config_map_name.
+	ReadinessGateConfigMapName string
 }{
 	OperatorRelease:             "v0.80.0",
 	Namespace:                   "tekton-operator",
 	OperatorDeploymentName:      "tekton-operator",
 	WebhookDeploymentName:       "tekton-operator-webhook",
+	LifecycleContainerName:      "tekton-operator-lifecycle",
 	ConfigDefaultsConfigMapName: "tekton-config-defaults",
 	TektonConfigCrdName:         "tektonconfigs.operator.tekton.dev",
+	ReadinessGateConfigMapName:  "tekton-operator-readiness",
 }
 
 // ManifestURL is the released single-file manifest for the pinned tag —

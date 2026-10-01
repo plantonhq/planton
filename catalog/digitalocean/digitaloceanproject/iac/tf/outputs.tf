@@ -15,3 +15,8 @@ output "owner_id" {
   description = "Numeric id of the account or team that owns the project"
   value       = tostring(digitalocean_project.project.owner_id)
 }
+
+output "resource_urns" {
+  description = "URNs of the resources DigitalOcean reports as project members after apply, sorted (the provider reads membership back whether or not the spec manages it)"
+  value       = sort(tolist(digitalocean_project.project.resources))
+}

@@ -33,14 +33,14 @@ func Resources(ctx *pulumi.Context, stackInput *awscodebuildprojectv1alpha1.AwsC
 		}
 		ctx.Export(OpWebhookUrl, createdWebhook.Url)
 		ctx.Export(OpWebhookPayload, createdWebhook.PayloadUrl)
-		ctx.Export(OpWebhookSecret, createdWebhook.Secret)
+		ctx.Export(OpWebhookSecret, pulumi.ToSecret(createdWebhook.Secret))
 	} else {
 		// The output contract is engine-invariant: webhook outputs always
 		// exist and are empty when no webhook is configured (matching the
 		// Terraform module).
 		ctx.Export(OpWebhookUrl, pulumi.String(""))
 		ctx.Export(OpWebhookPayload, pulumi.String(""))
-		ctx.Export(OpWebhookSecret, pulumi.String(""))
+		ctx.Export(OpWebhookSecret, pulumi.ToSecret(pulumi.String("")))
 	}
 
 	// 3. Resource policy (optional folded satellite, depends on project)

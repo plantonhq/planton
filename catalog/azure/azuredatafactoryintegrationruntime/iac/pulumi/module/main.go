@@ -51,8 +51,8 @@ func Resources(ctx *pulumi.Context, stackInput *azuredatafactoryintegrationrunti
 
 	ctx.Export(OpIntegrationRuntimeId, outputs.id)
 	ctx.Export(OpIntegrationRuntimeName, outputs.name)
-	ctx.Export(OpPrimaryAuthorizationKey, outputs.primaryAuthorizationKey)
-	ctx.Export(OpSecondaryAuthorizationKey, outputs.secondaryAuthorizationKey)
+	ctx.Export(OpPrimaryAuthorizationKey, pulumi.ToSecret(outputs.primaryAuthorizationKey))
+	ctx.Export(OpSecondaryAuthorizationKey, pulumi.ToSecret(outputs.secondaryAuthorizationKey))
 
 	return nil
 }

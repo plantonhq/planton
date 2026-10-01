@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUnwrapTofuOutputs_ValuesAndSensitivity(t *testing.T) {
+func TestUnwrapTofuOutputs_Values(t *testing.T) {
 	doc := []byte(`{
 		"host": {"value": "10.0.0.5", "type": "string", "sensitive": false},
 		"password": {"value": "s3cr3t", "type": "string", "sensitive": true},
@@ -14,29 +14,24 @@ func TestUnwrapTofuOutputs_ValuesAndSensitivity(t *testing.T) {
 		"labels": {"value": {"tier": "cache"}, "type": ["object", {"tier": "string"}], "sensitive": false}
 	}`)
 
-	values, sensitive, err := unwrapTofuOutputs(doc)
+	values, err := unwrapTofuOutputs(doc)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "10.0.0.5", values["host"])
 	assert.Equal(t, "s3cr3t", values["password"])
 	assert.Len(t, values["ports"], 2)
 	assert.Equal(t, map[string]interface{}{"tier": "cache"}, values["labels"])
-
-	assert.False(t, sensitive["host"])
-	assert.True(t, sensitive["password"])
-	assert.False(t, sensitive["ports"])
 }
 
 func TestUnwrapTofuOutputs_EmptyDocumentIsNotAnError(t *testing.T) {
 	for _, doc := range []string{"", "{}", "  \n"} {
-		values, sensitive, err := unwrapTofuOutputs([]byte(doc))
+		values, err := unwrapTofuOutputs([]byte(doc))
 		assert.NoError(t, err, "doc %q", doc)
 		assert.Empty(t, values)
-		assert.Empty(t, sensitive)
 	}
 }
 
 func TestUnwrapTofuOutputs_NonEnvelopeShapeErrors(t *testing.T) {
-	_, _, err := unwrapTofuOutputs([]byte(`{"host": "bare-value-not-an-envelope"}`))
+	_, err := unwrapTofuOutputs([]byte(`{"host": "bare-value-not-an-envelope"}`))
 	assert.Error(t, err)
 }

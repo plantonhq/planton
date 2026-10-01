@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awscodebuildproject.v1alpha1;
 
+import "shared/options/options.proto";
+
 // AwsCodeBuildProjectStackOutputs captures observable identifiers and
 // endpoints from the AWS CodeBuild project deployment.
 message AwsCodeBuildProjectStackOutputs {
@@ -41,5 +43,5 @@ message AwsCodeBuildProjectStackOutputs {
   // webhook.manual_creation, configure it on the repository webhook so
   // CodeBuild can authenticate payloads. Empty when no webhook is
   // configured.
-  string webhook_secret = 8;
+  string webhook_secret = 8 [(dev.planton.shared.options.sensitive) = true];
 }

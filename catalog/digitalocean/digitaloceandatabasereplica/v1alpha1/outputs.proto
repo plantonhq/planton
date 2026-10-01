@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1;
 
+import "shared/options/options.proto";
+
 // DigitalOceanDatabaseReplicaStackOutputs captures the key outputs after
 // provisioning a read-only replica of a DigitalOcean database cluster. The
 // primary's cluster id and the replica name are echoed so consumers (and
@@ -39,13 +41,13 @@ message DigitalOceanDatabaseReplicaStackOutputs {
   string user = 8;
 
   // Password of the replica's default user. Secret.
-  string password = 9;
+  string password = 9 [(dev.planton.shared.options.sensitive) = true];
 
   // Full public connection URI for the replica, including credentials.
   // Secret.
-  string uri = 10;
+  string uri = 10 [(dev.planton.shared.options.sensitive) = true];
 
   // Full private-network connection URI for the replica, including
   // credentials. Secret.
-  string private_uri = 11;
+  string private_uri = 11 [(dev.planton.shared.options.sensitive) = true];
 }

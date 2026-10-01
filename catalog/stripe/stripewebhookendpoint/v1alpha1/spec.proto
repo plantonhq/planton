@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripewebhookendpoint.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// StripeWebhookEndpointSpec is where the Stripe account the provider connection's key belongs
+// to delivers its events: a URL and the event types it receives.
+//
+// Stripe signs every delivery with the endpoint's signing secret, and returns that secret only
+// when the endpoint is created. The deployment captures it into status.outputs.secret, where the
+// service that verifies deliveries reads it by reference. An endpoint imported from one made in
+// the Dashboard carries no secret; replace it to get one.
+//
+// Destroy deletes the endpoint from Stripe. An endpoint deleted outside Planton makes the next
+// plan fail (the provider does not treat a missing endpoint as gone); remove it from state and
+// apply again to recreate it.
+//
+// The key needs "Webhook Endpoints" write (iac/permissions.yaml).
+//
+// https://docs.stripe.com/api/webhook_endpoints
+// https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/webhook_endpoint
+message StripeWebhookEndpointSpec {
+  // url is where Stripe sends each event, as an HTTP POST. Live mode requires HTTPS; a sandbox
+  // accepts HTTP for local testing through a tunnel. Changing it updates the endpoint in place
+  // and keeps its signing secret.
+  string url = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uri = true,
+    (buf.validate.field).cel = {
+      id: "spec.url.scheme"
+      message: "url is an https:// (or, in a sandbox, http://) address"
+      expression: "this.startsWith('https://') || this.startsWith('http://')"
+    }
+  ];
+
+  // enabled_events are the event types delivered to this endpoint, in Stripe's spelling
+  // ("checkout.session.completed", "invoice.paid", "charge.refunded"). "*" delivers every event
+  // except those that must be selected by name. List only the events the receiving service
+  // handles: every other delivery is traffic it must acknowledge and ignore.
+  repeated string enabled_events = 2 [(buf.validate.field).repeated = {
+    min_items: 1
+    unique: true
+    items: {
+      string: {pattern: "^(\\*|[a-z0-9_]+(\\.[a-z0-9_]+)+)$"}
+    }
+  }];
+
+  // description is a note shown beside the endpoint in the Dashboard.
+  string description = 3;
+
+  // metadata is a set of key-value pairs stored on the endpoint. A key removed here is removed
+  // in Stripe on the next apply.
+  map<string, string> metadata = 4;
+
+  // api_version pins the Stripe API version events are rendered in for this endpoint
+  // ("2025-09-30.clover"). Unset, Stripe renders events in the account's default version. Changing
+  // it REPLACES the endpoint, and a new endpoint gets a new signing secret: the service that
+  // verifies deliveries must take the new secret in the same deployment. Leave it unset unless
+  // the receiving code parses fields that differ between versions.
+  string api_version = 5 [(buf.validate.field).cel = {
+    id: "spec.api_version.format"
+    message: "api_version is a Stripe API version such as 2025-09-30.clover"
+    expression: "this == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}(\\\\.[a-z]+)?$')"
+  }];
+
+  // connect delivers events from the account's connected accounts (Stripe Connect) instead of
+  // its own. Changing it REPLACES the endpoint, which rotates the signing secret.
+  bool connect = 6;
+}

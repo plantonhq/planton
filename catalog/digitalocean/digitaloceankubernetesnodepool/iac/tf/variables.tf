@@ -17,7 +17,7 @@ variable "spec" {
     node_pool_name = string
     cluster = string
     size = string
-    node_count = number
+    node_count = optional(number, 0)
     auto_scale = optional(bool, false)
     min_nodes = optional(number, 0)
     max_nodes = optional(number, 0)

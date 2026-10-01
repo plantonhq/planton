@@ -6,11 +6,13 @@ spec:
   # The topic imports as "{cluster_id},{topic_name}" -- the provider's
   # importer splits on the comma and rewrites the id into its canonical
   # internal form. Both parts are stack outputs, so a blind round-trip
-  # needs zero user input. Tolerances (recorded in aa_import/catalog.yaml):
-  # partition_count is NEVER read back (partition changes apply
-  # asynchronously, so the provider keeps the configured value -- an import
-  # lands at the schema default), and min_insync_replicas is locally
-  # defaulted rather than read from the server.
+  # needs zero user input. The one tolerance (recorded in
+  # aa_import/catalog.yaml): partition_count is NEVER read back (partition
+  # changes apply asynchronously, so the provider keeps the value already
+  # in state -- empty after an import), so the post-import plan proposes
+  # `0 -> <configured>` and the reconcile-apply's equal-count update is an
+  # API no-op. Everything else, the config block included, reads back as
+  # sent (live-proven 2026-09-17 on both scenarios).
   values:
     - name: cluster_id
       derivations:

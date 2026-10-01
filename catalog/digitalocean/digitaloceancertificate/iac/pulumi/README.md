@@ -1,6 +1,6 @@
 # DigitalOcean Certificate -- Pulumi Module
 
-Deploys a `digitalocean:index/certificate:Certificate` from a `DigitalOceanCertificate` stack input: the certificate's stable name plus exactly one source branch -- Let's Encrypt domains or custom PEM material. DigitalOcean's `type` argument is derived from whichever branch is set. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`, which carries the complete provider argument surface -- no PARITY-EXCEPTION guards. (This resource has no urn attribute at the provider, so there is none to export.)
+Deploys a `digitalocean:index/certificate:Certificate` from a `DigitalOceanCertificate` stack input: the certificate's stable name plus exactly one source branch -- Let's Encrypt domains or custom PEM material. DigitalOcean's `type` argument is derived from whichever branch is set. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface -- no PARITY-EXCEPTION guards. (This resource has no urn attribute at the provider, so there is none to export.)
 
 ## Module structure
 

@@ -1,0 +1,15 @@
+# Auth0CustomDomain install profile, used as a prerequisite by the kinds that
+# compose a custom domain (the verification's registry prerequisite, and the
+# tenant settings' default-domain scenario). The name is run-scoped under the
+# operator's parent domain, so the verification record a consumer publishes
+# lands where Auth0 can resolve it publicly. metadata.name stays stable -- it is
+# the key consumers' valueFrom references resolve against.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomain
+metadata:
+  name: e2e-sign-in-domain
+  org: e2e-org
+  env: testing
+spec:
+  domain: id-${E2E_RUN_ID}.${E2E_ENV:PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT}
+  type: auth0_managed_certs

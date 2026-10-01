@@ -23,3 +23,13 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubectl_manifest.peer_authentication -- the module's only resource, applying one PeerAuthentication (security.istio.io/v1) into spec.namespace via server-side apply.
+      - api_groups:
+          - security.istio.io
+        resources:
+          - peerauthentications
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the PeerAuthentication in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

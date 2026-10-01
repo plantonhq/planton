@@ -28,6 +28,12 @@ type TempoVerifier struct {
 	Name      string
 	// Persistence switches on the trace-survives-pod-loss proof.
 	Persistence bool
+	// R2 switches on the object-store proof: after the push, Tempo is
+	// asked to shut down its ingester, which writes every block to the
+	// backend, and the proof lists this run's objects in the real R2 test
+	// bucket (r2_objects.go); the pod-loss proof then reads the trace back
+	// from R2 alone.
+	R2 bool
 }
 
 func (v *TempoVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
@@ -99,6 +105,23 @@ func (v *TempoVerifier) proveRoundTrip(ctx context.Context, kubeconfig string) e
 	}
 	fmt.Printf("  [verify] PUSH: proof span (trace %s) accepted over OTLP\n", traceId)
 
+	if v.R2 {
+		since := time.Now()
+		// /shutdown flushes all in-memory traces and the WAL to the
+		// backend (Tempo's documented pre-stop call); /flush alone only
+		// reaches the WAL, and a block waits max_block_duration before
+		// leaving it.
+		if _, err := httpRoundTrip(ctx, http.MethodPost, queryBase+"/shutdown", "", "", 2*time.Minute); err != nil {
+			return errors.Wrap(err, "R2: asking tempo to flush its blocks to the backend")
+		}
+		keys, err := awaitR2Objects(ctx, "single-tenant/", since, 6*time.Minute)
+		if err != nil {
+			return errors.Wrap(err, "R2: tempo flushed but no block reached the bucket; check the <name>-r2-credentials Secret, the TEMPO_S3_* variables and the composed endpoint")
+		}
+		fmt.Printf("  [verify] R2: tempo's blocks landed in the R2 bucket (%s)\n", summarizeKeys(keys))
+		defer removeR2Objects(ctx, keys)
+	}
+
 	if v.Persistence {
 		if err := deletePodAwaitReplacement(ctx, kubeconfig, v.Namespace,
 			"app.kubernetes.io/instance="+v.Name, 8*time.Minute); err != nil {
@@ -137,7 +160,7 @@ func (v *TempoVerifier) proveRoundTrip(ctx context.Context, kubeconfig string) e
 				verb = "PERSISTENCE"
 			}
 			fmt.Printf("  [verify] %s: trace %s retrieved by ID%s\n", verb, traceId,
-				map[bool]string{true: " AFTER pod replacement — traces survived on the PVC", false: ""}[v.Persistence])
+				map[bool]string{true: " AFTER pod replacement — traces survived " + map[bool]string{true: "in the R2 bucket", false: "on the PVC"}[v.R2], false: ""}[v.Persistence])
 			return nil
 		}
 		lastBody = body

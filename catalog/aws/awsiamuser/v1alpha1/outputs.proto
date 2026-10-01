@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awsiamuser.v1alpha1;
 
+import "shared/options/options.proto";
+
 // AwsIamUserStackOutputs describes the output values after provisioning an IAM user.
 message AwsIamUserStackOutputs {
   // user_arn is the ARN of the created IAM user.
@@ -12,7 +14,7 @@ message AwsIamUserStackOutputs {
 
   // secret_access_key is the base64-encoded secret key associated with the access key.
   // This value is sensitive and should be handled securely.
-  string secret_access_key = 3;
+  string secret_access_key = 3 [(dev.planton.shared.options.sensitive) = true];
 
   // console_url is the AWS console sign-in URL for this user.
   string console_url = 4;

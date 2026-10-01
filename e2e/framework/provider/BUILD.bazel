@@ -5,6 +5,8 @@ go_library(
     srcs = [
         "failuremode.go",
         "identity.go",
+        "lifecycle.go",
+        "outofband.go",
         "provider.go",
     ],
     importpath = "github.com/plantonhq/planton/e2e/framework/provider",

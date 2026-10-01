@@ -1,0 +1,111 @@
+# Auth0 Tenant Settings Test Manifest
+# This file is used for testing the Auth0TenantSettings component. It exercises
+# the whole spec, so the offline plan and preview proofs cover every argument
+# and block the modules can send, including settings a live lane's tenant may
+# not be entitled to (mtls and pushed authorization requests need the
+# Enterprise plan with the Highly Regulated Identity add-on; anonymous
+# sessions, token quotas and Client ID Metadata Document registration are
+# Early Access).
+#
+# Applying it REWRITES the settings of the tenant the credential belongs to:
+# run it only against a test tenant nobody signs in to.
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: the test tenant's domain (e.g., your-test-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - read:tenant_settings
+#    - update:tenant_settings
+
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: test-tenant-settings
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # Identity: "Log in to <friendlyName> to continue to <application>"
+  friendlyName: Acme
+  pictureUrl: https://assets.example.com/logo.png
+  supportEmail: support@example.com
+  supportUrl: https://example.com/support
+  enabledLocales:
+    - en
+    - fr-CA
+  sandboxVersion: "22"
+
+  # Sessions, in hours
+  sessionLifetime: 168
+  idleSessionLifetime: 72
+  ephemeralSessionLifetime: 72
+  idleEphemeralSessionLifetime: 0.5
+  sessionCookie:
+    mode: persistent
+  sessions:
+    oidcLogoutPromptEnabled: true
+    anonymous:
+      activateCookie: true
+      lifetimeInMinutes: 43200
+
+  # OAuth and OpenID Connect
+  clientIdMetadataDocumentSupported: true
+  resourceParameterProfile: compatibility
+  dynamicClientRegistrationSecurityMode: strict
+  pushedAuthorizationRequestsSupported: true
+  acrValuesSupported:
+    - urn:mace:incommon:iap:silver
+  allowOrganizationNameInAuthenticationApi: false
+  defaultRedirectionUri: https://example.com/login
+  allowedLogoutUrls:
+    - https://example.com
+  oidcLogout:
+    rpLogoutEndSessionEndpointDiscovery: true
+  mtls:
+    enableEndpointAliases: true
+  skipNonVerifiableCallbackUriConfirmationPrompt: false
+
+  # Defaults
+  defaultAudience:
+    value: https://api.example.com
+  defaultDirectory:
+    value: Username-Password-Authentication
+  defaultTokenQuota:
+    clients:
+      clientCredentials:
+        enforce: true
+        perDay: 10000
+        perHour: 1000
+    organizations:
+      clientCredentials:
+        enforce: false
+        perDay: 50000
+
+  # Sign-in and MFA
+  customizeMfaInPostloginAction: true
+  phoneConsolidatedExperience: false
+  countryCodes:
+    list:
+      - US
+      - CA
+    mode: allow
+
+  # The error page
+  errorPage:
+    url: https://example.com/error
+    showLogLink: false
+
+  # Behavior flags
+  flags:
+    enableClientConnections: false
+    enableDynamicClientRegistration: false
+    enablePublicSignupUserExistsError: false
+    allowLegacyRoGrantTypes: false
+    allowLegacyDelegationGrantTypes: false
+    allowLegacyTokeninfoEndpoint: false
+    revokeRefreshTokenGrant: false
+    useScopeDescriptionsForConsent: true

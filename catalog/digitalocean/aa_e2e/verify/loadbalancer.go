@@ -32,7 +32,7 @@ func (*loadBalancerVerifier) VerifyAbsent(ctx context.Context, client *godo.Clie
 		}
 		return pkgerrors.Wrapf(err, "digitaloceanloadbalancer verify-absent failed for %q", id)
 	}
-	return pkgerrors.Errorf("digitaloceanloadbalancer %q still exists after destroy", id)
+	return &StillExistsError{Component: "digitaloceanloadbalancer", ID: id}
 }
 
 func (v *loadBalancerVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {

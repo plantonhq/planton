@@ -55,7 +55,8 @@ variable "spec" {
 
     # Compute Engine SSL certificates presented to clients (1-15). Reference
     # GcpManagedSslCertificate resources (the default kind), self-managed
-    # GcpSslCertificate resources via an explicit valueFrom.kind, or provide
+    # GcpSslCertificate resources via an explicit valueFrom.kind (both are
+    # declared candidates, so the self_link output fills in), or provide
     # SSL certificate self-links directly — both certificate kinds share one
     # API collection and attach identically. The load balancer picks the
     # certificate matching the client's SNI hostname.

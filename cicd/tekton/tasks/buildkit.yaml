@@ -19,9 +19,34 @@ spec:
     - name: platforms              # e.g. linux/amd64,linux/arm64
       type: string
       default: ""
-    - name: cache                  # "true" ➜ inline cache
+    - name: cache                  # "true" ➜ reuse the last build's layers
       type: string
       default: "true"
+    - name: cacheImage             # registry/repo:buildcache, or empty
+      type: string
+      description: >-
+        One stable reference the build cache lives at (the image's own
+        repository, tag buildcache), so every build of the image reads the
+        layers the last one wrote whatever its own tag. Empty keeps the cache
+        inline in the pushed image, which a build tagged per commit never
+        finds again.
+      default: ""
+    - name: registrySignInExpiresAt  # Unix seconds, or empty
+      type: string
+      description: >-
+        When the registry sign-in this build pushes with stops being
+        accepted, as Unix seconds; empty when it outlives any build. A push
+        the registry refuses after that moment says so, with both times.
+      default: ""
+    - name: releaseTag             # v1.4.0, or empty
+      type: string
+      description: >-
+        The release's tag when this build is a tag release (v1.4.0); empty
+        otherwise. A tag that is also a valid image tag names the pushed image
+        too, on the same digest, so the registry answers "which image is
+        v1.4.0". A tag an image cannot carry (release/1.4) is said and left
+        off: the image keeps its commit's name only.
+      default: ""
     - name: push                   # "true" ➜ push to registry
       type: string
       default: "true"
@@ -59,11 +84,21 @@ spec:
 
   # ------------------------------ results --------------------------------
   results:
+    - name: image-digest
+      description: >-
+        The content digest (sha256:…) of the image this build pushed, as
+        BuildKit reported it -- what a deployment pins, so re-pushing the tag
+        never changes what runs. Empty when the build did not push.
     - name: build-node-architecture
       description: >-
         The architecture of the machine this build ran on (amd64, arm64), as
         the pod itself saw it. Read beside the platforms the image was built
         for, it says whether the build ran native or emulated.
+    - name: release-tag
+      description: >-
+        The release tag this build also pushed the image under, on the same
+        digest; empty when it pushed none (not a tag release, a tag no image
+        can carry, or no push).
 
   # ------------------------------ steps ---------------------------------
   steps:
@@ -114,6 +149,18 @@ spec:
       env:
         - name: DOCKER_CONFIG
           value: "$(workspaces.dockerconfig.path)"
+        # buildctl-daemonless.sh starts the BuildKit daemon in this step and
+        # then polls its socket, sleeping (100 + 20*try) ms after each failed
+        # try and giving up once try exceeds this maximum. Its default of 10
+        # is about 2.2 seconds in all, which a busy node, a spot node or a
+        # cold image outlasts -- the build then fails with "could not
+        # connect to ... buildkitd.sock after 10 trials" and passes on
+        # rerun. 70 tries is (70+1)*(100+10*70) ms, about 57 seconds. The
+        # script moves on the moment the daemon answers, so a healthy build
+        # waits no longer than it does today; only a daemon that never
+        # starts costs the full minute before its log is printed.
+        - name: BUILDCTL_CONNECT_RETRIES_MAX
+          value: "70"
       script: |
         #!/usr/bin/env sh
         set -eux
@@ -133,9 +180,28 @@ spec:
         [ -n "$(params.platforms)" ] && \
           extra_opts="$extra_opts --opt platform=$(params.platforms)"
 
-        if [ "$(params.cache)" = "true" ]; then
+        if [ "$(params.cache)" = "true" ] && [ -n "$(params.cacheImage)" ]; then
+          # A registry that refuses the cache reference never fails the build.
+          extra_opts="$extra_opts --import-cache type=registry,ref=$(params.cacheImage) \
+            --export-cache type=registry,ref=$(params.cacheImage),mode=max,image-manifest=true,oci-mediatypes=true,ignore-error=true"
+        elif [ "$(params.cache)" = "true" ]; then
           extra_opts="$extra_opts --export-cache type=inline \
             --import-cache type=registry,ref=$(params.image)"
+        fi
+
+        # A tag release also names the image by its release, on the same
+        # digest -- one push, two names. Docker's tag grammar is narrower
+        # than git's, so a tag an image cannot carry is said, never mangled.
+        names="$(params.image)"
+        release_tag=""
+        if [ -n "$(params.releaseTag)" ]; then
+          if printf '%s' "$(params.releaseTag)" | grep -qE '^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$'; then
+            repository="$(printf '%s' "$(params.image)" | sed 's|:[^:/]*$||')"
+            names="$names,$repository:$(params.releaseTag)"
+            release_tag="$(params.releaseTag)"
+          else
+            echo "The release tag $(params.releaseTag) isn't a valid image tag (letters, digits, '_', '.' and '-', up to 128), so the image is pushed under its commit only." >&2
+          fi
         fi
 
         printf '%s\n' "$(params.buildArgs)" | while IFS= read -r arg; do
@@ -145,6 +211,13 @@ spec:
         # Use modern dockerfile frontend (v1) for proper ARG variable expansion
         # The legacy dockerfile.v0 has known bugs with ARG expansion in COPY instructions
         # See: https://github.com/moby/buildkit/issues/2374
+        # The build's output streams to the step log as it runs and is kept,
+        # so a refused push can be read afterwards.
+        log=/tmp/build.log
+        mkfifo /tmp/build.fifo
+        tee "$log" < /tmp/build.fifo &
+        tee_pid=$!
+        set +e
         buildctl-daemonless.sh build \
           --frontend=gateway.v0 \
           --opt source=docker/dockerfile:1 \
@@ -152,8 +225,42 @@ spec:
           --local context=$(workspaces.source.path)/$(params.contextDir) \
           --local dockerfile=$(workspaces.source.path)/$(params.contextDir) \
           $extra_opts \
-          --output type=image,name=$(params.image),push=$(params.push) \
-          --progress=plain
+          --output "type=image,\"name=$names\",push=$(params.push)" \
+          --metadata-file /tmp/build-metadata.json \
+          --progress=plain > /tmp/build.fifo 2>&1
+        status=$?
+        set -e
+        wait "$tee_pid"
+
+        if [ "$status" -ne 0 ]; then
+          set +x
+          # A push refused after the sign-in Planton made for this build
+          # expired: say both moments, and the way out.
+          expires="$(params.registrySignInExpiresAt)"
+          if [ -n "$expires" ] && grep -qiE '401 unauthorized|unauthorized:|authentication required' "$log"; then
+            if [ "$(date -u +%s)" -ge "$expires" ]; then
+              echo "The registry sign-in Planton made when this build started expired at $(date -u -d "@$expires" '+%H:%M UTC'), before the push at $(date -u '+%H:%M UTC'). Give the registry connection its own key (a service-account key or an access token), which outlives any build, or shorten the build so it pushes within the hour the sign-in lasts." >&2
+            fi
+          fi
+          exit "$status"
+        fi
+
+        # What was pushed, by its digest: a build that pushed and cannot name
+        # its image fails here, where the fact is born, rather than deploy by
+        # a tag anyone can re-push.
+        if [ "$(params.push)" = "true" ]; then
+          digest="$(sed -n 's/.*"containerimage\.digest": *"\(sha256:[0-9a-f]\{64\}\)".*/\1/p' /tmp/build-metadata.json | head -n 1)"
+          if [ -z "$digest" ]; then
+            set +x
+            echo "BuildKit pushed $(params.image) but reported no image digest, so this build cannot name the image it produced; nothing deploys an image it cannot name." >&2
+            exit 1
+          fi
+          printf '%s' "$digest" > "$(results.image-digest.path)"
+          printf '%s' "$release_tag" > "$(results.release-tag.path)"
+        else
+          printf '' > "$(results.image-digest.path)"
+          printf '' > "$(results.release-tag.path)"
+        fi
 
   volumes:
     - name: layers-dir

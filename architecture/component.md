@@ -177,6 +177,7 @@ The following sections define the complete, ideal state of any component. This s
   - Cloudflare: 7000-7999
   - Auth0: 8000-8999
   - OpenFGA: 9000-9999
+  - Stripe: 10000-10999
 - [ ] **Unique Enum Value** - No duplicate enum numbers
 - [ ] **Unique ID Prefix** - The `id_prefix` is globally unique across all providers
 - [ ] **Proper Metadata** - `kind_meta` includes:

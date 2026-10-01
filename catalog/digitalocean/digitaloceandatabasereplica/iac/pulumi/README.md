@@ -13,5 +13,5 @@ Provisions a single-node read-only replica of a DigitalOcean managed database cl
 ## Behavior notes
 
 - `replica_id` exports the SDK's `Uuid` attribute (the API UUID); the resource's own ID() is a legacy composite string.
-- Tags are create-only upstream -- a retag replaces the replica; the module documents it where the tags are built.
+- Tags are create-only upstream -- a retag replaces the replica; the module documents it where the tags are built. Labels are added in sorted key order so the rendered set is deterministic on every apply, and `tagsCombinedBudget` fails the module before the resource is created when the combined tags (joined by commas) exceed DigitalOcean's measured 255-character cap -- the same number and message as the Terraform precondition (its twin).
 - `storage_size_mib` renders as the provider's bare-MiB string from the spec's number.

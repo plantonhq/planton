@@ -7,6 +7,7 @@
 package digitaloceandatabaseuserv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -39,7 +40,8 @@ type DigitalOceanDatabaseUserStackOutputs struct {
 	// return it only at creation time.
 	Password string `protobuf:"bytes,4,opt,name=password,proto3" json:"password,omitempty"`
 	// Kafka clusters only: PEM access certificate for mutual-TLS
-	// authentication. Secret. Empty on other engines.
+	// authentication -- the public half; the private key is access_key.
+	// Empty on other engines.
 	AccessCert string `protobuf:"bytes,5,opt,name=access_cert,json=accessCert,proto3" json:"access_cert,omitempty"`
 	// Kafka clusters only: PEM access key paired with access_cert. Secret.
 	// Empty on other engines.
@@ -124,17 +126,17 @@ var File_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto pr
 
 const file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/digitalocean/digitaloceandatabaseuser/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1\"\xd2\x01\n" +
+	"Dcatalog/digitalocean/digitaloceandatabaseuser/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1\x1a\x1cshared/options/options.proto\"\xde\x01\n" +
 	"$DigitalOceanDatabaseUserStackOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1b\n" +
 	"\tuser_name\x18\x02 \x01(\tR\buserName\x12\x12\n" +
-	"\x04role\x18\x03 \x01(\tR\x04role\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\x12\x1f\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\x12 \n" +
+	"\bpassword\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\bpassword\x12\x1f\n" +
 	"\vaccess_cert\x18\x05 \x01(\tR\n" +
-	"accessCert\x12\x1d\n" +
+	"accessCert\x12#\n" +
 	"\n" +
-	"access_key\x18\x06 \x01(\tR\taccessKeyB\xd1\x03\n" +
+	"access_key\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\taccessKeyB\xd1\x03\n" +
 	">com.dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1B\fOutputsProtoP\x01Ztgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabaseuser/v1alpha1;digitaloceandatabaseuserv1alpha1\xa2\x02\x04DPDD\xaa\x02:Dev.Planton.Digitalocean.Digitaloceandatabaseuser.V1alpha1\xca\x02:Dev\\Planton\\Digitalocean\\Digitaloceandatabaseuser\\V1alpha1\xe2\x02FDev\\Planton\\Digitalocean\\Digitaloceandatabaseuser\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Digitalocean::Digitaloceandatabaseuser::V1alpha1b\x06proto3"
 
 var (

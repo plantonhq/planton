@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -27,5 +27,16 @@ go_library(
         "@com_github_pulumi_pulumi_random_sdk_v4//go/random",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
         "@io_k8s_sigs_yaml//:yaml",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["values_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes/kubernetesvalkey/v1alpha1",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
     ],
 )

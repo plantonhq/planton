@@ -22,8 +22,8 @@ This preset creates a subnet with secondary IP ranges for GKE pod and service CI
 |---|---|---|
 | `<gcp-project-id>` | GCP project ID | GCP Console or `GcpProject` outputs |
 | `<vpc-network-self-link>` | Self-link of the parent VPC network | `GcpVpcNetwork` status outputs |
-| `<your-subnet-name>` | Name for this subnet (1-63 chars, lowercase) | Choose a descriptive name (e.g., `gke-us-central1`) |
-| `<gcp-region>` | GCP region (e.g., `us-central1`) | Your deployment region |
+| `gke-subnet` (`subnetworkName`) | Name for this subnet (1-63 chars, lowercase) | Choose a descriptive name |
+| `us-central1` (`region`) | GCP region | Your deployment region |
 
 ## Related Presets
 

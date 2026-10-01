@@ -13,8 +13,9 @@ cascade-deletes any TektonConfig — always destroy the KubernetesTekton
 resource FIRST (its teardown needs the operator running to process the
 InstallerSet finalizers; the modules block until that completes).
 
-Change first: nothing, usually. Set `operator_image`/`webhook_image`
-on air-gapped clusters that mirror ghcr.io, and the resource blocks on
+Change first: nothing, usually. Set `image_registry` on clusters that
+pull Tekton from a mirror or pull-through cache of ghcr.io (every image
+Tekton publishes follows it, at its digest), and the resource blocks on
 clusters with namespace quotas.
 
 See [01-operator.yaml](./01-operator.yaml) for the manifest.

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1;
 
+import "shared/options/options.proto";
+
 // DigitalOceanDatabaseClusterStackOutputs captures the key outputs after
 // provisioning a DigitalOcean database cluster.
 message DigitalOceanDatabaseClusterStackOutputs {
@@ -10,7 +12,7 @@ message DigitalOceanDatabaseClusterStackOutputs {
 
   // The full public connection URI for the database cluster (including
   // credentials and database name).
-  string connection_uri = 2;
+  string connection_uri = 2 [(dev.planton.shared.options.sensitive) = true];
 
   // The public hostname at which the database cluster is accessible.
   string host = 3;
@@ -22,14 +24,14 @@ message DigitalOceanDatabaseClusterStackOutputs {
   string database_user = 5;
 
   // The password for the cluster's default database user.
-  string database_password = 6;
+  string database_password = 6 [(dev.planton.shared.options.sensitive) = true];
 
   // The private-network hostname, reachable from resources in the same VPC.
   string private_host = 7;
 
   // The full private-network connection URI (including credentials and
   // database name), reachable from resources in the same VPC.
-  string private_uri = 8;
+  string private_uri = 8 [(dev.planton.shared.options.sensitive) = true];
 
   // The name of the cluster's default database.
   string database_name = 9;
@@ -42,7 +44,7 @@ message DigitalOceanDatabaseClusterStackOutputs {
 
   // OpenSearch only: full connection URI for OpenSearch Dashboards
   // (including credentials).
-  string ui_uri = 12;
+  string ui_uri = 12 [(dev.planton.shared.options.sensitive) = true];
 
   // OpenSearch only: default database of the OpenSearch Dashboards
   // connection.
@@ -52,5 +54,5 @@ message DigitalOceanDatabaseClusterStackOutputs {
   string ui_user = 14;
 
   // OpenSearch only: password for OpenSearch Dashboards.
-  string ui_password = 15;
+  string ui_password = 15 [(dev.planton.shared.options.sensitive) = true];
 }

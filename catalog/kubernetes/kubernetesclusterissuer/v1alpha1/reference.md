@@ -134,7 +134,7 @@ spec:
 | `spec.config.acme.solvers[].dns01.route53.staticCredentials.accessKeyId` | `string` | yes |  |  |
 | `spec.config.acme.solvers[].dns01.route53.staticCredentials.secretAccessKey` | `string` (sensitive) | yes |  |  |
 | `spec.config.acme.solvers[].dns01.route53.serviceAccount` | `CertManagerRoute53ServiceAccountAuth` |  |  |  |
-| `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `string \| valueFrom` | yes |  | KubernetesServiceAccount (`metadata.name`) |
+| `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `string \| valueFrom` | yes |  | KubernetesServiceAccount (`status.outputs.service_account_name`) |
 | `spec.config.acme.solvers[].dns01.route53.serviceAccount.audiences` | `[]string` |  |  |  |
 | `spec.config.acme.solvers[].dns01.azureDns` | `CertManagerDns01AzureDns` |  |  |  |
 | `spec.config.acme.solvers[].dns01.azureDns.subscriptionId` | `string` | yes |  |  |
@@ -193,7 +193,7 @@ spec:
 | `spec.config.vault.kubernetesAuth` | `CertManagerVaultKubernetesAuth` |  |  |  |
 | `spec.config.vault.kubernetesAuth.role` | `string` | yes |  |  |
 | `spec.config.vault.kubernetesAuth.mountPath` | `string` |  | `kubernetes` |  |
-| `spec.config.vault.kubernetesAuth.serviceAccountName` | `string \| valueFrom` | yes |  | KubernetesServiceAccount (`metadata.name`) |
+| `spec.config.vault.kubernetesAuth.serviceAccountName` | `string \| valueFrom` | yes |  | KubernetesServiceAccount (`status.outputs.service_account_name`) |
 | `spec.config.vault.kubernetesAuth.audiences` | `[]string` |  |  |  |
 
 ## Field Details
@@ -589,9 +589,9 @@ Name of the ServiceAccount (in the cert-manager namespace) whose token
 is exchanged for AWS credentials. Accepts a literal name or a reference
 to a KubernetesServiceAccount resource.
 
-- references: KubernetesServiceAccount (`metadata.name`)
+- references: KubernetesServiceAccount (`status.outputs.service_account_name`)
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesServiceAccount, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesServiceAccount, name: <that resource's name>, fieldPath: status.outputs.service_account_name}} -- a bare string does not parse
 
 ### spec.config.acme.solvers[].dns01.route53.serviceAccount.audiences
 
@@ -1024,9 +1024,9 @@ ServiceAccount (in the cert-manager namespace for a ClusterIssuer; the
 Issuer's namespace for an Issuer) whose token authenticates to Vault.
 Accepts a literal name or a reference to a KubernetesServiceAccount.
 
-- references: KubernetesServiceAccount (`metadata.name`)
+- references: KubernetesServiceAccount (`status.outputs.service_account_name`)
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesServiceAccount, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesServiceAccount, name: <that resource's name>, fieldPath: status.outputs.service_account_name}} -- a bare string does not parse
 
 ### spec.config.vault.kubernetesAuth.audiences
 
@@ -1051,9 +1051,9 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.certManagerNamespace` | KubernetesCertManager | `status.outputs.cluster_resource_namespace` |
-| `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | KubernetesServiceAccount | `metadata.name` |
+| `spec.config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | KubernetesServiceAccount | `status.outputs.service_account_name` |
 | `spec.config.ca.caSecretName` | KubernetesCertificate | `status.outputs.secret_name` |
-| `spec.config.vault.kubernetesAuth.serviceAccountName` | KubernetesServiceAccount | `metadata.name` |
+| `spec.config.vault.kubernetesAuth.serviceAccountName` | KubernetesServiceAccount | `status.outputs.service_account_name` |
 
 ## Referenced By
 
@@ -1062,7 +1062,9 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | KubernetesCertificate | `spec.issuerRef.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
+| KubernetesKeda | `spec.certificates.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 | KubernetesKyverno | `spec.certificates.certManager.issuerName` | `metadata.name` |
+| KubernetesMetricsServer | `spec.tls.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 | KubernetesMongodb | `spec.tls.issuer` | `metadata.name` |
 | KubernetesMysql | `spec.tls.issuer` | `metadata.name` |
 

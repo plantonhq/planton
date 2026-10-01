@@ -24,6 +24,27 @@ bool, `3` is a number, `"1.29"` stays a string, `[a, b]` is a list. The chart
 on disk is never touched — this is the way to prove a bool toggle in both
 positions (build once per position, compare the `resources[]` arrays).
 
+Compile an environment's values file with `-f` (repeatable) before anyone
+installs it:
+
+```
+planton chart build . -f values-prod.yaml -o json
+```
+
+A values file has the values.yaml shape and lists only the params it changes;
+every other param keeps the chart's value. Resolution is by name, in this
+order: values.yaml, then each `-f` file, then `--set` (later wins) -- the same
+order `chart install` uses, which adds `--set-file name=path` before `--set`.
+An unknown name in a file or a flag is exit 2, with the declared names listed.
+
+`--show` prints the rendered documents (the params applied), the same
+documents an install stores as the project's render; `--output-dir` writes both
+`template.yaml` (the combined templates) and `rendered.yaml`. To see exactly
+what an install would apply against a real environment without creating
+anything, use `planton chart install <name> <chart> -f <file> --dry-run`: it
+prints every param with its source and the render, and `-o json` adds `params`
+and `renderedYaml` to this report.
+
 Pin the control plane when needed (local instance, CI, desktop studio):
 
 ```
@@ -36,7 +57,7 @@ PLANTON_API_ENDPOINT_INFRA_HUB=127.0.0.1:23802 planton chart build . -o json
 |------|---------|--------------|
 | **0** | Chart valid. Warnings may be present; they never fail the build. | Phase 4 self-check, then stop or offer publish. |
 | **1** | Chart has fixable errors. JSON report on stdout lists every issue. | Parse `issues[]`, fix templates/values, rebuild. |
-| **2** | Check could not run. **Stdout is empty.** | Do not edit the chart. Fix environment (not a chart dir, bad flags, an unknown `--set` param name, control plane down) or report and stop. |
+| **2** | Check could not run. **Stdout is empty.** | Do not edit the chart. Fix environment (not a chart dir, bad flags, a values file or `--set` naming an unknown param, control plane down) or report and stop. |
 
 Exit 2 is the critical guardrail: an unreachable control plane has never been
 fixed by changing a template.
@@ -107,15 +128,16 @@ exit 1 — one channel for everything fixable.
 
 ## Human mode (no `-o json`)
 
-Exit codes are identical. The formatted report goes to **stderr**; stdout stays
-empty unless `--show` renders template YAML. Agents should always use `-o json`.
+Exit codes are identical. The formatted report goes to **stderr** (with a
+parameter summary when `-f` or `--set` changed anything); stdout stays empty
+unless `--show` prints the rendered documents. Agents should always use `-o json`.
 
 ## Flag interactions
 
 - `--show` + `-o json` → exit 2 (conflicting outputs).
-- `--set unknown_name=x` → exit 2, stderr lists the params values.yaml declares. Fix the flag, never the chart.
+- `--set unknown_name=x`, or a `-f` file naming an unknown param → exit 2, stderr lists the params values.yaml declares. Fix the flag or the file, never the chart.
 - `--no-browser`, `--copy` → deprecated no-ops; fleet Makefiles may still pass them.
-- `--output-dir <dir>` → writes rendered `template.yaml`; optional for agents.
+- `--output-dir <dir>` → writes `template.yaml` (the combined templates) and `rendered.yaml` (the render); optional for agents.
 
 ## Offline gates (no control plane)
 

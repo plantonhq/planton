@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0promptscreenpartials.v1alpha1;
+
+import "catalog/auth0/auth0promptscreenpartials/v1alpha1/api.proto";
+import "catalog/auth0/provider.proto";
+
+// Auth0PromptScreenPartialsStackInput is the input to the Auth0PromptScreenPartials IaC module.
+// It contains the target resource and the Auth0 provider configuration.
+message Auth0PromptScreenPartialsStackInput {
+  // target is the Auth0PromptScreenPartials resource to be deployed.
+  Auth0PromptScreenPartials target = 1;
+
+  // provider_config contains the Auth0 credentials for authentication: the
+  // tenant's domain and a Machine-to-Machine application's client id and secret.
+  // The application needs read:prompts and update:prompts on the tenant's Management API.
+  dev.planton.auth0.Auth0ProviderConfig provider_config = 2;
+}

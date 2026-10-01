@@ -30,7 +30,8 @@ planton local build-cluster enable        # the consent, from the terminal
 planton local build-cluster start | stop  # wake now / stop now (stop is refused while a build runs — the sentence says so)
 planton local build-cluster keep-warm on|off
 planton local build-cluster remove        # the cluster and its files go; the next consent sets it up again
-planton service watch <service>           # the watch: status, repository, connection, "Checked N s ago · next in M s", branches, PRs, tags, Actions, the GitHub request budget
+planton service watch <service>           # the watch: status, repository, connection, "Checked N s ago · next in M s", the last gap (Not Checked), branches, PRs, tags, Actions, the GitHub request budget
+planton service watch <service> --history # what the watch recorded, newest first: each gap and its cause, each push handed on, each pause and recovery
 planton daemon status                     # every local component, and "build cluster: <phase>"
 planton follow <run>                      # the run live: the wake as its own beat, the build, the deploy, the GitHub line, the platform line
 planton service urls <service>            # the environment card's truth: URL and rollout verdict, or why there is no address
@@ -48,6 +49,8 @@ Reading `planton local build-cluster status`: **Not Set Up** (no cluster, no cos
 6. The deploy stage applies the declared environment to the connected cluster; the URL is read back from what the resources reported or from the serving domain (`references/service.urls-and-rollout-verification.md`).
 7. GitHub gets a **commit status** `planton/<service>` from the sign-in — never a check run (the checks API refuses user tokens; only an App can write checks). Its description is the run's verdict sentence. `planton follow` prints the GitHub line, orange when it needs the person.
 8. The laptop's owner is notified: a macOS banner and an in-app card, under the `desktop` toggle; `planton notifications list` reads the same feed.
+
+**When a push is late.** The watch checks ONLY while the local instance runs (the desktop app open). A push "picked up hours late" is almost always the app having been quit: the card's **Not Checked** row names the gap, its length and its cause (*Planton wasn't running*), and `planton service watch <service> --history` lists every gap. The fix to offer is **Start at Login** on the desktop's Local Instance page (macOS 13+; macOS may hold it for approval in System Settings → Login Items). A watch reading **Behind** while the instance runs is a fault — restart the local instance and report it.
 
 ## Measured costs (say these; never invent numbers)
 
@@ -70,7 +73,7 @@ Relay the sentence verbatim (they are stable), then the next step. All of them l
 | *GitHub rejected this connection's sign-in while checking <repo> — the token is expired or revoked, or this machine signed out. Run `gh auth status` and sign in again; checks resume on their own.* | The watch cannot read GitHub | `gh auth status`, `gh auth login` |
 | *GitHub can't see <repo> with this connection's sign-in — the repository was renamed or deleted, or the token has no access to it (a private repository needs the `repo` scope). …* | Repository moved or unreadable | Check the repository; `gh auth refresh -s repo` |
 | *GitHub's hourly request limit for this account is nearly used up (N requests left) — checks pause until it refills in about N minutes, so your own `gh` keeps working. Pushes made meanwhile are picked up at the next check.* | The reserve held back | Nothing; the watch resumes |
-| *provider connection kubernetes/<slug> is not authorized for environment <env>* | An authorization is missing (a default alone does not authorize) | `planton connection auth create …` for that environment, then rerun |
+| *Nothing ran: environment <env> may not use the kubernetes connection <slug>* | An authorization is missing (a default alone does not authorize) | The sentence's own `planton connection auth create --provider kubernetes --connection <slug> --scope environment --environments <env>`, then rerun |
 | *No address to show — none of this environment's resources carries one. Declare a serving domain on the environment, or include a resource that carries an address (…)* | The deploy succeeded; nothing reported a URL | A serving domain, or an address-carrying kind |
 
 A run that fails to hand its build to the deploy stage ends **failed** with that step's own words within about a minute; a deploy stage that reads `queued` for longer than that on a laptop is a defect to report, never a state to wait on.

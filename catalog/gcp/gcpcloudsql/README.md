@@ -139,7 +139,7 @@ Everything else on `google_sql_database_instance` at the pinned provider is repr
 
 | Excluded Feature | Why |
 |---|---|
-| `root_password_wo` / `root_password_wo_version` | Write-only variants of the modeled `rootPassword` — same capability through engine-side ergonomics; the spec field is secret-annotated and encrypted in state on both engines. |
+| `root_password_wo` / `root_password_wo_version` | Write-only variants of the modeled `rootPassword` — same capability through engine-side ergonomics; the spec field is secret-annotated: Pulumi encrypts it in state, and OpenTofu encrypts it with the whole state file when given an encryption key. |
 | `pricing_plan` | `PER_USE` is the only accepted value on second-generation instances — no reachable capability. |
 | `follow_gae_application` | Legacy App Engine zone-following; `locationPreference.zone` is the direct modern placement control. |
 | `replication_cluster.psa_write_endpoint` | Documented read-only field; DR pairing is driven through `failoverDrReplicaName`. |

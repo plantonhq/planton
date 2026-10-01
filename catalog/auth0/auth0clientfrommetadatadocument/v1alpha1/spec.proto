@@ -1,0 +1,409 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// Auth0ClientFromMetadataDocumentSpec registers an application in the Auth0
+// tenant the provider connection's credential belongs to from its Client ID
+// Metadata Document: a JSON file the application's owner hosts at an https URL
+// (external_client_id). Auth0 fetches the document, validates it, and registers
+// the application from it -- the path an MCP client takes to onboard itself,
+// and the one partner integrations take when they manage their own metadata and
+// keys. In sign-in flows the application presents the document's URL as its
+// client_id; Auth0 also assigns it a Management API id (output client_id,
+// "tpc_...") that grants and connections reference.
+//
+// The document owns the application's identity, and this spec never states it:
+// its name (client_name), its redirect URIs (redirect_uris), its logo
+// (logo_uri), how it authenticates at the token endpoint
+// (token_endpoint_auth_method: "none" for a public client using PKCE, or
+// "private_key_jwt" with a jwks_uri for a confidential one) and its public keys
+// (jwks_uri) come from the document and are reported back as outputs. Three
+// settings are seeded from the document and may be set here over it:
+// app_type (the document's application_type), grant_types and description.
+// Everything else -- origins, token lifetimes, refresh-token rotation, the
+// redirect policy, organizations, metadata -- is the tenant's to set, and the
+// document has no say in it. Changing the document changes nothing in Auth0
+// until Auth0 fetches it again (external_client_id_version).
+//
+// Every application registered this way is a third-party application in
+// strict mode (output third_party_security_mode): it signs people in only
+// through connections promoted to the domain level, reaches an API only
+// through an explicit client grant (never the Management API), and holds only
+// the authorization_code and refresh_token grants. Login flows for these
+// applications fail while the tenant has active Rules.
+//
+// Unset fields are NOT MANAGED: the module sends only what the spec declares,
+// and Auth0 keeps what the document or the tenant set. Some settings cannot be
+// left alone by the provider once Auth0 holds a value for them; their comments
+// say so, and the kind's guide lists them for adoption.
+//
+// Prerequisite: the tenant must allow registration from metadata documents
+// (Auth0TenantSettings' Client ID Metadata Document Registration setting).
+//
+// Plans: registration itself is on every plan. A confidential client
+// (private_key_jwt) needs the Enterprise plan; the settings that need more say
+// so in their comments.
+//
+// The credential needs create:clients, read:clients, update:clients and
+// delete:clients on the tenant's Management API (iac/permissions.yaml).
+//
+// https://auth0.com/docs/get-started/auth0-overview/create-applications/register-applications-with-cimd
+// https://auth0.com/docs/get-started/applications/third-party-applications/security-controls
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/client_cimd
+// https://www.pulumi.com/registry/packages/auth0/api-docs/clientcimd/
+message Auth0ClientFromMetadataDocumentSpec {
+  // external_client_id is the https URL the application serves its Client ID
+  // Metadata Document from, for example
+  // "https://mcp-client.example.com/.well-known/oauth-client-metadata". It is
+  // the application's client_id in every sign-in flow, and the document's own
+  // client_id must be exactly this URL. Auth0 fetches the document without
+  // following redirects, and refuses one larger than 5 KB.
+  //
+  // Auth0 keys registrations by this URL: applying a URL the tenant has
+  // already registered (in the dashboard, or by the client itself) takes that
+  // registration over, and destroying this resource deletes it. Changing the
+  // URL replaces the application -- a new client_id, so every grant and
+  // connection that named the old one must be applied again.
+  //
+  // A document declaring private_key_jwt (a confidential client, with a
+  // jwks_uri on the document's own origin) needs the Enterprise plan; a public
+  // client ("none", with PKCE) does not.
+  string external_client_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 120,
+    (buf.validate.field).cel = {
+      id: "spec.external_client_id.https_url"
+      message: "external_client_id must be the https:// URL the metadata document is served from (for example https://mcp-client.example.com/.well-known/oauth-client-metadata) -- Auth0 fetches client metadata only over HTTPS"
+      expression: "this.startsWith('https://') && this.isUri()"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.external_client_id.path_after_host"
+      message: "external_client_id needs a path after the host (for example https://mcp-client.example.com/client.json) -- Auth0 refuses a document at the site's root"
+      expression: "this.matches('^https://[^/?#]+/[^?#]*[^/?#]')"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.external_client_id.plain_url"
+      message: "external_client_id cannot carry a query (?), a fragment (#), a user or password (user@host), port 0, or whitespace -- Auth0 refuses such document URLs"
+      expression: "!this.contains('?') && !this.contains('#') && !this.matches('^https://[^/]*@') && !this.matches('^https://[^/]*:0+(/|$)') && !this.matches('[[:space:]]')"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.external_client_id.not_loopback"
+      message: "external_client_id cannot point at localhost, 127.0.0.1 or [::1] -- Auth0 fetches the document from the public internet"
+      expression: "!this.matches('(?i)^https://(localhost|127[.]0[.]0[.]1|[[]::1[]])([:/]|$)')"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.external_client_id.no_dot_segments"
+      message: "external_client_id cannot contain . or .. path segments (written plainly or as %2e) -- Auth0 refuses them; write the document's path directly"
+      expression: "!this.matches('(?i)/([.]|%2e){1,2}(/|$)')"
+    },
+    (buf.validate.field).cel = {
+      id: "spec.external_client_id.percent_encoding"
+      message: "every % in external_client_id must start a two-digit hex escape (such as %20)"
+      expression: "!this.matches('%([^0-9A-Fa-f]|[0-9A-Fa-f][^0-9A-Fa-f]|[0-9A-Fa-f]?$)')"
+    }
+  ];
+
+  // external_client_id_version is a number that makes Auth0 fetch the
+  // document again when it changes: change it (1, then 2, ...) after the
+  // document's owner has changed the document, and the next apply re-registers
+  // the application from it -- its name, redirect URIs, logo and keys, and its
+  // application type and grant types, followed by this spec's own settings
+  // applied over them again. Its value means nothing to Auth0; only a change
+  // does. A key the owner rotates must arrive under a new kid: Auth0 keeps the
+  // old key when new material reuses a kid. Unset, Auth0 keeps what it fetched
+  // at registration.
+  optional int32 external_client_id_version = 2;
+
+  // app_type is the kind of application Auth0 treats this as, seeded from the
+  // document's application_type ("native" for native, "web" for
+  // "regular_web"). Unset, the document's value stands; set, it overrides the
+  // document until the next fetch (external_client_id_version), after which it
+  // is applied again.
+  // - "native": a desktop, mobile or command-line application
+  // - "regular_web": a web application with a server
+  // - "spa": a single-page application; the provider accepts it, while Auth0's
+  //   CIMD documentation names only native and regular_web
+  optional string app_type = 3 [(buf.validate.field).string = {
+    in: [
+      "native",
+      "regular_web",
+      "spa"
+    ]
+  }];
+
+  // grant_types are the grants the application may use, seeded from the
+  // document's grant_types. Auth0 allows these applications only
+  // "authorization_code" (sign-in, with PKCE) and "refresh_token" (keeping a
+  // session without signing in again; needed for refresh_token below to mean
+  // anything). Empty, the document's list stands; set, it overrides the
+  // document the way app_type does.
+  repeated string grant_types = 4 [(buf.validate.field).repeated.items.string = {
+    in: [
+      "authorization_code",
+      "refresh_token"
+    ]
+  }];
+
+  // description is a free-text description of the application, at most 140
+  // characters, seeded from the document's description. A fresh registration
+  // keeps the document's description while this is unset, but the provider
+  // does not read an unset description as "keep" on an adopted application:
+  // once Auth0's value is in state (after an import), every plan proposes to
+  // clear it. Declare it when adopting (the document's words or your own).
+  optional string description = 5 [(buf.validate.field).string.max_len = 140];
+
+  // allowed_origins are the origins allowed to call Auth0 from a browser
+  // (cross-origin requests), for example "https://mcp-client.example.com".
+  // Wildcards such as "https://*.example.com" are accepted. Empty is not
+  // managed. Declare the live value when adopting an existing application;
+  // leaving it unset on an adopted application resets it.
+  repeated string allowed_origins = 6;
+
+  // web_origins are the origins allowed to use web-message response mode --
+  // silent authentication and token renewal from a browser in a hidden frame.
+  // Empty is not managed. Declare the live value when adopting an existing
+  // application; leaving it unset on an adopted application resets it.
+  repeated string web_origins = 7;
+
+  // oidc_conformant is whether the application follows the OpenID Connect
+  // specification strictly. Auth0 requires it for these applications, so it
+  // can only be true; unset, Auth0 keeps it on.
+  optional bool oidc_conformant = 8 [(buf.validate.field).cel = {
+    id: "spec.oidc_conformant.true"
+    message: "oidc_conformant can only be true -- Auth0 requires applications registered from a metadata document to follow OpenID Connect strictly (leave it unset to keep it on)"
+    expression: "this == true"
+  }];
+
+  // require_proof_of_possession makes sender-constrained tokens mandatory: the
+  // application must prove on every token request that it holds its key, with
+  // DPoP (a proof signed by the application's key) or mutual TLS, so a stolen
+  // token is useless to anyone else. The APIs it calls must then accept
+  // sender-constrained tokens (Auth0ResourceServer). Mutual TLS needs the
+  // Enterprise plan with the Highly Regulated Identity add-on. The provider
+  // does not read an unset value as "keep": declare the live value when
+  // adopting an application that requires it, or every plan proposes to clear
+  // it.
+  optional bool require_proof_of_possession = 9;
+
+  // skip_non_verifiable_callback_uri_confirmation_prompt skips the prompt
+  // Auth0 shows before redirecting to a callback it cannot verify belongs to
+  // the application -- a custom scheme such as "myapp://" or a localhost
+  // address, common for a native MCP client on a person's machine. Auth0
+  // recommends leaving the prompt on (false): it is what stops a malicious app
+  // posing as this one from receiving the code silently. Declare the live
+  // value when adopting an existing application; leaving it unset on an
+  // adopted application resets it.
+  optional bool skip_non_verifiable_callback_uri_confirmation_prompt = 10;
+
+  // redirection_policy decides whether Auth0 sends people back to the
+  // application's callback when sign-in fails, and in email flows.
+  // - "open_redirect_protection": Auth0 shows its own error page instead, and
+  //   email templates do not see the callback's domain
+  //   (application.callback_domain) -- the default for third-party
+  //   applications, because a redirect nobody clicked is a phishing vector
+  //   when the callback belongs to someone else
+  // - "allow_always": the standard redirect; only for an application whose
+  //   callback URIs you trust
+  // Unset, Auth0 keeps open_redirect_protection.
+  optional string redirection_policy = 11 [(buf.validate.field).string = {
+    in: [
+      "allow_always",
+      "open_redirect_protection"
+    ]
+  }];
+
+  // organization_discovery_methods are how a person finds their Auth0
+  // Organization on the prompt before sign-in:
+  // - "email": by the domain of the email address they enter
+  // - "organization_name": by typing the organization's name
+  // Both can be listed. They apply only while the application's organization
+  // behavior is the pre-login prompt, which this resource does not set (the
+  // Auth0 dashboard or Management API sets it). Organizations' availability
+  // varies by Auth0 plan. Empty is not managed. Declare the live value when
+  // adopting an existing application; leaving it unset on an adopted
+  // application resets it.
+  repeated string organization_discovery_methods = 12 [(buf.validate.field).repeated.items.string = {
+    in: [
+      "email",
+      "organization_name"
+    ]
+  }];
+
+  // default_organization is the Auth0 Organization Auth0 uses for this
+  // application's flows when a request names none. Declare the live value
+  // when adopting an existing application; leaving it unset on an adopted
+  // application removes it.
+  Auth0ClientFromMetadataDocumentDefaultOrganization default_organization = 13;
+
+  // client_metadata is up to ten key-value pairs stored with the application
+  // -- an owner, a ticket, an environment -- readable by Actions and through
+  // the Management API. Keys and values are at most 255 characters; keys are
+  // letters, digits and : , - + = _ * ? " / \ ( ) < > @ tabs and spaces.
+  // Empty is not managed. Declare the live value when adopting an existing
+  // application; leaving it unset on an adopted application clears it.
+  map<string, string> client_metadata = 14 [
+    (buf.validate.field).map.max_pairs = 10,
+    (buf.validate.field).map.keys.string.max_len = 255,
+    (buf.validate.field).map.values.string.max_len = 255
+  ];
+
+  // jwt_configuration sets how the JSON Web Tokens Auth0 issues to this
+  // application are signed and how long they last. Unset, Auth0 keeps its own.
+  Auth0ClientFromMetadataDocumentJwtConfiguration jwt_configuration = 15;
+
+  // refresh_token sets the lifetime and rotation of the refresh tokens Auth0
+  // issues to this application (it needs the refresh_token grant). Auth0
+  // requires them to expire. Unset, Auth0 keeps its own settings.
+  Auth0ClientFromMetadataDocumentRefreshToken refresh_token = 16;
+
+  // token_quota caps how many client-credentials tokens Auth0 issues to this
+  // application per hour and per day. Auth0 does not give applications
+  // registered from a metadata document the client_credentials grant, so the
+  // quota has nothing to count until it does. Fine-grained token quotas are
+  // in Early Access: a feature Auth0 enables on request. Declare the live value
+  // when adopting an existing application; leaving it unset on an adopted
+  // application removes it.
+  Auth0ClientFromMetadataDocumentTokenQuota token_quota = 17;
+}
+
+// Auth0ClientFromMetadataDocumentDefaultOrganization names the Organization
+// Auth0 uses by default, and for which flows.
+message Auth0ClientFromMetadataDocumentDefaultOrganization {
+  // organization_id is the Auth0 Organization's identifier ("org_..."), from
+  // the Auth0 dashboard (Organizations, the organization's ID) or the
+  // Management API.
+  string organization_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.prefix = "org_"
+  ];
+
+  // flows are the flows that use the default organization.
+  // "client_credentials" is the only flow Auth0 defines -- a grant Auth0 does
+  // not give applications registered from a metadata document.
+  repeated string flows = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.string = {
+      in: ["client_credentials"]
+    }
+  ];
+}
+
+// Auth0ClientFromMetadataDocumentJwtConfiguration is how the tokens Auth0
+// issues to the application are signed and how long they last. A field left
+// unset keeps Auth0's value.
+message Auth0ClientFromMetadataDocumentJwtConfiguration {
+  // alg is the algorithm Auth0 signs the tokens with; these applications
+  // accept only asymmetric ones, so anyone can verify a token with the
+  // tenant's public keys.
+  // - "RS256": RSA with SHA-256, the one every OpenID Connect library supports
+  // - "RS512": RSA with SHA-512
+  // - "PS256": RSA-PSS with SHA-256; Auth0's Management API reference lists it
+  //   as available through an add-on
+  optional string alg = 1 [(buf.validate.field).string = {
+    in: [
+      "RS256",
+      "RS512",
+      "PS256"
+    ]
+  }];
+
+  // lifetime_in_seconds is how long a token stays valid after it is issued
+  // (its exp claim), in seconds -- for example 3600 for an hour.
+  optional int32 lifetime_in_seconds = 2;
+}
+
+// Auth0ClientFromMetadataDocumentRefreshToken is the lifetime and rotation of
+// the application's refresh tokens. Auth0 needs rotation_type and
+// expiration_type whenever the block is declared; the other fields left unset
+// keep Auth0's values.
+message Auth0ClientFromMetadataDocumentRefreshToken {
+  option (buf.validate.message).cel = {
+    id: "spec.refresh_token.rotation_and_expiration"
+    message: "refresh_token needs both rotation_type (rotating or non-rotating) and expiration_type (expiring) -- Auth0 refuses a refresh-token configuration without them"
+    expression: "has(this.rotation_type) && has(this.expiration_type)"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.refresh_token.idle_within_lifetime"
+    message: "refresh_token.idle_token_lifetime cannot exceed token_lifetime -- a token cannot stay alive idle longer than it lives at all"
+    expression: "!has(this.idle_token_lifetime) || !has(this.token_lifetime) || this.idle_token_lifetime <= this.token_lifetime"
+  };
+
+  // rotation_type decides whether a refresh token is replaced each time it is
+  // used.
+  // - "rotating": every exchange returns a new refresh token and retires the
+  //   old one; reusing a retired token revokes the whole family, so a stolen
+  //   token is caught the moment either party uses it. Auth0 turns it on by
+  //   default for public (SPA and native) third-party applications, and
+  //   OAuth 2.1 and MCP expect it for public clients.
+  // - "non-rotating": the same refresh token is used until it expires
+  optional string rotation_type = 1 [(buf.validate.field).string = {
+    in: [
+      "rotating",
+      "non-rotating"
+    ]
+  }];
+
+  // expiration_type decides whether refresh tokens expire. Applications
+  // registered from a metadata document must use "expiring".
+  optional string expiration_type = 2 [(buf.validate.field).string = {
+    in: ["expiring"]
+  }];
+
+  // leeway is how many seconds a rotating refresh token may be used again
+  // after its exchange without being treated as reuse, for a client that
+  // retries a request the network lost (for example 3). 0 turns the overlap
+  // off.
+  optional int32 leeway = 3 [(buf.validate.field).int32.gte = 0];
+
+  // token_lifetime is the absolute lifetime of a refresh token in seconds,
+  // after which the person signs in again however active they are (for
+  // example 2592000 for 30 days); up to 157788000. Rotation does not extend
+  // it.
+  optional int32 token_lifetime = 4 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 157788000
+  }];
+
+  // infinite_token_lifetime removes the absolute lifetime (token_lifetime
+  // then no longer applies). Set it false with a token_lifetime.
+  optional bool infinite_token_lifetime = 5;
+
+  // idle_token_lifetime is how many seconds a refresh token survives unused
+  // (for example 1296000 for 15 days); each use renews it. It cannot exceed
+  // token_lifetime.
+  optional int32 idle_token_lifetime = 6 [(buf.validate.field).int32.gte = 1];
+
+  // infinite_idle_token_lifetime would let an unused refresh token live
+  // forever; applications registered from a metadata document must keep it
+  // false.
+  optional bool infinite_idle_token_lifetime = 7 [(buf.validate.field).cel = {
+    id: "spec.refresh_token.infinite_idle_token_lifetime.false"
+    message: "refresh_token.infinite_idle_token_lifetime can only be false -- Auth0 requires refresh tokens of applications registered from a metadata document to expire when unused"
+    expression: "this == false"
+  }];
+}
+
+// Auth0ClientFromMetadataDocumentTokenQuota caps the client-credentials tokens
+// Auth0 issues to the application.
+message Auth0ClientFromMetadataDocumentTokenQuota {
+  // client_credentials is the quota on client-credentials tokens.
+  Auth0ClientFromMetadataDocumentTokenQuotaClientCredentials client_credentials = 1 [(buf.validate.field).required = true];
+}
+
+// Auth0ClientFromMetadataDocumentTokenQuotaClientCredentials is one quota's
+// limits. Hourly counts reset at the start of each UTC hour, daily counts at
+// the start of each UTC day.
+message Auth0ClientFromMetadataDocumentTokenQuotaClientCredentials {
+  // enforce decides what happens past a limit: true refuses the request
+  // (HTTP 429), false only logs warnings at 60, 80 and 100 percent -- a way to
+  // watch consumption before enforcing. Unset, the provider sends true.
+  optional bool enforce = 1;
+
+  // per_day is the most tokens Auth0 issues in a UTC day.
+  optional int32 per_day = 2 [(buf.validate.field).int32.gte = 1];
+
+  // per_hour is the most tokens Auth0 issues in a UTC hour.
+  optional int32 per_hour = 3 [(buf.validate.field).int32.gte = 1];
+}

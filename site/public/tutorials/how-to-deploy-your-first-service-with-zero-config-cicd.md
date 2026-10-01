@@ -60,25 +60,20 @@ Your application repository needs a `_kustomize/` directory that tells Planton h
 If you have the `planton` CLI and are inside your Git repository, run:
 
 ```bash
-planton service kustomize init
+planton service kustomize init --envs dev
 ```
 
-The command prompts you to choose a deployment platform (select **KubernetesDeployment**) and an environment. It generates the base and overlay structure with sensible defaults.
-
-After running, you will see:
+It writes one empty overlay per environment you name, plus the merge schema:
 
 ```text
 _kustomize/
-├── base/
-│   ├── kustomization.yaml
-│   └── service.yaml
+├── planton-schema.json
 └── overlays/
-    └── <your-chosen-env>/
-        ├── kustomization.yaml
-        └── service.yaml
+    └── dev/
+        └── kustomization.yaml
 ```
 
-Review the generated files and adjust the values (container port, resource limits) to match your application before continuing to Step 2.
+Add your service's manifest (a KubernetesDeployment) to the overlay and list it under the overlay's kustomization `resources`, as in Option B, before continuing to Step 2.
 
 ### Option B: Create the Structure Manually
 

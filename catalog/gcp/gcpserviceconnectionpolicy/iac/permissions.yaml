@@ -14,6 +14,7 @@ spec:
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
+          - serviceusage.services.list
         provenance: derived
         notes: Covers the module's two google_project_service resources enabling networkconnectivity.googleapis.com (the control plane that owns the policy) and compute.googleapis.com (where the referenced network and subnets live). disable_on_destroy is false on both, so the disable permission is never needed.
       - purpose: ManagePolicy

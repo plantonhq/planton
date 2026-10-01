@@ -4,7 +4,9 @@
 # basic-auth Mimir with the $__env password fold, and a Loki with typed
 # jsonData), the dashboard sidecar, pinned community dashboards, plugins
 # (including a Grafana-13 moved-out-of-core datasource plugin), server
-# root_url + anonymous viewing, SMTP with a credentials Secret, the
+# root_url + anonymous viewing, Google and generic OAuth sign-in (the
+# module-owned `<name>-sso` Secret, the admin-screen lock and the
+# credentials checksum), SMTP with a credentials Secret, the
 # ServiceMonitor toggle, a private-mirror image with a pull secret,
 # scheduling, and an escape-hatch entry — so the offline tofu plan and
 # pulumi preview proofs cover the full typed surface. Placeholder values;
@@ -79,6 +81,25 @@ spec:
   auth:
     anonymousEnabled: true
     anonymousOrgRole: Viewer
+    google:
+      clientId: 123456789-hack.apps.googleusercontent.com
+      clientSecret:
+        value: placeholder-google-client-secret
+      allowedDomains:
+        - example.com
+      hostedDomain: example.com
+      roleAttributePath: "email == 'lead@example.com' && 'Admin' || 'Viewer'"
+    genericOauth:
+      name: Okta
+      clientId: 0oa1hack
+      clientSecret:
+        value: placeholder-okta-client-secret
+      authUrl: https://id.example.com/oauth2/v1/authorize
+      tokenUrl: https://id.example.com/oauth2/v1/token
+      apiUrl: https://id.example.com/oauth2/v1/userinfo
+      groupsAttributePath: groups
+      allowedGroups:
+        - platform
   smtp:
     host: smtp.example.com:587
     fromAddress: grafana@example.com

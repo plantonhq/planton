@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0customdomain.v1alpha1;
+
+// Auth0CustomDomainStackOutputs contains the custom domain as Auth0 created it:
+// its identity, its state, and the DNS record that proves control of the name.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/custom_domain#read-only
+// https://www.pulumi.com/registry/packages/auth0/api-docs/customdomain/#outputs
+message Auth0CustomDomainStackOutputs {
+  // id is the custom domain's identifier in Auth0 (cd_...). An
+  // Auth0CustomDomainVerification's custom_domain_id reads it.
+  string id = 1;
+
+  // domain is the custom domain's name, as created (e.g. "id.example.com").
+  string domain = 2;
+
+  // status is where the domain is in its life: "pending_verification" until
+  // Auth0 has confirmed the DNS record, then "ready" once its certificate is
+  // issued ("disabled", "pending" and "failed" are the other states Auth0
+  // reports).
+  string status = 3;
+
+  // origin_domain_name is the tenant host the domain serves from (e.g.
+  // "example-cd-abc123.edge.tenants.eu.auth0.com"): the CNAME target for an
+  // Auth0-managed domain, and the origin a self-managed proxy forwards to.
+  string origin_domain_name = 4;
+
+  // The DNS record that proves control of the domain -- compose these three
+  // into a DNS record kind (for example a CloudflareDnsRecord's name, type and
+  // content) to complete verification. For an Auth0-managed domain it is the
+  // CNAME the domain is served through, and it must stay in place: Auth0
+  // re-checks it on every certificate renewal. For a self-managed domain it is a
+  // TXT record.
+  //
+  // dns_record_name is the record's fully qualified name (the domain itself
+  // for a CNAME, e.g. "id.example.com"; for a TXT record the name Auth0
+  // assigns, e.g. "_cf-custom-hostname.id.example.com").
+  string dns_record_name = 5;
+
+  // dns_record_type is the record's type: "CNAME" or "TXT".
+  string dns_record_type = 6;
+
+  // dns_record_value is the record's value: the CNAME's target host, or the
+  // TXT record's text.
+  string dns_record_value = 7;
+}

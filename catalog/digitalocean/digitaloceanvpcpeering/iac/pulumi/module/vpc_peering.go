@@ -35,8 +35,11 @@ func vpcPeering(
 		return nil, errors.Wrap(err, "failed to create digitalocean vpc peering")
 	}
 
+	// The lifecycle status is deliberately not exported: the provider waits
+	// for ACTIVE before this apply succeeds, so a stored status could only
+	// ever read "ACTIVE" and would go stale the moment DigitalOcean moved
+	// the peering. Live status belongs to whoever reads the API.
 	ctx.Export(OpPeeringId, createdPeering.ID())
-	ctx.Export(OpStatus, createdPeering.Status)
 
 	return createdPeering, nil
 }

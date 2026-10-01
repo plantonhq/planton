@@ -1,0 +1,18 @@
+# A country list created with two items, read back, renamed in place (the
+# name carries the run), and deleted on destroy with its items. The alias
+# carries the run, so lists from different runs never share one.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeRadarValueList
+metadata:
+  name: e2e-radar-value-list
+  org: e2e-org
+  env: testing
+spec:
+  alias: e2e_${E2E_RUN_ID_UNDERSCORE}
+  name: e2e ${E2E_RUN_ID} ${E2E_SCENARIO}
+  itemType: country
+  items:
+    - KP
+    - IR
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

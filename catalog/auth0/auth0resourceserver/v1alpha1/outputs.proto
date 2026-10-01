@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0resourceserver.v1alpha1;
 
+import "shared/options/options.proto";
+
 // Auth0ResourceServerStackOutputs contains the outputs from an Auth0 Resource Server deployment.
 // These outputs provide identifiers and configuration details needed for integrating
 // your applications with the deployed API.
@@ -30,7 +32,7 @@ message Auth0ResourceServerStackOutputs {
   // signing_secret is the secret used for signing tokens (HS256 only).
   // This is only populated when signing_alg is HS256.
   // IMPORTANT: Keep this secret secure and never expose in client-side code.
-  string signing_secret = 5;
+  string signing_secret = 5 [(dev.planton.shared.options.sensitive) = true];
 
   // token_lifetime is the configured token validity duration in seconds.
   string token_lifetime = 6;
@@ -57,4 +59,11 @@ message Auth0ResourceServerStackOutputs {
   // client_id is the associated client ID if one has been linked.
   // Some resource servers may have an associated client for certain features.
   string client_id = 13;
+
+  // third_party_client_default_grant_ids are the identifiers Auth0 assigned
+  // the default grants for third-party applications (cgr_...), keyed by
+  // subject type ("user", "client") -- one entry per
+  // spec.third_party_client_default_grants entry. Each grant imports by its
+  // id.
+  map<string, string> third_party_client_default_grant_ids = 14;
 }

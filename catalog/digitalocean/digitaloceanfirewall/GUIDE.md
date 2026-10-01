@@ -6,6 +6,8 @@ Judgment calls that matter when you run DigitalOcean Cloud Firewalls.
 
 Tag targeting (`tags`) follows Droplets automatically as they come and go, has no churn cost, and is how every tier should be wired in production. ID targeting (`dropletIds`) caps at 10 Droplets, must be edited on every membership change, and exists for the cases where a firewall genuinely protects one known machine — a bastion, a fixture, a snowflake. The same logic applies inside rules: `sourceTags` scales, `sourceDropletIds` pins.
 
+One ordering rule comes with tag targeting: the tag must exist before the firewall does. DigitalOcean creates a tag the first time a Droplet (or volume) declares it, but a firewall naming a tag nobody carries yet is rejected outright (`422 tag <name> does not exist`) — firewalls never create tags. In a chart, deploy the tagged Droplets first and the firewall after; for a firewall that must exist before its first Droplet, target a tag some Droplet already carries (every Planton-managed Droplet carries its `planton-ai_*` label tags) and add the intended tag once a Droplet has created it.
+
 ## Write "all", never "1-65535"
 
 The DigitalOcean API reports "all ports" as its own value, and the provider reads it back as the literal string `all`. A rule authored as `1-65535` deploys fine and then diffs forever, because the stored rule no longer matches the manifest. The same class applies to icmp: it has no ports, and any `portRange` set on an icmp rule is silently dropped on read — omit it.

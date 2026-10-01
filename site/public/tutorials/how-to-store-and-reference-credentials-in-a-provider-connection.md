@@ -44,16 +44,16 @@ Use `planton secret set` to store each credential. The slug you choose becomes t
 Store the access key ID:
 
 ```bash
-planton secret set aws-access-key-id value=AKIAIOSFODNN7EXAMPLE
+planton secret set aws-access-key-id 'AKIAIOSFODNN7EXAMPLE'
 ```
 
 Store the secret access key:
 
 ```bash
-planton secret set aws-secret-access-key value=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+planton secret set aws-secret-access-key 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
 ```
 
-Each command creates a versioned, encrypted secret in your organization's secrets manager. The slug (`aws-access-key-id`, `aws-secret-access-key`) is what you will reference in manifests -- the actual values are never exposed outside the secrets manager.
+Each command creates a versioned, encrypted single-value secret in your organization's secrets manager. The value is its own argument; a value containing `=` (base64, a JWT) goes after `--string`, as in `planton secret set <slug> --string '<value>'`. A new secret given one pair such as `value=...` is refused, because it would make a key-value secret whose format can never change. The slug (`aws-access-key-id`, `aws-secret-access-key`) is what you will reference in manifests -- the actual values are never exposed outside the secrets manager.
 
 Verify the secrets were created:
 
@@ -62,7 +62,7 @@ planton secret get aws-access-key-id
 planton secret get aws-secret-access-key
 ```
 
-The output shows the secret metadata (slug, version, creation time) but not the value itself. This is by design -- secret values are only decrypted at execution time by the platform.
+The output shows the secret's record (slug, scope, backend, creation time) but not the value itself: reading a record never decrypts the secret. Secret values are decrypted only at execution time by the platform, or when you ask for one with `--reveal`.
 
 ## Step 2: Create a Shared Variable
 
@@ -105,7 +105,7 @@ spec:
 Three reference patterns appear in this manifest:
 
 - **`account_id.value`**: A literal string. The AWS account ID is not sensitive and does not change across environments, so a direct value is appropriate.
-- **`region.variable`**: A variable reference. The platform resolves the slug `default-aws-region` to the value you stored in Step 2 (`us-west-2`). This is useful when multiple connections or resources share the same region.
+- **`region.variable`**: A variable reference. The platform resolves the slug `default-aws-region` to the value you stored in Step 2 (`us-west-2`). This is useful when multiple connections or resources share the same region. A variable field can also name one entry of a [variable group](/docs/variables/variable-groups) as `<group>/<entry>` (for example `region: {variable: aws-defaults/region}`), the same names a service reads as `$var/aws-defaults/region`, so a fact both a connection and your services use is declared once.
 - **`access_key_id.secret` / `secret_access_key.secret`**: Secret references. The platform resolves these slugs to the encrypted values you stored in Step 1. The actual credentials never appear in the YAML.
 
 ## Step 4: Apply and Verify
@@ -116,7 +116,7 @@ Apply the manifest:
 planton apply -f aws-connection.yaml
 ```
 
-Planton validates that the referenced secrets and variables exist in your organization's secrets manager, resolves them, and creates the connection.
+Planton creates the connection. It resolves the referenced secrets and variables each time the connection is used, and the connection's Verify check names any reference that does not resolve.
 
 Verify the connection:
 
@@ -131,7 +131,7 @@ In the output, `access_key_id` and `secret_access_key` show only the secret slug
 When credentials are compromised or need periodic rotation, update the secret:
 
 ```bash
-planton secret set aws-access-key-id value=AKIAI_NEW_KEY_EXAMPLE
+planton secret set aws-access-key-id 'AKIAI_NEW_KEY_EXAMPLE'
 ```
 
 This creates a new immutable version of the secret. The previous version is preserved in the version history. Every resource that references `aws-access-key-id` -- including the connection you created -- will use the new value on its next execution.

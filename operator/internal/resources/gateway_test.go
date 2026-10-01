@@ -125,7 +125,7 @@ func TestGatewayNginxConfig_RaisesBodySizeCapOnUploadPaths(t *testing.T) {
 // ${NGINX_LOCAL_RESOLVERS} substitution happen), so the mount point and key
 // must match the entrypoint's contract: /etc/nginx/templates/*.template.
 func TestGatewayDeployment_MountsEntrypointTemplate(t *testing.T) {
-	deploy := GatewayDeployment(GatewayConfig{CRName: "planton", Namespace: "default"})
+	deploy := GatewayDeployment(GatewayConfig{Resources: Effective(SizingGateway, nil), CRName: "planton", Namespace: "default"})
 
 	mount := deploy.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	if mount.MountPath != "/etc/nginx/templates" {
@@ -150,7 +150,7 @@ func TestGatewayDeployment_MountsEntrypointTemplate(t *testing.T) {
 }
 
 func TestGatewayDeployment_ConfigHashRollsThePod(t *testing.T) {
-	cfg := GatewayConfig{CRName: "planton", Namespace: "default", ConfigHash: "abc123"}
+	cfg := GatewayConfig{Resources: Effective(SizingGateway, nil), CRName: "planton", Namespace: "default", ConfigHash: "abc123"}
 	deploy := GatewayDeployment(cfg)
 
 	if got := deploy.Spec.Template.Annotations["planton.ai/gateway-config-hash"]; got != "abc123" {
@@ -159,13 +159,14 @@ func TestGatewayDeployment_ConfigHashRollsThePod(t *testing.T) {
 }
 
 func TestGatewayDeployment_ImageDefaultsAndOverride(t *testing.T) {
-	deploy := GatewayDeployment(GatewayConfig{CRName: "planton", Namespace: "default"})
+	deploy := GatewayDeployment(GatewayConfig{Resources: Effective(SizingGateway, nil), CRName: "planton", Namespace: "default"})
 	if got := deploy.Spec.Template.Spec.Containers[0].Image; got != "nginx:1.27-alpine" {
 		t.Errorf("image = %q, want the pinned nginx default", got)
 	}
 
 	deploy = GatewayDeployment(GatewayConfig{
-		CRName: "planton", Namespace: "default",
+		Resources: Effective(SizingGateway, nil),
+		CRName:    "planton", Namespace: "default",
 		ImageRepository: "mirror.example.com/nginx", ImageTag: "1.27",
 	})
 	if got := deploy.Spec.Template.Spec.Containers[0].Image; got != "mirror.example.com/nginx:1.27" {

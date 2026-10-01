@@ -10,16 +10,18 @@
 #
 # Version policy: tools are installed at their LATEST at build time (no pins),
 # mirroring the previous per-run behavior of the workflows this replaces. The Go
-# toolchain is the one exception - it is pinned to the base image tag so it tracks
-# the `go` directive in go.mod; bump it here when go.mod bumps (that Dockerfile
-# edit is what triggers a rebuild).
+# toolchain is the one exception - it is pinned to the EXACT base image tag equal
+# to the `go` directive in go.mod; bump it here when go.mod bumps (that Dockerfile
+# edit is what triggers a rebuild). A minor-only tag (golang:1.26-bookworm) froze
+# at whatever patch was current at the last build and fell behind go.mod, and a
+# GOTOOLCHAIN=local job then refuses to run.
 #
 # Note on preinstalled tools: a `container:` job does NOT inherit the tools that
 # GitHub's ubuntu-latest runner ships with (aws, gh, jq, zip, git, docker-cli),
 # so they are all installed explicitly below.
 # =============================================================================
 
-FROM golang:1.26-bookworm
+FROM golang:1.26.6-bookworm
 
 ENV PATH=/root/.pulumi/bin:${PATH}
 

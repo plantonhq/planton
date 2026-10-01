@@ -7,6 +7,7 @@
 package azuresearchservicev1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -164,15 +165,15 @@ var File_catalog_azure_azuresearchservice_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azuresearchservice/v1alpha1/outputs.proto\x12-dev.planton.azure.azuresearchservice.v1alpha1\"\xcc\x05\n" +
+	"7catalog/azure/azuresearchservice/v1alpha1/outputs.proto\x12-dev.planton.azure.azuresearchservice.v1alpha1\x1a\x1cshared/options/options.proto\"\xde\x05\n" +
 	"\x1eAzureSearchServiceStackOutputs\x12*\n" +
 	"\x11search_service_id\x18\x01 \x01(\tR\x0fsearchServiceId\x12.\n" +
 	"\x13search_service_name\x18\x02 \x01(\tR\x11searchServiceName\x12\x1a\n" +
-	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12\x1f\n" +
-	"\vprimary_key\x18\x04 \x01(\tR\n" +
-	"primaryKey\x12#\n" +
-	"\rsecondary_key\x18\x05 \x01(\tR\fsecondaryKey\x12*\n" +
-	"\x11default_query_key\x18\x06 \x01(\tR\x0fdefaultQueryKey\x12g\n" +
+	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12%\n" +
+	"\vprimary_key\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
+	"primaryKey\x12)\n" +
+	"\rsecondary_key\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\fsecondaryKey\x120\n" +
+	"\x11default_query_key\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\x0fdefaultQueryKey\x12g\n" +
 	"1customer_managed_key_encryption_compliance_status\x18\a \x01(\tR,customerManagedKeyEncryptionComplianceStatus\x12P\n" +
 	"%system_assigned_identity_principal_id\x18\b \x01(\tR!systemAssignedIdentityPrincipalId\x12\xb4\x01\n" +
 	"\x1fshared_private_link_service_ids\x18\t \x03(\v2n.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs.SharedPrivateLinkServiceIdsEntryR\x1bsharedPrivateLinkServiceIds\x1aN\n" +

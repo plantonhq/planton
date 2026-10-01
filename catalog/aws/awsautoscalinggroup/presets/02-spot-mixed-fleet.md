@@ -32,7 +32,7 @@ Typical savings on the Spot majority run 60-90% versus On-Demand.
 | --- | --- | --- |
 | `<fleet-name>` | Name for the group | Your workload's name (e.g., `workers`) |
 | `<aws-region>` | AWS region code (e.g., `us-east-1`) | Your deployment region |
-| `<private-subnet-a/b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
 | `<launch-template-resource-name>` | Name of the AwsLaunchTemplate resource | Your template manifest's `metadata.name` |
 
 ## Common Additions

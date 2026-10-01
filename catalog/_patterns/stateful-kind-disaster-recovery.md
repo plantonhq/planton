@@ -302,10 +302,25 @@ same key on source and target) and the bad-day restore target.
 | **Keyless posture** (GKE Workload Identity for GCS, EKS IRSA for S3, AKS Workload Identity for Azure Blob) | No stored credential anywhere; rotation is the cloud's | Only where the cluster and the store share a cloud; the identity and its binding are two more nodes, and the binding names the exact ServiceAccount the kind renders (a restore target is another instance and needs its own binding) | The identity is a visible node with an edge to the bucket and to the instance |
 | **Declared keys** (an access-key pair, a service-account key, an Azure key or connection string) | Works from any cluster to any store | A live credential the module materializes as a Kubernetes Secret; reference it (`key_base64`, an organization secret), never paste it | The credential source is a node only when it is a catalog kind; a pasted key is invisible |
 | **Cloudflare R2 by reference** | The store outside the cloud that runs the cluster; one token per bucket, least privilege; the store follows the bucket's jurisdiction | No keyless posture exists; emptying the bucket before teardown is yours | Bucket and token are two nodes; the instance draws edges to both |
-| **One path or prefix per live instance** | Retention and archiving stay correct | A restore target must declare the SOURCE's path to read it — the one deliberate sharing — and then (PostgreSQL) archive its own to a NEW path, or (OpenBao) suspend its schedule while the restore is declared | None; the path is a string, which is why the rule is taught here |
+| **One archive identity per install** | Retention and archiving stay correct | A store refuses, often quietly, to write one install's history over another's. PostgreSQL makes this the kind's job: each install archives into its own series beneath the path (`backup_server_name`), so a recreate or a restore target may share the source's path. OpenBao and MongoDB still key on the path, so a restore target reads the SOURCE's path and (OpenBao) suspends its schedule while the restore is declared | None; the identity is a string, which is why the rule is taught here |
 | **The GCS bucket's two roles** | rclone, Barman, and the storage clients read the bucket's attributes before writing | `roles/storage.objectAdmin` alone fails with `storage.buckets.get`; add `roles/storage.legacyBucketReader` on the bucket's `iamMembers` | None |
 | **The bundled platform's vault rides the database's archive** (`KubernetesPlantonPlatform`) | One backup, one schedule, one retention, one restore for records and secrets, to the same instant; the vault has no volume, no snapshot job, no second store | The database's outage is the vault's; the keys that OPEN the vault are never in the archive, so a backup is refused unless `vault.autoUnseal` or `vault.initSecretName` makes them outlive the platform; the seal is decided at creation and a changed seal is refused before render | The platform is one node; the seal set draws edges to the KMS ring, key, and identity kinds; the keys Secret is a name, not a node — which is why the copy outside the cluster is taught here |
 | **OpenBao's storage engine** (integrated Raft, or PostgreSQL by reference to a `KubernetesPostgres`) | Raft: the vault owns its recovery — this pattern's snapshot, store, and restore apply to it directly. PostgreSQL: ONE backup covers the database and the vault; the vault's bad day is the database's restore, and the kind refuses a `backup` block so two stories are never run by accident | Raft: a second store and a second rehearsal beside the database's. PostgreSQL: the database's outage is the vault's; the seal key is still required on restore (the barrier key wraps the data on either engine); the vault's connection pool counts against the database's headroom | Raft: the vault and its own volume, no edge. PostgreSQL: edges from the vault to the database node and to its credential Secret — the dependency is a visible node. The judgment of when to choose which is the [OpenBao guide's engine section](../kubernetes/kubernetesopenbao/GUIDE.md#storage-engine-raft-or-postgresql) |
+
+## A per-install archive identity comes from the install itself
+
+An archive keyed only by a name the declaration carries (the resource's
+name, a fixed path) is shared by every install of that declaration, so a
+destroy and recreate from the same files writes into its predecessor's
+history. The store's refusal is the dangerous part: Barman keeps the
+database healthy while it silently stops archiving. The durable fix is an
+identity the stack mints for itself, earlier in the same run, from an
+object that lives and dies with the install. KubernetesPostgres names its
+series after the backup ObjectStore's UID; the self-hosted platform's
+operator names its own after the platform resource's UID. Two properties
+follow: a recreate always gets a fresh identity, and an import (which keeps
+the live object) keeps the live identity. A number a person must remember
+to bump, or a random value held only in IaC state, gives neither.
 
 ## The restore is a declaration, and one step stays yours
 
@@ -324,7 +339,8 @@ readable, and each guide names the one step that stays with the operator:
 - **PostgreSQL** — the recovered data carries the source's roles and
   passwords; the target references the source's `<name>-app` Secret, so that
   Secret must outlive the source (back it up with the archive). The target
-  archives to a new path.
+  names the source's series (`source_server_name` = the source's
+  `backup_server_name`) and archives into a series of its own.
 - **MongoDB** — the restored database carries the source's users; the target
   references the source's `<name>-secrets` Secret, and the restore waits for
   the replica set to form before the Restore object exists.

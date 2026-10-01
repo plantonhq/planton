@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awscognitouserpoolclient.v1alpha1;
 
+import "shared/options/options.proto";
+
 // AwsCognitoUserPoolClientStackOutputs captures observable identifiers from a
 // provisioned Cognito User Pool app client. Downstream systems reference the
 // client ID: API Gateway JWT authorizers list it as an audience, ALB
@@ -16,7 +18,7 @@ message AwsCognitoUserPoolClientStackOutputs {
   // The app client secret. Only populated when `generate_secret` is true.
   // Sensitive -- treat as a credential and handle securely; confidential
   // clients present it at the token endpoint.
-  string client_secret = 2;
+  string client_secret = 2 [(dev.planton.shared.options.sensitive) = true];
 
   // The user pool this client belongs to, resolved from the spec reference.
   // Application configs typically need the (pool id, client id) pair together,

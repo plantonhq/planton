@@ -23,8 +23,9 @@ monitoring.ActivityLogAlert (one subscription-plane Activity Log alert)
 - **The recommendation / resource-health / service-health sub-criteria
   are mutually exclusive**, enforced by spec CELs before either engine
   runs.
-- **PARITY-EXCEPTION on tag shape** versus the Terraform module
-  (documented in both engines) -- output-neutral.
+- **Identity tags match the Terraform module** key for key and value
+  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 

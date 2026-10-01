@@ -96,16 +96,16 @@ func (r *Runner) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sche
 	if err != nil {
 		return Result{}, fmt.Errorf("checking runner readiness: %w", err)
 	}
+	workload := DeploymentRef(resources.RunnerDeploymentName(planton.Name)).Sized(resources.SizingRunner)
 	if !ready {
 		log.Info("Runner not ready")
 		// Readiness is the worker-poll probe: "not ready" after boot means
 		// the worker is not polling its Temporal queue yet.
-		return r.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.RunnerDeploymentName(planton.Name)),
-			"Waiting for the runner worker to start polling for deploys"), nil
+		return r.NotReady(ctx, c, planton.Namespace, workload, "Waiting for the runner worker to start polling for deploys"), nil
 	}
 
 	log.Info("Runner ready")
-	return Result{Ready: true, Message: runnerReadyMessage(ctx, c, planton)}, nil
+	return r.Ready(ctx, c, planton.Namespace, runnerReadyMessage(ctx, c, planton), workload), nil
 }
 
 // ensureBuildRBAC applies the build Role + RoleBinding when builds are
@@ -247,6 +247,7 @@ func runnerReadyMessage(ctx context.Context, c client.Client, planton *v1.Planto
 func runnerConfig(planton *v1.PlantonPlatform, ownerRef *metav1.OwnerReference) resources.RunnerConfig {
 	cfg := resources.RunnerConfig{
 		CRName:    planton.Name,
+		Resources: resources.EffectiveFor(resources.SizingRunner, &planton.Spec),
 		Namespace: planton.Namespace,
 		Version:   planton.Spec.Version,
 		OwnerRef:  ownerRef,

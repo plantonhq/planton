@@ -137,7 +137,20 @@ message AwsVendedLogDestination {
   // ARN of the receiving resource: an S3 bucket, a CloudWatch log
   // group, or a Firehose delivery stream. AWS infers the destination
   // type from the ARN's service. Forbidden for XRAY destinations.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef destination_resource_arn = 2;
+  dev.planton.shared.foreignkey.v1.StringValueOrRef destination_resource_arn = 2 [
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsS3Bucket
+      field_path: "status.outputs.bucket_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsCloudwatchLogGroup
+      field_path: "status.outputs.log_group_arn"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AwsKinesisFirehose
+      field_path: "status.outputs.delivery_stream_arn"
+    }
+  ];
 
   // The destination's type. Usually unset - AWS derives it from
   // destination_resource_arn. XRAY must be declared explicitly (it

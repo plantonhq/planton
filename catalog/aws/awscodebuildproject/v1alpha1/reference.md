@@ -1681,7 +1681,7 @@ approval. Defaults are provider-managed when empty.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AwsCodeBuildProject, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AwsCodeBuildProject, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -1692,7 +1692,7 @@ Reference an output from another manifest as `valueFrom: {kind: AwsCodeBuildProj
 | `status.outputs.public_project_alias` | `string` | The public alias of the project, when project_visibility is PUBLIC_READ. This is the identifier in the public build results URL. Empty for private projects. |
 | `status.outputs.webhook_url` | `string` | The webhook URL for the source provider, if a webhook was created. Empty when no webhook is configured. |
 | `status.outputs.webhook_payload_url` | `string` | The webhook payload URL, if a webhook was created. This is the URL the source provider posts events to; with webhook.manual_creation, register it on the repository by hand. Empty when no webhook is configured. |
-| `status.outputs.webhook_secret` | `string` | The webhook's HMAC signing secret (sensitive — a provider-minted credential, only returned at webhook creation). With webhook.manual_creation, configure it on the repository webhook so CodeBuild can authenticate payloads. Empty when no webhook is configured. |
+| `status.outputs.webhook_secret` | `string` (sensitive) | The webhook's HMAC signing secret (sensitive — a provider-minted credential, only returned at webhook creation). With webhook.manual_creation, configure it on the repository webhook so CodeBuild can authenticate payloads. Empty when no webhook is configured. |
 
 ## References
 

@@ -23,10 +23,11 @@ output "password" {
   sensitive   = true
 }
 
+# The client certificate is public; its private half is access_key. The
+# provider marks the attribute sensitive; nonsensitive() unwraps it.
 output "access_cert" {
   description = "Kafka only: PEM access certificate for mutual TLS"
-  value       = digitalocean_database_user.user.access_cert
-  sensitive   = true
+  value       = nonsensitive(digitalocean_database_user.user.access_cert)
 }
 
 output "access_key" {

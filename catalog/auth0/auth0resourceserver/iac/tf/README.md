@@ -1,76 +1,40 @@
-# Auth0 Resource Server Terraform Module
+# Auth0ResourceServer — Terraform Module
 
-This Terraform module deploys an Auth0 Resource Server (API).
+Terraform/OpenTofu module that creates an Auth0 Resource Server (API), its scopes, and the default grants every third-party application gets on it.
 
-## Usage
+## What It Creates
 
-```hcl
-module "auth0_resource_server" {
-  source = "./path/to/module"
+- `auth0_resource_server` — the API, in the tenant the provider's credential belongs to. Every setting but `allow_offline_access`, `skip_consent_for_verifiable_first_party_clients` and `enforce_policies` is sent only when the spec declares it (null attributes, blocks rendered only when declared); each access-policy block is rendered only with its policy. `signing_secret` is marked sensitive. Changing `identifier` replaces the API; destroy deletes it.
+- `auth0_resource_server_scopes` — the API's authoritative scope list, when `spec.scopes` is non-empty.
+- `auth0_client_grant.third_party_client_default_grants` — one per `spec.third_party_client_default_grants` entry, keyed by subject type, with `default_for = "third_party_clients"`, this API's identifier as audience, and no `client_id`; created after the scopes.
 
-  metadata = {
-    name = "my-api"
-    org  = "my-organization"
-  }
+## Prerequisites
 
-  spec = {
-    identifier         = "https://api.example.com/"
-    name               = "My Example API"
-    signing_alg        = "RS256"
-    token_lifetime     = 86400
-    allow_offline_access = true
-    enforce_policies   = true
-    token_dialect      = "access_token_authz"
-    scopes = [
-      {
-        name        = "read:data"
-        description = "Read access to data"
-      },
-      {
-        name        = "write:data"
-        description = "Write access to data"
-      }
-    ]
-  }
-}
-```
-
-## Requirements
-
-| Name | Version |
-|------|---------|
-| terraform | >= 1.0 |
-| auth0 | >= 1.0 |
+- [Terraform](https://www.terraform.io/downloads) >= 1.0 or [OpenTofu](https://opentofu.org/)
+- Auth0 credentials, supplied to the provider via the `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`, and `AUTH0_CLIENT_SECRET` environment variables. The application needs the four `resource_servers` scopes, and the four `client_grants` scopes when default grants are declared (`../permissions.yaml`).
 
 ## Inputs
 
-| Name | Description | Type | Required |
-|------|-------------|------|----------|
-| metadata | Resource metadata including name and labels | object | yes |
-| spec | Auth0 Resource Server specification | object | yes |
+| Name | Description |
+|---|---|
+| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `spec` | `identifier` (required); token settings, `scopes`, the access policy (`subject_type_authorization`), proof of possession, token encryption, authorization details and policy, anonymous-session settings, Online Refresh Tokens, and `third_party_client_default_grants` (optional) |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
-| id | The internal Auth0 identifier |
-| identifier | The API identifier (audience) |
-| name | The friendly display name |
-| signing_alg | The token signing algorithm |
-| signing_secret | The signing secret (HS256 only, sensitive) |
-| token_lifetime | Token validity duration in seconds |
-| token_lifetime_for_web | Token validity for implicit/hybrid flows |
-| allow_offline_access | Whether refresh tokens can be issued |
-| skip_consent_for_verifiable_first_party_clients | Consent skip setting |
-| enforce_policies | Whether RBAC is enabled |
-| token_dialect | Access token format |
-
-## Provider Configuration
-
-Set the following environment variables:
-
-```bash
-export AUTH0_DOMAIN="your-tenant.auth0.com"
-export AUTH0_CLIENT_ID="your-client-id"
-export AUTH0_CLIENT_SECRET="your-client-secret"
-```
+|---|---|
+| `id` | The internal Auth0 identifier |
+| `identifier` | The API identifier (audience) |
+| `name` | The friendly display name |
+| `signing_alg` | The token signing algorithm |
+| `signing_secret` | The signing secret (HS256 only, sensitive) |
+| `token_lifetime` | Token validity duration in seconds |
+| `token_lifetime_for_web` | Token validity for implicit/hybrid flows |
+| `allow_offline_access` | Whether refresh tokens can be issued |
+| `skip_consent_for_verifiable_first_party_clients` | Consent skip setting |
+| `enforce_policies` | Whether RBAC is enabled |
+| `token_dialect` | Access token format |
+| `is_system` | Whether this is a system resource server |
+| `client_id` | The client linked to the API, if any |
+| `third_party_client_default_grant_ids` | The default grants' ids (`cgr_...`), keyed by subject type |

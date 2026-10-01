@@ -14,7 +14,7 @@ metadata:
   name: demo-app
 spec:
   appName: demo-app
-  region: nyc3
+  region: nyc
   services:
     - name: web
       image:
@@ -40,7 +40,7 @@ metadata:
   name: sample-nodejs
 spec:
   appName: sample-nodejs
-  region: nyc3
+  region: nyc
   services:
     - name: web
       git:

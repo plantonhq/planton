@@ -14,6 +14,8 @@ spec:
   mx:
     # Lowest preference is tried first.
     - preference: 10
-      exchange: mail1.example.com
+      exchange:
+        value: mail1.example.com
     - preference: 20
-      exchange: mail2.example.com
+      exchange:
+        value: mail2.example.com

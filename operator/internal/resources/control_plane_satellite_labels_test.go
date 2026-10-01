@@ -14,6 +14,7 @@ import (
 // name keeps the grant its new reconcile applied.
 func TestControlPlaneTokenReviewerPair_CarriesThePlatformUID(t *testing.T) {
 	cfg := ControlPlaneConfig{
+		Resources: Effective(SizingControlPlane, nil),
 		CRName:    "planton",
 		Namespace: "planton",
 		OwnerRef:  &metav1.OwnerReference{Kind: "PlantonPlatform", Name: "planton", UID: types.UID("11111111-2222")},
@@ -35,7 +36,7 @@ func TestControlPlaneTokenReviewerPair_CarriesThePlatformUID(t *testing.T) {
 }
 
 func TestControlPlaneTokenReviewerPair_WithoutAnOwner_CarriesNoUID(t *testing.T) {
-	role := ControlPlaneTokenReviewerClusterRole(ControlPlaneConfig{CRName: "planton", Namespace: "planton"})
+	role := ControlPlaneTokenReviewerClusterRole(ControlPlaneConfig{Resources: Effective(SizingControlPlane, nil), CRName: "planton", Namespace: "planton"})
 	if _, present := role.Labels[PlatformUIDLabel]; present {
 		t.Error("no owner reference means no UID to stamp; an empty UID label would read as 'no live platform' and be swept")
 	}

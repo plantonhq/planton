@@ -43,7 +43,7 @@ Cloud plugin on the cluster, in the operator's namespace
 | `<store-access-key>` | Access key ID (MinIO: username) | Your object store's admin console |
 | `<store-secret-key>` | Secret access key (MinIO: password) — stored as a managed secret | Your object store's admin console |
 | `http://minio.minio-system.svc:9000` | Endpoint URL of the store | In-cluster Service DNS or the provider's endpoint documentation |
-| `s3://pg-backups/app-db` | Bucket + per-cluster path — one path per cluster | Your store's bucket layout |
+| `s3://pg-backups/app-db` | Bucket + per-cluster path; each install archives into its own series beneath it | Your store's bucket layout |
 
 ## Related Presets
 

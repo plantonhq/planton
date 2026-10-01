@@ -7,7 +7,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -37,19 +36,6 @@ const (
 	controlPlaneDefaultLogLevel          = "info"
 	controlPlaneDefaultTemporalNamespace = "default"
 
-	// The control plane's sizing, chosen here so a default install schedules
-	// honestly and is never OOM-killed by omission. Read live on a one-node
-	// install before choosing: ~3.3Gi resident under pipeline fan-out with
-	// the JVM's heap sized by the image's own -XX:MaxRAMPercentage from the
-	// container limit (so the limit IS the heap rule; a limit alone would
-	// not change the heap silently). The same request/limit pair the hosted
-	// product declares for this service -- one number in both homes. No CPU
-	// limit: a cold start and a pipeline burst must never be throttled into
-	// failing their own probes (requests-only, the house pattern).
-	controlPlaneCPURequest    = "250m"
-	controlPlaneMemoryRequest = "1Gi"
-	controlPlaneMemoryLimit   = "4Gi"
-
 	// A stopping pod drains before the kubelet's kill: the gRPC server's
 	// 30-second shutdown grace (longer than any poll a remote runner holds
 	// through the work door) plus the Temporal workers' 10-second stop. The
@@ -67,11 +53,28 @@ const (
 	// compiled in here would be a second truth beside the platform's, and
 	// it was (three weeks behind the catalog, so a kind the platform
 	// accepted 404'd at module download). The name is Spring's relaxed
-	// binding of planton.infra-hub.iac-modules.version with hyphens
-	// STRIPPED, the same shape as PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED;
-	// the underscored variant does not bind.
-	controlPlaneIacModulesVersionEnv = "PLANTON_INFRAHUB_IACMODULES_VERSION"
+	// binding of planton.infra-hub.iac-modules.version with each hyphen an
+	// underscore (see "Relaxed-binding spelling" below for why that
+	// spelling, and why a platform built before the rename still reads it).
+	controlPlaneIacModulesVersionEnv = "PLANTON_INFRA_HUB_IAC_MODULES_VERSION"
 )
+
+// Relaxed-binding spelling. Several variables below reach the control plane
+// straight from the environment rather than through a placeholder in its
+// yaml (planton.bootstrap.*, planton.connect.method-availability.*,
+// planton.infra-hub.iac-modules.*). Spring's relaxed binding accepts two
+// spellings of such a property: the canonical one, which strips each hyphen
+// (secret-backend -> SECRETBACKEND), and the legacy one, which turns each
+// hyphen into an underscore (SECRET_BACKEND). The operator renders the
+// underscored spelling, the one every other variable here follows, so a
+// person reading the Deployment never has to guess which a new name takes.
+// Every platform release the floor admits binds both spellings (the
+// platform's own properties tests prove it name by name), so this operator
+// and an older platform, or an older operator and a newer platform, agree on
+// every name: nothing depends on which of the two ships first. A platform
+// that later declares these properties in its yaml under the underscored
+// names stops reading the glued spelling, which is why the operator moves
+// first.
 
 // ControlPlaneConfig bundles all inputs needed to build the ControlPlane
 // Deployment. Using a config struct avoids a massive function signature and
@@ -86,6 +89,10 @@ type ControlPlaneConfig struct {
 	ImageRepository          string
 	ImageTag                 string
 	ExternalConfigSecretName string
+
+	// Resources is the container's effective sizing (SizingControlPlane in
+	// the registry, merged with the spec's override by the component).
+	Resources corev1.ResourceRequirements
 
 	// IacModulesVersion is the CR's spec.controlPlane.iacModulesVersion:
 	// the release the control plane downloads official IaC modules from
@@ -339,7 +346,7 @@ type RunnerBinding struct {
 // from OUTSIDE the cluster (developer laptops, appliances in other networks):
 // the address stamped into their identity documents. Present exactly when the
 // remote-runners capability is on AND the front door carries it; nil
-// otherwise, which leaves the work advertisement UNSET so the control plane
+// otherwise, which leaves the remote-runners switch UNSET so the control plane
 // refuses remote enrollment with the reason instead of minting an address only
 // this cluster's pods resolve. The in-cluster runner never reads it: the
 // operator renders its identity document itself, with the in-cluster
@@ -349,8 +356,8 @@ type RemoteRunnersBinding struct {
 	// runner outside the cluster dials it (host:port; :443 means TLS) -- the
 	// front door's gRPC endpoint. It is the runner's one address, for its API
 	// calls and its work alike: the control plane serves Temporal's worker
-	// methods itself, so the API endpoint and the work endpoint the control
-	// plane advertises are this one string and can never disagree.
+	// methods itself, so it advertises this one string as both and no
+	// separate work address exists to disagree with it.
 	PlantonAPIEndpoint string
 }
 
@@ -657,7 +664,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 						VolumeMounts: volumeMounts,
 						Env:          envVars,
 						EnvFrom:      envFrom,
-						Resources:    controlPlaneResources(),
+						Resources:    mustBeSized(SizingControlPlane, cfg.Resources),
 						// First boot self-provisions and migrates every database, which
 						// on a cold cluster takes several minutes; allow a generous
 						// window (10s x 90 = 15m) before the kubelet gives up, so the
@@ -889,8 +896,8 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// together with the floor.
 		{Name: "GITHUB_APP_CLIENT_ID", Value: "local"},
 		{Name: "GITHUB_APP_PRIVATE_KEY_BASE64", Value: "ZHVtbXk="},
-		{Name: "PLANTON_CONNECT_METHODAVAILABILITY_PLATFORMAPP_AVAILABILITY", Value: "unavailable"},
-		{Name: "PLANTON_CONNECT_METHODAVAILABILITY_PLATFORMAPP_REASON", Value: PlatformAppUnavailableReason},
+		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_AVAILABILITY", Value: "unavailable"},
+		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_REASON", Value: PlatformAppUnavailableReason},
 		{Name: "GITHUB_BUILD_STAGE_CHECK_NAME", Value: "build"},
 		{Name: "GITHUB_WEBHOOKS_SECRET_TOKEN", Value: "local"},
 
@@ -935,7 +942,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// platform) is the front door's gRPC endpoint when remote runners are
 		// open -- the address a laptop dials -- and the in-cluster Service
 		// otherwise (the variable is boot-required, and no remote runner is
-		// admitted without the queue advertisement below anyway). The
+		// admitted without the remote-runners switch below anyway). The
 		// platform-scoped address is always the in-cluster Service.
 		{Name: "CONNECT_RUNNER_PLANTON_API_ENDPOINT", Value: remoteRunnerAPIEndpoint(cfg)},
 		{Name: "CONNECT_RUNNER_PLATFORM_PLANTON_API_ENDPOINT", Value: fmt.Sprintf("%s:%d",
@@ -971,11 +978,10 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// OWN catalog release: the charts are validated against its protos at
 		// apply, so only the release those protos came from can ever be right,
 		// and the control plane carries that pin itself. The operator only
-		// switches the seed on. Canonical Spring relaxed-binding form of
-		// planton.bootstrap.infra-charts.enabled: hyphens are STRIPPED, not
-		// underscored (same as PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE); an
-		// underscored INFRA_CHARTS_ENABLED would not bind.
-		{Name: "PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED", Value: "true"},
+		// switches the seed on. Relaxed-binding form of
+		// planton.bootstrap.infra-charts.enabled, each hyphen an underscore
+		// (see "Relaxed-binding spelling" above ControlPlaneConfig).
+		{Name: "PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED", Value: "true"},
 		{Name: "PULUMI_ORG", Value: "local"},
 		{Name: "STACK_EXECUTION_LOGS_GCS_BUCKET", Value: "local"},
 		{Name: "STIGMER_API_KEY", Value: "local"},
@@ -996,18 +1002,19 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	envs = append(envs, emailEnvVars(cfg.Email)...)
 	envs = append(envs, emailSetupHintEnvVars(cfg.CRName, cfg.Namespace)...)
 
-	// Remote-runners capability: the work advertisement
-	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents, the control
-	// plane's work door, and the materializer's capability gate all read. Its
-	// address is the control plane's own front-door endpoint, because the
-	// control plane serves a remote runner's work calls itself. Set ONLY when
-	// the install opened remote runners and the front door carries native
-	// gRPC -- every reader of this variable on the platform is a remote-runner
-	// gate or minter (the in-cluster runner gets its queue address from its
-	// own Deployment, never from here), so leaving it unset is what makes the
-	// control plane refuse a laptop honestly ("this instance doesn't support
-	// deploying from your own machine yet") instead of handing it an address
-	// only this cluster's pods resolve.
+	// Remote-runners capability: the one switch that minted identity
+	// documents, the control plane's work door, and the materializer's
+	// capability gate all read. A remote runner's work address is its API
+	// address (CONNECT_RUNNER_PLANTON_API_ENDPOINT, the front door's gRPC
+	// endpoint while this is on), because the control plane serves a remote
+	// runner's work calls itself, so no second address exists to disagree.
+	// Set ONLY when the install opened remote runners and the front door
+	// carries native gRPC -- every reader of the switch on the platform is a
+	// remote-runner gate or minter (the in-cluster runner gets its queue
+	// address from its own Deployment, never from here), so leaving it unset
+	// is what makes the control plane refuse a laptop honestly ("this
+	// instance doesn't support deploying from your own machine yet") instead
+	// of handing it an address only this cluster's pods resolve.
 	//
 	// The replica count rides with it: the door's limit on polls it holds is
 	// one install-wide total, and each control-plane replica holds its share,
@@ -1015,7 +1022,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	// take from the job queue the platform's own work shares.
 	if cfg.RemoteRunners != nil {
 		envs = append(envs,
-			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.PlantonAPIEndpoint},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_REMOTE_RUNNERS_ENABLED", Value: "true"},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_NAMESPACE", Value: runnerTemporalNamespace},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS", Value: fmt.Sprint(controlPlaneReplicas(cfg))},
 		)
@@ -1059,9 +1066,9 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// organization's default is the whole routing chain below a service's
 		// own override. Presence of the RUNNER value is the seeders' activation gate;
 		// builds off means NO variables, not empty ones. The env names are
-		// the canonical relaxed-binding forms of
-		// planton.bootstrap.tekton-connection.* -- hyphens STRIPPED, not
-		// underscored (see PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED below).
+		// the relaxed-binding forms of planton.bootstrap.tekton-connection.*,
+		// each hyphen an underscore (see "Relaxed-binding spelling" above
+		// ControlPlaneConfig).
 		// The connection's namespace variable is deliberately not set: empty
 		// means "the runner's own placement" (TEKTON_NAMESPACE on the runner
 		// Deployment), which keeps the seeded connection inside the log
@@ -1070,8 +1077,8 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// each gates a DIFFERENT seeder.
 		if cfg.Runner.BuildEnabled {
 			envs = append(envs,
-				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTONCONNECTION_RUNNER", Value: RunnerSlug(cfg.CRName)},
-				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTONCONNECTION_ORG", Value: cfg.Identity.Bootstrap.OrgSlug},
+				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTON_CONNECTION_RUNNER", Value: RunnerSlug(cfg.CRName)},
+				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTON_CONNECTION_ORG", Value: cfg.Identity.Bootstrap.OrgSlug},
 			)
 		}
 	} else {
@@ -1114,7 +1121,7 @@ func iacModulesVersionEnvVars(override string) []corev1.EnvVar {
 // the in-cluster Service otherwise. The variable is boot-required, so the
 // closed posture still needs a value; it is truthful for the only runners that
 // can enroll then (this cluster's), and no runner from outside is admitted
-// without the deploy-queue advertisement that the capability alone sets.
+// without the remote-runners switch that the capability alone sets.
 func remoteRunnerAPIEndpoint(cfg ControlPlaneConfig) string {
 	if cfg.RemoteRunners != nil && cfg.RemoteRunners.PlantonAPIEndpoint != "" {
 		return cfg.RemoteRunners.PlantonAPIEndpoint
@@ -1134,9 +1141,10 @@ func fgaEnvVars(fga OpenFGAConnectionInfo) []corev1.EnvVar {
 	return []corev1.EnvVar{
 		{Name: "FGA_API_ENDPOINT", Value: fga.HTTPURL},
 		configMapEnv("FGA_STORE_ID", fga.BootstrapConfigMapName, "store_id"),
-		// Relaxed-binding form of planton.bootstrap.authorization-model.manage
-		// (hyphens stripped).
-		{Name: "PLANTON_BOOTSTRAP_AUTHORIZATIONMODEL_MANAGE", Value: "true"},
+		// Relaxed-binding form of planton.bootstrap.authorization-model.manage,
+		// each hyphen an underscore (see "Relaxed-binding spelling" above
+		// ControlPlaneConfig).
+		{Name: "PLANTON_BOOTSTRAP_AUTHORIZATION_MODEL_MANAGE", Value: "true"},
 		{Name: "FGA_READ_TIMEOUT_SECONDS", Value: "30"},
 		{Name: "FGA_CONNECT_TIMEOUT_SECONDS", Value: "10"},
 		{Name: "FGA_WRITE_TIMEOUT_SECONDS", Value: "30"},
@@ -1188,11 +1196,11 @@ func webIdentityEnvVars(binding *WebIdentityBinding) []corev1.EnvVar {
 		{Name: "OIDC_ISSUER_URL", Value: binding.IssuerURL},
 	}
 	if binding.Offered {
-		return append(envs, corev1.EnvVar{Name: "PLANTON_CONNECT_METHODAVAILABILITY_OIDC_AVAILABILITY", Value: "available"})
+		return append(envs, corev1.EnvVar{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_AVAILABILITY", Value: "available"})
 	}
 	return append(envs,
-		corev1.EnvVar{Name: "PLANTON_CONNECT_METHODAVAILABILITY_OIDC_AVAILABILITY", Value: "unavailable"},
-		corev1.EnvVar{Name: "PLANTON_CONNECT_METHODAVAILABILITY_OIDC_REASON", Value: binding.ClosedReason},
+		corev1.EnvVar{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_AVAILABILITY", Value: "unavailable"},
+		corev1.EnvVar{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_REASON", Value: binding.ClosedReason},
 	)
 }
 
@@ -1225,7 +1233,7 @@ func githubLegacyEnvVars(github *GithubBinding) []corev1.EnvVar {
 		return nil
 	}
 	return []corev1.EnvVar{
-		{Name: "PLANTON_CONNECT_METHODAVAILABILITY_HOSTLOGIN_AVAILABILITY", Value: "available"},
+		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY", Value: "available"},
 	}
 }
 
@@ -1286,11 +1294,11 @@ func secretBackendEnvVars(binding *SecretBackendBinding) []corev1.EnvVar {
 	}
 	envs := []corev1.EnvVar{
 		// ── default secret backend seed ──
-		{Name: "PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE", Value: binding.Type},
+		{Name: "PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE", Value: binding.Type},
 	}
 	if binding.AwsRegion != "" {
 		envs = append(envs, corev1.EnvVar{
-			Name: "PLANTON_BOOTSTRAP_SECRETBACKEND_AWSSECRETSMANAGER_REGION", Value: binding.AwsRegion,
+			Name: "PLANTON_BOOTSTRAP_SECRET_BACKEND_AWS_SECRETS_MANAGER_REGION", Value: binding.AwsRegion,
 		})
 	}
 	return envs
@@ -1454,18 +1462,4 @@ func controlPlaneReplicas(cfg ControlPlaneConfig) int32 {
 		return 1
 	}
 	return cfg.Replicas
-}
-
-// controlPlaneResources is the container sizing every install gets (the
-// constants above carry the reasoning).
-func controlPlaneResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(controlPlaneCPURequest),
-			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryLimit),
-		},
-	}
 }

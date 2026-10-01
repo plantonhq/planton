@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -38,16 +37,6 @@ const (
 	// too many clients already" starved the identity server's pool and
 	// crash-looped the control plane's boot).
 	postgresqlMaxConnections = "300"
-
-	// The database's sizing, chosen here rather than left to CloudNativePG's
-	// default (none): one instance serving every platform database, ~520Mi
-	// resident live with the control plane's pools open. A request so it
-	// schedules honestly, a memory limit so a runaway query cannot take the
-	// node, no CPU limit so a checkpoint or a vacuum is never throttled
-	// (requests-only, the house pattern).
-	postgresqlCPURequest    = "250m"
-	postgresqlMemoryRequest = "512Mi"
-	postgresqlMemoryLimit   = "2Gi"
 
 	// DBBase is the ONE database the control plane owns (DB_NAME=planton in
 	// every deployment shape); every domain is separated at the schema level
@@ -209,6 +198,10 @@ type PostgreSQLClusterOptions struct {
 	// to this Secret's, so consumers keep reading the Secret they always
 	// read (the superuser Secret's own behaviour, applied to every role).
 	ManagedRoles []PostgreSQLManagedRole
+
+	// Resources is each instance's effective sizing (SizingPostgreSQL in the
+	// registry, merged with the spec's override by the component).
+	Resources corev1.ResourceRequirements
 }
 
 // PostgreSQLManagedRole is one login role the Cluster carries under
@@ -237,13 +230,8 @@ type PostgreSQLClusterRecovery struct {
 // NewPostgreSQLCluster builds the platform's postgresql.cnpg.io/v1 Cluster as
 // an unstructured object.
 //
-// The resource floor exists because the control-plane's first boot
-// self-provisions every database and runs Flyway migrations across all of
-// them at once -- enough concurrent connections and shared buffers to
-// OOM-kill a tiny default and cascade the application boot into failure.
-// Memory limit only (no CPU limit) so migrations are never CPU-throttled.
-//
-// Absent quantities are OMITTED, never rendered empty: CloudNativePG's
+// The instances are sized from opts.Resources (SizingPostgreSQL carries why
+// the default is what it is). Absent quantities are OMITTED, never rendered empty: CloudNativePG's
 // mutating webhook rejects "" with a quantity-format error.
 func NewPostgreSQLCluster(opts PostgreSQLClusterOptions) *unstructured.Unstructured {
 	obj := &unstructured.Unstructured{}
@@ -277,7 +265,7 @@ func NewPostgreSQLCluster(opts PostgreSQLClusterOptions) *unstructured.Unstructu
 				"max_connections": postgresqlMaxConnections,
 			},
 		},
-		"resources": helmResourceValues(postgresqlResources()),
+		"resources": helmResourceValues(mustBeSized(SizingPostgreSQL, opts.Resources)),
 		"bootstrap": postgresqlBootstrap(opts.Recovery),
 	}
 
@@ -404,20 +392,6 @@ func postgresqlBootstrap(recovery *PostgreSQLClusterRecovery) map[string]any {
 			"postInitSQL": []any{
 				fmt.Sprintf("CREATE DATABASE %s", DBOpenFGA),
 			},
-		},
-	}
-}
-
-// postgresqlResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func postgresqlResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(postgresqlCPURequest),
-			corev1.ResourceMemory: resource.MustParse(postgresqlMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(postgresqlMemoryLimit),
 		},
 	}
 }

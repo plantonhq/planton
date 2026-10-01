@@ -28,12 +28,12 @@ their IdP group allows.
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<aws-region>` | AWS region code (e.g. `us-west-2`) | Your deployment region |
-| `<iam-saml-provider-arn>` | The IAM SAML identity provider ARN | IAM console → Identity providers |
+| `arn:aws:iam::123456789012:saml-provider/okta-workforce` | The IAM SAML identity provider ARN | IAM console → Identity providers |
 | `<server-certificate-arn>` | ACM ARN of the server certificate | ACM console, or an AwsCertManagerCert output |
 | `<vpc-id>` | The VPC whose security groups apply | Your AwsVpc output |
-| `<private-subnet-id-az1/2>` | Subnets to associate (two AZs for resilience) | Your AwsSubnet outputs |
-| `<vpc-cidr-block>` / `<tools-subnet-cidr>` | Destination networks per group | Your VPC design |
-| `<idp-*-group-id>` | The IdP group attribute values | Your identity provider |
+| `<private-subnet-id-az1>` / `<private-subnet-id-az2>` | Subnets to associate (two AZs for resilience) | Your AwsSubnet outputs |
+| `10.0.0.0/16` / `10.0.42.0/24` | Destination networks per group (the VPC, the tools subnet) | Your VPC design |
+| `<idp-engineering-group-id>` / `<idp-contractors-group-id>` | The IdP group attribute values | Your identity provider |
 | `<vpn-log-group-name>` | CloudWatch log group for connection events | Your AwsCloudwatchLogGroup output |
 
 ## Common Additions

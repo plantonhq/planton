@@ -60,6 +60,7 @@ jobs:
           - gcp
           - kubernetes
           - openfga
+          - stripe
 
     steps:
       - name: Checkout

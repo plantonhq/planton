@@ -1,0 +1,15 @@
+# A counting meter with only its names and formula: no mapping, value key,
+# time window or alerts. Updated in place (the display name carries the run)
+# and deactivated on destroy. The event name carries the run and scenario,
+# because a deactivated meter stays in the sandbox.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingMeter
+metadata:
+  name: e2e-meter
+  org: e2e-org
+  env: testing
+spec:
+  displayName: e2e ${E2E_RUN_ID}
+  eventName: e2e_${E2E_RUN_ID_UNDERSCORE}_minimal
+  defaultAggregation:
+    formula: count

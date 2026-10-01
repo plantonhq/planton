@@ -39,9 +39,12 @@ type DigitalOceanKubernetesNodePoolSpec struct {
 	// The slug identifier for the Droplet size of each node (e.g.
 	// "s-2vcpu-4gb"). Changing it replaces the pool.
 	Size string `protobuf:"bytes,3,opt,name=size,proto3" json:"size,omitempty"`
-	// The number of nodes in the pool. With auto_scale enabled this is the
-	// initial count; the live count then drifts freely between min_nodes and
-	// max_nodes without producing configuration diffs.
+	// The fixed number of nodes in the pool. Required when auto_scale is off;
+	// must be left unset when auto_scale is on -- the pool then starts at
+	// min_nodes and DigitalOcean's autoscaler owns the count from there, and
+	// both provisioners send no count at all (a stated count would be written
+	// back from the live pool on every read and re-applied on every update,
+	// fighting the autoscaler).
 	NodeCount uint32 `protobuf:"varint,4,opt,name=node_count,json=nodeCount,proto3" json:"node_count,omitempty"`
 	// Whether DigitalOcean's cluster-autoscaler manages this pool's node count
 	// between min_nodes and max_nodes.
@@ -61,7 +64,13 @@ type DigitalOceanKubernetesNodePoolSpec struct {
 	// (Optional) DigitalOcean tags applied to the pool's Droplets, in addition
 	// to the standard Planton tags both provisioners always apply. Tags drive
 	// DigitalOcean-side grouping and billing attribution; they are unrelated
-	// to Kubernetes labels.
+	// to Kubernetes labels. Tags are also the wiring surface for
+	// Droplet-scoped resources: a DigitalOceanFirewall or load balancer that
+	// targets a pool tag covers every current AND future node, because DOKS
+	// applies the pool's tags to each node it creates -- the pool's node and
+	// Droplet ids are never exported for that reason (they churn by design).
+	// Never author tags with the `k8s:` or `terraform:` prefixes; DOKS owns
+	// those and the provider filters them out of state.
 	Tags []string `protobuf:"bytes,10,rep,name=tags,proto3" json:"tags,omitempty"`
 	// (Optional) GPU partitioning mode for AMD GPU Droplet sizes. Changing it
 	// replaces the pool.
@@ -249,14 +258,13 @@ var File_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_spec_proto
 
 const file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/spec.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x86\b\n" +
+	"Gcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/spec.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf0\t\n" +
 	"\"DigitalOceanKubernetesNodePoolSpec\x12,\n" +
 	"\x0enode_pool_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fnodePoolName\x12v\n" +
 	"\acluster\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_idR\acluster\x12\x1a\n" +
-	"\x04size\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04size\x12)\n" +
+	"\x04size\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04size\x12\x1d\n" +
 	"\n" +
-	"node_count\x18\x04 \x01(\rB\n" +
-	"\xbaH\a\xc8\x01\x01*\x02 \x00R\tnodeCount\x12\x1d\n" +
+	"node_count\x18\x04 \x01(\rR\tnodeCount\x12\x1d\n" +
 	"\n" +
 	"auto_scale\x18\x05 \x01(\bR\tautoScale\x12\x1b\n" +
 	"\tmin_nodes\x18\x06 \x01(\rR\bminNodes\x12\x1b\n" +
@@ -268,8 +276,9 @@ const file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_spec_pro
 	"\x12gpu_partition_mode\x18\v \x01(\tBB\xbaH?\xd8\x01\x01r:R\x1bAMD_PARTITION_MODE_SPX_NPS1R\x1bAMD_PARTITION_MODE_DPX_NPS2R\x10gpuPartitionMode\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xa8\x01\xbaH\xa4\x01\x1a\xa1\x01\n" +
-	"\x10autoscale_bounds\x12=auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes\x1aN!this.auto_scale || (this.min_nodes >= 1u && this.max_nodes >= this.min_nodes)\"\xa0\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9e\x03\xbaH\x9a\x03\x1a\xa1\x01\n" +
+	"\x10autoscale_bounds\x12=auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes\x1aN!this.auto_scale || (this.min_nodes >= 1u && this.max_nodes >= this.min_nodes)\x1a\xf3\x01\n" +
+	"\x12node_count_by_mode\x12\x9b\x01node_count is required when auto_scale is off and must be left unset when auto_scale is on (the pool starts at min_nodes and the autoscaler owns the count)\x1a?this.auto_scale ? this.node_count == 0u : this.node_count >= 1u\"\xa0\x01\n" +
 	"#DigitalOceanKubernetesNodePoolTaint\x12\x18\n" +
 	"\x03key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value\x12I\n" +

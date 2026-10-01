@@ -43,6 +43,46 @@ already-exists, and destroying the database would delete the neighbors'
 namespace). The judgment, the failure story, and the `valueFrom` wiring:
 [namespace-ownership pattern](../../_patterns/namespace-ownership.md).
 
+## Backups across rebuilds
+
+A backup block archives into a **series**: a folder beneath
+`destination_path` holding the install's base backups and WAL (Barman's
+server name). Barman refuses to archive into a series that already holds
+another PostgreSQL system's history, and it refuses quietly. The cluster
+keeps reporting healthy while its `ContinuousArchiving` condition stays
+`False`, the plugin's log says `Expected empty archive`, and unsent WAL
+piles up on the data volume until the volume fills and the database stops.
+A rebuilt database that reused its predecessor's series would therefore
+run for days before anything looked wrong.
+
+So the kind never reuses a series by accident. Left unset,
+`backup.server_name` is `<name>-<first 8 characters of the backup
+ObjectStore's UID>`, and the ObjectStore is created with the install:
+
+- **A destroy and recreate from the same declaration** archives into a
+  fresh series. The previous series stays in the store, restorable up to
+  the moment it stopped.
+- **Every new series starts with a base backup** (the on-demand Backup
+  `<name>-series-start`), so it is restorable from its first minute
+  whatever the schedules say. Schedules then keep it restorable to a recent
+  point and bound how much WAL a recovery replays.
+- **An import keeps the live ObjectStore**, and so continues its series.
+- **The effective series is the `backup_server_name` output.** A recovery
+  names it as `source_server_name`.
+
+Set `server_name` only to continue a specific series, for example when
+adopting a cluster that already archives under its plain name. Two cases
+reuse a series and are refused by Barman: a declared `server_name` that
+another install already wrote, and deleting only the Cluster resource by
+hand and re-applying (the ObjectStore, and so the series, survives). In
+both, declare a new `server_name`. To confirm a database is archiving,
+read its condition:
+
+```
+kubectl get clusters.postgresql.cnpg.io <name> -n <namespace> \
+  -o jsonpath='{.status.conditions[?(@.type=="ContinuousArchiving")]}'
+```
+
 ## Disaster recovery on GKE: the resource set
 
 "Highly available, backed up, restorable" is six catalog resources on the
@@ -59,7 +99,7 @@ carrying rows written both before and after the base backup.
 | 3 | `GcpGkeWorkloadIdentityBinding` | Lets the cluster's KSA act as #1 | `ksa_namespace` = the database's namespace, `ksa_name` = the database's `metadata.name` (CloudNativePG names the ServiceAccount after the Cluster); `service_account_email` by reference to #1 |
 | 4 | `KubernetesCnpgBarmanCloudPlugin` | The backup engine, beside the operator | `namespace` = the operator's (by reference to a `KubernetesCloudNativePgOperator` resource, or the literal namespace of a CloudNativePG that ALREADY runs on the cluster — a self-hosted platform installs one); cert-manager resident or declared |
 | 5 | `KubernetesPostgres` (the production database) | HA + backups | `instances: 3`, `scheduling.anti_affinity_type: required`, `workload_identity.gke.service_account_email` by reference to #1, `backup.object_store` at `gs://<bucket>/<path>` with `gcs.keyless: true`, a schedule with `immediate: true`, `retention_policy` |
-| 6 | `KubernetesPostgres` (the recovery target, on the bad day) | Restore | `bootstrap.recovery.object_store` = #5's store, `source_server_name` = #5's name, `database`/`owner` = #5's initdb values, `owner_secret_name` = #5's `<name>-app` Secret; its own `workload_identity` (and its own #3 binding — the KSA is named after IT); its own `backup` at a DIFFERENT path |
+| 6 | `KubernetesPostgres` (the recovery target, on the bad day) | Restore | `bootstrap.recovery.object_store` = #5's store, `source_server_name` = #5's `backup_server_name` output, `database`/`owner` = #5's initdb values, `owner_secret_name` = #5's `<name>-app` Secret; its own `workload_identity` (and its own #3 binding — the KSA is named after IT); its own `backup`, which may keep #5's path — it archives into a series of its own |
 
 Two rules the set stands on:
 
@@ -69,9 +109,11 @@ Two rules the set stands on:
   back it up with the archive (a `KubernetesSecret` / `ExternalSecret`
   declaration, or the secret backend). Without it the target hands out a
   freshly generated password the restored role does not have.
-- **One archive path per cluster, forever.** A recovered cluster archives its
-  own WAL to a new path; Barman refuses to archive into a path that already
-  holds another cluster's WAL, and a second writer would corrupt the archive.
+- **One backup series per install.** Barman refuses to archive into a series
+  that already holds another cluster's history. The recovery target is a new
+  install, so it archives into a series of its own beside the one it
+  restored from, and the source's series stays intact (see
+  [Backups across rebuilds](#backups-across-rebuilds)).
 
 Where each piece lives, validated: rows 1–3 are the
 [GKE keyless store set](../../_patterns/stateful-kind-disaster-recovery.md#the-gke-keyless-store-set-complete)
@@ -98,10 +140,10 @@ from that archive carrying rows written before and after the base backup.
 | 2 | `CloudflareAccountApiToken` (e.g. `pg-archive-writer`) | The credential — R2 has NO keyless posture from any cluster | one policy: permission group `Workers R2 Storage Bucket Item Write` on resource `com.cloudflare.edge.r2.bucket.<account>_<jurisdiction>_<bucket>` (least privilege: objects in this bucket only); exports the token as the S3 key pair, `r2_access_key_id` + `r2_secret_access_key` |
 | 3 | `KubernetesCnpgBarmanCloudPlugin` | The backup engine, beside the operator | as in the GCS set above |
 | 4 | `KubernetesPostgres` (the production database) | HA + backups | `instances: 3`, `scheduling.anti_affinity_type: required`, `backup.object_store` at `s3://<bucket>/<path>` with the `r2` arm: `account_id` and `jurisdiction` by reference to #1, `credentials.access_key_id` / `secret_access_key` by reference to #2; a schedule with `immediate: true`, `retention_policy`. No `workload_identity` — nothing on the cluster side identifies the pods to R2 |
-| 5 | `KubernetesPostgres` (the recovery target, on the bad day) | Restore | `bootstrap.recovery.object_store` = #4's store (the same `r2` arm, the same references), `source_server_name` = #4's name, `database`/`owner` = #4's initdb values, `owner_secret_name` = #4's `<name>-app` Secret; its own `backup` at a DIFFERENT path in the same bucket |
+| 5 | `KubernetesPostgres` (the recovery target, on the bad day) | Restore | `bootstrap.recovery.object_store` = #4's store (the same `r2` arm, the same references), `source_server_name` = #4's `backup_server_name` output, `database`/`owner` = #4's initdb values, `owner_secret_name` = #4's `<name>-app` Secret; its own `backup` in the same bucket, at the same path or another — it archives into a series of its own |
 
-The two rules above (credential continuity; one archive path per cluster,
-forever) stand unchanged. Three R2-specific facts join them:
+The two rules above (credential continuity; one backup series per install)
+stand unchanged. Three R2-specific facts join them:
 
 - **The module owns the S3 dialect.** The rendered ObjectStore carries the
   jurisdiction's endpoint, region `auto`, and the plugin sidecar's

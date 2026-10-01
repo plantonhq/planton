@@ -1,0 +1,14 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "azuretagkeys",
+    srcs = ["azure_tag_keys.go"],
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "azuretagkeys_test",
+    srcs = ["azure_tag_keys_test.go"],
+    embed = [":azuretagkeys"],
+)

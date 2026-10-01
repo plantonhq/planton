@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/digitalocean/godo"
 	"github.com/pkg/errors"
@@ -106,7 +107,29 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	return v.VerifyExists(ctx, h.client, id)
 }
 
+// absentPollTimeout bounds how long VerifyDestroyed keeps re-probing a
+// resource the API still answers for after a successful destroy, and
+// absentPollInterval spaces the probes. DigitalOcean's read-after-delete is
+// eventually consistent: the IaC destroy returns once the DELETE is accepted,
+// and a GET issued within a second or two can still answer 200 (measured on
+// volumes -- destroy done in ~2s, the probe 1s later saw the volume, 404 a
+// few seconds after). Sixty seconds is far beyond the observed lag for the
+// fast classes and short enough that a genuinely leaked resource still fails
+// the lane promptly. The slow-to-create classes are not slow to vanish:
+// the database provider's Delete returns as soon as the DELETE is accepted
+// (it never waits), and a deleted cluster answered 404 within one second
+// when measured -- so they pass through this poll like the fast classes.
+const (
+	absentPollTimeout  = 60 * time.Second
+	absentPollInterval = 2 * time.Second
+)
+
 // VerifyDestroyed confirms the previously deployed resource no longer exists.
+//
+// Only a StillExistsError is retried (the resource is simply not gone YET);
+// every other error -- credentials, rate limits, a broken lookup -- fails the
+// phase on the first probe, so an API problem can never be polled into a
+// timeout that reads like a leak.
 func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	v, err := verify.GetVerifier(component)
 	if err != nil {
@@ -120,10 +143,32 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	if res.id == "" && res.outputs == nil {
 		return errors.Errorf("no stored resource id for %s -- VerifyDeployed may not have run", component)
 	}
-	if ov, ok := v.(verify.OutputsVerifier); ok {
-		return ov.VerifyAbsentFromOutputs(ctx, h.client, res.outputs)
+
+	probe := func() error {
+		if ov, ok := v.(verify.OutputsVerifier); ok {
+			return ov.VerifyAbsentFromOutputs(ctx, h.client, res.outputs)
+		}
+		return v.VerifyAbsent(ctx, h.client, res.id)
 	}
-	return v.VerifyAbsent(ctx, h.client, res.id)
+
+	deadline := time.Now().Add(absentPollTimeout)
+	for attempt := 1; ; attempt++ {
+		err := probe()
+		if err == nil {
+			if attempt > 1 {
+				fmt.Printf("  [verify] %s absent after %d probes (DigitalOcean read-after-delete lag)\n", component, attempt)
+			}
+			return nil
+		}
+		if !verify.IsStillExists(err) || time.Now().After(deadline) {
+			return err
+		}
+		select {
+		case <-time.After(absentPollInterval):
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+	}
 }
 
 // componentKey combines the manifest path (from context) with the component name

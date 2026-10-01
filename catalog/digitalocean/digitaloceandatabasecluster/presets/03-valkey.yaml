@@ -1,0 +1,17 @@
+apiVersion: digital-ocean.planton.dev/v1alpha1
+kind: DigitalOceanDatabaseCluster
+metadata:
+  name: my-valkey-cache
+spec:
+  clusterName: my-valkey-cache
+  engine: valkey
+  engineVersion: "8"
+  region: nyc3
+  sizeSlug: db-s-1vcpu-1gb
+  nodeCount: 1
+  evictionPolicy: allkeys_lru
+  vpc:
+    valueFrom:
+      kind: DigitalOceanVpc
+      name: my-vpc
+      fieldPath: status.outputs.vpc_id

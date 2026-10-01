@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0prompt
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for the prompt settings: choosing the Universal Login experience and turning on identifier-first login are available on every plan, the Free plan included. The device-biometrics first factor needs WebAuthn with device biometrics enabled as a multi-factor method, a factor whose availability Auth0 ties to the plan (auth0.com/docs/secure/multi-factor-authentication/fido-authentication-with-webauthn/configure-webauthn-device-biometrics-for-mfa, auth0.com/pricing)."
+  notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). These settings change the steps of a sign-in, never what it costs. An enterprise connection that identifier-first routes people to is priced with the plan, outside this component."

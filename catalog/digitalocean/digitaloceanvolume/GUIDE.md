@@ -8,11 +8,15 @@ Volumes only expand. A manifest that lowers `sizeGib` fails at plan time — by 
 
 ## Format at creation or format yourself — never both
 
-`filesystemType` formats the volume exactly once, at creation. DigitalOcean never reports the setting back, and changing it later replaces the volume (destroying the data). If you leave it unset, the volume arrives raw and you own `mkfs` from the Droplet. Pick one path per volume and stay on it: a volume formatted by hand but declared `ext4` later in the manifest will plan a replacement.
+`filesystemType` formats the volume exactly once, at creation. DigitalOcean never reports the setting back, and both provisioners deliberately ignore later edits to it: changing `filesystemType` on an existing volume neither reformats nor replaces it (the provider alone would replace the volume, destroying the data — the modules take that footgun away). If you leave it unset, the volume arrives raw and you own `mkfs` from the Droplet. Pick one path per volume and stay on it: a volume formatted by hand but declared `ext4` later in the manifest is simply left as it is, and the manifest is then lying about the disk. To reformat, create a new volume.
+
+## Adopting an existing volume is safe, by design
+
+When you import a volume you already own, the three creation-time arguments (`filesystemType`, `initialFilesystemLabel`, `snapshotId`) come back empty — DigitalOcean never reports them. Keep them in the manifest anyway if that is how the volume was made: because the modules ignore changes to them after creation, the first apply after an import is a no-op. This is the difference between "the manifest describes the volume" and "the manifest destroys the volume"; the provider on its own would plan a destroy-and-recreate for exactly this case.
 
 ## The label is for mount automation
 
-`initialFilesystemLabel` exists so cloud-init and fstab entries can mount by label (`LABEL=pgdata`) instead of by device path, which shifts across reboots and attach order. If you format at creation, set the label too — retrofitting one later means re-formatting or hand-running `e2label`/`xfs_admin` on the Droplet.
+`initialFilesystemLabel` exists so cloud-init and fstab entries can mount by label (`LABEL=pgdata`) instead of by device path, which shifts across reboots and attach order. If you format at creation, set the label too — retrofitting one later means hand-running `e2label`/`xfs_admin` on the Droplet (editing the manifest field after creation is ignored, like `filesystemType`).
 
 ## Description is not editable — yet
 
@@ -20,7 +24,7 @@ The provider marks `description` create-only ("update-ability coming soon" in it
 
 ## Snapshots restore into new volumes, not in place
 
-`snapshotId` seeds a NEW volume from a point-in-time capture — there is no in-place restore. The new volume inherits the snapshot's region and minimum size. Snapshots also outlive their source volume: deleting a volume does not delete its snapshots, which keep billing until removed (`doctl compute snapshot list`).
+`snapshotId` seeds a NEW volume from a point-in-time capture — there is no in-place restore. The new volume inherits the snapshot's region and minimum size. Like the formatting arguments, it acts at creation only and later edits are ignored: restoring a different snapshot means declaring a new volume, never editing this field on an existing one. Snapshots also outlive their source volume: deleting a volume does not delete its snapshots, which keep billing until removed (`doctl compute snapshot list`).
 
 ## Attachment lives on the Droplet
 

@@ -111,6 +111,7 @@ func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	chartData := resources.LoadOpenBAOChart()
 	values := resources.OpenBAOHelmValues(resources.OpenBAOHelmOptions{
 		CRName:                    planton.Name,
+		Resources:                 resources.EffectiveFor(resources.SizingOpenBAO, &planton.Spec),
 		Namespace:                 planton.Namespace,
 		StoragePasswordSecretName: resources.PostgreSQLVaultRoleSecretName(planton.Name),
 		Seal:                      seal,
@@ -141,7 +142,15 @@ func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 		return o.notReadyWithSealHint(ctx, c, planton, seal, releaseName, "Waiting for OpenBAO pod"), nil
 	}
 
-	return o.ensureInitialized(ctx, c, planton, seal, initSecret, resources.OpenBAOAPIAddr(planton.Name, planton.Namespace), http.DefaultClient)
+	res, err := o.ensureInitialized(ctx, c, planton, seal, initSecret, resources.OpenBAOAPIAddr(planton.Name, planton.Namespace), http.DefaultClient)
+	if err != nil || !res.Ready {
+		return res, err
+	}
+	// Every open vault's answer -- initialized, unsealed, or in steady state
+	// -- passes through the shared Ready answer, so a memory kill the vault
+	// recovered from (it came back sealed and was opened again) is named
+	// with the field to raise instead of reading healthy.
+	return o.Ready(ctx, c, planton.Namespace, res.Message, StatefulSetRef(releaseName).Sized(resources.SizingOpenBAO)), nil
 }
 
 // preflightSeal is everything checked BEFORE the chart renders, so that a
@@ -187,7 +196,7 @@ func (o *OpenBAO) preflightSeal(ctx context.Context, c client.Client, planton *v
 // the one clause the classifier cannot know: the server configures the seal
 // before anything else and exits when the wrapper's first call fails.
 func (o *OpenBAO) notReadyWithSealHint(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, releaseName, waiting string) Result {
-	res := o.NotReady(ctx, c, planton.Namespace, StatefulSetRef(releaseName), waiting)
+	res := o.NotReady(ctx, c, planton.Namespace, StatefulSetRef(releaseName).Sized(resources.SizingOpenBAO), waiting)
 	if res.Reason == v1.ComponentReasonCrashLooping && seal != nil {
 		res.Message += " " + sealStartHint(seal)
 	}

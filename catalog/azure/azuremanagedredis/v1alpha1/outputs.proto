@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremanagedredis.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureManagedRedisStackOutputs** captures the outputs of provisioning
 // an Azure Managed Redis instance.
 //
@@ -50,13 +52,13 @@ message AzureManagedRedisStackOutputs {
   // The primary access key (a SECRET). Used as the password in Redis
   // connection strings. Empty when access-keys authentication is
   // disabled -- the keyless default.
-  string primary_access_key = 8;
+  string primary_access_key = 8 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary access key (a SECRET). Kept live so clients can be
   // rotated to it while the primary is regenerated, and vice versa --
   // zero-downtime key rotation. Empty when access-keys authentication
   // is disabled.
-  string secondary_access_key = 9;
+  string secondary_access_key = 9 [(dev.planton.shared.options.sensitive) = true];
 
   // The system-assigned identity's principal (object) ID -- what RBAC
   // grants target when the identity block requests SYSTEM_ASSIGNED.

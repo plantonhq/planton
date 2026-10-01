@@ -39,6 +39,14 @@ annotation," stop and add external-dns instead.
 `KubernetesIngressNginx` exists in the catalog but is the unpaved
 alternative — offer it only when the user explicitly wants nginx.
 
+## Monitoring rides with the cluster
+
+A cluster that runs anything a person relies on gets its monitoring stack
+and working alert delivery in the same shared-cluster chart, not as a
+follow-up: `KubernetesKubePrometheusStack` with `alertmanager.notifications`
+and an outside heartbeat. The craft, the questions to ask and the proof are
+in `cloud.kubernetes-observability.md`.
+
 ## Educate at moments of leverage
 
 When a platform capability erases work the user was bracing for, say so in
@@ -59,31 +67,46 @@ by name, up front:
   and the Route 53 zone. This is Scenario 1 of `kubernetes-on-cluster.md` —
   it publishes the cluster's connection for everything that follows.
 - **The environment chart** (deployed once per environment — dev, prod, …):
-  the app's namespace, its `KubernetesGateway`/`KubernetesHttpRoute` with the
-  hostname as a param, and a **placeholder `KubernetesDeployment`** whose
-  image is a param. Scenario 2 of `kubernetes-on-cluster.md` — it carries NO
+  the environment's namespace and the `KubernetesGateway` its apps' routes
+  attach to. Scenario 2 of `kubernetes-on-cluster.md` — it carries NO
   connection wiring (the shared cluster's materialized connection is the
   platform's default binding); `values.env` differentiates the deployments so
   one chart serves every environment.
+- **The app itself** goes where its lifecycle goes. When the app is a Planton
+  service (or will be — the usual case for code the user ships), its
+  workload, the `KubernetesHttpRoute` for its hostname, and any gateway or
+  certificate only it uses are the SERVICE's resources, declared per
+  environment on the service — never in either chart. The platform reads a
+  service's URL from its own environment's resources, and the service's
+  delete cascade removes only what the service declares
+  (`service.configuring-deployments.md`, "What belongs on the service, and
+  what belongs on the infra project" — the one-question test, and the
+  three-step move when a chart already carries them). Only when there is no
+  service — the user wants the infrastructure alone — does the environment
+  chart carry a **placeholder `KubernetesDeployment`** (image as a param) and
+  its route.
 
 **Placement doctrine — operators follow the cluster, never the app.**
 Cluster-scoped, shared-by-design components — the Gateway API CRDs, Istio,
 the GatewayClass, cert-manager, external-dns, any operator or controller —
-live in the shared-infrastructure chart, exactly once. A per-environment app
-chart never installs one: the same app chart deployed into dev and prod
-would install a cluster-wide singleton twice, and the platform components'
+live in the shared-infrastructure chart, exactly once. A per-environment
+chart never installs one: the same chart deployed into dev and prod would
+install a cluster-wide singleton twice, and the platform components'
 lifecycle belongs with the cluster they serve, not with any one app. The
-environment chart carries only namespace-scoped concerns: the namespace,
-its gateway/route, the workload. When the environment chart needs a VALUE
-the shared chart's resources produce (a gateway name, a zone id), it wires
-a cross-chart `valueFrom` reference — never a param the user must fill
-(`dependencies.md`, "References cross chart boundaries").
+same rule one level down: the charts keep what outlives any one service —
+the cluster, the shared ingress controller and gateway, the DNS zone, the
+namespace — and a service keeps what exists because of it. When the
+environment chart needs a VALUE the shared chart's resources produce (a
+zone id, a cluster name), it wires a cross-chart `valueFrom` reference —
+never a param the user must fill (`dependencies.md`, "References cross
+chart boundaries").
 
-**The placeholder-first philosophy:** the goal is the fastest *validated
-base*. A placeholder answering on the real hostname proves the entire road —
-cluster, gateway, DNS, TLS — and the user's CI/CD then updates the image to
-ship the real app. Say this arc out loud when proposing the split, so the
-user knows what "done" unlocks and where CI/CD picks up.
+**The validated-base philosophy:** the goal is the fastest *validated
+base*. The first workload answering on the real hostname — the service's
+first deploy, or the placeholder when there is no service — proves the
+entire road: cluster, gateway, DNS, TLS. From there every push ships the
+real app. Say this arc out loud when proposing the split, so the user knows
+what "done" unlocks and where CI/CD picks up.
 
 **Application-first:** ask about the APP — what it is, what port it listens
 on, what hostname it should answer on. The infrastructure exists in service
@@ -92,7 +115,9 @@ regardless of how clean the charts are.
 
 **Sequencing:** propose both charts up front, then compose and finish the
 shared-infrastructure chart before the environment chart — producers before
-consumers, each chart driven green before the next begins. In your
+consumers, each chart driven green before the next begins, and the
+service's first deploy last, onto the namespace and gateway the environment
+chart made. In your
 workspace, each chart is its own top-level subfolder (the identity check in
 the skill), so both live side by side in one conversation; when the folder
 you were given IS a single chart, finish it and have the user open or

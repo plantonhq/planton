@@ -52,9 +52,6 @@ func webAnalyticsSite(
 		"web_analytics_site",
 		args,
 		pulumi.Provider(cloudflareProvider),
-		// site_token and snippet carry the measurement credential; keep
-		// them out of plain-text stack state.
-		pulumi.AdditionalSecretOutputs([]string{"siteToken", "snippet"}),
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create web analytics site")
@@ -116,12 +113,11 @@ func webAnalyticsSite(
 
 	// The site tag is the one value the create response returns (the
 	// resource id IS the tag); token and snippet come from the
-	// read-after-create lookup and are re-marked secret explicitly --
-	// AdditionalSecretOutputs on the resource does not cover lookup
-	// results.
+	// read-after-create lookup. Both ship inside public pages, so neither
+	// is exported as a secret.
 	ctx.Export(OpSiteTag, createdSite.ID())
-	ctx.Export(OpSiteToken, pulumi.ToSecret(lookedUpSite.SiteToken()))
-	ctx.Export(OpSnippet, pulumi.ToSecret(lookedUpSite.Snippet()))
+	ctx.Export(OpSiteToken, lookedUpSite.SiteToken())
+	ctx.Export(OpSnippet, lookedUpSite.Snippet())
 	ctx.Export(OpRulesetId, rulesetId)
 
 	return nil

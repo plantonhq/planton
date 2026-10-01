@@ -614,7 +614,7 @@ spec:
 | `spec.dataProtectionConfig.dataProtections[].excludeRuleMatchDetails` | `bool` |  |  |  |
 | `spec.dataProtectionConfig.dataProtections[].excludeRateBasedDetails` | `bool` |  |  |  |
 | `spec.logging` | `AwsWafWebAclLoggingConfig` |  |  |  |
-| `spec.logging.destinationArn` | `string \| valueFrom` | yes |  |  |
+| `spec.logging.destinationArn` | `string \| valueFrom` | yes |  | AwsCloudwatchLogGroup (`status.outputs.log_group_arn`), AwsS3Bucket (`status.outputs.bucket_arn`), AwsKinesisFirehose (`status.outputs.delivery_stream_arn`) |
 | `spec.logging.redactedHeaderNames` | `[]string` |  |  |  |
 | `spec.logging.redactUriPath` | `bool` |  |  |  |
 | `spec.logging.redactQueryString` | `bool` |  |  |  |
@@ -4666,8 +4666,10 @@ nominally accepts up to 100 entries, but the service contract — SDK:
 "You can associate one logging destination to a web ACL" — is one).
 
 No default_kind is set because the destination can be any of three
-different resource types.
+different resource types; the three are declared as candidates, each
+with its ARN output.
 
+- references: AwsCloudwatchLogGroup (`status.outputs.log_group_arn`), AwsS3Bucket (`status.outputs.bucket_arn`), AwsKinesisFirehose (`status.outputs.delivery_stream_arn`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
@@ -4803,6 +4805,9 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.rules[].statement.ipSetReference.arn` | AwsWafIpSet | `status.outputs.ip_set_arn` |
 | `spec.rules[].statement.regexPatternSetReference.arn` | AwsWafRegexPatternSet | `status.outputs.regex_pattern_set_arn` |
+| `spec.logging.destinationArn` | AwsCloudwatchLogGroup | `status.outputs.log_group_arn` |
+| `spec.logging.destinationArn` | AwsS3Bucket | `status.outputs.bucket_arn` |
+| `spec.logging.destinationArn` | AwsKinesisFirehose | `status.outputs.delivery_stream_arn` |
 
 ## Referenced By
 

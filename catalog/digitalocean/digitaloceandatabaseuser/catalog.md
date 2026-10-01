@@ -8,7 +8,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Database User** -- a named user on the referenced cluster, with a server-generated password
 - **MySQL Auth Plugin** -- configured only when `mysqlAuthPlugin` is set; chooses between DigitalOcean's modern default (`caching_sha2_password`) and the legacy plugin for old clients
-- **Kafka / OpenSearch ACLs** -- configured only when `settings` is set; grants per-topic or per-index permissions from closed permission lists
+- **Kafka / OpenSearch ACLs** -- configured only when `settings` is set; grants per-topic or per-index permissions from closed permission lists. `settings` is set by engine: PostgreSQL users declare `settings: {}` (DigitalOcean stores a settings object for every PostgreSQL user), MySQL users leave it out (the API refuses settings updates on MySQL)
 
 ## Before You Deploy
 

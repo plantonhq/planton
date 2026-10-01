@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpiamoauthclient.v1alpha1;
 
+import "shared/options/options.proto";
+
 // Outputs produced after provisioning a workforce OAuth client.
 message GcpIamOauthClientStackOutputs {
   // The system-generated OAuth client ID applications present in OAuth
@@ -24,5 +26,5 @@ message GcpIamOauthClientStackOutputs {
   // credential — the engines mark it secret in state; feed it to
   // consumers via valueFrom (e.g. into a GcpSecretManagerSecret
   // initial_version), never by copy-paste.
-  string client_secret = 4;
+  string client_secret = 4 [(dev.planton.shared.options.sensitive) = true];
 }

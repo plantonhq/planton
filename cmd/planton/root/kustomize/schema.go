@@ -26,7 +26,10 @@ for the "openapi:" directive in kustomization.yaml.`,
 }
 
 func init() {
-	Schema.Flags().StringP("output", "o", "", "write schema to file instead of stdout")
+	// No -o shorthand: a host that embeds the engine (the Planton Platform
+	// CLI) owns -o as its global --output-format, and a second -o panics when
+	// cobra merges the flag sets.
+	Schema.Flags().String("output", "", "write schema to file instead of stdout")
 }
 
 func schemaHandler(cmd *cobra.Command, args []string) {

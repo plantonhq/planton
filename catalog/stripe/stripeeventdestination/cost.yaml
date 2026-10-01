@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripeeventdestination
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for event destinations: every account, sandboxes included, can create them (docs.stripe.com/event-destinations)."
+  notes: "Stripe bills by payment volume and product usage (stripe.com/pricing), never by where events are sent. The cost is on the receiving side: every event is a request the webhook answers, or an event Amazon EventBridge or Azure Event Grid bills on its own price list."

@@ -42,7 +42,7 @@ func Resources(
 	ctx.Export(OpName, createdServiceAccount.Name)
 
 	if createdKey != nil {
-		ctx.Export(OpKeyBase64, createdKey.PrivateKey)
+		ctx.Export(OpKeyBase64, pulumi.ToSecret(createdKey.PrivateKey))
 	}
 
 	return nil

@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -22,6 +22,18 @@ go_library(
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/cloudrunv2",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["env_secrets_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/gcp/gcpcloudrunjob/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/cloudrunv2",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )

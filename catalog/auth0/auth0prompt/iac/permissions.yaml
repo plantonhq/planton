@@ -1,0 +1,23 @@
+# Least-privilege permissions the IaC runner's Auth0 credential needs to
+# provision, update, and destroy this component with the official modules.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.58 per iac/tf/provider.tf) and the
+# pulumi-auth0 SDK exchange its client id and secret for a token through
+# the client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: auth0prompt
+spec:
+  auth0:
+    groups:
+      - purpose: ManagePromptSettings
+        scopes:
+          - read:prompts
+          - update:prompts
+        provenance: derived
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/prompt.go) manage auth0_prompt, the login-flow settings of the tenant the credential belongs to -- read via GET /api/v2/prompts (read:prompts) and written via PATCH /api/v2/prompts (update:prompts), the two scopes the Management API's OpenAPI document names for the prompts-settings endpoints. There is no create and no delete -- the resource's create is a PATCH of the tenant's existing settings and its destroy is the provider's no-op (terraform-provider-auth0 internal/auth0/prompt/resource.go, deletePrompt returns nil) -- so no other scope is needed.

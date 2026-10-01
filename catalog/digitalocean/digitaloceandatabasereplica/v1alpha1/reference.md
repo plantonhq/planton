@@ -175,11 +175,25 @@ WARNING -- replica tags are CREATE-ONLY upstream: changing this list
 REPLACES the whole replica (a new replica is seeded from the primary;
 replication catch-up applies). Settle tagging before production use.
 
+BUDGET -- DigitalOcean caps a replica's COMBINED tags (the tag names
+joined by commas) at 255 characters, the same rule as the primary's
+create (measured 2026-09-17 on `POST /v2/databases/{id}/replicas`:
+255 pass, 256 fail with `422 combined tags cannot exceed 255
+characters`). The six Planton label tags (`planton-ai_resource`,
+`planton-ai_organization`, `planton-ai_environment`,
+`planton-ai_kind`, `planton-ai_name`, `planton-ai_id`) carry
+metadata.name and metadata.id, so they alone cost about 133
+characters plus the name and id lengths; what remains is the budget
+for this list. Both provisioners check the final set before anything
+renders and fail with the exact arithmetic -- shorten metadata.name or
+metadata.id, or trim this list, and the replica is never replaced over
+a tag the API would have refused.
+
 - rule: {"repeated":{"items":{"string":{"pattern":"^[a-zA-Z0-9:\\-_]{1,255}$"}}}}
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseReplica, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseReplica, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -191,9 +205,9 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanData
 | `status.outputs.port` | `uint32` | Port the replica listens on. |
 | `status.outputs.database` | `string` | Name of the default database served by the replica. |
 | `status.outputs.user` | `string` | Username of the replica's default user. |
-| `status.outputs.password` | `string` | Password of the replica's default user. Secret. |
-| `status.outputs.uri` | `string` | Full public connection URI for the replica, including credentials. Secret. |
-| `status.outputs.private_uri` | `string` | Full private-network connection URI for the replica, including credentials. Secret. |
+| `status.outputs.password` | `string` (sensitive) | Password of the replica's default user. Secret. |
+| `status.outputs.uri` | `string` (sensitive) | Full public connection URI for the replica, including credentials. Secret. |
+| `status.outputs.private_uri` | `string` (sensitive) | Full private-network connection URI for the replica, including credentials. Secret. |
 
 ## References
 

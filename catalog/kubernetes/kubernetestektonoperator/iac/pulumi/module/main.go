@@ -41,6 +41,18 @@ import (
 // their informers sync. The Terraform twin encodes the same chain with
 // depends_on.
 //
+// READINESS: nothing in the chain waits for the operator's pods, so a
+// fourth step does: a stand-in ConfigMap after the CRDs whose creation
+// waits until both Deployments rolled out and the API server returns a
+// TektonConfig with the operator's defaults filled in (readiness_gate.go).
+// Without it, a KubernetesTekton applied right after this resource is
+// refused on any cluster whose node pool starts empty.
+//
+// IMAGE REGISTRY: when set, every image Tekton publishes moves to it at
+// the same path, tag and digest — the operator's own and, through the
+// operator's IMAGE_* variables, every component it installs (see
+// images.go and deploymentTransformation).
+//
 // DESTROY SEMANTICS: every document deletes with the resource, INCLUDING
 // the CRDs — which cascade-deletes any TektonConfig on the cluster.
 // Always destroy the KubernetesTekton resource FIRST while the operator
@@ -60,9 +72,17 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetestektonoperatorv1alpha1
 		return errors.Wrap(err, "failed to fetch the tekton-operator release manifest")
 	}
 
+	var images *tektonImages
+	if locals.Spec.GetImageRegistry() != "" {
+		images, err = loadImageTable()
+		if err != nil {
+			return err
+		}
+	}
+
 	transformations := []pulumiyaml.Transformation{
 		autoInstallTransformation(),
-		deploymentTransformation(locals.Spec),
+		deploymentTransformation(locals.Spec, images),
 	}
 
 	namespaceGroup, err := pulumiyaml.NewConfigGroup(ctx, locals.ResourceName+"-namespace",
@@ -98,6 +118,11 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetestektonoperatorv1alpha1
 		pulumi.DependsOn([]pulumi.Resource{workloadsGroup}))
 	if err != nil {
 		return errors.Wrap(err, "failed to apply the tekton-operator CRDs")
+	}
+
+	// Done only when the operator can serve: see readiness_gate.go.
+	if err := readinessGate(ctx, kubernetesProvider, crdsGroup); err != nil {
+		return err
 	}
 
 	return exportOutputs(ctx, locals, crdsGroup)

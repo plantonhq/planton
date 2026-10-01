@@ -18,4 +18,4 @@ spec:
       - ops@example.com
     slack:
       - channel: "#incidents"
-        url: https://hooks.slack.com/services/EXAMPLE/EXAMPLE/EXAMPLE
+        url: $secret/slack-incidents-webhook

@@ -12,11 +12,10 @@ func loadAuth0EnvVars(providerConfigYaml []byte) (map[string]string, error) {
 		return nil, errors.Wrap(err, "failed to load Auth0 provider config")
 	}
 
-	envVars := map[string]string{
-		"AUTH0_DOMAIN":        config.Domain,
-		"AUTH0_CLIENT_ID":     config.ClientId,
-		"AUTH0_CLIENT_SECRET": config.ClientSecret,
-	}
+	envVars := map[string]string{}
+	putIfSet(envVars, "AUTH0_DOMAIN", config.Domain)
+	putIfSet(envVars, "AUTH0_CLIENT_ID", config.ClientId)
+	putIfSet(envVars, "AUTH0_CLIENT_SECRET", config.ClientSecret)
 
 	return envVars, nil
 }

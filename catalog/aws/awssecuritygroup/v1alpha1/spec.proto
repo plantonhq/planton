@@ -38,6 +38,13 @@ message AwsSecurityGroupSpec {
       id: "description_length_check"
       expression: "size(this) <= 255"
       message: "Description must not exceed 255 characters"
+    },
+    // AWS refuses the create call for any other character (an apostrophe
+    // included), so it would otherwise fail only at apply.
+    (buf.validate.field).cel = {
+      id: "description_charset_check"
+      expression: "this.matches('^[0-9A-Za-z_ .:/()#,@\\\\[\\\\]+=&;{}!$*-]*$')"
+      message: "AWS allows only letters, digits, spaces and ._-:/()#,@[]+=&;{}!$* in a security group description"
     }
   ];
 
@@ -163,12 +170,20 @@ message SecurityGroupRule {
   bool self_reference = 9;
 
   // description is an optional explanation of this specific rule,
-  // aiding in clarity and maintenance. Max 255 chars.
-  string description = 10 [(buf.validate.field).cel = {
-    id: "rule_description_length_check"
-    expression: "size(this) <= 255"
-    message: "Rule description must not exceed 255 characters"
-  }];
+  // aiding in clarity and maintenance. Max 255 chars, from the same character
+  // set AWS allows in a group description.
+  string description = 10 [
+    (buf.validate.field).cel = {
+      id: "rule_description_length_check"
+      expression: "size(this) <= 255"
+      message: "Rule description must not exceed 255 characters"
+    },
+    (buf.validate.field).cel = {
+      id: "rule_description_charset_check"
+      expression: "this.matches('^[0-9A-Za-z_ .:/()#,@\\\\[\\\\]+=&;{}!$*-]*$')"
+      message: "AWS allows only letters, digits, spaces and ._-:/()#,@[]+=&;{}!$* in a security group rule description"
+    }
+  ];
 
   // AWS rejects an all-protocol rule with a port range: when protocol is "-1"
   // (or "all"), both ports must be 0. Enforced here so the mistake fails at

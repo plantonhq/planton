@@ -5,6 +5,4 @@ const (
 	OpClusterId = "cluster_id"
 	// OpTopicName is the Kafka topic's name (its API identity).
 	OpTopicName = "topic_name"
-	// OpState is the topic's provisioning state at apply time.
-	OpState = "state"
 )

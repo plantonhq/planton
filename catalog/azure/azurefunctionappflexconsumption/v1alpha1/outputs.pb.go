@@ -88,9 +88,6 @@ type AzureFunctionAppFlexConsumptionStackOutputs struct {
 	// The site-level publishing credential's username (the Kudu/SCM
 	// basic-auth user). Paired with site_credential_password; only usable
 	// while webdeploy_publish_basic_authentication_enabled is true.
-	// Marked sensitive because azurerm marks the whole site_credential
-	// block Sensitive -- the name is half of a working deploy credential,
-	// so annotation-driven surfaces must mask it mechanically.
 	SiteCredentialName string `protobuf:"bytes,9,opt,name=site_credential_name,json=siteCredentialName,proto3" json:"site_credential_name,omitempty"`
 	// The site-level publishing credential's password. SECRET-BEARING:
 	// anyone holding it can deploy code to the app over Web Deploy/SCM
@@ -206,7 +203,7 @@ var File_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto pr
 
 const file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azurefunctionappflexconsumption/v1alpha1/outputs.proto\x12:dev.planton.azure.azurefunctionappflexconsumption.v1alpha1\x1a\x1cshared/options/options.proto\"\xaa\x04\n" +
+	"Dcatalog/azure/azurefunctionappflexconsumption/v1alpha1/outputs.proto\x12:dev.planton.azure.azurefunctionappflexconsumption.v1alpha1\x1a\x1cshared/options/options.proto\"\xa4\x04\n" +
 	"+AzureFunctionAppFlexConsumptionStackOutputs\x12&\n" +
 	"\x0ffunction_app_id\x18\x01 \x01(\tR\rfunctionAppId\x12)\n" +
 	"\x10default_hostname\x18\x02 \x01(\tR\x0fdefaultHostname\x122\n" +
@@ -215,8 +212,8 @@ const file_catalog_azure_azurefunctionappflexconsumption_v1alpha1_outputs_proto_
 	"\x12identity_tenant_id\x18\x05 \x01(\tR\x10identityTenantId\x12A\n" +
 	"\x1dcustom_domain_verification_id\x18\x06 \x01(\tR\x1acustomDomainVerificationId\x12\x12\n" +
 	"\x04kind\x18\a \x01(\tR\x04kind\x12C\n" +
-	"\x1epossible_outbound_ip_addresses\x18\b \x03(\tR\x1bpossibleOutboundIpAddresses\x126\n" +
-	"\x14site_credential_name\x18\t \x01(\tB\x04\xa0\xa6\x1d\x01R\x12siteCredentialName\x12>\n" +
+	"\x1epossible_outbound_ip_addresses\x18\b \x03(\tR\x1bpossibleOutboundIpAddresses\x120\n" +
+	"\x14site_credential_name\x18\t \x01(\tR\x12siteCredentialName\x12>\n" +
 	"\x18site_credential_password\x18\n" +
 	" \x01(\tB\x04\xa0\xa6\x1d\x01R\x16siteCredentialPasswordB\xd8\x03\n" +
 	">com.dev.planton.azure.azurefunctionappflexconsumption.v1alpha1B\fOutputsProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azurefunctionappflexconsumption/v1alpha1;azurefunctionappflexconsumptionv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azurefunctionappflexconsumption.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azurefunctionappflexconsumption\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azurefunctionappflexconsumption\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azurefunctionappflexconsumption::V1alpha1b\x06proto3"

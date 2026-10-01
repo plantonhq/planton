@@ -93,11 +93,13 @@ type KubernetesEnvoyFilterSpec struct {
 	// Upstream allows at most 16. Waypoint proxies REQUIRE target_refs; selector-based
 	// policies are ignored for waypoints.
 	//
-	// INFRA-CHART COMPOSABILITY: each target_ref is a PLAIN cross-resource reference,
-	// not an Planton foreign key. istiod resolves group/kind/name at runtime, so no automatic
-	// DAG edge is created. Order this EnvoyFilter after the resource it targets via
-	// metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
-	// KubernetesServiceEntry). See the component's "Composing in Infra Charts" docs.
+	// INFRA-CHART COMPOSABILITY: each target_ref's `name` is a foreign key that
+	// defaults to a KubernetesGateway (its status.outputs.gateway_name): wiring it with
+	// valueFrom orders this EnvoyFilter after the gateway it patches. A literal `value:`
+	// covers a Service, a ServiceEntry, or anything created outside Planton; istiod
+	// resolves group/kind/name at runtime, so order this EnvoyFilter after such a target
+	// with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
+	// See the component's "Composing in Infra Charts" docs.
 	TargetRefs    []*kubernetes.KubernetesIstioApiPolicyTargetReference `protobuf:"bytes,6,rep,name=target_refs,json=targetRefs,proto3" json:"target_refs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

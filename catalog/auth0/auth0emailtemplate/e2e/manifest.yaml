@@ -1,0 +1,39 @@
+# Auth0 Email Template Test Manifest
+# This file is used for testing the Auth0EmailTemplate component.
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: the test tenant's domain (e.g., your-test-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - read:email_templates
+#    - create:email_templates
+#    - update:email_templates
+#
+# 3. The tenant must send through its own email provider (e.g., created via
+#    the Auth0EmailProvider component): Auth0 refuses custom templates on the
+#    built-in one. The from address must be on a domain that provider may
+#    send for.
+
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailTemplate
+metadata:
+  name: test-verify-email
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # The email this resource customizes
+  template: verify_email
+
+  # The sender, subject and HTML body, all Liquid templates
+  from: Acme <no-reply@acme.com>
+  subject: Verify your email for Acme
+  body: |
+    <html><body><p>Hello {{ user.name | escape }}, <a href="{{ url }}">verify your email</a>.</p></body></html>
+
+  # How long the verification link works: one day
+  urlLifetimeInSeconds: 86400

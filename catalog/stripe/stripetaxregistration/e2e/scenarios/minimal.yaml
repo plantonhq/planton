@@ -1,0 +1,19 @@
+# The fewest fields: a simplified registration in India, starting a minute
+# after the lane does. Stripe holds one registration per place until it has
+# ended, and destroy only forgets it, so the lane ends its own: the second act
+# moves the expiry in to seventy seconds after the lane's start, and the next
+# run finds the place free. The dates come from the lane's clock because
+# Stripe takes a start only from now to five years ahead.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRegistration
+metadata:
+  name: e2e-tax-registration
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml
+spec:
+  country: IN
+  type: simplified
+  activeFrom: ${E2E_UNIX_TIME_PLUS:1m}
+  expiresAt: ${E2E_UNIX_TIME_PLUS:1d}

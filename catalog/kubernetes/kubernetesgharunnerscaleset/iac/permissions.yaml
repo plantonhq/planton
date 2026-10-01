@@ -82,3 +82,23 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers the AutoscalingRunnerSet the chart renders -- the fleet declaration the controller reconciles into a listener and ephemeral runner pods AFTER the release returns (the modules deliberately install with wait=false; the runner pods, listener, and ephemeral PVCs are controller-created at runtime, never runner-applied). The CRDs must already exist -- a KubernetesGhaRunnerScaleSetController install is the prerequisite. The helm_values overlay (spec.helm_values, merged last) can extend the chart's object surface beyond these rules generally; grants for such extensions ride the operator's review of the overlay, not this manifest.
+      - api_groups:
+          - ""
+        resources:
+          - secrets
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Secret in github_auth_secret.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing. Listing or watching Secrets returns their data, not only their names, so this grants read of every Secret in the namespace. Pulumi's delete wait cannot watch a deleted Secret without it.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

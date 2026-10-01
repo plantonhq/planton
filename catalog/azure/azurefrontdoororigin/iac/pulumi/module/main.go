@@ -74,7 +74,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoororiginv1alpha1.Azu
 	if spec.PrivateLink != nil {
 		privateLinkArgs := &cdn.FrontdoorOriginPrivateLinkArgs{
 			Location:            pulumi.String(spec.PrivateLink.Location),
-			PrivateLinkTargetId: pulumi.String(spec.PrivateLink.PrivateLinkTargetId),
+			PrivateLinkTargetId: pulumi.String(spec.PrivateLink.PrivateLinkTargetId.GetValue()),
 		}
 		if spec.PrivateLink.TargetType != azurefrontdoororiginv1alpha1.AzureFrontDoorOriginPrivateLinkTargetType_azure_front_door_origin_private_link_target_type_unspecified {
 			privateLinkArgs.TargetType = pulumi.String(privateLinkTargetTypeStrings[spec.PrivateLink.TargetType])

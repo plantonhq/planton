@@ -118,11 +118,11 @@ both engines) for anything beyond it.
 
 - **`spec.namespace`** is a foreign key (default kind KubernetesNamespace,
   field path `spec.name`).
-- **`spec.certificates.cert_manager_issuer.name`** is a foreign key
-  (default kind KubernetesIssuer); for a ClusterIssuer, wire `valueFrom`
-  against a KubernetesClusterIssuer's
-  `status.outputs.cluster_issuer_name` — the whole chain (cert-manager →
-  issuer → KEDA) then deploys in dependency order.
+- **`spec.certificates.cert_manager_issuer`** names its grain by arm:
+  `issuer.name` is a foreign key to a KubernetesIssuer
+  (`status.outputs.issuer_name`), `cluster_issuer.name` to a
+  KubernetesClusterIssuer (`status.outputs.cluster_issuer_name`) — the whole
+  chain (cert-manager → issuer → KEDA) then deploys in dependency order.
 - **Cloud-side keyless identity** closes over the
   `operator_service_account_name` output: IRSA trust policies, Entra
   federated credentials, and GCP Workload Identity bindings all name the
@@ -194,12 +194,10 @@ spec:
   certificates:
     type: cert_manager
     certManagerIssuer:
-      kind: cluster_issuer
-      name:
-        valueFrom:
-          kind: KubernetesClusterIssuer
-          name: platform-ca
-          fieldPath: status.outputs.cluster_issuer_name
+      clusterIssuer:
+        name:
+          valueFrom:
+            name: platform-ca
   prometheus:
     enabled: true
     serviceMonitor: true # requires the Prometheus operator CRDs

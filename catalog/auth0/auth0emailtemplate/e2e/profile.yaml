@@ -1,0 +1,18 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0emailtemplate
+spec:
+  # A template is ONE object per tenant, and applying this component changes
+  # what the tenant sends: the lanes run only on a dedicated test tenant
+  # (AUTH0_DOMAIN / AUTH0_CLIENT_ID / AUTH0_CLIENT_SECRET), one lane at a
+  # time. Auth0 refuses a template while the tenant has no email provider, so
+  # the lanes deploy one first (e2e/prerequisites/auth0emailprovider.yaml),
+  # which needs PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN and
+  # PLANTON_E2E_AUTH0_RESEND_API_KEY.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 5

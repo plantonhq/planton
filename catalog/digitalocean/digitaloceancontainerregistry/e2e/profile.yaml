@@ -3,22 +3,28 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceancontainerregistry
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` (starter tier, no region --
-  # DigitalOcean chooses) and `full` (basic tier + explicit region + minted
-  # docker credentials: write access, 1-hour expiry). HARD CONSTRAINT for the
-  # proof lane: a DigitalOcean account holds exactly ONE registry, so the two
-  # scenarios (and the two engines) can never overlap -- run every lane
-  # strictly serially, and any pre-existing registry in the test account
-  # collides with all of them. Registry names are globally unique across ALL
-  # DigitalOcean accounts, so scenario names carry ${E2E_RUN_ID}. Registries
-  # create in seconds; the starter tier is free, basic is ~$5/mo prorated.
-  # Watch on first live run: the blind import round-trip addresses the
-  # registry by NAME, and the docker-credentials resource is EXCLUDED from
-  # the round-trip (defective importer at the pin -- see the import map).
+  # Live-proven on BOTH engines, both scenarios, full lifecycle plus the blind
+  # import round-trip (Terraform lane): `minimal` (starter tier, no region --
+  # DigitalOcean chose one and the region output read it back) and `full`
+  # (basic tier + nyc3 + minted docker credentials with write access and a
+  # 1-hour expiry; all six outputs populated). The registry imports by NAME;
+  # the docker-credentials resource is declared not-importable-upstream in
+  # the provider import catalog (the machine-honored form -- a prose
+  # "excluded" is not), so the round-trip skipped it and the reconcile-apply
+  # re-minted it, exactly as an adopter's first apply would. Registries
+  # create in ~20-30s; the starter tier is free, basic is ~$5/mo prorated.
+  #
+  # HARD CONSTRAINT for the proof lane: a DigitalOcean account holds exactly
+  # ONE registry, so the two scenarios (and the two engines) can never
+  # overlap -- run every lane strictly serially, confirm `GET /v2/registry`
+  # answers 404 before starting, and know that any pre-existing registry in
+  # the account collides with all of them. Registry names are globally unique
+  # across ALL DigitalOcean accounts, so scenario names carry ${E2E_RUN_ID}.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: DEPLOY 17 s, IDEMPOTENCY PASS, DESTROY 12 s, GET
+  # /v2/registry 404 before and after -- every phase first run; the bridge
+  # bump changed nothing this kind's lane can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

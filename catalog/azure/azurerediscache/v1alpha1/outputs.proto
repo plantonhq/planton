@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azurerediscache.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureRedisCacheStackOutputs** captures the outputs of provisioning an
 // Azure Cache for Redis instance.
 //
@@ -49,20 +51,20 @@ message AzureRedisCacheStackOutputs {
 
   // The primary access key (a SECRET). Used as the password in Redis
   // connection strings. Empty when access-keys authentication is disabled.
-  string primary_access_key = 8;
+  string primary_access_key = 8 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary access key (a SECRET). Kept live so clients can be
   // rotated to it while the primary is regenerated, and vice versa --
   // zero-downtime key rotation.
-  string secondary_access_key = 9;
+  string secondary_access_key = 9 [(dev.planton.shared.options.sensitive) = true];
 
   // Ready-to-use primary connection string (a SECRET -- embeds the
   // primary key): {hostname}:{ssl_port},password={key},ssl=True,abortConnect=False
-  string primary_connection_string = 10;
+  string primary_connection_string = 10 [(dev.planton.shared.options.sensitive) = true];
 
   // Ready-to-use secondary connection string (a SECRET -- embeds the
   // secondary key), for the rotation window.
-  string secondary_connection_string = 11;
+  string secondary_connection_string = 11 [(dev.planton.shared.options.sensitive) = true];
 
   // The system-assigned identity's principal (object) ID -- what RBAC
   // grants target when the identity block requests SYSTEM_ASSIGNED. Empty

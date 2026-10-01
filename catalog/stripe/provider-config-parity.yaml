@@ -1,0 +1,10 @@
+# Provider-config parity manifest for the Stripe provider block: the recorded
+# judgment joining `provider "stripe" {}` arguments (stripe/stripe at the pinned
+# version) to StripeProviderConfig fields. File presence enrolls this provider
+# for provider-block accounting.
+#
+# api_key and stripe_account match their config fields by name.
+
+configExclusions:
+  - field: config.mode
+    reason: Planton's guard against applying a manifest with a key of the wrong mode -- the credential loader refuses a key whose prefix disagrees with it before the engine starts; the provider block has no mode argument, because the key alone decides which mode Stripe acts in

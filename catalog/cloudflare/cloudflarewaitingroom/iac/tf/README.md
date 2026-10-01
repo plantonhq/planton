@@ -7,7 +7,6 @@ Terraform IaC module for a waiting room -- a virtual queue on a host+path -- plu
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareWaitingRoomSpec
-locals.tf     — Resource naming and labels
 main.tf       — cloudflare_waiting_room + cloudflare_waiting_room_rules
 outputs.tf    — waiting_room_id, zone_id
 ```

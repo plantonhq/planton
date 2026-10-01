@@ -75,6 +75,7 @@ spec:
 |---|---|---|---|---|
 | `spec.applicationType` | `string` | yes |  |  |
 | `spec.description` | `string` |  |  |  |
+| `spec.name` | `string` |  |  |  |
 | `spec.logoUri` | `string` |  |  |  |
 | `spec.callbacks` | `[]string` |  |  |  |
 | `spec.allowedLogoutUrls` | `[]string` |  |  |  |
@@ -160,6 +161,19 @@ Useful for documenting the purpose, owner, or other metadata.
 Maximum 140 characters.
 
 - rule: {"string":{"maxLen":"140"}}
+
+### spec.name
+
+`string`
+
+name is the application's name as people see it: on the Universal Login
+page ("Log in to <tenant> to continue to <name>"), on consent screens, and
+in the tenant's dashboard. When omitted, the application is named after
+the resource (metadata.name), as before.
+
+metadata.name stays the resource's identity: every reference to this
+client (valueFrom, state) reads it, so it remains a stable slug, while this
+name is presentation and changes in place without replacing the client.
 
 ### spec.logoUri
 
@@ -649,13 +663,13 @@ exchanges for this grant.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: Auth0Client, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: Auth0Client, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.id` | `string` | id is the unique identifier of the Auth0 client. This is used internally by Auth0 to identify the application. Format: A unique string identifier. |
 | `status.outputs.client_id` | `string` | client_id is the OAuth 2.0 client identifier. This is the public identifier for the application. Used in authentication requests and as the "audience" for APIs. This value is safe to expose in client-side code. |
-| `status.outputs.client_secret` | `string` | client_secret is the OAuth 2.0 client secret. Used for authenticating the application in confidential client flows. IMPORTANT: Keep this secret secure and never expose in client-side code. Only available for regular_web and non_interactive application types. |
+| `status.outputs.client_secret` | `string` (sensitive) | client_secret is the OAuth 2.0 client secret. Used for authenticating the application in confidential client flows. IMPORTANT: Keep this secret secure and never expose in client-side code. Only available for regular_web and non_interactive application types. |
 | `status.outputs.name` | `string` | name is the name of the application. Derived from metadata.name in the Auth0Client resource. |
 | `status.outputs.application_type` | `string` | application_type is the type of application. One of: native, spa, regular_web, non_interactive |
 | `status.outputs.signing_keys` | `[]Auth0SigningKey` | signing_keys contains the signing keys for this client. Used for RS256 token signature verification. Contains certificate information for validating JWTs. |

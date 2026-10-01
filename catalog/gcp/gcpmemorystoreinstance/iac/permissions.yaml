@@ -14,6 +14,7 @@ spec:
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
+          - serviceusage.services.list
         provenance: derived
         notes: Covers TWO google_project_service resources -- the module enables both memorystore.googleapis.com and networkconnectivity.googleapis.com (PSC service connectivity automation rides the latter). disable_on_destroy is false on both, so the disable permission is never needed.
       - purpose: ReadProject

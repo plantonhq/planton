@@ -1,0 +1,62 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: auth0prompt
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: Three login-flow settings (an experience name and two flags) inside Auth0's SaaS control plane, none of them secret; their storage is Auth0's provider-managed posture, with no encryption seam in this spec.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest at this component's level to key (see enc-at-rest); Auth0 exposes no customer-managed-key surface on the prompt settings.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The settings terminate no connections; the Management API calls that write them travel to Auth0's HTTPS-only API.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The settings shape the public login page's flow by design; they expose no endpoint of their own.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network surface exists to filter (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The object receives no HTTP requests; Auth0's own login and API edge is Auth0's provider-managed posture.
+    - control_id: rbac
+      status: not_applicable
+      notes: WHO may change the login flow is governed at the Auth0 tenant level -- Management API tokens scoped with read:prompts and update:prompts (iac/permissions.yaml) and dashboard admin roles -- with no per-setting access-control surface in this spec.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The settings hold no credentials and authenticate to nothing; the credential the IaC runner presents is the provider connection's concern (iac/permissions.yaml).
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The settings carry no credential path of their own. Choosing universal_login_experience "new" retires the Classic, Lock-based pages from the flow, but which credentials a person may present is decided by the tenant's connections.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: webauthn_platform_first_factor offers a device's own authenticator as the first factor, and identifier_first routes enterprise users to their identity provider, but neither enforces a factor -- a person may still use a password. Enforcing strong authentication lives in the tenant's multi-factor policy and connections (the auth0connection kind).
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Changes to the prompt settings are Management API operations captured in Auth0's tenant logs (exported, where wanted, by the auth0eventstream kind).
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the modules expose a metrics surface for the prompt settings.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The managed settings are declaratively re-creatable from the manifest, so the manifest is the recovery point; settings the spec leaves unset are not managed and are Auth0's to keep.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure; availability of the login page is Auth0's SaaS platform posture.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: Destroying this resource deletes nothing -- Auth0 has no delete for the prompt settings, and the provider's destroy only forgets them, leaving the last-applied values in place.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software of its own to patch; Universal Login is Auth0's SaaS, patched by Auth0.

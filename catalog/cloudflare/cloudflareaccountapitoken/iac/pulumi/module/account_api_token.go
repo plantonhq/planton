@@ -86,7 +86,7 @@ func accountApiToken(
 	}
 
 	ctx.Export(OpTokenId, createdToken.ID())
-	ctx.Export(OpValue, createdToken.Value)
+	ctx.Export(OpValue, pulumi.ToSecret(createdToken.Value))
 
 	// The same token, in the shape R2's S3 API authenticates: Cloudflare
 	// defines the access key id as the token's id and the secret access key as

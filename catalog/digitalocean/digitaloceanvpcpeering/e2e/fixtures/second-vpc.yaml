@@ -5,7 +5,9 @@
 # framework's documented extra-instance mechanism. Same nyc3 region as the
 # install fixture (peerings work cross-region, but same-region keeps the
 # lane deterministic); a disjoint explicit ip_range -- peered VPCs must
-# not overlap, and the install fixture pins 10.60.0.0/24.
+# not overlap, and the install fixture pins its own /24 (see the
+# DigitalOceanVpc kind's e2e/prerequisite.yaml, which also says when that
+# range moves).
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanVpc
 metadata:

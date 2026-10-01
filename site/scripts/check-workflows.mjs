@@ -52,6 +52,9 @@ const stories = [...providers, 'delivery', 'agents'];
 const select = async id => {
   if (providers.includes(id)) {
     await page.click(`[role="tab"]:nth-child(${providers.indexOf(id) + 1})`);
+    // Reduced motion has no exit panel, so absence of [inert] alone can be
+    // true before React commits the newly selected provider on slower runners.
+    await page.waitForFunction(id => document.querySelector('[data-architectures]')?.dataset.selected === id && document.querySelector(`[data-workflow="${id}"]`), { polling: 25 }, id);
     await waitFor(() => !document.querySelector('[inert]'));
   }
   await page.mouse.move(0, 0);

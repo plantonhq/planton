@@ -7,6 +7,7 @@
 package awsiamuserv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -128,11 +129,11 @@ var File_catalog_aws_awsiamuser_v1alpha1_outputs_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsiamuser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsiamuser/v1alpha1/outputs.proto\x12#dev.planton.aws.awsiamuser.v1alpha1\"\x86\x02\n" +
+	"-catalog/aws/awsiamuser/v1alpha1/outputs.proto\x12#dev.planton.aws.awsiamuser.v1alpha1\x1a\x1cshared/options/options.proto\"\x8c\x02\n" +
 	"\x16AwsIamUserStackOutputs\x12\x19\n" +
 	"\buser_arn\x18\x01 \x01(\tR\auserArn\x12\"\n" +
-	"\raccess_key_id\x18\x02 \x01(\tR\vaccessKeyId\x12*\n" +
-	"\x11secret_access_key\x18\x03 \x01(\tR\x0fsecretAccessKey\x12\x1f\n" +
+	"\raccess_key_id\x18\x02 \x01(\tR\vaccessKeyId\x120\n" +
+	"\x11secret_access_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x0fsecretAccessKey\x12\x1f\n" +
 	"\vconsole_url\x18\x04 \x01(\tR\n" +
 	"consoleUrl\x12\x1b\n" +
 	"\tuser_name\x18\x05 \x01(\tR\buserName\x12\x17\n" +

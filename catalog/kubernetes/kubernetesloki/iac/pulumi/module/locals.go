@@ -58,6 +58,11 @@ type Locals struct {
 	// internal API behind the gateway.
 	LokiService string
 
+	// The r2 arm's module-owned credentials Secret (`<name>-r2-credentials`)
+	// and its rendering; nil unless storage.r2 is declared.
+	R2CredentialsSecretName string
+	R2                      *r2Storage
+
 	// kubectl one-liner for reaching the gateway from a workstation.
 	PortForwardCommand string
 }
@@ -122,5 +127,8 @@ func initializeLocals(_ *pulumi.Context, stackInput *kuberneteslokiv1alpha1.Kube
 		OtlpPushEndpoint:   otlpPushEndpoint,
 		LokiService:        releaseName,
 		PortForwardCommand: portForward,
+
+		R2CredentialsSecretName: releaseName + vars.R2CredentialsSecretSuffix,
+		R2:                      buildR2Storage(spec.GetStorage()),
 	}
 }

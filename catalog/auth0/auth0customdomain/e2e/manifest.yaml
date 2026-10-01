@@ -1,0 +1,35 @@
+# Auth0 Custom Domain Test Manifest
+# This file is used for testing the Auth0CustomDomain component.
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: the test tenant's domain (e.g., your-test-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - create:custom_domains
+#    - read:custom_domains
+#    - update:custom_domains
+#    - delete:custom_domains
+#
+# 3. The tenant must allow a custom domain: a card on file on the Free plan
+#    (not charged), or a paid plan.
+
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomain
+metadata:
+  name: test-sign-in-domain
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # The name people sign in on
+  domain: id.example.com
+
+  # Auth0 issues and renews the certificate; publish the CNAME it answers with
+  type: auth0_managed_certs
+
+  # The only TLS policy Auth0 accepts
+  tlsPolicy: recommended

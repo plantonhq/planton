@@ -20,6 +20,11 @@ numeric id and the fingerprint that droplets reference. Deleting a key
 never touches droplets that were created with it; they keep the key in
 their authorized_keys.
 
+The material is also the key's identity on the account: DigitalOcean
+deduplicates on the public key, not the name, so registering the same
+material twice -- under any name -- fails at create ("SSH Key is already
+in use on your account"). Register shared material once and reference it.
+
 ## Example
 
 ```yaml

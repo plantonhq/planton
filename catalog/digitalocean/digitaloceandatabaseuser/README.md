@@ -45,7 +45,8 @@ Deploy with either provisioner; both produce identical resources and outputs.
 
 ## Behavior worth knowing
 
-- **ACLs are write-only upstream.** DigitalOcean returns `settings` only in the create response -- reads never include them -- so the manifest is the source of truth for what the user may do, and imports cannot recover ACLs.
+- **ACLs are write-only upstream.** The provisioners record `settings` only from the create response and never refresh them, so the manifest is the source of truth for what the user may do, and imports cannot recover ACLs.
+- **Set `settings` by engine.** PostgreSQL users declare `settings: {}` (DigitalOcean stores a settings object for every PostgreSQL user; without the block the first re-plan proposes removing it). MySQL users leave it out (the API refuses a settings update on MySQL, so even an empty block fails every apply after the first). Kafka and OpenSearch users declare their ACLs.
 - **User operations serialize per cluster.** The provider locks user creation/deletion per cluster, so many users on one cluster deploy sequentially by design.
 - **Renaming replaces.** `user_name` and `cluster` are create-only; a change creates a new user with a new password and deletes the old one.
 - **ACL read-back is normalized.** Kafka permission spellings canonicalize (e.g. `read_write` becomes `produceconsume`) and each ACL row gets a server-side id -- both are provisioning noise the modules absorb.

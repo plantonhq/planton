@@ -53,6 +53,9 @@ func WriteBaseline(path string, violations []Violation) error {
 	seen := map[string]bool{}
 	ids := make([]string, 0, len(violations))
 	for _, v := range violations {
+		if unexemptableRules[v.Rule] {
+			continue
+		}
 		if id := v.ID(); !seen[id] {
 			seen[id] = true
 			ids = append(ids, id)
@@ -74,13 +77,14 @@ func WriteBaseline(path string, violations []Violation) error {
 
 // GateResult is the verdict of comparing live violations to the baseline.
 type GateResult struct {
-	NewViolations []Violation // drift not in the baseline -- a preset shipped invalid
-	StaleEntries  []string    // baseline ids no longer violated -- remove them
+	NewViolations    []Violation // drift not in the baseline (or of a rule the baseline cannot accept) -- a preset shipped invalid
+	StaleEntries     []string    // baseline ids no longer violated -- remove them
+	ForbiddenEntries []string    // baseline ids of a rule that accepts no baseline entries -- remove them and fix the preset
 }
 
 // OK reports whether the gate passes.
 func (g GateResult) OK() bool {
-	return len(g.NewViolations) == 0 && len(g.StaleEntries) == 0
+	return len(g.NewViolations) == 0 && len(g.StaleEntries) == 0 && len(g.ForbiddenEntries) == 0
 }
 
 // Gate compares violations against the accepted baseline. It is the single
@@ -94,11 +98,15 @@ func Gate(violations []Violation, baseline map[string]bool) GateResult {
 			continue
 		}
 		current[id] = true
-		if !baseline[id] {
+		if !baseline[id] || unexemptableRules[v.Rule] {
 			res.NewViolations = append(res.NewViolations, v)
 		}
 	}
 	for id := range baseline {
+		if unexemptableRules[id[strings.LastIndex(id, ":")+1:]] {
+			res.ForbiddenEntries = append(res.ForbiddenEntries, id)
+			continue
+		}
 		if !current[id] {
 			res.StaleEntries = append(res.StaleEntries, id)
 		}
@@ -107,5 +115,6 @@ func Gate(violations []Violation, baseline map[string]bool) GateResult {
 		return res.NewViolations[i].ID() < res.NewViolations[j].ID()
 	})
 	sort.Strings(res.StaleEntries)
+	sort.Strings(res.ForbiddenEntries)
 	return res
 }

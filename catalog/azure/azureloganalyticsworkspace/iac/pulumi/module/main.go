@@ -102,8 +102,8 @@ func Resources(ctx *pulumi.Context, stackInput *azureloganalyticsworkspacev1alph
 	ctx.Export(OpWorkspaceName, createdWorkspace.Name)
 	ctx.Export(OpWorkspaceCustomerId, createdWorkspace.WorkspaceId)
 	ctx.Export(OpResourceGroupName, createdWorkspace.ResourceGroupName)
-	ctx.Export(OpPrimarySharedKey, createdWorkspace.PrimarySharedKey)
-	ctx.Export(OpSecondarySharedKey, createdWorkspace.SecondarySharedKey)
+	ctx.Export(OpPrimarySharedKey, pulumi.ToSecret(createdWorkspace.PrimarySharedKey))
+	ctx.Export(OpSecondarySharedKey, pulumi.ToSecret(createdWorkspace.SecondarySharedKey))
 	// Empty unless SYSTEM_ASSIGNED is enabled -- mirrors the TF module's
 	// try(identity[0].principal_id, "").
 	ctx.Export(OpIdentityPrincipalId, createdWorkspace.Identity.PrincipalId().ApplyT(func(principalId *string) string {

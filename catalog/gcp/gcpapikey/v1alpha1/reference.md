@@ -319,13 +319,13 @@ What destroying this resource does to the key in GCP:
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: GcpApiKey, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: GcpApiKey, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.name` | `string` | The key's full resource name: projects/{project}/locations/global/keys/{key_id}. What the API Keys API and IAM conditions address the key by. |
 | `status.outputs.uid` | `string` | The key's unique id (a UUID). This is the value a Firebase app registration's api_key_id takes -- reference it from GcpFirebaseAndroidApp / GcpFirebaseAppleApp / GcpFirebaseWebApp rather than passing the key string. |
-| `status.outputs.key_string` | `string` | The key string -- the value a client presents to Google APIs. A credential Google bills and rate-limits against the project, so both engines mark it sensitive in their state and outputs; it reaches the client build through the platform's secret handling, never a log or a plan. (It ships inside the client binary by design; the restrictions on the key, not the secrecy of the string, are what bound its blast radius.) |
+| `status.outputs.key_string` | `string` (sensitive) | The key string -- the value a client presents to Google APIs. A credential Google bills and rate-limits against the project, so both engines mark it sensitive in their state and outputs; it reaches the client build through the platform's secret handling, never a log or a plan. (A browser or mobile key ships inside the client binary by design, and its restrictions bound its blast radius; a key bound to a service account authenticates as that account. Either way it is kept as a secret.) |
 
 ## References
 

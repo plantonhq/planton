@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0customdomainverification
+spec:
+  billing_model: free
+  free_tier: "Verifying a custom domain is free: Auth0 checks the DNS record and, for an Auth0-managed domain, issues and renews its certificate at no charge on every plan that allows the custom domain itself (see the auth0customdomain component)."
+  notes: "The DNS record the verification waits for is billed, if at all, by the DNS provider that serves it."

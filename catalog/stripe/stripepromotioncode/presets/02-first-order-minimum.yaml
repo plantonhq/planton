@@ -1,0 +1,16 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePromotionCode
+metadata:
+  name: welcome50
+  org: example-org
+  env: production
+spec:
+  coupon:
+    valueFrom:
+      kind: StripeCoupon
+      name: ten-off-once
+  code: WELCOME50
+  restrictions:
+    firstTimeTransaction: true
+    minimumAmount: 5000
+    minimumAmountCurrency: usd

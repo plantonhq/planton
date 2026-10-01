@@ -38,7 +38,7 @@ message AwsRdsInstanceSpec {
 
   // Name of an existing DB subnet group to place the instance in,
   // instead of providing subnet_ids.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef db_subnet_group_name = 3;
+  string db_subnet_group_name = 3;
 
   // Security groups attached to the instance. Empty uses the VPC's
   // default security group (the AWS default). Reference AwsSecurityGroup
@@ -438,7 +438,7 @@ message AwsRdsInstanceSpec {
   option (buf.validate.message).cel = {
     id: "subnets_or_group"
     message: "provide at least two subnet_ids (distinct AZs) or an existing db_subnet_group_name"
-    expression: "(this.subnet_ids.size() >= 2) || has(this.db_subnet_group_name)"
+    expression: "(this.subnet_ids.size() >= 2) || this.db_subnet_group_name != ''"
   };
 
   option (buf.validate.message).cel = {

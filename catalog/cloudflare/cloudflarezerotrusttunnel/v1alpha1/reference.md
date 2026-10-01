@@ -462,13 +462,13 @@ Seconds to complete a TLS handshake to an HTTPS origin.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: CloudflareZeroTrustTunnel, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: CloudflareZeroTrustTunnel, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.tunnel_id` | `string` | The Cloudflare-assigned UUID of the tunnel. Referenced by routes (CloudflareZeroTrustTunnelRoute) and used to build the CNAME target. |
 | `status.outputs.tunnel_cname` | `string` | The CNAME target for public hostnames served by this tunnel (<tunnel_id>.cfargotunnel.com). Point a CloudflareDnsRecord CNAME at this value to route a public hostname through the tunnel. |
-| `status.outputs.tunnel_token` | `string` | The connector run token. cloudflared uses this to authenticate and establish the tunnel (for example `cloudflared tunnel run --token <token>`). Sensitive. |
+| `status.outputs.tunnel_token` | `string` (sensitive) | The connector run token. cloudflared uses this to authenticate and establish the tunnel (for example `cloudflared tunnel run --token <token>`). Sensitive. |
 | `status.outputs.tunnel_status` | `string` | The tunnel status: inactive, degraded, healthy, or down. |
 | `status.outputs.account_tag` | `string` | The Cloudflare account tag the tunnel belongs to. |
 | `status.outputs.created_on` | `string` | RFC3339 timestamp of when the tunnel was created. |

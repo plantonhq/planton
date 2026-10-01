@@ -1,0 +1,10 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRegistration
+metadata:
+  name: de-oss
+  org: example-org
+  env: production
+spec:
+  country: DE
+  type: oss_union
+  activeFrom: 1830297600  # your start: now or later, at most five years ahead, in Unix seconds

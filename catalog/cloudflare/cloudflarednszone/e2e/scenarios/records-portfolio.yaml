@@ -3,7 +3,10 @@
 # inline records through BOTH value paths (simple `content` records and typed
 # structured-data records at the record level: srv/caa) plus a record
 # comment. The A record stays gray-clouded (proxied=false): a proxied record
-# on a pending zone serves nothing and adds no verification value.
+# on a pending zone serves nothing and adds no verification value. The NS
+# record's content ends in the root dot, the way another provider's zone
+# output spells a nameserver: Cloudflare stores it without the dot, so the
+# apply-idempotency re-plan proves the module sends what Cloudflare keeps.
 #
 # Live-measured walls keep the dnsSettings singleton and three record
 # surfaces OUT of this scenario (all remain offline-plan-proven by the kind's
@@ -48,12 +51,14 @@ spec:
   records:
     - name: www
       type: A
-      content: "192.0.2.10"
+      content:
+        value: "192.0.2.10"
       ttl: 300
       comment: planton e2e portfolio scenario
     - name: "@"
       type: MX
-      content: mail.planton-e2e.example.com
+      content:
+        value: mail.planton-e2e.example.com
       ttl: 300
       priority: 10
     - name: _e2e._tcp
@@ -62,7 +67,8 @@ spec:
         priority: 10
         weight: 5
         port: 8443
-        target: e2e.planton-e2e.example.com
+        target:
+          value: e2e.planton-e2e.example.com
     - name: "@"
       type: CAA
       caa:
@@ -70,4 +76,10 @@ spec:
         value: letsencrypt.org
     - name: "@"
       type: TXT
-      content: "planton-e2e-verification=portfolio"
+      content:
+        value: "planton-e2e-verification=portfolio"
+    - name: e2e-delegated
+      type: NS
+      content:
+        value: ns-cloud-a1.googledomains.com.
+      ttl: 300

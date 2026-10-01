@@ -119,16 +119,32 @@ locals {
   pipeline_block_full = merge(
     {
       for k, v in {
-        "default-cloud-events-sink" = try(var.spec.pipeline.cloud_events_sink_url, "") != "" ? var.spec.pipeline.cloud_events_sink_url : null
-        "enable-api-fields"         = try(var.spec.pipeline.enable_api_fields, "") != "" ? var.spec.pipeline.enable_api_fields : null
-        "default-timeout-minutes"   = try(var.spec.pipeline.default_timeout_minutes, null)
-        "default-service-account"   = try(var.spec.pipeline.default_service_account, "") != "" ? var.spec.pipeline.default_service_account : null
+        "enable-api-fields"       = try(var.spec.pipeline.enable_api_fields, "") != "" ? var.spec.pipeline.enable_api_fields : null
+        "default-timeout-minutes" = try(var.spec.pipeline.default_timeout_minutes, null)
+        "default-service-account" = try(var.spec.pipeline.default_service_account, "") != "" ? var.spec.pipeline.default_service_account : null
       } : k => v if v != null
     },
     local.pipeline_features,
     local.pipeline_resolvers,
     local.pipeline_metrics,
-    length(local.pipeline_performance) > 0 ? { performance = local.pipeline_performance } : {}
+    length(local.pipeline_performance) > 0 ? { performance = local.pipeline_performance } : {},
+    # The sink lives in the config-events ConfigMap, whose `sink` supersedes
+    # config-defaults' deprecated default-cloud-events-sink. The TektonConfig
+    # reaches that ConfigMap only through options.configMaps, which the
+    # operator merges into the one it installs; tektonv1 is the one event
+    # format Tekton emits. Pulumi twin: pipelineBody.
+    try(var.spec.pipeline.cloud_events_sink_url, "") != "" ? {
+      options = {
+        configMaps = {
+          "config-events" = {
+            data = {
+              sink    = var.spec.pipeline.cloud_events_sink_url
+              formats = "tektonv1"
+            }
+          }
+        }
+      }
+    } : {}
   )
 
   # ---- spec.trigger / spec.dashboard / spec.chain ---------------------------------

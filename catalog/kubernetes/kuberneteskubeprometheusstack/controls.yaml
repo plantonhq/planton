@@ -88,4 +88,4 @@ spec:
       field_path: chart_version
       evidence:
         type: spec_default
-        reference: chart_version pins the installed release (default 87.19.1, pairing with Prometheus Operator v0.92.1); changing it re-runs the Helm release deliberately -- and because Helm never upgrades crds/-directory CRDs, upgrades across operator minors pair with crd_upgrade_job (a pre-upgrade hook that server-side-applies the new CRD bundle) or a manual CRD apply.
+        reference: chart_version pins the installed release (default 91.8.2, pairing with Prometheus Operator v0.94.1); changing it re-runs the Helm release deliberately -- and because Helm never upgrades crds/-directory CRDs, upgrades across operator minors pair with crd_upgrade_job (a pre-upgrade hook that server-side-applies the new CRD bundle) or a manual CRD apply.

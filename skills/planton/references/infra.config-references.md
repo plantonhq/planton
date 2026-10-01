@@ -16,8 +16,9 @@ This is a DIFFERENT instrument from `valueFrom` (`dependencies.md`):
 | Value comes from | Wire it with |
 |---|---|
 | Another resource's deployment output (an id, ARN, endpoint the platform creates) | `valueFrom` — see `dependencies.md` |
+| A credential another resource GENERATES (a client secret, an access key, an admin password: a `(sensitive)` output) | `valueFrom`, into a sensitive field only — the platform already keeps it in the secret store and resolves the reference; see "A secret output" in `dependencies.md` |
 | An operator-managed config value (a region-independent setting, a team-owned constant) | `$var/...` |
-| A credential or any sensitive value (password, API key, token, private key) | `$secret/...` — the ONLY thing a sensitive field accepts |
+| A credential or any sensitive value (password, API key, token, private key; a workload's `env.secrets[].value`, every value in a `KubernetesSecret`, an Auth0 action's secret) | `$secret/...` — the ONLY thing a sensitive field accepts; a value written there is refused before anything is created, on every write path |
 | A registry login a Kubernetes workload pulls with (`spec.pod.imageRegistries[].password`, a `KubernetesSecret`'s docker-registry password, a GHCR connection's `pullToken.token`) | `$secret/...` — and for the service's own registry, usually nothing: the deploy fills it from the registry connection (`references/service.pulling-private-images.md`) |
 
 ## The grammar
@@ -42,6 +43,19 @@ and vice versa — there is no fallback. A secret that exists only in the
 `staging` environment is `$secret/@staging/db-password`; writing
 `$secret/db-password` for it fails validation with "secret not found",
 exactly like a misspelled slug. Scope is part of the address.
+
+A reference goes where the value goes, whatever shape rule the field
+carries: a base64 pattern, a CIDR format, a length. Validation judges the
+token's place, and the rule itself is applied to the value the reference
+resolves to, before anything deploys. A stored value that breaks the rule
+fails the deploy naming the field and the reference -- never printing the
+secret -- so fix the stored value (`planton secret set`), not the manifest.
+
+A provider connection's variable field (`domain: {variable: ...}` on an
+Auth0 connection, `region: {variable: ...}` on AWS) takes the same names as
+`$var/`, without the prefix: a variable's slug, or `<group>/<entry>` for an
+entry in a variable group. Connections read organization variables, so an
+`@<env>` segment is refused.
 
 Example — a sensitive field on a database user, environment-scoped:
 
@@ -128,7 +142,9 @@ What a developer should hear, in their terms, when you choose the home:
   value as a new revision, never as instances silently disagreeing.
 - **The value also sits in the deployment's IaC state**, as it does for
   every secret a module writes; that is why state lives in a backend the
-  organization controls.
+  organization controls, and why that state is encrypted (OpenTofu encrypts
+  the whole file, Pulumi every value marked secret) under a key the
+  organization can name.
 - **When the secret has another owner** (another team rotates it, several
   services share it), point at the store directly instead: Cloud Run's
   `valueFromSecret`, ECS's `secrets` (an ARN), a Kubernetes
@@ -149,13 +165,16 @@ exists before writing one, exactly as you ground field names with
 `planton explain`:
 
 ```
-planton secret list -o json      # every secret; each record's "env" field
-planton variable list -o json    #   distinguishes org- from env-scoped
+planton secret list -o json               # every secret; each record's "env" field
+planton variable list -o json             #   distinguishes org- from env-scoped
+planton secret list --env <env> -o json   # what <env> can read: its own + the org's
 ```
 
 Use `-o json`: the JSON records carry each entry's `env` (empty = org
-scope), which the human-readable table does not show — and the scope decides
-which reference form you write. On the platform-tools arm (no CLI), check
+scope), and the scope decides which reference form you write. A list is
+never cut off (every record, every page), and only a typed `--env` narrows
+it — the saved context's environment never does. `--env` answers "can this
+environment's resources reference it?" in one call. On the platform-tools arm (no CLI), check
 your roster for a config-manager search/list tool; when none exists, you
 cannot verify existence — treat every secret you reference as
 possibly-missing and follow the missing-secret protocol below. Never fake a
@@ -176,8 +195,8 @@ in the explain-after:
    point at the console's Secrets page as the click path:
 
 ```
-planton secret set db-password value=<the-value> --env staging   # env-scoped
-planton secret set api-key value=<the-value>                     # org-scoped
+planton secret set db-password --string '<the-value>' --env staging   # env-scoped
+planton secret set api-key --string '<the-value>'                     # org-scoped
 ```
 
 A composed chart with declared-but-uncreated secrets is honest and
@@ -187,20 +206,28 @@ failure.
 ## Creating variables and secrets (mutations — confirm first)
 
 ```
-planton secret set <slug> value=<value> [--env <env>]     # key=value pairs
-planton secret set <slug> --from-file value=./key.json    # file-backed value
-planton variable set <slug> <value> [--env <env>]         # value is POSITIONAL
+planton secret set <slug> --string '<value>' [--env <env>]   # single value, taken verbatim
+planton secret set <slug> user=<u> pass=<p> [--env <env>]    # key-value pairs
+planton secret set <slug> --key-value token=<value>          # key-value, ONE key named like a value
+cat ./key.pem | planton secret set <slug> --string           # single value from stdin
+planton variable set <slug> <value> [--env <env>]            # value is POSITIONAL
 ```
 
-Note the asymmetry: `secret set` takes `key=value` pairs (a secret can be a
-key-value map); `variable set` takes the value as a positional argument.
-`--env` makes the record environment-scoped; without it the record is
-org-scoped. Re-running `secret set` on an existing secret writes a new
-version (rotation), never a duplicate.
+A secret's format — a single value (`$secret/<slug>`) or key-value pairs
+(`$secret/<slug>/<key>`) — is fixed when it is created, so write the one the
+reference needs. `--string` takes the value verbatim (required when it
+contains `=`: base64, JWTs, PEM). A NEW secret given one pair whose key is
+`value`, `password`, `token` or `secret` is refused rather than guessed; the
+refusal offers `--string '<value>'` or `--key-value KEY=VALUE`. `--string`
+with `--key-value` is refused. `--env` makes the record environment-scoped;
+without it the record is org-scoped. Re-running `secret set` on an existing
+secret writes a new version (rotation), never a duplicate; the card reads
+"Secret Created" or "Secret Updated" accordingly.
 
 ## In chart templates
 
-Slugs are DNS-compatible (`[a-z0-9-]`) and can never contain `@`, so the env
+A slug is lowercase letters and digits joined by single hyphens, like my-app-2
+(DNS-label safe, no dots or underscores) and can never contain `@`, so the env
 sigil composes cleanly with Jinja — the canonical pattern for a chart that
 deploys per-environment:
 

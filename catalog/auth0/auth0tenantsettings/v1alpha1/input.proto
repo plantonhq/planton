@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0tenantsettings.v1alpha1;
+
+import "catalog/auth0/auth0tenantsettings/v1alpha1/api.proto";
+import "catalog/auth0/provider.proto";
+
+// Auth0TenantSettingsStackInput is the input to the Auth0TenantSettings IaC module.
+// It contains the target resource and the Auth0 provider configuration.
+message Auth0TenantSettingsStackInput {
+  // target is the Auth0TenantSettings resource to be deployed.
+  Auth0TenantSettings target = 1;
+
+  // provider_config contains the Auth0 credentials for authentication: the
+  // tenant's domain and a Machine-to-Machine application's client id and secret.
+  // The settings managed are the settings of that tenant, and the application
+  // needs read:tenant_settings and update:tenant_settings on its Management API.
+  dev.planton.auth0.Auth0ProviderConfig provider_config = 2;
+}

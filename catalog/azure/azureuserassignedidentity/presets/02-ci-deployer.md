@@ -39,6 +39,8 @@ spec:
   subject: repo:<owner>/<repo>:ref:refs/heads/main
 ```
 
+Replace `<owner>/<repo>` in `subject` with the repository allowed to deploy.
+
 No client secret exists at any point in this composition.
 
 ## When to Use
@@ -63,4 +65,3 @@ No client secret exists at any point in this composition.
 | `<azure-region>` | Azure region | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
 | `<org-prefix>` | Your organization's naming prefix | Your naming convention |
-| `<owner>/<repo>` | The repository allowed to deploy | The repository URL |

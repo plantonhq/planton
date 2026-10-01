@@ -1,0 +1,18 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingMeter
+metadata:
+  name: api-requests
+  org: example-org
+  env: production
+spec:
+  displayName: API requests
+  eventName: api_requests
+  defaultAggregation:
+    formula: sum
+  customerMapping:
+    eventPayloadKey: stripe_customer_id
+  valueSettings:
+    eventPayloadKey: value
+  alerts:
+    - title: 10k requests
+      gte: 10000

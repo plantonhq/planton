@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0tenantsettings.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/auth0/auth0tenantsettings/v1alpha1/outputs.proto";
+import "catalog/auth0/auth0tenantsettings/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// Auth0TenantSettings is a component that manages the settings of an existing
+// Auth0 tenant: how it presents itself to the people who sign in through it
+// (its name on Universal Login, its logo, languages and support contacts), how
+// long their sessions last, what its OAuth and OpenID Connect endpoints accept,
+// the defaults every application inherits, its error page and its behavior
+// flags.
+//
+// A tenant has one set of settings, so one Auth0TenantSettings resource per
+// tenant. It never creates or deletes the tenant (Auth0's Management API cannot),
+// and destroying it leaves the last-applied settings in place.
+//
+// Use cases:
+// - Show your product's name on the login page instead of the tenant's identifier
+// - Put your logo on the login and consent pages instead of Auth0's
+// - Point people who cannot sign in at your support address and help page
+// - End sessions left unused, and choose whether a session outlives the browser
+// - Let MCP clients register themselves and ask for tokens for your API
+//
+// Example manifest:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0TenantSettings
+// metadata:
+//   name: tenant-settings
+//   org: my-organization
+// spec:
+//   friendlyName: Acme
+//   pictureUrl: https://assets.acme.com/logo.png
+//   supportEmail: support@acme.com
+//   supportUrl: https://acme.com/support
+//   idleSessionLifetime: 8
+// ```
+message Auth0TenantSettings {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0TenantSettings" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0TenantSettings'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the settings resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the tenant settings to manage.
+  Auth0TenantSettingsSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the settings as applied, populated after deployment.
+  Auth0TenantSettingsStatus status = 5;
+}
+
+// Auth0TenantSettingsStatus represents the current state of an
+// Auth0TenantSettings resource. Populated by the deployment system.
+message Auth0TenantSettingsStatus {
+  // outputs contains the stack outputs: the tenant settings as applied.
+  Auth0TenantSettingsStackOutputs outputs = 1;
+}

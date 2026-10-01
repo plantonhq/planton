@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0branding.v1alpha1;
+
+import "catalog/auth0/auth0branding/v1alpha1/api.proto";
+import "catalog/auth0/provider.proto";
+
+// Auth0BrandingStackInput is the input to the Auth0Branding IaC module.
+// It contains the target resource and the Auth0 provider configuration.
+message Auth0BrandingStackInput {
+  // target is the Auth0Branding resource to be deployed.
+  Auth0Branding target = 1;
+
+  // provider_config contains the Auth0 credentials for authentication: the
+  // tenant's domain and a Machine-to-Machine application's client id and secret.
+  // The application needs read:branding, update:branding and delete:branding, plus read:custom_domains (the
+  // provider checks for a custom domain on every read) on the tenant's Management API.
+  dev.planton.auth0.Auth0ProviderConfig provider_config = 2;
+}

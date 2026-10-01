@@ -2564,6 +2564,18 @@ Fields on other kinds that can point at this resource:
 | GcpEventarcTrigger | `spec.destination.gke.cluster` | `status.outputs.name` |
 | GcpGkeNodePool | `spec.clusterName` | `status.outputs.name` |
 | GcpGkeNodePool | `spec.location` | `status.outputs.location` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.ip_allocation.services_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.private_cluster.master_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `spec.ip_allocation.services_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.except` | `spec.private_cluster.master_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `spec.ip_allocation.services_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.cidr` | `spec.private_cluster.master_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `spec.ip_allocation.cluster_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `spec.ip_allocation.services_ipv4_cidr_block` |
+| KubernetesNetworkPolicy | `spec.egressRules[].to[].ipBlock.except` | `spec.private_cluster.master_ipv4_cidr_block` |
 
 ## See Also
 

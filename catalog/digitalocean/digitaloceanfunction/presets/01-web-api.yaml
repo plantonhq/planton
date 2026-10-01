@@ -3,12 +3,12 @@ kind: DigitalOceanFunction
 metadata:
   name: hello
 spec:
+  appName: hello-fn
   functionName: hello
-  region: nyc3
+  region: nyc
   git:
     repoCloneUrl: https://github.com/digitalocean/sample-functions-nodejs-helloworld.git
     branch: master
-  sourceDirectory: packages
   envs:
     - key: NODE_ENV
       plaintext: production

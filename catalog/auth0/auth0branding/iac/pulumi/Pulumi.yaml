@@ -1,0 +1,6 @@
+# Auth0Branding Pulumi Module
+# This module manages how an existing Auth0 tenant's Universal Login looks.
+name: auth0-branding
+runtime:
+  name: go
+description: Pulumi module for Auth0Branding component

@@ -6,7 +6,7 @@
 
 App Platform runs the app, issues a default `ondigitalocean.app` hostname with HTTPS, and rolls out new deployments. You describe the app once; Terraform and Pulumi both create the same `digitalocean_app` resource.
 
-The app name (`spec.appName`) is 2–32 characters. Component instance sizes are free-form slugs such as `basic-xxs` or `professional-s` — the provider does not publish a closed list, so new sizes work without a catalog change.
+The app name (`spec.appName`) is 2–32 characters, starts with a letter, and is unique across the account; component names follow the same rule. Component instance sizes are free-form slugs such as `basic-xxs` or `professional-s` — the provider does not publish a closed list, so new sizes work without a catalog change.
 
 ## What this kind is
 
@@ -33,7 +33,7 @@ metadata:
   name: demo-app
 spec:
   appName: demo-app
-  region: nyc3
+  region: nyc
   services:
     - name: web
       image:

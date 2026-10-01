@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0tenantsettings
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for tenant settings. The tenant's name, logo and support contacts are editable on every plan, the Free plan included, and Auth0's documentation gates most other settings on no plan. A few need a plan or a feature Auth0 enables: pushed_authorization_requests_supported and mtls need the Enterprise plan with the Highly Regulated Identity add-on (auth0.com/docs/get-started/applications/configure-par), sessions.anonymous is Early Access on the Enterprise plan, default_token_quota is Early Access Auth0 enables on request, and the session lifetimes are capped lower outside the Enterprise plan. The default custom domain it can set is free too."
+  notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). These settings change what the login page shows and how sessions and tokens behave, never what a sign-in costs."

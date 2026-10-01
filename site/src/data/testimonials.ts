@@ -14,6 +14,8 @@ export interface Testimonial {
   company: string;
   location?: string;
   quote: string;
+  /** Original customer portrait, retained from the earlier public site. */
+  avatar?: string;
 }
 
 export const TESTIMONIALS: readonly Testimonial[] = [
@@ -35,6 +37,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     name: 'Balaji Borra',
+    avatar: '/_site/images/customers/people/balaji-borra.png',
     role: 'DevOps Engineer',
     company: 'TynyBay',
     location: 'India',
@@ -43,6 +46,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   },
   {
     name: 'Rakesh Kandhi',
+    avatar: '/_site/images/customers/people/rakesh-kandhi.jpeg',
     role: 'Senior Developer',
     company: 'TynyBay',
     location: 'India',

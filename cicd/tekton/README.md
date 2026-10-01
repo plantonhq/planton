@@ -13,9 +13,9 @@ Two things on the platform read this package and nothing else does:
 
 ## The pin
 
-`Version` in `content.go` names exactly one content state, and a recorded digest in `testdata/` holds the two together: changing any YAML here without bumping `Version` fails the tests. The pin stamped on run records is `platform-content/<Version>`. It is deliberately not this module's release version, because a release that touches no Tekton content must not give one content state a second pin.
+`Version` in `content.go` names exactly one content state, and a ledger in `testdata/content-digest.txt` holds the two together: it records every `Version` with the digest of the content it named, append-only. Changing any YAML here without bumping `Version` fails the tests, and so does bumping `Version` with no content change -- re-recording cannot hide either, because the ledger refuses a `Version` already bound to other content and content already bound to another `Version`. The pin stamped on run records is `platform-content/<Version>`. It is deliberately not this module's release version, because a release that touches no Tekton content must not give one content state a second pin.
 
-When you change any file under `pipelines/` or `tasks/`: bump `Version`, then re-record the digest with `UPDATE_CONTENT_DIGEST=1 go test ./cicd/tekton/`. The image-set test will also show you, as a diff, every image your change adds or removes.
+When you change any file under `pipelines/` or `tasks/`: bump `Version`, then record the new pair with `UPDATE_CONTENT_DIGEST=1 go test ./cicd/tekton/` (it appends one line to the ledger), and add that line to `reviewedLedger` in `content_test.go` in the same change -- the test holds every recorded line to that second copy, so an old line can never be rewritten quietly. The image-set test will also show you, as a diff, every image your change adds or removes.
 
 ## Image pinning discipline
 

@@ -407,7 +407,7 @@ with the same key wins.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureExpressRoutePort, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureExpressRoutePort, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -429,7 +429,7 @@ Reference an output from another manifest as `valueFrom: {kind: AzureExpressRout
 | `status.outputs.link2_patch_panel_id` | `string` | The patch panel the second link lands on. |
 | `status.outputs.link2_rack_id` | `string` | The rack of the second link's patch panel. |
 | `status.outputs.link2_connector_type` | `string` | The physical connector type of the second link. |
-| `status.outputs.authorization_keys` | `map<string, string>` | The generated key of each authorization ISSUED by this port, keyed by the authorization's name from the spec. A circuit in another subscription redeems one to be built on this port. Marked sensitive in both engines. Example valueFrom fieldPath: status.outputs.authorization_keys.partner-team |
+| `status.outputs.authorization_keys` | `map<string, string>` (sensitive) | The generated key of each authorization ISSUED by this port, keyed by the authorization's name from the spec. A circuit in another subscription redeems one to be built on this port. Marked sensitive in both engines. Example valueFrom fieldPath: status.outputs.authorization_keys.partner-team |
 
 ## References
 

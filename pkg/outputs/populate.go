@@ -40,9 +40,10 @@ func populateMessage(msg proto.Message, outputs map[string]string) error {
 	for key, value := range outputs {
 		parts := strings.Split(key, ".")
 		if err := setFieldRecursively(ref, parts, value, 0); err != nil {
+			// Never the value: an output that cannot be set may be a secret a
+			// customized module renamed, and logs outlive the run.
 			log.WithFields(log.Fields{
 				"key":   key,
-				"value": value,
 				"error": err,
 			}).Warn("skipping output field that could not be set")
 		}

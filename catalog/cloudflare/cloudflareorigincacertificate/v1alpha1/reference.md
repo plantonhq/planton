@@ -104,13 +104,13 @@ secret (the private key never appears in it).
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: CloudflareOriginCaCertificate, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: CloudflareOriginCaCertificate, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.certificate_id` | `string` | The Origin CA certificate identifier. |
 | `status.outputs.certificate` | `string` | The issued Origin CA certificate in PEM format. This is public certificate material (not a secret) — install it on the origin alongside the private key. |
-| `status.outputs.private_key` | `string` | The PEM-encoded private key for the certificate. Populated only when the module generated the key (i.e. when `spec.csr` was omitted); empty when a user-supplied CSR was used. Sensitive — exported as a secret so a downstream origin can mount it without the key ever living in plaintext. |
+| `status.outputs.private_key` | `string` (sensitive) | The PEM-encoded private key for the certificate. Populated only when the module generated the key (i.e. when `spec.csr` was omitted); empty when a user-supplied CSR was used. Sensitive — exported as a secret so a downstream origin can mount it without the key ever living in plaintext. |
 | `status.outputs.expires_on` | `string` | RFC3339 timestamp of when the certificate expires. |
 
 ## See Also

@@ -19,7 +19,7 @@ Renaming an inline record's `name` or `type` replaces the record (the resource k
 
 A record's value comes from exactly one place, and it must match `type`:
 
-- `content` for A, AAAA, CNAME, MX, NS, PTR, TXT, OPENPGPKEY -- the presentation string.
+- `content` for A, AAAA, CNAME, MX, NS, PTR, TXT, OPENPGPKEY -- the presentation string, as a literal (`value:`) or read from another resource's output (`valueFrom:`).
 - A typed block named after the record type for SRV, CAA, CERT, DNSKEY, DS, HTTPS, LOC, NAPTR, SMIMEA, SSHFP, SVCB, TLSA, URI (e.g. `srv: {priority, weight, port, target}`).
 
 Declare `priority` in exactly one place: top-level for MX, inside the typed block for SRV, URI, HTTPS, and SVCB. For SRV and URI the modules mirror the typed-block priority into the provider's top-level field themselves — Cloudflare reflects it there on read, so the mirror is what keeps re-plans clean (live-measured).

@@ -11,7 +11,7 @@ The spec maps one-to-one onto DigitalOcean's standalone node pool:
 | `nodePoolName` | The pool's name, unique within the cluster |
 | `cluster` | The owning DOKS cluster — a literal UUID or a reference to a `DigitalOceanKubernetesCluster`; create-only |
 | `size` | Droplet size slug for every node (`s-2vcpu-4gb`, GPU slugs, ...); changing it replaces the pool |
-| `nodeCount` | Node count; with autoscaling on, only the initial count |
+| `nodeCount` | Fixed node count; required when `autoScale` is off, must be left out when it is on |
 | `autoScale` / `minNodes` / `maxNodes` | DigitalOcean's cluster-autoscaler manages the count between the bounds |
 | `labels` | Kubernetes node labels for scheduling (nodeSelector, affinity) |
 | `taints` | Kubernetes taints keeping untolerating pods off the nodes |
@@ -50,17 +50,17 @@ Both provisioners export the identical output set:
 |---|---|
 | `node_pool_id` | The pool's UUID (import id for `digitalocean_kubernetes_node_pool`) |
 | `cluster_id` | The owning cluster's UUID — the pool's API address needs both ids |
-| `node_ids` | The DOKS node object UUIDs of the pool's current members |
-| `droplet_ids` | The integer ids of the Droplets backing the nodes — wire Droplet-scoped resources (e.g. firewalls) to the pool's machines |
+
+The pool's node and Droplet ids are deliberately not outputs: DOKS replaces nodes by design (autoscaling, upgrades, auto-repair), so any list captured at apply time is stale the next time the pool changes shape. Wire firewalls and other Droplet-scoped resources to the pool through its `tags`, which DigitalOcean applies to every current and future node.
 
 ## Behavior worth knowing
 
 - **`cluster` and `size` replace the pool when changed** (the nodes are recreated); everything else updates in place.
 - **Autoscaling bounds are validated early**: `autoScale: true` requires `minNodes >= 1` and `maxNodes >= minNodes` — the API would reject them late, the spec rejects them at validation.
-- **With autoscaling on, the live node count drifts by design.** `nodeCount` is only the initial count; the provider suppresses the diff while the count sits between the bounds.
+- **With autoscaling on, leave `nodeCount` out.** The pool starts at `minNodes` and the autoscaler owns the count; the manifest is rejected if you set both, because the provider writes the live count back into `node_count` and would re-apply a stated one against the autoscaler on every update.
 - **Taints must spell their effect exactly as Kubernetes does** (`NoSchedule`, `PreferNoSchedule`, `NoExecute`), and a taint's `value` may be empty — Kubernetes allows valueless taints.
 - **A cluster's default pool cannot be managed here** — it is part of the cluster resource itself, and DigitalOcean refuses to import a default pool as a standalone one.
-- **Pulumi SDK v4.49.0 cannot express `gpuPartitionMode`.** The Pulumi module fails loudly if it is set; Terraform wires it. See the [GUIDE](GUIDE.md).
+- **`gpuPartitionMode` deploys on both provisioners** and is create-only: changing it replaces the pool. It only means anything on AMD GPU sizes. See the [GUIDE](GUIDE.md).
 
 ---
 

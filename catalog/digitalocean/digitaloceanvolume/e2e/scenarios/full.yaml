@@ -17,7 +17,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  volumeName: pltn-e2e-vol-full
+  volumeName: pltn-e2e-vol-full-${E2E_RUN_ID}
   description: Planton E2E full-surface volume
   region: nyc3
   sizeGib: 10

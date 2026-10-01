@@ -1,3 +1,7 @@
+# An API with its scopes and token settings, created and deleted. Nothing
+# beyond them is declared, so the lane also proves that an API leaves every
+# unmanaged setting (the access policy, proof of possession, encryption,
+# authorization details) at Auth0's defaults.
 apiVersion: auth0.planton.dev/v1alpha1
 kind: Auth0ResourceServer
 metadata:
@@ -7,12 +11,12 @@ metadata:
 spec:
   identifier: https://e2e-api.planton.dev/
   name: E2E Test API
-  signing_alg: RS256
-  token_lifetime: 86400
-  allow_offline_access: true
-  skip_consent_for_verifiable_first_party_clients: true
-  enforce_policies: true
-  token_dialect: access_token_authz
+  signingAlg: RS256
+  tokenLifetime: 86400
+  allowOfflineAccess: true
+  skipConsentForVerifiableFirstPartyClients: true
+  enforcePolicies: true
+  tokenDialect: access_token_authz
   scopes:
     - name: read:items
       description: Read access to items

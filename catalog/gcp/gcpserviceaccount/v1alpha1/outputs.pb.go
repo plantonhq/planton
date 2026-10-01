@@ -7,6 +7,7 @@
 package gcpserviceaccountv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -120,14 +121,14 @@ var File_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpserviceaccount/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpserviceaccount.v1alpha1\"\x9d\x01\n" +
+	"4catalog/gcp/gcpserviceaccount/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpserviceaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xa3\x01\n" +
 	"\x1dGcpServiceAccountStackOutputs\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x16\n" +
 	"\x06member\x18\x02 \x01(\tR\x06member\x12\x1b\n" +
 	"\tunique_id\x18\x03 \x01(\tR\buniqueId\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1d\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12#\n" +
 	"\n" +
-	"key_base64\x18\x05 \x01(\tR\tkeyBase64B\xea\x02\n" +
+	"key_base64\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\tkeyBase64B\xea\x02\n" +
 	".com.dev.planton.gcp.gcpserviceaccount.v1alpha1B\fOutputsProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpserviceaccount/v1alpha1;gcpserviceaccountv1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpserviceaccount.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpserviceaccount\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpserviceaccount\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpserviceaccount::V1alpha1b\x06proto3"
 
 var (

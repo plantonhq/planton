@@ -1,0 +1,9 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeEntitlementFeature
+metadata:
+  name: api-access
+  org: example-org
+  env: production
+spec:
+  lookupKey: api-access
+  name: API access

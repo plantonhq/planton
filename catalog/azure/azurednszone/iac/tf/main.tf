@@ -10,7 +10,7 @@
 #   AzureDnsRecord resources referencing this zone's zone_name output, one
 #   resource per record set.
 # - Creating the zone does NOT make it authoritative: the domain resolves
-#   through it only once the name_servers output is configured at the
+#   through it only once the nameservers output is configured at the
 #   registrar (or as parent-zone NS records for subdomain delegation).
 resource "azurerm_dns_zone" "main" {
   name                = var.spec.zone_name

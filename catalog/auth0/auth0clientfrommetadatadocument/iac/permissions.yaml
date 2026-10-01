@@ -1,0 +1,29 @@
+# Least-privilege permissions the IaC runner's Auth0 credential needs to
+# provision, update, and destroy this component with the official modules.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.58 per iac/tf/provider.tf) and the
+# pulumi-auth0 SDK exchange its client id and secret for a token through
+# the client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
+#
+# Auth0 scopes are per resource family, not per object: a credential holding
+# them manages EVERY client in the tenant. Narrowing to one application is not
+# expressible, so the trust boundary is the tenant.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: auth0clientfrommetadatadocument
+spec:
+  auth0:
+    groups:
+      - purpose: ManageClientFromMetadataDocument
+        scopes:
+          - create:clients
+          - read:clients
+          - update:clients
+          - delete:clients
+        provenance: derived
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/client.go) manage auth0_client_cimd -- registered via POST /api/v2/clients/cimd/register, an upsert keyed by the document's URL that needs create:clients to create and update:clients to update an existing registration (both named by the endpoint's OpenAPI security entry and its description), then configured via PATCH /api/v2/clients/{id} (update:clients); every read fetches the client via GET /api/v2/clients/{id} (read:clients) and previews the document via POST /api/v2/clients/cimd/preview (read:clients); a change of external_client_id_version registers again (create:clients, update:clients); destroy is DELETE /api/v2/clients/{id} (delete:clients). Scopes as the Management API's OpenAPI document names them for each endpoint (read 2026-09-28).

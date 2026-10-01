@@ -1,0 +1,13 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: stripepaymentmethoddomain
+spec:
+  # A registration imports by its Stripe id (pmd_...), which a prior deploy reports as its id output. Import is also how a domain forgotten by an earlier destroy comes back under Planton: Stripe still has it.
+  values:
+    - name: payment_method_domain_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Stripe Dashboard -> Settings -> Payment method domains (the domain's id, pmd_..., on its
+        detail page), or `GET /v1/payment_method_domains?domain_name=<domain>`.

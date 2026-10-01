@@ -23,3 +23,13 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: Covers the kubectl_manifest.gateway_api_crds resources -- one per CRD document in the pinned upstream release manifest (fetched over HTTPS by the http data source, which needs no cluster permission), applied cluster-scoped via server-side apply with force_conflicts.
+      - api_groups:
+          - apiextensions.k8s.io
+        resources:
+          - customresourcedefinitions
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the CustomResourceDefinition applied by the yaml ConfigFile in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

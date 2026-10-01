@@ -28,9 +28,12 @@ const (
 type Locals struct {
 	Spec *kubernetesopenbaov1alpha1.KubernetesOpenBaoSpec
 
-	// Resource-identity labels stamped on module-created satellites
-	// (namespace, seal-credentials Secret) — never injected into the
-	// chart's own resources; Helm owns those.
+	// Resource-identity labels: stamped on the module-created satellites
+	// (namespace, seal-credentials Secret) and on every server pod through
+	// the chart's own server.extraLabels -- so a log line, a metric or an
+	// alert from the vault names its organization and environment. The
+	// StatefulSet's selector is the chart's own fixed labels; these never
+	// reach it.
 	Labels map[string]string
 
 	// Namespace the server installs into (resolved literal).

@@ -23,7 +23,7 @@ This preset creates a 4-shard MemoryDB cluster with 2 replicas per shard (12 tot
 
 | Placeholder | Description | Example |
 |-------------|-------------|---------|
-| `<acl-name>` | MemoryDB ACL with configured users | `analytics-acl` |
+| `<acl-resource-name>` | Name of the AwsMemorydbAcl resource with configured users (its `status.outputs.acl_name` is read) | `analytics-acl` |
 | `<kms-key-arn>` | Customer-managed KMS key ARN | `arn:aws:kms:us-east-1:123456789012:key/mrk-abc123` |
 | `<private-subnet-id-az1>` | Private subnet AZ1 | `subnet-0a1b2c3d4e5f6g7h8` |
 | `<private-subnet-id-az2>` | Private subnet AZ2 | `subnet-1a2b3c4d5e6f7g8h9` |

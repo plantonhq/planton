@@ -76,7 +76,10 @@ variable "spec" {
     #   - TXT: text values (e.g. ["v=spf1 include:_spf.google.com ~all"])
     # Each value is at most 4,000 characters (AWS's per-value limit).
     # Mutually exclusive with alias_target — a record is standard or alias,
-    # never both.
+    # never both. Each entry can be a literal or a reference to another
+    # resource's output — a load balancer's address, a zone's name server for
+    # a delegation, a domain-verification record's value.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     values = optional(list(string), [])
 
     # Alias target for A/AAAA alias records: point this name at an AWS

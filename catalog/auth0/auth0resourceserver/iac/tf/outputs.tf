@@ -66,3 +66,8 @@ output "client_id" {
   description = "The client ID associated with this resource server, if one has been linked"
   value       = auth0_resource_server.this.client_id
 }
+
+output "third_party_client_default_grant_ids" {
+  description = "The ids (cgr_...) of the default grants for third-party applications, keyed by subject type -- the key each grant imports under"
+  value       = { for subject_type, grant in auth0_client_grant.third_party_client_default_grants : subject_type => grant.id }
+}

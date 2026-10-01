@@ -30,7 +30,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1alpha1.AzureDnsZon
 	//   through AzureDnsRecord resources referencing this zone's
 	//   zone_name output, one resource per record set.
 	// - Creating the zone does NOT make it authoritative: the domain
-	//   resolves through it only once the name_servers output is
+	//   resolves through it only once the nameservers output is
 	//   configured at the registrar (or as parent-zone NS records for
 	//   subdomain delegation).
 	zoneArgs := &dns.ZoneArgs{
@@ -84,12 +84,12 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1alpha1.AzureDnsZon
 	// resource_group_name) is the join key AzureDnsRecord resources
 	// address record sets through; zone_id is the ARM-id seam for kinds
 	// that watch the zone as a whole (Front Door custom-domain
-	// validation, AKS web-app routing); name_servers is the registrar
+	// validation, AKS web-app routing); nameservers is the registrar
 	// delegation handoff.
 	ctx.Export(OpZoneId, createdZone.ID())
 	ctx.Export(OpZoneName, createdZone.Name)
 	ctx.Export(OpResourceGroupName, createdZone.ResourceGroupName)
-	ctx.Export(OpNameServers, createdZone.NameServers)
+	ctx.Export(OpNameservers, createdZone.NameServers)
 	ctx.Export(OpMaxNumberOfRecordSets, createdZone.MaxNumberOfRecordSets)
 
 	return nil

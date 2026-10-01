@@ -12,6 +12,7 @@ import (
 	"github.com/plantonhq/planton/internal/cli/version"
 	"github.com/plantonhq/planton/pkg/crkreflect"
 	"github.com/plantonhq/planton/pkg/fileutil"
+	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumibinary"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 )
@@ -35,6 +36,13 @@ type GetPathResult struct {
 // The returned GetPathResult includes a cleanup function that should be called after execution
 // unless noCleanup is true.
 func GetPath(moduleDir string, stackFqdn, kindName string, moduleVersion string, noCleanup bool) (*GetPathResult, error) {
+	// Every Pulumi run the CLI makes resolves its module here (run, init,
+	// remove, cancel), so a kind that does not run on Pulumi is refused before
+	// any module is fetched, compiled or pointed at.
+	if err := provisioner.RequireForKindName(kindName, provisioner.ProvisionerTypePulumi); err != nil {
+		return nil, err
+	}
+
 	localModuleDir, err := resolveLocalModuleDir(moduleDir)
 	if err != nil {
 		return nil, err

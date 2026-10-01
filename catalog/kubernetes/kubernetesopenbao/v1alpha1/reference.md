@@ -184,6 +184,9 @@ spec:
 | `spec.server.auditStorage` | `KubernetesOpenBaoVolume` |  |  |  |
 | `spec.server.auditStorage.size` | `string` |  | `10Gi` |  |
 | `spec.server.auditStorage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
+| `spec.server.audit` | `KubernetesOpenBaoAudit` |  |  |  |
+| `spec.server.audit.enabled` | `bool` |  |  |  |
+| `spec.server.audit.sink` | `enum` |  | `stdout` |  |
 | `spec.server.logLevel` | `string` |  | `info` |  |
 | `spec.server.logFormat` | `string` |  | `standard` |  |
 | `spec.server.scheduling` | `KubernetesOpenBaoScheduling` |  |  |  |
@@ -343,9 +346,11 @@ exist in the SERVED index at https://openbao.github.io/openbao-helm.
 `KubernetesOpenBaoServer`
 
 The OpenBao server: the storage engine (or `dev`), the replica
-count, sizing, the audit volume, and logging. UNSET = one Raft
-server.
+count, sizing, the audit device and its volume, and logging.
+UNSET = one Raft server.
 
+- rule: server.audit.sink is file, but no volume holds the file — declare server.auditStorage (the log lands at /openbao/audit/audit.log), or set server.audit.sink to stdout.
+- rule: Dev mode reads no configuration file, so the declared audit device would never be enabled — remove server.audit (or set enabled to false), or remove dev to run a storage engine.
 - rule: Dev mode is in-memory and takes no storage engine — remove raft/postgresql, or remove dev to run a storage engine.
 - rule: Dev mode runs exactly one in-memory server — remove replicas (or leave it at 1), or remove dev to run a storage engine at that count.
 
@@ -589,11 +594,13 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 
 `KubernetesOpenBaoVolume`
 
-Optional dedicated volume for file audit logs, mounted at
+Optional dedicated volume for the audit log, mounted at
 /openbao/audit — available on either storage engine (the chart
-claims it for any non-dev server). Creating the volume does NOT
-enable auditing — after initialization run
-`bao audit enable file file_path=/openbao/audit/audit.log`.
+claims it for any non-dev server). The volume alone enables
+nothing: `audit` below declares the audit device, and its `file`
+sink is the one that writes here (/openbao/audit/audit.log).
+OpenBao 2.4 and later refuse `bao audit enable` over the API, so
+the declaration in this spec is the only way to turn auditing on.
 
 ### spec.server.auditStorage.size
 
@@ -614,6 +621,49 @@ KubernetesStorageClass resource.
 
 - references: KubernetesStorageClass (`status.outputs.storage_class_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
+
+### spec.server.audit
+
+`KubernetesOpenBaoAudit`
+
+The audit device, declared in the server's configuration file.
+OpenBao 2.4 and later accept audit devices ONLY from that file
+(`bao audit enable` over the API is refused: "cannot enable audit
+device via API; use declarative, config-based audit device
+management instead"), so this block is the whole switch. UNSET or
+`enabled: false` = no audit device.
+
+THE SERVER READS IT AT START: the chart's StatefulSet updates
+OnDelete, so a change here reaches a running server when its pod
+is recreated (delete the pods one at a time, standbys first; each
+returns sealed unless `auto_unseal` is declared), like every other
+configuration change on this kind.
+
+WHAT AN AUDIT DEVICE COSTS: once one is enabled, OpenBao answers
+NO request it cannot record — if every audit device fails to
+write, every request fails. The `stdout` sink has no disk to
+fill; the `file` sink does (see `sink`). Refused with `dev`
+(dev mode reads no configuration file).
+
+### spec.server.audit.enabled
+
+`bool`
+
+Turns the audit device on. `false` (the default) declares none.
+
+### spec.server.audit.sink
+
+`enum` · optional (explicit presence)
+
+Where the records go: `stdout` (default) or `file`.
+
+- default: `stdout`
+
+Allowed values (use exactly as shown):
+
+- `sink_unspecified` -- Unset. The loader fills `stdout`.
+- `stdout` -- The server's standard output, where the cluster's log pipeline already collects the pod's logs. No disk to fill, so the audit device cannot stop the vault by running out of space. The records share the stream with the server's own log lines; each audit record is one JSON object per line.
+- `file` -- /openbao/audit/audit.log on the audit volume (requires `server.auditStorage`). NOTHING ROTATES THE FILE: when the volume fills, the write fails, and with no other audit device OpenBao then refuses every request. Size the volume for the retention you keep and rotate the file yourself (move it aside, then send the server SIGHUP to reopen it).
 
 ### spec.server.logLevel
 

@@ -384,16 +384,16 @@ place -- the only field on the link that does.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureSearchService, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureSearchService, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.search_service_id` | `string` | The Azure Resource Manager ID of the service -- what shared private links and diagnostic settings reference. Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Search/searchServices/{name} |
 | `status.outputs.search_service_name` | `string` | The name of the service. ARM addresses shared private links as children of this name, and the data-plane endpoint embeds it. |
 | `status.outputs.endpoint` | `string` | The service's data-plane endpoint (https://{name}.search.windows.net) -- what applications and SDKs call. |
-| `status.outputs.primary_key` | `string` | The primary admin API key -- full read-write control of the service's data plane. Sensitive: treat as a credential (the service mints it; there is no vault indirection). Empty when local authentication is disabled. |
-| `status.outputs.secondary_key` | `string` | The secondary admin API key -- the rotation partner of primary_key. Sensitive: treat as a credential. Empty when local authentication is disabled. |
-| `status.outputs.default_query_key` | `string` | The service's built-in query API key -- read-only data-plane access for client applications (the service creates exactly one unnamed query key at provisioning; create more at the data plane). Sensitive: treat as a credential. Empty when local authentication is disabled. |
+| `status.outputs.primary_key` | `string` (sensitive) | The primary admin API key -- full read-write control of the service's data plane. Sensitive: treat as a credential (the service mints it; there is no vault indirection). Empty when local authentication is disabled. |
+| `status.outputs.secondary_key` | `string` (sensitive) | The secondary admin API key -- the rotation partner of primary_key. Sensitive: treat as a credential. Empty when local authentication is disabled. |
+| `status.outputs.default_query_key` | `string` (sensitive) | The service's built-in query API key -- read-only data-plane access for client applications (the service creates exactly one unnamed query key at provisioning; create more at the data plane). Sensitive: treat as a credential. Empty when local authentication is disabled. |
 | `status.outputs.customer_managed_key_encryption_compliance_status` | `string` | Whether the service's objects comply with the customer-managed- key enforcement posture ("Compliant" / "NonCompliant") -- ARM's own assessment, read back at deploy time. |
 | `status.outputs.system_assigned_identity_principal_id` | `string` | The principal (object) ID of the service's system-assigned identity, when one is enabled -- what data-source grants for indexers bind to. |
 | `status.outputs.shared_private_link_service_ids` | `map<string, string>` | The ARM ID of each shared private link on the service, keyed by the link's name from the spec. Example valueFrom fieldPath: status.outputs.shared_private_link_service_ids.to-blob |

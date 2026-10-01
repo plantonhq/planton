@@ -26,56 +26,6 @@ const (
 )
 
 // *
-// cert-manager issuer reference kind vocabulary.
-type KubernetesKedaIssuerKind int32
-
-const (
-	// Namespaced Issuer in the installation namespace.
-	KubernetesKedaIssuerKind_issuer KubernetesKedaIssuerKind = 0
-	// Cluster-scoped ClusterIssuer.
-	KubernetesKedaIssuerKind_cluster_issuer KubernetesKedaIssuerKind = 1
-)
-
-// Enum value maps for KubernetesKedaIssuerKind.
-var (
-	KubernetesKedaIssuerKind_name = map[int32]string{
-		0: "issuer",
-		1: "cluster_issuer",
-	}
-	KubernetesKedaIssuerKind_value = map[string]int32{
-		"issuer":         0,
-		"cluster_issuer": 1,
-	}
-)
-
-func (x KubernetesKedaIssuerKind) Enum() *KubernetesKedaIssuerKind {
-	p := new(KubernetesKedaIssuerKind)
-	*p = x
-	return p
-}
-
-func (x KubernetesKedaIssuerKind) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (KubernetesKedaIssuerKind) Descriptor() protoreflect.EnumDescriptor {
-	return file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_enumTypes[0].Descriptor()
-}
-
-func (KubernetesKedaIssuerKind) Type() protoreflect.EnumType {
-	return &file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_enumTypes[0]
-}
-
-func (x KubernetesKedaIssuerKind) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use KubernetesKedaIssuerKind.Descriptor instead.
-func (KubernetesKedaIssuerKind) EnumDescriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDescGZIP(), []int{0}
-}
-
-// *
 // **KubernetesKedaSpec** installs KEDA — Kubernetes Event-Driven Autoscaling
 // — from the official Helm chart (`keda` at
 // https://kedacore.github.io/charts). KEDA scales workloads on REAL-WORLD
@@ -825,7 +775,10 @@ type KubernetesKedaCertificates struct {
 	// *
 	// cert-manager issuer that signs KEDA's certificates (type cert_manager).
 	// Empty = the chart generates its own self-signed CA + Issuer chain.
-	CertManagerIssuer *KubernetesKedaCertManagerIssuer `protobuf:"bytes,2,opt,name=cert_manager_issuer,json=certManagerIssuer,proto3" json:"cert_manager_issuer,omitempty"`
+	//
+	// The grain is the arm: `issuer` (a namespaced Issuer in the installation
+	// namespace) or `cluster_issuer` (a cluster-scoped ClusterIssuer).
+	CertManagerIssuer *kubernetes.CertManagerIssuerRef `protobuf:"bytes,3,opt,name=cert_manager_issuer,json=certManagerIssuer,proto3" json:"cert_manager_issuer,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -867,69 +820,9 @@ func (x *KubernetesKedaCertificates) GetType() string {
 	return ""
 }
 
-func (x *KubernetesKedaCertificates) GetCertManagerIssuer() *KubernetesKedaCertManagerIssuer {
+func (x *KubernetesKedaCertificates) GetCertManagerIssuer() *kubernetes.CertManagerIssuerRef {
 	if x != nil {
 		return x.CertManagerIssuer
-	}
-	return nil
-}
-
-// *
-// Existing cert-manager issuer reference.
-type KubernetesKedaCertManagerIssuer struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// *
-	// Issuer grain: a namespaced Issuer (must live in the installation
-	// namespace) or a cluster-scoped ClusterIssuer.
-	Kind *KubernetesKedaIssuerKind `protobuf:"varint,1,opt,name=kind,proto3,enum=dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaIssuerKind,oneof" json:"kind,omitempty"`
-	// *
-	// Name of the Issuer / ClusterIssuer that signs KEDA's certificates.
-	// References the matching Planton kind's output by default.
-	Name          *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *KubernetesKedaCertManagerIssuer) Reset() {
-	*x = KubernetesKedaCertManagerIssuer{}
-	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *KubernetesKedaCertManagerIssuer) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KubernetesKedaCertManagerIssuer) ProtoMessage() {}
-
-func (x *KubernetesKedaCertManagerIssuer) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KubernetesKedaCertManagerIssuer.ProtoReflect.Descriptor instead.
-func (*KubernetesKedaCertManagerIssuer) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *KubernetesKedaCertManagerIssuer) GetKind() KubernetesKedaIssuerKind {
-	if x != nil && x.Kind != nil {
-		return *x.Kind
-	}
-	return KubernetesKedaIssuerKind_issuer
-}
-
-func (x *KubernetesKedaCertManagerIssuer) GetName() *v1.StringValueOrRef {
-	if x != nil {
-		return x.Name
 	}
 	return nil
 }
@@ -953,7 +846,7 @@ type KubernetesKedaPrometheus struct {
 
 func (x *KubernetesKedaPrometheus) Reset() {
 	*x = KubernetesKedaPrometheus{}
-	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -965,7 +858,7 @@ func (x *KubernetesKedaPrometheus) String() string {
 func (*KubernetesKedaPrometheus) ProtoMessage() {}
 
 func (x *KubernetesKedaPrometheus) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -978,7 +871,7 @@ func (x *KubernetesKedaPrometheus) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesKedaPrometheus.ProtoReflect.Descriptor instead.
 func (*KubernetesKedaPrometheus) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesKedaPrometheus) GetEnabled() bool {
@@ -999,7 +892,7 @@ var File_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto protoreflect.File
 
 const file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/kubernetes/kuberneteskeda/v1alpha1/spec.proto\x12.dev.planton.kubernetes.kuberneteskeda.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa2\v\n" +
+	"5catalog/kubernetes/kuberneteskeda/v1alpha1/spec.proto\x12.dev.planton.kubernetes.kuberneteskeda.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a,catalog/kubernetes/cert_manager_issuer.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa2\v\n" +
 	"\x12KubernetesKedaSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -1066,26 +959,17 @@ const file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDesc = "" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x9b\x02\n" +
 	"\x15service_account_email\x18\x02 \x01(\tB\xe6\x01\xbaH\xe2\x01\xba\x01\xde\x01\n" +
 	"%spec.pod_identity.gcp_wi.email_format\x12Vservice_account_email must be a GCP service-account email (…@…gserviceaccount.com)\x1a]this == '' || this.matches('^[a-z0-9-]+@[a-z0-9-]+(\\\\.[a-z0-9-]+)*\\\\.gserviceaccount\\\\.com$')R\x13serviceAccountEmail:\xd8\x01\xbaH\xd4\x01\x1a\xd1\x01\n" +
-	"/spec.pod_identity.gcp_wi.enabled_requires_email\x12kgcp_workload_identity requires service_account_email — without it there is no GCP identity to impersonate\x1a1!this.enabled || this.service_account_email != ''\"\xd9\x04\n" +
+	"/spec.pod_identity.gcp_wi.enabled_requires_email\x12kgcp_workload_identity requires service_account_email — without it there is no GCP identity to impersonate\x1a1!this.enabled || this.service_account_email != ''\"\xbc\x04\n" +
 	"\x1aKubernetesKedaCertificates\x12\xbe\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\xa4\x01\xbaH\x94\x01\xba\x01\x90\x01\n" +
-	"\x1bspec.certificates.type_enum\x12=certificates type must be either 'operator' or 'cert_manager'\x1a2this == '' || this in ['operator', 'cert_manager']\x8a\xa6\x1d\boperatorH\x00R\x04type\x88\x01\x01\x12\x7f\n" +
-	"\x13cert_manager_issuer\x18\x02 \x01(\v2O.dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertManagerIssuerR\x11certManagerIssuer:\xef\x01\xbaH\xeb\x01\x1a\xe8\x01\n" +
+	"\x1bspec.certificates.type_enum\x12=certificates type must be either 'operator' or 'cert_manager'\x1a2this == '' || this in ['operator', 'cert_manager']\x8a\xa6\x1d\boperatorH\x00R\x04type\x88\x01\x01\x12\\\n" +
+	"\x13cert_manager_issuer\x18\x03 \x01(\v2,.dev.planton.kubernetes.CertManagerIssuerRefR\x11certManagerIssuer:\xef\x01\xbaH\xeb\x01\x1a\xe8\x01\n" +
 	"3spec.certificates.issuer_requires_cert_manager_type\x12rcert_manager_issuer is only used with certificates type cert_manager — set type accordingly or remove the issuer\x1a=!has(this.cert_manager_issuer) || this.type == 'cert_manager'B\a\n" +
-	"\x05_type\"\x8c\x02\n" +
-	"\x1fKubernetesKedaCertManagerIssuer\x12m\n" +
-	"\x04kind\x18\x01 \x01(\x0e2H.dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaIssuerKindB\n" +
-	"\x8a\xa6\x1d\x06issuerH\x00R\x04kind\x88\x01\x01\x12q\n" +
-	"\x04name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\xc0\x1f\x92\xd4a\x1astatus.outputs.issuer_nameR\x04nameB\a\n" +
-	"\x05_kind\"\xb3\x02\n" +
+	"\x05_typeJ\x04\b\x02\x10\x03\"\xb3\x02\n" +
 	"\x18KubernetesKedaPrometheus\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12'\n" +
 	"\x0fservice_monitor\x18\x02 \x01(\bR\x0eserviceMonitor:\xd3\x01\xbaH\xcf\x01\x1a\xcc\x01\n" +
-	"(spec.prometheus.monitor_requires_enabled\x12yservice_monitor requires prometheus metrics to be enabled — the ServiceMonitor would have no metrics endpoint to scrape\x1a%!this.service_monitor || this.enabled*:\n" +
-	"\x18KubernetesKedaIssuerKind\x12\n" +
-	"\n" +
-	"\x06issuer\x10\x00\x12\x12\n" +
-	"\x0ecluster_issuer\x10\x01B\xfc\x02\n" +
+	"(spec.prometheus.monitor_requires_enabled\x12yservice_monitor requires prometheus metrics to be enabled — the ServiceMonitor would have no metrics endpoint to scrape\x1a%!this.service_monitor || this.enabledB\xfc\x02\n" +
 	"2com.dev.planton.kubernetes.kuberneteskeda.v1alpha1B\tSpecProtoP\x01Z^github.com/plantonhq/planton/catalog/kubernetes/kuberneteskeda/v1alpha1;kuberneteskedav1alpha1\xa2\x02\x04DPKK\xaa\x02.Dev.Planton.Kubernetes.Kuberneteskeda.V1alpha1\xca\x02.Dev\\Planton\\Kubernetes\\Kuberneteskeda\\V1alpha1\xe2\x02:Dev\\Planton\\Kubernetes\\Kuberneteskeda\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Kubernetes::Kuberneteskeda::V1alpha1b\x06proto3"
 
 var (
@@ -1100,50 +984,46 @@ func file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDescGZIP() []
 	return file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_goTypes = []any{
-	(KubernetesKedaIssuerKind)(0),               // 0: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaIssuerKind
-	(*KubernetesKedaSpec)(nil),                  // 1: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec
-	(*KubernetesKedaCrds)(nil),                  // 2: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCrds
-	(*KubernetesKedaComponent)(nil),             // 3: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent
-	(*KubernetesKedaWebhooks)(nil),              // 4: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaWebhooks
-	(*KubernetesKedaPodIdentity)(nil),           // 5: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity
-	(*KubernetesKedaAwsIrsa)(nil),               // 6: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAwsIrsa
-	(*KubernetesKedaAzureWorkloadIdentity)(nil), // 7: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAzureWorkloadIdentity
-	(*KubernetesKedaGcpWorkloadIdentity)(nil),   // 8: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaGcpWorkloadIdentity
-	(*KubernetesKedaCertificates)(nil),          // 9: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertificates
-	(*KubernetesKedaCertManagerIssuer)(nil),     // 10: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertManagerIssuer
-	(*KubernetesKedaPrometheus)(nil),            // 11: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPrometheus
-	nil,                                         // 12: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),                 // 13: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.WorkloadToleration)(nil),       // 14: dev.planton.kubernetes.WorkloadToleration
-	(*kubernetes.ContainerResources)(nil),       // 15: dev.planton.kubernetes.ContainerResources
+	(*KubernetesKedaSpec)(nil),                  // 0: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec
+	(*KubernetesKedaCrds)(nil),                  // 1: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCrds
+	(*KubernetesKedaComponent)(nil),             // 2: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent
+	(*KubernetesKedaWebhooks)(nil),              // 3: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaWebhooks
+	(*KubernetesKedaPodIdentity)(nil),           // 4: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity
+	(*KubernetesKedaAwsIrsa)(nil),               // 5: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAwsIrsa
+	(*KubernetesKedaAzureWorkloadIdentity)(nil), // 6: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAzureWorkloadIdentity
+	(*KubernetesKedaGcpWorkloadIdentity)(nil),   // 7: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaGcpWorkloadIdentity
+	(*KubernetesKedaCertificates)(nil),          // 8: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertificates
+	(*KubernetesKedaPrometheus)(nil),            // 9: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPrometheus
+	nil,                                         // 10: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),                 // 11: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.WorkloadToleration)(nil),       // 12: dev.planton.kubernetes.WorkloadToleration
+	(*kubernetes.ContainerResources)(nil),       // 13: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.CertManagerIssuerRef)(nil),     // 14: dev.planton.kubernetes.CertManagerIssuerRef
 }
 var file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_depIdxs = []int32{
-	13, // 0: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 1: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.crds:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCrds
-	3,  // 2: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.operator:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent
-	3,  // 3: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.metrics_server:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent
-	4,  // 4: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.webhooks:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaWebhooks
-	5,  // 5: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.pod_identity:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity
-	9,  // 6: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.certificates:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertificates
-	12, // 7: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.node_selector:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.NodeSelectorEntry
-	14, // 8: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	11, // 9: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.prometheus:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPrometheus
-	15, // 10: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	15, // 11: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaWebhooks.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	6,  // 12: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity.aws_irsa:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAwsIrsa
-	7,  // 13: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity.azure_workload_identity:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAzureWorkloadIdentity
-	8,  // 14: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity.gcp_workload_identity:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaGcpWorkloadIdentity
-	10, // 15: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertificates.cert_manager_issuer:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertManagerIssuer
-	0,  // 16: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertManagerIssuer.kind:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaIssuerKind
-	13, // 17: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertManagerIssuer.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	11, // 0: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 1: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.crds:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCrds
+	2,  // 2: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.operator:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent
+	2,  // 3: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.metrics_server:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent
+	3,  // 4: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.webhooks:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaWebhooks
+	4,  // 5: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.pod_identity:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity
+	8,  // 6: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.certificates:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertificates
+	10, // 7: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.node_selector:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.NodeSelectorEntry
+	12, // 8: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	9,  // 9: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaSpec.prometheus:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPrometheus
+	13, // 10: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaComponent.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	13, // 11: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaWebhooks.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	5,  // 12: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity.aws_irsa:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAwsIrsa
+	6,  // 13: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity.azure_workload_identity:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaAzureWorkloadIdentity
+	7,  // 14: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaPodIdentity.gcp_workload_identity:type_name -> dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaGcpWorkloadIdentity
+	14, // 15: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaCertificates.cert_manager_issuer:type_name -> dev.planton.kubernetes.CertManagerIssuerRef
+	16, // [16:16] is the sub-list for method output_type
+	16, // [16:16] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_init() }
@@ -1156,20 +1036,18 @@ func file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_init() {
 	file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
 	file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
-	file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   12,
+			NumEnums:      0,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_goTypes,
 		DependencyIndexes: file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_depIdxs,
-		EnumInfos:         file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_enumTypes,
 		MessageInfos:      file_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto_msgTypes,
 	}.Build()
 	File_catalog_kubernetes_kuberneteskeda_v1alpha1_spec_proto = out.File

@@ -13,4 +13,11 @@ message DigitalOceanProjectStackOutputs {
 
   // Numeric id of the account or team that owns the project.
   string owner_id = 3;
+
+  // URNs of the resources DigitalOcean reports as members of the project
+  // after apply (for example "do:droplet:12345"), sorted. When the spec's
+  // resources list is set this is the membership the project holds; when it
+  // is left empty membership is unmanaged and the list reflects whatever
+  // the account has assigned out of band.
+  repeated string resource_urns = 4;
 }

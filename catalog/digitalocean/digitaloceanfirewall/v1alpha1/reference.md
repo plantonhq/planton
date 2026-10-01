@@ -167,7 +167,9 @@ IPv4/IPv6 addresses or CIDR ranges traffic is allowed from
 `[]string`
 
 Droplet tag names; traffic from any Droplet carrying one of these tags
-is allowed. Tag values are case-insensitive for set membership.
+is allowed. Each tag must already exist on the account (a Droplet
+declaring it creates it; the API rejects a firewall naming an unknown
+tag). Tag values are case-insensitive for set membership.
 
 - rule: {"repeated":{"items":{"string":{"pattern":"^[a-zA-Z0-9:\\-_]{1,255}$"}}}}
 
@@ -245,7 +247,9 @@ IPv4/IPv6 addresses or CIDR ranges traffic is allowed to
 `[]string`
 
 Droplet tag names; traffic to any Droplet carrying one of these tags is
-allowed. Tag values are case-insensitive for set membership.
+allowed. Each tag must already exist on the account (a Droplet
+declaring it creates it; the API rejects a firewall naming an unknown
+tag). Tag values are case-insensitive for set membership.
 
 - rule: {"repeated":{"items":{"string":{"pattern":"^[a-zA-Z0-9:\\-_]{1,255}$"}}}}
 
@@ -289,10 +293,15 @@ to DigitalOceanLoadBalancer resources.
 
 (Optional) Droplet tag names this firewall applies to: any Droplet
 carrying one of these tags is protected, and membership follows the tag
-automatically as Droplets come and go. DigitalOcean creates tags
-implicitly when first referenced. The API documents a maximum of 5 tags
-per firewall (enforced server-side, not by the provider). Tag values are
-case-insensitive for set membership.
+automatically as Droplets come and go. Every tag named here MUST
+already exist on the account — the API rejects the firewall with
+"422 tag <name> does not exist" otherwise. Droplets (and volumes) create
+tags implicitly when they declare them, so tag the Droplets first (or
+reference a tag a Droplet already carries, such as the Planton label
+tags every Planton-managed Droplet gets); firewalls never create tags.
+The API documents a maximum of 5 tags per firewall (enforced
+server-side, not by the provider). Tag values are case-insensitive for
+set membership.
 
 - rule: {"repeated":{"items":{"string":{"pattern":"^[a-zA-Z0-9:\\-_]{1,255}$"}}}}
 

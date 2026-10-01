@@ -13,7 +13,10 @@
 #       * <UTC timestamp>  (e.g. 2026-07-03-14-30-05) - immutable audit tag
 #       * latest           - the tag all dependent workflows pull
 #
-# Trigger: only when files under tools/ci/docker/** change.
+# Trigger: files under tools/ci/docker/** change, or go.mod does -- the image's
+# Go must equal go.mod's `go` directive (GOTOOLCHAIN=local jobs refuse an older
+# one), so a go.mod bump that forgets the Dockerfile fails here, not in every
+# job that runs inside the image.
 # =============================================================================
 
 name: build.ci-image
@@ -22,11 +25,13 @@ on:
   pull_request:
     paths:
       - 'tools/ci/docker/**'
+      - 'go.mod'
   push:
     branches:
       - main
     paths:
       - 'tools/ci/docker/**'
+      - 'go.mod'
   workflow_dispatch: {}
 
 permissions:
@@ -47,6 +52,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: The image's Go equals go.mod's
+        run: |
+          want="$(awk '/^go /{print $2; exit}' go.mod)"
+          have="$(sed -n 's/^FROM golang:\([0-9.]*\)-.*/\1/p' tools/ci/docker/Dockerfile)"
+          if [ "$want" != "$have" ]; then
+            echo "::error file=tools/ci/docker/Dockerfile::the image pins Go ${have:-<none>} but go.mod requires ${want}; set FROM golang:${want}-bookworm"
+            exit 1
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { ARCHITECTURES, PROVIDER_ORDER } from '../src/data/architecture-stories.ts';
 const site = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const registry = {};
+// The overview film uses a managed database alongside its GCP foundation.
+registry.GcpCloudSql = `data:image/svg+xml;base64,${Buffer.from(fs.readFileSync(path.join(site, '../catalog/gcp/gcpcloudsql/logo.svg'), 'utf8')).toString('base64')}`;
 for (const provider of PROVIDER_ORDER) {
   const files = [
     [

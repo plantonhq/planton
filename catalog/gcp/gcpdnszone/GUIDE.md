@@ -16,7 +16,7 @@ delegates to".
 ## Delegation is the real go-live
 
 Creating a public zone does nothing until the registrar points at the
-zone's `nameServers` output — and once it does, those four NS hosts are
+zone's `nameservers` output — and once it does, those four NS hosts are
 load-bearing. Recreating the zone hands out a DIFFERENT name-server set
 in the general case, which silently breaks delegation until the
 registrar is updated. Treat zone recreation like an IP change: planned,

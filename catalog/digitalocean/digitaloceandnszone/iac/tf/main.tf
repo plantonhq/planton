@@ -5,6 +5,18 @@
 resource "digitalocean_domain" "dns_zone" {
   name       = var.spec.domain_name
   ip_address = var.spec.ip_address != "" ? var.spec.ip_address : null
+
+  # ip_address is applied at creation ONLY and never read back by the API,
+  # and the provider marks it ForceNew. Left unguarded, adopting an existing
+  # zone whose manifest still carries it -- or editing it later -- would plan
+  # a destroy-and-recreate of the whole zone, taking every record and the
+  # domain's resolution with it. The seed record it created keeps living in
+  # the zone regardless, so later changes are ignored here, exactly as the
+  # Pulumi module's IgnoreChanges does; the spec field comment tells manifest
+  # authors the same.
+  lifecycle {
+    ignore_changes = [ip_address]
+  }
 }
 
 # The zone's managed records, one resource per record value.

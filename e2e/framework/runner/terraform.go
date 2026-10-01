@@ -82,16 +82,20 @@ func TerraformOutputs(t testing.TB, opts *terraform.Options) (map[string]interfa
 	return result, nil
 }
 
-// BuildTerratestOptions constructs Terratest Options from the prepared working
-// directory, tfvars path, and provider environment variables.
-//
-// The binary defaults to "tofu" (matching Planton's CLI preference for OpenTofu).
-// Set PLANTON_E2E_TF_BINARY="terraform" to use HashiCorp Terraform instead.
-func BuildTerratestOptions(t testing.TB, workDir, tfvarsPath string, envVars map[string]string) *terraform.Options {
-	binary := "tofu"
+// TerraformBinary is the HCL engine binary every terraform-engine lane runs: "tofu" (matching
+// Planton's CLI preference for OpenTofu), or PLANTON_E2E_TF_BINARY when set ("terraform" for
+// HashiCorp Terraform). RunComponentTest refuses the binary for a kind that does not declare it.
+func TerraformBinary() string {
 	if override := os.Getenv("PLANTON_E2E_TF_BINARY"); override != "" {
-		binary = override
+		return override
 	}
+	return "tofu"
+}
+
+// BuildTerratestOptions constructs Terratest Options from the prepared working
+// directory, tfvars path, and provider environment variables, running TerraformBinary.
+func BuildTerratestOptions(t testing.TB, workDir, tfvarsPath string, envVars map[string]string) *terraform.Options {
+	binary := TerraformBinary()
 
 	fmt.Printf("  [terraform] binary=%s workDir=%s\n", binary, workDir)
 

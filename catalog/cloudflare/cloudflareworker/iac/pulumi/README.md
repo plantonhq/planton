@@ -9,7 +9,7 @@ Provisions a Cloudflare Worker script and the companions that hang off it: worke
 - `cloudflare.WorkersCustomDomain` — one per hostname (`environment` is deprecated and omitted)
 - `cloudflare.WorkersRoute` — one per pattern
 - `cloudflare.WorkersCronTrigger` — when `schedules` is set
-- R2 fetch via the AWS S3 provider — only when `r2Bundle` is set
+- R2 fetch via the AWS S3 provider — only when `r2Bundle` is set. The provider signs with the connection's R2 key pair (`provider_config.r2`, falling back to the ambient `AWS_*` chain when absent) and reads the object's raw bytes whatever its Content-Type; an empty bundle stops the program with an error naming it
 
 ## Outputs
 

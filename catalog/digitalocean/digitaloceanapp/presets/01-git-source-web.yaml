@@ -4,7 +4,7 @@ metadata:
   name: my-web-app
 spec:
   appName: my-web-app
-  region: nyc3
+  region: nyc
   services:
     - name: web
       git:

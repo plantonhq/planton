@@ -7,6 +7,7 @@
 package azuremanagedredisv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -181,7 +182,7 @@ var File_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azuremanagedredis/v1alpha1/outputs.proto\x12,dev.planton.azure.azuremanagedredis.v1alpha1\"\xa4\x03\n" +
+	"6catalog/azure/azuremanagedredis/v1alpha1/outputs.proto\x12,dev.planton.azure.azuremanagedredis.v1alpha1\x1a\x1cshared/options/options.proto\"\xb0\x03\n" +
 	"\x1dAzureManagedRedisStackOutputs\x12(\n" +
 	"\x10managed_redis_id\x18\x01 \x01(\tR\x0emanagedRedisId\x12,\n" +
 	"\x12managed_redis_name\x18\x02 \x01(\tR\x10managedRedisName\x12\x16\n" +
@@ -190,9 +191,9 @@ const file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_rawDesc = "" +
 	"\bhostname\x18\x05 \x01(\tR\bhostname\x12\x1f\n" +
 	"\vdatabase_id\x18\x06 \x01(\tR\n" +
 	"databaseId\x12\x12\n" +
-	"\x04port\x18\a \x01(\x05R\x04port\x12,\n" +
-	"\x12primary_access_key\x18\b \x01(\tR\x10primaryAccessKey\x120\n" +
-	"\x14secondary_access_key\x18\t \x01(\tR\x12secondaryAccessKey\x122\n" +
+	"\x04port\x18\a \x01(\x05R\x04port\x122\n" +
+	"\x12primary_access_key\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\x10primaryAccessKey\x126\n" +
+	"\x14secondary_access_key\x18\t \x01(\tB\x04\xa0\xa6\x1d\x01R\x12secondaryAccessKey\x122\n" +
 	"\x15identity_principal_id\x18\n" +
 	" \x01(\tR\x13identityPrincipalIdB\xf6\x02\n" +
 	"0com.dev.planton.azure.azuremanagedredis.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/azure/azuremanagedredis/v1alpha1;azuremanagedredisv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Azure.Azuremanagedredis.V1alpha1\xca\x02,Dev\\Planton\\Azure\\Azuremanagedredis\\V1alpha1\xe2\x028Dev\\Planton\\Azure\\Azuremanagedredis\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Azure::Azuremanagedredis::V1alpha1b\x06proto3"

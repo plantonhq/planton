@@ -128,7 +128,10 @@ type DigitalOceanLoadBalancerSpec struct {
 	DropletIds []*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=droplet_ids,json=dropletIds,proto3" json:"droplet_ids,omitempty"`
 	// (Optional) A Droplet tag: every Droplet carrying it is attached, and
 	// membership follows the tag automatically as Droplets come and go.
-	// Mutually exclusive with droplet_ids.
+	// The tag does not have to exist yet -- DigitalOcean stores it as a
+	// selector and accepts a tag no Droplet carries (unlike a firewall, which
+	// rejects an unknown tag); the balancer serves nothing until a Droplet in
+	// its region picks up the tag. Mutually exclusive with droplet_ids.
 	DropletTag string `protobuf:"bytes,7,opt,name=droplet_tag,json=dropletTag,proto3" json:"droplet_tag,omitempty"`
 	// (Optional) Cookie-based session affinity. When unset, DigitalOcean
 	// defaults to no sticky sessions ("none").

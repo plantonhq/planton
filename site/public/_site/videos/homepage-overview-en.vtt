@@ -1,0 +1,25 @@
+WEBVTT
+
+1
+00:00:00.600 --> 00:00:05.430
+Your team can write code faster. Getting it into production still takes coordination.
+
+2
+00:00:07.500 --> 00:00:17.531
+Your platform team defines reusable environments, access, and delivery workflows. Planton provisions the foundation in dependency order, ready for your developers to use.
+
+3
+00:00:18.500 --> 00:00:27.742
+Developers and their coding agents use that foundation. A change in GitHub triggers the configured pipeline. Planton builds your code and deploys it to development in your cloud.
+
+4
+00:00:31.200 --> 00:00:40.627
+Routine work becomes repeatable. Where production requires approval, your team decides. Then Planton deploys the same artifact and records the result.
+
+5
+00:00:41.400 --> 00:00:52.267
+Everyone can see the resources and how they fit together. This is our own self-hosted Planton on G K E, managing Planton SaaS. Dogfooding, in practice.
+
+6
+00:00:53.100 --> 00:00:59.880
+Start with one team, one service, one reusable environment. See Planton with your stack. Book a demo.

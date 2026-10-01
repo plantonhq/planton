@@ -41,8 +41,8 @@ locals {
   # longer than this corrupts the naming contract the outputs promise. The
   # helm_release precondition (main.tf) fails the plan loudly; this flag is
   # its condition (twin: the Pulumi module's MaxNameLength guard).
-  max_name_length      = 40
-  name_within_budget   = length(local.release_name) <= local.max_name_length
+  max_name_length    = 40
+  name_within_budget = length(local.release_name) <= local.max_name_length
 
   labels = merge(
     {
@@ -59,7 +59,7 @@ locals {
   # One derivation feeds three surfaces: loki.storage.type, the derived
   # schema's object_store, and the compactor's delete_request_store.
   backend_type = (
-    try(var.spec.storage.s3, null) != null ? "s3" :
+    try(var.spec.storage.s3, null) != null || try(var.spec.storage.r2, null) != null ? "s3" :
     try(var.spec.storage.gcs, null) != null ? "gcs" :
     try(var.spec.storage.azure, null) != null ? "azure" : "filesystem"
   )
@@ -168,15 +168,44 @@ locals {
   # ---- schema ------------------------------------------------------------
   schema_from = coalesce(var.spec.schema_from_date != "" ? var.spec.schema_from_date : null, "2024-04-01")
 
+  # ---- the r2 arm (twin of the Pulumi module's r2.go) ---------------------
+  # R2 speaks S3, so backend_type is "s3" and the S3 values are composed
+  # from R2's vocabulary. The host table is pkg/cloudflare/r2's (the Go
+  # source of truth): a jurisdictional bucket is served only through
+  # <account>.<jurisdiction>.r2.cloudflarestorage.com. The key pair goes
+  # into the module-owned `<name>-r2-credentials` Secret (main.tf).
+  r2              = try(var.spec.storage.r2, null)
+  r2_jurisdiction = local.r2 == null ? "default" : coalesce(try(coalesce(local.r2.jurisdiction), ""), "default")
+  r2_endpoint = local.r2 == null ? null : (
+    local.r2_jurisdiction == "default"
+    ? "https://${local.r2.account_id}.r2.cloudflarestorage.com"
+    : "https://${local.r2.account_id}.${local.r2_jurisdiction}.r2.cloudflarestorage.com"
+  )
+  r2_secret_name = "${local.release_name}-r2-credentials"
+  r2_secret_data = local.r2 == null ? {} : {
+    "access-key-id"     = local.r2.credentials.access_key_id
+    "secret-access-key" = local.r2.credentials.secret_access_key
+  }
+
   # ---- object-store credential env + volumes -----------------------------
-  s3_creds_declared = local.backend_type == "s3" && try(var.spec.storage.s3.credentials, null) != null
-  gcs_key_declared  = local.backend_type == "gcs" && try(var.spec.storage.gcs.service_account_key_secret, null) != null
+  s3_creds_declared  = local.backend_type == "s3" && try(var.spec.storage.s3.credentials, null) != null
+  gcs_key_declared   = local.backend_type == "gcs" && try(var.spec.storage.gcs.service_account_key_secret, null) != null
   azure_key_declared = local.backend_type == "azure" && try(var.spec.storage.azure.account_key_secret, null) != null
 
   gcs_key_mount_path = "/var/secrets/gcs"
   gcs_key_volume     = "gcs-service-account"
 
   credential_env = concat(
+    local.r2 != null ? [
+      {
+        name      = "LOKI_S3_ACCESS_KEY_ID"
+        valueFrom = { secretKeyRef = { name = local.r2_secret_name, key = "access-key-id" } }
+      },
+      {
+        name      = "LOKI_S3_SECRET_ACCESS_KEY"
+        valueFrom = { secretKeyRef = { name = local.r2_secret_name, key = "secret-access-key" } }
+      },
+    ] : [],
     local.s3_creds_declared ? [
       {
         name = "LOKI_S3_ACCESS_KEY_ID"
@@ -225,13 +254,18 @@ locals {
   ] : []
 
   # ---- storage block -----------------------------------------------------
+  # One object for both arms that speak S3 (s3 and r2), each attribute
+  # choosing its own value: a conditional between two differently shaped
+  # objects makes OpenTofu unify them to map(string), and the chart copies
+  # these values into Loki's config verbatim -- a quoted "true" for
+  # s3ForcePathStyle is a string Loki refuses to parse, and it never starts.
   storage_s3 = local.backend_type != "s3" ? null : { for k, v in {
-    endpoint        = try(var.spec.storage.s3.endpoint, "") != "" ? var.spec.storage.s3.endpoint : null
-    region          = try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null
-    s3ForcePathStyle = try(var.spec.storage.s3.force_path_style, false) ? true : null
-    insecure        = try(var.spec.storage.s3.insecure, false) ? true : null
-    accessKeyId     = local.s3_creds_declared ? "$${LOKI_S3_ACCESS_KEY_ID}" : null
-    secretAccessKey = local.s3_creds_declared ? "$${LOKI_S3_SECRET_ACCESS_KEY}" : null
+    endpoint         = local.r2 != null ? local.r2_endpoint : (try(var.spec.storage.s3.endpoint, "") != "" ? var.spec.storage.s3.endpoint : null)
+    region           = local.r2 != null ? "auto" : (try(var.spec.storage.s3.region, "") != "" ? var.spec.storage.s3.region : null)
+    s3ForcePathStyle = local.r2 != null || try(var.spec.storage.s3.force_path_style, false) ? true : null
+    insecure         = local.r2 == null && try(var.spec.storage.s3.insecure, false) ? true : null
+    accessKeyId      = local.r2 != null || local.s3_creds_declared ? "$${LOKI_S3_ACCESS_KEY_ID}" : null
+    secretAccessKey  = local.r2 != null || local.s3_creds_declared ? "$${LOKI_S3_SECRET_ACCESS_KEY}" : null
   } : k => v if v != null }
 
   storage_azure = local.backend_type != "azure" ? null : { for k, v in {
@@ -242,7 +276,10 @@ locals {
 
   storage_block = { for k, v in {
     type = local.backend_type
-    bucketNames = local.backend_type == "s3" ? {
+    bucketNames = local.r2 != null ? {
+      chunks = local.r2.bucket
+      ruler  = local.r2.bucket
+      } : local.backend_type == "s3" ? {
       chunks = var.spec.storage.s3.bucket
       ruler  = try(var.spec.storage.s3.ruler_bucket, "") != "" ? var.spec.storage.s3.ruler_bucket : var.spec.storage.s3.bucket
       } : local.backend_type == "gcs" ? {
@@ -281,9 +318,9 @@ locals {
   } : null
 
   # ---- multi-tenancy -----------------------------------------------------
-  mt_enabled       = try(var.spec.multi_tenancy.enabled, false)
-  mt_tenants       = try(var.spec.multi_tenancy.tenants, [])
-  mt_existing_htp  = try(var.spec.multi_tenancy.existing_htpasswd_secret, "")
+  mt_enabled      = try(var.spec.multi_tenancy.enabled, false)
+  mt_tenants      = try(var.spec.multi_tenancy.tenants, [])
+  mt_existing_htp = try(var.spec.multi_tenancy.existing_htpasswd_secret, "")
   loki_tenants = local.mt_enabled && length(local.mt_tenants) > 0 ? [
     for t in local.mt_tenants : {
       name         = t.name
@@ -312,13 +349,17 @@ locals {
     compactor     = local.compactor_block
     rulerConfig   = local.ruler_config
     tenants       = local.loki_tenants
+    # Loki reads its object-store credentials only at start: the Secret's
+    # fingerprint changes every Loki pod's template when the key rotates.
+    # sha256(jsonencode(map)) is the Pulumi twin's credentialsChecksum.
+    podAnnotations = local.r2 != null ? { "checksum/credentials" = sha256(jsonencode(local.r2_secret_data)) } : null
   } : k => v if v != null }
 
   # ---- gateway -----------------------------------------------------------
   gateway_enabled = try(var.spec.gateway.enabled, null) != null ? var.spec.gateway.enabled : true
   gateway_block = { for k, v in {
-    enabled  = local.gateway_enabled ? null : false
-    replicas = try(var.spec.gateway.replicas, null) != null && try(var.spec.gateway.replicas, 1) != 1 ? var.spec.gateway.replicas : null
+    enabled   = local.gateway_enabled ? null : false
+    replicas  = try(var.spec.gateway.replicas, null) != null && try(var.spec.gateway.replicas, 1) != 1 ? var.spec.gateway.replicas : null
     resources = local.gateway_resources
     basicAuth = local.mt_enabled && (length(local.mt_tenants) > 0 || local.mt_existing_htp != "") ? { for bk, bv in {
       enabled        = true
@@ -364,7 +405,7 @@ locals {
   # `memcached` image (repository-only, COMBINED form) the global override
   # does not reach — its repository is re-pointed explicitly. Twin: the
   # Pulumi module's image handling.
-  global_block   = var.spec.image_registry != "" ? { imageRegistry = var.spec.image_registry } : null
+  global_block    = var.spec.image_registry != "" ? { imageRegistry = var.spec.image_registry } : null
   memcached_block = var.spec.image_registry != "" ? { image = { repository = "${var.spec.image_registry}/memcached" } } : null
 
   # ---- typed chart values (twin of the Pulumi module's buildHelmValues) --
@@ -379,14 +420,14 @@ locals {
 
     loki = local.loki_config
 
-    gateway       = length(local.gateway_block) > 0 ? local.gateway_block : null
-    chunksCache   = length(local.chunks_cache) > 0 ? local.chunks_cache : null
-    resultsCache  = length(local.results_cache) > 0 ? local.results_cache : null
-    lokiCanary    = try(var.spec.canary_enabled, null) != null && !var.spec.canary_enabled ? { enabled = false } : null
-    monitoring    = var.spec.service_monitor_enabled ? { serviceMonitor = { enabled = true } } : null
-    global        = local.global_block
-    memcached     = local.memcached_block
+    gateway          = length(local.gateway_block) > 0 ? local.gateway_block : null
+    chunksCache      = length(local.chunks_cache) > 0 ? local.chunks_cache : null
+    resultsCache     = length(local.results_cache) > 0 ? local.results_cache : null
+    lokiCanary       = try(var.spec.canary_enabled, null) != null && !var.spec.canary_enabled ? { enabled = false } : null
+    monitoring       = var.spec.service_monitor_enabled ? { serviceMonitor = { enabled = true } } : null
+    global           = local.global_block
+    memcached        = local.memcached_block
     imagePullSecrets = length(var.spec.image_pull_secrets) > 0 ? var.spec.image_pull_secrets : null
-    defaults      = length(local.defaults_block) > 0 ? local.defaults_block : null
+    defaults         = length(local.defaults_block) > 0 ? local.defaults_block : null
   } : k => v if v != null }
 }

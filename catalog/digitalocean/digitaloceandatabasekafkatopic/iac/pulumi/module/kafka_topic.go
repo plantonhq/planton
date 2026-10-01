@@ -52,9 +52,11 @@ func kafkaTopic(
 		return nil, errors.Wrap(err, "failed to create digitalocean kafka topic")
 	}
 
+	// The topic's provisioning state is deliberately not exported: an
+	// apply-time snapshot goes stale (creation is asynchronous), so live
+	// state belongs to whoever reads the API, never to the outputs contract.
 	ctx.Export(OpClusterId, createdTopic.ClusterId)
 	ctx.Export(OpTopicName, createdTopic.Name)
-	ctx.Export(OpState, createdTopic.State)
 
 	return createdTopic, nil
 }

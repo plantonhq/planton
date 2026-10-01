@@ -74,7 +74,7 @@ This component provisions the FSx for Windows file system, its network interface
 | `dns_ips` | []string | **Yes** | DNS server IPs for the domain (1–2 IPs). |
 | `username` | string | Conditional | Service account username. Mutually exclusive with `domain_join_service_account_secret_arn`. |
 | `password` | string | Conditional | Service account password. Mutually exclusive with `domain_join_service_account_secret_arn`. |
-| `domain_join_service_account_secret_arn` | StringValueOrRef | Conditional | Secrets Manager ARN with domain join credentials. Recommended for production. |
+| `domain_join_service_account_secret_arn` | StringValueOrRef | Conditional | Secrets Manager ARN with domain join credentials, or a valueFrom that defaults to an AwsSecretsManagerSecret's `status.outputs.secret_arn`. Recommended for production. |
 | `file_system_administrators_group` | string | No | AD group for file system admin privileges. Default: `Domain Admins`. |
 | `organizational_unit_distinguished_name` | string | No | OU where the computer object is created. |
 

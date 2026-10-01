@@ -30,7 +30,13 @@ type DigitalOceanProjectStackOutputs struct {
 	// UUID of the account or team that owns the project.
 	OwnerUuid string `protobuf:"bytes,2,opt,name=owner_uuid,json=ownerUuid,proto3" json:"owner_uuid,omitempty"`
 	// Numeric id of the account or team that owns the project.
-	OwnerId       string `protobuf:"bytes,3,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	OwnerId string `protobuf:"bytes,3,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	// URNs of the resources DigitalOcean reports as members of the project
+	// after apply (for example "do:droplet:12345"), sorted. When the spec's
+	// resources list is set this is the membership the project holds; when it
+	// is left empty membership is unmanaged and the list reflects whatever
+	// the account has assigned out of band.
+	ResourceUrns  []string `protobuf:"bytes,4,rep,name=resource_urns,json=resourceUrns,proto3" json:"resource_urns,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -86,17 +92,25 @@ func (x *DigitalOceanProjectStackOutputs) GetOwnerId() string {
 	return ""
 }
 
+func (x *DigitalOceanProjectStackOutputs) GetResourceUrns() []string {
+	if x != nil {
+		return x.ResourceUrns
+	}
+	return nil
+}
+
 var File_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceanproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/digitalocean/digitaloceanproject/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceanproject.v1alpha1\"z\n" +
+	"?catalog/digitalocean/digitaloceanproject/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceanproject.v1alpha1\"\x9f\x01\n" +
 	"\x1fDigitalOceanProjectStackOutputs\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\x12\x1d\n" +
 	"\n" +
 	"owner_uuid\x18\x02 \x01(\tR\townerUuid\x12\x19\n" +
-	"\bowner_id\x18\x03 \x01(\tR\aownerIdB\xae\x03\n" +
+	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12#\n" +
+	"\rresource_urns\x18\x04 \x03(\tR\fresourceUrnsB\xae\x03\n" +
 	"9com.dev.planton.digitalocean.digitaloceanproject.v1alpha1B\fOutputsProtoP\x01Zjgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanproject/v1alpha1;digitaloceanprojectv1alpha1\xa2\x02\x04DPDD\xaa\x025Dev.Planton.Digitalocean.Digitaloceanproject.V1alpha1\xca\x025Dev\\Planton\\Digitalocean\\Digitaloceanproject\\V1alpha1\xe2\x02ADev\\Planton\\Digitalocean\\Digitaloceanproject\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Digitalocean::Digitaloceanproject::V1alpha1b\x06proto3"
 
 var (

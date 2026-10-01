@@ -453,7 +453,7 @@ destroy at all):
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: GcpRedisInstance, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: GcpRedisInstance, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -462,7 +462,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpRedisInstance
 | `status.outputs.read_endpoint` | `string` | Hostname or IP address of the read replica endpoint. Only populated when tier is STANDARD_HA with read replicas enabled. Clients can direct read-only traffic here to reduce load on the primary. |
 | `status.outputs.read_endpoint_port` | `int32` | Port number of the read replica endpoint. Only populated when tier is STANDARD_HA with read replicas enabled. |
 | `status.outputs.current_location_id` | `string` | Zone where the Redis primary is currently running. For STANDARD_HA, this may change after a failover event. |
-| `status.outputs.auth_string` | `string` | Redis AUTH string for client authentication. Only populated when auth_enabled is true. This value is generated and rotated by GCP automatically. Treat as a secret -- do not log or expose in UIs. |
+| `status.outputs.auth_string` | `string` (sensitive) | Redis AUTH string for client authentication. Only populated when auth_enabled is true. This value is generated and rotated by GCP automatically. Treat as a secret -- do not log or expose in UIs. |
 | `status.outputs.server_ca_certs` | `[]string` | PEM-encoded CA certificates protecting the server endpoint. Only populated when transit_encryption_mode is SERVER_AUTHENTICATION. Clients must install these as trust anchors to complete the TLS handshake — this is the material every TLS-enabled consumer needs. |
 | `status.outputs.persistence_iam_identity` | `string` | Cloud IAM identity (format "serviceAccount:<email>") used by import and export operations. Grant this identity access to Cloud Storage buckets used for RDB import/export. May change on CMEK rotation. |
 | `status.outputs.effective_reserved_ip_range` | `string` | The CIDR range actually in use by the instance. Populated whether reserved_ip_range was set explicitly or auto-selected by GCP — the value to consult when planning non-overlapping address space. |

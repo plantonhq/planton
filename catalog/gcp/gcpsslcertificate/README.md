@@ -82,7 +82,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 - **Nothing renews itself**: unlike a Google-managed certificate, expiry is your responsibility — watch the `expire_time` output.
 - **Fully immutable**: every field is ForceNew. Rotation is create-before-destroy — create the replacement under a new name, repoint the proxy's `sslCertificates`, then destroy the old one. GCP blocks deleting a certificate a proxy still references (`resourceInUseByAnotherResource`), so the destroy fails rather than dropping TLS.
-- **The private key is the only secret**: it is marked sensitive, encrypted in state, write-only in GCP, and never appears in outputs. The certificate chain is public handshake material presented to every client and is deliberately not treated as a secret.
+- **The private key is the only secret**: it is marked sensitive (Pulumi encrypts it in state; OpenTofu encrypts it with the whole state file when given an encryption key), write-only in GCP, and never appears in outputs. The certificate chain is public handshake material presented to every client and is deliberately not treated as a secret.
 - **When to prefer this over a managed certificate**: wildcard domains, EV/OV or private-CA issuance, internal load balancers (no public DNS for managed validation), or serving TLS before DNS cutover.
 
 ### Deliberately not modeled (recorded reasons)

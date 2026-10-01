@@ -97,8 +97,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `site_tag` | The Cloudflare-assigned site tag — the site's identity in every RUM API path | RUM API queries, import recipes |
-| `site_token` | The beacon's measurement token (secret-marked) | Manual beacon embeds that build their own script tag |
-| `snippet` | The ready-to-embed script tag, carrying the token (secret-marked) | Pasting into page templates for hostname-identified sites |
+| `site_token` | The beacon's measurement token | Manual beacon embeds that build their own script tag |
+| `snippet` | The ready-to-embed script tag, carrying the token | Pasting into page templates for hostname-identified sites |
 | `ruleset_id` | The parent object the include/exclude rules live under (empty for host-identified sites — they have no ruleset) | Rule management via the RUM API |
 
 The token ships inside public pages once deployed, so it is not a secret the way an API key is — the secret marking keeps it out of plan logs and CI output.

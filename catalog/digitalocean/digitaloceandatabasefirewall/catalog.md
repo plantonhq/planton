@@ -1,6 +1,6 @@
 # DigitalOcean Database Firewall
 
-Declares the inbound trusted sources of a DigitalOcean managed database cluster: IP addresses and CIDR blocks, Droplets, Kubernetes clusters, App Platform apps, and Droplet tags -- each in its own typed list, with platform resources wired by reference instead of hand-copied ids. The rule set is a property of the cluster, not a standalone object: there is at most one per cluster, every apply replaces the full set, and destroying this resource clears the set -- after which the cluster accepts connections from anywhere again.
+Declares the inbound trusted sources of a DigitalOcean managed database cluster: IPv4 addresses and IPv4 CIDR blocks (DigitalOcean's database firewall accepts no IPv6 shape -- the spec refuses it at validation), Droplets, Kubernetes clusters, App Platform apps, and Droplet tags -- each in its own typed list, with platform resources wired by reference instead of hand-copied ids. The rule set is a property of the cluster, not a standalone object: there is at most one per cluster, every apply replaces the full set, and destroying this resource clears the set -- after which the cluster accepts connections from anywhere again.
 
 ## What Gets Created
 
@@ -84,6 +84,8 @@ These are the most important decisions when configuring a database firewall. Exp
 **Destroying the firewall OPENS the database** -- "delete" is not a deletion. Destroy PUTs an empty rule list, after which the cluster accepts connections from anywhere, exactly as it did before the firewall existed. Never remove this resource as cleanup while the cluster lives; remove it only when the cluster goes with it, or replace it with the successor rule set in the same change.
 
 **Exactly one rule set per cluster** -- DigitalOcean holds one trusted-sources list per cluster. Two of these resources pointing at the same cluster do not merge -- each apply overwrites the other's rules, and they will flap forever. Declare every trusted source in one resource per cluster, owned by one manifest.
+
+**A read replica has its own firewall** -- a replica is its own cluster to DigitalOcean, with its own trusted-sources list that starts EMPTY; the primary's rules never reach it. Declare a second resource per replica with `cluster` pointing at the replica (`kind: DigitalOceanDatabaseReplica`, `fieldPath: status.outputs.replica_id`), or the replica stays open to the public endpoint with the primary's credentials.
 
 **Every apply replaces the full set** -- there is no per-rule add or remove; each apply PUTs the complete list. That makes review easy (the manifest IS the allowlist) and partial edits impossible. At least one source across the five lists is required at validation time -- an empty set is rejected before any provisioner runs.
 

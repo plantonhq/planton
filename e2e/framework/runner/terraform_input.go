@@ -79,7 +79,7 @@ func BuildTerraformInput(manifestPath, workDir string,
 	// kubeconfig) is written to a file the engine reads by path, so the file
 	// lives in the lane's own working directory: absolute for the providers,
 	// and gone with the directory when the lane ends.
-	providerEnvVarMap, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{FileCacheLoc: workDir})
+	providerEnvVarMap, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{FileCacheLoc: workDir, Engine: providerenvvars.EngineReadsEnvironment})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to extract provider environment variables")
 	}
@@ -115,9 +115,13 @@ func PrepareWorkDir(sourceModuleDir string) (string, func(), error) {
 	}
 
 	// Never copied: engine-local state (a shared checkout may carry a
-	// developer's .terraform plugin tree and state files).
+	// developer's .terraform plugin tree, its dependency lock and state
+	// files). The lock is git-ignored, so no release zip carries it: a
+	// stale one pinned below the module's provider constraint fails init
+	// on a lane that a release would pass.
 	skip := map[string]bool{
-		".terraform": true,
+		".terraform":          true,
+		".terraform.lock.hcl": true,
 	}
 
 	var copyTree func(src, dst string) error

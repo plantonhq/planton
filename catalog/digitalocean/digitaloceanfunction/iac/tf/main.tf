@@ -2,12 +2,18 @@ resource "digitalocean_app" "main" {
   project_id = var.spec.project_id != "" ? var.spec.project_id : null
 
   spec {
-    name   = var.metadata.name
+    # The App Platform app is named from spec.app_name, never metadata.name:
+    # the API caps app names at 32 characters and requires them to be unique
+    # across the account, neither of which a Planton metadata name guarantees.
+    name   = var.spec.app_name
     region = local.region
 
     function {
-      name       = var.spec.function_name
-      source_dir = var.spec.source_directory
+      name = var.spec.function_name
+      # Omitted when unset so App Platform reads project.yml from the
+      # repository root; an empty string would name a directory that does not
+      # exist.
+      source_dir = var.spec.source_directory != "" ? var.spec.source_directory : null
 
       dynamic "git" {
         for_each = var.spec.git != null ? [var.spec.git] : []

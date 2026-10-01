@@ -64,7 +64,7 @@ one or more sensitive fields must reference an existing org secret (use '$secret
    `$secret/@<env>/<slug>`.
 3. "secret not found for environment '<env>' …" → wrong env in the sigil, or
    the secret genuinely does not exist yet — create it
-   (`planton secret set <slug> value=<value> --env <env>`) or hand the user
+   (`planton secret set <slug> --string '<value>' --env <env>`) or hand the user
    that exact command with the reference already in place.
 
 Scope is strict: org-scoped and env-scoped references never fall back to

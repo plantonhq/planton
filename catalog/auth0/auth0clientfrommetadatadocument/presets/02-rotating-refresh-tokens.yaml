@@ -1,0 +1,29 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0ClientFromMetadataDocument
+metadata:
+  name: my-mcp-client
+  org: example-org
+  env: production
+spec:
+  # Example document URL (https-validated field) -- replace with the URL the
+  # MCP client serves its Client ID Metadata Document from.
+  externalClientId: https://mcp-client.example.com/.well-known/oauth-client-metadata
+  externalClientIdVersion: 1
+  description: MCP client for the team's tools
+  # Refresh tokens need the refresh_token grant beside sign-in.
+  grantTypes:
+    - authorization_code
+    - refresh_token
+  refreshToken:
+    # A new refresh token on every exchange; reusing a retired one revokes the family.
+    rotationType: rotating
+    # Refresh tokens of these applications must expire.
+    expirationType: expiring
+    # 30 days at most, however active the person is.
+    tokenLifetime: 2592000
+    infiniteTokenLifetime: false
+    # 15 days unused and the person signs in again.
+    idleTokenLifetime: 1296000
+    infiniteIdleTokenLifetime: false
+    # Seconds a just-rotated token may be retried after a lost response.
+    leeway: 3

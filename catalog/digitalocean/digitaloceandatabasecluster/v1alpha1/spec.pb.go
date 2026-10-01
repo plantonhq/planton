@@ -32,7 +32,7 @@ const (
 	DigitalOceanDatabaseEngine_digital_ocean_database_engine_unspecified DigitalOceanDatabaseEngine = 0
 	DigitalOceanDatabaseEngine_pg                                        DigitalOceanDatabaseEngine = 1 // PostgreSQL
 	DigitalOceanDatabaseEngine_mysql                                     DigitalOceanDatabaseEngine = 2 // MySQL
-	DigitalOceanDatabaseEngine_redis                                     DigitalOceanDatabaseEngine = 3 // Redis (legacy caching engine; DigitalOcean treats redis and valkey as interchangeable)
+	DigitalOceanDatabaseEngine_redis                                     DigitalOceanDatabaseEngine = 3 // Redis (adoption only: DigitalOcean no longer creates Redis clusters; use valkey)
 	DigitalOceanDatabaseEngine_mongodb                                   DigitalOceanDatabaseEngine = 4 // MongoDB
 	DigitalOceanDatabaseEngine_kafka                                     DigitalOceanDatabaseEngine = 5 // Apache Kafka
 	DigitalOceanDatabaseEngine_opensearch                                DigitalOceanDatabaseEngine = 6 // OpenSearch
@@ -109,13 +109,19 @@ type DigitalOceanDatabaseClusterSpec struct {
 	ClusterName string `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
 	// The database engine for the cluster. Enum value names are exactly the
 	// DigitalOcean engine slugs (pg, mysql, redis, mongodb, kafka,
-	// opensearch, valkey).
+	// opensearch, valkey). DigitalOcean no longer creates Redis clusters --
+	// `redis` only adopts one that already exists; new caches are `valkey`.
 	Engine DigitalOceanDatabaseEngine `protobuf:"varint,2,opt,name=engine,proto3,enum=dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseEngine" json:"engine,omitempty"`
-	// The engine version for the cluster, as a major or major.minor number:
-	// "16" for PostgreSQL 16, "8" for MySQL 8, "7" for Redis/Valkey,
-	// "3.5" for Kafka, "2" for OpenSearch, "7.0" for MongoDB.
-	// Changing the version on an existing cluster performs an in-place major
-	// version upgrade; DigitalOcean does not support downgrades.
+	// The engine version for the cluster, exactly as DigitalOcean lists it
+	// for the engine in `GET /v2/databases/options` -- a major for some
+	// engines ("16" for PostgreSQL, "8" for Valkey), major.minor for others
+	// ("8.4" for MySQL, "4.2" for Kafka, "2.19" for OpenSearch, "8.0" for
+	// MongoDB, as offered on 2026-09-16). The offer list moves: DigitalOcean
+	// retires versions on a published schedule and rejects any value not on
+	// it at create (422 "invalid cluster engine version" -- a bare "8" for
+	// MySQL fails today). Changing the version on an existing cluster
+	// performs an in-place major version upgrade; DigitalOcean does not
+	// support downgrades.
 	EngineVersion string `protobuf:"bytes,3,opt,name=engine_version,json=engineVersion,proto3" json:"engine_version,omitempty"`
 	// The DigitalOcean region where the cluster will be created.
 	// Changing the region on an existing cluster performs a live migration.
@@ -161,7 +167,17 @@ type DigitalOceanDatabaseClusterSpec struct {
 	// after creation.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,16,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// (Optional) Tags applied to the cluster in DigitalOcean, in addition to
-	// the standard Planton labels both provisioners always apply.
+	// the standard Planton labels both provisioners always apply
+	// (`planton-ai_resource:true`, `planton-ai_name:<metadata.name>`,
+	// `planton-ai_kind:DigitalOceanDatabaseCluster`,
+	// `planton-ai_organization:<org>`, `planton-ai_environment:<env>`,
+	// `planton-ai_id:<metadata.id>`). DigitalOcean caps a database cluster's
+	// COMBINED tags -- every tag joined by commas -- at 255 characters
+	// (measured 2026-09-17: the API answers `422 combined tags cannot exceed
+	// 255 characters`). The label tags alone cost about 133 characters plus
+	// the length of metadata.name and metadata.id, so a long resource name
+	// leaves little room here; both provisioners check the budget before
+	// creating anything and fail with the exact arithmetic.
 	Tags          []string `protobuf:"bytes,15,rep,name=tags,proto3" json:"tags,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -420,7 +436,10 @@ func (x *DigitalOceanDatabaseClusterBackupRestore) GetBackupCreatedAt() string {
 
 // DigitalOceanDatabaseClusterStorageAutoscale grows the cluster's disk
 // automatically when usage crosses a threshold. DigitalOcean enforces a
-// one-hour cooldown between autoscale operations.
+// one-hour cooldown between autoscale operations. Both provisioners deploy
+// it. The API refuses an increment_gib larger than the size slug's maximum
+// plan storage at create time (for example 30 GiB on db-s-1vcpu-1gb), so
+// size the increment for the smallest slug the manifest may run on.
 type DigitalOceanDatabaseClusterStorageAutoscale struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether automatic storage growth is enabled.

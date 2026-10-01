@@ -7,6 +7,7 @@
 package digitaloceandatabaseconnectionpoolv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -147,18 +148,18 @@ var File_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_output
 
 const file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/outputs.proto\x12Ddev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1\"\x86\x02\n" +
+	"Ncatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/outputs.proto\x12Ddev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1\x1a\x1cshared/options/options.proto\"\x98\x02\n" +
 	".DigitalOceanDatabaseConnectionPoolStackOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1b\n" +
 	"\tpool_name\x18\x02 \x01(\tR\bpoolName\x12\x12\n" +
 	"\x04host\x18\x03 \x01(\tR\x04host\x12!\n" +
 	"\fprivate_host\x18\x04 \x01(\tR\vprivateHost\x12\x12\n" +
-	"\x04port\x18\x05 \x01(\rR\x04port\x12\x10\n" +
-	"\x03uri\x18\x06 \x01(\tR\x03uri\x12\x1f\n" +
-	"\vprivate_uri\x18\a \x01(\tR\n" +
-	"privateUri\x12\x1a\n" +
-	"\bpassword\x18\b \x01(\tR\bpasswordB\x98\x04\n" +
+	"\x04port\x18\x05 \x01(\rR\x04port\x12\x16\n" +
+	"\x03uri\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\x03uri\x12%\n" +
+	"\vprivate_uri\x18\a \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
+	"privateUri\x12 \n" +
+	"\bpassword\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\bpasswordB\x98\x04\n" +
 	"Hcom.dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1B\fOutputsProtoP\x01Z\x88\x01github.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1;digitaloceandatabaseconnectionpoolv1alpha1\xa2\x02\x04DPDD\xaa\x02DDev.Planton.Digitalocean.Digitaloceandatabaseconnectionpool.V1alpha1\xca\x02DDev\\Planton\\Digitalocean\\Digitaloceandatabaseconnectionpool\\V1alpha1\xe2\x02PDev\\Planton\\Digitalocean\\Digitaloceandatabaseconnectionpool\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Digitalocean::Digitaloceandatabaseconnectionpool::V1alpha1b\x06proto3"
 
 var (

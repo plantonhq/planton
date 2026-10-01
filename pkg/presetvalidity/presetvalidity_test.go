@@ -59,6 +59,9 @@ func TestPresetValidityGate(t *testing.T) {
 	for _, id := range res.StaleEntries {
 		t.Errorf("stale baseline entry (no longer a violation): %s -- remove it from baseline.yaml", id)
 	}
+	for _, id := range res.ForbiddenEntries {
+		t.Errorf("baseline.yaml lists %s, but that rule accepts no baseline entries: the entry would hide a guide that misleads its reader -- remove the entry and fix the preset's guide", id)
+	}
 }
 
 // torturePreset reads the torture kind's default preset -- the repository's
@@ -121,5 +124,89 @@ func TestGate(t *testing.T) {
 	}
 	if res := Gate([]Violation{v, v}, map[string]bool{v.ID(): true}); !res.OK() {
 		t.Errorf("expected duplicate-rule collapse, got %+v", res)
+	}
+}
+
+// TestPhantomPlaceholderRows proves the placeholder-table rule reads the
+// table the guides actually carry: the rows under "Placeholders to Replace"
+// (or "Placeholders"), the placeholders in each row's first cell, and
+// nothing outside that section.
+func TestPhantomPlaceholderRows(t *testing.T) {
+	manifest := []byte("spec:\n  region: <aws-region>\n  subnets:\n    - value: <private-subnet-a>\n    - value: <private-subnet-b>\n  # <kms-key-arn> when encryption is on\n")
+	guide := []byte(`# A preset
+
+Uses ` + "`<not-in-a-table>`" + ` in prose, which is not a row.
+
+## Key Configuration Choices
+
+| Field | Why |
+|-------|-----|
+| ` + "`<also-not-the-table>`" + ` | a different section |
+
+## Placeholders to Replace
+
+| Placeholder | Description | Where to Find |
+|-------------|-------------|---------------|
+| ` + "`<aws-region>`" + ` | The region | Console |
+| ` + "`<private-subnet-a>`" + ` / ` + "`<private-subnet-b>`" + ` | Two subnets | VPC |
+| ` + "`<kms-key-arn>`" + ` | Named in a manifest comment | KMS |
+| ` + "`<vpc-id>`" + ` | Gone from the manifest | VPC |
+| ` + "`<private-subnet-a/b>`" + ` | Two placeholders spelled as one | VPC |
+| ` + "`123456789012`" + ` | A pattern-valid placeholder, not checked | IAM |
+
+## Related Presets
+
+| ` + "`<after-the-table>`" + ` | not a placeholder row |
+`)
+	rows := phantomPlaceholderRows(guide, manifest)
+	want := []phantomRow{{line: 18, placeholder: "<vpc-id>"}, {line: 19, placeholder: "<private-subnet-a/b>"}}
+	if len(rows) != len(want) {
+		t.Fatalf("expected %v, got %v", want, rows)
+	}
+	for i := range want {
+		if rows[i] != want[i] {
+			t.Errorf("row %d: expected %v, got %v", i, want[i], rows[i])
+		}
+	}
+
+	vs := checkPlaceholderTable("catalog/aws/x/presets/01-a.yaml", guide, manifest)
+	if len(vs) != 1 || vs[0].Rule != RulePhantomPlaceholder {
+		t.Fatalf("expected one %s violation, got %v", RulePhantomPlaceholder, vs)
+	}
+	for _, part := range []string{"catalog/aws/x/presets/01-a.md", "01-a.yaml", "line 18 names <vpc-id>", "line 19 names <private-subnet-a/b>", "delete each row", "reword a row", "add the placeholder to the manifest"} {
+		if !strings.Contains(vs[0].Detail, part) {
+			t.Errorf("detail lacks %q: %s", part, vs[0].Detail)
+		}
+	}
+
+	if vs := checkPlaceholderTable("catalog/aws/x/presets/01-a.yaml", []byte("# No table\n"), manifest); len(vs) != 0 {
+		t.Errorf("a guide without a placeholder table has nothing to check, got %v", vs)
+	}
+}
+
+// TestGate_PhantomPlaceholderAcceptsNoBaseline proves the placeholder-table
+// rule cannot be baselined: a listed violation still fails, the listing
+// itself fails, and a regenerated baseline never writes one.
+func TestGate_PhantomPlaceholderAcceptsNoBaseline(t *testing.T) {
+	v := Violation{Path: "catalog/aws/x/presets/01-a.yaml", Rule: RulePhantomPlaceholder}
+	res := Gate([]Violation{v}, map[string]bool{v.ID(): true})
+	if len(res.NewViolations) != 1 || len(res.ForbiddenEntries) != 1 || res.OK() {
+		t.Errorf("a baselined phantom placeholder must still fail and its entry must be refused, got %+v", res)
+	}
+	if res := Gate(nil, map[string]bool{v.ID(): true}); res.OK() || len(res.ForbiddenEntries) != 1 || len(res.StaleEntries) != 0 {
+		t.Errorf("a baseline entry for the rule is refused, not reported stale, got %+v", res)
+	}
+
+	path := filepath.Join(t.TempDir(), "baseline.yaml")
+	invalid := Violation{Path: "catalog/aws/x/presets/01-a.yaml", Rule: RuleInvalidPreset}
+	if err := WriteBaseline(path, []Violation{v, invalid}); err != nil {
+		t.Fatal(err)
+	}
+	written, err := LoadBaseline(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if written[v.ID()] || !written[invalid.ID()] {
+		t.Errorf("a regenerated baseline must keep %s and never write %s, got %v", invalid.ID(), v.ID(), written)
 	}
 }

@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0prompt.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// Auth0PromptSpec manages how the login flow of the Auth0 tenant the provider
+// connection's credential belongs to behaves.
+//
+// Unset fields are NOT MANAGED: the module never sends them, and the tenant keeps
+// whatever it carries. Auth0 has no delete for the prompt settings, so destroy
+// leaves the last-applied values in place.
+//
+// The credential needs read:prompts and update:prompts on the tenant's
+// Management API (iac/permissions.yaml).
+//
+// https://auth0.com/docs/authenticate/login/auth0-universal-login/identifier-first
+// https://auth0.com/docs/authenticate/passwordless/passwordless-with-universal-login/webauthn-device-biometrics
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt
+message Auth0PromptSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.biometrics_first_needs_identifier_first"
+    message: "webauthn_platform_first_factor needs identifier_first: true -- Auth0 offers the device's authenticator only after the identifier screen has named the account"
+    expression: "!(has(this.webauthn_platform_first_factor) && this.webauthn_platform_first_factor) || (has(this.identifier_first) && this.identifier_first)"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.at_least_one_setting"
+    message: "configure at least one of universal_login_experience, identifier_first or webauthn_platform_first_factor -- an Auth0Prompt resource that manages nothing would deploy nothing"
+    expression: "this.universal_login_experience != '' || has(this.identifier_first) || has(this.webauthn_platform_first_factor)"
+  };
+
+  // universal_login_experience chooses the login experience: "new" (Universal
+  // Login, which every branding, theme, custom text and partial styles) or
+  // "classic" (the legacy Lock-based pages, which none of them reach).
+  string universal_login_experience = 1 [(buf.validate.field).string = {
+    in: [
+      "",
+      "new",
+      "classic"
+    ]
+  }];
+
+  // identifier_first asks for the email or username on a first screen and the
+  // password on a second, so a person whose email domain belongs to an
+  // enterprise connection is routed to that identity provider instead of being
+  // asked for a password.
+  optional bool identifier_first = 2;
+
+  // webauthn_platform_first_factor offers the device's own authenticator
+  // (Touch ID, Face ID, Windows Hello) as the first factor, after the
+  // identifier screen ("Identifier First + Biometrics"), so it needs
+  // identifier_first: true. The tenant needs WebAuthn with Device Biometrics
+  // enabled as a multi-factor factor first.
+  optional bool webauthn_platform_first_factor = 3;
+}

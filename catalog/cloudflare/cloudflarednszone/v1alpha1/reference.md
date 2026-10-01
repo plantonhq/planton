@@ -40,7 +40,8 @@ spec:
   records:
     - name: www
       type: A
-      content: "192.0.2.1"
+      content:
+        value: "192.0.2.1"
       proxied: true
       ttl: 1
       settings:
@@ -49,7 +50,8 @@ spec:
         - team:web
     - name: "@"
       type: MX
-      content: mail.planton-example.com
+      content:
+        value: mail.planton-example.com
       ttl: 1
       priority: 10
     - name: _sip._tcp
@@ -58,7 +60,8 @@ spec:
         priority: 10
         weight: 5
         port: 5060
-        target: sip.planton-example.com
+        target:
+          value: sip.planton-example.com
     - name: "@"
       type: CAA
       caa:
@@ -68,7 +71,8 @@ spec:
       type: HTTPS
       https:
         priority: 1
-        target: "."
+        target:
+          value: "."
         value: alpn="h2"
   dnsSettings:
     flattenAllCnames: true
@@ -96,7 +100,7 @@ spec:
 | `spec.records` | `[]CloudflareDnsZoneRecord` |  |  |  |
 | `spec.records[].name` | `string` | yes |  |  |
 | `spec.records[].type` | `enum` | yes |  |  |
-| `spec.records[].content` | `string` |  |  |  |
+| `spec.records[].content` | `string \| valueFrom` |  |  |  |
 | `spec.records[].proxied` | `bool` |  |  |  |
 | `spec.records[].ttl` | `int32` |  |  |  |
 | `spec.records[].priority` | `int32` |  |  |  |
@@ -122,7 +126,7 @@ spec:
 | `spec.records[].ds.digest` | `string` | yes |  |  |
 | `spec.records[].https` | `HttpsData` |  |  |  |
 | `spec.records[].https.priority` | `uint32` |  |  |  |
-| `spec.records[].https.target` | `string` | yes |  |  |
+| `spec.records[].https.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].https.value` | `string` |  |  |  |
 | `spec.records[].loc` | `LocData` |  |  |  |
 | `spec.records[].loc.latDirection` | `string` |  |  |  |
@@ -153,14 +157,14 @@ spec:
 | `spec.records[].srv.priority` | `uint32` |  |  |  |
 | `spec.records[].srv.weight` | `uint32` |  |  |  |
 | `spec.records[].srv.port` | `uint32` |  |  |  |
-| `spec.records[].srv.target` | `string` | yes |  |  |
+| `spec.records[].srv.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].sshfp` | `SshfpData` |  |  |  |
 | `spec.records[].sshfp.algorithm` | `uint32` |  |  |  |
 | `spec.records[].sshfp.type` | `uint32` |  |  |  |
 | `spec.records[].sshfp.fingerprint` | `string` | yes |  |  |
 | `spec.records[].svcb` | `SvcbData` |  |  |  |
 | `spec.records[].svcb.priority` | `uint32` |  |  |  |
-| `spec.records[].svcb.target` | `string` | yes |  |  |
+| `spec.records[].svcb.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].svcb.value` | `string` |  |  |  |
 | `spec.records[].tlsa` | `TlsaData` |  |  |  |
 | `spec.records[].tlsa.usage` | `uint32` |  |  |  |
@@ -170,7 +174,7 @@ spec:
 | `spec.records[].uri` | `UriData` |  |  |  |
 | `spec.records[].uri.priority` | `uint32` |  |  |  |
 | `spec.records[].uri.weight` | `uint32` |  |  |  |
-| `spec.records[].uri.target` | `string` | yes |  |  |
+| `spec.records[].uri.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].tags` | `[]string` |  |  |  |
 | `spec.records[].settings` | `CloudflareDnsZoneRecordSettings` |  |  |  |
 | `spec.records[].settings.ipv4Only` | `bool` |  |  |  |
@@ -298,13 +302,23 @@ Allowed values (use exactly as shown):
 
 ### spec.records[].content
 
-`string`
+`string | valueFrom`
 
 Presentation-format value for simple record types. Set this for A/AAAA/
-CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave empty for structured types (use `data`).
-For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g. "2001:db8::1").
-For CNAME/MX/NS/PTR: a hostname. For TXT: the text value. For OPENPGPKEY:
-the base64-encoded key.
+CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave it unset for structured types (use
+`data`). For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g.
+"2001:db8::1"). For CNAME/MX/NS/PTR: a hostname. For TXT: the text value.
+For OPENPGPKEY: the base64-encoded key.
+
+A literal or a reference to another resource's output, so a record can
+publish a value that only exists once that resource does: one of a zone's
+name servers for a subdomain delegation (a CloudflareDnsZone's, an
+AwsRoute53Zone's or a GcpDnsZone's status.outputs.nameservers.0, .1, ...),
+or a validation target (an Auth0CustomDomain's status.outputs.dns_record_value,
+a GcpCertManagerDnsAuthorization's status.outputs.dns_record_data). A
+referenced record is created after the resource it reads.
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].proxied
 
@@ -503,11 +517,13 @@ records evaluated in ascending priority order.
 
 ### spec.records[].https.target
 
-`string` · required
+`string | valueFrom` · required
 
 Target hostname (".": the owner name; or a specific endpoint).
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].https.value
 
@@ -733,11 +749,13 @@ TCP/UDP port of the service (0-65535).
 
 ### spec.records[].srv.target
 
-`string` · required
+`string | valueFrom` · required
 
 Hostname of the machine providing the service.
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].sshfp
 
@@ -785,11 +803,13 @@ Priority (0-65535). 0 selects AliasMode; higher values are ServiceMode.
 
 ### spec.records[].svcb.target
 
-`string` · required
+`string | valueFrom` · required
 
 Target hostname (".": the owner name; or a specific endpoint).
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].svcb.value
 
@@ -859,11 +879,13 @@ Relative weight among URIs with the same priority (0-65535).
 
 ### spec.records[].uri.target
 
-`string` · required
+`string | valueFrom` · required
 
 The target URI (e.g. "https://example.com/path").
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].tags
 

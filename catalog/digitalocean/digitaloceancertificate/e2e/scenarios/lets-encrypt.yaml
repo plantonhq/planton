@@ -1,10 +1,13 @@
 # Let's Encrypt scenario: DigitalOcean issues and auto-renews the
-# certificate. LIVE ARM DEFERRED (environmental gate): issuance requires
-# every listed domain to be managed by DigitalOcean DNS in the test account
-# -- a delegated domain the account does not have yet. Until then this
-# scenario proves the branch's wiring through the offline plan only.
-# The ${E2E_RUN_ID} token keeps the domain globally unique if the arm ever
-# runs against a delegated zone.
+# certificate. ENVIRONMENTAL GATE: issuance requires every listed domain to
+# be managed by DigitalOcean DNS in the account, so the lane needs an
+# operator-arranged domain delegated to the account's nameservers, injected
+# as PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN (the bare apex, e.g.
+# "example.com"). Where that variable is unset the runner records an honest
+# skip per the e2e-required-env annotation instead of failing at the API;
+# the branch's wiring is still proven by the offline plan. The moment the
+# variable is exported the arm runs unchanged: a run-scoped subdomain of the
+# delegated apex keeps every lane's names unique.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanCertificate
 metadata:
@@ -17,11 +20,12 @@ metadata:
     e2e-component: digitaloceancertificate
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN
   tags:
     - planton-e2e
 spec:
-  certificateName: planton-e2e-le-cert
+  certificateName: planton-e2e-le-cert-${E2E_RUN_ID}
   letsEncrypt:
     domains:
-      - pltn-e2e-cert-${E2E_RUN_ID}.com
-      - "*.pltn-e2e-cert-${E2E_RUN_ID}.com"
+      - e2e-${E2E_RUN_ID}.${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN}
+      - "*.e2e-${E2E_RUN_ID}.${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN}"

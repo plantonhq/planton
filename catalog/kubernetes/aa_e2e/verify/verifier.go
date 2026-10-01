@@ -709,8 +709,12 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// proof (a healthy kube-state-metrics target + a PromQL answer). The
 	// behavioral-alerting scenario (recognized by name) proves the
 	// pipeline end to end via the always-firing Watchdog alert in BOTH
-	// Prometheus and Alertmanager. Destroy asserts the crds-subchart
-	// keep posture (the monitoring CRDs must SURVIVE uninstall).
+	// Prometheus and Alertmanager; the behavioral-notifications scenario
+	// proves typed alert delivery reaches a sink (heartbeat with its
+	// token, a page reaching the pager and the channel, no customer label
+	// in the message, rotation without a restart). Destroy asserts the
+	// crds-subchart keep posture (the monitoring CRDs must SURVIVE
+	// uninstall).
 	case "kuberneteskubeprometheusstack":
 		spec := manifestSpecMap(manifestPath)
 		return &KubePrometheusStackVerifier{
@@ -721,6 +725,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			AlertmanagerReplicas: kpsReplicas(spec, "alertmanager"),
 			GrafanaEnabled:       kpsHalfEnabled(spec, "grafana"),
 			Alerting:             strings.Contains(manifestPath, "behavioral-alerting"),
+			Notifications:        strings.Contains(manifestPath, "behavioral-notifications"),
 		}, nil
 
 	// A standalone Grafana: Deployment available, /api/health reporting
@@ -728,7 +733,8 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// credentials (read from the Secret — the credential-wiring proof),
 	// and every declared datasource provisioned. The
 	// behavioral-persistence scenario (recognized by name) proves a
-	// UI-authored dashboard survives a pod REPLACEMENT through the PVC.
+	// UI-authored dashboard survives a pod REPLACEMENT through the PVC;
+	// behavioral-sso signs in end to end through a stand-in Google.
 	case "kubernetesgrafana":
 		spec := manifestSpecMap(manifestPath)
 		return &GrafanaVerifier{
@@ -739,6 +745,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			AdminPasswordKey: grafanaAdminSecretKey(spec, "password_key"),
 			Datasources:      grafanaDatasourceNames(spec),
 			Persistence:      strings.Contains(manifestPath, "behavioral-persistence"),
+			SignIn:           strings.Contains(manifestPath, "behavioral-sso"),
 		}, nil
 
 	// A Grafana Loki log store: the monolithic StatefulSet ready, the
@@ -756,7 +763,8 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			Namespace:      info.Namespace,
 			Name:           info.Name,
 			GatewayEnabled: lokiGatewayEnabled(spec),
-			Durability:     strings.Contains(manifestPath, "behavioral-durability"),
+			Durability:     strings.Contains(manifestPath, "behavioral-durability") || strings.Contains(manifestPath, "behavioral-r2"),
+			R2:             strings.Contains(manifestPath, "behavioral-r2"),
 		}
 		if tenant := lokiFirstTenantUser(spec); tenant != "" {
 			v.TenantUser = tenant
@@ -772,7 +780,8 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		return &TempoVerifier{
 			Namespace:   info.Namespace,
 			Name:        info.Name,
-			Persistence: strings.Contains(manifestPath, "behavioral-persistence"),
+			Persistence: strings.Contains(manifestPath, "behavioral-persistence") || strings.Contains(manifestPath, "behavioral-r2"),
+			R2:          strings.Contains(manifestPath, "behavioral-r2"),
 		}, nil
 
 	// A SigNoz observability platform: server StatefulSet + collector

@@ -500,7 +500,7 @@ groups by them. Updatable in place.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureManagedRedis, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureManagedRedis, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -511,8 +511,8 @@ Reference an output from another manifest as `valueFrom: {kind: AzureManagedRedi
 | `status.outputs.hostname` | `string` | The instance's DNS hostname: {cluster_name}.{region}.redis.azure.net. Keyless (Entra) clients need only this and the port -- tokens replace keys. |
 | `status.outputs.database_id` | `string` | The Azure Resource Manager ID of the default database -- the cluster ID with "/databases/default" appended. The scope Entra access-policy grants and geo-replication links operate on. |
 | `status.outputs.port` | `int32` | The TCP port the database listens on (10000 -- Managed Redis does not use classic Redis's 6379/6380 ports). |
-| `status.outputs.primary_access_key` | `string` | The primary access key (a SECRET). Used as the password in Redis connection strings. Empty when access-keys authentication is disabled -- the keyless default. |
-| `status.outputs.secondary_access_key` | `string` | The secondary access key (a SECRET). Kept live so clients can be rotated to it while the primary is regenerated, and vice versa -- zero-downtime key rotation. Empty when access-keys authentication is disabled. |
+| `status.outputs.primary_access_key` | `string` (sensitive) | The primary access key (a SECRET). Used as the password in Redis connection strings. Empty when access-keys authentication is disabled -- the keyless default. |
+| `status.outputs.secondary_access_key` | `string` (sensitive) | The secondary access key (a SECRET). Kept live so clients can be rotated to it while the primary is regenerated, and vice versa -- zero-downtime key rotation. Empty when access-keys authentication is disabled. |
 | `status.outputs.identity_principal_id` | `string` | The system-assigned identity's principal (object) ID -- what RBAC grants target when the identity block requests SYSTEM_ASSIGNED. Empty otherwise. |
 
 ## References

@@ -1,8 +1,8 @@
 package explain
 
 import (
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -43,13 +43,14 @@ func SharedOptions(fd protoreflect.FieldDescriptor, f *Field) {
 	if f.RecommendedDefault == "" && proto.HasExtension(opts, options.E_Default) {
 		f.RecommendedDefault = proto.GetExtension(opts, options.E_Default).(string)
 	}
-	if proto.HasExtension(opts, foreignkeyv1.E_DefaultKind) {
-		if kind, ok := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind); ok &&
-			kind != cloudresourcekind.CloudResourceKind_unspecified {
-			f.RefKind = kind.String()
-		}
+	annotations := refannotations.Of(fd)
+	if annotations.DefaultKind != cloudresourcekind.CloudResourceKind_unspecified {
+		f.RefKind = annotations.DefaultKind.String()
 	}
-	if proto.HasExtension(opts, foreignkeyv1.E_DefaultKindFieldPath) {
-		f.RefFieldPath = proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
+	f.RefFieldPath = annotations.DefaultKindFieldPath
+	if len(annotations.Candidates) > 0 {
+		for _, key := range annotations.Keys() {
+			f.RefTargets = append(f.RefTargets, RefTarget{Kind: key.Kind.String(), FieldPath: key.FieldPath})
+		}
 	}
 }

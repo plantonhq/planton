@@ -148,18 +148,18 @@ Default: false
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureServiceBusAuthorizationRule, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureServiceBusAuthorizationRule, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.authorization_rule_id` | `string` | The Azure Resource Manager ID of the rule (under its namespace, queue, or topic parent). AzureServiceBusDisasterRecoveryConfig's alias_authorization_rule_id consumes it with zero translation. |
 | `status.outputs.rule_name` | `string` | The rule's name -- the SharedAccessKeyName clients present. |
-| `status.outputs.primary_key` | `string` | The primary key. |
-| `status.outputs.secondary_key` | `string` | The secondary key -- the rotation partner. |
-| `status.outputs.primary_connection_string` | `string` | The ready-to-use primary connection string (endpoint + key name + primary key), scoped to the rule's entity when queue- or topic-scoped. |
-| `status.outputs.secondary_connection_string` | `string` | The secondary connection string -- the rotation partner. |
-| `status.outputs.primary_connection_string_alias` | `string` | The primary connection string addressing the geo-DR alias instead of the namespace. Empty unless the namespace carries a disaster-recovery pairing. |
-| `status.outputs.secondary_connection_string_alias` | `string` | The secondary alias connection string -- the rotation partner. |
+| `status.outputs.primary_key` | `string` (sensitive) | The primary key. |
+| `status.outputs.secondary_key` | `string` (sensitive) | The secondary key -- the rotation partner. |
+| `status.outputs.primary_connection_string` | `string` (sensitive) | The ready-to-use primary connection string (endpoint + key name + primary key), scoped to the rule's entity when queue- or topic-scoped. |
+| `status.outputs.secondary_connection_string` | `string` (sensitive) | The secondary connection string -- the rotation partner. |
+| `status.outputs.primary_connection_string_alias` | `string` (sensitive) | The primary connection string addressing the geo-DR alias instead of the namespace. Empty unless the namespace carries a disaster-recovery pairing. |
+| `status.outputs.secondary_connection_string_alias` | `string` (sensitive) | The secondary alias connection string -- the rotation partner. |
 
 ## References
 

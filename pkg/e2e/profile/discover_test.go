@@ -1,6 +1,31 @@
 package profile
 
-import "testing"
+import (
+	"strings"
+	"testing"
+
+	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	sharedpb "github.com/plantonhq/planton/shared"
+)
+
+// A profile may only claim engines its kind runs on; otherwise the matrix schedules a lane the CLI
+// refuses before it starts.
+func TestCheckValidatedProvisioners_RefusesAnEngineTheKindDoesNotRunOn(t *testing.T) {
+	profile := func(provisioners ...sharedpb.IacProvisioner) *componentv1.ComponentE2EProfile {
+		return &componentv1.ComponentE2EProfile{Spec: &componentv1.ComponentE2EProfileSpec{ValidatedProvisioners: provisioners}}
+	}
+
+	err := checkValidatedProvisioners("openfgastore", profile(sharedpb.IacProvisioner_terraform, sharedpb.IacProvisioner_pulumi))
+	if err == nil || !strings.Contains(err.Error(), "validated_provisioners lists pulumi, but OpenFgaStore does not run on it") {
+		t.Fatalf("want the refusal, got %v", err)
+	}
+	if err := checkValidatedProvisioners("openfgastore", profile(sharedpb.IacProvisioner_tofu, sharedpb.IacProvisioner_terraform)); err != nil {
+		t.Errorf("declared engines pass: %v", err)
+	}
+	if err := checkValidatedProvisioners("awss3bucket", profile(sharedpb.IacProvisioner_pulumi)); err != nil {
+		t.Errorf("an undeclared kind accepts every engine: %v", err)
+	}
+}
 
 func TestToPascalCase_RegistryLookup(t *testing.T) {
 	tests := []struct {

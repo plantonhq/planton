@@ -1,0 +1,11 @@
+# The install profile a consumer's scenario gets when it needs a
+# StripeProduct (every StripePrice does, through its registry prerequisite): a
+# run-named service product. Archived after the consumer's scenario.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeProduct
+metadata:
+  name: e2e-product-prereq
+  org: e2e-org
+  env: testing
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}-product

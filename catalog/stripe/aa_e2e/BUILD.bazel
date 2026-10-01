@@ -1,0 +1,28 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "aa_e2e",
+    srcs = [
+        "client.go",
+        "harness.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/stripe/aa_e2e",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/stripe/aa_e2e/verify",
+        "//e2e/framework/provider",
+        "//e2e/framework/runner",
+        "//pkg/iac/provider/stripe/stripekey",
+        "@com_github_pkg_errors//:errors",
+    ],
+)
+
+go_test(
+    name = "aa_e2e_test",
+    srcs = [
+        "harness_test.go",
+        "lifecycle_test.go",
+    ],
+    embed = [":aa_e2e"],
+    deps = ["//e2e/framework/provider"],
+)

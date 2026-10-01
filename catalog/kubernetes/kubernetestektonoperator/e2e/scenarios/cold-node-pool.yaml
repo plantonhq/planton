@@ -1,0 +1,21 @@
+# THE COLD NODE POOL: the install a new cluster actually gets. A GKE node
+# pool can be born with no node; the autoscaler adds the first one only
+# after pods go Pending, a minute or so later. Here the operator's pods may
+# run only on a node carrying a label no node has yet, and the setup script
+# puts that label on the kind node 60s into the deploy -- the node joining.
+#
+# The proof is the verifier's FIRST check, asked with no wait the moment
+# the deploy reports done: a TektonConfig must come back from a server-side
+# dry run with the operator's defaults filled in. A module that reports
+# done before its operator can serve fails there, where a KubernetesTekton
+# applied next would have been refused ("spec.pipeline.options: Required
+# value").
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesTektonOperator
+metadata:
+  name: e2e-tektonop-cold
+  annotations:
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetestektonoperator/e2e/scenarios/cold-node-pool.setup.sh"
+spec:
+  nodeSelector:
+    ${E2E_SETUP:COLD_POOL_LABEL}: "true"

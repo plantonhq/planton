@@ -45,7 +45,7 @@ spec:
   type: A
   ttl: 300
   values:
-    - 192.0.2.1
+    - value: 192.0.2.1
 
 ---
 # Weighted canary record: 10% of traffic to the new stack. A second record
@@ -63,7 +63,7 @@ spec:
   type: A
   ttl: 60
   values:
-    - 192.0.2.10
+    - value: 192.0.2.10
   setIdentifier: canary
   routingPolicy:
     weighted:
@@ -79,7 +79,7 @@ spec:
 | `spec.name` | `string` | yes |  |  |
 | `spec.type` | `string` | yes |  |  |
 | `spec.ttl` | `int32` |  |  |  |
-| `spec.values` | `[]string` |  |  |  |
+| `spec.values` | `[]string \| valueFrom` |  |  |  |
 | `spec.aliasTarget` | `AwsRoute53AliasTarget` |  |  |  |
 | `spec.aliasTarget.dnsName` | `string \| valueFrom` | yes |  | AwsAlb (`status.outputs.load_balancer_dns_name`) |
 | `spec.aliasTarget.zoneId` | `string \| valueFrom` | yes |  | AwsAlb (`status.outputs.load_balancer_hosted_zone_id`) |
@@ -194,7 +194,7 @@ ceiling for health-checked records), 300 (general default), 86400
 
 ### spec.values
 
-`[]string`
+`[]string | valueFrom`
 
 The record data for standard records. Format depends on type:
   - A: IPv4 addresses (e.g. ["192.0.2.1", "192.0.2.2"])
@@ -204,9 +204,12 @@ The record data for standard records. Format depends on type:
   - TXT: text values (e.g. ["v=spf1 include:_spf.google.com ~all"])
 Each value is at most 4,000 characters (AWS's per-value limit).
 Mutually exclusive with alias_target — a record is standard or alias,
-never both.
+never both. Each entry can be a literal or a reference to another
+resource's output — a load balancer's address, a zone's name server for
+a delegation, a domain-verification record's value.
 
-- rule: {"repeated":{"items":{"string":{"maxLen":"4000"}}}}
+- rule: each literal value is at most 4000 characters (AWS's per-value limit)
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.aliasTarget
 

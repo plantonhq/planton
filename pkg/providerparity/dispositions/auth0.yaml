@@ -1,0 +1,187 @@
+# Breadth dispositions ledger for the auth0 (GA) provider -- the recorded
+# judgment for GA resources the computed classes do not cover. Two classes
+# never appear here because they are computed: modeled (the module census
+# proves consumption) and iam-covered (the *_iam_member/binding/policy
+# pattern, which this provider does not use); schema-flagged deprecations are
+# computed too (auth0_hook, auth0_rule, auth0_prompt_partials), and the
+# checker fails a ledger entry that shadows any computed class.
+#
+# Entries record judgment, one disposition per resource, reason mandatory:
+#   composed            -- covered by fields of an existing kind (name it)
+#   model-planned       -- covered by a planned kind not built yet: a kind
+#                          of its own, or a planned kind (or planned
+#                          composition) it folds into; flips to modeled or
+#                          composed when the kind ships
+#   deferred            -- deliberately not offered, with the reason
+#   excluded-deprecated -- deprecated/superseded in docs but not flagged in
+#                          the schema
+#
+# Nothing on this provider is deferred: every resource that is not
+# deprecated is either modeled, composed, or planned as a kind.
+provider: auth0
+resources:
+  # ---- Actions ---------------------------------------------------------------
+  - resource: auth0_action_module
+    disposition: model-planned
+    reason: "judged as a planned Auth0ActionModule kind (a reusable code package with its own versions, referenced by many actions)"
+  - resource: auth0_trigger_actions
+    disposition: model-planned
+    reason: "judged as a planned Auth0TriggerBinding kind (one per trigger, owning the ORDER of the actions bound to it; Auth0Action binds itself through the non-authoritative auth0_trigger_action)"
+
+  # ---- Applications and connections -------------------------------------------
+  - resource: auth0_client_credentials
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Client (the token endpoint authentication method: client secret, private_key_jwt and tls_client_auth credentials)"
+  - resource: auth0_connection_client
+    disposition: composed
+    reason: "covered by Auth0Connection.enabled_clients, which the module applies through the authoritative auth0_connection_clients; the one-client variant would fight it on the same connection"
+  - resource: auth0_connection_keys
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Connection (the Client Assertion JWT signing keys of an OIDC or Okta Workforce connection)"
+  - resource: auth0_connection_scim_configuration
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Connection (SCIM provisioning on a SAML or OIDC enterprise connection, one per connection)"
+  - resource: auth0_connection_scim_token
+    disposition: model-planned
+    reason: "judged as a planned Auth0ConnectionScimToken kind (many bearer tokens per connection, each with its own expiry and a secret output)"
+  - resource: auth0_connection_directory
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Connection (directory provisioning for a Google Workspace connection, one per connection)"
+  - resource: auth0_connection_directory_synchronized_groups
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Connection, beside its directory provisioning (the Google Workspace groups that directory sync imports)"
+  - resource: auth0_connection_profile
+    disposition: model-planned
+    reason: "judged as a planned Auth0ConnectionProfile kind (a tenant-level configuration template that connections are created from)"
+
+  # ---- Custom domains, branding and the sign-in experience --------------------
+  - resource: auth0_prompt_screen_partial
+    disposition: composed
+    reason: "composed into Auth0PromptScreenPartials, which owns the whole set for a prompt and expresses every argument of the one-screen variant; Auth0 warns against mixing the two on one prompt"
+  - resource: auth0_prompt_screen_renderer
+    disposition: model-planned
+    reason: "judged as a planned Auth0PromptScreenRenderer kind (Advanced Customizations: the rendering mode, head tags and filters of one prompt screen)"
+  - resource: auth0_pages
+    disposition: model-planned
+    reason: "judged as a planned Auth0Pages kind (the tenant's custom error page, and the login, password-reset and MFA pages of the Classic experience)"
+  - resource: auth0_self_service_profile
+    disposition: model-planned
+    reason: "judged as a planned Auth0SelfServiceProfile kind (the branding and allowed strategies of self-service SSO setup)"
+  - resource: auth0_self_service_profile_custom_text
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0SelfServiceProfile (its per-language text)"
+
+  # ---- Email and phone -------------------------------------------------------------
+  - resource: auth0_phone_provider
+    disposition: model-planned
+    reason: "judged as a planned Auth0PhoneProvider kind (the tenant's one SMS and voice provider)"
+  - resource: auth0_branding_phone_notification_template
+    disposition: model-planned
+    reason: "judged as a planned Auth0PhoneNotificationTemplate kind (one per SMS or voice notification type); this is the resource's canonical name, the one Pulumi's bridge exposes"
+  - resource: auth0_phone_notification_template
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0PhoneNotificationTemplate: the provider registers the same resource under this second name (one constructor), and the planned kind maps it once, under its canonical auth0_branding_phone_notification_template"
+
+  # ---- Security and risk ------------------------------------------------------------
+  - resource: auth0_attack_protection
+    disposition: model-planned
+    reason: "judged as a planned Auth0AttackProtection kind (the tenant's brute-force, breached-password, suspicious-IP and bot-detection settings)"
+  - resource: auth0_guardian
+    disposition: model-planned
+    reason: "judged as a planned Auth0Guardian kind (the tenant's multi-factor policy and factors)"
+  - resource: auth0_risk_assessments
+    disposition: model-planned
+    reason: "judged as a planned Auth0RiskAssessment kind (the tenant's risk-assessment settings)"
+  - resource: auth0_risk_assessments_new_device
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0RiskAssessment (its new-device assessment)"
+  - resource: auth0_supplemental_signals
+    disposition: model-planned
+    reason: "judged as a planned Auth0SupplementalSignals kind (a per-tenant settings object)"
+  - resource: auth0_network_acl
+    disposition: model-planned
+    reason: "judged as a planned Auth0NetworkAcl kind (many per tenant: allow, block or redirect rules on the tenant's edge)"
+  - resource: auth0_network_acl_key
+    disposition: model-planned
+    reason: "judged as a planned Auth0NetworkAclKey kind (HMAC signing keys that network ACL rules reference, with a write-only secret)"
+  - resource: auth0_rate_limit_policy
+    disposition: model-planned
+    reason: "judged as a planned Auth0RateLimitPolicy kind (per-application throttling on the Authentication API)"
+  - resource: auth0_encryption_key_manager
+    disposition: model-planned
+    reason: "judged as a planned Auth0EncryptionKeyManager kind (the tenant master key's rekeying and customer-provided root key)"
+
+  # ---- Extensibility -----------------------------------------------------------------
+  - resource: auth0_flow
+    disposition: model-planned
+    reason: "judged as a planned Auth0Flow kind (a Forms flow's actions)"
+  - resource: auth0_flow_vault_connection
+    disposition: model-planned
+    reason: "judged as a planned Auth0FlowVaultConnection kind (credentials Forms flows use to reach third-party services)"
+  - resource: auth0_form
+    disposition: model-planned
+    reason: "judged as a planned Auth0Form kind (a Forms page inserted into the sign-in pipeline)"
+  - resource: auth0_log_stream
+    disposition: model-planned
+    reason: "judged as a planned Auth0LogStream kind (many per tenant: tenant logs to an HTTP endpoint, event bus or SIEM)"
+  - resource: auth0_token_exchange_profile
+    disposition: model-planned
+    reason: "judged as a planned Auth0TokenExchangeProfile kind (Custom Token Exchange, bound to an action)"
+  - resource: auth0_user_attribute_profile
+    disposition: model-planned
+    reason: "judged as a planned Auth0UserAttributeProfile kind (how user attributes map between identity providers and Auth0)"
+  - resource: auth0_rule_config
+    disposition: excluded-deprecated
+    reason: "configuration variables for Rules only; Auth0 replaced Rules with Actions and the schema already flags auth0_rule deprecated, so the variables are superseded with it (Actions carry their own secrets)"
+
+  # ---- Organizations ------------------------------------------------------------------
+  - resource: auth0_organization
+    disposition: model-planned
+    reason: "judged as a planned Auth0Organization kind (a B2B customer: its name, branding and metadata)"
+  - resource: auth0_organization_connections
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Organization (its enabled connections, authoritative)"
+  - resource: auth0_organization_connection
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Organization, which owns the full set of enabled connections; the one-connection variant would fight it"
+  - resource: auth0_organization_clients
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Organization (its application entitlements, authoritative)"
+  - resource: auth0_organization_client
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Organization, which owns the full set of application entitlements; the one-application variant would fight it"
+  - resource: auth0_organization_client_grant
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Organization (the client grants an organization is associated with)"
+  - resource: auth0_organization_discovery_domains
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Organization (its Home Realm Discovery domains, authoritative)"
+  - resource: auth0_organization_discovery_domain
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0Organization, which owns the full set of discovery domains; the one-domain variant would fight it"
+  - resource: auth0_organization_members
+    disposition: model-planned
+    reason: "judged as a planned Auth0OrganizationMembership kind (an organization's members, authoritative, with each member's roles)"
+  - resource: auth0_organization_member
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0OrganizationMembership, which owns the full member set; the one-member variant would fight it"
+  - resource: auth0_organization_member_roles
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0OrganizationMembership (each member's roles, authoritative)"
+  - resource: auth0_organization_member_role
+    disposition: model-planned
+    reason: "judged as a planned composition into Auth0OrganizationMembership, which owns each member's full role set; the one-role variant would fight it"
+
+  # ---- Authorization -------------------------------------------------------------------
+  - resource: auth0_resource_server_scope
+    disposition: composed
+    reason: "covered by Auth0ResourceServer.scopes, which the module applies through the authoritative auth0_resource_server_scopes; the one-scope variant would fight it"
+  - resource: auth0_role_permission
+    disposition: composed
+    reason: "covered by Auth0Role.permissions, which the module applies through the authoritative auth0_role_permissions; the one-permission variant would fight it"
+  - resource: auth0_user_permission
+    disposition: composed
+    reason: "covered by Auth0User.permissions, which the module applies through the authoritative auth0_user_permissions; the one-permission variant would fight it"
+  - resource: auth0_user_role
+    disposition: composed
+    reason: "covered by Auth0User.roles, which the module applies through the authoritative auth0_user_roles; the one-role variant would fight it"

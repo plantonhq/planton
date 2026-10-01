@@ -6,9 +6,13 @@ Judgment calls that matter when you run individual DNS records on DigitalOcean.
 
 Two components can create the same record: this kind (one record, one resource) and the `DigitalOceanDnsZone` kind's inline `records` list. Use zone-inline records when one team owns the whole zone and its records ship together. Use this kind when records have different owners or lifecycles than their zone — an application chart adding its own hostname to a shared company zone is the canonical case. Mixing both against the same name works (DigitalOcean allows duplicate-name records of most types) but splits ownership; pick one home per record.
 
+## Many records on one zone at once: apply them one after another
+
+DigitalOcean's DNS API deadlocks when several record writes to the same domain are in flight together — one of the batch fails with `422 Error 1213 (40001): Deadlock found when trying to get lock; try restarting transaction` (measured: 1 in 8 parallel creates, on a fresh and on a settled zone alike), and the provider does not retry it. A single standalone record is never affected. A chart that deploys many `DigitalOceanDnsRecord` resources into one zone concurrently can be: the failed record simply re-applies cleanly, but the run is not. When a zone's records ship together under one owner, prefer the zone kind's inline `records`, whose modules write them one at a time; when they must stay standalone, sequence their deployment.
+
 ## Author hostname targets fully qualified
 
-DigitalOcean stores CNAME/MX/NS/SRV/CAA targets with a trailing dot and reads them back that way. Author `mail.example.com.` (with the dot) and the manifest matches the stored record forever; author it without and every plan shows a cosmetic diff on `value`. IP-valued records (A, AAAA) and TXT are unaffected.
+DigitalOcean reports CNAME/MX/NS/SRV/CAA (`issue`/`issuewild`) targets back fully qualified with a trailing dot, and the provider forgives exactly two manifest spellings: the same dotted form (`mail.example.com.`, `letsencrypt.org.`) or a name relative to the zone (`mail`). Author either and the manifest matches the stored record forever. Author a bare fully-qualified name without the dot (`letsencrypt.org`) and it is not cosmetic: every apply rewrites the record, DigitalOcean hands it back with the dot again, and the diff never settles. IP-valued records (A, AAAA), TXT, and CAA `iodef` (`mailto:` values) are unaffected.
 
 ## The explicit-zero trap
 

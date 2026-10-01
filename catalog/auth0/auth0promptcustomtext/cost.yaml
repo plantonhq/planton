@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0promptcustomtext
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for custom text: re-wording a Universal Login prompt, in any language the tenant enables, is available on every plan, the Free plan included, and needs no custom domain (auth0.com/docs/customize/login-pages/universal-login/customize-text-elements). It needs the Universal Login experience \"new\" (Auth0Prompt), itself free."
+  notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). Custom text changes the words a sign-in shows, never what it costs; each additional language is one more resource, at no charge."

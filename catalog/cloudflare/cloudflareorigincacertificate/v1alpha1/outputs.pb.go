@@ -7,6 +7,7 @@
 package cloudflareorigincacertificatev1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -103,11 +104,11 @@ var File_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto
 
 const file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/cloudflare/cloudflareorigincacertificate/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1\"\xb4\x01\n" +
+	"Gcatalog/cloudflare/cloudflareorigincacertificate/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1\x1a\x1cshared/options/options.proto\"\xba\x01\n" +
 	")CloudflareOriginCaCertificateStackOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12 \n" +
-	"\vcertificate\x18\x02 \x01(\tR\vcertificate\x12\x1f\n" +
-	"\vprivate_key\x18\x03 \x01(\tR\n" +
+	"\vcertificate\x18\x02 \x01(\tR\vcertificate\x12%\n" +
+	"\vprivate_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"privateKey\x12\x1d\n" +
 	"\n" +
 	"expires_on\x18\x04 \x01(\tR\texpiresOnB\xe8\x03\n" +

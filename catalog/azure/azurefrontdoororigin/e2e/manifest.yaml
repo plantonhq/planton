@@ -22,6 +22,7 @@ spec:
   # "sites" for App Service).
   privateLink:
     location: eastus
-    privateLinkTargetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/myapp
+    privateLinkTargetId:
+      value: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/myapp
     targetType: SITES
     requestMessage: Front Door origin connection for myapp

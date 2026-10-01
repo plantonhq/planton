@@ -59,6 +59,13 @@ The bar for every component:
   concept. Every provider is being rebuilt to this same bar concurrently, so a sibling
   *provider*'s component is an outdated, incomplete reference that only drags quality down.
   (Structure is the sole cross-provider constant — see the STRUCTURE-not-DEPTH bullet above.)
+- **A provider object with no identity or lifecycle of its own belongs to the kind it
+  serves.** When an object is keyed by its parent, created and destroyed with it, and
+  referenced by nothing else (an API's default grants for third-party applications,
+  one per subject type), the parent's kind models it as a field and its module declares
+  it. A kind of its own would claim the same provider resource type that other kinds
+  already declare for their own purposes (a client's per-API grants), and the two
+  would fight over it.
 - **Docs are part of the experience, not polish.** Dense intent-explaining field comments,
   empathetic CEL messages, richly-commented Terraform and Pulumi module code (explaining
   *why*/trade-offs/provider quirks/non-obvious ordering, not narration -- the module-comment
@@ -82,6 +89,52 @@ The bar for every component:
   on the field its author will be reading when they make it — a lesson recorded only in a
   workflow rule is NOT captured. (The update rule's "Knowledge lands where its READER
   lives" section carries the full reader-to-surface table.)
+
+- **A value another resource produces takes a reference.** Any spec field whose value is a
+  hostname, an address, a name server, a target or an identifier that another catalog kind
+  can output is a `StringValueOrRef` (a `repeated StringValueOrRef` for a list), never a bare
+  string: a DNS record's values, addresses, name servers, mail exchanges, SRV / HTTPS / SVCB /
+  URI targets and pointers; a zone's seeded apex address. Checks that apply to a literal
+  (an IPv4 or IPv6 address, a length) move to CEL on the literal
+  (`this.all(v, !has(v.value) || v.value.isIp(4))`). Material no resource outputs (a CAA
+  tag and value, an SSHFP fingerprint, a TLSA certificate, a DS digest) stays a plain
+  string. Terraform receives a reference as the plain string it resolves to, so only the
+  Pulumi module changes (`.GetValue()`).
+- **A reference names its kinds, or it is plain text.** A `StringValueOrRef` declares what it
+  can point at: one `default_kind` with its `default_kind_field_path`, or, when the value
+  legitimately comes from several kinds, one `(dev.planton.shared.foreignkey.v1.candidate)`
+  entry per kind and output (a kind may appear twice when two of its outputs fit -- a
+  subnetwork's primary and secondary ranges). When both are declared, the default kind is one
+  of the candidates, on the same path. A field no catalog kind can produce (an operator's own
+  pre-existing group name) is a plain `string`, never a reference that names no kind. A
+  field that can point at ANY kind (an Azure resource ID for a diagnostic setting) declares
+  neither and says so in its comment. Kind knowledge never lives in prose ("reference X via
+  an explicit valueFrom.kind") or in a console list: declare it, so every picker, graph and
+  agent reads the same set. `refcheck`'s registry gate resolves every declared key.
+- **A reference's grain is its type, never a sibling selector.** When a reference can mean a
+  namespaced or a cluster-scoped object (an Issuer or a ClusterIssuer, a SecretStore or a
+  ClusterSecretStore), model it as a `oneof` of typed arms, each with its own `default_kind`
+  and a one-arm CEL rule -- the `KubernetesCertificate` issuer reference, and the shared
+  `CertManagerIssuerRef` -- never one reference beside a `kind` string or enum: the
+  platform's readers see the annotation, not the data, so a sibling selector resolves the
+  wrong kind.
+- **A rule on a value that may be a reference is written about the literal.** A shape rule
+  (a pattern, a CIDR or IP format, a length) on a `StringValueOrRef` reads the literal arm
+  only (`!has(this.value) || this.value.isIpPrefix()`), and a rule on a plain string is
+  written about the literal and nothing else -- never an arm that spells a platform's token
+  grammar (`^\$secret/...`). A platform that resolves `$secret/` and `$var/` tokens sets the
+  rule aside for the token and applies it to the value the token resolves to, before the
+  module runs.
+- **A per-install identity comes from the install itself.** When a kind keys something
+  durable outside the cluster or account by a name (a backup series in an object store, an
+  archive prefix, a registration), a destroy and recreate from the same declaration must not
+  reuse its predecessor's key: the store may refuse, quietly, to write one install's history
+  over another's. Derive the key from an object the stack creates earlier in the same run
+  and that lives and dies with the install (its UID), the way `KubernetesPostgres` names its
+  backup series after its ObjectStore's UID; expose the effective key as an output; and
+  offer an optional explicit override for continuing a known key. A random value held only
+  in IaC state is the wrong tool: an import mints a new one. A number a person must remember
+  to bump is the wrong tool too.
 
 This philosophy governs every flow rule below; the per-rule steps are how it is executed, not
 a substitute for it.
@@ -118,6 +171,22 @@ the other into line; when you author or change one engine, reconcile the other i
 session. (In the forge sequence Pulumi is generated first, so Terraform is reconciled
 against the existing Pulumi module — but if the Pulumi module is the one that is wrong, fix
 Pulumi.)
+
+**The one exception: a kind that declares fewer engines.** When the provider publishes no
+Pulumi provider, or its kinds are proven on OpenTofu alone (OpenFGA runs on OpenTofu and
+Terraform; Stripe on OpenTofu only), the kind says so in its enum entry --
+`provisioners: ["tofu"]` or `["tofu", "terraform"]` in `kind_meta` (flow rule 014) -- and
+ships only `iac/tf/`. Skip Phase 5 (the Pulumi rules) and the Phase 6b gate, which has no
+pair to compare. Never write a placeholder Pulumi module that succeeds while creating
+nothing: the anatomy gate fails a declared kind that carries `iac/pulumi/`, and the CLI
+(`pkg/iac/provisioner`) and the platform refuse the undeclared engine before anything runs,
+in one sentence naming the engines the kind runs on. The kind's E2E profile lists only its
+declared engines in `validated_provisioners`, and each test entrypoint is named for one of
+them: the matrix builder schedules `Test<Kind>_<Provisioner>` with the provisioner name
+capitalized, so an OpenTofu-only kind's entrypoint is `Test<Kind>_Tofu` (it still passes the
+framework's `"terraform"` engine, which runs the `tofu` binary; the runner refuses any binary
+the kind does not declare). No `_Pulumi` entrypoint exists for such a kind. `e2e/stripe/` is
+the worked example.
 
 **Deviation is allowed ONLY with a strong, documented technical reason.** If the two
 engines genuinely cannot match (a provider feature exists in one SDK but not the other, an
@@ -271,7 +340,18 @@ The following 21 rules execute in order. Each rule is atomic and can be run indi
 10. **008-e2e-manifest** - Generate the component-root e2e/manifest.yaml (the kind's
     complete, protovalidate-valid example manifest -- embedded as the reference page's
     Example block AND deployed by the E2E framework, which treats its presence as the
-    testability marker)
+    testability marker). Because it round-trips into its typed message, no run token can
+    stand in a number field there, so a date the vendor requires in the future is a
+    near-future literal the vendor accepts, with an inline note saying what range it takes.
+    A scenario under `e2e/scenarios/` is expanded before it is parsed, so its dates come
+    from the lane's clock instead: `${E2E_UNIX_TIME_PLUS:<offset>}` (days then a duration,
+    like `30d` or `1m10s`) is the lane's start plus the offset, the same instant in every
+    manifest one lane expands. A vendor that bounds how far ahead a date may sit makes every
+    literal go stale (Stripe refuses a promotion code's expiry or a tax registration's
+    start more than five years out). An object that outlives destroy, and that the vendor
+    holds one of per place, must be left ended by its lane: Stripe keeps one tax
+    registration per country or state until it has ended, so the scenarios start a minute
+    after the lane and expire seconds later.
 
 ### Phase 5: Pulumi Implementation (Rules 009-011)
 
@@ -372,13 +452,35 @@ platform's guided import can derive identifiers instead of asking the user
    that exist only in IaC configuration -- `force_destroy`-class delete
    behavior, and the kubernetes provider's `wait_for_*` lifecycle knobs
    (`wait_for_rollout`, `wait_for_load_balancer`,
-   `wait_for_service_account_token`) -- import can never carry them; declare
+   `wait_for_service_account_token`), and write-only credentials the API never
+   returns (an email provider's `credentials`) -- import can never carry them; declare
    them when the resource type first enters the catalog, or every consumer's
    round-trip lane fails on the same knob later). When a provider's importer
    fails to read back ONE nested block (found only by running the round-trip),
    declare it as a dotted `write_normalized_attributes` sub-path
    (e.g. `"spec.update_strategy"`) -- never tolerate a whole structural
-   attribute like `spec`, which would blind the proof.
+   attribute like `spec`, which would blind the proof. Two limits of the
+   tolerance vocabulary, both measured live: (a) a tolerance covers
+   in-place UPDATES only -- a config-only attribute the provider marks
+   `ForceNew` (create-only initialization arguments the API never returns,
+   such as a volume's initial filesystem) plans a REPLACE after a blind
+   import, which the oracle refuses no matter what is declared; the modules
+   `ignore_changes` such arguments in both engines when they have no
+   post-create meaning (this is also what keeps an adopted resource from
+   being destroyed on its first apply), and a scenario carrying write-only
+   ForceNew SECRETS opts out with the reason-carrying
+   `planton.dev/e2e-import-roundtrip-skip` annotation instead (rotation is
+   supposed to replace); (b) a scenario whose spec leaves unset an argument the
+   provider has no computed value for, on an object that already holds a value
+   (a tenant-wide object earlier lanes set, a setting a registration document
+   seeds), plans that value's removal after a blind import. That is the
+   adoption rule measured, not a recipe defect: the scenario opts out with the
+   skip annotation naming the argument, and a sibling scenario that declares
+   the value proves the recipe; (c) a resource type whose upstream importer is
+   missing OR defective is excluded from the round-trip ONLY by
+   `not_importable_upstream_reason` in place of `id_format` -- a `notes`
+   sentence saying "excluded" is not machine-honored, and the runner will
+   attempt the import.
 2. **Component map** (the component-root `iac/import-map.yaml`): the value source per
    `{placeholder}` -- prefer derivable sources (metadata.name, spec field,
    stack output, ARN part, address key); `where_to_find` is mandatory when
@@ -416,6 +518,21 @@ retrofitting it later means re-deriving every naming decision:
    enablement, module-wired parent linkage) -- the resource-level `internal`
    disposition. For every uncovered spec field, either fix the mapping or
    record a `specExclusions` entry (platform-level fields).
+   An argument that makes the provider create a SECOND object inline -- a
+   `*_data` block such as a product's `default_price_data` (a price) or a
+   price's `product_data` (a product), or a file's inline link -- is never
+   offered: the module would neither track, update nor destroy that object,
+   so destroy would leave it live and its drift would go unseen. Exclude it
+   with that reason, point the spec comment and the GUIDE at the kind a
+   reader declares instead, and let a reference compose the two.
+   An argument the provider accepts but can't send -- an in-place update the
+   vendor's API has no field for, or a write-only value whose change plans
+   nothing -- is never a silent drop or a pending change forever: the module
+   tracks it in a `terraform_data` tracker that replaces the resource
+   (flow rule 012 has the recipe), the manifest judges the tracker
+   `internal`, the provider's import catalog records `terraform_data` as not
+   importable (an imported tracker would replace the object), and the spec
+   field says a change replaces the object.
 3. Re-run with `--check`; the kind must be at total accounting and OUT of
    `pkg/providerparity/baseline.yaml` (a new kind never ships pre-baselined
    debt). File presence IS enrollment -- the `lint.provider-parity` CI lane
@@ -427,6 +544,16 @@ retrofitting it later means re-deriving every naming decision:
    (`pkg/providerparity/dispositions/`) carried the consumed resources as
    planned or deferred, the accounting now flags those entries stale --
    remove them.
+
+A provider can carry a committed schema before it is enrolled (no
+`catalog/<provider>/terraform-parity.md` yet): enrollment waits until every
+EXISTING kind of the provider is at total accounting, because the shared
+baseline never grows and enrolling a provider whose older kinds are in debt
+would add them to it. Its new kinds are held to the same bar regardless --
+`--kind` needs no enrollment -- so run step 1 and ship the kind at total
+accounting; steps 3 and 4 begin when the provider enrolls. The manifest
+records only divergences: a kind whose every argument matches its spec field
+by exact name is at total accounting with no `provider-parity.yaml` at all.
 
 For a provider without schema artifacts, skip silently -- the gate reports
 NOT INSTRUMENTED there.
@@ -597,7 +724,18 @@ A new kind is only exercised once it is registered in the provider harness:
   "<component>", pathFormat: "<api-path>/%s"}`); cloud-SDK providers (e.g. AWS)
   implement the three-method `Verifier` interface against the provider SDK,
   keyed on the API's own identifier for the resource and treating the provider's
-  typed not-found error as the absent signal.
+  typed not-found error as the absent signal. The destroy check asserts what the
+  provider's destroy really leaves, never plain absence: GONE for a deleted
+  object, still readable and INACTIVE for one the vendor only archives or
+  deactivates, and still PRESENT for one the provider merely forgets (its
+  destroy makes no call) -- the last proves the GUIDE's "the vendor keeps it"
+  and catches a provider that starts deleting. Read inactive the way the
+  vendor reports it (a flag on most objects, a status field on some). A kind
+  that folds children (a list's items, a parent's links, a meter's alerts)
+  proves each child's destroy truth too, from the map output that keys the
+  children's ids: a folded child is not proven because its parent is.
+  Stripe's `verify/verifier.go` carries all three shapes, both inactive
+  forms, and the child checks.
 - `e2e/<provider>/<provider>_test.go` — add `Test<Kind>_Pulumi` / `Test<Kind>_Terraform` entrypoints. Scenarios are auto-discovered; the entry funcs are not.
 - **Test-name discovery is registry-driven.** The GitHub Actions matrix builder in
   `pkg/e2e/profile/discover.go` maps component directory names (e.g. `awslambda`) to
@@ -629,7 +767,25 @@ exact document as an EXTRA INSTANCE of whatever kind it declares (how a
 scenario gets a SECOND instance of a kind, e.g. a peering's remote network),
 after the kind-driven chain, each preceded by its own not-yet-deployed
 transitive prerequisites — a path entry never substitutes for the kind's
-install profile. Unknown kinds and self-references fail loudly. Singular AND
+install profile. Path entries deploy in the order listed, and a reference is
+not a prerequisite: when a path entry reads a kind the chain would otherwise
+deploy after it, name that kind in the annotation first (the tenant settings'
+default-domain scenario lists `Auth0CustomDomain`, then the CNAME fixture that
+reads it, then the verification fixture that waits for the CNAME). A
+prerequisite may belong to ANOTHER provider (an Auth0 domain's verification
+waits for a Cloudflare DNS record): the runner reads each prerequisite's
+provider from its kind, installs it from that provider's catalog and module,
+and verifies it with that provider's harness -- which the suite lends in its
+`TestMain` with `runner.RegisterDependencyHarness("<provider>", <harness>)`,
+set up only when a scenario first needs it, and torn down with
+`runner.TeardownDependencyHarnesses`. The prerequisite deploys with that
+provider's ambient credentials, so the scenario's `e2e-required-env` names the
+arrangement it needs. Each prerequisite deploys on ITS OWN kind's engine,
+whatever the lane runs: on Pulumi when the kind has a Pulumi module, and on
+the HCL lane (its `iac/tf` module in a disposable working copy with local
+state) when the kind declares HCL engines only -- so an OpenTofu-only kind
+can be a prerequisite, and its `e2e/prerequisite.yaml` is written exactly as
+any other. Unknown kinds and self-references fail loudly. Singular AND
 repeated `StringValueOrRef` fields both resolve, refs nested inside (repeated)
 spec messages resolve too, and a repeated list can mix literals with
 references. Audit the annotation against EVERY `valueFrom` kind the scenario
@@ -985,6 +1141,11 @@ referenced instance's captured STACK OUTPUTS — a `field_path` under
 composed scenario. Design rule, not just a test rule: point every
 `default_kind_field_path` at a stack output. If a kind's natural join key is
 its name, export a `name` output and reference that — never `metadata.name`.
+A list of plain values is addressed one element at a time — a zone's name
+servers as `status.outputs.nameservers.0`, `.1`, ... — and the index ends the
+path; a reference to the whole list is refused offline (`pkg/refcheck`),
+because a reference feeds one string and the flattened outputs hold only the
+elements.
 
 ### Tier 1 — Local run (preferred: fast on-machine loop)
 
@@ -992,7 +1153,15 @@ Local credentials live in a gitignored `.env.e2e` at the repo root (ignored via
 `.gitignore`; NEVER commit it). The harness reads credentials from environment
 variables — discover the exact names by reading the harness `Setup`
 (`aa_e2e/harness.go`); e.g. Auth0 uses `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`,
-`AUTH0_CLIENT_SECRET`.
+`AUTH0_CLIENT_SECRET`. Before a live lane of a kind that is ONE per tenant or
+account (a tenant's settings, branding, prompt or email provider; an account's
+settings), confirm which tenant the ambient credentials reach: the lane applies
+and destroys that tenant's one object, so a shell that happens to carry a
+shared tenant's credentials would rewrite what its users see. Such lanes run
+only against a dedicated test tenant, and a local lane never inherits the
+shell's provider credentials: it unsets them (`env -u AUTH0_DOMAIN -u
+AUTH0_CLIENT_ID -u AUTH0_CLIENT_SECRET`) and sets the test tenant's for that one
+command, read from the vault.
 
 ```bash
 # Confirm which provider secrets exist (names only) and match the harness env vars:

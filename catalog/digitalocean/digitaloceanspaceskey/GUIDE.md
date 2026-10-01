@@ -4,7 +4,11 @@ What experience with this component teaches that the field reference cannot.
 
 ## The secret is shown once -- design your handoff around that
 
-`secret_key` exists in exactly one place: the create response. DigitalOcean never returns it again, from any API, ever. Both provisioners store it as a sensitive output, and consumers should read it from there (or through a reference) rather than expecting to look it up later. If the secret is lost, there is no recovery -- destroy the key and create a new one.
+`secret_key` exists in exactly one place: the create response. DigitalOcean never returns it again, from any API, ever. Both provisioners store it as a sensitive output, and consumers should read it from there (or through a reference) rather than expecting to look it up later. If the secret is lost, there is no recovery -- destroy the key and create a new one. Both provisioners are proven to capture it: the live proof signs a real S3 request with the pair each engine exported, and a freshly minted pair is accepted by the Spaces data plane within two seconds.
+
+## Adopting an existing key cannot work -- create a new one instead
+
+There is no import for a Spaces key: the provider ships no importer, and even one that existed could never recover the secret. Do not try to bring an existing key under management by any workaround that re-creates it -- that mints a SECOND access key while the first keeps working unmanaged, and every consumer of the old pair silently keeps old credentials. Create the key through this component, hand its pair to consumers, and retire the hand-made key on your own schedule.
 
 ## Rotation means a new key, and consumers must follow
 

@@ -1,0 +1,160 @@
+[
+  {
+    "path": "spec.components.graph.resources",
+    "component": "neo4j",
+    "requests": {
+      "cpu": "1",
+      "memory": "2Gi"
+    },
+    "limits": {
+      "memory": "2Gi"
+    },
+    "floor": {
+      "cpu": "500m",
+      "memory": "2Gi"
+    }
+  },
+  {
+    "path": "spec.console.resources",
+    "component": "console",
+    "requests": {
+      "cpu": "250m",
+      "memory": "512Mi"
+    },
+    "limits": {
+      "memory": "2Gi"
+    }
+  },
+  {
+    "path": "spec.controlPlane.resources",
+    "component": "controlplane",
+    "requests": {
+      "cpu": "250m",
+      "memory": "1Gi"
+    },
+    "limits": {
+      "memory": "6Gi"
+    }
+  },
+  {
+    "path": "spec.database.postgresql.resources",
+    "component": "postgresql",
+    "requests": {
+      "cpu": "250m",
+      "memory": "512Mi"
+    },
+    "limits": {
+      "memory": "2Gi"
+    }
+  },
+  {
+    "path": "spec.database.redis.resources",
+    "component": "redis",
+    "requests": {
+      "cpu": "100m",
+      "memory": "256Mi"
+    },
+    "limits": {
+      "memory": "1Gi"
+    }
+  },
+  {
+    "path": "spec.gateway.resources",
+    "component": "gateway",
+    "requests": {
+      "cpu": "50m",
+      "memory": "64Mi"
+    },
+    "limits": {
+      "memory": "256Mi"
+    }
+  },
+  {
+    "path": "spec.identity.resources",
+    "component": "identity",
+    "requests": {
+      "cpu": "250m",
+      "memory": "512Mi"
+    },
+    "limits": {
+      "memory": "1536Mi"
+    }
+  },
+  {
+    "path": "spec.openfga.resources",
+    "component": "openfga",
+    "requests": {
+      "cpu": "50m",
+      "memory": "64Mi"
+    },
+    "limits": {
+      "memory": "256Mi"
+    }
+  },
+  {
+    "path": "spec.runner.resources",
+    "component": "runner",
+    "requests": {
+      "cpu": "100m",
+      "memory": "512Mi"
+    },
+    "limits": {
+      "memory": "2Gi"
+    }
+  },
+  {
+    "path": "spec.temporal.frontend.resources",
+    "component": "temporal",
+    "requests": {
+      "cpu": "50m",
+      "memory": "128Mi"
+    },
+    "limits": {
+      "memory": "512Mi"
+    }
+  },
+  {
+    "path": "spec.temporal.history.resources",
+    "component": "temporal",
+    "requests": {
+      "cpu": "100m",
+      "memory": "256Mi"
+    },
+    "limits": {
+      "memory": "1Gi"
+    }
+  },
+  {
+    "path": "spec.temporal.matching.resources",
+    "component": "temporal",
+    "requests": {
+      "cpu": "50m",
+      "memory": "128Mi"
+    },
+    "limits": {
+      "memory": "512Mi"
+    }
+  },
+  {
+    "path": "spec.temporal.worker.resources",
+    "component": "temporal",
+    "requests": {
+      "cpu": "50m",
+      "memory": "128Mi"
+    },
+    "limits": {
+      "memory": "512Mi"
+    }
+  },
+  {
+    "path": "spec.vault.resources",
+    "component": "openbao",
+    "requests": {
+      "cpu": "50m",
+      "memory": "128Mi"
+    },
+    "limits": {
+      "memory": "512Mi"
+    }
+  }
+]

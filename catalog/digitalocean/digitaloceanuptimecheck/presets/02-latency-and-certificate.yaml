@@ -20,7 +20,7 @@ spec:
     - alertName: api-cert-expiring
       type: ssl_expiry
       threshold: 21
-      comparison: less_than
+      period: 2m
       notifications:
         emails:
           - ops@example.com

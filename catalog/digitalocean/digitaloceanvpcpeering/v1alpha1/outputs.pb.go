@@ -23,15 +23,18 @@ const (
 
 // DigitalOceanVpcPeeringStackOutputs captures the key outputs after
 // provisioning a VPC peering connection.
+//
+// The peering's lifecycle status is deliberately NOT an output: both
+// provisioners wait for ACTIVE before the apply succeeds, so a stored
+// status could only ever say "ACTIVE" -- and it would keep saying so after
+// DigitalOcean moved the peering to DELETING or removed it. Live status is
+// read from the API by whoever needs it (GET /v2/vpcs/peerings/{id}); the
+// E2E verifier asserts existence that way.
 type DigitalOceanVpcPeeringStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the VPC peering connection (the resource's API identity and
 	// its import id).
-	PeeringId string `protobuf:"bytes,1,opt,name=peering_id,json=peeringId,proto3" json:"peering_id,omitempty"`
-	// Lifecycle status of the peering as reported by DigitalOcean at apply
-	// time. DigitalOcean reports statuses in UPPERCASE (PROVISIONING,
-	// ACTIVE, DELETING); the module waits for ACTIVE before exporting.
-	Status        string `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	PeeringId     string `protobuf:"bytes,1,opt,name=peering_id,json=peeringId,proto3" json:"peering_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -73,22 +76,14 @@ func (x *DigitalOceanVpcPeeringStackOutputs) GetPeeringId() string {
 	return ""
 }
 
-func (x *DigitalOceanVpcPeeringStackOutputs) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
 var File_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceanvpcpeering_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/digitalocean/digitaloceanvpcpeering/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1\"[\n" +
+	"Bcatalog/digitalocean/digitaloceanvpcpeering/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1\"Q\n" +
 	"\"DigitalOceanVpcPeeringStackOutputs\x12\x1d\n" +
 	"\n" +
-	"peering_id\x18\x01 \x01(\tR\tpeeringId\x12\x16\n" +
-	"\x06status\x18\x02 \x01(\tR\x06statusB\xc3\x03\n" +
+	"peering_id\x18\x01 \x01(\tR\tpeeringIdJ\x04\b\x02\x10\x03R\x06statusB\xc3\x03\n" +
 	"<com.dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanvpcpeering/v1alpha1;digitaloceanvpcpeeringv1alpha1\xa2\x02\x04DPDD\xaa\x028Dev.Planton.Digitalocean.Digitaloceanvpcpeering.V1alpha1\xca\x028Dev\\Planton\\Digitalocean\\Digitaloceanvpcpeering\\V1alpha1\xe2\x02DDev\\Planton\\Digitalocean\\Digitaloceanvpcpeering\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Digitalocean::Digitaloceanvpcpeering::V1alpha1b\x06proto3"
 
 var (

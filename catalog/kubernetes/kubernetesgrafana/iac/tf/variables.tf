@@ -77,6 +77,37 @@ variable "spec" {
       anonymous_enabled  = optional(bool, false)
       anonymous_org_role = optional(string)
       disable_login_form = optional(bool, false)
+      # client_secret arrives resolved from its managed-secret reference.
+      google = optional(object({
+        client_id             = string
+        client_secret         = string
+        allowed_domains       = optional(list(string), [])
+        hosted_domain         = optional(string, "")
+        allow_sign_up         = optional(bool)
+        auto_login            = optional(bool, false)
+        role_attribute_path   = optional(string, "")
+        role_attribute_strict = optional(bool, false)
+      }))
+      generic_oauth = optional(object({
+        name                  = optional(string)
+        client_id             = string
+        client_secret         = string
+        auth_url              = string
+        token_url             = string
+        api_url               = string
+        scopes                = optional(list(string), [])
+        email_attribute_path  = optional(string, "")
+        login_attribute_path  = optional(string, "")
+        name_attribute_path   = optional(string, "")
+        role_attribute_path   = optional(string, "")
+        role_attribute_strict = optional(bool, false)
+        groups_attribute_path = optional(string, "")
+        allowed_groups        = optional(list(string), [])
+        allowed_domains       = optional(list(string), [])
+        allow_sign_up         = optional(bool)
+        auto_login            = optional(bool, false)
+        use_pkce              = optional(bool)
+      }))
     }))
     smtp = optional(object({
       host                    = string

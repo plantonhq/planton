@@ -70,11 +70,13 @@ type KubernetesRequestAuthenticationSpec struct {
 	// `target_refs` may be set (enforced below). Waypoint proxies require this field
 	// (label `selector` policies are ignored by waypoints). Upstream allows up to 16.
 	//
-	// INFRA-CHART COMPOSABILITY: a target reference is a PLAIN cross-resource
-	// reference, not an Planton foreign key. istiod resolves it at runtime, creating
-	// NO automatic DAG edge. Order this policy after the referenced resource via
-	// metadata.relationships (`uses` -> KubernetesGateway / KubernetesService /
-	// KubernetesServiceEntry). See the component's "Composing in Infra Charts" docs.
+	// INFRA-CHART COMPOSABILITY: each target_ref's `name` is a foreign key that
+	// defaults to a KubernetesGateway (its status.outputs.gateway_name): wiring it with
+	// valueFrom orders this policy after the gateway it protects. A literal `value:`
+	// covers a Service, a ServiceEntry, or anything created outside Planton; istiod
+	// resolves group/kind/name at runtime, so order this policy after such a target
+	// with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
+	// See the component's "Composing in Infra Charts" docs.
 	TargetRefs []*kubernetes.KubernetesIstioApiPolicyTargetReference `protobuf:"bytes,4,rep,name=target_refs,json=targetRefs,proto3" json:"target_refs,omitempty"`
 	// The set of JWT rules evaluated at the selected workloads' proxies. A token is
 	// validated only when presented at a location a rule recognizes; if validation

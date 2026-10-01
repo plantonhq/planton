@@ -2,14 +2,29 @@
 # (the spec's vpc is OPTIONAL, so the fixture rides the e2e-prerequisites
 # annotation, never a registry edge) and proves private networking, custom
 # storage (the provider's bare-MiB string wiring -- the arm the old module
-# broke), a maintenance window, sql_mode on MySQL, and the user-tags +
-# Planton-labels tag composition. storage_autoscale is deliberately absent:
-# the Pulumi SDK v4.49.0 has no such field and the module fails loudly.
+# broke), storage_autoscale (increment_gib 10: the API refuses an increment
+# larger than the size slug's maximum plan storage, 30 GiB on
+# db-s-1vcpu-1gb, with a 422 at create; the settings read back exactly as
+# sent from GET /v2/databases/{id}/autoscale -- the cluster body's own
+# storage_autoscale field is always null), a maintenance window, sql_mode on
+# MySQL, and the user-tags + Planton-labels tag composition.
+# engineVersion is the version DigitalOcean offers TODAY: MySQL is
+# "8.4" only -- a bare "8" is rejected at create (422 "invalid cluster
+# engine version"); check `GET /v2/databases/options` when a lane fails
+# there, because DigitalOcean retires majors on a schedule.
+# The cluster name carries the run id: cluster names are unique per account
+# (the API answers 422 "cluster name is not available"), and a delete returns
+# before the cluster is gone, so a re-run must never reuse the previous name.
+# The metadata name uses the kind's id prefix (`dodb`), the catalog's shape
+# for long kind names: DigitalOcean caps a database cluster's combined tags
+# (joined by commas) at 255 characters, and the six Planton label tags carry
+# this name twice -- the full kind name plus the user tag below would have
+# joined to 273.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
-  name: planton-oss-e2e-digitaloceandatabasecluster-mysql
-  id: planton-oss-e2e-digitaloceandatabasecluster-mysql
+  name: planton-oss-e2e-dodb-mysql
+  id: planton-oss-e2e-dodb-mysql
   org: planton-oss
   env: e2e
   labels:
@@ -21,9 +36,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-dodb-mysql
+  clusterName: pltn-e2e-dodb-mysql-${E2E_RUN_ID}
   engine: mysql
-  engineVersion: "8"
+  engineVersion: "8.4"
   region: nyc3
   sizeSlug: db-s-1vcpu-1gb
   nodeCount: 1
@@ -33,6 +48,10 @@ spec:
       name: planton-oss-e2e-digitaloceanvpc-prereq
       fieldPath: status.outputs.vpc_id
   storageGib: 30
+  storageAutoscale:
+    enabled: true
+    thresholdPercent: 80
+    incrementGib: 10
   maintenanceWindow:
     day: sunday
     hour: "02:00"

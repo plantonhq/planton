@@ -1,0 +1,18 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# A shipping rate's only type is fixed_amount, so the spec requires
+# fixed_amount and the module writes the type. The other currencies are a map
+# keyed by currency.
+resources:
+  stripe_shipping_rate:
+    exclusions:
+      - arg: type
+        reason: set by the module to fixed_amount, the only shipping rate type Stripe offers (the provider validates exactly that one value); the spec requires fixed_amount instead
+      - arg: fixed_amount.currency_options.key
+        reason: the currency is the key of the spec's fixed_amount.currency_options map, which the module writes into each entry's key -- not a field of its own

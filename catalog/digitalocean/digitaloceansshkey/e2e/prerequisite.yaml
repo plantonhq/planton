@@ -1,0 +1,30 @@
+# DigitalOceanSshKey install profile used as a prerequisite by composed
+# components (DigitalOceanDropletAutoscalePool, whose API mandates at least
+# one SSH key on the template). The E2E harness deploys this key first,
+# captures its outputs, and resolves each dependent's ssh_keys reference
+# against them.
+#
+# The key material here is deliberately DIFFERENT from the one in
+# scenarios/minimal.yaml: DigitalOcean deduplicates SSH keys on the public
+# key itself, not the name ("SSH Key is already in use on your account"),
+# so a fixture and a scenario sharing one key body would collide the moment
+# their lanes overlap -- and ${E2E_RUN_ID} cannot help, because key material
+# is not a name. Throwaway ed25519 pair generated for this fixture; the
+# private half was discarded at generation and never existed anywhere else.
+apiVersion: digital-ocean.planton.dev/v1alpha1
+kind: DigitalOceanSshKey
+metadata:
+  name: planton-oss-e2e-digitaloceansshkey-prereq
+  id: planton-oss-e2e-digitaloceansshkey-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: digitaloceansshkey
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  keyName: pltn-e2e-dosshk-prereq-${E2E_RUN_ID}
+  publicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB3skfvWEfh8NQ5r1vkBSM7yF/M6ItR+dfvTKXUJW+6y planton-e2e-fixture@example.com

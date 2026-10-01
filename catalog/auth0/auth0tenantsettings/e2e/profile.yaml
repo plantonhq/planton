@@ -1,0 +1,17 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0tenantsettings
+spec:
+  # A tenant has ONE set of settings, and applying this component changes
+  # them for everyone signing in through it: the lanes run only on a dedicated
+  # test tenant (AUTH0_DOMAIN / AUTH0_CLIENT_ID / AUTH0_CLIENT_SECRET, the
+  # tenant_settings scopes of iac/permissions.yaml), one lane at a time. The
+  # default-domain scenario composes a verified custom domain (see the
+  # verification's profile for what that needs).
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 5

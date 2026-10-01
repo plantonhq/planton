@@ -25,7 +25,7 @@ func (t *Temporal) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sc
 	log := logf.FromContext(ctx).WithValues("component", t.Name())
 
 	chartData := resources.LoadTemporalChart()
-	values := resources.TemporalHelmValues(planton.Name, planton.Namespace)
+	values := resources.TemporalHelmValues(temporalHelmOptions(planton))
 
 	rendered, err := resources.RenderHelmChart(
 		chartData,
@@ -41,8 +41,12 @@ func (t *Temporal) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sc
 		return Result{}, fmt.Errorf("applying Temporal manifests: %w", err)
 	}
 
-	frontendDeploy := resources.TemporalFrontendServiceName(planton.Name)
-	ready, err := t.IsDeploymentReady(ctx, c, frontendDeploy, planton.Namespace)
+	// Clients dial the frontend, so it alone gates readiness; every server
+	// service is read for a memory kill it recovered from, since history --
+	// the busiest -- would otherwise hide behind a healthy frontend.
+	workloads := temporalWorkloads(planton.Name)
+	frontend := workloads[0]
+	ready, err := t.IsDeploymentReady(ctx, c, frontend.Name, planton.Namespace)
 	if err != nil {
 		return Result{}, fmt.Errorf("checking Temporal readiness: %w", err)
 	}
@@ -59,9 +63,32 @@ func (t *Temporal) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sc
 		}, "Temporal schema setup"); expl != nil {
 			return Result{Ready: false, Reason: expl.Reason, Object: expl.Object, Message: expl.Message}, nil
 		}
-		return t.NotReady(ctx, c, planton.Namespace, DeploymentRef(frontendDeploy), "Waiting for Temporal frontend"), nil
+		return t.NotReady(ctx, c, planton.Namespace, frontend, "Waiting for Temporal frontend"), nil
 	}
 
 	log.Info("Temporal ready")
-	return Result{Ready: true, Message: "Temporal healthy"}, nil
+	return t.Ready(ctx, c, planton.Namespace, "Temporal healthy", workloads...), nil
+}
+
+// temporalWorkloads references the chart's four server Deployments, each
+// sized by its own field, frontend first.
+func temporalWorkloads(crName string) []WorkloadRef {
+	refs := make([]WorkloadRef, 0, len(resources.TemporalServerServices))
+	for _, svc := range resources.TemporalServerServices {
+		refs = append(refs, DeploymentRef(resources.TemporalServiceDeploymentName(crName, svc.Name)).Sized(svc.SizedBy))
+	}
+	return refs
+}
+
+// temporalHelmOptions resolves each server service's sizing: the service's own
+// override laid over its measured default, quantity by quantity.
+func temporalHelmOptions(planton *v1.PlantonPlatform) resources.TemporalHelmOptions {
+	return resources.TemporalHelmOptions{
+		CRName:    planton.Name,
+		Namespace: planton.Namespace,
+		Frontend:  resources.EffectiveFor(resources.SizingTemporalFrontend, &planton.Spec),
+		History:   resources.EffectiveFor(resources.SizingTemporalHistory, &planton.Spec),
+		Matching:  resources.EffectiveFor(resources.SizingTemporalMatching, &planton.Spec),
+		Worker:    resources.EffectiveFor(resources.SizingTemporalWorker, &planton.Spec),
+	}
 }

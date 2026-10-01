@@ -10,7 +10,7 @@ This preset adds an autoscaling application pool to an existing DOKS cluster: 3 
 
 ## Key Configuration Choices
 
-- **Autoscaling with coherent bounds** (`autoScale` + `minNodes`/`maxNodes`) -- DigitalOcean's cluster-autoscaler manages the node count between 2 and 6; `nodeCount: 3` is only the initial count and drifts freely afterward without producing configuration diffs.
+- **Autoscaling with coherent bounds** (`autoScale` + `minNodes`/`maxNodes`) -- DigitalOcean's cluster-autoscaler manages the node count between 2 and 6; the pool starts at `minNodes` and no `nodeCount` is stated, because a stated count would be re-applied against the autoscaler on every update.
 - **General-purpose sizing** (`size: s-4vcpu-8gb`) -- balanced CPU/RAM for typical application pods. Changing the size later replaces the pool (the nodes are recreated), so schedule size changes deliberately.
 - **Node label** (`workload: app`) -- target this pool from Kubernetes with a `nodeSelector` or node affinity. The standard Planton identity labels are always applied alongside.
 - **Cluster reference** (`cluster.valueFrom`) -- resolves the owning cluster's UUID from a `DigitalOceanKubernetesCluster` resource's outputs at deploy time.

@@ -1,9 +1,13 @@
 # Full-surface regional DigitalOceanLoadBalancer: composes the VPC fixture
 # (the spec's vpc is OPTIONAL, so the fixture rides the e2e-prerequisites
-# annotation, never a registry edge) and proves tag-based targeting, an
-# LB-level firewall, cookie sticky sessions, full health-check thresholds,
-# PROXY protocol, backend keepalive, idle-timeout, and size_unit. HTTPS,
-# GLOBAL, BYOIP, and the Pulumi-gap arms are deliberately absent.
+# annotation, never a registry edge) plus a scenario-local droplet fixture
+# that carries the targeted tag (see e2e/fixtures/droplet-nyc3.yaml for why
+# a real member is needed), and proves tag-based targeting, an LB-level
+# firewall, cookie sticky sessions, full health-check thresholds, PROXY
+# protocol, backend keepalive, idle-timeout, and size_unit. HTTPS, GLOBAL,
+# BYOIP, and the Pulumi-gap arms are deliberately absent. The balancer
+# name carries the run id: load-balancer names are unique per account
+# (the API answers 422 "There is already a load balancer with that name").
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanLoadBalancer
 metadata:
@@ -16,11 +20,11 @@ metadata:
     e2e-component: digitaloceanloadbalancer
   annotations:
     planton.dev/e2e: "true"
-    planton.dev/e2e-prerequisites: "DigitalOceanVpc"
+    planton.dev/e2e-prerequisites: "DigitalOceanVpc,catalog/digitalocean/digitaloceanloadbalancer/e2e/fixtures/droplet-nyc3.yaml"
   tags:
     - planton-e2e
 spec:
-  loadBalancerName: pltn-e2e-dolb-full
+  loadBalancerName: pltn-e2e-dolb-full-${E2E_RUN_ID}
   region: nyc3
   vpc:
     valueFrom:
@@ -31,7 +35,7 @@ spec:
   enableProxyProtocol: true
   enableBackendKeepalive: true
   httpIdleTimeoutSeconds: 90
-  dropletTag: planton-e2e-web
+  dropletTag: pltn-e2e-dolb-web
   forwardingRules:
     - entryPort: 80
       entryProtocol: http

@@ -1,0 +1,30 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingPortalConfiguration
+metadata:
+  name: cancel-at-once-portal
+  org: example-org
+  env: production
+spec:
+  name: Cancel at once, with a credit
+  defaultReturnUrl: https://app.example.com/billing
+  features:
+    customerUpdate:
+      enabled: true
+      allowedUpdates:
+        - email
+        - address
+    invoiceHistory:
+      enabled: true
+    paymentMethodUpdate:
+      enabled: true
+    subscriptionCancel:
+      enabled: true
+      mode: immediately
+      prorationBehavior: create_prorations
+      cancellationReason:
+        enabled: true
+        options:
+          - too_expensive
+          - missing_features
+          - switched_service
+          - other

@@ -23,3 +23,13 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubernetes_persistent_volume_claim_v1.persistent_volume_claim (Terraform main.tf) and persistentvolumeclaim.go (Pulumi) -- the claim is the module's ONLY resource; the spec has no create_namespace and the module never creates namespaces. Binding and provisioning are performed by the cluster's controllers and CSI driver, so no persistentvolumes verbs are needed. Neither engine waits for the claim to reach Bound (deliberate -- WaitForFirstConsumer classes stay Pending until a pod consumes the claim).
+      - api_groups:
+          - ""
+        resources:
+          - persistentvolumeclaims
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the PersistentVolumeClaim in persistentvolumeclaim.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

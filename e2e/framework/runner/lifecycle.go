@@ -25,6 +25,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"time"
 
 	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
@@ -66,6 +67,7 @@ type lifecycleAnnotations struct {
 	upgradeManifest      string
 	expectUpgradeFailure string
 	reinstall            bool
+	outOfBand            *outOfBandRecovery // nil unless the scenario declares the out-of-band act (outofband.go)
 }
 
 func readLifecycleAnnotations(manifestPath string) (lifecycleAnnotations, error) {
@@ -83,6 +85,13 @@ func readLifecycleAnnotations(manifestPath string) (lifecycleAnnotations, error)
 	}
 	reinstall, _ := ManifestAnnotation(manifestPath, ReinstallAnnotation)
 	la.reinstall = reinstall == "true"
+	if value, _ := ManifestAnnotation(manifestPath, OutOfBandDeleteAnnotation); value != "" {
+		recovery, err := parseOutOfBandRecovery(value)
+		if err != nil {
+			return la, err
+		}
+		la.outOfBand = recovery
+	}
 	return la, nil
 }
 
@@ -117,6 +126,22 @@ func bindManifest(tc *provider.ComponentTestContext, manifestPath string) error 
 		return errors.Errorf("unsupported engine: %s", tc.Engine)
 	}
 	return nil
+}
+
+// prepareSecondAct turns the second act's file, as authored beside the
+// scenario, into the manifest the upgrade deploys: its tokens expand to the
+// FIRST act's values (the same run id, scenario slug and lane clock, so a name
+// built from them names the same object and only the declared fields change),
+// and its value_from refs resolve against the same deployed prerequisites.
+// Without this, a second act could only be written for a scenario that
+// carries neither tokens nor refs.
+func prepareSecondAct(path, runID, firstActScenario string, clock time.Time, depOutputs DependencyOutputs) (string, error) {
+	expanded, err := ExpandManifestTokens(path, runID, firstActScenario, clock)
+	if err != nil {
+		return "", errors.Wrap(err, "expanding the second act's tokens")
+	}
+	resolved, err := ResolveManifestRefs(expanded, depOutputs)
+	return resolved, errors.Wrap(err, "resolving the second act's references from the prerequisites' outputs")
 }
 
 // runUpgrade deploys the second manifest against the same stack.

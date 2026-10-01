@@ -1,0 +1,23 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0promptcustomtext
+spec:
+  # A custom text imports by the prompt and language it belongs to, joined
+  # by "::" -- both read from the spec, so the id derives blind.
+  values:
+    - name: prompt
+      derivations:
+        - from_spec_field: prompt
+      where_to_find: >-
+        The prompt the words belong to (login, signup-id, reset-password,
+        ...) -- Auth0 dashboard -> Branding -> Universal Login -> Advanced
+        Options -> Custom Text (the Prompt selector).
+    - name: language
+      derivations:
+        - from_spec_field: language
+      where_to_find: >-
+        The language code of the words (en, fr-CA, pt-BR, ...) -- the
+        Language selector beside the Prompt, or `GET
+        /api/v2/prompts/{prompt}/custom-text/{language}` on the Management
+        API, which answers the stored words for that pair.

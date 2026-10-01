@@ -4,7 +4,9 @@ import (
 	"github.com/pkg/errors"
 	kuberneteslokiv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesloki/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
+	kubernetescorev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
 	helmv3 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
+	kubernetesmeta "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -12,8 +14,9 @@ import (
 // Helm release. The typed spec renders into chart values (values.go);
 // exactly one deployment mode renders with every other mode's workloads
 // zeroed; declared object-store credentials ride environment variables
-// sourced from Secrets so no credential ever lands in the chart's rendered
-// configuration; the helm_values escape hatch merges last with Helm -f
+// sourced from Secrets (the r2 arm's from the module-owned
+// `<name>-r2-credentials` Secret) so no credential ever lands in the
+// chart's rendered configuration; the helm_values escape hatch merges last with Helm -f
 // semantics — the exact semantic twin of the Terraform module's
 // helm_release with values = [typed, helm_values, re-pin].
 func Resources(ctx *pulumi.Context, stackInput *kuberneteslokiv1alpha1.KubernetesLokiStackInput) error {
@@ -34,6 +37,29 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteslokiv1alpha1.Kubernete
 	var releaseDeps []pulumi.ResourceOption
 	if createdNamespace != nil {
 		releaseDeps = append(releaseDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+
+	// ------------------------ r2 credentials Secret -------------------------
+	// Created BEFORE the release: Loki's credential variables read it
+	// through secretKeyRef, and a pod whose referenced key is missing never
+	// starts. The values arrive resolved from references; the provider
+	// stores Secret data as Pulumi secrets.
+	if r2Arm := locals.R2; r2Arm != nil {
+		createdSecret, err := kubernetescorev1.NewSecret(ctx,
+			locals.R2CredentialsSecretName,
+			&kubernetescorev1.SecretArgs{
+				Metadata: kubernetesmeta.ObjectMetaPtrInput(&kubernetesmeta.ObjectMetaArgs{
+					Name:      pulumi.String(locals.R2CredentialsSecretName),
+					Namespace: pulumi.String(locals.Namespace),
+					Labels:    pulumi.ToStringMap(locals.Labels),
+				}),
+				StringData: pulumi.ToSecret(pulumi.ToStringMap(r2Arm.SecretData)).(pulumi.StringMapOutput),
+			},
+			append([]pulumi.ResourceOption{pulumi.Provider(kubernetesProvider)}, releaseDeps...)...)
+		if err != nil {
+			return errors.Wrap(err, "failed to create r2 credentials secret")
+		}
+		releaseDeps = append(releaseDeps, pulumi.DependsOn([]pulumi.Resource{createdSecret}))
 	}
 
 	// ------------------------------ helm release --------------------------

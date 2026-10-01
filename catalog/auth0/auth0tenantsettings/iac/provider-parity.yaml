@@ -1,0 +1,32 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# auth0 provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# auth0_tenant carries ZERO divergences: every configurable argument, and every
+# argument of its blocks (flags, session_cookie, sessions and its anonymous
+# block, oidc_logout, mtls, error_page, default_token_quota and its quotas,
+# country_codes), matches its spec field by exact name under spec. The spec
+# keeps the provider's nesting; the at-least-one rule and the grouping
+# comments are the only additions.
+#
+# flags.require_pushed_authorization_requests is not modeled: the provider
+# schema marks it deprecated ("not supported by the Auth0 Management API and
+# will be removed in the next major release"), and the accounting skips
+# schema-deprecated arguments on its own, so recording an exclusion for it
+# here would be a stale entry. Auth0 requires PAR per application (the
+# provider's auth0_client), once the tenant's
+# pushed_authorization_requests_supported opens the endpoint.
+#
+# The tenant's default domain is its own provider resource; the spec names it
+# for what it is on the tenant (default_custom_domain), where the resource
+# calls its one argument domain.
+
+resources:
+  auth0_custom_domain_default:
+    mappings:
+      - spec: spec.default_custom_domain
+        arg: domain

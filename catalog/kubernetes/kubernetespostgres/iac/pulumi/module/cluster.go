@@ -16,12 +16,19 @@ import (
 func createCluster(ctx *pulumi.Context, locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 	dependencies []pulumi.ResourceOption,
+	backupSeries pulumi.StringOutput,
 ) (pulumi.Resource, error) {
 	spec := locals.Spec
 
 	clusterSpec := postgresqlv1.ClusterSpecArgs{
 		Instances: pulumi.Int(int(spec.GetInstances())),
 		Storage:   buildStorage(spec.GetStorage()),
+		// The operator stamps these on every object it creates (the
+		// instance pods, their volumes, the Services), so the database's
+		// pods name their organization and environment.
+		InheritedMetadata: postgresqlv1.ClusterSpecInheritedMetadataArgs{
+			Labels: pulumi.ToStringMap(locals.Labels),
+		},
 	}
 
 	if spec.GetImageName() != "" {
@@ -83,6 +90,9 @@ func createCluster(ctx *pulumi.Context, locals *Locals,
 
 	// The Barman Cloud plugin wiring: designating the plugin as the WAL
 	// archiver is what starts continuous archiving into the ObjectStore.
+	// serverName names the backup series (the ObjectStore CRD forbids it,
+	// so it rides the Cluster's plugin entry); every Backup of the cluster,
+	// scheduled or on demand, files into the same series.
 	if spec.GetBackup() != nil {
 		clusterSpec.Plugins = postgresqlv1.ClusterSpecPluginsArray{
 			postgresqlv1.ClusterSpecPluginsArgs{
@@ -90,6 +100,7 @@ func createCluster(ctx *pulumi.Context, locals *Locals,
 				IsWALArchiver: pulumi.Bool(true),
 				Parameters: pulumi.StringMap{
 					"barmanObjectName": pulumi.String(locals.BackupObjectStoreName),
+					"serverName":       backupSeries,
 				},
 			},
 		}

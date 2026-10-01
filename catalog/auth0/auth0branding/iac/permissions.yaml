@@ -1,0 +1,29 @@
+# Least-privilege permissions the IaC runner's Auth0 credential needs to
+# provision, update, and destroy this component with the official modules.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.58 per iac/tf/provider.tf) and the
+# pulumi-auth0 SDK exchange its client id and secret for a token through
+# the client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: auth0branding
+spec:
+  auth0:
+    groups:
+      - purpose: ManageBranding
+        scopes:
+          - read:branding
+          - update:branding
+          - delete:branding
+        provenance: derived
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/branding.go) manage auth0_branding, the branding of the tenant the credential belongs to -- read via GET /api/v2/branding and GET /api/v2/branding/templates/universal-login (read:branding), written via PATCH /api/v2/branding and PUT /api/v2/branding/templates/universal-login (update:branding), and its delete removes the page template via DELETE /api/v2/branding/templates/universal-login (delete:branding); the branding itself has no delete (terraform-provider-auth0 internal/auth0/branding/resource.go, deleteBranding). When the spec declares a theme, iac/tf/main.tf and iac/pulumi/module/branding_theme.go manage auth0_branding_theme -- read via GET /api/v2/branding/themes/default (read:branding), created via POST /api/v2/branding/themes and updated via PATCH /api/v2/branding/themes/{themeId} (update:branding), deleted via DELETE /api/v2/branding/themes/{themeId} (delete:branding) (internal/auth0/branding/resource_theme.go) -- the scopes the Management API's OpenAPI document names for each endpoint.
+      - purpose: CheckForCustomDomain
+        scopes:
+          - read:custom_domains
+        provenance: derived
+        notes: The provider lists the tenant's custom domains on every read, update and delete of auth0_branding -- GET /api/v2/custom-domains (read:custom_domains) -- to decide whether the page template can be read, set or removed, and refuses a page template on a tenant without one (terraform-provider-auth0 internal/auth0/branding/resource.go, checkForCustomDomains). The modules never change a custom domain, so no other custom_domains scope is needed.

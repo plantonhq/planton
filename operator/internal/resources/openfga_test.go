@@ -8,7 +8,7 @@ import (
 )
 
 func TestOpenFGAHelmValues_DatastoreURI(t *testing.T) {
-	values := resources.OpenFGAHelmValues("myplanton", "ns")
+	values := resources.OpenFGAHelmValues(defaultOpenFGA("myplanton", "ns"))
 
 	ds, ok := values["datastore"].(map[string]any)
 	if !ok {
@@ -37,7 +37,7 @@ func TestOpenFGAHelmValues_DatastoreURI(t *testing.T) {
 }
 
 func TestOpenFGAHelmValues_ExtraEnvVars(t *testing.T) {
-	values := resources.OpenFGAHelmValues("myplanton", "ns")
+	values := resources.OpenFGAHelmValues(defaultOpenFGA("myplanton", "ns"))
 
 	envVars, ok := values["extraEnvVars"].([]any)
 	if !ok {

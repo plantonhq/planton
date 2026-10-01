@@ -7,6 +7,7 @@
 package azurelinuxwebappv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -208,7 +209,7 @@ var File_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azurelinuxwebapp/v1alpha1/outputs.proto\x12+dev.planton.azure.azurelinuxwebapp.v1alpha1\"\xbb\x04\n" +
+	"5catalog/azure/azurelinuxwebapp/v1alpha1/outputs.proto\x12+dev.planton.azure.azurelinuxwebapp.v1alpha1\x1a\x1cshared/options/options.proto\"\xc1\x04\n" +
 	"\x1cAzureLinuxWebAppStackOutputs\x12\x1c\n" +
 	"\n" +
 	"web_app_id\x18\x01 \x01(\tR\bwebAppId\x12)\n" +
@@ -221,8 +222,8 @@ const file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x1epossible_outbound_ip_addresses\x18\b \x03(\tR\x1bpossibleOutboundIpAddresses\x124\n" +
 	"\x16hosting_environment_id\x18\t \x01(\tR\x14hostingEnvironmentId\x120\n" +
 	"\x14site_credential_name\x18\n" +
-	" \x01(\tR\x12siteCredentialName\x128\n" +
-	"\x18site_credential_password\x18\v \x01(\tR\x16siteCredentialPasswordB\xef\x02\n" +
+	" \x01(\tR\x12siteCredentialName\x12>\n" +
+	"\x18site_credential_password\x18\v \x01(\tB\x04\xa0\xa6\x1d\x01R\x16siteCredentialPasswordB\xef\x02\n" +
 	"/com.dev.planton.azure.azurelinuxwebapp.v1alpha1B\fOutputsProtoP\x01Z]github.com/plantonhq/planton/catalog/azure/azurelinuxwebapp/v1alpha1;azurelinuxwebappv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Azure.Azurelinuxwebapp.V1alpha1\xca\x02+Dev\\Planton\\Azure\\Azurelinuxwebapp\\V1alpha1\xe2\x027Dev\\Planton\\Azure\\Azurelinuxwebapp\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Azure::Azurelinuxwebapp::V1alpha1b\x06proto3"
 
 var (

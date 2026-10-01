@@ -1,9 +1,24 @@
 # Fetch the pre-built worker bundle from R2 when spec.r2_bundle is set.
+#
+# download_body returns the object's bytes as body_base64 whatever its Content-Type.
+# The plain body attribute is filled only for a short list of "readable" types, which
+# excludes application/javascript -- the type many upload tools give a .js file -- so a
+# bundle read through it can come back empty. The postcondition refuses an empty
+# bundle here, naming the object, instead of letting Cloudflare receive a Worker with
+# no code.
 data "aws_s3_object" "bundle" {
-  count    = local.use_bundle ? 1 : 0
-  provider = aws.r2
-  bucket   = var.spec.r2_bundle.bucket
-  key      = var.spec.r2_bundle.path
+  count         = local.use_bundle ? 1 : 0
+  provider      = aws.r2
+  bucket        = var.spec.r2_bundle.bucket
+  key           = var.spec.r2_bundle.path
+  download_body = true
+
+  lifecycle {
+    postcondition {
+      condition     = try(self.body_base64, "") != ""
+      error_message = "The Worker bundle r2://${var.spec.r2_bundle.bucket}/${var.spec.r2_bundle.path} is empty. Upload the built script to that key, or point spec.r2_bundle.path at the object that holds it."
+    }
+  }
 }
 
 # The Worker script and all of its bindings.

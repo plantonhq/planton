@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec validations", func() {
 			Name:   "www.example.com",
 			Type:   "A",
 			Ttl:    proto.Int32(300),
-			Values: []string{"192.0.2.1"},
+			Values: []*foreignkeyv1.StringValueOrRef{strRef("192.0.2.1")},
 		}
 	})
 
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec validations", func() {
 
 	ginkgo.It("accepts a multi-value A record and a wildcard name", func() {
 		spec.Name = "*.example.com"
-		spec.Values = []string{"192.0.2.1", "192.0.2.2"}
+		spec.Values = []*foreignkeyv1.StringValueOrRef{strRef("192.0.2.1"), strRef("192.0.2.2")}
 		gomega.Expect(protovalidate.Validate(spec)).To(gomega.Succeed())
 	})
 
@@ -71,7 +71,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec validations", func() {
 		for _, n := range []string{"_dmarc.example.com", "token._domainkey.example.com", "_sip._tcp.example.com"} {
 			spec.Name = n
 			spec.Type = "TXT"
-			spec.Values = []string{"v=DMARC1; p=none"}
+			spec.Values = []*foreignkeyv1.StringValueOrRef{strRef("v=DMARC1; p=none")}
 			gomega.Expect(protovalidate.Validate(spec)).To(gomega.Succeed(), "name %s should be valid", n)
 		}
 	})
@@ -261,7 +261,7 @@ var _ = ginkgo.Describe("AwsRoute53DnsRecordSpec validations", func() {
 
 	ginkgo.It("rejects a value above AWS's 4000-character limit", func() {
 		spec.Type = "TXT"
-		spec.Values = []string{strings.Repeat("a", 4001)}
+		spec.Values = []*foreignkeyv1.StringValueOrRef{strRef(strings.Repeat("a", 4001))}
 		gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.Succeed())
 	})
 

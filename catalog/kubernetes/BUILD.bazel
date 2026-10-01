@@ -4,6 +4,7 @@ go_library(
     name = "kubernetes",
     srcs = [
         "cert_manager_issuer.pb.go",
+        "cert_manager_issuer_ref.go",
         "cli_help.go",
         "container_env.pb.go",
         "external_secrets_store.pb.go",

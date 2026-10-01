@@ -12,7 +12,7 @@ The spec maps onto DigitalOcean's `digitalocean_vpc` in full:
 | `description` | Free-form description, up to 255 characters; editable |
 | `ipRangeCidr` | The private range in CIDR notation, prefix /16 through /24; omit to let DigitalOcean choose. Immutable — changing it replaces the VPC |
 
-Whether a VPC is the region's DEFAULT is computed by DigitalOcean and cannot be set through infrastructure-as-code.
+Whether a VPC is the region's DEFAULT is computed by DigitalOcean and cannot be set through infrastructure-as-code -- and in a region with no VPC yet, the first one created becomes the undeletable default (see the GUIDE before declaring your first VPC in a new region).
 
 ## Quick start
 

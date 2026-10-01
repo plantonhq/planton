@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0promptscreenpartials.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/auth0/auth0promptscreenpartials/v1alpha1/outputs.proto";
+import "catalog/auth0/auth0promptscreenpartials/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// Auth0PromptScreenPartials is a component that manages the HTML fragments one
+// Universal Login prompt inserts at its named insertion points: extra form
+// fields, consent checkboxes, a note above the buttons, on each of the
+// prompt's screens.
+//
+// A prompt has one set of screen partials, so a tenant carries one
+// Auth0PromptScreenPartials resource per prompt it extends. Partials render
+// only with a page template (Auth0Branding's universal_login_template), which
+// needs a custom domain. Destroying it removes every partial of the prompt.
+//
+// Use cases:
+// - Ask for a company name or accept terms of service on the signup screen
+// - Show a notice above the login form
+//
+// Example manifest:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0PromptScreenPartials
+// metadata:
+//   name: signup-partials
+//   org: my-organization
+// spec:
+//   promptType: signup
+//   screenPartials:
+//     - screenName: signup
+//       insertionPoints:
+//         formContentEnd: <div class="terms">By signing up you accept the terms.</div>
+// ```
+message Auth0PromptScreenPartials {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0PromptScreenPartials" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0PromptScreenPartials'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the prompt and the partials of its screens.
+  Auth0PromptScreenPartialsSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the resource as applied, populated after deployment.
+  Auth0PromptScreenPartialsStatus status = 5;
+}
+
+// Auth0PromptScreenPartialsStatus represents the current state of a Auth0PromptScreenPartials resource.
+// Populated by the deployment system.
+message Auth0PromptScreenPartialsStatus {
+  // outputs contains the stack outputs: the prompt managed.
+  Auth0PromptScreenPartialsStackOutputs outputs = 1;
+}

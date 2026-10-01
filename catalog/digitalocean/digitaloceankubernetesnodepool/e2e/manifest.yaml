@@ -26,7 +26,8 @@ spec:
   cluster:
     value: fb7d9b81-fe06-4ee5-87f1-b9efc5af46fd
   size: gpu-mi300x1-192gb
-  nodeCount: 1
+  # No nodeCount: with autoScale on, the pool starts at minNodes and the
+  # autoscaler owns the count (a stated count would fight it).
   autoScale: true
   minNodes: 1
   maxNodes: 3

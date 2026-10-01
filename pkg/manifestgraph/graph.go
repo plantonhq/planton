@@ -3,6 +3,7 @@ package manifestgraph
 import (
 	"fmt"
 
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
@@ -225,7 +226,7 @@ func BuildGraph(set *Set) *Graph {
 		// literal that names no sibling is the common, legitimate case (an
 		// externally created gateway, a cloud id).
 		for _, use := range node.literalUses {
-			kind := annotatedKind(use.Field)
+			kind := refannotations.Of(use.Field).DefaultKind
 			if kind == cloudresourcekind.CloudResourceKind_unspecified || kind == cloudresourcekind.CloudResourceKind_KubernetesNamespace {
 				continue
 			}
@@ -297,16 +298,6 @@ func (g *Graph) dropInferredEdge(consumer, producer int) bool {
 	return false
 }
 
-// annotatedKind reads the default_kind annotation off a StringValueOrRef
-// field's descriptor (unspecified when the field carries none).
-func annotatedKind(fd protoreflect.FieldDescriptor) cloudresourcekind.CloudResourceKind {
-	if fd == nil || fd.Options() == nil {
-		return cloudresourcekind.CloudResourceKind_unspecified
-	}
-	kind, _ := proto.GetExtension(fd.Options(), foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
-	return kind
-}
-
 // literalNamespacePlacements finds top-level spec fields that name a
 // kubernetes namespace as a LITERAL: a StringValueOrRef field annotated
 // default_kind=KubernetesNamespace and not containment_exempt, holding the
@@ -327,14 +318,8 @@ func literalNamespacePlacements(msg proto.Message) []string {
 		if string(fd.Message().FullName()) != stringValueOrRefFullName {
 			return true
 		}
-		opts := fd.Options()
-		if opts == nil {
-			return true
-		}
-		if annotatedKind(fd) != cloudresourcekind.CloudResourceKind_KubernetesNamespace {
-			return true
-		}
-		if exempt, _ := proto.GetExtension(opts, foreignkeyv1.E_ContainmentExempt).(bool); exempt {
+		annotations := refannotations.Of(fd)
+		if annotations.DefaultKind != cloudresourcekind.CloudResourceKind_KubernetesNamespace || annotations.ContainmentExempt {
 			return true
 		}
 		svor, ok := v.Message().Interface().(*foreignkeyv1.StringValueOrRef)

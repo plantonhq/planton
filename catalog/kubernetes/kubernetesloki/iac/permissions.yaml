@@ -37,7 +37,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: The modules create no Secret of their own -- object-store credentials are read from EXISTING Secrets the manifest references -- but the Helm release stores its state in namespace-scoped release Secrets the runner must manage, and the pinned chart (18.5.4) renders the gateway's htpasswd Secret when spec.multi_tenancy declares tenants (with existing_htpasswd_secret the chart references the named Secret instead of creating one).
+        notes: The modules create exactly one Secret of their own, kubernetes_secret_v1.r2_credentials (`<name>-r2-credentials`, the r2 arm's key pair, only when storage.r2 is declared); the other arms' object-store credentials are read from EXISTING Secrets the manifest references. The Helm release also stores its state in namespace-scoped release Secrets the runner must manage, and the pinned chart (18.5.4) renders the gateway's htpasswd Secret when spec.multi_tenancy declares tenants (with existing_htpasswd_secret the chart references the named Secret instead of creating one).
       - api_groups:
           - ""
         resources:
@@ -127,3 +127,13 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers the chart's ServiceMonitor objects -- rendered only when spec.service_monitor_enabled is true (requires the Prometheus Operator CRDs on the cluster). The chart's wider optional surface (HPA/KEDA autoscaling, Ingress, NetworkPolicies) renders only through the helm_values escape hatch and needs its own permissions when enabled that way.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

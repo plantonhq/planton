@@ -276,7 +276,8 @@ locals {
   # namespace→workloads→crds and destroy crds→workloads→namespace —
   # both hazards resolved structurally. The operator tolerates starting
   # before its CRDs exist (the JOSDK operator crash-loops until they
-  # appear; the verifier owns rollout readiness).
+  # appear), and with no admission webhook nothing it defines is refused
+  # while it starts, so nothing waits for it.
   #
   # The Namespace document is MODULE-AUTHORED (the bundle ships none):
   # rendered only when create_namespace is set, carrying the standard

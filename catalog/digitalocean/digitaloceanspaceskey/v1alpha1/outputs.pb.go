@@ -7,6 +7,7 @@
 package digitaloceanspaceskeyv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -85,12 +86,12 @@ var File_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto proto
 
 const file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/digitalocean/digitaloceanspaceskey/v1alpha1/outputs.proto\x127dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1\"a\n" +
+	"Acatalog/digitalocean/digitaloceanspaceskey/v1alpha1/outputs.proto\x127dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1\x1a\x1cshared/options/options.proto\"g\n" +
 	"!DigitalOceanSpacesKeyStackOutputs\x12\x1d\n" +
 	"\n" +
-	"access_key\x18\x01 \x01(\tR\taccessKey\x12\x1d\n" +
+	"access_key\x18\x01 \x01(\tR\taccessKey\x12#\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKeyB\xbc\x03\n" +
+	"secret_key\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\tsecretKeyB\xbc\x03\n" +
 	";com.dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1B\fOutputsProtoP\x01Zngithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanspaceskey/v1alpha1;digitaloceanspaceskeyv1alpha1\xa2\x02\x04DPDD\xaa\x027Dev.Planton.Digitalocean.Digitaloceanspaceskey.V1alpha1\xca\x027Dev\\Planton\\Digitalocean\\Digitaloceanspaceskey\\V1alpha1\xe2\x02CDev\\Planton\\Digitalocean\\Digitaloceanspaceskey\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Digitalocean::Digitaloceanspaceskey::V1alpha1b\x06proto3"
 
 var (

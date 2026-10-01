@@ -34,8 +34,8 @@ spec:
   backup:
     object_store:
       # The bucket is the CloudflareR2Bucket's bucket_name; the path after it
-      # is this cluster's alone — a recovered cluster archives to a NEW path;
-      # Barman refuses a path holding another cluster's WAL.
+      # holds this cluster's backup series, one per install (the
+      # backup_server_name output), so a recreate never collides.
       destination_path: s3://prod-db-archive/prod-db
       r2:
         # The account and jurisdiction follow the bucket by reference, so the

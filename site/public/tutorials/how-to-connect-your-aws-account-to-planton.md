@@ -67,7 +67,7 @@ After creating the user, note the **Access Key ID** and **Secret Access Key**. Y
 Use the `planton secret set` command to store the access key ID. The name you choose here (in this case, `aws-access-key-id`) is the slug you will reference in the connection manifest.
 
 ```bash
-planton secret set aws-access-key-id value=AKIAIOSFODNN7EXAMPLE
+planton secret set aws-access-key-id 'AKIAIOSFODNN7EXAMPLE'
 ```
 
 ### Step 3: Store the Secret Access Key as an Org-Level Secret
@@ -75,7 +75,7 @@ planton secret set aws-access-key-id value=AKIAIOSFODNN7EXAMPLE
 Store the secret access key the same way. Use a distinct, descriptive name.
 
 ```bash
-planton secret set aws-secret-access-key value=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+planton secret set aws-secret-access-key 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
 ```
 
 After these two commands, your AWS credentials are stored securely in Planton's config-manager. The connection you create next will reference them by slug -- the actual key values never appear in the connection spec.

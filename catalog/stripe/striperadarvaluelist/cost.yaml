@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: striperadarvaluelist
+spec:
+  billing_model: free
+  free_tier: "Stripe bills nothing for a list or its items: any account, sandboxes included, can create them (docs.stripe.com/radar/lists)."
+  notes: "The list is free, but using it is not always: custom Radar rules that reference a list need Radar for Fraud Teams, an account-level product Stripe prices per screened transaction (stripe.com/radar/pricing). Radar's default rules, included with payments, cannot reference custom lists."

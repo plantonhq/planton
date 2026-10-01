@@ -585,10 +585,10 @@ const file_catalog_aws_awssecretsmanagersecret_v1alpha1_spec_proto_rawDesc = "" 
 	"\x1erotation_mechanism_exactly_one\x12\x89\x01set exactly one of rotation_lambda_arn (self-managed rotation function) or external_rotation_role_arn (partner-managed external rotation)\x1a\x94\x01(has(this.rotation_lambda_arn) && !has(this.external_rotation_role_arn)) || (!has(this.rotation_lambda_arn) && has(this.external_rotation_role_arn))\x1a\xc8\x01\n" +
 	"(external_metadata_requires_external_role\x12Gexternal_rotation_metadata is only used with external_rotation_role_arn\x1aSthis.external_rotation_metadata.size() == 0 || has(this.external_rotation_role_arn)B\x1b\n" +
 	"\x19_automatically_after_daysB\x15\n" +
-	"\x13_rotate_immediately\"a\n" +
+	"\x13_rotate_immediately\"\xd3\x01\n" +
 	"'AwsSecretsManagerSecretRotationMetadata\x12\x18\n" +
-	"\x03key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\x12\x1c\n" +
-	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05valueB\x91\x03\n" +
+	"\x03key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\x12\x8d\x01\n" +
+	"\x05value\x18\x02 \x01(\tBw\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dmPartner-defined configuration passed to an external rotation integration, not the secret the rotation managesR\x05valueB\x91\x03\n" +
 	"4com.dev.planton.aws.awssecretsmanagersecret.v1alpha1B\tSpecProtoP\x01Zigithub.com/plantonhq/planton/catalog/aws/awssecretsmanagersecret/v1alpha1;awssecretsmanagersecretv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Aws.Awssecretsmanagersecret.V1alpha1\xca\x020Dev\\Planton\\Aws\\Awssecretsmanagersecret\\V1alpha1\xe2\x02<Dev\\Planton\\Aws\\Awssecretsmanagersecret\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Aws::Awssecretsmanagersecret::V1alpha1b\x06proto3"
 
 var (

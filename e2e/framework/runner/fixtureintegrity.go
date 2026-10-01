@@ -124,7 +124,15 @@ func CheckScenarioFixtureIntegrity(repoRoot, componentProvider, component, scena
 // the on-disk file to name in findings (docPath may be a temp per-document
 // split of a multi-document profile).
 func manifestRefFindings(scenarioPath, reportPath, docPath string, deployed map[cloudresourcekind.CloudResourceKind]map[string]bool) []FixtureIntegrityFinding {
-	manifestObject, err := manifest.LoadManifest(docPath)
+	loadPath, err := withRunClockExpanded(docPath)
+	if err != nil {
+		return []FixtureIntegrityFinding{{
+			ScenarioPath: scenarioPath,
+			ManifestPath: reportPath,
+			Reason:       "run-clock token cannot expand: " + err.Error(),
+		}}
+	}
+	manifestObject, err := manifest.LoadManifest(loadPath)
 	if err != nil {
 		return []FixtureIntegrityFinding{{
 			ScenarioPath: scenarioPath,
@@ -259,4 +267,25 @@ func componentProfileDeferred(repoRoot, provider, component string) bool {
 		return false
 	}
 	return p.GetSpec().GetStatus() == componentv1.ComponentE2EProfileSpec_deferred
+}
+
+// withRunClockExpanded returns a manifest whose run-clock tokens hold timestamps, as a lane expands
+// them before parsing: a token standing in a number field (an expiry, a start date) cannot load
+// into the kind's message as text. A manifest without one passes through untouched; the copy
+// keeps the base name and lives beside no scenario.
+func withRunClockExpanded(path string) (string, error) {
+	raw, err := os.ReadFile(path)
+	if err != nil || !strings.Contains(string(raw), TimeTokenPrefix) {
+		return path, nil
+	}
+	expanded, err := expandRunClock(string(raw), LaneClock())
+	if err != nil {
+		return "", err
+	}
+	dir, err := os.MkdirTemp("", "planton-e2e-fixture-*")
+	if err != nil {
+		return "", err
+	}
+	copyPath := filepath.Join(dir, filepath.Base(path))
+	return copyPath, os.WriteFile(copyPath, []byte(expanded), 0o600)
 }

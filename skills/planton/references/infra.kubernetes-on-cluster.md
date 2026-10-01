@@ -113,8 +113,11 @@ metadata:
 
 `metadata.relationships` entries create REAL dependency edges in the deploy
 graph: a resource with a `runs_on` or `depends_on` relationship does not start
-until its target succeeds. The connection annotation carries credentials only;
-it creates no edge. Both are required in Scenario 1:
+until its target succeeds. The connection annotation carries the credentials,
+and the platform reads it for placement too: a workload whose annotation names
+the connection the cluster publishes draws inside that cluster and waits for
+the cluster itself. It does not wait for the nodes, so both are still required
+in Scenario 1:
 
 - **Every Kubernetes workload gets a `runs_on` relationship** to the in-chart
   cluster resource (`kind` + the cluster's exact `metadata.name` expression).

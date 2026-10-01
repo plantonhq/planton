@@ -63,7 +63,7 @@ spec:
 |---|---|---|---|---|
 | `spec.region` | `string` | yes |  |  |
 | `spec.subnetIds` | `[]string \| valueFrom` |  |  | AwsSubnet (`status.outputs.subnet_id`) |
-| `spec.dbSubnetGroupName` | `string \| valueFrom` |  |  |  |
+| `spec.dbSubnetGroupName` | `string` |  |  |  |
 | `spec.securityGroupIds` | `[]string \| valueFrom` |  |  | AwsSecurityGroup (`status.outputs.security_group_id`) |
 | `spec.engine` | `string` |  |  |  |
 | `spec.engineVersion` | `string` |  |  |  |
@@ -181,12 +181,10 @@ db_subnet_group_name at an existing group.
 
 ### spec.dbSubnetGroupName
 
-`string | valueFrom`
+`string`
 
 Name of an existing DB subnet group to place the instance in,
 instead of providing subnet_ids.
-
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.securityGroupIds
 

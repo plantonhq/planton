@@ -1,6 +1,6 @@
 # DigitalOcean App Platform App
 
-Deploys a full App Platform application -- HTTP services, workers, jobs, static sites, functions, and in-app databases -- from Git or from a container image. One manifest declares every component with its source, sizing, and autoscaling, plus app-level domains, ingress rules, alerts, and VPC egress placement; App Platform builds and serves the result with automatic HTTPS on a default `ondigitalocean.app` hostname. The decisions that matter most: which source type the DigitalOcean account can actually use, and which fields deploy only through Terraform at the current Pulumi SDK.
+Deploys a full App Platform application -- HTTP services, workers, jobs, static sites, functions, and in-app databases -- from Git or from a container image. One manifest declares every component with its source, sizing, and autoscaling, plus app-level domains, ingress rules, alerts, and VPC egress placement; App Platform builds and serves the result with automatic HTTPS on a default `ondigitalocean.app` hostname. The decisions that matter most: which source type the DigitalOcean account can actually use, and the two fields that still deploy only through Terraform at the current Pulumi SDK.
 
 ## What Gets Created
 
@@ -24,7 +24,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### DigitalOcean Account
 
 - **A source** for each component: a public Git clone URL, a linked GitHub/GitLab/Bitbucket repo, or a container image (Docker Hub, GHCR, or DigitalOcean Container Registry). The `github`/`gitlab`/`bitbucket` sources need the matching connection in the DigitalOcean control panel; `git` with a public clone URL needs none.
-- **A supported App Platform region** (for example `nyc3`, `sfo3`, `fra1`).
+- **An App Platform region group** (for example `nyc`, `sfo`, `fra` -- these are datacenter groups, not droplet slugs like `nyc3`).
 - **A DigitalOcean-managed DNS zone** (only for custom domains) -- `domains[].zone` expects the zone to already exist; App Platform will not create DNS for you.
 
 ## Deploy
@@ -46,7 +46,7 @@ metadata:
   env: prod
 spec:
   appName: my-web-app
-  region: nyc3
+  region: nyc
   services:
     - name: web
       git:
@@ -101,7 +101,7 @@ These are the most important decisions when configuring an App Platform applicat
 
 **Source per component** -- each component sets exactly one of `git`, `github`, `gitlab`, `bitbucket`, or (services/workers/jobs) `image`. The VCS-linked sources need the matching connection in the DigitalOcean control panel -- `deployOnPush` is silently ignored without it and a missing connection fails the deploy -- so `git` with a public clone URL is the right default for unlinked accounts. For Docker Hub images, `registry` is the namespace (`library` for official images), not the string "docker-hub"; for DigitalOcean Container Registry set `registryType: docr` and leave `registry` empty.
 
-**App name** -- `appName` is 2-32 characters, DNS-friendly, and unique in the DigitalOcean account. Changing it replaces the app.
+**App name** -- `appName` is 2-32 characters matching `^[a-z][a-z0-9-]{0,30}[a-z0-9]$` (starts with a letter) and unique across every app in the account; component names follow the same rule and validation enforces it on each. Renaming updates the app in place, but the default `<name>-<hash>.ondigitalocean.app` URL changes with the name.
 
 **Instance size and count** -- `instanceSizeSlug` is a free-form string (`basic-xxs`, `professional-s`, ...); new provider sizes work without a catalog change. The slug is the cost driver: every instance of every service, worker, and job bills by its size, so a forgotten `professional` slug on a staging worker costs real money.
 
@@ -109,7 +109,11 @@ These are the most important decisions when configuring an App Platform applicat
 
 **Termination** -- `termination.drainSeconds` is a service-only HTTP connection drain; workers and jobs reject it and honor `gracePeriodSeconds` only.
 
-**Terraform-only fields at the current Pulumi SDK (v4.49.0)** -- `vpc`, `maintenance`, service/worker `livenessHealthCheck`, `ingress.secureHeader`, ingress `authorityExact` matches, and alert destinations are all real spec fields that Terraform wires; the Pulumi module fails the apply loudly if they are set. Deploy through Terraform when you need them.
+**Liveness and secure headers** -- service/worker `livenessHealthCheck` is the restart probe (the service `healthCheck` is the readiness probe that gates traffic), and `ingress.secureHeader` adds one response header to every route. Both deploy on both provisioners, as does every other spec field including `vpc`, `maintenance`, ingress `authorityExact` matches, and alert destinations.
+
+**Alert destinations** -- both engines wire email and Slack destinations, but the provider never reads them back, so a Terraform apply with destinations set re-plans and redeploys the app every time (a provider defect, tracked as [digitalocean/terraform-provider-digitalocean#1606](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1606)). Set them on Pulumi stacks, or leave them unset on Terraform and manage recipients in the control panel; recipients must be verified team members.
+
+**Project** -- `projectId` is create-only: changing it destroys and recreates the app. Leave it unset to use the account's default project.
 
 **In-app databases** -- a `databases[]` entry without `clusterName` is App Platform's managed dev database, not a production data store. Set `production: true` with `clusterName` referencing an existing cluster; the attachment never creates the cluster.
 
@@ -124,7 +128,7 @@ These are the most important decisions when configuring an App Platform applicat
 | **DigitalOceanDatabaseCluster** (optional) | `databases[].clusterName` | `spec.cluster_name` |
 | **DigitalOceanProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-VPC placement is wired by Terraform. The Pulumi SDK at v4.49.0 cannot set it; Pulumi fails loudly if `vpc` is set.
+VPC placement is wired by both provisioners.
 
 ### What This Component Provides
 

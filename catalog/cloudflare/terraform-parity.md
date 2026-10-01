@@ -20,8 +20,8 @@ and every provider resource carries exactly one recorded disposition --
 omission is a decision, never an accident. This page is the measurement,
 generated from the same accounting that gates the repository's CI. It makes
 no achieved-parity claim: a kind counts as PROVEN only when live end-to-end
-runs pass on both IaC engines, and the tables below show exactly how far
-that has progressed.
+runs pass on every IaC engine it runs on, and the tables below show exactly
+how far that has progressed.
 
 ## Measurement baseline
 
@@ -32,7 +32,7 @@ that has progressed.
 | Kinds in the catalog | 66 |
 | Distinct provider resources consumed | 113 |
 | Spec fields authored across all kinds | 2092 |
-| Module pins on `aws` | `~> 5.0` × 1 |
+| Module pins on `aws` | `~> 6.58` × 1 |
 | Module pins on `cloudflare` | `~> 5.23` × 66 |
 | Module pins on `tls` | `~> 4.0` × 1 |
 
@@ -65,7 +65,7 @@ Every configurable, non-deprecated provider argument of a kind's consumed
 resources must be matched to a spec field, mapped by recorded judgment, or
 excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
-gaps. **Proven** means live end-to-end runs passed on both IaC engines.
+gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.
 
 **66 of 66 kinds are at total accounting; 58 proven live.**
 

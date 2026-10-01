@@ -19,7 +19,6 @@ The most common Google-managed SSL certificate: one fully-qualified domain name 
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<gcp-project-id>` | GCP project ID where the certificate will live | GCP Console or `GcpProject` outputs |
-| `<your-cert-name>` | Cloud-side certificate name (RFC1035) | Choose a descriptive name (e.g., `prod-app-cert`) |
 | `app.example.com` | The hostname the certificate should secure | Your DNS / load balancer hostname |
 
 ## Remix Notes

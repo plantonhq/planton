@@ -323,7 +323,7 @@ Microsoft Cost Management groups by them.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureLogAnalyticsWorkspace, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureLogAnalyticsWorkspace, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -331,8 +331,8 @@ Reference an output from another manifest as `valueFrom: {kind: AzureLogAnalytic
 | `status.outputs.workspace_name` | `string` | The name of the Log Analytics Workspace. |
 | `status.outputs.workspace_customer_id` | `string` | The workspace customer ID -- the GUID agents and direct-ingestion APIs identify the workspace by (the portal calls it "Workspace ID" on the agents page; distinct from the ARM resource ID above). |
 | `status.outputs.resource_group_name` | `string` | The name of the resource group containing the workspace. |
-| `status.outputs.primary_shared_key` | `string` | The primary shared key for agent authentication. Secret-bearing: used by Azure Monitor agents and direct ingestion APIs to authenticate when sending data. Unusable as a credential when local_authentication_enabled is false (keyless posture). |
-| `status.outputs.secondary_shared_key` | `string` | The secondary shared key for agent authentication. Secret-bearing: a backup key that allows rotation without downtime -- point agents at the secondary, regenerate the primary, then swap back. |
+| `status.outputs.primary_shared_key` | `string` (sensitive) | The primary shared key for agent authentication. Secret-bearing: used by Azure Monitor agents and direct ingestion APIs to authenticate when sending data. Unusable as a credential when local_authentication_enabled is false (keyless posture). |
+| `status.outputs.secondary_shared_key` | `string` (sensitive) | The secondary shared key for agent authentication. Secret-bearing: a backup key that allows rotation without downtime -- point agents at the secondary, regenerate the primary, then swap back. |
 | `status.outputs.identity_principal_id` | `string` | The principal ID of the workspace's system-assigned managed identity. Empty unless the identity block enables SYSTEM_ASSIGNED. Grant this principal access (for example to a Key Vault key) when the workspace itself must read other resources. |
 
 ## References

@@ -408,14 +408,18 @@ func containsFreeForm(t TFType) bool {
 // rendered tfvars, and therefore must stay a bare (non-optional) attribute. The
 // source of truth is buf.validate: a field is required if it is explicitly
 // (buf.validate.field).required, or if it carries a presence-implying constraint
-// (string min_len >= 1, repeated min_items >= 1) that is evaluated on the zero
-// value. A constraint under `ignore = IGNORE_IF_ZERO_VALUE` (or IGNORE_ALWAYS)
-// is skipped when the field is unset, so the zero value is legal and the field
-// is optional however strict its rule reads -- the idiom for "if you set it,
-// it must be at least N characters", such as a password that is only set for
-// one authentication type. Everything else is optional, because the renderer
-// prunes unset/zero fields and a bare attribute would then fail object
-// validation.
+// (string min_len >= 1, repeated min_items >= 1) that protovalidate evaluates
+// on the zero value. Two cases skip the zero value, so their constraints
+// describe a value, never presence, and the field is optional unless
+// explicitly required:
+//   - a constraint under `ignore = IGNORE_IF_ZERO_VALUE` (or IGNORE_ALWAYS),
+//     the idiom for "if you set it, it must be at least N characters", such as
+//     a password that is only set for one authentication type;
+//   - a field with explicit presence (proto3 `optional`, a oneof member),
+//     which protovalidate checks only when it is set.
+//
+// Everything else is optional, because the renderer prunes unset/zero fields
+// and a bare attribute would then fail object validation.
 func isRequiredField(fd protoreflect.FieldDescriptor) bool {
 	opts := fd.Options()
 	if opts == nil {
@@ -433,6 +437,9 @@ func isRequiredField(fd protoreflect.FieldDescriptor) bool {
 	}
 	switch rules.GetIgnore() {
 	case validate.Ignore_IGNORE_IF_ZERO_VALUE, validate.Ignore_IGNORE_ALWAYS:
+		return false
+	}
+	if fd.HasPresence() {
 		return false
 	}
 	if s := rules.GetString(); s != nil && s.GetMinLen() >= 1 {

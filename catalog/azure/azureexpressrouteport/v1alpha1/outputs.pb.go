@@ -7,6 +7,7 @@
 package azureexpressrouteportv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -248,7 +249,7 @@ var File_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azureexpressrouteport/v1alpha1/outputs.proto\x120dev.planton.azure.azureexpressrouteport.v1alpha1\"\x85\b\n" +
+	":catalog/azure/azureexpressrouteport/v1alpha1/outputs.proto\x120dev.planton.azure.azureexpressrouteport.v1alpha1\x1a\x1cshared/options/options.proto\"\x8b\b\n" +
 	"!AzureExpressRoutePortStackOutputs\x121\n" +
 	"\x15express_route_port_id\x18\x01 \x01(\tR\x12expressRoutePortId\x125\n" +
 	"\x17express_route_port_name\x18\x02 \x01(\tR\x14expressRoutePortName\x12\x12\n" +
@@ -268,8 +269,8 @@ const file_catalog_azure_azureexpressrouteport_v1alpha1_outputs_proto_rawDesc = 
 	"\x14link2_interface_name\x18\x0f \x01(\tR\x12link2InterfaceName\x12/\n" +
 	"\x14link2_patch_panel_id\x18\x10 \x01(\tR\x11link2PatchPanelId\x12\"\n" +
 	"\rlink2_rack_id\x18\x11 \x01(\tR\vlink2RackId\x120\n" +
-	"\x14link2_connector_type\x18\x12 \x01(\tR\x12link2ConnectorType\x12\x99\x01\n" +
-	"\x12authorization_keys\x18\x13 \x03(\v2j.dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackOutputs.AuthorizationKeysEntryR\x11authorizationKeys\x1aD\n" +
+	"\x14link2_connector_type\x18\x12 \x01(\tR\x12link2ConnectorType\x12\x9f\x01\n" +
+	"\x12authorization_keys\x18\x13 \x03(\v2j.dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackOutputs.AuthorizationKeysEntryB\x04\xa0\xa6\x1d\x01R\x11authorizationKeys\x1aD\n" +
 	"\x16AuthorizationKeysEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x92\x03\n" +

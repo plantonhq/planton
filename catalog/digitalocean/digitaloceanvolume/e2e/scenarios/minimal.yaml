@@ -14,6 +14,6 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  volumeName: pltn-e2e-vol-min
+  volumeName: pltn-e2e-vol-min-${E2E_RUN_ID}
   region: nyc3
   sizeGib: 10

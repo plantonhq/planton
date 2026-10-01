@@ -1,8 +1,18 @@
 # Composed DigitalOceanApp: an HTTP service plus a background worker,
 # both from public Docker Hub images. Proves the multi-component app
-# spec (service + worker families) without GitHub, private registries,
-# or any Pulumi-gap field (no vpc, maintenance, liveness, custom
-# domain, or alert destinations).
+# spec (service + worker families), a liveness probe on each component
+# (the readiness health_check on the service gates traffic; the liveness
+# probe restarts the container), and an explicit ingress rule carrying the
+# one ingress-wide secure response header -- all three arms accepted and
+# echoed unchanged by the API's validate-only propose endpoint before they
+# joined this lane. Without GitHub, private registries, or any field that
+# needs a fixture or an environment variable (no vpc, custom domain, or
+# alert destinations -- the alerted scenario carries the alert arms behind
+# its email gate).
+#
+# appName carries ${E2E_RUN_ID}: App Platform app names are unique across
+# the account and capped at 32 characters. 20 + 10 (run id + engine
+# suffix) = 30.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanApp
 metadata:
@@ -18,8 +28,8 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  appName: pltn-e2e-doapp-comp
-  region: nyc3
+  appName: pltn-e2e-doapp-comp-${E2E_RUN_ID}
+  region: nyc
   services:
     - name: web
       image:
@@ -30,6 +40,14 @@ spec:
       instanceSizeSlug: basic-xxs
       instanceCount: 1
       httpPort: 80
+      livenessHealthCheck:
+        port: 80
+        httpPath: /
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 3
+        successThreshold: 1
+        failureThreshold: 3
   workers:
     - name: worker
       image:
@@ -39,3 +57,16 @@ spec:
         tag: latest
       instanceSizeSlug: basic-xxs
       instanceCount: 1
+      livenessHealthCheck:
+        port: 80
+        httpPath: /
+        periodSeconds: 10
+  ingress:
+    rules:
+      - match:
+          pathPrefix: /
+        component:
+          name: web
+    secureHeader:
+      key: X-Frame-Options
+      value: DENY

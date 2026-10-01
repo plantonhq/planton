@@ -1,6 +1,6 @@
 # DigitalOcean Database Cluster
 
-Managed databases on DigitalOcean: one Planton component models the full `digitalocean_database_cluster` resource — every engine DigitalOcean offers (PostgreSQL, MySQL, Redis, MongoDB, Kafka, OpenSearch, Valkey), node topology and sizing, VPC-private networking, custom storage with automatic growth, weekly maintenance windows, restore-from-backup provisioning, engine-specific tuning, project placement, and tags.
+Managed databases on DigitalOcean: one Planton component models the full `digitalocean_database_cluster` resource — every engine DigitalOcean offers (PostgreSQL, MySQL, Valkey, MongoDB, Kafka, OpenSearch — plus Redis for adopting existing clusters), node topology and sizing, VPC-private networking, custom storage with automatic growth, weekly maintenance windows, restore-from-backup provisioning, engine-specific tuning, project placement, and tags.
 
 ## What this component models
 
@@ -9,8 +9,8 @@ The spec maps one-to-one onto DigitalOcean's managed database cluster:
 | Spec field | What it controls |
 |---|---|
 | `clusterName` | The cluster's name in DigitalOcean (up to 64 characters) |
-| `engine` | `pg`, `mysql`, `redis`, `mongodb`, `kafka`, `opensearch`, or `valkey` |
-| `engineVersion` | Major or major.minor version (`"16"`, `"8"`, `"3.5"`); changing it performs an in-place major upgrade — DigitalOcean never downgrades |
+| `engine` | `pg`, `mysql`, `valkey`, `mongodb`, `kafka`, or `opensearch` for new clusters; `redis` only adopts an existing cluster (DigitalOcean no longer creates Redis) |
+| `engineVersion` | A version DigitalOcean currently offers for the engine, exactly as `GET /v2/databases/options` lists it (`"16"` for PostgreSQL, `"8.4"` for MySQL, `"8"` for Valkey, `"4.2"` for Kafka, `"2.19"` for OpenSearch, `"8.0"` for MongoDB as of 2026-09-16); a version not on that list is rejected at create. Changing it performs an in-place major upgrade — DigitalOcean never downgrades |
 | `region` | Data-center region; changing it live-migrates the cluster |
 | `sizeSlug` | Per-node CPU/memory (`db-s-1vcpu-1gb`, `db-s-2vcpu-4gb`, ...); changing it resizes in place |
 | `nodeCount` | Engine-specific: 1–3 for most engines, 3+ for Kafka, up to 15 for OpenSearch |
@@ -22,7 +22,7 @@ The spec maps one-to-one onto DigitalOcean's managed database cluster:
 | `evictionPolicy` | Redis/Valkey only: key eviction under memory pressure |
 | `sqlMode` | MySQL only: comma-separated SQL modes |
 | `projectId` | Optional DigitalOcean project placement (UUID); create-only |
-| `tags` | Your tags, applied alongside the standard Planton labels |
+| `tags` | Your tags, applied alongside the six standard Planton labels; DigitalOcean caps the comma-joined total at 255 characters and both provisioners fail fast with the arithmetic when a long `metadata.name` or `metadata.id` spends it |
 
 Engine pairing is validated at manifest time: `sqlMode` with anything but MySQL, or `evictionPolicy` with anything but Redis/Valkey, is rejected before any provisioner runs — the same rules DigitalOcean enforces server-side.
 
@@ -101,7 +101,7 @@ Both provisioners export the identical output set:
 - **Region changes migrate live.** The cluster stays up while DigitalOcean moves it; plan for elevated latency during the move.
 - **Removing `evictionPolicy` resets to `noeviction`** rather than leaving the last policy in place.
 - **`backupRestore` acts only at creation.** DigitalOcean never reports it back; changing it on an existing cluster does nothing.
-- **`storageAutoscale` is Terraform-only today.** The Pulumi bridge (v4.49.0) has no such field; the Pulumi module fails loudly if it is set rather than silently dropping it.
+- **`storageAutoscale` deploys on both provisioners.** Keep `incrementGib` at or below the size slug's maximum plan storage (30 GiB on `db-s-1vcpu-1gb`) — the API refuses a larger step at create time. See the [GUIDE](GUIDE.md).
 
 See `GUIDE.md` for operational judgment (sizing, engine selection, upgrade practice) and `catalog.md` for the deployment-store page.
 
@@ -111,7 +111,7 @@ See `GUIDE.md` for operational judgment (sizing, engine selection, upgrade pract
 - `iac/tf/` and `iac/pulumi/` — the two provisioner modules implementing the same contract with identical outputs
 - `iac/provider-parity.yaml` — the recorded mapping judgment against the pinned provider
 - `iac/import-map.yaml` — how an existing cluster's identity derives for import
-- `presets/` — ready-to-deploy starting points (PostgreSQL HA/dev, Redis, Kafka, OpenSearch)
+- `presets/` — ready-to-deploy starting points (PostgreSQL HA/dev, Valkey, Kafka, OpenSearch)
 - `e2e/` — test profile, canonical manifests, and live-lane scenarios
 
 ---

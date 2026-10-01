@@ -410,7 +410,7 @@ is never retyped. Example: "https://api.example.com/".
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: Auth0User, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: Auth0User, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -421,7 +421,7 @@ Reference an output from another manifest as `valueFrom: {kind: Auth0User, name:
 | `status.outputs.nickname` | `string` | nickname is the user's short name as stored, including the default Auth0 derived when none was declared. |
 | `status.outputs.picture` | `string` | picture is the URL of the user's avatar as stored, including the placeholder Auth0 assigned when none was declared. |
 | `status.outputs.connection_name` | `string` | connection_name is the name of the connection the user belongs to. |
-| `status.outputs.password` | `string` | password is the initial password the modules generated, set ONLY when spec.password was left empty on a database connection. A declared password is never echoed back here, and a passwordless user has none. Read it once into the credential store that owns it; every later rotation happens in Auth0, and this output keeps the value the modules minted, not the current one. |
+| `status.outputs.password` | `string` (sensitive) | password is the initial password the modules generated, set ONLY when spec.password was left empty on a database connection. A declared password is never echoed back here, and a passwordless user has none. Read it once into the credential store that owns it; every later rotation happens in Auth0, and this output keeps the value the modules minted, not the current one. |
 
 ## References
 

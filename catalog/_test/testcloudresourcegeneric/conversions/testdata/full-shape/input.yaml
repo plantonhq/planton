@@ -17,4 +17,4 @@ spec:
   commands:
     - first
     - second
-  sensitiveString: not-a-real-secret
+  sensitiveString: $secret/not-a-real-secret

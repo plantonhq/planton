@@ -110,3 +110,13 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: The "cilium" GatewayClass, rendered only when spec.gateway_api is true (which requires kube_proxy_replacement and the Gateway API CRDs from KubernetesGatewayApiCrds). The chart's Gateway API arm also renders supporting objects in its own namespaces; the chart's full object surface under helm_values overrides is broader than any static list -- the rules here cover the typed spec's rendering.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

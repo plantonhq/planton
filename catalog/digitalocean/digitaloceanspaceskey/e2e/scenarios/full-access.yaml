@@ -15,6 +15,12 @@ metadata:
     e2e-component: digitaloceanspaceskey
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-import-roundtrip-skip: >-
+      digitalocean_spaces_key ships NO importer at the provider pin, and the
+      secret_key exists only in the create response -- no import could ever
+      restore it. The only reconcile after an adoption is a replace, which
+      mints a SECOND key and orphans the first; the consequence is documented
+      on the kind's GUIDE and the import catalog row.
   tags:
     - planton-e2e
 spec:

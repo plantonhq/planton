@@ -7,6 +7,7 @@
 package azurecontainerregistryv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -137,13 +138,13 @@ var File_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_azure_azurecontainerregistry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azurecontainerregistry/v1alpha1/outputs.proto\x121dev.planton.azure.azurecontainerregistry.v1alpha1\"\x8c\x03\n" +
+	";catalog/azure/azurecontainerregistry/v1alpha1/outputs.proto\x121dev.planton.azure.azurecontainerregistry.v1alpha1\x1a\x1cshared/options/options.proto\"\x92\x03\n" +
 	"\"AzureContainerRegistryStackOutputs\x122\n" +
 	"\x15container_registry_id\x18\x01 \x01(\tR\x13containerRegistryId\x126\n" +
 	"\x17container_registry_name\x18\x02 \x01(\tR\x15containerRegistryName\x12!\n" +
 	"\flogin_server\x18\x03 \x01(\tR\vloginServer\x12%\n" +
-	"\x0eadmin_username\x18\x04 \x01(\tR\radminUsername\x12%\n" +
-	"\x0eadmin_password\x18\x05 \x01(\tR\radminPassword\x12P\n" +
+	"\x0eadmin_username\x18\x04 \x01(\tR\radminUsername\x12+\n" +
+	"\x0eadmin_password\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\radminPassword\x12P\n" +
 	"%system_assigned_identity_principal_id\x18\x06 \x01(\tR!systemAssignedIdentityPrincipalId\x127\n" +
 	"\x18data_endpoint_host_names\x18\a \x03(\tR\x15dataEndpointHostNamesB\x99\x03\n" +
 	"5com.dev.planton.azure.azurecontainerregistry.v1alpha1B\fOutputsProtoP\x01Zigithub.com/plantonhq/planton/catalog/azure/azurecontainerregistry/v1alpha1;azurecontainerregistryv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Azure.Azurecontainerregistry.V1alpha1\xca\x021Dev\\Planton\\Azure\\Azurecontainerregistry\\V1alpha1\xe2\x02=Dev\\Planton\\Azure\\Azurecontainerregistry\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Azure::Azurecontainerregistry::V1alpha1b\x06proto3"

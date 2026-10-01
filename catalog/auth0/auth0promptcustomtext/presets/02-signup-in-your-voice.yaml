@@ -1,0 +1,16 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptCustomText
+metadata:
+  name: signup-en
+  org: example-org
+  env: production
+spec:
+  prompt: signup
+  language: en
+  screens:
+    signup:
+      texts:
+        title: Create your Planton account
+        description: Sign up to Planton to continue to ${clientName}.
+        loginActionText: Already on Planton?
+        email-in-use: An account with this email already exists. Log in instead, or write to support@planton.ai.

@@ -19,7 +19,8 @@ missing configuration key as a server-side error only for some types.
 `authToken`, `password`, and `serviceKey` live in `sensitiveLabels`, where
 the platform enforces managed-secret handling and GCP redacts them on
 read. Validation refuses the same keys in `channelLabels` — a credential
-in a plain map would sit in state as plaintext.
+in a plain map would be shown in plans and kept outside Pulumi's secret
+encryption.
 
 ## Verification is part of the deploy, not an afterthought
 

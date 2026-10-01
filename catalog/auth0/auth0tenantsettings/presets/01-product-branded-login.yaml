@@ -1,0 +1,11 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: tenant-settings
+  org: example-org
+  env: production
+spec:
+  friendlyName: Example
+  pictureUrl: https://assets.example.com/logo.png
+  supportEmail: support@example.com
+  supportUrl: https://example.com/support

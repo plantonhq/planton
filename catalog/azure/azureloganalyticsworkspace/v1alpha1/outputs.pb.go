@@ -7,6 +7,7 @@
 package azureloganalyticsworkspacev1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -146,14 +147,14 @@ var File_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azureloganalyticsworkspace/v1alpha1/outputs.proto\x125dev.planton.azure.azureloganalyticsworkspace.v1alpha1\"\xea\x02\n" +
+	"?catalog/azure/azureloganalyticsworkspace/v1alpha1/outputs.proto\x125dev.planton.azure.azureloganalyticsworkspace.v1alpha1\x1a\x1cshared/options/options.proto\"\xf6\x02\n" +
 	"&AzureLogAnalyticsWorkspaceStackOutputs\x12!\n" +
 	"\fworkspace_id\x18\x01 \x01(\tR\vworkspaceId\x12%\n" +
 	"\x0eworkspace_name\x18\x02 \x01(\tR\rworkspaceName\x122\n" +
 	"\x15workspace_customer_id\x18\x03 \x01(\tR\x13workspaceCustomerId\x12.\n" +
-	"\x13resource_group_name\x18\x04 \x01(\tR\x11resourceGroupName\x12,\n" +
-	"\x12primary_shared_key\x18\x05 \x01(\tR\x10primarySharedKey\x120\n" +
-	"\x14secondary_shared_key\x18\x06 \x01(\tR\x12secondarySharedKey\x122\n" +
+	"\x13resource_group_name\x18\x04 \x01(\tR\x11resourceGroupName\x122\n" +
+	"\x12primary_shared_key\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10primarySharedKey\x126\n" +
+	"\x14secondary_shared_key\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\x12secondarySharedKey\x122\n" +
 	"\x15identity_principal_id\x18\a \x01(\tR\x13identityPrincipalIdB\xb5\x03\n" +
 	"9com.dev.planton.azure.azureloganalyticsworkspace.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azureloganalyticsworkspace/v1alpha1;azureloganalyticsworkspacev1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azureloganalyticsworkspace.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azureloganalyticsworkspace\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azureloganalyticsworkspace\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azureloganalyticsworkspace::V1alpha1b\x06proto3"
 

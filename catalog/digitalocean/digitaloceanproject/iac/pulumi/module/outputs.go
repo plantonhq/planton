@@ -7,4 +7,7 @@ const (
 	OpOwnerUuid = "owner_uuid"
 	// OpOwnerId is the numeric id of the owning account or team, as a string.
 	OpOwnerId = "owner_id"
+	// OpResourceUrns is the sorted list of member resource URNs DigitalOcean
+	// reports for the project after apply.
+	OpResourceUrns = "resource_urns"
 )

@@ -24,9 +24,9 @@ Use separate stores for:
 
 ## Important: Terraform Only
 
-> ⚠️ **OpenFGA only has a Terraform provider.** There is no Pulumi provider available.
+> ⚠️ **OpenFGA only has a Terraform provider**, so this component runs on OpenTofu or Terraform.
 > 
-> You **must** use `--provisioner tofu` when deploying this component.
+> Set `planton.dev/provisioner: tofu` (or `terraform`) on the manifest, or leave it unset and the CLI asks between the two; Pulumi is refused before anything runs.
 
 ## Usage
 

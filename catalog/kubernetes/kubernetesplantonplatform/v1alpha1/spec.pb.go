@@ -8,6 +8,7 @@ package kubernetesplantonplatformv1alpha1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -180,10 +181,11 @@ type KubernetesPlantonPlatformSpec struct {
 	// Runners outside this cluster — a developer's laptop deploying with the
 	// cloud sign-in already on it, an appliance in another network — pulling
 	// this platform's deploy work. OFF by default. Rides the front door:
-	// the deploy queue is routed through the platform hostname beside the
-	// native gRPC API, so it needs a Gateway API front door (ingress with a
-	// gateway_ref); on any other door the capability stays closed and the
-	// platform's status says why. The in-cluster runner is unaffected.
+	// such a runner reaches its work through the control plane on the
+	// platform hostname's native gRPC address, so it needs a Gateway API front
+	// door (ingress with a gateway_ref); on any other door the capability
+	// stays closed and the platform's status says why. The in-cluster runner
+	// is unaffected.
 	RemoteRunners *KubernetesPlantonPlatformRemoteRunners `protobuf:"bytes,18,opt,name=remote_runners,json=remoteRunners,proto3" json:"remote_runners,omitempty"`
 	// *
 	// The one mail provider every sender on the install uses: the control
@@ -213,6 +215,15 @@ type KubernetesPlantonPlatformSpec struct {
 	// knows this field (0.22.0 or newer); an older definition refuses the
 	// declaration.
 	ImageRegistry string `protobuf:"bytes,20,opt,name=image_registry,json=imageRegistry,proto3" json:"image_registry,omitempty"`
+	// *
+	// Sizes Temporal, the platform's job engine, one server service at a time.
+	// History holds workflow state and is the one that grows. Requires a
+	// planton-operator chart >= 0.23.0.
+	Temporal *KubernetesPlantonPlatformTemporal `protobuf:"bytes,21,opt,name=temporal,proto3" json:"temporal,omitempty"`
+	// *
+	// Sizes OpenFGA, the platform's authorization engine. Requires a
+	// planton-operator chart >= 0.23.0.
+	Openfga       *KubernetesPlantonPlatformOpenFga `protobuf:"bytes,22,opt,name=openfga,proto3" json:"openfga,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -385,6 +396,20 @@ func (x *KubernetesPlantonPlatformSpec) GetImageRegistry() string {
 		return x.ImageRegistry
 	}
 	return ""
+}
+
+func (x *KubernetesPlantonPlatformSpec) GetTemporal() *KubernetesPlantonPlatformTemporal {
+	if x != nil {
+		return x.Temporal
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformSpec) GetOpenfga() *KubernetesPlantonPlatformOpenFga {
+	if x != nil {
+		return x.Openfga
+	}
+	return nil
 }
 
 // *
@@ -804,14 +829,16 @@ func (x *KubernetesPlantonPlatformEmailResend) GetApiKeySecretRef() *KubernetesP
 type KubernetesPlantonPlatformRemoteRunners struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Open the deploy queue to runners outside the cluster and advertise the
-	// front door's address to them. Platform default: false — an install that
-	// has not chosen this keeps its queue in-cluster, and a runner asking to
-	// enroll from outside is refused with the reason, never handed an address
-	// it cannot reach. What opens: the queue's workflow service, over TLS,
-	// without authentication of its own (the posture the hosted platform
-	// carries for its remote runners); the queue's administrative service
-	// never leaves the cluster.
+	// Admit runners outside the cluster and advertise the front door's address
+	// to them. Platform default: false — an install that has not chosen this
+	// admits only its in-cluster runner, and a runner asking to enroll from
+	// outside is refused with the reason, never handed an address it cannot
+	// reach. What is exposed: nothing of the deploy queue itself, which never
+	// leaves the cluster. The control plane answers a remote runner's work
+	// calls on the queue's behalf, authenticating the runner's own key on
+	// every call and admitting it only to its own two queues, the work
+	// dispatched to it, and the tasks it polled; any other caller, and any
+	// other queue method, is refused with one sentence saying why.
 	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1167,7 +1194,24 @@ type KubernetesPlantonPlatformPostgresql struct {
 	// recovery keys of an init Secret that was lost with the old cluster
 	// (the vault's break-glass), unless you kept a copy; the platform runs
 	// without them.
-	RecoverFrom   *KubernetesPlantonPlatformPostgresqlRecoverFrom `protobuf:"bytes,5,opt,name=recover_from,json=recoverFrom,proto3" json:"recover_from,omitempty"`
+	RecoverFrom *KubernetesPlantonPlatformPostgresqlRecoverFrom `protobuf:"bytes,5,opt,name=recover_from,json=recoverFrom,proto3" json:"recover_from,omitempty"`
+	// *
+	// The platform database (each instance)'s CPU and memory. Unset, it runs the operator's measured
+	// default: 250m CPU and 512Mi memory requested, a 2Gi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// With one instance, a change restarts the only database: the platform is
+	// unavailable for about a minute. With replicas, CloudNativePG switches
+	// over.
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,6,opt,name=resources,proto3" json:"resources,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1233,6 +1277,13 @@ func (x *KubernetesPlantonPlatformPostgresql) GetBackup() *KubernetesPlantonPlat
 func (x *KubernetesPlantonPlatformPostgresql) GetRecoverFrom() *KubernetesPlantonPlatformPostgresqlRecoverFrom {
 	if x != nil {
 		return x.RecoverFrom
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformPostgresql) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
 	}
 	return nil
 }
@@ -2051,8 +2102,31 @@ type KubernetesPlantonPlatformRedis struct {
 	// *
 	// StorageClass override for the cache volume.
 	StorageClassName string `protobuf:"bytes,2,opt,name=storage_class_name,json=storageClassName,proto3" json:"storage_class_name,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// *
+	// The redis-protocol store (Valkey)'s CPU and memory. Unset, it runs the operator's measured
+	// default: 100m CPU and 256Mi memory requested, a 1Gi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// Its memory limit must stay above max_memory, the dataset ceiling:
+	// Valkey needs headroom for its append-only rewrite and client buffers.
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources *kubernetes.ContainerResources `protobuf:"bytes,4,opt,name=resources,proto3" json:"resources,omitempty"`
+	// *
+	// The store's dataset ceiling, in Valkey's own units ("768mb", "2gb";
+	// k, m and g are powers of 1000, kb, mb and gb powers of 1024). Unset, the
+	// operator uses 768mb under the default 1Gi limit. Raise it together with
+	// resources.limits.memory: a ceiling at or above the limit is refused
+	// before anything changes. Requires a planton-operator chart >= 0.23.0.
+	MaxMemory     string `protobuf:"bytes,3,opt,name=max_memory,json=maxMemory,proto3" json:"max_memory,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformRedis) Reset() {
@@ -2095,6 +2169,20 @@ func (x *KubernetesPlantonPlatformRedis) GetStorageSize() string {
 func (x *KubernetesPlantonPlatformRedis) GetStorageClassName() string {
 	if x != nil {
 		return x.StorageClassName
+	}
+	return ""
+}
+
+func (x *KubernetesPlantonPlatformRedis) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformRedis) GetMaxMemory() string {
+	if x != nil {
+		return x.MaxMemory
 	}
 	return ""
 }
@@ -2462,7 +2550,21 @@ type KubernetesPlantonPlatformGateway struct {
 	// server's issuer and the console's callbacks at first boot — pick it
 	// before the first visit; two port-forward platforms on one machine
 	// need distinct ports.
-	LocalPort     *int32 `protobuf:"varint,1,opt,name=local_port,json=localPort,proto3,oneof" json:"local_port,omitempty"`
+	LocalPort *int32 `protobuf:"varint,1,opt,name=local_port,json=localPort,proto3,oneof" json:"local_port,omitempty"`
+	// *
+	// The front-door gateway's CPU and memory. Unset, it runs the operator's measured
+	// default: 50m CPU and 64Mi memory requested, a 256Mi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,2,opt,name=resources,proto3" json:"resources,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2504,6 +2606,13 @@ func (x *KubernetesPlantonPlatformGateway) GetLocalPort() int32 {
 	return 0
 }
 
+func (x *KubernetesPlantonPlatformGateway) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
 // *
 // The identity server.
 type KubernetesPlantonPlatformIdentity struct {
@@ -2516,7 +2625,23 @@ type KubernetesPlantonPlatformIdentity struct {
 	// page: the operator creates this user and writes a one-time password
 	// into the platform's admin-user Secret. Unset (the default) leaves
 	// the setup-code flow — the first console visitor becomes the admin.
-	AdminEmail    string `protobuf:"bytes,2,opt,name=admin_email,json=adminEmail,proto3" json:"admin_email,omitempty"`
+	AdminEmail string `protobuf:"bytes,2,opt,name=admin_email,json=adminEmail,proto3" json:"admin_email,omitempty"`
+	// *
+	// The identity server's CPU and memory. Unset, it runs the operator's measured
+	// default: 250m CPU and 512Mi memory requested, a 1536Mi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// A JVM whose first boot imports the realm; its recovery job takes the
+	// same size.
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,3,opt,name=resources,proto3" json:"resources,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2563,6 +2688,13 @@ func (x *KubernetesPlantonPlatformIdentity) GetAdminEmail() string {
 		return x.AdminEmail
 	}
 	return ""
+}
+
+func (x *KubernetesPlantonPlatformIdentity) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
 }
 
 // *
@@ -2921,7 +3053,22 @@ type KubernetesPlantonPlatformRunner struct {
 	// *
 	// Runner image override (registry mirrors, custom builds). Empty = the
 	// image under spec.image_registry at spec.version.
-	Image         *KubernetesPlantonPlatformImage `protobuf:"bytes,6,opt,name=image,proto3" json:"image,omitempty"`
+	Image *KubernetesPlantonPlatformImage `protobuf:"bytes,6,opt,name=image,proto3" json:"image,omitempty"`
+	// *
+	// The in-cluster runner's CPU and memory. Unset, it runs the operator's measured
+	// default: 100m CPU and 512Mi memory requested, a 2Gi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// The OpenTofu and Pulumi engines it runs count against its memory.
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,7,opt,name=resources,proto3" json:"resources,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2994,6 +3141,13 @@ func (x *KubernetesPlantonPlatformRunner) GetCloudCredentialsSecretName() string
 func (x *KubernetesPlantonPlatformRunner) GetImage() *KubernetesPlantonPlatformImage {
 	if x != nil {
 		return x.Image
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformRunner) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
 	}
 	return nil
 }
@@ -3113,8 +3267,24 @@ type KubernetesPlantonPlatformVault struct {
 	// Distinct from the runner's, the control plane's, and the database
 	// backup's identities: this one only reaches the seal key.
 	ServiceAccountAnnotations map[string]string `protobuf:"bytes,7,rep,name=service_account_annotations,json=serviceAccountAnnotations,proto3" json:"service_account_annotations,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	// *
+	// The vault (OpenBAO)'s CPU and memory. Unset, it runs the operator's measured
+	// default: 50m CPU and 128Mi memory requested, a 512Mi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// A restart seals it; the operator unseals it again, so a change is a
+	// brief gap for secret reads.
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,8,opt,name=resources,proto3" json:"resources,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformVault) Reset() {
@@ -3171,6 +3341,13 @@ func (x *KubernetesPlantonPlatformVault) GetInitSecretName() string {
 func (x *KubernetesPlantonPlatformVault) GetServiceAccountAnnotations() map[string]string {
 	if x != nil {
 		return x.ServiceAccountAnnotations
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformVault) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
 	}
 	return nil
 }
@@ -3740,8 +3917,24 @@ type KubernetesPlantonPlatformGraph struct {
 	// *
 	// StorageClass override for the graph volume.
 	StorageClassName string `protobuf:"bytes,3,opt,name=storage_class_name,json=storageClassName,proto3" json:"storage_class_name,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// *
+	// The graph database (Neo4j)'s CPU and memory. Unset, it runs the operator's measured
+	// default: 1000m CPU and 2Gi memory requested, a 2Gi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// Its chart refuses requests under 500m CPU or 2Gi memory; the operator
+	// refuses them first, naming the field.
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,4,opt,name=resources,proto3" json:"resources,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformGraph) Reset() {
@@ -3793,6 +3986,13 @@ func (x *KubernetesPlantonPlatformGraph) GetStorageClassName() string {
 		return x.StorageClassName
 	}
 	return ""
+}
+
+func (x *KubernetesPlantonPlatformGraph) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
 }
 
 // *
@@ -3903,8 +4103,25 @@ type KubernetesPlantonPlatformControlPlane struct {
 	// retracted artifact set; it selects among published releases and
 	// controls nothing else (not the platform version, not the charts).
 	IacModulesVersion string `protobuf:"bytes,5,opt,name=iac_modules_version,json=iacModulesVersion,proto3" json:"iac_modules_version,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// *
+	// The control plane's CPU and memory. Unset, it runs the operator's measured
+	// default: 250m CPU and 1Gi memory requested, a 6Gi memory limit (the
+	// heaviest parallel-deploy wave measured, 4.52Gi, plus 25%), no CPU limit (a
+	// limit throttles cold starts, so the operator never sets one; set one if
+	// your cluster's policy requires it).
+	// The control plane is a JVM whose heap is 60% of this memory limit, so
+	// raising the limit raises the heap; parallel deploys are what grow it.
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,6,opt,name=resources,proto3" json:"resources,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformControlPlane) Reset() {
@@ -3972,6 +4189,13 @@ func (x *KubernetesPlantonPlatformControlPlane) GetIacModulesVersion() string {
 	return ""
 }
 
+func (x *KubernetesPlantonPlatformControlPlane) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
 // *
 // The console deployment.
 type KubernetesPlantonPlatformConsole struct {
@@ -3986,8 +4210,22 @@ type KubernetesPlantonPlatformConsole struct {
 	// Name of a Secret (in the platform's namespace) whose keys are all
 	// injected into the console as environment variables.
 	ExternalConfigSecretName string `protobuf:"bytes,3,opt,name=external_config_secret_name,json=externalConfigSecretName,proto3" json:"external_config_secret_name,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	// *
+	// The web console's CPU and memory. Unset, it runs the operator's measured
+	// default: 250m CPU and 512Mi memory requested, a 2Gi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,4,opt,name=resources,proto3" json:"resources,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformConsole) Reset() {
@@ -4039,6 +4277,13 @@ func (x *KubernetesPlantonPlatformConsole) GetExternalConfigSecretName() string 
 		return x.ExternalConfigSecretName
 	}
 	return ""
+}
+
+func (x *KubernetesPlantonPlatformConsole) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
 }
 
 // *
@@ -4100,11 +4345,198 @@ func (x *KubernetesPlantonPlatformImage) GetTag() string {
 	return ""
 }
 
+// *
+// Sizes Temporal's four server services, each its own Deployment. One message
+// serves all four and their measured defaults differ, so each service field
+// carries its own default size (default_container_resources) rather than the
+// shared message's resources field. Unset, each runs that default.
+type KubernetesPlantonPlatformTemporal struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The gateway clients and workers connect to.
+	Frontend *KubernetesPlantonPlatformTemporalService `protobuf:"bytes,1,opt,name=frontend,proto3" json:"frontend,omitempty"`
+	// Owns workflow state and its caches: the service that grows.
+	History *KubernetesPlantonPlatformTemporalService `protobuf:"bytes,2,opt,name=history,proto3" json:"history,omitempty"`
+	// Manages task queues and dispatches work.
+	Matching *KubernetesPlantonPlatformTemporalService `protobuf:"bytes,3,opt,name=matching,proto3" json:"matching,omitempty"`
+	// Runs Temporal's own system workflows.
+	Worker        *KubernetesPlantonPlatformTemporalService `protobuf:"bytes,4,opt,name=worker,proto3" json:"worker,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesPlantonPlatformTemporal) Reset() {
+	*x = KubernetesPlantonPlatformTemporal{}
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[47]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPlantonPlatformTemporal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPlantonPlatformTemporal) ProtoMessage() {}
+
+func (x *KubernetesPlantonPlatformTemporal) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[47]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPlantonPlatformTemporal.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformTemporal) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{47}
+}
+
+func (x *KubernetesPlantonPlatformTemporal) GetFrontend() *KubernetesPlantonPlatformTemporalService {
+	if x != nil {
+		return x.Frontend
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformTemporal) GetHistory() *KubernetesPlantonPlatformTemporalService {
+	if x != nil {
+		return x.History
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformTemporal) GetMatching() *KubernetesPlantonPlatformTemporalService {
+	if x != nil {
+		return x.Matching
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformTemporal) GetWorker() *KubernetesPlantonPlatformTemporalService {
+	if x != nil {
+		return x.Worker
+	}
+	return nil
+}
+
+// One Temporal server service's size.
+type KubernetesPlantonPlatformTemporalService struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The service's CPU and memory; its default is on the service's field in
+	// KubernetesPlantonPlatformTemporal. Every quantity is merged on its own
+	// with that default: a quantity set here wins, one left unset keeps the
+	// default. A request above its limit is refused before anything changes.
+	// Changing it rolls the service's pods. Requires a planton-operator chart
+	// >= 0.23.0.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,1,opt,name=resources,proto3" json:"resources,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesPlantonPlatformTemporalService) Reset() {
+	*x = KubernetesPlantonPlatformTemporalService{}
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[48]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPlantonPlatformTemporalService) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPlantonPlatformTemporalService) ProtoMessage() {}
+
+func (x *KubernetesPlantonPlatformTemporalService) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[48]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPlantonPlatformTemporalService.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformTemporalService) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{48}
+}
+
+func (x *KubernetesPlantonPlatformTemporalService) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
+// Sizes OpenFGA, the authorization engine.
+type KubernetesPlantonPlatformOpenFga struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The authorization engine (OpenFGA)'s CPU and memory. Unset, it runs the operator's measured
+	// default: 50m CPU and 64Mi memory requested, a 256Mi memory limit, no
+	// CPU limit (a limit throttles cold starts, so the operator never sets one;
+	// set one if your cluster's policy requires it).
+	// Every quantity is merged on its own with the operator's default: a
+	// quantity set here wins, one left unset keeps the default, so raising one
+	// limit never means restating the numbers beside it. A request above its
+	// limit is refused before anything changes, naming the field. The sizes in
+	// effect are reported in the platform's status.components.<component>.sizing.
+	// Changing it rolls the component's pods. Requires a planton-operator chart
+	// >= 0.23.0: an older operator's definition drops the field without a word,
+	// which the status's sizing then shows as the default.
+	Resources     *kubernetes.ContainerResources `protobuf:"bytes,1,opt,name=resources,proto3" json:"resources,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesPlantonPlatformOpenFga) Reset() {
+	*x = KubernetesPlantonPlatformOpenFga{}
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[49]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPlantonPlatformOpenFga) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPlantonPlatformOpenFga) ProtoMessage() {}
+
+func (x *KubernetesPlantonPlatformOpenFga) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[49]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPlantonPlatformOpenFga.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformOpenFga) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{49}
+}
+
+func (x *KubernetesPlantonPlatformOpenFga) GetResources() *kubernetes.ContainerResources {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
+}
+
 var File_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf3\x1a\n" +
+	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe4\x1c\n" +
 	"\x1dKubernetesPlantonPlatformSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12!\n" +
@@ -4129,7 +4561,9 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x0eremote_runners\x18\x12 \x01(\v2a.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunnersR\rremoteRunners\x12o\n" +
 	"\x05email\x18\x13 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailR\x05email\x12\xf3\x01\n" +
 	"\x0eimage_registry\x18\x14 \x01(\tB\xcb\x01\xbaH\xc7\x01\xba\x01\xc0\x01\n" +
-	"\x15image_registry_format\x12yimage_registry is a registry root such as \"asia-south1-docker.pkg.dev/plantonhq/planton\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry:\xf9\a\xbaH\xf5\a\x1a\xd5\x04\n" +
+	"\x15image_registry_format\x12yimage_registry is a registry root such as \"asia-south1-docker.pkg.dev/plantonhq/planton\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry\x12x\n" +
+	"\btemporal\x18\x15 \x01(\v2\\.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalR\btemporal\x12u\n" +
+	"\aopenfga\x18\x16 \x01(\v2[.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFgaR\aopenfga:\xf9\a\xbaH\xf5\a\x1a\xd5\x04\n" +
 	"&spec.vault.backup_needs_surviving_keys\x12\xa7\x02a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key\x1a\x80\x02!has(this.database) || !has(this.database.postgresql) || !has(this.database.postgresql.backup) || (has(this.vault) && has(this.vault.enabled) && !this.vault.enabled) || (has(this.vault) && (has(this.vault.auto_unseal) || this.vault.init_secret_name != ''))\x1a\x9a\x03\n" +
 	".spec.vault.disabled_needs_cloud_secret_backend\x12\xaf\x01bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager\x1a\xb5\x01!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled\"\xfd\x04\n" +
 	"\x1eKubernetesPlantonPlatformEmail\x12y\n" +
@@ -4181,14 +4615,17 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\n" +
 	"postgresql\x18\x01 \x01(\v2^.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlR\n" +
 	"postgresql\x12o\n" +
-	"\x05redis\x18\x02 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedisR\x05redis\"\xee\x04\n" +
+	"\x05redis\x18\x02 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedisR\x05redis\"\xd5\x05\n" +
 	"#KubernetesPlantonPlatformPostgresql\x12-\n" +
 	"\breplicas\x18\x01 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01\x12\xcf\x01\n" +
 	"\fstorage_size\x18\x02 \x01(\tB\xab\x01\xbaH\xa7\x01\xba\x01\xa0\x01\n" +
 	" postgresql.storage_size_quantity\x126storage_size must be a Kubernetes quantity like \"10Gi\"\x1aDthis.matches('^[0-9]+(\\\\.[0-9]+)?(Ei|Pi|Ti|Gi|Mi|Ki|E|P|T|G|M|K)?$')\xd8\x01\x01R\vstorageSize\x12,\n" +
 	"\x12storage_class_name\x18\x03 \x01(\tR\x10storageClassName\x12|\n" +
 	"\x06backup\x18\x04 \x01(\v2d.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackupR\x06backup\x12\x8c\x01\n" +
-	"\frecover_from\x18\x05 \x01(\v2i.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFromR\vrecoverFromB\v\n" +
+	"\frecover_from\x18\x05 \x01(\v2i.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFromR\vrecoverFrom\x12e\n" +
+	"\tresources\x18\x06 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1b\xba\xfb\xa4\x02\x16\n" +
+	"\x05\x12\x032Gi\x12\r\n" +
+	"\x04250m\x12\x05512MiR\tresourcesB\v\n" +
 	"\t_replicas\"\xac\b\n" +
 	")KubernetesPlantonPlatformPostgresqlBackup\x12\x8a\x01\n" +
 	"\fobject_store\x18\x01 \x01(\v2_.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStoreB\x06\xbaH\x03\xc8\x01\x01R\vobjectStore\x12\xfa\x01\n" +
@@ -4253,11 +4690,17 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\vcredentials\x18\x03 \x01(\v2a.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2CredentialsB\x06\xbaH\x03\xc8\x01\x01R\vcredentials\"\xca\x02\n" +
 	"&KubernetesPlantonPlatformR2Credentials\x12\x86\x01\n" +
 	"\raccess_key_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\xca9\x92\xd4a\x1fstatus.outputs.r2_access_key_idR\vaccessKeyId\x12\x96\x01\n" +
-	"\x11secret_access_key\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01\x88\xd4a\xca9\x92\xd4a#status.outputs.r2_secret_access_keyR\x0fsecretAccessKey\"\x9a\x02\n" +
+	"\x11secret_access_key\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB6\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01\x88\xd4a\xca9\x92\xd4a#status.outputs.r2_secret_access_keyR\x0fsecretAccessKey\"\xa4\x04\n" +
 	"\x1eKubernetesPlantonPlatformRedis\x12\xc9\x01\n" +
 	"\fstorage_size\x18\x01 \x01(\tB\xa5\x01\xbaH\xa1\x01\xba\x01\x9a\x01\n" +
 	"\x1bredis.storage_size_quantity\x125storage_size must be a Kubernetes quantity like \"1Gi\"\x1aDthis.matches('^[0-9]+(\\\\.[0-9]+)?(Ei|Pi|Ti|Gi|Mi|Ki|E|P|T|G|M|K)?$')\xd8\x01\x01R\vstorageSize\x12,\n" +
-	"\x12storage_class_name\x18\x02 \x01(\tR\x10storageClassName\"\x82\x0e\n" +
+	"\x12storage_class_name\x18\x02 \x01(\tR\x10storageClassName\x12e\n" +
+	"\tresources\x18\x04 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1b\xba\xfb\xa4\x02\x16\n" +
+	"\x05\x12\x031Gi\x12\r\n" +
+	"\x04100m\x12\x05256MiR\tresources\x12\xa0\x01\n" +
+	"\n" +
+	"max_memory\x18\x03 \x01(\tB\x80\x01\xbaH}\xba\x01w\n" +
+	"\x15redis.max_memory_size\x121max_memory is a Valkey size like \"768mb\" or \"2gb\"\x1a+this.matches('^[0-9]+(b|kb|mb|gb|k|m|g)?$')\xd8\x01\x01R\tmaxMemory\"\x82\x0e\n" +
 	" KubernetesPlantonPlatformIngress\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostname\x12,\n" +
@@ -4287,16 +4730,22 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"*KubernetesPlantonPlatformCertManagerIssuer\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x12A\n" +
 	"\x04kind\x18\x02 \x01(\tB(\xbaH\x1br\x19R\x00R\x06IssuerR\rClusterIssuer\x8a\xa6\x1d\x06IssuerH\x00R\x04kind\x88\x01\x01B\a\n" +
-	"\x05_kind\"j\n" +
+	"\x05_kind\"\xd1\x01\n" +
 	" KubernetesPlantonPlatformGateway\x127\n" +
 	"\n" +
-	"local_port\x18\x01 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x048080H\x00R\tlocalPort\x88\x01\x01B\r\n" +
-	"\v_local_port\"\x8b\x02\n" +
+	"local_port\x18\x01 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01\x8a\xa6\x1d\x048080H\x00R\tlocalPort\x88\x01\x01\x12e\n" +
+	"\tresources\x18\x02 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1b\xba\xfb\xa4\x02\x16\n" +
+	"\a\x12\x05256Mi\x12\v\n" +
+	"\x0350m\x12\x0464MiR\tresourcesB\r\n" +
+	"\v_local_port\"\xf5\x02\n" +
 	"!KubernetesPlantonPlatformIdentity\x12&\n" +
 	"\x05realm\x18\x01 \x01(\tB\v\x8a\xa6\x1d\aplantonH\x00R\x05realm\x88\x01\x01\x12\xb3\x01\n" +
 	"\vadmin_email\x18\x02 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x86\x01\n" +
 	"\x1bidentity.admin_email_format\x12=admin_email must be an email address like \"admin@example.com\"\x1a(this.matches('^[^@ ]+@[^@ ]+\\\\.[^@ ]+$')\xd8\x01\x01R\n" +
-	"adminEmailB\b\n" +
+	"adminEmail\x12h\n" +
+	"\tresources\x18\x03 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1e\xba\xfb\xa4\x02\x19\n" +
+	"\b\x12\x061536Mi\x12\r\n" +
+	"\x04250m\x12\x05512MiR\tresourcesB\b\n" +
 	"\x06_realm\"\xb7\x04\n" +
 	"\"KubernetesPlantonPlatformBootstrap\x12\x84\x01\n" +
 	"\forganization\x18\x01 \x01(\v2`.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapOrgR\forganization\x12\x82\x01\n" +
@@ -4319,7 +4768,7 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"1spec.bootstrap.secret_backend.aws_requires_config\x12|awsSecretsManager needs its configuration block: aws_secrets_manager.region and aws_secrets_manager.kms_key_arn are required\x1a\x9a\x01this.type != 'awsSecretsManager' || (has(this.aws_secrets_manager) && this.aws_secrets_manager.region != '' && this.aws_secrets_manager.kms_key_arn != '')\"v\n" +
 	"*KubernetesPlantonPlatformAwsSecretsManager\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12'\n" +
-	"\vkms_key_arn\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tkmsKeyArn\"\x8f\x06\n" +
+	"\vkms_key_arn\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tkmsKeyArn\"\xf6\x06\n" +
 	"\x1fKubernetesPlantonPlatformRunner\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12\xca\x01\n" +
 	"\fstorage_size\x18\x02 \x01(\tB\xa6\x01\xbaH\xa2\x01\xba\x01\x9b\x01\n" +
@@ -4327,7 +4776,10 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x12storage_class_name\x18\x03 \x01(\tR\x10storageClassName\x12\xb9\x01\n" +
 	"\x1bservice_account_annotations\x18\x04 \x03(\v2y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x12A\n" +
 	"\x1dcloud_credentials_secret_name\x18\x05 \x01(\tR\x1acloudCredentialsSecretName\x12o\n" +
-	"\x05image\x18\x06 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImageR\x05image\x1aL\n" +
+	"\x05image\x18\x06 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImageR\x05image\x12e\n" +
+	"\tresources\x18\a \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1b\xba\xfb\xa4\x02\x16\n" +
+	"\x05\x12\x032Gi\x12\r\n" +
+	"\x04100m\x12\x05512MiR\tresources\x1aL\n" +
 	"\x1eServiceAccountAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\n" +
@@ -4336,13 +4788,16 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x1eKubernetesPlantonPlatformBuild\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
 	"\n" +
-	"\b_enabled\"\xa6\a\n" +
+	"\b_enabled\"\x8e\b\n" +
 	"\x1eKubernetesPlantonPlatformVault\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12\x84\x01\n" +
 	"\vauto_unseal\x18\x05 \x01(\v2c.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnsealR\n" +
 	"autoUnseal\x12(\n" +
 	"\x10init_secret_name\x18\x06 \x01(\tR\x0einitSecretName\x12\xb8\x01\n" +
-	"\x1bservice_account_annotations\x18\a \x03(\v2x.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x1aL\n" +
+	"\x1bservice_account_annotations\x18\a \x03(\v2x.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x12f\n" +
+	"\tresources\x18\b \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1c\xba\xfb\xa4\x02\x17\n" +
+	"\a\x12\x05512Mi\x12\f\n" +
+	"\x0350m\x12\x05128MiR\tresources\x1aL\n" +
 	"\x1eServiceAccountAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd5\x02\xbaH\xd1\x02\x1a\xce\x02\n" +
@@ -4384,39 +4839,67 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x05token\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\x05tokenB\r\n" +
 	"\v_mount_path\"\x96\x01\n" +
 	"#KubernetesPlantonPlatformComponents\x12o\n" +
-	"\x05graph\x18\x03 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraphR\x05graph\"\xb5\x02\n" +
+	"\x05graph\x18\x03 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraphR\x05graph\"\x9b\x03\n" +
 	"\x1eKubernetesPlantonPlatformGraph\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\xca\x01\n" +
 	"\fstorage_size\x18\x02 \x01(\tB\xa6\x01\xbaH\xa2\x01\xba\x01\x9b\x01\n" +
 	"\x1bgraph.storage_size_quantity\x126storage_size must be a Kubernetes quantity like \"10Gi\"\x1aDthis.matches('^[0-9]+(\\\\.[0-9]+)?(Ei|Pi|Ti|Gi|Mi|Ki|E|P|T|G|M|K)?$')\xd8\x01\x01R\vstorageSize\x12,\n" +
-	"\x12storage_class_name\x18\x03 \x01(\tR\x10storageClassName\"\xe2\x02\n" +
+	"\x12storage_class_name\x18\x03 \x01(\tR\x10storageClassName\x12d\n" +
+	"\tresources\x18\x04 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1a\xba\xfb\xa4\x02\x15\n" +
+	"\x05\x12\x032Gi\x12\f\n" +
+	"\x051000m\x12\x032GiR\tresources\"\xe2\x02\n" +
 	"&KubernetesPlantonPlatformPrerequisites\x12M\n" +
 	"\x11postgres_operator\x18\x01 \x01(\tB\x1b\xbaH\x10r\x0eR\x00R\x04autoR\x04skip\x8a\xa6\x1d\x04autoH\x00R\x10postgresOperator\x88\x01\x01\x12K\n" +
 	"\x10tekton_pipelines\x18\x03 \x01(\tB\x1b\xbaH\x10r\x0eR\x00R\x04autoR\x04skip\x8a\xa6\x1d\x04autoH\x01R\x0ftektonPipelines\x88\x01\x01\x12V\n" +
 	"\x16postgres_backup_plugin\x18\x04 \x01(\tB\x1b\xbaH\x10r\x0eR\x00R\x04autoR\x04skip\x8a\xa6\x1d\x04autoH\x02R\x14postgresBackupPlugin\x88\x01\x01B\x14\n" +
 	"\x12_postgres_operatorB\x13\n" +
 	"\x11_tekton_pipelinesB\x19\n" +
-	"\x17_postgres_backup_plugin\"\xef\x04\n" +
+	"\x17_postgres_backup_plugin\"\xd4\x05\n" +
 	"%KubernetesPlantonPlatformControlPlane\x12o\n" +
 	"\x05image\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImageR\x05image\x12-\n" +
 	"\breplicas\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01\x12=\n" +
 	"\x1bexternal_config_secret_name\x18\x03 \x01(\tR\x18externalConfigSecretName\x12\xbf\x01\n" +
 	"\x1bservice_account_annotations\x18\x04 \x03(\v2\x7f.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x12J\n" +
-	"\x13iac_modules_version\x18\x05 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^v\\d+\\.\\d+\\.\\d+$R\x11iacModulesVersion\x1aL\n" +
+	"\x13iac_modules_version\x18\x05 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^v\\d+\\.\\d+\\.\\d+$R\x11iacModulesVersion\x12c\n" +
+	"\tresources\x18\x06 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x19\xba\xfb\xa4\x02\x14\n" +
+	"\x05\x12\x036Gi\x12\v\n" +
+	"\x04250m\x12\x031GiR\tresources\x1aL\n" +
 	"\x1eServiceAccountAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +
-	"\t_replicas\"\x8e\x02\n" +
+	"\t_replicas\"\xf5\x02\n" +
 	" KubernetesPlantonPlatformConsole\x12o\n" +
 	"\x05image\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImageR\x05image\x12-\n" +
 	"\breplicas\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01\x12=\n" +
-	"\x1bexternal_config_secret_name\x18\x03 \x01(\tR\x18externalConfigSecretNameB\v\n" +
+	"\x1bexternal_config_secret_name\x18\x03 \x01(\tR\x18externalConfigSecretName\x12e\n" +
+	"\tresources\x18\x04 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1b\xba\xfb\xa4\x02\x16\n" +
+	"\x05\x12\x032Gi\x12\r\n" +
+	"\x04250m\x12\x05512MiR\tresourcesB\v\n" +
 	"\t_replicas\"R\n" +
 	"\x1eKubernetesPlantonPlatformImage\x12\x1e\n" +
 	"\n" +
 	"repository\x18\x01 \x01(\tR\n" +
 	"repository\x12\x10\n" +
-	"\x03tag\x18\x02 \x01(\tR\x03tagB\xc9\x03\n" +
+	"\x03tag\x18\x02 \x01(\tR\x03tag\"\x9c\x05\n" +
+	"!KubernetesPlantonPlatformTemporal\x12\x9d\x01\n" +
+	"\bfrontend\x18\x01 \x01(\v2c.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalServiceB\x1c\xba\xfb\xa4\x02\x17\n" +
+	"\a\x12\x05512Mi\x12\f\n" +
+	"\x0350m\x12\x05128MiR\bfrontend\x12\x9a\x01\n" +
+	"\ahistory\x18\x02 \x01(\v2c.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalServiceB\x1b\xba\xfb\xa4\x02\x16\n" +
+	"\x05\x12\x031Gi\x12\r\n" +
+	"\x04100m\x12\x05256MiR\ahistory\x12\x9d\x01\n" +
+	"\bmatching\x18\x03 \x01(\v2c.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalServiceB\x1c\xba\xfb\xa4\x02\x17\n" +
+	"\a\x12\x05512Mi\x12\f\n" +
+	"\x0350m\x12\x05128MiR\bmatching\x12\x99\x01\n" +
+	"\x06worker\x18\x04 \x01(\v2c.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalServiceB\x1c\xba\xfb\xa4\x02\x17\n" +
+	"\a\x12\x05512Mi\x12\f\n" +
+	"\x0350m\x12\x05128MiR\x06worker\"t\n" +
+	"(KubernetesPlantonPlatformTemporalService\x12H\n" +
+	"\tresources\x18\x01 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\"\x89\x01\n" +
+	" KubernetesPlantonPlatformOpenFga\x12e\n" +
+	"\tresources\x18\x01 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x1b\xba\xfb\xa4\x02\x16\n" +
+	"\a\x12\x05256Mi\x12\v\n" +
+	"\x0350m\x12\x0464MiR\tresourcesB\xc9\x03\n" +
 	"=com.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1B\tSpecProtoP\x01Ztgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonplatform/v1alpha1;kubernetesplantonplatformv1alpha1\xa2\x02\x04DPKK\xaa\x029Dev.Planton.Kubernetes.Kubernetesplantonplatform.V1alpha1\xca\x029Dev\\Planton\\Kubernetes\\Kubernetesplantonplatform\\V1alpha1\xe2\x02EDev\\Planton\\Kubernetes\\Kubernetesplantonplatform\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Kubernetes::Kubernetesplantonplatform::V1alpha1b\x06proto3"
 
 var (
@@ -4431,7 +4914,7 @@ func file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDe
 	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
+var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 55)
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_goTypes = []any{
 	(*KubernetesPlantonPlatformSpec)(nil),                   // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec
 	(*KubernetesPlantonPlatformEmail)(nil),                  // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail
@@ -4480,15 +4963,19 @@ var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_goType
 	(*KubernetesPlantonPlatformControlPlane)(nil),           // 44: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane
 	(*KubernetesPlantonPlatformConsole)(nil),                // 45: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole
 	(*KubernetesPlantonPlatformImage)(nil),                  // 46: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	nil,                                                     // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
-	nil,                                                     // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
-	nil,                                                     // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
-	nil,                                                     // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
-	nil,                                                     // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
-	(*v1.StringValueOrRef)(nil),                             // 52: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*KubernetesPlantonPlatformTemporal)(nil),               // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal
+	(*KubernetesPlantonPlatformTemporalService)(nil),        // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	(*KubernetesPlantonPlatformOpenFga)(nil),                // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga
+	nil,                                                     // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
+	nil,                                                     // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
+	nil,                                                     // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
+	nil,                                                     // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
+	nil,                                                     // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
+	(*v1.StringValueOrRef)(nil),                             // 55: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),                   // 56: dev.planton.kubernetes.ContainerResources
 }
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_depIdxs = []int32{
-	52, // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	55, // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	7,  // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.license:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense
 	9,  // 2: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.storage:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStorage
 	10, // 3: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.database:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase
@@ -4505,62 +4992,79 @@ var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_depIdx
 	45, // 14: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.console:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole
 	6,  // 15: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.remote_runners:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunners
 	1,  // 16: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.email:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail
-	2,  // 17: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailFrom
-	3,  // 18: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.smtp:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp
-	5,  // 19: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.resend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend
-	4,  // 20: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.oauth2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2
-	8,  // 21: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.ca_bundle_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	8,  // 22: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2.client_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	8,  // 23: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend.api_key_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	8,  // 24: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense.secret_key_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	11, // 25: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.postgresql:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql
-	21, // 26: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.redis:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis
-	12, // 27: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.backup:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup
-	13, // 28: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.recover_from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom
-	14, // 29: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
-	47, // 30: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
-	14, // 31: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
-	15, // 32: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore
-	17, // 33: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.gcs:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGcsObjectStore
-	18, // 34: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.azure_blob:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAzureBlobObjectStore
-	19, // 35: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.r2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore
-	16, // 36: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore.access_keys:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3AccessKeys
-	52, // 37: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 38: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	20, // 39: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.credentials:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials
-	52, // 40: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 41: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	48, // 42: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
-	24, // 43: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.tls:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls
-	23, // 44: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.gateway_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef
-	52, // 45: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 46: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls.issuer:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformCertManagerIssuer
-	29, // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.organization:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapOrg
-	30, // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.environment:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapEnv
-	31, // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.secret_backend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend
-	32, // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend.aws_secrets_manager:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManager
-	49, // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
-	46, // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	36, // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
-	50, // 55: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
-	37, // 56: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
-	38, // 57: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
-	39, // 58: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
-	40, // 59: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
-	52, // 60: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 61: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 62: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 63: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	42, // 64: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents.graph:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
-	46, // 65: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	51, // 66: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
-	46, // 67: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	68, // [68:68] is the sub-list for method output_type
-	68, // [68:68] is the sub-list for method input_type
-	68, // [68:68] is the sub-list for extension type_name
-	68, // [68:68] is the sub-list for extension extendee
-	0,  // [0:68] is the sub-list for field type_name
+	47, // 17: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.temporal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal
+	49, // 18: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.openfga:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga
+	2,  // 19: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailFrom
+	3,  // 20: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.smtp:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp
+	5,  // 21: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.resend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend
+	4,  // 22: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.oauth2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2
+	8,  // 23: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.ca_bundle_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	8,  // 24: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2.client_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	8,  // 25: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend.api_key_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	8,  // 26: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense.secret_key_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	11, // 27: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.postgresql:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql
+	21, // 28: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.redis:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis
+	12, // 29: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.backup:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup
+	13, // 30: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.recover_from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom
+	56, // 31: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	14, // 32: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
+	50, // 33: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
+	14, // 34: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
+	15, // 35: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore
+	17, // 36: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.gcs:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGcsObjectStore
+	18, // 37: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.azure_blob:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAzureBlobObjectStore
+	19, // 38: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.r2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore
+	16, // 39: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore.access_keys:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3AccessKeys
+	55, // 40: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	55, // 41: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // 42: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.credentials:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials
+	55, // 43: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	55, // 44: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	56, // 45: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	51, // 46: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
+	24, // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.tls:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls
+	23, // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.gateway_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef
+	55, // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	55, // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls.issuer:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformCertManagerIssuer
+	56, // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGateway.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	56, // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIdentity.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	29, // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.organization:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapOrg
+	30, // 55: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.environment:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapEnv
+	31, // 56: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.secret_backend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend
+	32, // 57: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend.aws_secrets_manager:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManager
+	52, // 58: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
+	46, // 59: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	56, // 60: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	36, // 61: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
+	53, // 62: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
+	56, // 63: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	37, // 64: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
+	38, // 65: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
+	39, // 66: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
+	40, // 67: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
+	55, // 68: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	55, // 69: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	55, // 70: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	55, // 71: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	42, // 72: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents.graph:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
+	56, // 73: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	46, // 74: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	54, // 75: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
+	56, // 76: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	46, // 77: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	56, // 78: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	48, // 79: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.frontend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	48, // 80: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.history:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	48, // 81: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.matching:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	48, // 82: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.worker:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	56, // 83: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	56, // 84: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	85, // [85:85] is the sub-list for method output_type
+	85, // [85:85] is the sub-list for method input_type
+	85, // [85:85] is the sub-list for extension type_name
+	85, // [85:85] is the sub-list for extension extendee
+	0,  // [0:85] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_init() }
@@ -4605,7 +5109,7 @@ func file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_init(
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   52,
+			NumMessages:   55,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

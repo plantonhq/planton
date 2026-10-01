@@ -1,0 +1,14 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRate
+metadata:
+  name: ny-sales-tax
+  org: example-org
+  env: production
+spec:
+  displayName: Sales tax
+  percentage: 8.875
+  inclusive: false
+  country: US
+  state: NY
+  jurisdiction: New York
+  taxType: sales_tax

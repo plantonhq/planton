@@ -1,0 +1,22 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: tenant-settings
+  org: example-org
+  env: production
+spec:
+  # Lets an application register from a Client ID Metadata Document it hosts:
+  # the document's HTTPS URL is its client ID, so an MCP client that has never
+  # met this tenant registers without a shared secret. Every such client is a
+  # strict third-party application. Auth0 marks this Early Access.
+  clientIdMetadataDocumentSupported: true
+
+  # Lets a client name the API it wants a token for with the RFC 8707
+  # resource parameter (what MCP clients send) when it sends no audience.
+  resourceParameterProfile: compatibility
+
+  flags:
+    # Opens /oidc/register: ANY client can register a third-party application
+    # without a token. Each registration reaches only the APIs and scopes the
+    # tenant's default third-party permissions grant, so set those first.
+    enableDynamicClientRegistration: true

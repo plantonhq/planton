@@ -22,9 +22,9 @@ module "function" {
   }
 
   spec = {
-    function_name    = "hello"
-    region           = "nyc3"
-    source_directory = "packages"
+    app_name      = "hello-fn"
+    function_name = "hello"
+    region        = "nyc"
     git = {
       repo_clone_url = "https://github.com/digitalocean/sample-functions-nodejs-helloworld.git"
       branch         = "master"
@@ -47,4 +47,4 @@ output "https_endpoint" {
 | `https_endpoint` | Public HTTPS URL |
 | `default_hostname` | Default `ondigitalocean.app` hostname |
 
-Runtime, memory, timeout, and schedules come from `project.yml` in `source_directory`, not from this module. See the kind [GUIDE](../../GUIDE.md).
+The app is named from `spec.app_name` (2-32 characters, unique in the account), never `metadata.name`. `source_directory` is sent as `null` when unset so App Platform reads `project.yml` from the repository root. Runtime, memory, timeout, and schedules come from that `project.yml`, not from this module. See the kind [GUIDE](../../GUIDE.md).

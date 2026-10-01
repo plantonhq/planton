@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Guard: script text a kind ships through BOTH engines is byte-identical.
+# Guard: text a kind ships through BOTH engines is byte-identical.
 #
 # WHY THIS EXISTS
 # Some kinds hand a program to the cluster — a shell script a CronJob runs,
-# a Python module a chart loads — and both engines must render the same
-# bytes from one manifest: the Pulumi module carries the text as a Go raw
-# string constant, the Terraform module as an HCL heredoc, and a release
-# packages each module on its own (tools/ci/release), so the text cannot be
-# read from a sibling directory and lives twice on purpose. The only
-# difference the two copies may have is HCL's escaping of `${` as `$${` and
-# `%{` as `%%{`. Two copies drift silently: a fix to one engine's script is a
-# behavior only that engine ships, and nothing in a working tree notices.
-# This guard turns that drift into a static, pre-merge failure.
+# a Python module a chart loads — or render from a data table both engines
+# read, such as the images a mirror setting redirects, and both engines
+# must render the same bytes from one manifest: the Pulumi module carries
+# the text as a Go raw string constant, the Terraform module as an HCL
+# heredoc, and a release packages each module on its own (tools/ci/release),
+# so the text cannot be read from a sibling directory and lives twice on
+# purpose. The only difference the two copies may have is HCL's escaping of
+# `${` as `$${` and `%{` as `%%{`. Two copies drift silently: a fix to one
+# engine's text is a behavior only that engine ships, and nothing in a
+# working tree notices. This guard turns that drift into a static,
+# pre-merge failure.
 #
 # HOW A KIND OPTS IN
 # In the Terraform module, the line immediately above a heredoc opener

@@ -1,0 +1,17 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: tenant-settings
+  org: example-org
+  env: production
+spec:
+  # A session left unused for an hour ends; the person signs in again.
+  idleSessionLifetime: 1
+
+  # However active the person is, a session lasts at most a day.
+  sessionLifetime: 24
+
+  # The session survives closing the browser (within the two limits above),
+  # so a person returning within the hour is still signed in.
+  sessionCookie:
+    mode: persistent

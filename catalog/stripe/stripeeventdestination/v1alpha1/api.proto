@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripeeventdestination.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/stripe/stripeeventdestination/v1alpha1/outputs.proto";
+import "catalog/stripe/stripeeventdestination/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// StripeEventDestination is a component that declares where a Stripe account sends its events
+// through Stripe's v2 event destinations: a webhook URL, an Amazon EventBridge event bus, or an
+// Azure Event Grid partner topic, as thin or snapshot events.
+//
+// A webhook destination's signing secret exists only at creation, so the deployment captures it
+// into status.outputs.signing_secret; an imported destination has none. Destroy deletes the
+// destination.
+//
+// Use cases:
+// - Deliver thin events to a webhook route that fetches only what it needs
+// - Stream Stripe events into Amazon EventBridge or Azure Event Grid
+//
+// Example manifest:
+// ```yaml
+// apiVersion: stripe.planton.dev/v1alpha1
+// kind: StripeEventDestination
+// metadata:
+//   name: billing-thin-events
+//   org: my-organization
+// spec:
+//   name: Billing thin events
+//   eventPayload: thin
+//   enabledEvents:
+//     - v1.billing.meter.error_report_triggered
+//   webhookEndpoint:
+//     url: https://app.example.com/stripe/thin
+// ```
+message StripeEventDestination {
+  // api_version is the version of the Stripe API resource.
+  // Must be "stripe.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'stripe.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "StripeEventDestination" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'StripeEventDestination'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains where events go and which events are sent.
+  StripeEventDestinationSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the destination as created, populated after deployment.
+  StripeEventDestinationStatus status = 5;
+}
+
+// StripeEventDestinationStatus represents the current state of a StripeEventDestination
+// resource. Populated by the deployment system.
+message StripeEventDestinationStatus {
+  // outputs contains the stack outputs: the destination's id, signing secret and cloud source.
+  StripeEventDestinationStackOutputs outputs = 1;
+}

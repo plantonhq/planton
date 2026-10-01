@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### DigitalOcean Account
 
-- **Droplets or Droplet tags to protect** -- target Droplets by reference (`dropletIds`, up to 10) or by tag (`tags`, up to 5; any Droplet carrying the tag is protected automatically, and DigitalOcean creates tags implicitly). Tag targeting is the production standard for anything long-lived.
+- **Droplets or Droplet tags to protect** -- target Droplets by reference (`dropletIds`, up to 10) or by tag (`tags`, up to 5; any Droplet carrying the tag is protected automatically). Every tag a firewall names must already exist on the account -- DigitalOcean rejects the firewall otherwise -- and Droplets create tags implicitly when they declare them, so tag the Droplets first. Tag targeting is the production standard for anything long-lived.
 - **Network planning** -- decide which protocols, ports, and sources your application needs. Firewalls deny everything not explicitly allowed, and at least one rule (in either direction) is required.
 
 ## Deploy

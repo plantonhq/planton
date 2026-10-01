@@ -9,3 +9,7 @@ spec:
       name: orders-postgres
       fieldPath: status.outputs.cluster_id
   userName: orders-service
+  # PostgreSQL: declare an empty settings block so the manifest mirrors the
+  # settings object DigitalOcean stores for every PostgreSQL user; on a
+  # MySQL cluster remove this line (the API refuses settings there).
+  settings: {}

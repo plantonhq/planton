@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azureexpressroutecircuit.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureExpressRouteCircuitStackOutputs** captures the outputs of
 // provisioning an ExpressRoute circuit.
 message AzureExpressRouteCircuitStackOutputs {
@@ -17,7 +19,7 @@ message AzureExpressRouteCircuitStackOutputs {
   // The SERVICE KEY -- the circuit's provisioning credential, handed to
   // the connectivity provider to complete the physical cross-connect.
   // Marked sensitive in both engines; treat it like a password.
-  string service_key = 3;
+  string service_key = 3 [(dev.planton.shared.options.sensitive) = true];
 
   // The provider side's provisioning state: "NotProvisioned" (fresh
   // circuit, waiting on the provider), "Provisioning", "Provisioned"
@@ -29,5 +31,5 @@ message AzureExpressRouteCircuitStackOutputs {
   // gateway in another subscription redeems one to connect. Marked
   // sensitive in both engines.
   // Example valueFrom fieldPath: status.outputs.authorization_keys.partner-team
-  map<string, string> authorization_keys = 5;
+  map<string, string> authorization_keys = 5 [(dev.planton.shared.options.sensitive) = true];
 }

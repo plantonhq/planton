@@ -33,8 +33,9 @@ spec:
       data_checksums: true
   backup:
     object_store:
-      # One destination path per cluster — a recovered cluster archives
-      # to a NEW path; Barman refuses a path holding another cluster's WAL.
+      # Each install archives into a backup series of its own beneath this
+      # path (the backup_server_name output) — a recreate, or a recovered
+      # cluster beside its source, never writes into another's history.
       destination_path: gs://<backups-bucket>/prod-db
       gcs:
         # KEYLESS: the instance pods present their GKE Workload Identity

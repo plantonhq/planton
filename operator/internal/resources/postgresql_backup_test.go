@@ -266,7 +266,7 @@ func TestNewScheduledBackup(t *testing.T) {
 }
 
 func TestNewPostgreSQLCluster_NoBackupRendersNoPlugins(t *testing.T) {
-	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi"})
+	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{Resources: Effective(SizingPostgreSQL, nil), CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi"})
 	absent(t, obj, "spec", "plugins")
 	absent(t, obj, "spec", "externalClusters")
 	absent(t, obj, "spec", "serviceAccountTemplate")
@@ -275,7 +275,8 @@ func TestNewPostgreSQLCluster_NoBackupRendersNoPlugins(t *testing.T) {
 
 func TestNewPostgreSQLCluster_BackupWiresThePluginUnderTheServerName(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
-		CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi",
+		Resources: Effective(SizingPostgreSQL, nil),
+		CRName:    "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi",
 		Backup:                    &PostgreSQLClusterBackup{ObjectStoreName: testStoreName, ServerName: "planton-postgres-1a2b3c4d"},
 		ServiceAccountAnnotations: map[string]string{"iam.gke.io/gcp-service-account": "backups@proj.iam.gserviceaccount.com"},
 	})
@@ -302,7 +303,8 @@ func TestNewPostgreSQLCluster_BackupWiresThePluginUnderTheServerName(t *testing.
 
 func TestNewPostgreSQLCluster_RecoveryReplacesInitdb(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
-		CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi",
+		Resources: Effective(SizingPostgreSQL, nil),
+		CRName:    "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi",
 		Recovery: &PostgreSQLClusterRecovery{
 			ObjectStoreName: "planton-postgres-recovery-source",
 			ServerName:      "planton-postgres-deadbeef",
@@ -340,7 +342,8 @@ func TestNewPostgreSQLCluster_RecoveryReplacesInitdb(t *testing.T) {
 
 func TestNewPostgreSQLCluster_RecoveryWithoutTargetRecoversToLatest(t *testing.T) {
 	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
-		CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi",
+		Resources: Effective(SizingPostgreSQL, nil),
+		CRName:    "planton", Namespace: "planton", Instances: 1, StorageSize: "10Gi",
 		Recovery: &PostgreSQLClusterRecovery{ObjectStoreName: "src", ServerName: "srv"},
 	})
 	absent(t, obj, "spec", "bootstrap", "recovery", "recoveryTarget")

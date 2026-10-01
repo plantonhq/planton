@@ -7,6 +7,7 @@
 package awscodebuildprojectv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -149,7 +150,7 @@ var File_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awscodebuildproject/v1alpha1/outputs.proto\x12,dev.planton.aws.awscodebuildproject.v1alpha1\"\xd6\x02\n" +
+	"6catalog/aws/awscodebuildproject/v1alpha1/outputs.proto\x12,dev.planton.aws.awscodebuildproject.v1alpha1\x1a\x1cshared/options/options.proto\"\xdc\x02\n" +
 	"\x1fAwsCodeBuildProjectStackOutputs\x12\x1f\n" +
 	"\vproject_arn\x18\x01 \x01(\tR\n" +
 	"projectArn\x12!\n" +
@@ -159,8 +160,8 @@ const file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x14public_project_alias\x18\x05 \x01(\tR\x12publicProjectAlias\x12\x1f\n" +
 	"\vwebhook_url\x18\x06 \x01(\tR\n" +
 	"webhookUrl\x12.\n" +
-	"\x13webhook_payload_url\x18\a \x01(\tR\x11webhookPayloadUrl\x12%\n" +
-	"\x0ewebhook_secret\x18\b \x01(\tR\rwebhookSecretB\xf8\x02\n" +
+	"\x13webhook_payload_url\x18\a \x01(\tR\x11webhookPayloadUrl\x12+\n" +
+	"\x0ewebhook_secret\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\rwebhookSecretB\xf8\x02\n" +
 	"0com.dev.planton.aws.awscodebuildproject.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awscodebuildproject/v1alpha1;awscodebuildprojectv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awscodebuildproject.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awscodebuildproject\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awscodebuildproject\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awscodebuildproject::V1alpha1b\x06proto3"
 
 var (

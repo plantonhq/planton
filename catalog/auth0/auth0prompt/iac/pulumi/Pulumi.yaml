@@ -1,0 +1,6 @@
+# Auth0Prompt Pulumi Module
+# This module manages the login-flow settings of an existing Auth0 tenant.
+name: auth0-prompt
+runtime:
+  name: go
+description: Pulumi module for Auth0Prompt component

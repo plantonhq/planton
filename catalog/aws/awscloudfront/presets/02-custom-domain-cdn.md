@@ -20,7 +20,7 @@ This preset serves a private S3 bucket through CloudFront on your own domain: an
 | --- | --- | --- |
 | `cdn.replaceme.example.com` | The custom domain the distribution answers for (a real DNS shape — the field's pattern rejects placeholders) | Your DNS plan |
 | `<certificate-resource-name>` | The `AwsCertManagerCert` resource covering the domain (in us-east-1) | Your certificate manifest |
-| `<bucket-name>` / `<bucket-region>` | The S3 bucket holding the content | `AwsS3Bucket` outputs |
+| `replace-me-bucket.s3.us-east-1.amazonaws.com` | The S3 bucket holding the content (replace the bucket and region segments) | `AwsS3Bucket` outputs |
 
 ## Related Presets
 

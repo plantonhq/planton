@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 const (
@@ -16,15 +15,6 @@ const (
 	// kind runs, so one upstream clone and one set of chart facts serve both.
 	OpenBAOHelmChartVersion = "0.28.6"
 	OpenBAOPort             = 8200
-
-	// The vault's sizing, chosen here rather than left to the chart (which
-	// ships none): a single-tenant vault serving one control plane is a
-	// small, steady workload (~35Mi resident live). A request so it schedules
-	// honestly, a memory limit that guards the node, no CPU limit
-	// (requests-only, the house pattern).
-	openBAOCPURequest    = "50m"
-	openBAOMemoryRequest = "128Mi"
-	openBAOMemoryLimit   = "512Mi"
 
 	// The vault's PostgreSQL connection reaches the server as the driver's
 	// own environment -- libpq's variables, which OpenBao's pgx-based
@@ -93,6 +83,10 @@ type OpenBAOHelmOptions struct {
 	// Workload Identity). Already merged by the declaring module; rendered
 	// as given.
 	ServiceAccountAnnotations map[string]string
+
+	// Resources is the server container's effective sizing (SizingOpenBAO in
+	// the registry, merged with the spec's override by the component).
+	Resources corev1.ResourceRequirements
 }
 
 // OpenBAOHelmValues builds the Helm values map for rendering the official
@@ -142,7 +136,7 @@ storage "postgresql" {
 	}
 
 	server := map[string]any{
-		"resources": helmResourceValues(openBAOResources()),
+		"resources": helmResourceValues(mustBeSized(SizingOpenBAO, opts.Resources)),
 		// The vault's ServiceAccount DOES need system:auth-delegator --
 		// the Kubernetes auth method the operator signs in through reviews
 		// tokens with it -- but not from the chart: the chart's binding is
@@ -312,18 +306,4 @@ func OpenBAOServiceHost(crName, namespace string) string {
 // "http://{crName}-openbao.{namespace}.svc.cluster.local:8200".
 func OpenBAOAPIAddr(crName, namespace string) string {
 	return fmt.Sprintf("http://%s:%d", OpenBAOServiceHost(crName, namespace), OpenBAOPort)
-}
-
-// openBAOResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func openBAOResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(openBAOCPURequest),
-			corev1.ResourceMemory: resource.MustParse(openBAOMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(openBAOMemoryLimit),
-		},
-	}
 }

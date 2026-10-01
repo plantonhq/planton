@@ -145,10 +145,13 @@ The `status.outputs` section contains the key information about your cluster:
 
 | Output | Description | Example |
 |---|---|---|
-| `api_server_endpoint` | The FQDN of the Kubernetes API server | `app-aks-cluster-dns-abc123.hcp.eastus.azmk8s.io` |
-| `cluster_resource_id` | The Azure ARM resource ID of the AKS cluster | `/subscriptions/.../managedClusters/app-aks-cluster` |
-| `cluster_kubeconfig` | Base64-encoded kubeconfig file contents | (base64 string) |
-| `managed_identity_principal_id` | Azure AD principal ID of the cluster's managed identity | `a1b2c3d4-...` |
+| `fqdn` | The public FQDN of the Kubernetes API server | `app-aks-cluster-dns-abc123.hcp.eastus.azmk8s.io` |
+| `clusterId` | The Azure ARM resource ID of the AKS cluster | `/subscriptions/.../managedClusters/app-aks-cluster` |
+| `clusterKubeconfig` | A `$secret/` reference to the base64-encoded kubeconfig, which Planton keeps in your secret store | `$secret/@production/azure-aks-cluster-outputs-app-aks-cluster/cluster_kubeconfig` |
+| `clusterIdentityPrincipalId` | Principal ID of the cluster's managed identity | `a1b2c3d4-...` |
+| `oidcIssuerUrl` | The cluster's OIDC issuer URL, for workload identity federation | `https://eastus.oic.prod-aks.azure.com/...` |
+
+`planton get` prints the resource as you write it, so the keys are camelCase, like every manifest (`status.outputs.clusterKubeconfig`).
 
 To list all deployment jobs for this resource:
 
@@ -188,11 +191,14 @@ aks-system-87654321-vmss000001    Ready    <none>   8m    v1.30.x
 aks-system-87654321-vmss000002    Ready    <none>   8m    v1.30.x
 ```
 
-Alternatively, the `cluster_kubeconfig` output from Step 3 contains a base64-encoded kubeconfig that you can decode and use directly:
+Alternatively, use the kubeconfig the deployment generated. The `clusterKubeconfig` output from Step 3 is a reference to the secret that holds it; read the secret's `cluster_kubeconfig` key and decode it:
 
 ```bash
-planton get AzureAksCluster app-aks-cluster -o yaml | \
-  grep cluster_kubeconfig | awk '{print $2}' | base64 -d > kubeconfig-aks.yaml
+planton get AzureAksCluster app-aks-cluster -o yaml | yq '.status.outputs.clusterKubeconfig'
+# $secret/@production/azure-aks-cluster-outputs-app-aks-cluster/cluster_kubeconfig
+
+planton secret get azure-aks-cluster-outputs-app-aks-cluster --env production \
+  --reveal --key cluster_kubeconfig -o plain | base64 -d > kubeconfig-aks.yaml
 export KUBECONFIG=kubeconfig-aks.yaml
 kubectl get nodes
 ```

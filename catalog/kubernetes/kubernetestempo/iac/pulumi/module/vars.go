@@ -26,6 +26,16 @@ var vars = struct {
 	EnvS3AccessKeyId     string
 	EnvS3SecretAccessKey string
 	EnvAzureAccountKey   string
+	// The r2 arm's module-owned Secret: `<name>` plus this suffix, and
+	// the two keys the credential variables read (the Terraform module
+	// uses the same literals).
+	R2CredentialsSecretSuffix string
+	R2AccessKeyIdKey          string
+	R2SecretAccessKeyKey      string
+	// Pod annotation carrying the fingerprint of a module-owned Secret
+	// Tempo reads only at start; the same key on every catalog module
+	// that uses the pattern.
+	CredentialsChecksumAnnotation string
 	// GCS service-account key mount contract.
 	GcsKeyMountPath string
 	GcsKeyVolume    string
@@ -46,21 +56,25 @@ var vars = struct {
 	// registry/repository and rides global.imageRegistry).
 	TempoQueryRepository string
 }{
-	HelmChartName:        "tempo",
-	HelmChartRepo:        "https://grafana-community.github.io/helm-charts",
-	DefaultChartVersion:  "2.2.3",
-	DefaultDiskSize:      "10Gi",
-	DefaultRetention:     "24h",
-	EnvS3AccessKeyId:     "TEMPO_S3_ACCESS_KEY_ID",
-	EnvS3SecretAccessKey: "TEMPO_S3_SECRET_ACCESS_KEY",
-	EnvAzureAccountKey:   "TEMPO_AZURE_ACCOUNT_KEY",
-	GcsKeyMountPath:      "/var/secrets/gcs",
-	GcsKeyVolume:         "gcs-service-account",
-	TracesLocalPath:      "/var/tempo/traces",
-	WalPath:              "/var/tempo/wal",
-	HttpPort:             3200,
-	OtlpGrpc:             4317,
-	OtlpHttp:             4318,
-	MaxNameLength:        45,
-	TempoQueryRepository: "grafana/tempo-query",
+	HelmChartName:                 "tempo",
+	HelmChartRepo:                 "https://grafana-community.github.io/helm-charts",
+	DefaultChartVersion:           "2.2.3",
+	DefaultDiskSize:               "10Gi",
+	DefaultRetention:              "24h",
+	EnvS3AccessKeyId:              "TEMPO_S3_ACCESS_KEY_ID",
+	EnvS3SecretAccessKey:          "TEMPO_S3_SECRET_ACCESS_KEY",
+	EnvAzureAccountKey:            "TEMPO_AZURE_ACCOUNT_KEY",
+	R2CredentialsSecretSuffix:     "-r2-credentials",
+	R2AccessKeyIdKey:              "access-key-id",
+	R2SecretAccessKeyKey:          "secret-access-key",
+	CredentialsChecksumAnnotation: "checksum/credentials",
+	GcsKeyMountPath:               "/var/secrets/gcs",
+	GcsKeyVolume:                  "gcs-service-account",
+	TracesLocalPath:               "/var/tempo/traces",
+	WalPath:                       "/var/tempo/wal",
+	HttpPort:                      3200,
+	OtlpGrpc:                      4317,
+	OtlpHttp:                      4318,
+	MaxNameLength:                 45,
+	TempoQueryRepository:          "grafana/tempo-query",
 }

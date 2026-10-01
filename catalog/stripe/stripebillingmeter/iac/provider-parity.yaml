@@ -1,0 +1,31 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The meter's arguments match by exact name except the customer mapping's
+# type. Each alert is its own stripe_billing_alert, which the module creates
+# per spec.alerts entry, keyed by title; usage_threshold is a nested
+# attribute, which distills to one provider argument, so fan-in mappings
+# record every spec leaf it realizes.
+resources:
+  stripe_billing_meter:
+    exclusions:
+      - arg: customer_mapping.type
+        reason: set by the module to by_id, the only customer mapping Stripe offers (the provider validates exactly that one value) -- the spec names only the payload key
+  stripe_billing_alert:
+    mappings:
+      - spec: spec.alerts.title
+        arg: title
+      - spec: spec.alerts.gte
+        arg: usage_threshold
+      - spec: spec.alerts.recurrence
+        arg: usage_threshold
+      - spec: spec.alerts.customer
+        arg: usage_threshold
+    exclusions:
+      - arg: alert_type
+        reason: set by the module to usage_threshold, the only alert type Stripe offers (the provider validates exactly that one value) -- a field of its own could only restate it

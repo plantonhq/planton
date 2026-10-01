@@ -1,0 +1,35 @@
+# Every feature the pinned provider can hold: customer details, invoices,
+# payment methods, and an immediate cancellation with a credit for unused
+# time, plus the business profile and login page. Letting customers change a
+# subscription can't be declared yet: Stripe requires switchable products
+# whenever that feature is on, and Stripe returns them only when a read
+# expands them, so validation refuses it.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingPortalConfiguration
+metadata:
+  name: e2e-portal-every-feature
+  org: e2e-org
+  env: testing
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  defaultReturnUrl: https://example.com/billing
+  businessProfile:
+    headline: e2e ${E2E_RUN_ID}
+    privacyPolicyUrl: https://example.com/privacy
+    termsOfServiceUrl: https://example.com/terms
+  loginPage:
+    enabled: true
+  features:
+    customerUpdate:
+      enabled: true
+      allowedUpdates:
+        - email
+        - address
+    invoiceHistory:
+      enabled: true
+    paymentMethodUpdate:
+      enabled: true
+    subscriptionCancel:
+      enabled: true
+      mode: immediately
+      prorationBehavior: create_prorations

@@ -140,8 +140,8 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 				input.Spec.Values = nil
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
 					Wrr: []*GcpDnsRecordWrrPolicyItem{
-						{Weight: f64(80), Values: []string{"192.0.2.1"}},
-						{Weight: f64(20), Values: []string{"192.0.2.2"}},
+						{Weight: f64(80), Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.1")}},
+						{Weight: f64(20), Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.2")}},
 					},
 				}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -152,8 +152,8 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 				input.Spec.Values = nil
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
 					Wrr: []*GcpDnsRecordWrrPolicyItem{
-						{Weight: f64(100), Values: []string{"192.0.2.1"}},
-						{Weight: f64(0), Values: []string{"192.0.2.2"}},
+						{Weight: f64(100), Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.1")}},
+						{Weight: f64(0), Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.2")}},
 					},
 				}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -164,8 +164,8 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 				input.Spec.Values = nil
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
 					Geo: []*GcpDnsRecordGeoPolicyItem{
-						{Location: "us-east1", Values: []string{"192.0.2.1"}},
-						{Location: "europe-west3", Values: []string{"192.0.2.2"}},
+						{Location: "us-east1", Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.1")}},
+						{Location: "europe-west3", Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.2")}},
 					},
 					EnableGeoFencing: true,
 				}
@@ -217,7 +217,7 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 							},
 						},
 						BackupGeo: []*GcpDnsRecordGeoPolicyItem{
-							{Location: "us-east1", Values: []string{"192.0.2.9"}},
+							{Location: "us-east1", Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.9")}},
 						},
 						TrickleRatio: &trickle,
 					},
@@ -290,7 +290,7 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should reject a record with both values and routing_policy", func() {
 				input := baseRecord()
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
-					Wrr: []*GcpDnsRecordWrrPolicyItem{{Weight: f64(1), Values: []string{"192.0.2.5"}}},
+					Wrr: []*GcpDnsRecordWrrPolicyItem{{Weight: f64(1), Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.5")}}},
 				}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
@@ -331,8 +331,8 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 				input := baseRecord()
 				input.Spec.Values = nil
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
-					Wrr: []*GcpDnsRecordWrrPolicyItem{{Weight: f64(1), Values: []string{"192.0.2.1"}}},
-					Geo: []*GcpDnsRecordGeoPolicyItem{{Location: "us-east1", Values: []string{"192.0.2.2"}}},
+					Wrr: []*GcpDnsRecordWrrPolicyItem{{Weight: f64(1), Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.1")}}},
+					Geo: []*GcpDnsRecordGeoPolicyItem{{Location: "us-east1", Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.2")}}},
 				}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
@@ -341,7 +341,7 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 				input := baseRecord()
 				input.Spec.Values = nil
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
-					Wrr:              []*GcpDnsRecordWrrPolicyItem{{Weight: f64(1), Values: []string{"192.0.2.1"}}},
+					Wrr:              []*GcpDnsRecordWrrPolicyItem{{Weight: f64(1), Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.1")}}},
 					EnableGeoFencing: true,
 				}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
@@ -351,7 +351,7 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 				input := baseRecord()
 				input.Spec.Values = nil
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
-					Geo: []*GcpDnsRecordGeoPolicyItem{{Values: []string{"192.0.2.1"}}},
+					Geo: []*GcpDnsRecordGeoPolicyItem{{Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.1")}}},
 				}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
@@ -375,7 +375,7 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 				input.Spec.RoutingPolicy = &GcpDnsRecordRoutingPolicy{
 					PrimaryBackup: &GcpDnsRecordPrimaryBackupPolicy{
 						BackupGeo: []*GcpDnsRecordGeoPolicyItem{
-							{Location: "us-east1", Values: []string{"192.0.2.9"}},
+							{Location: "us-east1", Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.9")}},
 						},
 					},
 				}
@@ -392,7 +392,7 @@ var _ = ginkgo.Describe("GcpDnsRecordSpec Validation Tests", func() {
 							ExternalEndpoints: []string{"203.0.113.10"},
 						},
 						BackupGeo: []*GcpDnsRecordGeoPolicyItem{
-							{Location: "us-east1", Values: []string{"192.0.2.9"}},
+							{Location: "us-east1", Values: []*foreignkeyv1.StringValueOrRef{literal("192.0.2.9")}},
 						},
 						TrickleRatio: &trickle,
 					},

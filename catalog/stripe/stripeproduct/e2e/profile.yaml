@@ -1,0 +1,14 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: stripeproduct
+spec:
+  # Proven live on OpenTofu against the test sandbox: plain, shippable and
+  # feature-linked products (StripeEntitlementFeature deploys first), every
+  # feature link imported blind, an in-place update, and destroy archiving the
+  # product and deleting its feature links.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - tofu
+  timeout_minutes: 5

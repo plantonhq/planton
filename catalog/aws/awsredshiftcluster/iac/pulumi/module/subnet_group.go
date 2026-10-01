@@ -14,7 +14,7 @@ import (
 // subnets are first-class AwsSubnet nodes this module never modifies.
 func subnetGroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*redshift.SubnetGroup, error) {
 	spec := locals.AwsRedshiftCluster.Spec
-	if spec.ClusterSubnetGroupName.GetValue() != "" || len(spec.SubnetIds) == 0 {
+	if spec.ClusterSubnetGroupName != "" || len(spec.SubnetIds) == 0 {
 		return nil, nil
 	}
 

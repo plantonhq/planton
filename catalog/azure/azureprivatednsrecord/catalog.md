@@ -44,7 +44,7 @@ spec:
   name: db
   ttlSeconds: 300
   a:
-    - 10.0.4.10
+    - value: 10.0.4.10
 ```
 
 ```shell
@@ -64,7 +64,7 @@ spec:
       name: internal-zone
   name: db
   a:
-    - 10.0.4.10
+    - value: 10.0.4.10
 ```
 
 The InfraPipeline resolves the dependency graph, provisioning the zone before the records inside it.

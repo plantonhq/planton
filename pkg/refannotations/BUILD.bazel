@@ -1,0 +1,27 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "refannotations",
+    srcs = ["refannotations.go"],
+    importpath = "github.com/plantonhq/planton/pkg/refannotations",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//shared/cloudresourcekind",
+        "//shared/foreignkey/v1:foreignkey",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "refannotations_test",
+    srcs = ["refannotations_test.go"],
+    embed = [":refannotations"],
+    deps = [
+        "//catalog/_test/testcloudresourcegeneric/v1alpha2",
+        "//catalog/digitalocean/digitaloceanproject/v1alpha1",
+        "//shared/cloudresourcekind",
+        "@com_github_stretchr_testify//assert",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)

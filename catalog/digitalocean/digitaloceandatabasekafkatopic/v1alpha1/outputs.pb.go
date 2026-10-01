@@ -25,16 +25,19 @@ const (
 // provisioning a Kafka topic. DigitalOcean has no standalone topic id --
 // the (cluster, topic name) pair IS the identity -- so both halves are
 // exported for consumers and verification tooling.
+//
+// The topic's provisioning state is deliberately NOT an output: a state
+// captured at apply time goes stale the moment DigitalOcean changes it
+// (topic creation is asynchronous, and a topic can later degrade), and a
+// stale "active" in stored outputs is worse than no value. Live state is
+// read from the API by whoever needs it -- the E2E verifier asserts it that
+// way.
 type DigitalOceanDatabaseKafkaTopicStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the Kafka database cluster the topic lives in.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
 	// Name of the Kafka topic (its API identity within the cluster).
-	TopicName string `protobuf:"bytes,2,opt,name=topic_name,json=topicName,proto3" json:"topic_name,omitempty"`
-	// Provisioning state of the topic as reported by DigitalOcean at apply
-	// time (e.g. active). Topic creation is asynchronous, so this is a
-	// snapshot, not a live guarantee.
-	State         string `protobuf:"bytes,3,opt,name=state,proto3" json:"state,omitempty"`
+	TopicName     string `protobuf:"bytes,2,opt,name=topic_name,json=topicName,proto3" json:"topic_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -83,24 +86,16 @@ func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) GetTopicName() string {
 	return ""
 }
 
-func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) GetState() string {
-	if x != nil {
-		return x.State
-	}
-	return ""
-}
-
 var File_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/digitalocean/digitaloceandatabasekafkatopic/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1\"\x80\x01\n" +
+	"Jcatalog/digitalocean/digitaloceandatabasekafkatopic/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1\"w\n" +
 	"*DigitalOceanDatabaseKafkaTopicStackOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1d\n" +
 	"\n" +
-	"topic_name\x18\x02 \x01(\tR\ttopicName\x12\x14\n" +
-	"\x05state\x18\x03 \x01(\tR\x05stateB\xfc\x03\n" +
+	"topic_name\x18\x02 \x01(\tR\ttopicNameJ\x04\b\x03\x10\x04R\x05stateB\xfc\x03\n" +
 	"Dcom.dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1B\fOutputsProtoP\x01Z\x80\x01github.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabasekafkatopic/v1alpha1;digitaloceandatabasekafkatopicv1alpha1\xa2\x02\x04DPDD\xaa\x02@Dev.Planton.Digitalocean.Digitaloceandatabasekafkatopic.V1alpha1\xca\x02@Dev\\Planton\\Digitalocean\\Digitaloceandatabasekafkatopic\\V1alpha1\xe2\x02LDev\\Planton\\Digitalocean\\Digitaloceandatabasekafkatopic\\V1alpha1\\GPBMetadata\xea\x02DDev::Planton::Digitalocean::Digitaloceandatabasekafkatopic::V1alpha1b\x06proto3"
 
 var (

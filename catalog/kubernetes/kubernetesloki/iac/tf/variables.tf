@@ -72,6 +72,16 @@ variable "spec" {
           })
         }))
       }))
+      # The r2 arm; references arrive resolved to their values.
+      r2 = optional(object({
+        account_id   = string
+        jurisdiction = optional(string, "")
+        bucket       = string
+        credentials = object({
+          access_key_id     = string
+          secret_access_key = string
+        })
+      }))
       gcs = optional(object({
         bucket       = string
         ruler_bucket = optional(string, "")

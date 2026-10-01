@@ -1,0 +1,35 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingPortalConfiguration
+metadata:
+  name: self-serve-portal
+  org: example-org
+  env: production
+spec:
+  name: Self-serve portal
+  defaultReturnUrl: https://app.example.com/billing
+  businessProfile:
+    headline: Manage your subscription
+    privacyPolicyUrl: https://example.com/privacy
+    termsOfServiceUrl: https://example.com/terms
+  features:
+    customerUpdate:
+      enabled: true
+      allowedUpdates:
+        - email
+        - address
+        - tax_id
+    invoiceHistory:
+      enabled: true
+    paymentMethodUpdate:
+      enabled: true
+    subscriptionCancel:
+      enabled: true
+      mode: at_period_end
+      cancellationReason:
+        enabled: true
+        options:
+          - too_expensive
+          - missing_features
+          - switched_service
+          - unused
+          - other

@@ -1,0 +1,23 @@
+# Least-privilege permissions the IaC runner's Auth0 credential needs to
+# provision, update, and destroy this component with the official modules.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.58 per iac/tf/provider.tf) and the
+# pulumi-auth0 SDK exchange its client id and secret for a token through
+# the client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: auth0customdomainverification
+spec:
+  auth0:
+    groups:
+      - purpose: VerifyCustomDomain
+        scopes:
+          - create:custom_domains
+          - read:custom_domains
+        provenance: derived
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/verification.go) manage auth0_custom_domain_verification -- POST /api/v2/custom-domains/{id}/verify, which the Management API's OpenAPI document files under create:custom_domains, polled until the domain is ready -- and read the verified domain back through GET /api/v2/custom-domains/{id} (read:custom_domains) for the outputs. The resource has no update, and its delete is the provider's no-op (terraform-provider-auth0 internal/auth0/customdomain/resource_verification.go; read 2026-09-28), so no other scope is needed.
