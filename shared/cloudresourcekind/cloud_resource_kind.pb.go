@@ -2161,6 +2161,23 @@ const (
 	// A certificate issued from a CA pool for a key its owner holds; destroy
 	// revokes it.
 	CloudResourceKind_GcpPrivateCaCertificate CloudResourceKind = 3239
+	// 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build,
+	// Cloud Deploy)
+	// GcpGkeFleet is the container a fleet's scopes, namespaces, memberships,
+	// and features live in: the project's one fleet is the room, and a team
+	// scope or a fleet-wide feature is what is placed inside it.
+	CloudResourceKind_GcpGkeFleet CloudResourceKind = 3240
+	// The three fleet children name GcpGkeFleet as their prerequisite: Google
+	// requires the fleet before a scope, a fleet declared after a cluster
+	// registers collides with the fleet that registration created implicitly,
+	// and a feature configures the fleet it lives in. A chart that references
+	// the fleet's project_id output orders each child after it.
+	CloudResourceKind_GcpGkeFleetFeature    CloudResourceKind = 3241
+	CloudResourceKind_GcpGkeFleetScope      CloudResourceKind = 3242
+	CloudResourceKind_GcpGkeFleetMembership CloudResourceKind = 3243
+	// A Compute Engine custom image: the golden boot image VMs, instance
+	// templates, and disks start from, rolled forward through image families.
+	CloudResourceKind_GcpComputeImage CloudResourceKind = 3244
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -3314,6 +3331,11 @@ var (
 		3237:  "GcpPrivateCaCertificateAuthority",
 		3238:  "GcpPrivateCaCertificateTemplate",
 		3239:  "GcpPrivateCaCertificate",
+		3240:  "GcpGkeFleet",
+		3241:  "GcpGkeFleetFeature",
+		3242:  "GcpGkeFleetScope",
+		3243:  "GcpGkeFleetMembership",
+		3244:  "GcpComputeImage",
 		3250:  "GcpFirebaseProject",
 		3251:  "GcpFirebaseAndroidApp",
 		3252:  "GcpFirebaseAppleApp",
@@ -4135,6 +4157,11 @@ var (
 		"GcpPrivateCaCertificateAuthority":               3237,
 		"GcpPrivateCaCertificateTemplate":                3238,
 		"GcpPrivateCaCertificate":                        3239,
+		"GcpGkeFleet":                                    3240,
+		"GcpGkeFleetFeature":                             3241,
+		"GcpGkeFleetScope":                               3242,
+		"GcpGkeFleetMembership":                          3243,
+		"GcpComputeImage":                                3244,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4843,7 +4870,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*ŉ\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\u074b\x03\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5454,7 +5481,12 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1eGcpBinaryAuthorizationAttestor\x10\xa4\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpbaattP\xb3\x02\x12G\n" +
 	" GcpPrivateCaCertificateAuthority\x10\xa5\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppcaa:\x02\x9e\x19P\xb3\x02\x12B\n" +
 	"\x1fGcpPrivateCaCertificateTemplate\x10\xa6\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcppcatP\xb3\x02\x12>\n" +
-	"\x17GcpPrivateCaCertificate\x10\xa7\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppcac:\x02\xa5\x19P\xb3\x02\x128\n" +
+	"\x17GcpPrivateCaCertificate\x10\xa7\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppcac:\x02\xa5\x19P\xb3\x02\x121\n" +
+	"\vGcpGkeFleet\x10\xa8\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfleet0\x01P\xad\x02\x129\n" +
+	"\x12GcpGkeFleetFeature\x10\xa9\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflft:\x02\xa8\x19P\xad\x02\x127\n" +
+	"\x10GcpGkeFleetScope\x10\xaa\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflsc:\x02\xa8\x19P\xad\x02\x12<\n" +
+	"\x15GcpGkeFleetMembership\x10\xab\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflmb:\x02\xa8\x19P\xad\x02\x121\n" +
+	"\x0fGcpComputeImage\x10\xac\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpimgP\xac\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

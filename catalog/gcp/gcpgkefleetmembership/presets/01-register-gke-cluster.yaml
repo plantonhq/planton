@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetMembership
+metadata:
+  name: legacy-cluster
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: platform-fleet
+      fieldPath: status.outputs.project_id
+  gkeCluster:
+    value: projects/my-gcp-project/locations/us-central1/clusters/legacy-cluster

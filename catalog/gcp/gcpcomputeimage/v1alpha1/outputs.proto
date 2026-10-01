@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcomputeimage.v1alpha1;
+
+// GcpComputeImageStackOutputs captures the image's identity.
+message GcpComputeImageStackOutputs {
+  // Name of the image in GCP.
+  string name = 1;
+
+  // Self-link URL of the image -- what a disk's image, an instance's boot
+  // disk image, or another image's source_image consumes.
+  string self_link = 2;
+
+  // The image's family, or empty when it has none. Consumers that should
+  // always boot the newest build use
+  // "projects/{project}/global/images/family/{family}".
+  string family = 3;
+
+  // The image's size in GB.
+  int32 disk_size_gb = 4;
+}

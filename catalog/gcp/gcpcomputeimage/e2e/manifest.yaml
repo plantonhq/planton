@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeImage
+metadata:
+  name: web-base-20261001
+spec:
+  projectId:
+    value: my-gcp-project
+  family: web-base
+  description: Hardened web base image
+  sourceDisk:
+    value: projects/my-gcp-project/zones/us-central1-a/disks/web-build
+  kmsKey:
+    value: projects/my-gcp-project/locations/us/keyRings/images/cryptoKeys/images
+  guestOsFeatures:
+    - UEFI_COMPATIBLE
+    - GVNIC
+  storageLocations:
+    - us
+  labels:
+    os: debian

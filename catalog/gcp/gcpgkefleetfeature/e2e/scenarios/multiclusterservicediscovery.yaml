@@ -1,0 +1,25 @@
+# GcpGkeFleetFeature scenario: multi-cluster service discovery on the
+# second project's fleet (the registry prerequisite) -- a feature with no
+# settings, the smallest proof of enable and disable. Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetFeature
+metadata:
+  name: planton-oss-e2e-gcpflft-mcsd
+  id: planton-oss-e2e-gcpflft-mcsd
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleetfeature
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: planton-oss-e2e-gcpflft-fleet
+      fieldPath: status.outputs.project_id
+  feature: multiclusterservicediscovery

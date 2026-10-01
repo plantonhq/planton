@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcomputeimage
+spec:
+  gcp:
+    groups:
+      - purpose: EnableComputeApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling compute.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageImage
+        permissions:
+          - compute.images.create
+          - compute.images.get
+          - compute.images.delete
+          - compute.images.setLabels
+          - compute.globalOperations.get
+        provenance: derived
+        notes: Covers google_compute_image across its lifecycle -- create, label changes (the one in-place update), and delete -- plus polling the global operation every mutation returns.
+      - purpose: ReadImageSources
+        permissions:
+          - compute.disks.useReadOnly
+          - compute.images.useReadOnly
+          - compute.snapshots.useReadOnly
+        provenance: derived
+        notes: Each permission gates one source shape -- source_disk, source_image, and source_snapshot; a raw_disk tarball is read through Cloud Storage permissions on its object, not a compute permission.

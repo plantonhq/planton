@@ -2634,10 +2634,12 @@ func TestStackOutputsConformance(t *testing.T) {
 				"location":               "us-central1",
 				"self_link":              "https://container.googleapis.com/v1/projects/my-project/locations/us-central1/clusters/prod-primary",
 				"master_version":         "1.31.4-gke.1256000",
+				"fleet_membership":       "projects/my-project/locations/us-central1/memberships/prod-primary",
 			},
 			mustPopulate: []string{
 				"endpoint", "cluster_ca_certificate", "workload_identity_pool",
 				"cluster_id", "name", "location", "self_link", "master_version",
+				"fleet_membership",
 			},
 		},
 		{
@@ -4564,6 +4566,63 @@ func TestStackOutputsConformance(t *testing.T) {
 				"delegation_service_account_email": "service-123@gcp-sa-binaryauthorization.iam.gserviceaccount.com",
 			},
 			mustPopulate: []string{"attestor_id", "attestor_name", "note_reference", "delegation_service_account_email"},
+		},
+		{
+			// GcpGkeFleet: the host project every fleet child references,
+			// the fleet's name, and its uid.
+			name: "GcpGkeFleet",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleet,
+			rawOutputs: map[string]interface{}{
+				"project_id": "platform-host",
+				"name":       "projects/platform-host/locations/global/fleets/default",
+				"uid":        "5c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f",
+			},
+			mustPopulate: []string{"project_id", "name", "uid"},
+		},
+		{
+			// GcpGkeFleetFeature: the feature's full name.
+			name: "GcpGkeFleetFeature",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetFeature,
+			rawOutputs: map[string]interface{}{
+				"name": "projects/platform-host/locations/global/features/configmanagement",
+			},
+			mustPopulate: []string{"name"},
+		},
+		{
+			// GcpGkeFleetScope: the scope's name, ID, and uid.
+			name: "GcpGkeFleetScope",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetScope,
+			rawOutputs: map[string]interface{}{
+				"name":     "projects/platform-host/locations/global/scopes/orders",
+				"scope_id": "orders",
+				"uid":      "9f8e7d6c-5b4a-3c2d-1e0f-a9b8c7d6e5f4",
+			},
+			mustPopulate: []string{"name", "scope_id", "uid"},
+		},
+		{
+			// GcpGkeFleetMembership: the membership name scopes and
+			// per-cluster feature settings reference.
+			name: "GcpGkeFleetMembership",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/platform-host/locations/global/memberships/orders-uc1",
+				"membership_id": "orders-uc1",
+				"location":      "global",
+			},
+			mustPopulate: []string{"name", "membership_id", "location"},
+		},
+		{
+			// GcpComputeImage: the self link consumers boot from, the
+			// family, and the size.
+			name: "GcpComputeImage",
+			kind: cloudresourcekind.CloudResourceKind_GcpComputeImage,
+			rawOutputs: map[string]interface{}{
+				"name":         "web-base-20261001",
+				"self_link":    "https://www.googleapis.com/compute/v1/projects/images-prod/global/images/web-base-20261001",
+				"family":       "web-base",
+				"disk_size_gb": 20,
+			},
+			mustPopulate: []string{"name", "self_link", "family", "disk_size_gb"},
 		},
 		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric

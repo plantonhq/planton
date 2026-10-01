@@ -1,0 +1,45 @@
+# GcpGkeFleetScope scenario: a team scope on the second project's fleet
+# with two fleet namespaces, namespace labels, and two role bindings (a
+# group with EDIT, a user with VIEW). No cluster is bound, so nothing lands
+# on a cluster; the proof is the scope and its children in the Fleet API.
+# Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetScope
+metadata:
+  name: planton-oss-e2e-gcpflsc-team
+  id: planton-oss-e2e-gcpflsc-team
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleetscope
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: planton-oss-e2e-gcpflsc-fleet
+      fieldPath: status.outputs.project_id
+  scopeId: e2e-team-${E2E_RUN_ID}
+  namespaceLabels:
+    team: e2e
+  namespaces:
+    - scopeNamespaceId: e2e-api
+      namespaceLabels:
+        tier: api
+    - scopeNamespaceId: e2e-workers
+  rbacRoleBindings:
+    - scopeRbacRoleBindingId: e2e-devs
+      group:
+        value: planton-e2e-devs@example.com
+      role:
+        predefinedRole: EDIT
+    - scopeRbacRoleBindingId: e2e-oncall
+      user:
+        value: planton-e2e-oncall@example.com
+      role:
+        predefinedRole: VIEW

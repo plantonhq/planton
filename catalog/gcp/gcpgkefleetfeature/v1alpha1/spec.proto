@@ -1,0 +1,789 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgkefleetfeature.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpGkeFleetFeatureSpec turns on one GKE fleet feature and configures it
+// (`google_gke_hub_feature`), together with the per-cluster settings that
+// override the fleet-wide defaults (`google_gke_hub_feature_membership`).
+//
+// One block is one feature, named by `feature`:
+//
+//   "configmanagement"             -- Config Sync: clusters sync their
+//                                     Kubernetes configuration from Git or
+//                                     an OCI image (fleet_default_member_config
+//                                     .configmanagement, membership_configs)
+//   "policycontroller"             -- Policy Controller: admission policies
+//                                     and audits, with Google's policy
+//                                     bundles (.policycontroller)
+//   "servicemesh"                  -- Cloud Service Mesh (.mesh)
+//   "multiclusteringress"          -- one ingress across clusters, hosted on
+//                                     a config cluster (multiclusteringress)
+//   "multiclusterservicediscovery" -- services exported across clusters (no
+//                                     settings)
+//   "fleetobservability"           -- fleet logging (fleetobservability)
+//   "clusterupgrade"               -- upgrade sequencing behind an upstream
+//                                     fleet (clusterupgrade)
+//   "rbacrolebindingactuation"     -- custom ClusterRoles team scopes may
+//                                     grant (rbacrolebindingactuation)
+//   "workloadidentity"             -- fleet tenancy's workload identity pool
+//                                     (workloadidentity)
+//
+// Each settings block is accepted only on its feature: Google's API holds
+// one spec per feature, and a block on the wrong feature would never take
+// effect.
+//
+// fleet_default_member_config is the recommended way to configure Config
+// Sync, Policy Controller, and Service Mesh: Google applies it to every
+// cluster in the fleet, including clusters that join later.
+// membership_configs overrides it for named clusters. A per-cluster entry
+// has no API object of its own -- Google stores it inside this feature --
+// so it lives here, keyed by the cluster's fleet membership.
+//
+// Important behavioral notes:
+//
+//   - Creating a feature that is already on adopts it: the existing
+//     feature's settings are replaced by this block's.
+//   - Destroy turns the feature off and removes its per-cluster settings,
+//     except "rbacrolebindingactuation", which Google never deletes:
+//     destroy empties its allowlist instead.
+//   - Both modules enable the Fleet API and the feature's own API
+//     (anthosconfigmanagement, anthospolicycontroller, mesh,
+//     multiclusteringress, multiclusterservicediscovery) and never disable
+//     them on destroy.
+message GcpGkeFleetFeatureSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.multiclusteringress_on_its_feature"
+    expression: "!has(this.multiclusteringress) || this.feature == 'multiclusteringress'"
+    message: "multiclusteringress settings apply only to feature multiclusteringress"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.fleetobservability_on_its_feature"
+    expression: "!has(this.fleetobservability) || this.feature == 'fleetobservability'"
+    message: "fleetobservability settings apply only to feature fleetobservability"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.clusterupgrade_on_its_feature"
+    expression: "!has(this.clusterupgrade) || this.feature == 'clusterupgrade'"
+    message: "clusterupgrade settings apply only to feature clusterupgrade"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.rbacrolebindingactuation_on_its_feature"
+    expression: "!has(this.rbacrolebindingactuation) || this.feature == 'rbacrolebindingactuation'"
+    message: "rbacrolebindingactuation settings apply only to feature rbacrolebindingactuation"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.workloadidentity_on_its_feature"
+    expression: "!has(this.workloadidentity) || this.feature == 'workloadidentity'"
+    message: "workloadidentity settings apply only to feature workloadidentity"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.default_configmanagement_on_its_feature"
+    expression: "!has(this.fleet_default_member_config.configmanagement) || this.feature == 'configmanagement'"
+    message: "fleet_default_member_config.configmanagement applies only to feature configmanagement"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.default_mesh_on_its_feature"
+    expression: "!has(this.fleet_default_member_config.mesh) || this.feature == 'servicemesh'"
+    message: "fleet_default_member_config.mesh applies only to feature servicemesh"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.default_policycontroller_on_its_feature"
+    expression: "!has(this.fleet_default_member_config.policycontroller) || this.feature == 'policycontroller'"
+    message: "fleet_default_member_config.policycontroller applies only to feature policycontroller"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.membership_configs_on_member_features"
+    expression: "size(this.membership_configs) == 0 || this.feature in ['configmanagement', 'servicemesh', 'policycontroller']"
+    message: "membership_configs apply only to features configmanagement, servicemesh, and policycontroller"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.membership_config_block_matches_feature"
+    expression: "this.membership_configs.all(c, (!has(c.configmanagement) || this.feature == 'configmanagement') && (!has(c.mesh) || this.feature == 'servicemesh') && (!has(c.policycontroller) || this.feature == 'policycontroller'))"
+    message: "each membership_configs entry carries the block of this feature: configmanagement, mesh (servicemesh), or policycontroller"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_membership_configs"
+    expression: "this.membership_configs.filter(c, has(c.membership.value)).map(c, c.membership.value).unique()"
+    message: "a membership appears at most once in membership_configs"
+  };
+
+  // The fleet host project: a literal project ID or a GcpGkeFleet
+  // reference (the fleet this feature configures, which orders it after
+  // the fleet in a chart). Empty means the provider's default project.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Which feature, by Google's feature name (see the list above): one of
+  // the documented names, or another lowercase name Google adds. Immutable.
+  string feature = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "feature.format"
+      message: "feature must be a lowercase Google fleet feature name, e.g. configmanagement"
+      expression: "this.matches('^[a-z][a-z0-9]*$')"
+    }
+  ];
+
+  // Where the feature lives. Fleet features are "global" (the default).
+  // Immutable.
+  string location = 3 [(buf.validate.field).cel = {
+    id: "location.format"
+    message: "location must be global or a region"
+    expression: "this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')"
+  }];
+
+  // Labels on the feature. The platform attribution labels are added on
+  // top and win on key conflicts.
+  map<string, string> labels = 4;
+
+  // Settings for "multiclusteringress".
+  GcpGkeFleetFeatureMultiClusterIngress multiclusteringress = 5;
+
+  // Settings for "fleetobservability".
+  GcpGkeFleetFeatureFleetObservability fleetobservability = 6;
+
+  // Settings for "clusterupgrade".
+  GcpGkeFleetFeatureClusterUpgrade clusterupgrade = 7;
+
+  // Settings for "rbacrolebindingactuation".
+  GcpGkeFleetFeatureRbacRoleBindingActuation rbacrolebindingactuation = 8;
+
+  // Settings for "workloadidentity".
+  GcpGkeFleetFeatureWorkloadIdentity workloadidentity = 9;
+
+  // The fleet-wide defaults for "configmanagement", "servicemesh", or
+  // "policycontroller": applied to every cluster in the fleet, including
+  // clusters that join later, unless membership_configs overrides one.
+  GcpGkeFleetFeatureFleetDefaultMemberConfig fleet_default_member_config = 10;
+
+  // Per-cluster settings for "configmanagement", "servicemesh", or
+  // "policycontroller", each overriding the fleet-wide default for one
+  // cluster.
+  repeated GcpGkeFleetFeatureMembershipConfig membership_configs = 11;
+
+  // What destroy does, for the feature and its per-cluster settings:
+  //   "" / "DELETE" -- the feature is turned off and the per-cluster
+  //                    settings removed ("rbacrolebindingactuation" only
+  //                    empties its allowlist)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays on in Google
+  string deletion_policy = 12 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// Multi Cluster Ingress: one ingress whose MultiClusterIngress and
+// MultiClusterService resources live on a config cluster and route to
+// backends across the fleet. Billed per backend Pod beyond the GKE fee.
+message GcpGkeFleetFeatureMultiClusterIngress {
+  // The config cluster's fleet membership, by full name: a
+  // GcpGkeFleetMembership reference, a GcpGkeCluster reference (its
+  // fleet_membership output), or the literal name. Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef config_membership = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleetMembership,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeFleetMembership
+      field_path: "status.outputs.name"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "status.outputs.fleet_membership"
+    },
+    (buf.validate.field).cel = {
+      id: "config_membership.format"
+      message: "config_membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/memberships/[^/]+$')"
+    }
+  ];
+}
+
+// Fleet logging: routes the fleet's application logs to the fleet host
+// project, per log type. Unset means fleet logging stays off.
+message GcpGkeFleetFeatureFleetObservability {
+  // The routing configuration.
+  GcpGkeFleetFeatureFleetLoggingConfig logging_config = 1;
+}
+
+// Fleet logging routes.
+message GcpGkeFleetFeatureFleetLoggingConfig {
+  // Routing for logs no other route covers.
+  GcpGkeFleetFeatureLogRoutingConfig default_config = 1;
+
+  // Routing for all logs of every fleet scope.
+  GcpGkeFleetFeatureLogRoutingConfig fleet_scope_logs_config = 2;
+}
+
+// One fleet log route.
+message GcpGkeFleetFeatureLogRoutingConfig {
+  // How the logs reach the fleet host project:
+  //   "COPY" -- copied there and kept in the cluster's project too
+  //   "MOVE" -- moved there only
+  // Empty leaves the route off.
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "mode.valid"
+    expression: "this == '' || this in ['COPY', 'MOVE']"
+    message: "mode must be COPY or MOVE"
+  }];
+}
+
+// Upgrade sequencing: this fleet takes a GKE upgrade only after it has
+// soaked in an upstream fleet (for example prod behind dev).
+message GcpGkeFleetFeatureClusterUpgrade {
+  // The upstream fleet whose completed upgrades this fleet consumes: its
+  // host project's ID or number, as a literal or a GcpGkeFleet reference.
+  // Google accepts at most one today; the list leaves room for more.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef upstream_fleets = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleet,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // When an upgrade counts as complete in this fleet. Empty takes Google's
+  // default.
+  GcpGkeFleetFeatureUpgradePostConditions post_conditions = 2;
+
+  // Different completion conditions for individual upgrades.
+  repeated GcpGkeFleetFeatureGkeUpgradeOverride gke_upgrade_overrides = 3;
+}
+
+// When an upgrade counts as complete.
+message GcpGkeFleetFeatureUpgradePostConditions {
+  // How long to soak after the rollout finishes before marking it
+  // complete, as seconds with an "s" suffix ("604800s" is seven days); at
+  // most 30 days. Required.
+  string soaking = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "soaking.format"
+      message: "soaking must be a duration in seconds with an s suffix, e.g. 604800s"
+      expression: "this.matches('^[0-9]+(\\\\.[0-9]{1,9})?s$')"
+    }
+  ];
+}
+
+// The completion conditions of one specific upgrade.
+message GcpGkeFleetFeatureGkeUpgradeOverride {
+  // Which upgrade. Required.
+  GcpGkeFleetFeatureGkeUpgrade upgrade = 1 [(buf.validate.field).required = true];
+
+  // Its completion conditions. Required.
+  GcpGkeFleetFeatureUpgradePostConditions post_conditions = 2 [(buf.validate.field).required = true];
+}
+
+// One GKE upgrade.
+message GcpGkeFleetFeatureGkeUpgrade {
+  // The upgrade's name, e.g. "k8s_control_plane" or "k8s_node". At most 99
+  // characters. Required.
+  string name = 1 [(buf.validate.field).string = {min_len: 1, max_len: 99}];
+
+  // The upgrade's version, e.g. "1.31.1-gke.1146000". At most 99
+  // characters. Required.
+  string version = 2 [(buf.validate.field).string = {min_len: 1, max_len: 99}];
+}
+
+// Custom roles for team scopes.
+message GcpGkeFleetFeatureRbacRoleBindingActuation {
+  // The Kubernetes ClusterRoles a scope role binding may grant through
+  // custom_role. A role in use cannot leave the list until the bindings
+  // that use it are gone.
+  repeated string allowed_custom_roles = 1 [(buf.validate.field).repeated.unique = true];
+}
+
+// Fleet tenancy's workload identity.
+message GcpGkeFleetFeatureWorkloadIdentity {
+  // The workload identity pool, in trust-domain mode, that fleet tenancy
+  // uses so identities stay the same across the clusters of a scope: a
+  // GcpWorkloadIdentityPool reference (its name) or the literal pool name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef scope_tenancy_pool = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpWorkloadIdentityPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+}
+
+// The fleet-wide member defaults.
+message GcpGkeFleetFeatureFleetDefaultMemberConfig {
+  // Config Sync for every cluster (feature "configmanagement").
+  GcpGkeFleetFeatureConfigManagement configmanagement = 1;
+
+  // Cloud Service Mesh for every cluster (feature "servicemesh").
+  GcpGkeFleetFeatureMesh mesh = 2;
+
+  // Policy Controller for every cluster (feature "policycontroller").
+  GcpGkeFleetFeaturePolicyController policycontroller = 3;
+}
+
+// One cluster's settings, overriding the fleet-wide default.
+message GcpGkeFleetFeatureMembershipConfig {
+  option (buf.validate.message).cel = {
+    id: "membership_config.exactly_one_block"
+    expression: "(has(this.configmanagement) ? 1 : 0) + (has(this.mesh) ? 1 : 0) + (has(this.policycontroller) ? 1 : 0) == 1"
+    message: "a membership_configs entry carries exactly one of configmanagement, mesh, or policycontroller"
+  };
+
+  // The cluster's fleet membership, by full name: a GcpGkeFleetMembership
+  // reference, a GcpGkeCluster reference (its fleet_membership output), or
+  // the literal name. The membership must be in this feature's fleet
+  // project; both modules derive the membership ID and location from it.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef membership = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleetMembership,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeFleetMembership
+      field_path: "status.outputs.name"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "status.outputs.fleet_membership"
+    },
+    (buf.validate.field).cel = {
+      id: "membership.format"
+      message: "membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/memberships/[^/]+$')"
+    }
+  ];
+
+  // Config Sync for this cluster (feature "configmanagement").
+  GcpGkeFleetFeatureMembershipConfigManagement configmanagement = 2;
+
+  // Cloud Service Mesh for this cluster (feature "servicemesh").
+  GcpGkeFleetFeatureMesh mesh = 3;
+
+  // Policy Controller for this cluster (feature "policycontroller").
+  GcpGkeFleetFeaturePolicyController policycontroller = 4;
+}
+
+// Config Sync as a fleet-wide default.
+message GcpGkeFleetFeatureConfigManagement {
+  // Upgrades: "MANAGEMENT_AUTOMATIC" lets Google keep Config Sync current;
+  // "MANAGEMENT_MANUAL" pins it to `version`. Empty takes Google's default.
+  string management = 1 [(buf.validate.field).cel = {
+    id: "management.valid"
+    expression: "this == '' || this in ['MANAGEMENT_AUTOMATIC', 'MANAGEMENT_MANUAL']"
+    message: "management must be MANAGEMENT_AUTOMATIC or MANAGEMENT_MANUAL"
+  }];
+
+  // The Config Sync version to install, e.g. "1.22.0"; meaningful with
+  // MANAGEMENT_MANUAL. Empty takes the current release.
+  string version = 2;
+
+  // What to sync and how.
+  GcpGkeFleetFeatureConfigSync config_sync = 3;
+}
+
+// Config Sync for one cluster: the fleet-wide shape plus the per-cluster
+// levers Google offers only on a membership.
+message GcpGkeFleetFeatureMembershipConfigManagement {
+  // Upgrades: "MANAGEMENT_AUTOMATIC" or "MANAGEMENT_MANUAL" (pinned to
+  // `version`). Empty takes Google's default.
+  string management = 1 [(buf.validate.field).cel = {
+    id: "management.valid"
+    expression: "this == '' || this in ['MANAGEMENT_AUTOMATIC', 'MANAGEMENT_MANUAL']"
+    message: "management must be MANAGEMENT_AUTOMATIC or MANAGEMENT_MANUAL"
+  }];
+
+  // The Config Sync version to install on this cluster.
+  string version = 2;
+
+  // What this cluster syncs and how.
+  GcpGkeFleetFeatureMembershipConfigSync config_sync = 3;
+}
+
+// Config Sync's source and behavior (fleet-wide default).
+message GcpGkeFleetFeatureConfigSync {
+  option (buf.validate.message).cel = {
+    id: "config_sync.one_source"
+    expression: "!(has(this.git) && has(this.oci))"
+    message: "config_sync syncs from git or oci, not both"
+  };
+
+  // true installs Config Sync and applies these settings; false removes it
+  // and ignores the rest. Unset installs it exactly when git or oci is set.
+  optional bool enabled = 1;
+
+  // Sync from a Git repository.
+  GcpGkeFleetFeatureConfigSyncGit git = 2;
+
+  // Sync from an OCI image in Artifact Registry.
+  GcpGkeFleetFeatureConfigSyncOci oci = 3;
+
+  // The service account Config Sync exports metrics to Cloud Monitoring
+  // as (it needs roles/monitoring.metricWriter): a GcpServiceAccount
+  // reference or a literal email.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef metrics_gcp_service_account_email = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // true turns on Config Sync's admission webhook, which refuses manual
+  // changes to synced objects; false turns it off. Unset takes Google's
+  // default.
+  optional bool prevent_drift = 5;
+
+  // The repository's layout: "unstructured" (any layout; the recommended
+  // choice) or "hierarchy" (the namespace-directory layout). Empty takes
+  // Google's default.
+  string source_format = 6 [(buf.validate.field).cel = {
+    id: "source_format.valid"
+    expression: "this == '' || this in ['unstructured', 'hierarchy']"
+    message: "source_format must be unstructured or hierarchy"
+  }];
+}
+
+// Config Sync's source and behavior for one cluster.
+message GcpGkeFleetFeatureMembershipConfigSync {
+  option (buf.validate.message).cel = {
+    id: "config_sync.one_source"
+    expression: "!(has(this.git) && has(this.oci))"
+    message: "config_sync syncs from git or oci, not both"
+  };
+
+  // true installs Config Sync and applies these settings; false removes it
+  // and ignores the rest. Unset installs it exactly when git or oci is set.
+  optional bool enabled = 1;
+
+  // Sync from a Git repository.
+  GcpGkeFleetFeatureConfigSyncGit git = 2;
+
+  // Sync from an OCI image in Artifact Registry.
+  GcpGkeFleetFeatureConfigSyncOci oci = 3;
+
+  // The service account Config Sync exports metrics as: a
+  // GcpServiceAccount reference or a literal email.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef metrics_gcp_service_account_email = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // true turns on the admission webhook that refuses manual changes to
+  // synced objects. Unset takes Google's default.
+  optional bool prevent_drift = 5;
+
+  // The repository's layout: "unstructured" or "hierarchy".
+  string source_format = 6 [(buf.validate.field).cel = {
+    id: "source_format.valid"
+    expression: "this == '' || this in ['unstructured', 'hierarchy']"
+    message: "source_format must be unstructured or hierarchy"
+  }];
+
+  // true pauses syncing on this cluster (a break-glass lever during an
+  // incident); Config Sync stays installed. Unset or false keeps syncing.
+  optional bool stop_syncing = 7;
+
+  // Resource overrides for Config Sync's own Deployments on this cluster,
+  // e.g. more memory for the reconciler of a large repository.
+  repeated GcpGkeFleetFeatureConfigSyncDeploymentOverride deployment_overrides = 8;
+}
+
+// A Git source for Config Sync.
+message GcpGkeFleetFeatureConfigSyncGit {
+  // How Config Sync authenticates to the repository:
+  //   "none" (public repository), "ssh", "cookiefile", "token",
+  //   "gcenode" (the node's service account), "gcpserviceaccount" (a
+  //   Google service account through Workload Identity, see
+  //   gcp_service_account_email), "githubapp".
+  // Required; Google matches it case-sensitively.
+  string secret_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "secret_type.valid"
+      expression: "this in ['none', 'ssh', 'cookiefile', 'token', 'gcenode', 'gcpserviceaccount', 'githubapp']"
+      message: "secret_type must be one of: none, ssh, cookiefile, token, gcenode, gcpserviceaccount, githubapp"
+    }
+  ];
+
+  // The Google service account Config Sync reads as when secret_type is
+  // "gcpserviceaccount": a GcpServiceAccount reference or a literal email.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef gcp_service_account_email = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // An HTTPS proxy for reaching the repository.
+  string https_proxy = 3;
+
+  // The directory within the repository to sync. Empty is the root.
+  string policy_dir = 4;
+
+  // The branch to sync. Empty is Google's default ("master").
+  string sync_branch = 5;
+
+  // The repository URL. Required.
+  string sync_repo = 6 [(buf.validate.field).required = true];
+
+  // A tag or commit to check out instead of the branch head.
+  string sync_rev = 7;
+
+  // Seconds between syncs. 0 takes Google's default (15).
+  int64 sync_wait_secs = 8 [(buf.validate.field).int64.gte = 0];
+}
+
+// An OCI image source for Config Sync.
+message GcpGkeFleetFeatureConfigSyncOci {
+  // How Config Sync authenticates to the registry:
+  //   "none", "gcenode" (the node's service account), "gcpserviceaccount"
+  //   (a Google service account through Workload Identity, see
+  //   gcp_service_account_email), "k8sserviceaccount".
+  // Required; Google matches it case-sensitively.
+  string secret_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "secret_type.valid"
+      expression: "this in ['none', 'gcenode', 'gcpserviceaccount', 'k8sserviceaccount']"
+      message: "secret_type must be one of: none, gcenode, gcpserviceaccount, k8sserviceaccount"
+    }
+  ];
+
+  // The Google service account Config Sync pulls as when secret_type is
+  // "gcpserviceaccount": a GcpServiceAccount reference or a literal email.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef gcp_service_account_email = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // The directory within the image to sync. Empty is the image root.
+  string policy_dir = 3;
+
+  // The image repository, e.g.
+  // "us-docker.pkg.dev/my-project/configs/platform". Required.
+  string sync_repo = 4 [(buf.validate.field).required = true];
+
+  // Seconds between syncs. 0 takes Google's default (15).
+  int64 sync_wait_secs = 5 [(buf.validate.field).int64.gte = 0];
+}
+
+// Resource overrides for one Config Sync Deployment.
+message GcpGkeFleetFeatureConfigSyncDeploymentOverride {
+  // The Deployment's name, e.g. "root-reconciler".
+  string deployment_name = 1;
+
+  // The Deployment's namespace, e.g. "config-management-system".
+  string deployment_namespace = 2;
+
+  // Per-container resource overrides.
+  repeated GcpGkeFleetFeatureConfigSyncContainerOverride containers = 3;
+}
+
+// Resource overrides for one Config Sync container, in Kubernetes
+// quantities ("500m", "1Gi").
+message GcpGkeFleetFeatureConfigSyncContainerOverride {
+  // The container's name, e.g. "reconciler".
+  string container_name = 1;
+
+  // CPU limit.
+  string cpu_limit = 2;
+
+  // CPU request.
+  string cpu_request = 3;
+
+  // Memory limit.
+  string memory_limit = 4;
+
+  // Memory request.
+  string memory_request = 5;
+}
+
+// Cloud Service Mesh for a cluster or the fleet.
+message GcpGkeFleetFeatureMesh {
+  // "MANAGEMENT_AUTOMATIC" lets Google provision and upgrade the managed
+  // mesh; "MANAGEMENT_MANUAL" leaves mesh components to you. Required: it
+  // is the one mesh setting Google offers here.
+  string management = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "management.valid"
+      expression: "this in ['MANAGEMENT_AUTOMATIC', 'MANAGEMENT_MANUAL']"
+      message: "management must be MANAGEMENT_AUTOMATIC or MANAGEMENT_MANUAL"
+    }
+  ];
+}
+
+// Policy Controller for a cluster or the fleet.
+message GcpGkeFleetFeaturePolicyController {
+  // The Policy Controller version to install. Empty takes the current
+  // release.
+  string version = 1;
+
+  // How Policy Controller is installed and what it enforces. Required.
+  GcpGkeFleetFeaturePolicyControllerHubConfig policy_controller_hub_config = 2 [(buf.validate.field).required = true];
+}
+
+// Policy Controller's installation and behavior.
+message GcpGkeFleetFeaturePolicyControllerHubConfig {
+  option (buf.validate.message).cel = {
+    id: "hub_config.unique_components"
+    expression: "this.deployment_configs.map(d, d.component).unique()"
+    message: "each Policy Controller component appears at most once in deployment_configs"
+  };
+
+  // The installation state:
+  //   "INSTALL_SPEC_ENABLED"       -- installed and enforcing
+  //   "INSTALL_SPEC_SUSPENDED"     -- installed with its webhooks off
+  //   "INSTALL_SPEC_NOT_INSTALLED" -- uninstalled
+  //   "INSTALL_SPEC_DETACHED"      -- Google stops reconciling (break-glass)
+  // Required.
+  string install_spec = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "install_spec.valid"
+      expression: "this in ['INSTALL_SPEC_ENABLED', 'INSTALL_SPEC_SUSPENDED', 'INSTALL_SPEC_NOT_INSTALLED', 'INSTALL_SPEC_DETACHED']"
+      message: "install_spec must be INSTALL_SPEC_ENABLED, INSTALL_SPEC_SUSPENDED, INSTALL_SPEC_NOT_INSTALLED, or INSTALL_SPEC_DETACHED"
+    }
+  ];
+
+  // Seconds between audit scans; 0 turns auditing off. Unset takes
+  // Google's default.
+  optional int64 audit_interval_seconds = 2 [(buf.validate.field).int64.gte = 0];
+
+  // How many violations a constraint stores. Unset takes Google's default
+  // (20).
+  optional int64 constraint_violation_limit = 3 [(buf.validate.field).int64.gte = 0];
+
+  // Namespaces Policy Controller never checks; they need not exist yet.
+  repeated string exemptable_namespaces = 4;
+
+  // Log every denial and dry-run failure.
+  bool log_denies_enabled = 5;
+
+  // Allow mutation policies, which change objects at admission.
+  bool mutation_enabled = 6;
+
+  // Allow constraint templates that read objects other than the one being
+  // checked (referential rules).
+  bool referential_rules_enabled = 7;
+
+  // Where Policy Controller exports metrics. Unset takes Google's default;
+  // set with no backends to turn metrics export off.
+  GcpGkeFleetFeaturePolicyControllerMonitoring monitoring = 8;
+
+  // Sizing and placement for Policy Controller's components.
+  repeated GcpGkeFleetFeaturePolicyControllerDeploymentConfig deployment_configs = 9;
+
+  // The policies installed.
+  GcpGkeFleetFeaturePolicyControllerPolicyContent policy_content = 10;
+}
+
+// Policy Controller metrics export.
+message GcpGkeFleetFeaturePolicyControllerMonitoring {
+  // "PROMETHEUS" and/or "CLOUD_MONITORING". Empty turns export off.
+  repeated string backends = 1 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {
+        in: ["PROMETHEUS", "CLOUD_MONITORING"]
+      }
+    }
+  }];
+}
+
+// Sizing and placement for one Policy Controller component.
+message GcpGkeFleetFeaturePolicyControllerDeploymentConfig {
+  // The component: "admission", "audit", or "mutation". Required.
+  string component = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "component.valid"
+      expression: "this in ['admission', 'audit', 'mutation']"
+      message: "component must be admission, audit, or mutation"
+    }
+  ];
+
+  // Pod replicas. Unset takes Google's default.
+  optional int64 replica_count = 2 [(buf.validate.field).int64.gte = 0];
+
+  // "ANTI_AFFINITY" spreads replicas across nodes; "NO_AFFINITY" does not.
+  // Empty takes Google's default.
+  string pod_affinity = 3 [(buf.validate.field).cel = {
+    id: "pod_affinity.valid"
+    expression: "this == '' || this in ['NO_AFFINITY', 'ANTI_AFFINITY']"
+    message: "pod_affinity must be NO_AFFINITY or ANTI_AFFINITY"
+  }];
+
+  // Container resources.
+  GcpGkeFleetFeaturePolicyControllerContainerResources container_resources = 4;
+
+  // Tolerations, so the component can run on tainted nodes.
+  repeated GcpGkeFleetFeaturePolicyControllerToleration pod_tolerations = 5;
+}
+
+// Container resource requirements.
+message GcpGkeFleetFeaturePolicyControllerContainerResources {
+  // The most the container may use.
+  GcpGkeFleetFeaturePolicyControllerResourceList limits = 1;
+
+  // What the scheduler reserves for the container.
+  GcpGkeFleetFeaturePolicyControllerResourceList requests = 2;
+}
+
+// CPU and memory in Kubernetes quantities ("500m", "512Mi").
+message GcpGkeFleetFeaturePolicyControllerResourceList {
+  // CPU.
+  string cpu = 1;
+
+  // Memory.
+  string memory = 2;
+}
+
+// A Kubernetes toleration.
+message GcpGkeFleetFeaturePolicyControllerToleration {
+  // The taint effect matched, e.g. "NoSchedule".
+  string effect = 1;
+
+  // The taint key matched.
+  string key = 2;
+
+  // "Equal" or "Exists".
+  string operator = 3;
+
+  // The taint value matched (with "Equal").
+  string value = 4;
+}
+
+// The policies Policy Controller installs.
+message GcpGkeFleetFeaturePolicyControllerPolicyContent {
+  option (buf.validate.message).cel = {
+    id: "policy_content.unique_bundles"
+    expression: "this.bundles.map(b, b.bundle).unique()"
+    message: "each bundle appears at most once"
+  };
+
+  // Google's policy bundles to install, e.g. "cis-k8s-v1.5.1",
+  // "pss-baseline-v2022", "policy-essentials-v2022".
+  repeated GcpGkeFleetFeaturePolicyControllerBundle bundles = 1;
+
+  // The constraint template library.
+  GcpGkeFleetFeaturePolicyControllerTemplateLibrary template_library = 2;
+}
+
+// One installed policy bundle.
+message GcpGkeFleetFeaturePolicyControllerBundle {
+  // The bundle's name. Required.
+  string bundle = 1 [(buf.validate.field).required = true];
+
+  // Namespaces the bundle's constraints skip.
+  repeated string exempted_namespaces = 2;
+}
+
+// The constraint template library.
+message GcpGkeFleetFeaturePolicyControllerTemplateLibrary {
+  // "ALL" installs Google's whole template library; "NOT_INSTALLED"
+  // installs none. Empty takes Google's default.
+  string installation = 1 [(buf.validate.field).cel = {
+    id: "installation.valid"
+    expression: "this == '' || this in ['ALL', 'NOT_INSTALLED']"
+    message: "installation must be ALL or NOT_INSTALLED"
+  }];
+}

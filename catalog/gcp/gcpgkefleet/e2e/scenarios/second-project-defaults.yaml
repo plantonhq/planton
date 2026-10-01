@@ -1,0 +1,32 @@
+# GcpGkeFleet scenario: the second test project's fleet (owner-arranged:
+# PLANTON_E2E_GCP_SECOND_PROJECT_ID), never the harness project's, so the
+# fleet-wide defaults can never reach clusters other GKE lanes create and
+# the destroy deletes a fleet nothing else uses. Basic security posture and
+# vulnerability scanning as the cluster defaults; Binary Authorization
+# evaluation off. Fleets are free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleet
+metadata:
+  name: planton-oss-e2e-gcpfleet-defaults
+  id: planton-oss-e2e-gcpfleet-defaults
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleet
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  displayName: Planton E2E fleet
+  defaultClusterConfig:
+    binaryAuthorizationConfig:
+      evaluationMode: DISABLED
+    securityPostureConfig:
+      mode: BASIC
+      vulnerabilityMode: VULNERABILITY_BASIC
+  deletionPolicy: DELETE

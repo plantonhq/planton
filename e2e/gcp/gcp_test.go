@@ -1770,3 +1770,43 @@ func TestGcpBinaryAuthorizationAttestor_Pulumi(t *testing.T) {
 func TestGcpBinaryAuthorizationAttestor_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpbinaryauthorizationattestor", "terraform")
 }
+
+func TestGcpGkeFleet_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleet", "pulumi")
+}
+
+func TestGcpGkeFleet_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleet", "terraform")
+}
+
+func TestGcpGkeFleetFeature_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleetfeature", "pulumi")
+}
+
+func TestGcpGkeFleetFeature_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleetfeature", "terraform")
+}
+
+func TestGcpGkeFleetScope_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleetscope", "pulumi")
+}
+
+func TestGcpGkeFleetScope_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleetscope", "terraform")
+}
+
+func TestGcpGkeFleetMembership_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleetmembership", "pulumi")
+}
+
+func TestGcpGkeFleetMembership_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgkefleetmembership", "terraform")
+}
+
+func TestGcpComputeImage_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcomputeimage", "pulumi")
+}
+
+func TestGcpComputeImage_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcomputeimage", "terraform")
+}

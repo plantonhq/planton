@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeImage
+metadata:
+  name: regulated-base-20261001
+spec:
+  family: regulated-base
+  sourceImage:
+    value: projects/debian-cloud/global/images/family/debian-12
+  kmsKey:
+    valueFrom:
+      kind: GcpKmsKeyHandle
+      name: images-key
+      fieldPath: status.outputs.kms_key
+  storageLocations:
+    - us

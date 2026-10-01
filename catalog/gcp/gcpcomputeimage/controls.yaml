@@ -1,0 +1,81 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcomputeimage
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Compute Engine encrypts every image at rest with Google-managed keys.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key
+      evidence:
+        type: spec_default
+        reference: kms_key encrypts the image with a customer-managed Cloud KMS key or an Autokey key handle; customer-supplied raw keys are deliberately not modeled.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: An image terminates no connections; management calls ride Google's TLS-only Compute Engine API.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: An image is private to its project; sharing needs an explicit IAM grant on the image.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The image serves no traffic.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating or deleting an image needs compute.images.* permissions; booting from it needs compute.images.useReadOnly.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: No workload runs as the image.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Image creation and deletion are Compute Engine admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The image emits no metrics.
+    - control_id: backup-recovery
+      status: configurable
+      field_path: storage_locations
+      evidence:
+        type: spec_default
+        reference: An image is itself a recoverable copy of a disk; storage_locations chooses where it is kept.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: Retention is the image's lifetime; there is no schedule to set.
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Image storage is regional or multi-regional by design; there is no zone to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: deletion_policy PREVENT makes destroy fail, guarding an image fleets boot from.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: An image is a frozen OS build; patching is a new image in the family.

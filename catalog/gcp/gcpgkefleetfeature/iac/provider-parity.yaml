@@ -1,0 +1,84 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_gke_hub_feature:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # `name` is which feature (configmanagement, servicemesh, ...); the
+      # spec calls it `feature` so it never reads as the resource's own
+      # name beside metadata.name.
+      - spec: spec.feature
+        arg: name
+      # The provider's one-level spec wrapper is lifted: each feature's
+      # settings block sits on the kind's spec directly. Exact matching
+      # resumes below each mapped block.
+      - spec: spec.multiclusteringress
+        arg: spec.multiclusteringress
+      - spec: spec.fleetobservability
+        arg: spec.fleetobservability
+      - spec: spec.clusterupgrade
+        arg: spec.clusterupgrade
+      - spec: spec.rbacrolebindingactuation
+        arg: spec.rbacrolebindingactuation
+      - spec: spec.workloadidentity
+        arg: spec.workloadidentity
+      # One Policy Controller message serves the fleet default and the
+      # per-cluster settings; it uses Google's API name for tolerations.
+      - spec: spec.fleet_default_member_config.policycontroller.policy_controller_hub_config.deployment_configs.pod_tolerations
+        arg: fleet_default_member_config.policycontroller.policy_controller_hub_config.deployment_configs.pod_toleration
+  # The per-cluster settings are folded: Google stores each as one entry of
+  # this feature's membershipSpecs map, with no API object of its own.
+  google_gke_hub_feature_membership:
+    specRoot: spec.membership_configs
+    mappings:
+      # The feature, its project and location, and the destroy stance are
+      # the feature's own -- never declared twice.
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.location
+        arg: location
+      - spec: spec.feature
+        arg: feature
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      # The membership ID and location are parsed from the membership's
+      # full name, so they can never disagree with it.
+      - spec: spec.membership_configs.membership
+        arg: membership
+      - spec: spec.membership_configs.membership
+        arg: membership_location
+      # The shared Policy Controller message keeps one name for the
+      # component and the bundle on both paths.
+      - spec: spec.membership_configs.policycontroller.policy_controller_hub_config.deployment_configs.component
+        arg: policycontroller.policy_controller_hub_config.deployment_configs.component_name
+      - spec: spec.membership_configs.policycontroller.policy_controller_hub_config.policy_content.bundles.bundle
+        arg: policycontroller.policy_controller_hub_config.policy_content.bundles.bundle_name
+    exclusions:
+      # Capabilities Google has turned down: offering them would let a
+      # manifest declare a configuration that blocks the cluster's Config
+      # Sync upgrades or that Google no longer installs.
+      - arg: configmanagement.hierarchy_controller
+        reason: >-
+          turned down by Google -- Config Sync 1.20.0 release notes:
+          "Hierarchy Controller is no longer available to install. If
+          Hierarchy Controller is still configured, Config Sync upgrades are
+          blocked"; the provider points to the Hierarchical Namespace
+          Controller instead
+      - arg: configmanagement.policy_controller
+        reason: >-
+          turned down by Google -- Config Sync 1.21.0 release notes:
+          "Installing Policy Controller through the ConfigManagement API is
+          no longer supported"; Policy Controller is configured through the
+          policycontroller block (feature policycontroller) instead
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the Fleet API and the
+      feature's own API so a fresh project works on the first deploy; not a
+      knob of the kind.

@@ -49,6 +49,7 @@ import (
 	eventarc "google.golang.org/api/eventarc/v1"
 	firebase "google.golang.org/api/firebase/v1beta1"
 	firestore "google.golang.org/api/firestore/v1"
+	gkehub "google.golang.org/api/gkehub/v1"
 	"google.golang.org/api/iam/v1"
 	iamv2 "google.golang.org/api/iam/v2"
 	identitytoolkit "google.golang.org/api/identitytoolkit/v2"
@@ -320,6 +321,12 @@ func (h *Harness) Setup(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create cloudidentity client")
 	}
+	// The Fleet API (GKE Hub) serves fleets, features, scopes and their
+	// namespaces and role bindings, memberships, and membership bindings.
+	gkeHubService, err := gkehub.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create gkehub client")
+	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
 	// client is not in the pinned google.golang.org/api line (Vertex AI,
 	// Discovery Engine, Model Armor, Document AI, Cloud TPU, Memorystore for
@@ -381,6 +388,7 @@ func (h *Harness) Setup(ctx context.Context) error {
 		OrgPolicy:            orgPolicyService,
 		BillingBudgets:       billingBudgetsService,
 		CloudIdentity:        cloudIdentityService,
+		GkeHub:               gkeHubService,
 		RestClient:           restClient,
 	}
 	return nil

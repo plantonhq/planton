@@ -1,0 +1,25 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetFeature
+metadata:
+  name: policy-controller
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: platform-fleet
+      fieldPath: status.outputs.project_id
+  feature: policycontroller
+  fleetDefaultMemberConfig:
+    policycontroller:
+      policyControllerHubConfig:
+        installSpec: INSTALL_SPEC_ENABLED
+        referentialRulesEnabled: true
+        logDeniesEnabled: true
+        auditIntervalSeconds: 60
+        exemptableNamespaces:
+          - kube-system
+        policyContent:
+          templateLibrary:
+            installation: ALL
+          bundles:
+            - bundle: pss-baseline-v2022

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgkefleetfeature.v1alpha1;
+
+// GcpGkeFleetFeatureStackOutputs carries the feature's identity.
+message GcpGkeFleetFeatureStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/features/{feature}.
+  string name = 1;
+}

@@ -1,0 +1,52 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpgkefleetscope
+spec:
+  gcp:
+    groups:
+      - purpose: EnableFleetApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling gkehub.googleapis.com on the fleet host project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageScope
+        permissions:
+          - gkehub.scopes.create
+          - gkehub.scopes.get
+          - gkehub.scopes.update
+          - gkehub.scopes.delete
+          - gkehub.operations.get
+        provenance: derived
+        notes: Covers google_gke_hub_scope (Pulumi gkehub.Scope) -- long-running create, label and namespace-label updates, and delete (Google's GKE Hub roles and permissions page).
+      - purpose: ManageScopeNamespaces
+        permissions:
+          - gkehub.namespaces.create
+          - gkehub.namespaces.get
+          - gkehub.namespaces.update
+          - gkehub.namespaces.delete
+        provenance: derived
+        notes: Covers google_gke_hub_namespace, one per spec.namespaces entry.
+      - purpose: ManageScopeRoleBindings
+        permissions:
+          - gkehub.rbacrolebindings.create
+          - gkehub.rbacrolebindings.get
+          - gkehub.rbacrolebindings.update
+          - gkehub.rbacrolebindings.delete
+        provenance: derived
+        notes: Covers google_gke_hub_scope_rbac_role_binding, one per spec.rbac_role_bindings entry; principal and role changes update in place.
+      - purpose: ManageMembershipBindings
+        permissions:
+          - gkehub.membershipbindings.create
+          - gkehub.membershipbindings.get
+          - gkehub.membershipbindings.update
+          - gkehub.membershipbindings.delete
+        provenance: derived
+        notes: Covers google_gke_hub_membership_binding, one per spec.membership_bindings entry; a binding lives under the bound membership.

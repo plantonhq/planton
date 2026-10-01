@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetFeature
+metadata:
+  name: cluster-upgrade
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: prod-fleet
+      fieldPath: status.outputs.project_id
+  feature: clusterupgrade
+  clusterupgrade:
+    upstreamFleets:
+      - valueFrom:
+          kind: GcpGkeFleet
+          name: dev-fleet
+          fieldPath: status.outputs.project_id
+    postConditions:
+      soaking: 604800s

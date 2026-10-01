@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgkefleet.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpGkeFleetSpec declares a project's GKE fleet (`google_gke_hub_fleet`):
+// the one fleet a fleet host project holds, its display name, and the
+// defaults every cluster that joins it inherits.
+//
+// A fleet is how a platform team runs many clusters as one: team scopes
+// (GcpGkeFleetScope) give teams namespaces and access across the clusters
+// bound to them, fleet features (GcpGkeFleetFeature) turn on Config Sync,
+// Policy Controller, Cloud Service Mesh, multi-cluster ingress, and
+// upgrade sequencing fleet-wide, and memberships (GcpGkeFleetMembership,
+// or GcpGkeCluster.fleet_project) bring clusters in. Those blocks live
+// inside this one and reference it from their project_id.
+//
+// Important behavioral notes:
+//
+//   - A project holds exactly one fleet, always named "default" in
+//     "global". Google also creates it implicitly when the first cluster
+//     registers in a project that has none; declare this block BEFORE any
+//     cluster joins (every fleet child names it as its prerequisite), or
+//     its create collides with the implicit fleet.
+//   - Everything except the project updates in place.
+//   - Destroy deletes the fleet. Google refuses while memberships or
+//     scopes still exist, so a chart tears the children down first.
+//   - Fleet labels and the compliance posture default are not offered:
+//     the pinned Pulumi SDK (pulumi-gcp v9.37.0) lacks both, and an
+//     argument one engine cannot send is never a one-engine field. They
+//     arrive with pulumi-gcp v10.
+message GcpGkeFleetSpec {
+  // The fleet host project: a literal project ID or a GcpProject
+  // reference. Empty means the provider's default project. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The fleet's name as the console and gcloud show it. 4-30 characters of
+  // letters, digits, hyphens, single or double quotes, spaces, and
+  // exclamation points. Empty lets Google derive one from the project's
+  // name.
+  string display_name = 2 [(buf.validate.field).cel = {
+    id: "display_name.format"
+    message: "display_name must be 4-30 characters of letters, digits, hyphens, quotes, spaces, or exclamation points"
+    expression: "this == '' || this.matches('^[A-Za-z0-9\\'\" !-]{4,30}$')"
+  }];
+
+  // Defaults applied to every cluster in the fleet, existing and future.
+  GcpGkeFleetDefaultClusterConfig default_cluster_config = 3;
+
+  // What destroy does:
+  //   "" / "DELETE" -- the fleet is deleted (Google refuses while
+  //                    memberships or scopes remain)
+  //   "PREVENT"     -- destroy fails; a guard for a fleet teams depend on
+  //   "ABANDON"     -- the fleet leaves management and stays in Google
+  string deletion_policy = 4 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// The fleet-wide cluster defaults.
+message GcpGkeFleetDefaultClusterConfig {
+  // Binary Authorization for every cluster in the fleet: which GKE
+  // platform policies their workloads are evaluated against.
+  GcpGkeFleetBinaryAuthorizationConfig binary_authorization_config = 1;
+
+  // GKE security posture for every cluster in the fleet: workload
+  // configuration auditing and vulnerability scanning.
+  GcpGkeFleetSecurityPostureConfig security_posture_config = 2;
+}
+
+// Fleet-wide Binary Authorization.
+message GcpGkeFleetBinaryAuthorizationConfig {
+  option (buf.validate.message).cel = {
+    id: "binary_authorization_config.policy_bindings_need_mode"
+    expression: "size(this.policy_bindings) == 0 || this.evaluation_mode == 'POLICY_BINDINGS'"
+    message: "policy_bindings take effect only with evaluation_mode POLICY_BINDINGS"
+  };
+
+  // How workloads are evaluated:
+  //   "DISABLED"        -- no Binary Authorization evaluation
+  //   "POLICY_BINDINGS" -- workloads are audited against policy_bindings
+  // Empty leaves Google's current setting.
+  string evaluation_mode = 1 [(buf.validate.field).cel = {
+    id: "evaluation_mode.valid"
+    expression: "this == '' || this in ['DISABLED', 'POLICY_BINDINGS']"
+    message: "evaluation_mode must be DISABLED or POLICY_BINDINGS"
+  }];
+
+  // The GKE platform policies to audit against, each the policy's
+  // relative name: "projects/{project_number}/platforms/gke/policies/{policy_id}".
+  // Platform policies are created through the Binary Authorization API or
+  // console (no catalog block creates one), so these are names, not
+  // references. Distinct from the project-level GcpBinaryAuthorizationPolicy.
+  repeated string policy_bindings = 2 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {pattern: "^projects/[0-9]+/platforms/gke/policies/[^/]+$"}
+    }
+  }];
+}
+
+// Fleet-wide GKE security posture.
+message GcpGkeFleetSecurityPostureConfig {
+  // Workload configuration auditing:
+  //   "DISABLED"   -- off
+  //   "BASIC"      -- Google's standard configuration checks
+  //   "ENTERPRISE" -- advanced posture capabilities; check Google's
+  //                   security posture pricing before choosing it
+  // Empty leaves Google's current setting.
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "mode.valid"
+    expression: "this == '' || this in ['DISABLED', 'BASIC', 'ENTERPRISE']"
+    message: "mode must be DISABLED, BASIC, or ENTERPRISE"
+  }];
+
+  // Vulnerability scanning of running workloads:
+  //   "VULNERABILITY_DISABLED", "VULNERABILITY_BASIC" (OS vulnerabilities),
+  //   "VULNERABILITY_ENTERPRISE" (adds language-package vulnerabilities).
+  // Empty leaves Google's current setting.
+  string vulnerability_mode = 2 [(buf.validate.field).cel = {
+    id: "vulnerability_mode.valid"
+    expression: "this == '' || this in ['VULNERABILITY_DISABLED', 'VULNERABILITY_BASIC', 'VULNERABILITY_ENTERPRISE']"
+    message: "vulnerability_mode must be VULNERABILITY_DISABLED, VULNERABILITY_BASIC, or VULNERABILITY_ENTERPRISE"
+  }];
+}

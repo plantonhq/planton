@@ -1,0 +1,26 @@
+# GcpComputeImage scenario: a copy of Debian 12's newest public image in
+# the harness project, in an image family, stored in the "us"
+# multi-region. Guest OS features and licenses are inherited from the
+# source. Cost: image storage for the lane's duration (cents).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeImage
+metadata:
+  name: planton-oss-e2e-gcpimg-public
+  id: planton-oss-e2e-gcpimg-public
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcomputeimage
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  imageName: planton-e2e-gcpimg-public-${E2E_RUN_ID}
+  family: planton-e2e-gcpimg
+  description: Ephemeral image created by the Planton E2E harness; safe to delete
+  sourceImage:
+    value: projects/debian-cloud/global/images/family/debian-12
+  storageLocations:
+    - us

@@ -1,0 +1,57 @@
+# GcpGkeFleetFeature scenario: Policy Controller as the second project's
+# fleet default plus one per-cluster override, on a membership fixture
+# with no cluster behind it (nothing installs, so nothing runs or bills).
+# It proves the shared Policy Controller message lands under both provider
+# resources' names (component vs component_name, bundle vs bundle_name).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetFeature
+metadata:
+  name: planton-oss-e2e-gcpflft-poco
+  id: planton-oss-e2e-gcpflft-poco
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleetfeature
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpgkefleetfeature/e2e/prerequisites/membership.yaml"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: planton-oss-e2e-gcpflft-fleet
+      fieldPath: status.outputs.project_id
+  feature: policycontroller
+  fleetDefaultMemberConfig:
+    policycontroller:
+      policyControllerHubConfig:
+        installSpec: INSTALL_SPEC_ENABLED
+        auditIntervalSeconds: 60
+        referentialRulesEnabled: true
+        policyContent:
+          templateLibrary:
+            installation: ALL
+          bundles:
+            - bundle: pss-baseline-v2022
+  membershipConfigs:
+    - membership:
+        valueFrom:
+          kind: GcpGkeFleetMembership
+          name: planton-oss-e2e-gcpflft-membership
+          fieldPath: status.outputs.name
+      policycontroller:
+        policyControllerHubConfig:
+          installSpec: INSTALL_SPEC_SUSPENDED
+          deploymentConfigs:
+            - component: admission
+              replicaCount: 2
+              podAffinity: ANTI_AFFINITY
+          policyContent:
+            bundles:
+              - bundle: pss-baseline-v2022
+                exemptedNamespaces:
+                  - kube-system

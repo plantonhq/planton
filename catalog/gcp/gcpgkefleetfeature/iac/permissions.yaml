@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpgkefleetfeature
+spec:
+  gcp:
+    groups:
+      - purpose: EnableFeatureApis
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling gkehub.googleapis.com and the feature's own API (anthosconfigmanagement, anthospolicycontroller, mesh, multiclusteringress, or multiclusterservicediscovery) on the fleet host project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageFeature
+        permissions:
+          - gkehub.features.create
+          - gkehub.features.get
+          - gkehub.features.update
+          - gkehub.features.delete
+          - gkehub.operations.get
+        provenance: derived
+        notes: Covers google_gke_hub_feature (Pulumi gkehub.Feature) -- the create first reads the feature and adopts it with an update when it is already on; delete turns it off, except rbacrolebindingactuation, which the provider empties with an update (Google's GKE Hub roles and permissions page).
+      - purpose: ManageMembershipConfigs
+        permissions:
+          - gkehub.features.get
+          - gkehub.features.update
+          - gkehub.memberships.get
+        provenance: derived
+        notes: Covers google_gke_hub_feature_membership, one per spec.membership_configs entry -- each is a read-modify-write of the feature's membershipSpecs map, and delete empties the entry with an update.

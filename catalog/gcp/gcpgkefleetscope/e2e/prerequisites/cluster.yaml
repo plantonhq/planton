@@ -1,0 +1,34 @@
+# Second-project zonal Standard cluster for the gcpflsc chain -- the
+# fastest cluster GKE creates, inside the GKE free tier's monthly credit.
+# It joins the fleet through fleetProject, so Google creates its membership and the cluster exports it as fleet_membership -- the path the scope binding proves.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeCluster
+metadata:
+  name: planton-oss-e2e-gcpflsc-cluster
+  id: planton-oss-e2e-gcpflsc-cluster
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkecluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  description: Ephemeral zonal GKE cluster for a fleet E2E chain; safe to delete
+  location: us-east1-b
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpflsc-vpc
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcpflsc-subnet
+      fieldPath: status.outputs.subnetwork_self_link
+  fleetProject: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  deletionProtection: false

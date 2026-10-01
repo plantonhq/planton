@@ -37,3 +37,10 @@ output "master_version" {
   description = "Kubernetes version currently running on the control plane"
   value       = google_container_cluster.this.master_version
 }
+
+# Google creates the membership when the cluster joins a fleet through
+# fleet_project; empty when the cluster joins no fleet.
+output "fleet_membership" {
+  description = "Full name of the fleet membership Google created for the cluster (empty when it joins no fleet)"
+  value       = try(google_container_cluster.this.fleet[0].membership, "")
+}

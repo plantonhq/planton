@@ -9,4 +9,5 @@ const (
 	OpLocation             = "location"
 	OpSelfLink             = "self_link"
 	OpMasterVersion        = "master_version"
+	OpFleetMembership      = "fleet_membership"
 )

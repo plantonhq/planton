@@ -1,0 +1,37 @@
+# GcpGkeFleetFeature scenario: Config Sync as the second project's fleet
+# default, syncing Google's public samples repository (no credential).
+# The fleet holds no cluster, so nothing installs; the proof is that Google
+# accepts and stores the default. Config Management is free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetFeature
+metadata:
+  name: planton-oss-e2e-gcpflft-acm
+  id: planton-oss-e2e-gcpflft-acm
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleetfeature
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: planton-oss-e2e-gcpflft-fleet
+      fieldPath: status.outputs.project_id
+  feature: configmanagement
+  fleetDefaultMemberConfig:
+    configmanagement:
+      management: MANAGEMENT_AUTOMATIC
+      configSync:
+        enabled: true
+        sourceFormat: unstructured
+        git:
+          secretType: none
+          syncRepo: https://github.com/GoogleCloudPlatform/anthos-config-management-samples
+          syncBranch: main
+          policyDir: quickstart/multirepo/root

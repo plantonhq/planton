@@ -1,0 +1,33 @@
+# Second-project subnetwork for the gcpflmb cluster chain, with the pod
+# and service ranges GKE uses.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSubnetwork
+metadata:
+  name: planton-oss-e2e-gcpflmb-subnet
+  id: planton-oss-e2e-gcpflmb-subnet
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsubnetwork
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpflmb-vpc
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: planton-oss-e2e-gcpflmb-subnet
+  region: us-east1
+  ipCidrRange: 10.240.0.0/20
+  privateIpGoogleAccess: true
+  secondaryIpRanges:
+    - rangeName: pods
+      ipCidrRange: 10.242.0.0/16
+    - rangeName: services
+      ipCidrRange: 10.243.0.0/20

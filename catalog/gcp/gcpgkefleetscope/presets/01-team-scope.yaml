@@ -1,0 +1,22 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetScope
+metadata:
+  name: team-orders
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: platform-fleet
+      fieldPath: status.outputs.project_id
+  scopeId: orders
+  namespaceLabels:
+    team: orders
+  namespaces:
+    - scopeNamespaceId: orders-api
+    - scopeNamespaceId: orders-workers
+  rbacRoleBindings:
+    - scopeRbacRoleBindingId: orders-devs
+      group:
+        value: orders-devs@example.com
+      role:
+        predefinedRole: EDIT

@@ -1,0 +1,22 @@
+# Consumer-scoped GcpGkeFleet install profile for the gcpflmb scenarios:
+# the second test project's fleet, never the harness project's, so a
+# fleet-wide setting can never reach clusters other GKE lanes create. The
+# children reference its project_id, which places them in this fleet.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleet
+metadata:
+  name: planton-oss-e2e-gcpflmb-fleet
+  id: planton-oss-e2e-gcpflmb-fleet
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleet
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  displayName: Planton E2E fleet

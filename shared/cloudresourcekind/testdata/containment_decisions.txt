@@ -435,6 +435,7 @@ contained dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleNetworkSpec.
 contained dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleNetworkSpec.subnetwork -> GcpSubnetwork
 contained dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.subnetwork -> GcpSubnetwork
 contained dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.project_id -> GcpProject
@@ -480,6 +481,10 @@ contained dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterPrivateCluster.pri
 contained dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.subnetwork -> GcpSubnetwork
+contained dev.planton.gcp.gcpgkefleet.v1alpha1.GcpGkeFleetSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureSpec.project_id -> GcpGkeFleet
+contained dev.planton.gcp.gcpgkefleetmembership.v1alpha1.GcpGkeFleetMembershipSpec.project_id -> GcpGkeFleet
+contained dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeSpec.project_id -> GcpGkeFleet
 contained dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolAdditionalNodeNetwork.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolAdditionalNodeNetwork.subnetwork -> GcpSubnetwork
 contained dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolAdditionalPodNetwork.subnetwork -> GcpSubnetwork
@@ -961,6 +966,9 @@ exempt    dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceNetw
 exempt    dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceNfsExportOption.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketIpFilterVpcNetworkSource.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterResourceUsageExport.bigquery_dataset_id -> GcpBigQueryDataset
+exempt    dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureClusterUpgrade.upstream_fleets -> GcpGkeFleet
+exempt    dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureWorkloadIdentity.scope_tenancy_pool -> GcpWorkloadIdentityPool
+exempt    dev.planton.gcp.gcpgkefleetmembership.v1alpha1.GcpGkeFleetMembershipSpec.gke_cluster -> GcpGkeCluster
 exempt    dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSpec.location -> GcpGkeCluster
 exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyAttachmentTarget.folder_id -> GcpFolder
 exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyRule.target_resources -> GcpVpcNetwork

@@ -1,0 +1,28 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpgkefleet
+spec:
+  gcp:
+    groups:
+      - purpose: EnableFleetApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling gkehub.googleapis.com on the fleet host project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageFleet
+        permissions:
+          - gkehub.fleet.create
+          - gkehub.fleet.get
+          - gkehub.fleet.update
+          - gkehub.fleet.delete
+          - gkehub.operations.get
+        provenance: derived
+        notes: Covers google_gke_hub_fleet (Pulumi gkehub.Fleet) -- create, in-place updates of the display name and cluster defaults, and delete are long-running operations the provider polls (Google's GKE Hub roles and permissions page). The provider-default project lookup reads provider configuration only and needs no permission.

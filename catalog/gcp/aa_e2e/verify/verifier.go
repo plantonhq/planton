@@ -37,6 +37,7 @@ import (
 	eventarc "google.golang.org/api/eventarc/v1"
 	firebase "google.golang.org/api/firebase/v1beta1"
 	firestore "google.golang.org/api/firestore/v1"
+	gkehub "google.golang.org/api/gkehub/v1"
 	"google.golang.org/api/iam/v1"
 	iamv2 "google.golang.org/api/iam/v2"
 	identitytoolkit "google.golang.org/api/identitytoolkit/v2"
@@ -115,6 +116,10 @@ type Services struct {
 	// pinned google.golang.org/api line.
 	BillingBudgets *billingbudgets.Service
 	CloudIdentity  *cloudidentity.Service
+	// GkeHub is the Fleet API (GKE Hub): fleets, fleet features, scopes
+	// with their namespaces and role bindings, memberships, and membership
+	// bindings.
+	GkeHub *gkehub.Service
 
 	// RestClient is an ADC-authenticated HTTP client for GCP services whose
 	// typed Go client is not yet in the pinned google.golang.org/api line
@@ -319,6 +324,11 @@ var verifiers = map[string]Verifier{
 	"gcpfirebaseandroidapp":                  &firebaseAndroidAppVerifier{},
 	"gcpfirebaseappleapp":                    &firebaseAppleAppVerifier{},
 	"gcpfirebasewebapp":                      &firebaseWebAppVerifier{},
+	"gcpgkefleet":                            &gkeFleetVerifier{},
+	"gcpgkefleetfeature":                     &gkeFleetFeatureVerifier{},
+	"gcpgkefleetscope":                       &gkeFleetScopeVerifier{},
+	"gcpgkefleetmembership":                  &gkeFleetMembershipVerifier{},
+	"gcpcomputeimage":                        &computeImageVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

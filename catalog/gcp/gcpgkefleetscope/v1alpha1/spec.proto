@@ -1,0 +1,243 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgkefleetscope.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpGkeFleetScopeSpec declares a team scope in a GKE fleet
+// (`google_gke_hub_scope`) together with everything that defines the
+// team's slice of the fleet: its fleet namespaces
+// (`google_gke_hub_namespace`), who gets which access
+// (`google_gke_hub_scope_rbac_role_binding`), and which clusters the team
+// may use (`google_gke_hub_membership_binding`).
+//
+// A scope is the unit of fleet team management. Binding a cluster to it
+// creates the scope's namespaces on that cluster and applies its role
+// bindings there; adding a namespace creates it on every bound cluster.
+// The namespaces, role bindings, and cluster bindings have no meaning
+// outside their scope and are owned by whoever owns the team's slice, so
+// they live here rather than as blocks of their own.
+//
+// Clusters are bound by their fleet membership's full name, whichever way
+// they joined: a GcpGkeCluster with fleet_project exports it as
+// fleet_membership, an explicit GcpGkeFleetMembership as name.
+//
+// Important behavioral notes:
+//
+//   - The scope lives in a fleet: Google requires the fleet first, so
+//     project_id references the GcpGkeFleet by default.
+//   - scope_id and every child's ID are create-time decisions; labels,
+//     namespace labels, role-binding principals and roles, and a cluster
+//     binding's target update in place.
+//   - Destroy deletes the bindings, the namespaces (removing them from
+//     every bound cluster), and the scope.
+message GcpGkeFleetScopeSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.unique_namespace_ids"
+    expression: "this.namespaces.map(n, n.scope_namespace_id).unique()"
+    message: "scope_namespace_id must be unique within the scope"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_rbac_role_binding_ids"
+    expression: "this.rbac_role_bindings.map(b, b.scope_rbac_role_binding_id).unique()"
+    message: "scope_rbac_role_binding_id must be unique within the scope"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_membership_binding_ids"
+    expression: "this.membership_bindings.map(b, b.membership_binding_id).unique()"
+    message: "membership_binding_id must be unique within the scope"
+  };
+
+  // The fleet host project the scope lives in: a literal project ID or a
+  // GcpGkeFleet reference (the fleet the scope belongs to, which Google
+  // requires first and a chart then orders before the scope). Empty means
+  // the provider's default project. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The scope's ID, unique in the fleet; usually the team's name. 1-63
+  // lowercase letters, digits, and hyphens, starting and ending with a
+  // letter or digit. Defaults to metadata.name. Immutable.
+  string scope_id = 2 [(buf.validate.field).cel = {
+    id: "scope_id.format"
+    message: "scope_id must be 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit"
+    expression: "this == '' || this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')"
+  }];
+
+  // Labels on the scope resource itself. The platform attribution labels
+  // are added on top and win on key conflicts.
+  map<string, string> labels = 3;
+
+  // Kubernetes labels Google applies to every namespace of this scope on
+  // every bound cluster. On a key collision with a namespace's own
+  // namespace_labels, this scope-level value wins.
+  map<string, string> namespace_labels = 4;
+
+  // The scope's fleet namespaces. Each is created as a Kubernetes namespace
+  // on every cluster bound to the scope (onboarding a namespace that
+  // already exists there).
+  repeated GcpGkeFleetScopeNamespace namespaces = 5;
+
+  // Who gets which Kubernetes access within the scope's namespaces on the
+  // bound clusters.
+  repeated GcpGkeFleetScopeRbacRoleBinding rbac_role_bindings = 6;
+
+  // The clusters the team may use, each by its fleet membership.
+  repeated GcpGkeFleetScopeMembershipBinding membership_bindings = 7;
+
+  // What destroy does, for the scope and everything folded into it:
+  //   "" / "DELETE" -- bindings, namespaces, and the scope are deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in Google
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// One fleet namespace of the scope.
+message GcpGkeFleetScopeNamespace {
+  // The namespace's name, which is also the Kubernetes namespace created
+  // on every bound cluster: a DNS label (1-63 lowercase letters, digits,
+  // and hyphens). Google reserves the system namespaces (default,
+  // kube-system, gke-connect, istio-system, config-management-system, and
+  // the others the spec refuses). Immutable.
+  string scope_namespace_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "scope_namespace_id.format"
+      message: "scope_namespace_id must be a DNS label: 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit"
+      expression: "this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')"
+    },
+    (buf.validate.field).cel = {
+      id: "scope_namespace_id.not_reserved"
+      message: "scope_namespace_id is a namespace Google reserves for the system"
+      expression: "!(this in ['default', 'kube-system', 'gke-connect', 'kube-node-lease', 'kube-public', 'istio-system', 'gatekeeper-system', 'asm-system', 'config-management-system', 'anthos-creds', 'anthos-identity-service', 'capi-kubeadm-bootstrap-system', 'capi-system', 'cert-manager', 'gke-managed-metrics-server', 'gke-system', 'config-management-monitoring', 'istio-gateway', 'knative-serving', 'resource-group-system', 'gke-mcs', 'appdevexperience', 'vm-system', 'gmp-system', 'gmp-public', 'gke-gmp-system', 'gke-managed-filestorecsi', 'apigee', 'apigee-system'])"
+    }
+  ];
+
+  // Labels on the fleet namespace resource. The platform attribution
+  // labels are added on top and win on key conflicts.
+  map<string, string> labels = 2;
+
+  // Kubernetes labels Google applies to this namespace on every bound
+  // cluster; the scope's namespace_labels win on a key collision.
+  map<string, string> namespace_labels = 3;
+}
+
+// One principal's access within the scope.
+message GcpGkeFleetScopeRbacRoleBinding {
+  option (buf.validate.message).cel = {
+    id: "rbac_role_binding.exactly_one_principal"
+    expression: "((has(this.user) && (has(this.user.value) || has(this.user.value_from))) ? 1 : 0) + ((has(this.group) && (has(this.group.value) || has(this.group.value_from))) ? 1 : 0) == 1"
+    message: "a role binding names exactly one principal: user or group"
+  };
+
+  // The binding's ID, unique in the scope. 1-63 lowercase letters, digits,
+  // and hyphens. Immutable.
+  string scope_rbac_role_binding_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "scope_rbac_role_binding_id.format"
+      message: "scope_rbac_role_binding_id must be 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit"
+      expression: "this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // A user, as the clusters see it: a person's email ("alice@example.com")
+  // or a service account's email -- a GcpServiceAccount reference, for the
+  // CI or workload identity that deploys into the team's namespaces.
+  // Exactly one of user or group.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef user = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // A Google group's email, the usual way to give a whole team access:
+  // a literal ("team-a@example.com") or a GcpCloudIdentityGroup reference.
+  // Exactly one of user or group.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef group = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudIdentityGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.group_email"
+  ];
+
+  // The access granted. Required.
+  GcpGkeFleetScopeRole role = 4 [(buf.validate.field).required = true];
+
+  // Labels on the role binding resource. The platform attribution labels
+  // are added on top and win on key conflicts.
+  map<string, string> labels = 5;
+}
+
+// The access a scope role binding grants.
+message GcpGkeFleetScopeRole {
+  option (buf.validate.message).cel = {
+    id: "role.exactly_one"
+    expression: "(this.predefined_role != '' ? 1 : 0) + (this.custom_role != '' ? 1 : 0) == 1"
+    message: "a role is exactly one of predefined_role or custom_role"
+  };
+
+  // One of Google's predefined roles, applied in each of the scope's
+  // namespaces:
+  //   "ADMIN" -- full control of the namespace, including its RBAC
+  //   "EDIT"  -- read and write most objects; no RBAC changes
+  //   "VIEW"  -- read-only
+  string predefined_role = 1 [(buf.validate.field).cel = {
+    id: "predefined_role.valid"
+    expression: "this == '' || this in ['ADMIN', 'EDIT', 'VIEW']"
+    message: "predefined_role must be ADMIN, EDIT, or VIEW"
+  }];
+
+  // The name of a Kubernetes ClusterRole on the bound clusters. Google
+  // honors it only when the fleet's rbacrolebindingactuation feature
+  // (GcpGkeFleetFeature with feature "rbacrolebindingactuation") lists it
+  // in allowed_custom_roles.
+  string custom_role = 2;
+}
+
+// One cluster bound to the scope.
+message GcpGkeFleetScopeMembershipBinding {
+  // The binding's ID, unique in the scope. 1-63 lowercase letters, digits,
+  // and hyphens. Immutable.
+  string membership_binding_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "membership_binding_id.format"
+      message: "membership_binding_id must be 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit"
+      expression: "this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // The cluster's fleet membership, by full name
+  // ("projects/{p}/locations/{l}/memberships/{id}"): a GcpGkeFleetMembership
+  // reference, a GcpGkeCluster reference (its fleet_membership output, for
+  // a cluster that joined through fleet_project), or the literal name. The
+  // membership must be in this scope's fleet. Both modules derive the
+  // binding's project, location, and membership ID from it. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef membership = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleetMembership,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeFleetMembership
+      field_path: "status.outputs.name"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeCluster
+      field_path: "status.outputs.fleet_membership"
+    },
+    (buf.validate.field).cel = {
+      id: "membership.format"
+      message: "membership must be a full membership name: projects/{project}/locations/{location}/memberships/{id}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/memberships/[^/]+$')"
+    }
+  ];
+
+  // Labels on the binding resource. The platform attribution labels are
+  // added on top and win on key conflicts.
+  map<string, string> labels = 3;
+}

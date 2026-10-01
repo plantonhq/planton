@@ -1,0 +1,19 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpcomputeimage
+spec:
+  # Awaiting the live proof lane. Both scenarios run in the harness
+  # project: a copy of Debian 12's public image in a family, and an image of
+  # a disk fixture. Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest and both scenarios are clean
+  # on the pinned provider, and the accounting is total. Live facts the
+  # proof lane confirms: (1) the images read READY with the attribution
+  # labels and the family output; (2) the inherited guest OS features,
+  # licenses, and storage locations (Optional+Computed, unset) re-plan
+  # clean on both engines; (3) destroy deletes the image before the disk
+  # fixture.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

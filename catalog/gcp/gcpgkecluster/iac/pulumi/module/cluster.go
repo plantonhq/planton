@@ -1034,6 +1034,15 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	ctx.Export(OpLocation, pulumi.String(spec.Location))
 	ctx.Export(OpSelfLink, createdCluster.SelfLink)
 	ctx.Export(OpMasterVersion, createdCluster.MasterVersion)
+	// Google creates the membership when the cluster joins a fleet through
+	// fleet_project; empty when it joins none -- the Terraform module's
+	// try() twin.
+	ctx.Export(OpFleetMembership, createdCluster.Fleet.Membership().ApplyT(func(membership *string) string {
+		if membership == nil {
+			return ""
+		}
+		return *membership
+	}).(pulumi.StringOutput))
 
 	return nil
 }

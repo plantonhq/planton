@@ -556,6 +556,7 @@ import (
 	gcpcolabruntimetemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabruntimetemplate/v1alpha1"
 	gcpcolabschedulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabschedule/v1alpha1"
 	gcpcomputediskv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputedisk/v1alpha1"
+	gcpcomputeimagev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputeimage/v1alpha1"
 	gcpcomputeinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputeinstance/v1alpha1"
 	gcpcomputemigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputemig/v1alpha1"
 	gcpdataprocautoscalingpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1"
@@ -582,6 +583,10 @@ import (
 	gcpfolderv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfolder/v1alpha1"
 	gcpgcsbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucket/v1alpha1"
 	gcpgkeclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkecluster/v1alpha1"
+	gcpgkefleetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleet/v1alpha1"
+	gcpgkefleetfeaturev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetfeature/v1alpha1"
+	gcpgkefleetmembershipv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetmembership/v1alpha1"
+	gcpgkefleetscopev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetscope/v1alpha1"
 	gcpgkenodepoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkenodepool/v1alpha1"
 	gcpgkeworkloadidentitybindingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1"
 	gcpglobaladdressv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpglobaladdress/v1alpha1"
@@ -1407,6 +1412,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpColabRuntimeTemplate:                &gcpcolabruntimetemplatev1alpha1.GcpColabRuntimeTemplate{},
 	cloudresourcekind.CloudResourceKind_GcpColabSchedule:                       &gcpcolabschedulev1alpha1.GcpColabSchedule{},
 	cloudresourcekind.CloudResourceKind_GcpComputeDisk:                         &gcpcomputediskv1alpha1.GcpComputeDisk{},
+	cloudresourcekind.CloudResourceKind_GcpComputeImage:                        &gcpcomputeimagev1alpha1.GcpComputeImage{},
 	cloudresourcekind.CloudResourceKind_GcpComputeInstance:                     &gcpcomputeinstancev1alpha1.GcpComputeInstance{},
 	cloudresourcekind.CloudResourceKind_GcpComputeMig:                          &gcpcomputemigv1alpha1.GcpComputeMig{},
 	cloudresourcekind.CloudResourceKind_GcpDataprocAutoscalingPolicy:           &gcpdataprocautoscalingpolicyv1alpha1.GcpDataprocAutoscalingPolicy{},
@@ -1433,6 +1439,10 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpFolder:                              &gcpfolderv1alpha1.GcpFolder{},
 	cloudresourcekind.CloudResourceKind_GcpGcsBucket:                           &gcpgcsbucketv1alpha1.GcpGcsBucket{},
 	cloudresourcekind.CloudResourceKind_GcpGkeCluster:                          &gcpgkeclusterv1alpha1.GcpGkeCluster{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleet:                            &gcpgkefleetv1alpha1.GcpGkeFleet{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleetFeature:                     &gcpgkefleetfeaturev1alpha1.GcpGkeFleetFeature{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership:                  &gcpgkefleetmembershipv1alpha1.GcpGkeFleetMembership{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleetScope:                       &gcpgkefleetscopev1alpha1.GcpGkeFleetScope{},
 	cloudresourcekind.CloudResourceKind_GcpGkeNodePool:                         &gcpgkenodepoolv1alpha1.GcpGkeNodePool{},
 	cloudresourcekind.CloudResourceKind_GcpGkeWorkloadIdentityBinding:          &gcpgkeworkloadidentitybindingv1alpha1.GcpGkeWorkloadIdentityBinding{},
 	cloudresourcekind.CloudResourceKind_GcpGlobalAddress:                       &gcpglobaladdressv1alpha1.GcpGlobalAddress{},

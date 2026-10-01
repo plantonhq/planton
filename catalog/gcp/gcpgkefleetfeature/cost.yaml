@@ -1,0 +1,23 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpgkefleetfeature
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: feature
+      sku_meter: per-feature SKU
+      pricing_unit: varies by feature
+      impact: "Config Management, Policy Controller, team management, fleet logging routing, upgrade sequencing, and multi-cluster service discovery carry no charge of their own; Managed Service Mesh and Multi Cluster Ingress have their own SKUs -- Multi Cluster Ingress bills per backend Pod per month (GKE pricing page, read 2026-10-01)."
+    - field_path: fleet_default_member_config
+      sku_meter: cluster resources the feature's agents use
+      pricing_unit: node capacity
+      impact: Config Sync, Policy Controller, and mesh components run as Pods on every cluster the default reaches, consuming node capacity the clusters' own billing carries.
+  estimate_exclusions:
+    - Multi Cluster Ingress backend Pod counts -- follow the workloads routed through the ingress, not any spec field
+    - Managed Service Mesh usage -- follows the meshed workloads, not any spec field
+    - node capacity the feature agents consume on each cluster
+  notes: "Fleet logging (fleetobservability) routes logs; the Cloud Logging ingestion and storage they incur bill in the fleet host project."

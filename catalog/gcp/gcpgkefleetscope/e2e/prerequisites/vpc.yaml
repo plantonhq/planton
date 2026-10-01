@@ -1,0 +1,21 @@
+# Second-project network for the gcpflsc cluster chain: custom mode, so
+# the subnetwork fixture owns the address plan.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcNetwork
+metadata:
+  name: planton-oss-e2e-gcpflsc-vpc
+  id: planton-oss-e2e-gcpflsc-vpc
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvpcnetwork
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  networkName: planton-oss-e2e-gcpflsc-vpc
+  autoCreateSubnetworks: false

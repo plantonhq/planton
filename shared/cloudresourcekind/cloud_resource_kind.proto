@@ -6011,6 +6011,53 @@ enum CloudResourceKind {
     service_group: gcp_security
   }];
 
+  // 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build,
+  // Cloud Deploy)
+  // GcpGkeFleet is the container a fleet's scopes, namespaces, memberships,
+  // and features live in: the project's one fleet is the room, and a team
+  // scope or a fleet-wide feature is what is placed inside it.
+  GcpGkeFleet = 3240 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfleet"
+    container_kind: true
+    service_group: gcp_containers
+  }];
+  // The three fleet children name GcpGkeFleet as their prerequisite: Google
+  // requires the fleet before a scope, a fleet declared after a cluster
+  // registers collides with the fleet that registration created implicitly,
+  // and a feature configures the fleet it lives in. A chart that references
+  // the fleet's project_id output orders each child after it.
+  GcpGkeFleetFeature = 3241 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpflft"
+    prerequisites: [GcpGkeFleet]
+    service_group: gcp_containers
+  }];
+  GcpGkeFleetScope = 3242 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpflsc"
+    prerequisites: [GcpGkeFleet]
+    service_group: gcp_containers
+  }];
+  GcpGkeFleetMembership = 3243 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpflmb"
+    prerequisites: [GcpGkeFleet]
+    service_group: gcp_containers
+  }];
+  // A Compute Engine custom image: the golden boot image VMs, instance
+  // templates, and disks start from, rolled forward through image families.
+  GcpComputeImage = 3244 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpimg"
+    service_group: gcp_compute
+  }];
+
   // 3250–3259: GCP Firebase (project enablement, app registrations, and
   // the Firebase-adjacent products that follow)
   // GcpFirebaseProject is the container the app registrations live in:

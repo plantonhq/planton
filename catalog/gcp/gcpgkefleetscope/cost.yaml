@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpgkefleetscope
+spec:
+  billing_model: free
+  free_tier: "Team scopes, fleet namespaces, and their role and cluster bindings are part of GKE's included multi-cluster management (GKE pricing page, read 2026-10-01)."
+  notes: "Namespaces land on bound clusters, whose own nodes and management fee bill through their GcpGkeCluster blocks."
