@@ -881,25 +881,11 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "OIDC_TOKEN_TTL_SECONDS", Value: "900"},
 		{Name: "WEBHOOK_PORT", Value: fmt.Sprintf("%d", controlPlaneWebhookPort)},
 
-		// ── GitHub app (connect): no self-hosted install carries Planton's App ──
-		// The credentials are placeholders that keep the beans booting and are
-		// never read for meaning; the posture is declared beside them, with the
-		// sentence a server's person can act on (the catalog's generic copy
-		// offers "the sign-in on this machine", which a server does not have).
-		// The platform release the floor admits still reads its GitHub
-		// posture through these one-host variables. They are fed from the
-		// facts' github.com entry where the declaration can be honored
-		// through env (the webhook verdict, host login) and stay at their
-		// no-App values where it cannot (an App key is a mounted PEM file,
-		// which this env contract has no shape for). When the platform reads
-		// the facts file, these variables and githubLegacyEnvVars leave
-		// together with the floor.
-		{Name: "GITHUB_APP_CLIENT_ID", Value: "local"},
-		{Name: "GITHUB_APP_PRIVATE_KEY_BASE64", Value: "ZHVtbXk="},
-		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_AVAILABILITY", Value: "unavailable"},
-		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_REASON", Value: PlatformAppUnavailableReason},
+		// ── GitHub (connect): the install's Apps and host login reach the
+		// control plane through the facts file (githubFactsEnvVars), never
+		// through variables; the deployment-wide webhook verdict is
+		// githubWebhooksEnvVars.
 		{Name: "GITHUB_BUILD_STAGE_CHECK_NAME", Value: "build"},
-		{Name: "GITHUB_WEBHOOKS_SECRET_TOKEN", Value: "local"},
 
 		// ── cloud oauth (connect): no self-hosted install carries Planton's apps ──
 		// Each cloud's sign-in and one-click keyless setup follow that cloud's
@@ -994,7 +980,6 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	envs = append(envs, webIdentityEnvVars(cfg.WebIdentity)...)
 	envs = append(envs, githubWebhooksEnvVars(cfg.GithubWebhooks, cfg.Github)...)
 	envs = append(envs, githubFactsEnvVars()...)
-	envs = append(envs, githubLegacyEnvVars(cfg.Github)...)
 	envs = append(envs, consoleEnvVars(cfg.Console)...)
 	envs = append(envs, vaultEnvVars(cfg.Vault)...)
 	envs = append(envs, secretBackendEnvVars(cfg.SecretBackend)...)
@@ -1222,18 +1207,6 @@ func githubWebhooksEnvVars(binding *GithubWebhooksBinding, github *GithubBinding
 		// ── GitHub webhook delivery: the front door's webhook namespace ──
 		{Name: "GITHUB_WEBHOOKS_RECEIVER_URL", Value: binding.ReceiverURL},
 		{Name: "GITHUB_WEBHOOKS_REACHABLE", Value: fmt.Sprintf("%t", reachable)},
-	}
-}
-
-// githubLegacyEnvVars renders the parts of the declaration the one-host env
-// contract can carry: host login. Absent (never "unavailable") when the
-// declaration does not turn it on -- the platform's own default is off.
-func githubLegacyEnvVars(github *GithubBinding) []corev1.EnvVar {
-	if github == nil || !github.HostLogin {
-		return nil
-	}
-	return []corev1.EnvVar{
-		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY", Value: "available"},
 	}
 }
 

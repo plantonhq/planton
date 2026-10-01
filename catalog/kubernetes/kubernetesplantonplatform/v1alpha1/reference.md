@@ -506,6 +506,19 @@ spec:
 | `spec.openfga.resources.requests` | `CpuMemory` |  |  |  |
 | `spec.openfga.resources.requests.cpu` | `string` |  |  |  |
 | `spec.openfga.resources.requests.memory` | `string` |  |  |  |
+| `spec.github` | `KubernetesPlantonPlatformGithub` |  |  |  |
+| `spec.github.hosts` | `[]KubernetesPlantonPlatformGithubHost` |  |  |  |
+| `spec.github.hosts[].host` | `string` | yes |  |  |
+| `spec.github.hosts[].app` | `KubernetesPlantonPlatformGithubApp` |  |  |  |
+| `spec.github.hosts[].app.clientId` | `string` | yes |  |  |
+| `spec.github.hosts[].app.privateKeySecretRef` | `KubernetesPlantonPlatformSecretKeyRef` | yes |  |  |
+| `spec.github.hosts[].app.privateKeySecretRef.name` | `string` | yes |  |  |
+| `spec.github.hosts[].app.privateKeySecretRef.key` | `string` | yes |  |  |
+| `spec.github.hosts[].app.webhookSecretRef` | `KubernetesPlantonPlatformSecretKeyRef` |  |  |  |
+| `spec.github.hosts[].app.webhookSecretRef.name` | `string` | yes |  |  |
+| `spec.github.hosts[].app.webhookSecretRef.key` | `string` | yes |  |  |
+| `spec.github.hosts[].webhooks` | `string` |  | `auto` |  |
+| `spec.github.hostLogin` | `bool` |  |  |  |
 
 ## Field Details
 
@@ -3151,6 +3164,134 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 ### spec.openfga.resources.requests.memory
 
 `string`
+
+### spec.github
+
+`KubernetesPlantonPlatformGithub`
+
+The GitHub hosts this install works with, the GitHub App registered for
+the whole install on each, and whether each host can deliver webhooks
+to the install. With an App declared, every organization connects in
+one click: the control plane signs installation tokens with the App's
+key and verifies its deliveries with the App's webhook secret, both
+read from Secrets in the platform's namespace as mounted files, so a
+rotated key is live on the next token. Absent, the install offers
+github.com with "bring your own App" and judges webhooks by the front
+door, the right posture for an adopter on github.com who has declared
+nothing. Requires a planton-operator chart that knows this field
+(0.14.1 or newer) and a platform version whose control plane reads it.
+
+- rule: each GitHub host is declared once: two entries name the same host
+
+### spec.github.hosts
+
+`[]KubernetesPlantonPlatformGithubHost`
+
+The GitHub hosts, in the order the connection wizard offers them.
+Declare github.com to give it an App or to say it explicitly; declare a
+GitHub Enterprise Server to make it the first choice. A host left out
+can still be typed by hand in a connection, without an install App.
+
+- rule: {"repeated":{"maxItems":"8"}}
+
+### spec.github.hosts[].host
+
+`string` · required
+
+The hostname as people type it in a browser: github.com, or a GitHub
+Enterprise Server such as github.example.com. A hostname, never a URL;
+the control plane derives the API address.
+
+- rule: {"string":{"minLen":"1","maxLen":"253","pattern":"^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)+$"}}
+
+### spec.github.hosts[].app
+
+`KubernetesPlantonPlatformGithubApp`
+
+A GitHub App registered on this host for the whole install. With it,
+every organization connects in one click and gets webhooks and check
+runs; without it, teams bring their own App. The App must be
+registered on this host: an App on github.com cannot sign for an
+enterprise server.
+
+### spec.github.hosts[].app.clientId
+
+`string` · required
+
+The App's Client ID, from its settings page. Not a secret.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.github.hosts[].app.privateKeySecretRef
+
+`KubernetesPlantonPlatformSecretKeyRef` · required
+
+The Secret key holding the App's private key as GitHub generated it:
+the PEM text, unencoded.
+
+- rule: {"required":true}
+
+### spec.github.hosts[].app.privateKeySecretRef.name
+
+`string` · required
+
+Secret name (in the platform's namespace).
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.github.hosts[].app.privateKeySecretRef.key
+
+`string` · required
+
+Key within the Secret holding the value.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.github.hosts[].app.webhookSecretRef
+
+`KubernetesPlantonPlatformSecretKeyRef`
+
+The Secret key holding the webhook secret set on the App, so its
+deliveries are verified as the App's own. Leave it out only on a host
+that cannot deliver webhooks at all.
+
+### spec.github.hosts[].app.webhookSecretRef.name
+
+`string` · required
+
+Secret name (in the platform's namespace).
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.github.hosts[].app.webhookSecretRef.key
+
+`string` · required
+
+Key within the Secret holding the value.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.github.hosts[].webhooks
+
+`string` · optional (explicit presence)
+
+Whether this host can deliver webhooks to the install: auto (judge by
+the front door, reachable when it is on the public internet),
+reachable (an enterprise server on the install's private network), or
+unreachable (a public host that cannot reach a door public only inside
+a corporate perimeter). Where webhooks cannot arrive, Planton checks
+GitHub for pushes and every team is told so. Platform default: auto.
+
+- default: `auto`
+- rule: {"string":{"in":["","auto","reachable","unreachable"]}}
+
+### spec.github.hostLogin
+
+`bool`
+
+Let connections use a GitHub sign-in the control plane's own process
+carries (a GITHUB_TOKEN in its environment). Off by default on a
+shared install, because that token would act for everyone.
 
 ## Validation Rules
 

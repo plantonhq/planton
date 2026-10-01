@@ -272,6 +272,118 @@ message KubernetesPlantonPlatformSpec {
    * planton-operator chart >= 0.23.0.
    */
   KubernetesPlantonPlatformOpenFga openfga = 22;
+
+  /**
+   * The GitHub hosts this install works with, the GitHub App registered for
+   * the whole install on each, and whether each host can deliver webhooks
+   * to the install. With an App declared, every organization connects in
+   * one click: the control plane signs installation tokens with the App's
+   * key and verifies its deliveries with the App's webhook secret, both
+   * read from Secrets in the platform's namespace as mounted files, so a
+   * rotated key is live on the next token. Absent, the install offers
+   * github.com with "bring your own App" and judges webhooks by the front
+   * door, the right posture for an adopter on github.com who has declared
+   * nothing. Requires a planton-operator chart that knows this field
+   * (0.14.1 or newer) and a platform version whose control plane reads it.
+   */
+  KubernetesPlantonPlatformGithub github = 23;
+}
+
+/**
+ * What the install knows about GitHub, declared once by the platform team
+ * and read by every organization's connection wizard.
+ */
+message KubernetesPlantonPlatformGithub {
+  option (buf.validate.message).cel = {
+    id: "spec.github.unique_hosts"
+    message: "each GitHub host is declared once: two entries name the same host"
+    expression: "this.hosts.all(h, this.hosts.filter(o, o.host == h.host).size() == 1)"
+  };
+
+  /**
+   * The GitHub hosts, in the order the connection wizard offers them.
+   * Declare github.com to give it an App or to say it explicitly; declare a
+   * GitHub Enterprise Server to make it the first choice. A host left out
+   * can still be typed by hand in a connection, without an install App.
+   */
+  repeated KubernetesPlantonPlatformGithubHost hosts = 1 [(buf.validate.field).repeated.max_items = 8];
+
+  /**
+   * Let connections use a GitHub sign-in the control plane's own process
+   * carries (a GITHUB_TOKEN in its environment). Off by default on a
+   * shared install, because that token would act for everyone.
+   */
+  bool host_login = 2;
+}
+
+/**
+ * One GitHub host and what the install offers on it.
+ */
+message KubernetesPlantonPlatformGithubHost {
+  /**
+   * The hostname as people type it in a browser: github.com, or a GitHub
+   * Enterprise Server such as github.example.com. A hostname, never a URL;
+   * the control plane derives the API address.
+   */
+  string host = 1 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 253,
+    (buf.validate.field).string.pattern = "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)+$"
+  ];
+
+  /**
+   * A GitHub App registered on this host for the whole install. With it,
+   * every organization connects in one click and gets webhooks and check
+   * runs; without it, teams bring their own App. The App must be
+   * registered on this host: an App on github.com cannot sign for an
+   * enterprise server.
+   */
+  KubernetesPlantonPlatformGithubApp app = 2;
+
+  /**
+   * Whether this host can deliver webhooks to the install: auto (judge by
+   * the front door, reachable when it is on the public internet),
+   * reachable (an enterprise server on the install's private network), or
+   * unreachable (a public host that cannot reach a door public only inside
+   * a corporate perimeter). Where webhooks cannot arrive, Planton checks
+   * GitHub for pushes and every team is told so. Platform default: auto.
+   */
+  optional string webhooks = 3 [
+    (dev.planton.shared.options.default) = "auto",
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "auto",
+        "reachable",
+        "unreachable"
+      ]
+    }
+  ];
+}
+
+/**
+ * The identity of a GitHub App registered for the install on one host. Its
+ * private key stays in a Secret the adopter owns, exactly as GitHub
+ * generated it.
+ */
+message KubernetesPlantonPlatformGithubApp {
+  /**
+   * The App's Client ID, from its settings page. Not a secret.
+   */
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  /**
+   * The Secret key holding the App's private key as GitHub generated it:
+   * the PEM text, unencoded.
+   */
+  KubernetesPlantonPlatformSecretKeyRef private_key_secret_ref = 2 [(buf.validate.field).required = true];
+
+  /**
+   * The Secret key holding the webhook secret set on the App, so its
+   * deliveries are verified as the App's own. Leave it out only on a host
+   * that cannot deliver webhooks at all.
+   */
+  KubernetesPlantonPlatformSecretKeyRef webhook_secret_ref = 3;
 }
 
 /**
@@ -516,7 +628,8 @@ message KubernetesPlantonPlatformLicense {
 /**
  * A key in an existing Kubernetes Secret in the platform's namespace — the
  * one shape every by-reference credential on this spec uses (the license
- * key, the relay's CA bundle, the OAuth2 client secret, the Resend API key).
+ * key, the relay's CA bundle, the OAuth2 client secret, the Resend API key,
+ * a GitHub App's private key and webhook secret).
  */
 message KubernetesPlantonPlatformSecretKeyRef {
   /**

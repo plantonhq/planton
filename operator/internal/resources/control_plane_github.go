@@ -288,10 +288,9 @@ func githubFactsEnvVars() []corev1.EnvVar {
 }
 
 // githubDefaultHostBinding returns the github.com entry of a binding, or nil.
-// The platform release the floor admits still reads GitHub through
-// environment variables shaped for one host; the renderer feeds those from
-// the github.com entry until the platform reads the facts file, at which
-// point the variables and this helper leave together with the floor.
+// The control plane's connection-method catalog states one webhook caveat
+// for the whole deployment, so the deployment-wide verdict follows
+// github.com's declared posture where the install declared one.
 func githubDefaultHostBinding(binding *GithubBinding) *GithubHostBinding {
 	if binding == nil {
 		return nil

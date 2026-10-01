@@ -163,8 +163,16 @@ func TestControlPlaneDeployment_GithubDeclaration(t *testing.T) {
 	if envMap["GITHUB_WEBHOOKS_REACHABLE"] != strconv.FormatBool(false) {
 		t.Errorf("the one-host variable follows github.com's declared verdict (unreachable here), got %q", envMap["GITHUB_WEBHOOKS_REACHABLE"])
 	}
-	if envMap["PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY"] != "available" {
-		t.Error("host login declared on renders available")
+	for _, name := range []string{
+		"PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY",
+		"PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_AVAILABILITY",
+		"GITHUB_APP_CLIENT_ID",
+		"GITHUB_APP_PRIVATE_KEY_BASE64",
+		"GITHUB_WEBHOOKS_SECRET_TOKEN",
+	} {
+		if _, present := envMap[name]; present {
+			t.Errorf("%s rendered: the declaration reaches the control plane through the facts file alone", name)
+		}
 	}
 	if _, present := envMap["GITHUB_CHECKS_DETAILS_URL_FORMAT"]; present {
 		t.Error("the unconsumed variable is no longer rendered")
@@ -181,11 +189,5 @@ func TestControlPlaneDeployment_GithubDeclaration(t *testing.T) {
 	}
 	if !credentials || !facts {
 		t.Errorf("expected the facts and credentials volumes, got %+v", podSpec.Volumes)
-	}
-
-	plain := ControlPlaneDeployment(testControlPlaneConfig())
-	plainEnv := envVarMap(plain.Spec.Template.Spec.Containers[0].Env)
-	if _, present := plainEnv["PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY"]; present {
-		t.Error("host login undeclared renders nothing: the platform's own default is off")
 	}
 }

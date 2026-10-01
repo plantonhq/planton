@@ -1208,8 +1208,6 @@ func TestControlPlaneDeployment_PostureFollowsTheFrontDoor(t *testing.T) {
 	}
 	// Every arm declares the app-less doors closed the same way.
 	everyArm := map[string]string{
-		"PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_AVAILABILITY": "unavailable",
-		"PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_REASON":       PlatformAppUnavailableReason,
 		"GCP_OAUTH_ENABLED":          "false",
 		"AZURE_OAUTH_ENABLED":        "false",
 		"AWS_CLOUDFORMATION_ENABLED": "false",
