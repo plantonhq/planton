@@ -26,7 +26,7 @@ Policies accept many targets; a CPU policy covering the whole web fleet beats te
 
 ## Slack webhooks are credentials
 
-The webhook URL lets anyone post to your channel. The spec marks it sensitive, so the platform accepts only a managed-secret reference (`$secret/<name>`) for it, never a literal URL, and the Pulumi module additionally encrypts it in stack state. Terraform state stores every value in plain text -- on that engine the protection is your state backend's own encryption, so treat state as you would the credential itself.
+The webhook URL lets anyone post to your channel. The spec marks it sensitive, so the platform accepts only a managed-secret reference (`$secret/<name>`) for it, never a literal URL, and the Pulumi module marks it secret, so Pulumi encrypts it in stack state. OpenTofu keeps every value in its state file and encrypts the whole file when it is given an encryption key: keep that key as carefully as the credential, and never run OpenTofu against this state without one.
 
 ## Disabling beats deleting
 

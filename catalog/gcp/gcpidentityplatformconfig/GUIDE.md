@@ -61,4 +61,4 @@ function fast and regional to your users, and forward only the tokens
 It is what client apps bootstrap the Identity Platform / Firebase Auth
 SDK with — public by design but abusable when unrestricted. Restrict it
 by domain/app in the console before shipping; the engines already mark it
-secret in state.
+sensitive, and Pulumi encrypts it in state.

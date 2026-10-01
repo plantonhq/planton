@@ -85,7 +85,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 ## Important Notes
 
-- **The password is secret-by-default** — encrypted in IaC state, never exported in outputs.
+- **The password is secret-by-default** — secret in Pulumi state, encrypted with the whole OpenTofu state file when it has an encryption key, and never exported in outputs.
 - **Rotation is in-place** — updating `password` updates the credential without recreating the user.
 - **Database privileges are schema territory** — GRANTs inside the database are applied by migrations/application tooling, not by this resource (the API manages the login, not its grants).
 - **PostgreSQL user deletion** — a user that owns objects cannot be deleted until ownership is reassigned; plan teardown accordingly.
@@ -96,7 +96,7 @@ Everything else on `google_sql_user` at the pinned provider is representable —
 
 | Excluded Feature | Why |
 |---|---|
-| `password_wo` / `password_wo_version` | Write-only variants of the modeled `password` — same capability through engine-side ergonomics; the spec field is secret-annotated and encrypted in state on both engines. |
+| `password_wo` / `password_wo_version` | Write-only variants of the modeled `password` — same capability through engine-side ergonomics; the spec field is secret-annotated: Pulumi encrypts it in state, and OpenTofu encrypts it with the whole state file when given an encryption key. |
 
 ## Related Components
 

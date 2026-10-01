@@ -26,7 +26,8 @@ import "shared/options/options.proto";
 message GcpMonitoringNotificationChannelSpec {
   // Credentials belong in sensitive_labels, where they are handled as
   // secrets end to end. The provider rejects the same key set in both maps,
-  // and a credential in the plain map would sit in state as plaintext.
+  // and a credential in the plain map would be handled as an ordinary value:
+  // shown in plans, and stored outside Pulumi's secret encryption.
   option (buf.validate.message).cel = {
     id: "credentials_never_in_channel_labels"
     message: "auth_token, password, and service_key are credentials — set them in sensitive_labels, never in channel_labels"

@@ -33,7 +33,7 @@ The provider schema ships a LEAKED EXAMPLE VALUE as the default rule id: every r
 
 ## Two credentials the provider forgot to mark
 
-`otel[].authorization` and `stripe.authorization` are credentials the provider leaves unmarked. This spec treats both as sensitive: provide managed-secret references, and the modules keep them secret in state. Never paste a bearer token or Stripe key as a literal.
+`otel[].authorization` and `stripe.authorization` are credentials the provider leaves unmarked. This spec treats both as sensitive: provide managed-secret references, and Pulumi keeps them secret in state, while OpenTofu encrypts them with the whole state file when given an encryption key. Never paste a bearer token or Stripe key as a literal.
 
 ## ZDR and logging pull in opposite directions
 

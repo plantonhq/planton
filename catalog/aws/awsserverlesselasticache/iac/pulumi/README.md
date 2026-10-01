@@ -24,8 +24,10 @@ pulumi up --stack dev
 
 ## Debug
 
+Pulumi encrypts every secret value in the stack under this passphrase, so use a real one and keep it, even for a scratch stack:
+
 ```bash
-export PULUMI_CONFIG_PASSPHRASE=""
+export PULUMI_CONFIG_PASSPHRASE="$(openssl rand -base64 32)"   # keep it: the stack's secrets open with nothing else
 pulumi login --local
 pulumi stack init dev
 pulumi config set-all --path < ../../e2e/manifest.yaml

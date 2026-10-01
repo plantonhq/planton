@@ -77,7 +77,7 @@ These are the most important decisions when configuring an uptime check. Explore
 
 **Comparison spelling** -- this API spells `comparison` snake_case (`greater_than`, `less_than`); monitor alerts spell the same concept CamelCase. The two are different DigitalOcean APIs and are deliberately not unified -- copy each kind's own spelling.
 
-**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, so in manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL; the Pulumi module additionally encrypts it in stack state. Terraform state stores every value in plain text -- on that engine the protection is the state backend's own encryption.
+**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, so in manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL; the Pulumi module marks it secret, so Pulumi encrypts it in stack state. OpenTofu keeps every value in its state file and encrypts the whole file when it is given an encryption key, so on that engine the state's encryption is what protects it.
 
 **Pausing without deleting** -- `enabled: false` keeps the check defined but stops probing (and with it, alerting); unset defaults to enabled.
 

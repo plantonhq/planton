@@ -142,7 +142,9 @@ What a developer should hear, in their terms, when you choose the home:
   value as a new revision, never as instances silently disagreeing.
 - **The value also sits in the deployment's IaC state**, as it does for
   every secret a module writes; that is why state lives in a backend the
-  organization controls.
+  organization controls, and why that state is encrypted (OpenTofu encrypts
+  the whole file, Pulumi every value marked secret) under a key the
+  organization can name.
 - **When the secret has another owner** (another team rotates it, several
   services share it), point at the store directly instead: Cloud Run's
   `valueFromSecret`, ECS's `secrets` (an ARN), a Kubernetes

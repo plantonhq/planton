@@ -94,7 +94,7 @@ These are the most important decisions when configuring a monitor alert. Explore
 
 **Threshold precision and units** -- `value`'s units follow the metric: percent for utilization metrics, load units for `load_*`, bytes per second for bandwidth and disk I/O. DigitalOcean stores the threshold as a 32-bit float, so more than 7 significant digits silently truncate -- 99.999999 becomes 100 by the time it evaluates. The `window` (5m to 1h) sets how long the metric aggregates before comparison: 10m ignores boot spikes; tighten to 5m for latency-sensitive services.
 
-**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, so in manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL; the Pulumi module additionally encrypts it in stack state. Terraform state stores every value in plain text -- on that engine the protection is the state backend's own encryption.
+**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, so in manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL; the Pulumi module marks it secret, so Pulumi encrypts it in stack state. OpenTofu keeps every value in its state file and encrypts the whole file when it is given an encryption key, so on that engine the state's encryption is what protects it.
 
 **Disabling beats deleting** -- `enabled: false` keeps the policy defined but silent, ideal for maintenance windows or pre-staging alerts before a service carries traffic. Unset defaults to enabled, and the policy starts evaluating the moment it provisions. Deleting loses nothing but the policy's UUID -- the manifest is the source of truth and recreating is cheap.
 
