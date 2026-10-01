@@ -66,7 +66,7 @@ var _ = ginkgo.Describe("StripePaymentLink Validation Tests", func() {
 			spec := proMonthly()
 			spec.AllowPromotionCodes = boolPtr(true)
 			spec.ConsentCollection = &StripePaymentLinkConsentCollection{TermsOfService: StripePaymentLinkTermsOfService_required}
-			spec.AfterCompletion = &StripePaymentLinkAfterCompletion{Redirect: &StripePaymentLinkRedirect{Url: "https://example.com/welcome?session={CHECKOUT_SESSION_ID}"}}
+			spec.AfterCompletion = &StripePaymentLinkAfterCompletion{Behavior: &StripePaymentLinkAfterCompletion_Redirect{Redirect: &StripePaymentLinkRedirect{Url: "https://example.com/welcome?session={CHECKOUT_SESSION_ID}"}}}
 			spec.SubscriptionData = &StripePaymentLinkSubscriptionData{
 				TrialPeriodDays: int64Ptr(14),
 				TrialSettings: &StripePaymentLinkTrialSettings{EndBehavior: &StripePaymentLinkTrialEndBehavior{
@@ -93,10 +93,11 @@ var _ = ginkgo.Describe("StripePaymentLink Validation Tests", func() {
 					},
 				}}},
 				CustomFields: []*StripePaymentLinkCustomField{
-					{Key: "engraving", Label: "Engraving", Text: &StripePaymentLinkTextBounds{MaximumLength: int64Ptr(20)}, Optional: boolPtr(true)},
-					{Key: "size", Label: "Size", Dropdown: &StripePaymentLinkDropdown{Options: []*StripePaymentLinkDropdownOption{{Label: "Small", Value: "s"}}}},
+					{Key: "engraving", Label: "Engraving", Type: &StripePaymentLinkCustomField_Text{Text: &StripePaymentLinkTextBounds{MaximumLength: int64Ptr(20)}}, Optional: boolPtr(true)},
+					{Key: "seats", Label: "Seats", Type: &StripePaymentLinkCustomField_Numeric{Numeric: &StripePaymentLinkTextBounds{}}},
+					{Key: "size", Label: "Size", Type: &StripePaymentLinkCustomField_Dropdown{Dropdown: &StripePaymentLinkDropdown{Options: []*StripePaymentLinkDropdownOption{{Label: "Small", Value: "s"}}}}},
 				},
-				AfterCompletion:          &StripePaymentLinkAfterCompletion{HostedConfirmation: &StripePaymentLinkHostedConfirmation{CustomMessage: "Thanks!"}},
+				AfterCompletion:          &StripePaymentLinkAfterCompletion{Behavior: &StripePaymentLinkAfterCompletion_HostedConfirmation{HostedConfirmation: &StripePaymentLinkHostedConfirmation{CustomMessage: "Thanks!"}}},
 				BillingAddressCollection: StripePaymentLinkSpec_required,
 				CustomerCreation:         StripePaymentLinkSpec_always,
 				SubmitType:               StripePaymentLinkSubmitType_pay,
@@ -165,9 +166,9 @@ var _ = ginkgo.Describe("StripePaymentLink Validation Tests", func() {
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("Stripe shipping rate id"))
 		})
 
-		ginkgo.It("refuses more than 3 custom fields, a field of no type or two, and a malformed key", func() {
+		ginkgo.It("refuses more than 3 custom fields, a field of no type, and a malformed key", func() {
 			field := func() *StripePaymentLinkCustomField {
-				return &StripePaymentLinkCustomField{Key: "note", Label: "Note", Text: &StripePaymentLinkTextBounds{}}
+				return &StripePaymentLinkCustomField{Key: "note", Label: "Note", Type: &StripePaymentLinkCustomField_Text{Text: &StripePaymentLinkTextBounds{}}}
 			}
 			spec := proMonthly()
 			spec.CustomFields = []*StripePaymentLinkCustomField{field(), field(), field(), field()}
@@ -177,37 +178,30 @@ var _ = ginkgo.Describe("StripePaymentLink Validation Tests", func() {
 			spec.CustomFields = []*StripePaymentLinkCustomField{{Key: "note", Label: "Note"}}
 			err := protovalidate.Validate(link(spec))
 			gomega.Expect(err).To(gomega.HaveOccurred())
-			gomega.Expect(err.Error()).To(gomega.ContainSubstring("exactly one of dropdown, numeric and text"))
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("custom_fields[0].type"))
 
 			spec = proMonthly()
 			f := field()
-			f.Numeric = &StripePaymentLinkTextBounds{}
-			spec.CustomFields = []*StripePaymentLinkCustomField{f}
-			gomega.Expect(protovalidate.Validate(link(spec))).NotTo(gomega.Succeed())
-
-			spec = proMonthly()
-			f = field()
 			f.Key = "gift note"
 			spec.CustomFields = []*StripePaymentLinkCustomField{f}
 			gomega.Expect(protovalidate.Validate(link(spec))).NotTo(gomega.Succeed())
 		})
 
-		ginkgo.It("refuses after_completion with neither or both behaviors, and a redirect that is not a URL", func() {
+		ginkgo.It("accepts Stripe's confirmation page with no message", func() {
+			spec := proMonthly()
+			spec.AfterCompletion = &StripePaymentLinkAfterCompletion{Behavior: &StripePaymentLinkAfterCompletion_HostedConfirmation{HostedConfirmation: &StripePaymentLinkHostedConfirmation{}}}
+			gomega.Expect(protovalidate.Validate(link(spec))).To(gomega.Succeed())
+		})
+
+		ginkgo.It("refuses after_completion with no behavior, and a redirect that is not a URL", func() {
 			spec := proMonthly()
 			spec.AfterCompletion = &StripePaymentLinkAfterCompletion{}
 			err := protovalidate.Validate(link(spec))
 			gomega.Expect(err).To(gomega.HaveOccurred())
-			gomega.Expect(err.Error()).To(gomega.ContainSubstring("exactly one of hosted_confirmation and redirect"))
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("after_completion.behavior"))
 
 			spec = proMonthly()
-			spec.AfterCompletion = &StripePaymentLinkAfterCompletion{
-				HostedConfirmation: &StripePaymentLinkHostedConfirmation{},
-				Redirect:           &StripePaymentLinkRedirect{Url: "https://example.com"},
-			}
-			gomega.Expect(protovalidate.Validate(link(spec))).NotTo(gomega.Succeed())
-
-			spec = proMonthly()
-			spec.AfterCompletion = &StripePaymentLinkAfterCompletion{Redirect: &StripePaymentLinkRedirect{Url: "example.com"}}
+			spec.AfterCompletion = &StripePaymentLinkAfterCompletion{Behavior: &StripePaymentLinkAfterCompletion_Redirect{Redirect: &StripePaymentLinkRedirect{Url: "example.com"}}}
 			gomega.Expect(protovalidate.Validate(link(spec))).NotTo(gomega.Succeed())
 		})
 

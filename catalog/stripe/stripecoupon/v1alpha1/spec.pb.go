@@ -84,9 +84,9 @@ func (StripeCouponSpec_Duration) EnumDescriptor() ([]byte, []int) {
 // StripePromotionCode, or the application applies it to a subscription or Checkout session.
 //
 // A coupon's discount can never change in Stripe. Changing the amount, percentage, currency,
-// duration, months, redemption limit, redeem-by date or products REPLACES the coupon: Planton
-// deletes the old one and creates the new one, and every promotion code that references it is
-// replaced with it. Name, metadata and currency options update in place.
+// currency options, duration, months, redemption limit, redeem-by date or products REPLACES the
+// coupon: Planton deletes the old one and creates the new one, and every promotion code that
+// references it is replaced with it. Name and metadata update in place.
 //
 // One owner per object: declare a coupon here only if nothing else creates or edits it. When the
 // application's own code or the Dashboard owns the account's discounts, leave its coupons there.

@@ -388,6 +388,42 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		}
 	}
 
+	// ---- github ----------------------------------------------------------------
+	// Hosts render in declaration order (the wizard's order). The webhook
+	// posture renders on presence only, so an omitted one is left to the
+	// CRD's own default (auto). An App's key and webhook secret are Secret
+	// key references, never values.
+	if g := spec.GetGithub(); g != nil {
+		github := map[string]interface{}{}
+		if len(g.GetHosts()) > 0 {
+			hosts := make([]interface{}, 0, len(g.GetHosts()))
+			for _, h := range g.GetHosts() {
+				host := map[string]interface{}{"host": h.GetHost()}
+				if a := h.GetApp(); a != nil {
+					app := map[string]interface{}{
+						"clientId":            a.GetClientId(),
+						"privateKeySecretRef": secretKeyRefMap(a.GetPrivateKeySecretRef()),
+					}
+					if ref := a.GetWebhookSecretRef(); ref != nil {
+						app["webhookSecretRef"] = secretKeyRefMap(ref)
+					}
+					host["app"] = app
+				}
+				if h.Webhooks != nil && h.GetWebhooks() != "" {
+					host["webhooks"] = h.GetWebhooks()
+				}
+				hosts = append(hosts, host)
+			}
+			github["hosts"] = hosts
+		}
+		if g.GetHostLogin() {
+			github["hostLogin"] = true
+		}
+		if len(github) > 0 {
+			out["github"] = github
+		}
+	}
+
 	// ---- vault -----------------------------------------------------------------
 	// The seal follows the object-store discipline: the spec declares a
 	// credential VALUE, the CR names the Secret this module materialized for

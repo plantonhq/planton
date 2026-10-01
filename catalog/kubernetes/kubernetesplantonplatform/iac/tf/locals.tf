@@ -429,6 +429,38 @@ locals {
       resend  = local.email_resend
     } : k => v if v != null
   }
+
+  # ---- github ----------------------------------------------------------------
+  # Hosts render in declaration order; an App's secrets are Secret key
+  # references; the webhook posture renders on presence only, so an omitted
+  # one is left to the CRD's own default (auto).
+  github_hosts = [
+    for h in coalesce(try(var.spec.github.hosts, null), []) : {
+      for k, v in {
+        host = h.host
+        app = try(h.app, null) == null ? null : {
+          for ak, av in {
+            clientId = h.app.client_id
+            privateKeySecretRef = {
+              name = h.app.private_key_secret_ref.name
+              key  = h.app.private_key_secret_ref.key
+            }
+            webhookSecretRef = try(h.app.webhook_secret_ref, null) == null ? null : {
+              name = h.app.webhook_secret_ref.name
+              key  = h.app.webhook_secret_ref.key
+            }
+          } : ak => av if av != null
+        }
+        webhooks = try(h.webhooks, "") != "" ? h.webhooks : null
+      } : k => v if v != null
+    }
+  ]
+  github_body = {
+    for k, v in {
+      hosts     = length(local.github_hosts) > 0 ? local.github_hosts : null
+      hostLogin = try(var.spec.github.host_login, false) ? true : null
+    } : k => v if v != null
+  }
   # ---- vault: the seal and its credential ----------------------------------------
   # The seal follows the object-store discipline: the spec declares a
   # credential VALUE, this module materializes it as a Secret the CR names,
@@ -597,6 +629,7 @@ locals {
       build         = length(local.build_body) > 0 ? local.build_body : null
       remoteRunners = length(local.remote_runners_body) > 0 ? local.remote_runners_body : null
       email         = length(local.email_body) > 0 ? local.email_body : null
+      github        = length(local.github_body) > 0 ? local.github_body : null
       vault         = length(local.vault_body) > 0 ? local.vault_body : null
       components    = length(local.components_body) > 0 ? local.components_body : null
       prerequisites = length(local.prerequisites_body) > 0 ? local.prerequisites_body : null

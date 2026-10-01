@@ -351,13 +351,12 @@ inactive_message is shown at the link's address while it is deactivated, up to 5
 
 after_completion is what the buyer sees after paying. Unset, Stripe's confirmation page.
 
-- rule: after_completion sets exactly one of hosted_confirmation and redirect
-
 ### spec.afterCompletion.hostedConfirmation
 
 `StripePaymentLinkHostedConfirmation`
 
-hosted_confirmation shows Stripe's confirmation page, optionally with a custom message.
+hosted_confirmation shows Stripe's confirmation page, optionally with a custom message
+(hosted_confirmation: {} is Stripe's page as it is).
 
 ### spec.afterCompletion.hostedConfirmation.customMessage
 
@@ -499,7 +498,6 @@ several ("usd"). Changing it REPLACES the link.
 custom_fields are up to 3 extra questions the buyer answers.
 
 - rule: {"repeated":{"maxItems":"3"}}
-- rule: a custom field sets exactly one of dropdown, numeric and text
 
 ### spec.customFields[].key
 
@@ -527,7 +525,7 @@ optional lets the buyer skip the question.
 
 `StripePaymentLinkDropdown`
 
-dropdown makes the answer a choice from a list. The block that is set is the field's type.
+dropdown makes the answer a choice from a list.
 
 ### spec.customFields[].dropdown.options
 
@@ -593,7 +591,7 @@ maximum_length is the longest answer, 1 to 255.
 
 `StripePaymentLinkTextBounds`
 
-text makes the answer free text.
+text makes the answer free text (text: {} with no bounds is enough to choose it).
 
 - rule: minimum_length is at most maximum_length
 

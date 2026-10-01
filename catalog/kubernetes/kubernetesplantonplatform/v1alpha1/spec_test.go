@@ -72,6 +72,21 @@ func minimalValidPlatform() *KubernetesPlantonPlatform {
 	}
 }
 
+// githubWithApp declares one host carrying an install App whose key and
+// webhook secret live in one Secret, the shape the operator mounts.
+func githubWithApp(host string) *KubernetesPlantonPlatformGithub {
+	return &KubernetesPlantonPlatformGithub{
+		Hosts: []*KubernetesPlantonPlatformGithubHost{{
+			Host: host,
+			App: &KubernetesPlantonPlatformGithubApp{
+				ClientId:            "Iv23liExample",
+				PrivateKeySecretRef: &KubernetesPlantonPlatformSecretKeyRef{Name: "planton-github-app", Key: "private-key.pem"},
+				WebhookSecretRef:    &KubernetesPlantonPlatformSecretKeyRef{Name: "planton-github-app", Key: "webhook-secret"},
+			},
+		}},
+	}
+}
+
 var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func() {
 
 	ginkgo.Describe("When valid input is passed", func() {
@@ -362,6 +377,26 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			}
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		// ---- GitHub ------------------------------------------------------------------
+
+		ginkgo.It("should accept an install App on github.com with both secrets by reference", func() {
+			input := minimalValidPlatform()
+			input.Spec.Github = githubWithApp("github.com")
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept an enterprise server first, reachable on the private network, beside github.com without an App", func() {
+			input := minimalValidPlatform()
+			input.Spec.Github = &KubernetesPlantonPlatformGithub{
+				Hosts: []*KubernetesPlantonPlatformGithubHost{
+					{Host: "github.acme.com", Webhooks: strPtr("reachable")},
+					{Host: "github.com"},
+				},
+				HostLogin: true,
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
 		// ---- the database's backup and recovery ------------------------------------
@@ -977,6 +1012,44 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			}
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		// ---- GitHub ------------------------------------------------------------------
+
+		ginkgo.It("should fail on a GitHub host written as a URL", func() {
+			input := minimalValidPlatform()
+			input.Spec.Github = githubWithApp("https://github.com")
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should fail on the same GitHub host declared twice", func() {
+			input := minimalValidPlatform()
+			input.Spec.Github = &KubernetesPlantonPlatformGithub{
+				Hosts: []*KubernetesPlantonPlatformGithubHost{{Host: "github.com"}, {Host: "github.com"}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should fail on an install App without its private key reference", func() {
+			input := minimalValidPlatform()
+			input.Spec.Github = githubWithApp("github.com")
+			input.Spec.Github.Hosts[0].App.PrivateKeySecretRef = nil
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should fail on an install App without a client id", func() {
+			input := minimalValidPlatform()
+			input.Spec.Github = githubWithApp("github.com")
+			input.Spec.Github.Hosts[0].App.ClientId = ""
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should fail on a webhook posture the operator does not know", func() {
+			input := minimalValidPlatform()
+			input.Spec.Github = &KubernetesPlantonPlatformGithub{
+				Hosts: []*KubernetesPlantonPlatformGithubHost{{Host: "github.com", Webhooks: strPtr("sometimes")}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
 		// ---- the database's backup and recovery ------------------------------------

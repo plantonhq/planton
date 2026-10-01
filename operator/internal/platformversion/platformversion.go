@@ -89,7 +89,17 @@ import (
 // deploys would have nowhere to go. The same release serves the runner door
 // this operator now routes a remote runner's work calls to, which an older
 // control plane does not have.
-const MinimumSupported = "v0.0.75"
+//
+// v0.0.113: the control plane reads the install's GitHub declaration from the
+// facts file alone -- each host's App signs installation tokens from its
+// mounted key and verifies deliveries with its webhook secret, and host login
+// and the platform App's offer follow the declaration -- so the operator
+// stops rendering the placeholder App credentials (GITHUB_APP_CLIENT_ID,
+// GITHUB_APP_PRIVATE_KEY_BASE64, GITHUB_WEBHOOKS_SECRET_TOKEN) and the
+// one-host method verdicts (the platform App's availability and reason, host
+// login). An older control plane requires the placeholder webhook secret to
+// boot at all, and would offer neither a declared App nor host login.
+const MinimumSupported = "v0.0.113"
 
 // releaseForm is the only shape spec.version may take: a full semantic
 // version with the "v" prefix, optionally with a pre-release suffix and build

@@ -67,6 +67,41 @@ send can reveal (a From the account may not send as) is what the
 console's "Send Me a Test Email" is for. The platform never probes the
 relay on a timer; the checks run when someone asks.
 
+## Give the install one GitHub App, and every team connects in one click
+
+Without a declaration, every team that wants push-to-deploy registers a
+GitHub App of its own and pastes its key into a connection. `github`
+moves that work to the platform team, once: register one App for the
+whole install on each GitHub host the company uses, and every
+organization's connection wizard offers "Connect with one click" for it.
+Installation tokens are signed with that App's key and deliveries are
+verified with its webhook secret, so a push is proven to come from your
+App before anything runs.
+
+Register the App on the host it will sign for: an App on github.com
+cannot sign for a GitHub Enterprise Server, and the reverse. Point its
+webhook at the install's front door (`https://<hostname>/webhooks/github`),
+generate a private key, and keep the PEM exactly as GitHub handed it in a
+Secret in the platform's namespace beside the webhook secret:
+
+```bash
+kubectl -n <namespace> create secret generic planton-github-app \
+  --from-file=private-key.pem=./app.private-key.pem \
+  --from-literal=webhook-secret=<the App's webhook secret>
+```
+
+Then declare the host with the App's Client ID and the two keys by
+reference. The operator preflights the Secret and mounts both values as
+files, so rotating the key is a Secret edit that is live on the next
+token, with no restart. A host whose Secret is missing shows in the
+platform's status and is offered without an App until the Secret appears.
+List hosts in the order the wizard should offer them, put a company's
+enterprise server first, and declare its `webhooks` posture when the
+front door alone cannot say: `reachable` for a server on the install's
+private network, `unreachable` for a public host that cannot reach a door
+public only inside a perimeter (Planton then checks GitHub for pushes and
+tells every team so).
+
 ## Version is the upgrade lever, and it is never automated
 
 `version` is required with no default, deliberately: a module-owned
@@ -363,7 +398,7 @@ spec:
   namespace:
     value: planton
   createNamespace: true
-  version: v0.0.75
+  version: v0.0.113
   database:
     postgresql:
       backup:
@@ -498,7 +533,7 @@ spec:
     value: planton
   createNamespace: true
   # The release the source ran; upgrade afterwards, as its own step.
-  version: v0.0.75
+  version: v0.0.113
   database:
     postgresql:
       # READS the source's archive; honored only when the database is first
