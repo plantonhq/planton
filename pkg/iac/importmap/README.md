@@ -347,7 +347,8 @@ only (noted per row); the lane proves exactly what the fixtures exercise.
 | `stripetaxregistration` | 2026-10-01, both scenarios on OpenTofu (India simplified; Texas state sales tax with an election) | nothing -- lossless; a registration Stripe fills with defaults plans nothing after import |
 | `stripebillingmeter` | 2026-10-01, both scenarios on OpenTofu (the meter and each alert blind; alerts keyed by title through `alert_ids`) | nothing -- lossless once the module always sends both payload keys, which Stripe fills when omitted |
 | `stripepaymentlink` | 2026-10-01, both scenarios on OpenTofu | the line-item `terraform_data` tracker (not importable upstream, re-created by the reconcile-apply, the link untouched) |
-| `stripebillingportalconfiguration`, `stripepromotioncode` | 2026-10-01, the `minimal` scenario of each on OpenTofu; not proven as kinds | the portal's switchable products and a promotion code's other-currency minimums are returned only when a read expands them, and the pinned provider rejects its own create when either is set, so their scenarios cannot pass on this pin |
+| `stripebillingportalconfiguration` | 2026-10-01, both scenarios on OpenTofu (`minimal` and `every-feature`) | nothing -- lossless; subscription updates are refused by validation, since Stripe requires switchable products whenever they are on, returns them only when a read expands them, and the pinned provider rejects its own create when they are set |
+| `stripepromotioncode` | 2026-10-01, both scenarios on OpenTofu, on a StripeCoupon prerequisite | nothing -- lossless; minimums in other currencies are refused by validation for the same reason |
 
 Kinds where an import map is **deliberately not applicable** (recorded so
 absence is never mistaken for an oversight):

@@ -1,6 +1,7 @@
 package stripepromotioncodev1alpha1
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
@@ -63,7 +64,6 @@ var _ = ginkgo.Describe("StripePromotionCode Validation Tests", func() {
 				FirstTimeTransaction:  boolPtr(true),
 				MinimumAmount:         int64Ptr(5000),
 				MinimumAmountCurrency: "usd",
-				CurrencyOptions:       map[string]int64{"eur": 4500},
 			}
 			gomega.Expect(protovalidate.Validate(promotionCode(spec))).To(gomega.Succeed())
 		})
@@ -106,13 +106,22 @@ var _ = ginkgo.Describe("StripePromotionCode Validation Tests", func() {
 			gomega.Expect(err).To(gomega.HaveOccurred())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("minimum_amount and minimum_amount_currency go together"))
 
-			spec = launch25()
-			spec.Restrictions = &StripePromotionCodeRestrictions{CurrencyOptions: map[string]int64{"eur": 4500}}
-			gomega.Expect(protovalidate.Validate(promotionCode(spec))).NotTo(gomega.Succeed())
+		})
 
-			spec = launch25()
-			spec.Restrictions = &StripePromotionCodeRestrictions{MinimumAmount: int64Ptr(5000), MinimumAmountCurrency: "usd", CurrencyOptions: map[string]int64{"usd": 5000}}
-			gomega.Expect(protovalidate.Validate(promotionCode(spec))).NotTo(gomega.Succeed())
+		ginkgo.It("refuses minimums in other currencies, which the pinned provider can't hold", func() {
+			spec := launch25()
+			spec.Restrictions = &StripePromotionCodeRestrictions{
+				MinimumAmount: int64Ptr(5000), MinimumAmountCurrency: "usd", CurrencyOptions: map[string]int64{"eur": 4500},
+			}
+			err := protovalidate.Validate(promotionCode(spec))
+			var validationErr *protovalidate.ValidationError
+			gomega.Expect(errors.As(err, &validationErr)).To(gomega.BeTrue())
+			ids := []string{}
+			for _, violation := range validationErr.Violations {
+				ids = append(ids, violation.Proto.GetRuleId())
+			}
+			gomega.Expect(ids).To(gomega.Equal([]string{"restrictions.currency_options_not_held"}))
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("minimums in other currencies can't be declared yet"))
 		})
 
 		ginkgo.It("refuses a zero redemption limit or expiry", func() {

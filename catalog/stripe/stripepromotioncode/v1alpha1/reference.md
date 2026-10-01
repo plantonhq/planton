@@ -140,7 +140,7 @@ max_redemptions. Unset, no limit beyond the coupon's. Changing it REPLACES the c
 restrictions limit which orders the code applies to. Changing them REPLACES the code.
 
 - rule: minimum_amount and minimum_amount_currency go together: set both, or neither
-- rule: currency_options are minimum_amount in other currencies: they need minimum_amount, and its currency is not one of them
+- rule: minimums in other currencies can't be declared yet: the pinned Stripe provider never reads them back (Stripe returns them only when a read expands them), so every create with them fails; set minimum_amount in one currency
 
 ### spec.restrictions.firstTimeTransaction
 
@@ -170,7 +170,9 @@ minimum_amount_currency is the lowercase three-letter ISO code of minimum_amount
 `map<string, int64>`
 
 currency_options are minimum_amount in other currencies, keyed by lowercase currency code
-("eur").
+("eur"). They can't be declared on the pinned Stripe provider, and validation refuses them:
+Stripe returns a code's other-currency minimums only when a read expands them, the provider
+never expands, and so every create that sets them fails after Stripe has made the code.
 
 - rule: {"map":{"keys":{"string":{"pattern":"^[a-z]{3}$"}},"values":{"int64":{"gt":"0"}}}}
 

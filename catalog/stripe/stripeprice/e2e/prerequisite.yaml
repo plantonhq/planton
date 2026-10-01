@@ -1,7 +1,7 @@
 # The install profile a consumer's scenario gets when it names StripePrice as
 # a prerequisite: a monthly price on the run-named product (its own registry
-# prerequisite, deployed first). A portal's plan switching needs a recurring
-# price. Archived after the consumer's scenario.
+# prerequisite, deployed first). A payment link sells it. Archived after the
+# consumer's scenario.
 apiVersion: stripe.planton.dev/v1alpha1
 kind: StripePrice
 metadata:

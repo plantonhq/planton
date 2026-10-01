@@ -37,7 +37,7 @@ spec:
 | `customer` / `customerAccount` | Only this customer. **Replaces** |
 | `expiresAt` | When it stops working, in Unix seconds. **Replaces** |
 | `maxRedemptions` | How many times it can be redeemed. **Replaces** |
-| `restrictions` | First-time customers, a minimum order (with other currencies). **Replaces** |
+| `restrictions` | First-time customers, a minimum order in one currency (minimums in other currencies are refused: the pinned provider can't hold them). **Replaces** |
 | `active` | Whether it can be redeemed (default `true`). Changes in place |
 | `metadata` | Key-value pairs stored on the code. Changes in place |
 

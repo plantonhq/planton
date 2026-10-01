@@ -110,8 +110,8 @@ func TestDeployTofuDependency_CapturesOutputs(t *testing.T) {
 	}
 }
 
-// The portal's plan-switching scenario names StripePrice; the price's registry
-// prerequisite brings the product first. Both deploy on OpenTofu from their own
+// A payment link's registry prerequisite is StripePrice, and the price's own
+// registry prerequisite brings the product first. Both deploy on OpenTofu from their own
 // install profiles, and the price's product reference resolves against the
 // product's output before its variables are written -- an unresolved reference
 // would fail the price's tfvars generation outright.
@@ -121,9 +121,9 @@ func TestDeployDependencies_StripePriceOnProductChainsOnOpenTofu(t *testing.T) {
 	if err != nil {
 		t.Fatalf("locating repo root: %v", err)
 	}
-	scenario := filepath.Join(repoRoot, "catalog", "stripe", "stripebillingportalconfiguration", "e2e", "scenarios", "plan-switching.yaml")
+	scenario := filepath.Join(repoRoot, "catalog", "stripe", "stripepaymentlink", "e2e", "scenarios", "minimal.yaml")
 
-	deps, err := ResolveDependencies(repoRoot, "stripe", "stripebillingportalconfiguration", scenario)
+	deps, err := ResolveDependencies(repoRoot, "stripe", "stripepaymentlink", scenario)
 	if err != nil {
 		t.Fatalf("ResolveDependencies: %v", err)
 	}
@@ -150,7 +150,7 @@ func TestDeployDependencies_StripePriceOnProductChainsOnOpenTofu(t *testing.T) {
 		return map[string]interface{}{"id": "price_chain"}, nil
 	}
 
-	states, err := DeployDependencies(context.Background(), t, repoRoot, "stripe", "stripebillingportalconfiguration", scenario, "", "a1b2c3d4", LaneClock(), &recordingHarness{})
+	states, err := DeployDependencies(context.Background(), t, repoRoot, "stripe", "stripepaymentlink", scenario, "", "a1b2c3d4", LaneClock(), &recordingHarness{})
 	t.Cleanup(func() {
 		for _, s := range states {
 			s.terraformCleanup()
@@ -166,7 +166,7 @@ func TestDeployDependencies_StripePriceOnProductChainsOnOpenTofu(t *testing.T) {
 		t.Fatalf("the price's variables do not carry the product's id:\n%s", priceTfvars)
 	}
 	if states[1].Outputs["id"] != "price_chain" {
-		t.Errorf("price outputs = %v, want its id for the portal to reference", states[1].Outputs)
+		t.Errorf("price outputs = %v, want its id for the payment link to reference", states[1].Outputs)
 	}
 }
 

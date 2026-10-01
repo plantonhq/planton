@@ -10,7 +10,7 @@ This preset is a welcome code that applies only to a customer's first order of a
 ## Key Configuration Choices
 
 - **Minimum** (`minimumAmount`, `minimumAmountCurrency`) -- the order total the code needs, in cents
-- **Other currencies** (`currencyOptions`) -- the minimum in each currency
+- **One currency** -- the minimum is set in the main currency only. Minimums in other currencies (`currencyOptions`) can't be declared yet: the pinned Stripe provider can't hold them, so validation refuses them
 - **First-time customers** (`firstTimeTransaction`) -- customers who have never paid before
 - **Changing a limit replaces the code** -- the old code is deactivated first, so the same code keeps working
 

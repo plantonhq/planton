@@ -1,6 +1,6 @@
 # Self-Serve Portal, Cancel at Period End
 
-This preset gives customers the portal most subscription businesses start with: they can update their email, address and tax id, manage payment methods, download past invoices, and cancel -- with the cancellation taking effect when the period they paid for ends, after telling you why. Switching plans stays off until you list the plans to switch between.
+This preset gives customers the portal most subscription businesses start with: they can update their email, address and tax id, manage payment methods, download past invoices, and cancel -- with the cancellation taking effect when the period they paid for ends, after telling you why. Subscription changes stay off: they can't be declared on the pinned provider.
 
 ## When to Use
 
@@ -26,4 +26,4 @@ This preset gives customers the portal most subscription businesses start with: 
 
 ## Related Presets
 
-- **02-plan-switching** -- adds switching between the plans you sell
+- **02-cancel-at-once-with-credit** -- cancellation that takes effect at once, crediting the unused time

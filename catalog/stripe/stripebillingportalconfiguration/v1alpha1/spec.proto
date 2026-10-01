@@ -68,7 +68,8 @@ message StripeBillingPortalFeatures {
   StripeBillingPortalPaymentMethodUpdate payment_method_update = 3;
   // subscription_cancel lets a customer cancel a subscription.
   StripeBillingPortalSubscriptionCancel subscription_cancel = 4;
-  // subscription_update lets a customer switch plans or quantities.
+  // subscription_update lets a customer change a subscription: switch plans, change quantities,
+  // apply promotion codes. It can't be turned on with the pinned provider (see its products).
   StripeBillingPortalSubscriptionUpdate subscription_update = 5;
 }
 
@@ -191,7 +192,8 @@ message StripeBillingPortalCancellationReason {
 
 // StripeBillingPortalSubscriptionUpdate lets a customer change a subscription.
 message StripeBillingPortalSubscriptionUpdate {
-  // enabled turns the feature on. The portal needs at least one product to switch between.
+  // enabled turns the feature on. It can't be declared on the pinned provider, and validation
+  // refuses it: Stripe requires switchable products whenever it is on (see products).
   bool enabled = 1;
   // default_allowed_updates are what a customer may change on a subscription.
   repeated DefaultAllowedUpdate default_allowed_updates = 2 [(buf.validate.field).repeated = {
@@ -213,16 +215,24 @@ message StripeBillingPortalSubscriptionUpdate {
   // ends the trial.
   TrialUpdateBehavior trial_update_behavior = 5 [(buf.validate.field).enum.defined_only = true];
   // products are the products, and their prices, a customer may switch between. Stripe allows up
-  // to ten.
+  // to ten. They can't be declared on the pinned Stripe provider, and validation refuses them:
+  // Stripe returns a configuration's products only when a read expands them, the provider never
+  // expands, and so every create that sets them fails after Stripe has made the configuration.
+  // Stripe requires them whenever the feature is on, so the feature is refused too.
   repeated StripeBillingPortalProduct products = 6 [(buf.validate.field).repeated.max_items = 10];
   // schedule_at_period_end defers some changes to the end of the period instead of applying them
   // at once.
   StripeBillingPortalScheduleAtPeriodEnd schedule_at_period_end = 7;
 
   option (buf.validate.message).cel = {
-    id: "subscription_update.price_needs_products"
-    message: "switching prices needs the prices to switch between: list at least one product under products, or drop price from default_allowed_updates"
-    expression: "!this.enabled || !(1 in this.default_allowed_updates) || size(this.products) > 0"
+    id: "subscription_update.products_not_held"
+    message: "switchable products can't be declared yet: the pinned Stripe provider never reads a portal's products back (Stripe returns them only when a read expands them), so every create with them fails; leave products out"
+    expression: "size(this.products) == 0"
+  };
+  option (buf.validate.message).cel = {
+    id: "subscription_update.enabled_not_held"
+    message: "letting customers change a subscription can't be declared yet: Stripe requires switchable products whenever the feature is on, and the pinned provider can't hold them (see products); leave subscription_update off"
+    expression: "!this.enabled"
   };
 
   // DefaultAllowedUpdate is one thing a customer may change on a subscription.

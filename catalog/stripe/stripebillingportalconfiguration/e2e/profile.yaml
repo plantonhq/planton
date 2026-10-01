@@ -3,13 +3,15 @@ kind: ComponentE2EProfile
 metadata:
   name: stripebillingportalconfiguration
 spec:
-  # Held at pending_proof. The minimal scenario passes live on OpenTofu.
-  # The plan-switching scenario cannot pass on the pinned provider: Stripe
-  # returns a configuration's switchable products only when a read expands
-  # them, the provider never does, and its create then rejects its own result.
-  # The sandbox's default configuration is one the first lane created; Stripe
-  # refuses to deactivate a default, so it stays active.
+  # Proven live on OpenTofu against the dedicated Stripe test sandbox: the
+  # minimal and every-feature scenarios, blind import, cancellation reasons
+  # changed in place, and destroy deactivating the configuration. Letting
+  # customers change a subscription is refused by validation: Stripe requires
+  # switchable products whenever that feature is on, and the pinned provider
+  # can't hold them. The sandbox's default configuration is one the first lane
+  # created; Stripe refuses to deactivate a default, so it stays active.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

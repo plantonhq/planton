@@ -1,5 +1,5 @@
-# A code with every limit: first-time customers, a 50 USD minimum with a euro
-# minimum, a redemption cap and an expiry. The minimal scenario leaves every
+# A code with every limit the pinned provider can hold: first-time customers,
+# a 50 USD minimum, a redemption cap and an expiry. The minimal scenario leaves every
 # limit out, so the module's handling of both is exercised.
 apiVersion: stripe.planton.dev/v1alpha1
 kind: StripePromotionCode
@@ -19,5 +19,3 @@ spec:
     firstTimeTransaction: true
     minimumAmount: 5000
     minimumAmountCurrency: usd
-    currencyOptions:
-      eur: 4500

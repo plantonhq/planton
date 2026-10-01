@@ -24,7 +24,7 @@ const (
 )
 
 // StripeBillingPortalConfiguration is a component that declares what Stripe's customer portal
-// lets a customer do: cancel, switch plans, update payment methods and details, see invoices.
+// lets a customer do: cancel, update payment methods and details, see invoices.
 //
 // It creates a configuration of its own and never adopts the account's default; the application
 // names its id (status.outputs.id) when it opens a portal session. Stripe never deletes a
@@ -32,7 +32,7 @@ const (
 //
 // Use cases:
 // - Let customers cancel at the end of the period, with a reason
-// - Let customers switch between the plans you sell, and manage their cards
+// - Let customers cancel at once with a credit for unused time, and manage their cards
 //
 // Example manifest:
 // ```yaml

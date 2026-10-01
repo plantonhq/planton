@@ -10,7 +10,7 @@ OpenTofu module that declares what Stripe's customer portal lets a customer do. 
 
 - [OpenTofu](https://opentofu.org/) (the provider is pinned exactly at `stripe/stripe` `0.3.0` from OpenTofu's registry).
 - A Stripe key in `STRIPE_API_KEY`: a restricted key with "Customer portal" write. `STRIPE_ACCOUNT` optionally names a Connect account to act on.
-- For `subscription_update`, the products and prices a customer may switch between must exist in the account: StripeProduct and StripePrice resources, whose references resolve to their ids before this module runs, or existing ids.
+- `subscription_update` is refused by the spec on the pinned provider: Stripe requires switchable products whenever it is on, returns them only when a read expands them, and the provider never does, so a create with them fails. The module still writes the feature, for a provider version that reads it back.
 
 ## Inputs
 

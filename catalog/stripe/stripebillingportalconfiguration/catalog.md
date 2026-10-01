@@ -1,13 +1,13 @@
 # Stripe Billing Portal Configuration
 
-Declares what Stripe's customer portal lets your customers do -- cancel, switch plans, update payment methods and details, download invoices -- as a configuration of your own that every portal session names. One Cloud Resource per configuration.
+Declares what Stripe's customer portal lets your customers do -- cancel, update payment methods and details, download invoices -- as a configuration of your own that every portal session names. One Cloud Resource per configuration.
 
 ## What Gets Created
 
 When you deploy this Cloud Resource, the OpenTofu module creates one portal configuration in the Stripe account your Stripe connection's key belongs to:
 
 - **The features** -- exactly what a customer may do, each off unless enabled
-- **The policies** -- cancellation timing and reasons, which plans a customer may switch to, how changes are prorated
+- **The policies** -- cancellation timing and reasons, what a customer may change on a subscription, how changes are prorated
 - **The branding** -- the headline and the privacy and terms links
 
 The account's default configuration is never adopted or changed.
@@ -22,7 +22,6 @@ The account's default configuration is never adopted or changed.
 ### Stripe Account
 
 - **The connection's restricted key** needs **Customer portal: Write** (Stripe Dashboard: Developers, API keys, the key's permissions).
-- **Products and prices** to switch between, if you enable plan changes: declare them as Stripe Product and Stripe Price resources and reference them, or name existing ids.
 
 ## Deploy
 
@@ -77,22 +76,6 @@ spec:
 
 The InfraPipeline deploys the payment-method configuration first, then this portal.
 
-Wire the plans a customer may switch between the same way, so a price replaced after an amount change reaches the portal on its next apply:
-
-```yaml
-spec:
-  features:
-    subscriptionUpdate:
-      products:
-        - product:
-            valueFrom:
-              kind: StripeProduct
-              name: team-plan
-          prices:
-            - valueFrom:
-                kind: StripePrice
-                name: team-monthly
-```
 
 ## Key Configuration
 
@@ -100,7 +83,7 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 **Cancel when the paid period ends** -- `subscriptionCancel.mode: at_period_end` keeps what the customer paid for; `immediately` needs a `prorationBehavior` decision.
 
-**Plans to switch between** -- `subscriptionUpdate.products` lists each product and the prices a customer may choose; allowing `price` changes needs at least one. Reference the Stripe Product and Stripe Price resources, so a price replaced after an amount change reaches the portal on its next apply.
+**No subscription changes yet** -- letting customers switch plans or change quantities can't be declared: Stripe requires switchable products whenever `subscriptionUpdate` is on, returns them only when a read expands them, and the pinned Stripe provider never does, so every create that names them fails after Stripe has made the configuration. Validation refuses `subscriptionUpdate.enabled` and its `products`.
 
 **The same methods as checkout** -- reference a Stripe Payment Method Configuration in `paymentMethodUpdate`.
 
@@ -133,10 +116,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Self-serve, cancel at period end** -- Details, payment methods, invoices and cancellation with a reason. Start from the **Self-Serve Portal, Cancel at Period End** preset.
 
-**Plan switching** -- Upgrades at once, downgrades at period end. Start from the **Plan Switching Portal** preset.
+**Cancel at once, with a credit** -- Cancellation that takes effect immediately and credits the unused time. Start from the **Cancel at Once, with a Credit** preset.
 
 ## Works With
 
 - [**Stripe Payment Method Configuration**](/cloud-catalog/stripe-payment-method-configuration) -- the methods a customer may add in the portal.
 - [**Stripe Webhook Endpoint**](/cloud-catalog/stripe-webhook-endpoint) -- where the subscription changes customers make here arrive as events.
-- [**Stripe Product**](/cloud-catalog/stripe-product) and [**Stripe Price**](/cloud-catalog/stripe-price) -- the plans and prices a customer may switch between.
+- [**Stripe Product**](/cloud-catalog/stripe-product) and [**Stripe Price**](/cloud-catalog/stripe-price) -- the plans a customer subscribes to. A portal can't name them as plans to switch between on the pinned provider.

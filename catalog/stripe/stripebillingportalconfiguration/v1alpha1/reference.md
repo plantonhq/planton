@@ -267,15 +267,18 @@ Allowed values (use exactly as shown):
 
 `StripeBillingPortalSubscriptionUpdate`
 
-subscription_update lets a customer switch plans or quantities.
+subscription_update lets a customer change a subscription: switch plans, change quantities,
+apply promotion codes. It can't be turned on with the pinned provider (see its products).
 
-- rule: switching prices needs the prices to switch between: list at least one product under products, or drop price from default_allowed_updates
+- rule: switchable products can't be declared yet: the pinned Stripe provider never reads a portal's products back (Stripe returns them only when a read expands them), so every create with them fails; leave products out
+- rule: letting customers change a subscription can't be declared yet: Stripe requires switchable products whenever the feature is on, and the pinned provider can't hold them (see products); leave subscription_update off
 
 ### spec.features.subscriptionUpdate.enabled
 
 `bool`
 
-enabled turns the feature on. The portal needs at least one product to switch between.
+enabled turns the feature on. It can't be declared on the pinned provider, and validation
+refuses it: Stripe requires switchable products whenever it is on (see products).
 
 ### spec.features.subscriptionUpdate.defaultAllowedUpdates
 
@@ -343,7 +346,10 @@ Allowed values (use exactly as shown):
 `[]StripeBillingPortalProduct`
 
 products are the products, and their prices, a customer may switch between. Stripe allows up
-to ten.
+to ten. They can't be declared on the pinned Stripe provider, and validation refuses them:
+Stripe returns a configuration's products only when a read expands them, the provider never
+expands, and so every create that sets them fails after Stripe has made the configuration.
+Stripe requires them whenever the feature is on, so the feature is refused too.
 
 - rule: {"repeated":{"maxItems":"10"}}
 - rule: each price is listed once: remove the repeated price id

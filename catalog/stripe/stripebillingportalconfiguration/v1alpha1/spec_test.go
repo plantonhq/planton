@@ -1,6 +1,7 @@
 package stripebillingportalconfigurationv1alpha1
 
 import (
+	"errors"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -38,6 +39,8 @@ func selfServe() *StripeBillingPortalConfigurationSpec {
 	}
 }
 
+// planSwitching is the shape Stripe takes for switching plans, which validation refuses on the
+// pinned provider; the product-level rules are still checked inside it.
 func planSwitching() *StripeBillingPortalSubscriptionUpdate {
 	return &StripeBillingPortalSubscriptionUpdate{
 		Enabled: true,
@@ -60,6 +63,19 @@ func planSwitching() *StripeBillingPortalSubscriptionUpdate {
 }
 
 func int64Ptr(v int64) *int64 { return &v }
+
+// violatedRules lists the ids of the rules a validation error broke.
+func violatedRules(err error) []string {
+	var validationErr *protovalidate.ValidationError
+	if !errors.As(err, &validationErr) {
+		return nil
+	}
+	ids := make([]string, 0, len(validationErr.Violations))
+	for _, violation := range validationErr.Violations {
+		ids = append(ids, violation.Proto.GetRuleId())
+	}
+	return ids
+}
 
 func literal(v string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
@@ -95,7 +111,7 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 				},
 			}
 			spec.Features.PaymentMethodUpdate = &StripeBillingPortalPaymentMethodUpdate{
-				Enabled: true,
+				Enabled:                    true,
 				PaymentMethodConfiguration: literal("pmc_123"),
 			}
 			spec.Features.SubscriptionCancel.CancellationReason = &StripeBillingPortalCancellationReason{
@@ -104,7 +120,6 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 					StripeBillingPortalCancellationReason_too_expensive, StripeBillingPortalCancellationReason_other,
 				},
 			}
-			spec.Features.SubscriptionUpdate = planSwitching()
 			gomega.Expect(protovalidate.Validate(portal(spec))).To(gomega.Succeed())
 		})
 
@@ -115,22 +130,9 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 			gomega.Expect(protovalidate.Validate(portal(spec))).To(gomega.Succeed())
 		})
 
-		ginkgo.It("accepts products and prices named by reference", func() {
-			spec := selfServe()
-			update := planSwitching()
-			update.Products[0].Product = ref(cloudresourcekind.CloudResourceKind_StripeProduct, "team-plan")
-			update.Products[0].Prices = []*foreignkeyv1.StringValueOrRef{
-				ref(cloudresourcekind.CloudResourceKind_StripePrice, "team-monthly"),
-				ref(cloudresourcekind.CloudResourceKind_StripePrice, "team-yearly"),
-			}
-			spec.Features.SubscriptionUpdate = update
-			gomega.Expect(protovalidate.Validate(portal(spec))).To(gomega.Succeed())
-		})
-
-		ginkgo.It("accepts quantity changes without products", func() {
+		ginkgo.It("accepts the subscription-update feature left off, with its settings declared", func() {
 			spec := selfServe()
 			spec.Features.SubscriptionUpdate = &StripeBillingPortalSubscriptionUpdate{
-				Enabled: true,
 				DefaultAllowedUpdates: []StripeBillingPortalSubscriptionUpdate_DefaultAllowedUpdate{
 					StripeBillingPortalSubscriptionUpdate_quantity,
 				},
@@ -152,14 +154,29 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("only an immediate cancellation leaves"))
 		})
 
-		ginkgo.It("refuses price changes with no products to switch between", func() {
+		ginkgo.It("refuses switchable products, even named by reference, because the pinned provider can't hold them", func() {
 			spec := selfServe()
-			update := planSwitching()
-			update.Products = nil
-			spec.Features.SubscriptionUpdate = update
+			spec.Features.SubscriptionUpdate = &StripeBillingPortalSubscriptionUpdate{
+				Products: []*StripeBillingPortalProduct{{
+					Product: ref(cloudresourcekind.CloudResourceKind_StripeProduct, "team-plan"),
+					Prices:  []*foreignkeyv1.StringValueOrRef{ref(cloudresourcekind.CloudResourceKind_StripePrice, "team-monthly")},
+				}},
+			}
 			err := protovalidate.Validate(portal(spec))
-			gomega.Expect(err).To(gomega.HaveOccurred())
-			gomega.Expect(err.Error()).To(gomega.ContainSubstring("switching prices needs the prices to switch between"))
+			gomega.Expect(violatedRules(err)).To(gomega.ContainElement("subscription_update.products_not_held"))
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("switchable products can't be declared yet"))
+		})
+
+		ginkgo.It("refuses the subscription-update feature turned on, which Stripe never allows without products", func() {
+			spec := selfServe()
+			spec.Features.SubscriptionUpdate = &StripeBillingPortalSubscriptionUpdate{
+				Enabled: true,
+				DefaultAllowedUpdates: []StripeBillingPortalSubscriptionUpdate_DefaultAllowedUpdate{
+					StripeBillingPortalSubscriptionUpdate_quantity,
+				},
+			}
+			err := protovalidate.Validate(portal(spec))
+			gomega.Expect(violatedRules(err)).To(gomega.Equal([]string{"subscription_update.enabled_not_held"}))
 		})
 
 		ginkgo.It("refuses more than ten products", func() {

@@ -51,10 +51,10 @@ go_library(
         "@com_github_gruntwork_io_terratest//modules/logger",
         "@com_github_gruntwork_io_terratest//modules/terraform",
         "@com_github_pkg_errors//:errors",
+        "@io_k8s_sigs_yaml//:yaml",
         "@org_golang_google_protobuf//encoding/protojson",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
-        "@io_k8s_sigs_yaml//:yaml",
     ],
 )
 

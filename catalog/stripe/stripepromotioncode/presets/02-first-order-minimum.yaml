@@ -14,5 +14,3 @@ spec:
     firstTimeTransaction: true
     minimumAmount: 5000
     minimumAmountCurrency: usd
-    currencyOptions:
-      eur: 4500

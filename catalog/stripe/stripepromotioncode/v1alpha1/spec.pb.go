@@ -186,7 +186,9 @@ type StripePromotionCodeRestrictions struct {
 	// minimum_amount_currency is the lowercase three-letter ISO code of minimum_amount ("usd").
 	MinimumAmountCurrency string `protobuf:"bytes,3,opt,name=minimum_amount_currency,json=minimumAmountCurrency,proto3" json:"minimum_amount_currency,omitempty"`
 	// currency_options are minimum_amount in other currencies, keyed by lowercase currency code
-	// ("eur").
+	// ("eur"). They can't be declared on the pinned Stripe provider, and validation refuses them:
+	// Stripe returns a code's other-currency minimums only when a read expands them, the provider
+	// never expands, and so every create that sets them fails after Stripe has made the code.
 	CurrencyOptions map[string]int64 `protobuf:"bytes,4,rep,name=currency_options,json=currencyOptions,proto3" json:"currency_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -274,7 +276,7 @@ const file_catalog_stripe_stripepromotioncode_v1alpha1_spec_proto_rawDesc = "" +
 	"\x11spec.one_customer\x12Ma code is limited to one customer: set customer or customer_account, not both\x1a2this.customer == '' || this.customer_account == ''B\r\n" +
 	"\v_expires_atB\x12\n" +
 	"\x10_max_redemptionsB\t\n" +
-	"\a_active\"\xfb\b\n" +
+	"\a_active\"\x8c\t\n" +
 	"\x1fStripePromotionCodeRestrictions\x129\n" +
 	"\x16first_time_transaction\x18\x01 \x01(\bH\x00R\x14firstTimeTransaction\x88\x01\x01\x123\n" +
 	"\x0eminimum_amount\x18\x02 \x01(\x03B\a\xbaH\x04\"\x02 \x00H\x01R\rminimumAmount\x88\x01\x01\x12\xe3\x01\n" +
@@ -284,9 +286,9 @@ const file_catalog_stripe_stripepromotioncode_v1alpha1_spec_proto_rawDesc = "" +
 	"^[a-z]{3}$*\x04\"\x02 \x00R\x0fcurrencyOptions\x1aB\n" +
 	"\x14CurrencyOptionsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01:\xde\x03\xbaH\xda\x03\x1a\xbb\x01\n" +
-	")restrictions.minimum_amount_with_currency\x12Lminimum_amount and minimum_amount_currency go together: set both, or neither\x1a@has(this.minimum_amount) == (this.minimum_amount_currency != '')\x1a\x99\x02\n" +
-	"#restrictions.currency_options_shape\x12vcurrency_options are minimum_amount in other currencies: they need minimum_amount, and its currency is not one of them\x1azsize(this.currency_options) == 0 || (has(this.minimum_amount) && !(this.minimum_amount_currency in this.currency_options))B\x19\n" +
+	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01:\xef\x03\xbaH\xeb\x03\x1a\xbb\x01\n" +
+	")restrictions.minimum_amount_with_currency\x12Lminimum_amount and minimum_amount_currency go together: set both, or neither\x1a@has(this.minimum_amount) == (this.minimum_amount_currency != '')\x1a\xaa\x02\n" +
+	"&restrictions.currency_options_not_held\x12\xdd\x01minimums in other currencies can't be declared yet: the pinned Stripe provider never reads them back (Stripe returns them only when a read expands them), so every create with them fails; set minimum_amount in one currency\x1a size(this.currency_options) == 0B\x19\n" +
 	"\x17_first_time_transactionB\x11\n" +
 	"\x0f_minimum_amountB\x87\x03\n" +
 	"3com.dev.planton.stripe.stripepromotioncode.v1alpha1B\tSpecProtoP\x01Zdgithub.com/plantonhq/planton/catalog/stripe/stripepromotioncode/v1alpha1;stripepromotioncodev1alpha1\xa2\x02\x04DPSS\xaa\x02/Dev.Planton.Stripe.Stripepromotioncode.V1alpha1\xca\x02/Dev\\Planton\\Stripe\\Stripepromotioncode\\V1alpha1\xe2\x02;Dev\\Planton\\Stripe\\Stripepromotioncode\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Stripe::Stripepromotioncode::V1alpha1b\x06proto3"

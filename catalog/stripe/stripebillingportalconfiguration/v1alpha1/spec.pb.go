@@ -655,7 +655,8 @@ type StripeBillingPortalFeatures struct {
 	PaymentMethodUpdate *StripeBillingPortalPaymentMethodUpdate `protobuf:"bytes,3,opt,name=payment_method_update,json=paymentMethodUpdate,proto3" json:"payment_method_update,omitempty"`
 	// subscription_cancel lets a customer cancel a subscription.
 	SubscriptionCancel *StripeBillingPortalSubscriptionCancel `protobuf:"bytes,4,opt,name=subscription_cancel,json=subscriptionCancel,proto3" json:"subscription_cancel,omitempty"`
-	// subscription_update lets a customer switch plans or quantities.
+	// subscription_update lets a customer change a subscription: switch plans, change quantities,
+	// apply promotion codes. It can't be turned on with the pinned provider (see its products).
 	SubscriptionUpdate *StripeBillingPortalSubscriptionUpdate `protobuf:"bytes,5,opt,name=subscription_update,json=subscriptionUpdate,proto3" json:"subscription_update,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
@@ -1018,7 +1019,8 @@ func (x *StripeBillingPortalCancellationReason) GetOptions() []StripeBillingPort
 // StripeBillingPortalSubscriptionUpdate lets a customer change a subscription.
 type StripeBillingPortalSubscriptionUpdate struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// enabled turns the feature on. The portal needs at least one product to switch between.
+	// enabled turns the feature on. It can't be declared on the pinned provider, and validation
+	// refuses it: Stripe requires switchable products whenever it is on (see products).
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	// default_allowed_updates are what a customer may change on a subscription.
 	DefaultAllowedUpdates []StripeBillingPortalSubscriptionUpdate_DefaultAllowedUpdate `protobuf:"varint,2,rep,packed,name=default_allowed_updates,json=defaultAllowedUpdates,proto3,enum=dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalSubscriptionUpdate_DefaultAllowedUpdate" json:"default_allowed_updates,omitempty"`
@@ -1032,7 +1034,10 @@ type StripeBillingPortalSubscriptionUpdate struct {
 	// ends the trial.
 	TrialUpdateBehavior StripeBillingPortalSubscriptionUpdate_TrialUpdateBehavior `protobuf:"varint,5,opt,name=trial_update_behavior,json=trialUpdateBehavior,proto3,enum=dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalSubscriptionUpdate_TrialUpdateBehavior" json:"trial_update_behavior,omitempty"`
 	// products are the products, and their prices, a customer may switch between. Stripe allows up
-	// to ten.
+	// to ten. They can't be declared on the pinned Stripe provider, and validation refuses them:
+	// Stripe returns a configuration's products only when a read expands them, the provider never
+	// expands, and so every create that sets them fails after Stripe has made the configuration.
+	// Stripe requires them whenever the feature is on, so the feature is refused too.
 	Products []*StripeBillingPortalProduct `protobuf:"bytes,6,rep,name=products,proto3" json:"products,omitempty"`
 	// schedule_at_period_end defers some changes to the end of the period instead of applying them
 	// at once.
@@ -1523,7 +1528,7 @@ const file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_spec_proto_r
 	"\vtoo_complex\x10\x06\x12\x11\n" +
 	"\rtoo_expensive\x10\a\x12\n" +
 	"\n" +
-	"\x06unused\x10\b\"\xe3\r\n" +
+	"\x06unused\x10\b\"\x81\x10\n" +
 	"%StripeBillingPortalSubscriptionUpdate\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\xc3\x01\n" +
 	"\x17default_allowed_updates\x18\x02 \x03(\x0e2x.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalSubscriptionUpdate.DefaultAllowedUpdateB\x11\xbaH\x0e\x92\x01\v\x18\x01\"\a\x82\x01\x04\x10\x01 \x00R\x15defaultAllowedUpdates\x12\xae\x01\n" +
@@ -1550,8 +1555,9 @@ const file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_spec_proto_r
 	"\x13TrialUpdateBehavior\x12%\n" +
 	"!trial_update_behavior_unspecified\x10\x00\x12\x12\n" +
 	"\x0econtinue_trial\x10\x01\x12\r\n" +
-	"\tend_trial\x10\x02:\x8f\x02\xbaH\x8b\x02\x1a\x88\x02\n" +
-	"(subscription_update.price_needs_products\x12\x89\x01switching prices needs the prices to switch between: list at least one product under products, or drop price from default_allowed_updates\x1aP!this.enabled || !(1 in this.default_allowed_updates) || size(this.products) > 0\"\x9c\a\n" +
+	"\tend_trial\x10\x02:\xad\x04\xbaH\xa9\x04\x1a\x97\x02\n" +
+	"%subscription_update.products_not_held\x12\xd3\x01switchable products can't be declared yet: the pinned Stripe provider never reads a portal's products back (Stripe returns them only when a read expands them), so every create with them fails; leave products out\x1a\x18size(this.products) == 0\x1a\x8c\x02\n" +
+	"$subscription_update.enabled_not_held\x12\xd4\x01letting customers change a subscription can't be declared yet: Stripe requires switchable products whenever the feature is on, and the pinned provider can't hold them (see products); leave subscription_update off\x1a\r!this.enabled\"\x9c\a\n" +
 	"\x1aStripeBillingPortalProduct\x12\x8e\x02\n" +
 	"\aproduct\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xbf\x01\xbaH\xa1\x01\xba\x01\x9a\x01\n" +
 	"\x16product.product.format\x12Lproduct is a Stripe product id (prod_...), or a reference to a StripeProduct\x1a2!has(this.value) || this.value.startsWith('prod_')\xc8\x01\x01\x88\xd4a\xf4N\x92\xd4a\x11status.outputs.idR\aproduct\x12\x8f\x02\n" +
