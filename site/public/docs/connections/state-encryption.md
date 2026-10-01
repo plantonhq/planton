@@ -40,6 +40,27 @@ You choose the key when you create a state backend (the **Key** step of the conn
 
 If you choose nothing, a backend gets its type's default: Planton's key for every storage type, Pulumi Cloud's keys for state in Pulumi Cloud, and no encryption for Terraform Cloud, which must read your state to show it and run against it. A cloud key's credentials come from its own connection and stay apart from the bucket's credentials and from the cloud your resources deploy to.
 
+## What Your Key's Identity Needs
+
+The connection a key source names needs permission to use that one key, and nothing more. It never needs to manage the key, and it needs no access to your bucket or to the resources you deploy. The two engines call different operations, so grant the row for every engine that will use the backend:
+
+| Key source | OpenTofu calls | Pulumi calls | What to grant |
+|---|---|---|---|
+| AWS KMS | `kms:GenerateDataKey`, `kms:Decrypt` | `kms:Encrypt`, `kms:Decrypt` | Those actions on the key: in its key policy, in a grant, or in an IAM policy the key policy allows |
+| Google Cloud KMS | encrypt and decrypt | encrypt and decrypt | The Cloud KMS CryptoKey Encrypter/Decrypter role (`roles/cloudkms.cryptoKeyEncrypterDecrypter`) on the key |
+| Azure Key Vault | encrypt and decrypt, with RSA-OAEP-256 | encrypt and decrypt, with RSA-OAEP-256 | The data actions `Microsoft.KeyVault/vaults/keys/encrypt/action` and `Microsoft.KeyVault/vaults/keys/decrypt/action` on the key (an RSA key), or an access policy with the key permissions Encrypt and Decrypt |
+| Vault or OpenBao transit | `<mount>/datakey/plaintext/<key>`, `<mount>/decrypt/<key>` | `<mount>/encrypt/<key>`, `<mount>/decrypt/<key>` | A policy with `update` on those paths for the connection's token |
+
+For a transit key mounted at `transit` and named `state`, a token both engines can use carries this policy:
+
+```hcl
+path "transit/datakey/plaintext/state" { capabilities = ["update"] }
+path "transit/encrypt/state"           { capabilities = ["update"] }
+path "transit/decrypt/state"           { capabilities = ["update"] }
+```
+
+A key's own versions rotate in AWS, Google Cloud, Azure, Vault or OpenBao without any change in Planton: state sealed under an older version still opens, and new state is sealed under the newest one.
+
 ## Changing the Key
 
 A backend's key is part of the backend, like any other field. Change it with **Change Key** on the backend's page, with the CLI, or by editing the backend's manifest and applying it:
