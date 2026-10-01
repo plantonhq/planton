@@ -52,11 +52,32 @@ the question "who can sign in" belongs in the proposal, not after it.
   test users). Grafana's own gate is `allowed_domains`, matched against
   the signed-in email; the kind refuses a Google sign-in that allows
   sign-up with no `allowed_domains`, because that would let anyone on the
-  internet create a Viewer. `hosted_domain` only narrows Google's account
-  chooser; it is a hint, not a gate.
+  internet create a Viewer. `hosted_domain` sends Google's `hd` hint, and
+  Google's sign-in screen then accepts only that domain's accounts (seen
+  live: an outside account never reaches Grafana). Keep `allowed_domains`
+  anyway; it is the gate Grafana itself enforces.
 - **Roles come from a JMESPath.** `role_attribute_path` maps claims to
   Admin, Editor or Viewer (`email == 'lead@example.com' && 'Admin' ||
   'Viewer'`) and is re-read at every sign-in.
+- **Reading logs and traces needs Editor in open-source Grafana.** Explore
+  is the only place to search logs or open a trace until dashboards exist,
+  and it is granted to Editors and Admins. The Viewer workaround
+  (`viewers_can_edit`) is deprecated, and the finer "data sources
+  explorer" role is assigned only in Grafana Enterprise. Staff who must
+  investigate are Editors; keep dashboards in committed files and treat a
+  saved hand-made one as drift.
+- **With `hosted_domain`, Google's sign-in screen fixes the domain.** The
+  email box carries `@<domain>` and an outside account cannot be typed
+  in, so a browser test of the outside-account refusal stops at Google;
+  `allowed_domains` remains Grafana's own gate behind it.
+- **Reading logs and traces needs Editor.** In open-source Grafana only
+  Editors and Admins can open Explore, which is the one place to read logs
+  and traces until dashboards exist. The Viewer workaround
+  (`viewers_can_edit`) is deprecated, and the finer-grained data-sources
+  explorer role is an Enterprise feature. So a team that must investigate
+  maps its staff to Editor and catches stray hand-made dashboards by
+  comparing Grafana's dashboards with the committed ones. Agents querying
+  through the API need no more than Viewer.
 - **The manifest owns sign-in.** Once either provider is declared,
   Grafana's Administration > Authentication screen can no longer edit
   any OAuth provider: settings saved there would otherwise live in
@@ -67,9 +88,63 @@ the question "who can sign in" belongs in the proposal, not after it.
 - **A rotation takes effect on apply.** Grafana reads the client secret
   only at start; the pods carry a checksum of the `<name>-sso` Secret, so
   the apply that writes a new secret also rolls Grafana onto it.
-- **Keep the login form as break-glass.** Leave `disable_login_form`
-  off and `auto_login` off until the identity provider has proven itself:
-  the admin account is the way back in when it is down.
+- **Keep the login form as break-glass until sign-in is proven.** Leave
+  `disable_login_form` and `auto_login` off until the first person has
+  signed in through the provider. After that, turning both on sends
+  everyone straight to the provider; the way back in when the provider is
+  down is the admin account from `admin_secret_name` over a port-forward
+  (the HTTP API with basic auth), or a re-apply with the form on.
+
+## Trace to logs, and back
+
+The kind has no typed field for Grafana's trace links; they live in each
+datasource's `json_data`, and each side names the other by `uid`, so pin
+the uids. OTLP logs keep `trace_id` as structured metadata, which a
+`label` matcher reads:
+
+```yaml
+datasources:
+  - name: Loki
+    type: loki
+    uid: loki
+    json_data: |
+      derivedFields:
+        - name: TraceID
+          matcherType: label
+          matcherRegex: trace_id
+          datasourceUid: tempo
+          url: "${__value.raw}"
+  - name: Tempo
+    type: tempo
+    uid: tempo
+    json_data: |
+      tracesToLogsV2:
+        datasourceUid: loki
+        spanStartTimeShift: -5m
+        spanEndTimeShift: 5m
+        customQuery: true
+        query: '{service_name=~".+"} | trace_id="${__trace.traceId}"'
+```
+
+Prove it with one synthetic span and one log record carrying the same
+`traceId` (OTLP HTTP to Tempo's `otlp_http_endpoint` and to Loki's
+`otlp_push_endpoint`): Tempo returns the trace by id, and the query above
+returns the line. Once it has,
+  turning both on sends people straight to the provider; the admin
+  password still works against the API through a port-forward.
+
+## Trace to logs, and back
+
+There is no typed field for the links between a Tempo and a Loki
+datasource; each datasource's `json_data` carries them, and each names
+the other by `uid`, so pin `uid` on both. On Loki, a `derivedFields`
+entry with `matcherType: label` and `matcherRegex: trace_id` turns the
+`trace_id` that OTLP logs carry as structured metadata into a link to
+the trace. On Tempo, `tracesToLogsV2` with `customQuery: true` and a
+query such as `{service_name=~".+"} | trace_id="${__trace.traceId}"`
+opens the span's log lines (Loki indexes OTLP's `service.name` as
+`service_name`). Prove it with one synthetic span and one log line
+sharing a trace id.
 
 ## On the diagram
 

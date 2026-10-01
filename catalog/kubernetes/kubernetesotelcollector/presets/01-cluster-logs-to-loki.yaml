@@ -7,10 +7,22 @@ spec:
     value: observability
   mode: daemonset
   configYaml: |
+    extensions:
+      file_storage:
+        directory: /var/lib/otelcol-checkpoints
     receivers:
       filelog:
         include:
           - /var/log/pods/*/*/*.log
+        # The collector's own pods (<name>-collector-<hash>); reading them would echo every export
+        # error back into the stream it is failing to send.
+        exclude:
+          - /var/log/pods/observability_cluster-logs-collector-*/*/*.log
+        # Resume from the last offset after a restart instead of skipping or re-sending.
+        storage: file_storage
+        # The container parser reads pod, namespace and container from the file path, which the
+        # receiver records only when asked; without it every line fails to parse.
+        include_file_path: true
         operators:
           - type: container
       otlp:
@@ -31,7 +43,13 @@ spec:
         # Replace the host with your KubernetesLoki gateway service —
         # Loki ingests OTLP at the gateway's /otlp route.
         endpoint: http://loki-gateway.observability.svc.cluster.local:80/otlp
+        # Lines read while Loki is away wait on the node's disk and are retried without a deadline.
+        sending_queue:
+          storage: file_storage
+        retry_on_failure:
+          max_elapsed_time: 0
     service:
+      extensions: [file_storage]
       pipelines:
         logs:
           receivers: [filelog, otlp]

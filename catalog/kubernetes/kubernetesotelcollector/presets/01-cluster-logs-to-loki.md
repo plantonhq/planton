@@ -18,10 +18,22 @@ the operator's default ServiceAccount — compose a
 
 The volumes are the daemonset log-collection pattern: `/var/log/pods`
 mounted read-only from the host (the receiver only reads), plus a
-writable hostPath at `/var/lib/otelcol-checkpoints` for the filelog
-receiver's checkpoint state, so a restarted collector resumes where it
-left off. The control-plane toleration covers every node — remove it
-if control-plane logs should stay uncollected.
+writable hostPath at `/var/lib/otelcol-checkpoints`. The mount alone
+keeps nothing: the `file_storage` extension points at it, the filelog
+receiver's `storage` keeps its offsets there (a restarted collector
+resumes where it left off), and the exporter's `sending_queue` keeps
+unsent lines there with retries that never give up, so logs written
+while Loki is down arrive when it returns. The control-plane toleration
+covers every node — remove it if control-plane logs should stay
+uncollected.
+
+Two lines that look optional are not. `include_file_path: true` is what
+the `container` operator reads pod, namespace and container from;
+without it the receiver drops every line with "log.file.path is
+missing". The `exclude` keeps the collector off its own log files
+(pods `<name>-collector-<hash>`; change the namespace and name with
+yours), which would otherwise echo each export error back into the
+stream it is failing to send.
 
 The `podSecurityContext.runAsUser: 0` is load-bearing, not a
 convenience: container runtimes write pod log files readable only by
@@ -34,8 +46,8 @@ sheds load visibly instead of OOMing — if you add container resources,
 keep the memory limit and `limit_mib` in agreement.
 
 Change first: the `otlphttp` endpoint's host — point it at your
-`KubernetesLoki`'s exported gateway service (Loki ingests OTLP at the
-gateway's `/otlp` route).
+`KubernetesLoki`'s `otlp_push_endpoint` output (Loki ingests OTLP at the
+gateway's `/otlp` route) — and the `exclude` path's namespace and name.
 
 See [01-cluster-logs-to-loki.yaml](./01-cluster-logs-to-loki.yaml) for
 the manifest.

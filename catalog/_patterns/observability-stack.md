@@ -345,6 +345,100 @@ External one any Google account (in Testing, only listed test users).
 Grafana's own gate is `allowed_domains`, matched against the email; the
 kind refuses a Google sign-in that allows sign-up with none.
 
+## A hub beside a cluster's agent
+
+The hub usually lives on a cluster that already runs its own
+monitoring agent (the stack and its Alertmanager, from "Alerts that
+reach a person"). Split the work by lifecycle, not by component:
+
+- **Collection belongs to the agent; storage and reading to the hub.**
+  The daemonset log collector joins the agent, the same composition
+  every cluster runs, with only its destination differing (the hub's
+  Loki `otlp_push_endpoint` in-cluster, a public telemetry door
+  elsewhere). The hub holds Loki, Tempo and Grafana in its own
+  namespace, so rebuilding one never removes the other.
+- **Grafana reads the cluster's own Prometheus** (the datasource's
+  default kind is the stack) until other clusters send metrics; a
+  second stack on one cluster needs `skip_crds`, so add a receiving
+  store only when there is something to receive.
+- **The hub brings its own front door.** Instead of editing the
+  cluster's Gateway for every hostname, the Gateway admits listener sets
+  (`allowed_listeners`) and the hub attaches a `KubernetesListenerSet`
+  with its own certificate, one per hostname, so a browser never reuses
+  another hostname's connection and meets a 404. external-dns writes a
+  record for a route on a listener set only when its chart value
+  `enableGatewayListenerSets` is on (no typed field yet, so it rides
+  `helm_values`); without it the route reads Accepted and no record
+  appears.
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesListenerSet
+metadata:
+  name: grafana-door
+spec:
+  namespace:
+    value: observability-hub
+  parentRef:
+    kind: Gateway
+    namespace: istio-ingress
+    name:
+      valueFrom:
+        kind: KubernetesGateway
+        name: cluster-gateway
+        fieldPath: status.outputs.gateway_name
+  listeners:
+    - name: https
+      hostname: grafana.example.com
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name:
+              valueFrom:
+                kind: KubernetesCertificate
+                name: grafana-cert
+                fieldPath: status.outputs.secret_name
+      allowedRoutes:
+        namespaces:
+          from: Same
+---
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesHttpRoute
+metadata:
+  name: grafana-route
+spec:
+  namespace:
+    value: observability-hub
+  hostnames:
+    - grafana.example.com
+  parentRefs:
+    - kind: ListenerSet
+      name:
+        valueFrom:
+          kind: KubernetesListenerSet
+          name: grafana-door
+          fieldPath: status.outputs.listener_set_name
+  rules:
+    - backendRefs:
+        - name:
+            valueFrom:
+              kind: KubernetesGrafana
+              name: hub
+              fieldPath: status.outputs.service
+          port: 80
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+```
+
+The certificate's Secret lives in the listener set's own namespace.
+Install order on a fresh cluster: the Gateway's and external-dns's
+switches, then the agent (its collector holds lines on the node's disk
+until Loki answers), then the hub.
+
 ## On the diagram
 
 The assembled shape renders as a hub: Grafana with three datasource edges

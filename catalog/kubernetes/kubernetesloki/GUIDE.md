@@ -15,6 +15,14 @@ datasource on the same endpoint. The full wired composition:
 Loki alone looks healthy and receives nothing — the gap appears only when
 someone searches for logs that were never shipped.
 
+OTLP-ingested lines are indexed by Loki's default resource labels, so a
+cluster's pod logs are searched as `{k8s_namespace_name="<ns>"}` (also
+`k8s_pod_name`, `k8s_container_name`, `service_name`), and a record's
+`trace_id` is kept as structured metadata, not a label. Leave
+`canary_enabled` at its default: switching the canary off fails the
+install today, because the chart's Helm test needs it. The `scheduling`
+block reaches Loki itself and its gateway, not the caches or the canary.
+
 ## The mode choice is a storage commitment
 
 `monolithic` (default) runs everything in one StatefulSet — right for

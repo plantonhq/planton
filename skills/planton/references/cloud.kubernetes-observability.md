@@ -116,6 +116,18 @@ Ask these before composing, in the person's words, not the chart's:
   secrets only at start; the pods carry a checksum of the secret, so the
   apply that writes a new value rolls them onto it. Rotate by updating the
   secret, then re-applying.
+- **Ask what teammates must do in Grafana.** In open-source Grafana only
+  Editors and Admins can open Explore, the one place to read logs and
+  traces before dashboards exist. People who investigate are Editors;
+  tell the person the cost (an Editor can save a hand-made dashboard) and
+  keep dashboards in committed files.
+- **Put the log collector in each cluster's agent, the stores in the
+  hub,** and give the hub its own listener set on the cluster's Gateway
+  (the pattern's "A hub beside a cluster's agent"). Copy the collector
+  preset whole: its `include_file_path`, `file_storage` and self-exclude
+  are each the difference between logs arriving and silence.
+- **A `$var/` reference works in a plain-string field** (a Grafana
+  `client_id`, for one): it resolves at deploy like any other.
 
 ## Proving it
 
@@ -150,8 +162,18 @@ Do these with the person, and report what arrived and when:
 
 5. For the hub, sign in with an account the person expects to get in and
    one that must not (another domain); the first lands with the role the
-   manifest names, the second is refused. Then read a log line and a trace
-   from Grafana and confirm objects are arriving in the bucket.
+   manifest names, the second is refused. With `hosted_domain` set, Google's
+   own screen fixes the domain, so the outside account stops there; say so
+   rather than claiming Grafana refused it. Unauthenticated, `/` must
+   redirect to sign-in and `/api/datasources` answer 401.
+6. Prove every datasource from the server: each one's
+   `/api/datasources/uid/<uid>/health` reads OK, a query returns data (a
+   log line from a known namespace, `up` from Prometheus), and one
+   synthetic span plus one log record with the same `traceId` come back
+   from Tempo by id and from Loki by the trace-to-logs query. Objects
+   appear in the buckets once Loki and Tempo flush (minutes for Tempo,
+   longer for Loki's chunks); an index file in the logs bucket proves the
+   key writes.
 
 A rotated alerting secret is picked up on the next notification without a
 restart, so rotation needs no drill of its own; the hub's secrets roll the

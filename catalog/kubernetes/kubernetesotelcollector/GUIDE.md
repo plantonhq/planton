@@ -26,6 +26,22 @@ need RBAC beyond the default ServiceAccount — compose a
 KubernetesServiceAccount + KubernetesRbac and set `serviceAccount`, or the
 receiver silently collects nothing.
 
+## A log collector that loses nothing and reads only others
+
+Three filelog settings decide whether a daemonset log pipeline works,
+and none is the default (the `01-cluster-logs-to-loki` preset carries
+all three):
+- `include_file_path: true` — the `container` operator takes pod,
+  namespace and container from the file path; without it every line is
+  dropped with "log.file.path is missing".
+- `file_storage` on a hostPath, used by the receiver's `storage` (offsets
+  survive a restart) and the exporter's `sending_queue` with
+  `retry_on_failure.max_elapsed_time: 0` (lines wait on the node's disk
+  while the destination is down, then arrive). A mounted checkpoint
+  volume that nothing points at keeps nothing.
+- an `exclude` for the collector's own pods (`<name>-collector-<hash>`),
+  or every export error echoes back into the stream it failed to send.
+
 ## Operator prerequisite
 
 KubernetesOtelOperator is the registry prerequisite, watching cluster-wide
