@@ -329,6 +329,14 @@ Fields that can point at another resource's outputs:
 | `spec.consumerAcceptLists[].network` | GcpVpcNetwork | `status.outputs.network_self_link` |
 | `spec.consumerRejectLists` | GcpProject | `status.outputs.project_id` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpGlobalForwardingRule | `spec.target` | `status.outputs.self_link` |
+
 ## See Also
 
 - [Overview](../README.md)

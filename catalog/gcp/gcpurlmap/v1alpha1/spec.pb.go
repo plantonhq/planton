@@ -79,10 +79,12 @@ type GcpUrlMapSpec struct {
 	// scopes or regions.
 	Region string `protobuf:"bytes,13,opt,name=region,proto3" json:"region,omitempty"`
 	// The default target when no host/path rule matches — a backend service or
-	// backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-	// provide a self-link directly (a regional map takes only a regional
-	// GcpBackendService in its region). Exactly one of default_service,
-	// default_url_redirect, or default_route_action must be set. Mutable.
+	// backend bucket. Reference a GcpBackendService (the default kind) or a
+	// GcpBackendBucket (both are declared candidates, so the self_link output
+	// fills in), or provide a self-link directly (a regional map takes only a
+	// regional GcpBackendService in its region). Exactly one of
+	// default_service, default_url_redirect, or default_route_action must be
+	// set. Mutable.
 	DefaultService *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=default_service,json=defaultService,proto3" json:"default_service,omitempty"`
 	// Redirect unmatched requests instead of serving them (e.g. an
 	// apex-to-www or http-to-https redirect as the catch-all). Mutually
@@ -1749,9 +1751,10 @@ type GcpUrlMapPathMatcher struct {
 	// The path matcher's name, referenced by host_rules.path_matcher.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The default target when no path_rule or route_rule matches — a backend
-	// service or backend bucket. Reference a GcpBackendService or
-	// GcpBackendBucket, or provide a self-link. Set exactly one of
-	// default_service, default_url_redirect, or default_route_action.
+	// service or backend bucket. Reference a GcpBackendService (the default
+	// kind) or a GcpBackendBucket (both are declared candidates), or provide a
+	// self-link. Set exactly one of default_service, default_url_redirect, or
+	// default_route_action.
 	DefaultService *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=default_service,json=defaultService,proto3" json:"default_service,omitempty"`
 	// Redirect as the path matcher's default instead of serving.
 	DefaultUrlRedirect *GcpUrlMapUrlRedirect `protobuf:"bytes,3,opt,name=default_url_redirect,json=defaultUrlRedirect,proto3" json:"default_url_redirect,omitempty"`
@@ -1877,8 +1880,9 @@ type GcpUrlMapPathRule struct {
 	// a single "*" wildcard (e.g. "/api/*"). At least one required.
 	Paths []string `protobuf:"bytes,1,rep,name=paths,proto3" json:"paths,omitempty"`
 	// The target when a path matches — a backend service or backend bucket.
-	// Reference a GcpBackendService or GcpBackendBucket, or provide a self-link.
-	// Set exactly one of service, url_redirect, or route_action.
+	// Reference a GcpBackendService (the default kind) or a GcpBackendBucket
+	// (both are declared candidates), or provide a self-link. Set exactly one
+	// of service, url_redirect, or route_action.
 	Service *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=service,proto3" json:"service,omitempty"`
 	// Advanced handling (weighted split / rewrite) for matched paths.
 	RouteAction *GcpUrlMapRouteAction `protobuf:"bytes,3,opt,name=route_action,json=routeAction,proto3" json:"route_action,omitempty"`
@@ -2533,8 +2537,9 @@ type GcpUrlMapTest struct {
 	// The request path the test sends.
 	Path string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
 	// The backend service or backend bucket the request is expected to resolve
-	// to. Reference a GcpBackendService or GcpBackendBucket, or provide a
-	// self-link. Leave empty when asserting a redirect via
+	// to. Reference a GcpBackendService (the default kind) or a
+	// GcpBackendBucket (both are declared candidates), or provide a self-link.
+	// Leave empty when asserting a redirect via
 	// expected_redirect_response_code. Required on a regional map, whose
 	// tests can only assert a service.
 	Service *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=service,proto3" json:"service,omitempty"`
@@ -2690,7 +2695,7 @@ var File_catalog_gcp_gcpurlmap_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	")catalog/gcp/gcpurlmap/v1alpha1/spec.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd8'\n" +
+	")catalog/gcp/gcpurlmap/v1alpha1/spec.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xbe(\n" +
 	"\rGcpUrlMapSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x8e\x02\n" +
@@ -2699,8 +2704,8 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"urlMapName\x12*\n" +
 	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xc6\x01\n" +
 	"\x06region\x18\r \x01(\tB\xad\x01\xbaH\xa9\x01\xba\x01\xa5\x01\n" +
-	"\fvalid_region\x12Yregion must be a valid GCP region name such as us-central1, or empty for a global URL map\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12[\n" +
-	"\x0fdefault_service\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x0edefaultService\x12j\n" +
+	"\fvalid_region\x12Yregion must be a valid GCP region name such as us-central1, or empty for a global URL map\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12\xc0\x01\n" +
+	"\x0fdefault_service\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBc\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd1\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd0\x17\x12\x18status.outputs.self_linkR\x0edefaultService\x12j\n" +
 	"\x14default_url_redirect\x18\x05 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapUrlRedirectR\x12defaultUrlRedirect\x12j\n" +
 	"\x14default_route_action\x18\x06 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapRouteActionR\x12defaultRouteAction\x12\x96\x01\n" +
 	"$default_custom_error_response_policy\x18\a \x01(\v2F.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapCustomErrorResponsePolicyR defaultCustomErrorResponsePolicy\x12^\n" +
@@ -2846,10 +2851,10 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05hosts\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\x05hosts\x12-\n" +
 	"\fpath_matcher\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vpathMatcher\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\"\x92\r\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\"\xf8\r\n" +
 	"\x14GcpUrlMapPathMatcher\x12 \n" +
-	"\x04name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18?R\x04name\x12[\n" +
-	"\x0fdefault_service\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x0edefaultService\x12j\n" +
+	"\x04name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18?R\x04name\x12\xc0\x01\n" +
+	"\x0fdefault_service\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBc\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd1\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd0\x17\x12\x18status.outputs.self_linkR\x0edefaultService\x12j\n" +
 	"\x14default_url_redirect\x18\x03 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapUrlRedirectR\x12defaultUrlRedirect\x12j\n" +
 	"\x14default_route_action\x18\x04 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapRouteActionR\x12defaultRouteAction\x12\x96\x01\n" +
 	"$default_custom_error_response_policy\x18\x05 \x01(\v2F.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapCustomErrorResponsePolicyR defaultCustomErrorResponsePolicy\x12*\n" +
@@ -2861,11 +2866,10 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"routeRules:\xce\x06\xbaH\xca\x06\x1a\xc8\x03\n" +
 	"'path_matcher_default_target_at_most_one\x12\xda\x01a path matcher may set at most one default target: default_service, default_url_redirect, or default_route_action with weighted_backend_services (a route action carrying only sub-policies may accompany default_service)\x1a\xbf\x01(has(this.default_service) ? 1 : 0) + (has(this.default_url_redirect) ? 1 : 0) + (has(this.default_route_action) && size(this.default_route_action.weighted_backend_services) > 0 ? 1 : 0) <= 1\x1a\xe0\x01\n" +
 	",path_matcher_route_action_conflicts_redirect\x12kdefault_route_action and default_url_redirect are mutually exclusive — a redirect never reaches a backend\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\x99\x01\n" +
-	"\x1cpath_matcher_rules_exclusive\x12>a path matcher uses either path_rules or route_rules, not both\x1a9size(this.path_rules) == 0 || size(this.route_rules) == 0\"\xa8\n" +
-	"\n" +
+	"\x1cpath_matcher_rules_exclusive\x12>a path matcher uses either path_rules or route_rules, not both\x1a9size(this.path_rules) == 0 || size(this.route_rules) == 0\"\x8e\v\n" +
 	"\x11GcpUrlMapPathRule\x12$\n" +
-	"\x05paths\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\x05paths\x12L\n" +
-	"\aservice\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\aservice\x12[\n" +
+	"\x05paths\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\x05paths\x12\xb1\x01\n" +
+	"\aservice\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBc\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd1\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd0\x17\x12\x18status.outputs.self_linkR\aservice\x12[\n" +
 	"\froute_action\x18\x03 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapRouteActionR\vrouteAction\x12[\n" +
 	"\furl_redirect\x18\x04 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapUrlRedirectR\vurlRedirect\x12\x87\x01\n" +
 	"\x1ccustom_error_response_policy\x18\x05 \x01(\v2F.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapCustomErrorResponsePolicyR\x19customErrorResponsePolicy:\xda\x06\xbaH\xd6\x06\x1a\xf4\x02\n" +
@@ -2930,13 +2934,13 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12 \n" +
 	"\x05value\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x05value\"\xa6\x03\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x05value\"\x8c\x04\n" +
 	"\rGcpUrlMapTest\x12\x1e\n" +
 	"\x04host\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04host\x12\x1e\n" +
 	"\x04path\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04path\x12L\n" +
-	"\aservice\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\aservice\x12*\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04path\x12\xb1\x01\n" +
+	"\aservice\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBc\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd1\x17\x12\x18status.outputs.self_link\xa2\xd4a\x1d\b\xd0\x17\x12\x18status.outputs.self_linkR\aservice\x12*\n" +
 	"\vdescription\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\x128\n" +
 	"\x13expected_output_url\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\x11expectedOutputUrl\x12N\n" +
 	"\x1fexpected_redirect_response_code\x18\x06 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x1cexpectedRedirectResponseCode\x12Q\n" +

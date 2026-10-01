@@ -96,21 +96,34 @@ message GcpGlobalForwardingRuleSpec {
   }];
 
   // The target that receives matched traffic — every proxy-based load
-  // balancer's form. Reference a GcpTargetHttpsProxy (the default) or a
-  // GcpTargetHttpProxy resource (a regional rule takes the regional arm of
-  // the same kinds, in its own region), or provide a target URI directly —
-  // other targets (target SSL/TCP proxies, target gRPC proxies, target
-  // instances, target pools) attach by self-link until they exist as
-  // Planton kinds. For Private Service Connect, pass the literal bundle name
-  // "all-apis" or "vpc-sc" (Google APIs, global rule) or a service
-  // attachment URI (a producer's service, regional rule). Exactly one of
-  // target and backend_service is set: a passthrough Network Load Balancer
-  // has no proxy and names its backend service instead. Mutable: GCP
-  // repoints it in place (a dedicated setTarget call), enabling
+  // balancer's form. Reference a GcpTargetHttpsProxy (the default kind) or a
+  // GcpTargetHttpProxy (a regional rule takes the regional arm of the same
+  // kinds, in its own region), or provide a target URI directly — other
+  // targets (target SSL/TCP proxies, target gRPC proxies, target instances,
+  // target pools) attach by self-link until they exist as Planton kinds. For
+  // Private Service Connect, pass the literal bundle name "all-apis" or
+  // "vpc-sc" (Google APIs, global rule), or reference the producer's
+  // GcpPscServiceAttachment (regional rule, in the attachment's region). All
+  // three kinds are declared candidates, so their self_link output fills in.
+  // Exactly one of target and backend_service is set: a passthrough Network
+  // Load Balancer has no proxy and names its backend service instead.
+  // Mutable: GCP repoints it in place (a dedicated setTarget call), enabling
   // zero-downtime frontend swaps.
   dev.planton.shared.foreignkey.v1.StringValueOrRef target = 4 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpTargetHttpsProxy,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpTargetHttpsProxy
+      field_path: "status.outputs.self_link"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpTargetHttpProxy
+      field_path: "status.outputs.self_link"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpPscServiceAttachment
+      field_path: "status.outputs.self_link"
+    }
   ];
 
   // The regional backend service that receives matched traffic directly,
@@ -127,16 +140,25 @@ message GcpGlobalForwardingRuleSpec {
   ];
 
   // The IP address this rule accepts traffic on. Reference a
-  // GcpGlobalAddress resource (the default kind, for a global rule) or a
-  // regional GcpAddress resource in the rule's region (for a regional rule,
-  // with valueFrom.kind: GcpAddress), provide a literal IP ("34.120.1.2"),
-  // or an address resource URL. When omitted, Google Cloud assigns an
-  // ephemeral IP — fine for testing, but production frontends should
-  // reserve a static address so DNS never has to chase a new VIP. Required
-  // for Private Service Connect rules to Google APIs. Immutable.
+  // GcpGlobalAddress (the default kind, for a global rule) or a regional
+  // GcpAddress in the rule's region (for a regional rule) — both are
+  // declared candidates, so their address output fills in — or provide a
+  // literal IP ("34.120.1.2") or an address resource URL. When omitted,
+  // Google Cloud assigns an ephemeral IP — fine for testing, but production
+  // frontends should reserve a static address so DNS never has to chase a
+  // new VIP. Required for Private Service Connect rules to Google APIs.
+  // Immutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef ip_address = 5 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpGlobalAddress,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.address"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.address",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGlobalAddress
+      field_path: "status.outputs.address"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpAddress
+      field_path: "status.outputs.address"
+    }
   ];
 
   // The IP protocol this rule matches (default TCP). All proxy-based load

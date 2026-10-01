@@ -98,9 +98,9 @@ spec:
 | `spec.forwardingRuleName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.region` | `string` |  |  |  |
-| `spec.target` | `string \| valueFrom` |  |  | GcpTargetHttpsProxy (`status.outputs.self_link`) |
+| `spec.target` | `string \| valueFrom` |  |  | GcpTargetHttpsProxy (`status.outputs.self_link`), GcpTargetHttpProxy (`status.outputs.self_link`), GcpPscServiceAttachment (`status.outputs.self_link`) |
 | `spec.backendService` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`) |
-| `spec.ipAddress` | `string \| valueFrom` |  |  | GcpGlobalAddress (`status.outputs.address`) |
+| `spec.ipAddress` | `string \| valueFrom` |  |  | GcpGlobalAddress (`status.outputs.address`), GcpAddress (`status.outputs.address`) |
 | `spec.ipProtocol` | `string` |  | `TCP` |  |
 | `spec.ipVersion` | `string` |  |  |  |
 | `spec.loadBalancingScheme` | `string` |  | `EXTERNAL` |  |
@@ -200,20 +200,21 @@ rule cannot move between scopes or regions.
 `string | valueFrom`
 
 The target that receives matched traffic — every proxy-based load
-balancer's form. Reference a GcpTargetHttpsProxy (the default) or a
-GcpTargetHttpProxy resource (a regional rule takes the regional arm of
-the same kinds, in its own region), or provide a target URI directly —
-other targets (target SSL/TCP proxies, target gRPC proxies, target
-instances, target pools) attach by self-link until they exist as
-Planton kinds. For Private Service Connect, pass the literal bundle name
-"all-apis" or "vpc-sc" (Google APIs, global rule) or a service
-attachment URI (a producer's service, regional rule). Exactly one of
-target and backend_service is set: a passthrough Network Load Balancer
-has no proxy and names its backend service instead. Mutable: GCP
-repoints it in place (a dedicated setTarget call), enabling
+balancer's form. Reference a GcpTargetHttpsProxy (the default kind) or a
+GcpTargetHttpProxy (a regional rule takes the regional arm of the same
+kinds, in its own region), or provide a target URI directly — other
+targets (target SSL/TCP proxies, target gRPC proxies, target instances,
+target pools) attach by self-link until they exist as Planton kinds. For
+Private Service Connect, pass the literal bundle name "all-apis" or
+"vpc-sc" (Google APIs, global rule), or reference the producer's
+GcpPscServiceAttachment (regional rule, in the attachment's region). All
+three kinds are declared candidates, so their self_link output fills in.
+Exactly one of target and backend_service is set: a passthrough Network
+Load Balancer has no proxy and names its backend service instead.
+Mutable: GCP repoints it in place (a dedicated setTarget call), enabling
 zero-downtime frontend swaps.
 
-- references: GcpTargetHttpsProxy (`status.outputs.self_link`)
+- references: GcpTargetHttpsProxy (`status.outputs.self_link`), GcpTargetHttpProxy (`status.outputs.self_link`), GcpPscServiceAttachment (`status.outputs.self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpTargetHttpsProxy, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.backendService
@@ -237,15 +238,16 @@ balancers and rejects it for every proxy-based one. Immutable.
 `string | valueFrom`
 
 The IP address this rule accepts traffic on. Reference a
-GcpGlobalAddress resource (the default kind, for a global rule) or a
-regional GcpAddress resource in the rule's region (for a regional rule,
-with valueFrom.kind: GcpAddress), provide a literal IP ("34.120.1.2"),
-or an address resource URL. When omitted, Google Cloud assigns an
-ephemeral IP — fine for testing, but production frontends should
-reserve a static address so DNS never has to chase a new VIP. Required
-for Private Service Connect rules to Google APIs. Immutable.
+GcpGlobalAddress (the default kind, for a global rule) or a regional
+GcpAddress in the rule's region (for a regional rule) — both are
+declared candidates, so their address output fills in — or provide a
+literal IP ("34.120.1.2") or an address resource URL. When omitted,
+Google Cloud assigns an ephemeral IP — fine for testing, but production
+frontends should reserve a static address so DNS never has to chase a
+new VIP. Required for Private Service Connect rules to Google APIs.
+Immutable.
 
-- references: GcpGlobalAddress (`status.outputs.address`)
+- references: GcpGlobalAddress (`status.outputs.address`), GcpAddress (`status.outputs.address`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpGlobalAddress, name: <that resource's name>, fieldPath: status.outputs.address}} -- a bare string does not parse
 
 ### spec.ipProtocol
@@ -634,8 +636,11 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.target` | GcpTargetHttpsProxy | `status.outputs.self_link` |
+| `spec.target` | GcpTargetHttpProxy | `status.outputs.self_link` |
+| `spec.target` | GcpPscServiceAttachment | `status.outputs.self_link` |
 | `spec.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.ipAddress` | GcpGlobalAddress | `status.outputs.address` |
+| `spec.ipAddress` | GcpAddress | `status.outputs.address` |
 | `spec.network` | GcpVpcNetwork | `status.outputs.network_self_link` |
 | `spec.subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_self_link` |
 

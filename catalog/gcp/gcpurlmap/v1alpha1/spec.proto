@@ -75,11 +75,24 @@ message GcpUrlMapSpec {
   }];
 
   // The default target when no host/path rule matches — a backend service or
-  // backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-  // provide a self-link directly (a regional map takes only a regional
-  // GcpBackendService in its region). Exactly one of default_service,
-  // default_url_redirect, or default_route_action must be set. Mutable.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef default_service = 4;
+  // backend bucket. Reference a GcpBackendService (the default kind) or a
+  // GcpBackendBucket (both are declared candidates, so the self_link output
+  // fills in), or provide a self-link directly (a regional map takes only a
+  // regional GcpBackendService in its region). Exactly one of
+  // default_service, default_url_redirect, or default_route_action must be
+  // set. Mutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef default_service = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBackendService,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendService
+      field_path: "status.outputs.self_link"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendBucket
+      field_path: "status.outputs.self_link"
+    }
+  ];
 
   // Redirect unmatched requests instead of serving them (e.g. an
   // apex-to-www or http-to-https redirect as the catch-all). Mutually
@@ -690,10 +703,22 @@ message GcpUrlMapPathMatcher {
   ];
 
   // The default target when no path_rule or route_rule matches — a backend
-  // service or backend bucket. Reference a GcpBackendService or
-  // GcpBackendBucket, or provide a self-link. Set exactly one of
-  // default_service, default_url_redirect, or default_route_action.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef default_service = 2;
+  // service or backend bucket. Reference a GcpBackendService (the default
+  // kind) or a GcpBackendBucket (both are declared candidates), or provide a
+  // self-link. Set exactly one of default_service, default_url_redirect, or
+  // default_route_action.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef default_service = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBackendService,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendService
+      field_path: "status.outputs.self_link"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendBucket
+      field_path: "status.outputs.self_link"
+    }
+  ];
 
   // Redirect as the path matcher's default instead of serving.
   GcpUrlMapUrlRedirect default_url_redirect = 3;
@@ -751,9 +776,21 @@ message GcpUrlMapPathRule {
   ];
 
   // The target when a path matches — a backend service or backend bucket.
-  // Reference a GcpBackendService or GcpBackendBucket, or provide a self-link.
-  // Set exactly one of service, url_redirect, or route_action.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef service = 2;
+  // Reference a GcpBackendService (the default kind) or a GcpBackendBucket
+  // (both are declared candidates), or provide a self-link. Set exactly one
+  // of service, url_redirect, or route_action.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBackendService,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendService
+      field_path: "status.outputs.self_link"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendBucket
+      field_path: "status.outputs.self_link"
+    }
+  ];
 
   // Advanced handling (weighted split / rewrite) for matched paths.
   GcpUrlMapRouteAction route_action = 3;
@@ -975,11 +1012,23 @@ message GcpUrlMapTest {
   ];
 
   // The backend service or backend bucket the request is expected to resolve
-  // to. Reference a GcpBackendService or GcpBackendBucket, or provide a
-  // self-link. Leave empty when asserting a redirect via
+  // to. Reference a GcpBackendService (the default kind) or a
+  // GcpBackendBucket (both are declared candidates), or provide a self-link.
+  // Leave empty when asserting a redirect via
   // expected_redirect_response_code. Required on a regional map, whose
   // tests can only assert a service.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef service = 3;
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBackendService,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendService
+      field_path: "status.outputs.self_link"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpBackendBucket
+      field_path: "status.outputs.self_link"
+    }
+  ];
 
   // What this test guards — write it for whoever reads a failed-test error.
   string description = 4 [(buf.validate.field).string.max_len = 1024];

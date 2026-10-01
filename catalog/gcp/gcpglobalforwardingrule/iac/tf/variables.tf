@@ -56,17 +56,18 @@ variable "spec" {
     region = optional(string, "")
 
     # The target that receives matched traffic — every proxy-based load
-    # balancer's form. Reference a GcpTargetHttpsProxy (the default) or a
-    # GcpTargetHttpProxy resource (a regional rule takes the regional arm of
-    # the same kinds, in its own region), or provide a target URI directly —
-    # other targets (target SSL/TCP proxies, target gRPC proxies, target
-    # instances, target pools) attach by self-link until they exist as
-    # Planton kinds. For Private Service Connect, pass the literal bundle name
-    # "all-apis" or "vpc-sc" (Google APIs, global rule) or a service
-    # attachment URI (a producer's service, regional rule). Exactly one of
-    # target and backend_service is set: a passthrough Network Load Balancer
-    # has no proxy and names its backend service instead. Mutable: GCP
-    # repoints it in place (a dedicated setTarget call), enabling
+    # balancer's form. Reference a GcpTargetHttpsProxy (the default kind) or a
+    # GcpTargetHttpProxy (a regional rule takes the regional arm of the same
+    # kinds, in its own region), or provide a target URI directly — other
+    # targets (target SSL/TCP proxies, target gRPC proxies, target instances,
+    # target pools) attach by self-link until they exist as Planton kinds. For
+    # Private Service Connect, pass the literal bundle name "all-apis" or
+    # "vpc-sc" (Google APIs, global rule), or reference the producer's
+    # GcpPscServiceAttachment (regional rule, in the attachment's region). All
+    # three kinds are declared candidates, so their self_link output fills in.
+    # Exactly one of target and backend_service is set: a passthrough Network
+    # Load Balancer has no proxy and names its backend service instead.
+    # Mutable: GCP repoints it in place (a dedicated setTarget call), enabling
     # zero-downtime frontend swaps.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     target = optional(string, "")
@@ -83,13 +84,14 @@ variable "spec" {
     backend_service = optional(string, "")
 
     # The IP address this rule accepts traffic on. Reference a
-    # GcpGlobalAddress resource (the default kind, for a global rule) or a
-    # regional GcpAddress resource in the rule's region (for a regional rule,
-    # with valueFrom.kind: GcpAddress), provide a literal IP ("34.120.1.2"),
-    # or an address resource URL. When omitted, Google Cloud assigns an
-    # ephemeral IP — fine for testing, but production frontends should
-    # reserve a static address so DNS never has to chase a new VIP. Required
-    # for Private Service Connect rules to Google APIs. Immutable.
+    # GcpGlobalAddress (the default kind, for a global rule) or a regional
+    # GcpAddress in the rule's region (for a regional rule) — both are
+    # declared candidates, so their address output fills in — or provide a
+    # literal IP ("34.120.1.2") or an address resource URL. When omitted,
+    # Google Cloud assigns an ephemeral IP — fine for testing, but production
+    # frontends should reserve a static address so DNS never has to chase a
+    # new VIP. Required for Private Service Connect rules to Google APIs.
+    # Immutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     ip_address = optional(string, "")
 

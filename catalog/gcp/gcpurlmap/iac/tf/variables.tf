@@ -46,10 +46,12 @@ variable "spec" {
     region = optional(string, "")
 
     # The default target when no host/path rule matches — a backend service or
-    # backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-    # provide a self-link directly (a regional map takes only a regional
-    # GcpBackendService in its region). Exactly one of default_service,
-    # default_url_redirect, or default_route_action must be set. Mutable.
+    # backend bucket. Reference a GcpBackendService (the default kind) or a
+    # GcpBackendBucket (both are declared candidates, so the self_link output
+    # fills in), or provide a self-link directly (a regional map takes only a
+    # regional GcpBackendService in its region). Exactly one of
+    # default_service, default_url_redirect, or default_route_action must be
+    # set. Mutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     default_service = optional(string, "")
 
@@ -502,9 +504,10 @@ variable "spec" {
       name = string
 
       # The default target when no path_rule or route_rule matches — a backend
-      # service or backend bucket. Reference a GcpBackendService or
-      # GcpBackendBucket, or provide a self-link. Set exactly one of
-      # default_service, default_url_redirect, or default_route_action.
+      # service or backend bucket. Reference a GcpBackendService (the default
+      # kind) or a GcpBackendBucket (both are declared candidates), or provide a
+      # self-link. Set exactly one of default_service, default_url_redirect, or
+      # default_route_action.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       default_service = optional(string, "")
 
@@ -940,8 +943,9 @@ variable "spec" {
         paths = list(string)
 
         # The target when a path matches — a backend service or backend bucket.
-        # Reference a GcpBackendService or GcpBackendBucket, or provide a self-link.
-        # Set exactly one of service, url_redirect, or route_action.
+        # Reference a GcpBackendService (the default kind) or a GcpBackendBucket
+        # (both are declared candidates), or provide a self-link. Set exactly one
+        # of service, url_redirect, or route_action.
         # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         service = optional(string, "")
 
@@ -1869,8 +1873,9 @@ variable "spec" {
       path = string
 
       # The backend service or backend bucket the request is expected to resolve
-      # to. Reference a GcpBackendService or GcpBackendBucket, or provide a
-      # self-link. Leave empty when asserting a redirect via
+      # to. Reference a GcpBackendService (the default kind) or a
+      # GcpBackendBucket (both are declared candidates), or provide a self-link.
+      # Leave empty when asserting a redirect via
       # expected_redirect_response_code. Required on a regional map, whose
       # tests can only assert a service.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.

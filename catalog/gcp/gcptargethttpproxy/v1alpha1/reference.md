@@ -210,6 +210,14 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.urlMap` | GcpUrlMap | `status.outputs.self_link` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpGlobalForwardingRule | `spec.target` | `status.outputs.self_link` |
+
 ## See Also
 
 - [Overview](../README.md)

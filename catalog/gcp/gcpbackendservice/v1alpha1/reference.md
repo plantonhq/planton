@@ -2001,15 +2001,19 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpGlobalForwardingRule | `spec.backendService` | `status.outputs.self_link` |
+| GcpUrlMap | `spec.defaultService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.defaultRouteAction.weightedBackendServices[].backendService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.defaultRouteAction.requestMirrorPolicy.backendService` | `status.outputs.self_link` |
+| GcpUrlMap | `spec.pathMatchers[].defaultService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].defaultRouteAction.weightedBackendServices[].backendService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].defaultRouteAction.requestMirrorPolicy.backendService` | `status.outputs.self_link` |
+| GcpUrlMap | `spec.pathMatchers[].pathRules[].service` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].pathRules[].routeAction.weightedBackendServices[].backendService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].pathRules[].routeAction.requestMirrorPolicy.backendService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].routeRules[].service` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].routeRules[].routeAction.weightedBackendServices[].backendService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].routeRules[].routeAction.requestMirrorPolicy.backendService` | `status.outputs.self_link` |
+| GcpUrlMap | `spec.tests[].service` | `status.outputs.self_link` |
 
 ## See Also
 

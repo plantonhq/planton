@@ -115,7 +115,7 @@ spec:
 | `spec.urlMapName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.region` | `string` |  |  |  |
-| `spec.defaultService` | `string \| valueFrom` |  |  |  |
+| `spec.defaultService` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.defaultUrlRedirect` | `GcpUrlMapUrlRedirect` |  |  |  |
 | `spec.defaultUrlRedirect.hostRedirect` | `string` |  |  |  |
 | `spec.defaultUrlRedirect.httpsRedirect` | `bool` |  |  |  |
@@ -227,7 +227,7 @@ spec:
 | `spec.hostRules[].description` | `string` |  |  |  |
 | `spec.pathMatchers` | `[]GcpUrlMapPathMatcher` |  |  |  |
 | `spec.pathMatchers[].name` | `string` | yes |  |  |
-| `spec.pathMatchers[].defaultService` | `string \| valueFrom` |  |  |  |
+| `spec.pathMatchers[].defaultService` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.pathMatchers[].defaultUrlRedirect` | `GcpUrlMapUrlRedirect` |  |  |  |
 | `spec.pathMatchers[].defaultUrlRedirect.hostRedirect` | `string` |  |  |  |
 | `spec.pathMatchers[].defaultUrlRedirect.httpsRedirect` | `bool` |  |  |  |
@@ -336,7 +336,7 @@ spec:
 | `spec.pathMatchers[].headerAction.responseHeadersToRemove` | `[]string` |  |  |  |
 | `spec.pathMatchers[].pathRules` | `[]GcpUrlMapPathRule` |  |  |  |
 | `spec.pathMatchers[].pathRules[].paths` | `[]string` | yes |  |  |
-| `spec.pathMatchers[].pathRules[].service` | `string \| valueFrom` |  |  |  |
+| `spec.pathMatchers[].pathRules[].service` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.pathMatchers[].pathRules[].routeAction` | `GcpUrlMapRouteAction` |  |  |  |
 | `spec.pathMatchers[].pathRules[].routeAction.weightedBackendServices` | `[]GcpUrlMapWeightedBackendService` |  |  |  |
 | `spec.pathMatchers[].pathRules[].routeAction.weightedBackendServices[].backendService` | `string \| valueFrom` | yes |  | GcpBackendService (`status.outputs.self_link`) |
@@ -569,7 +569,7 @@ spec:
 | `spec.tests` | `[]GcpUrlMapTest` |  |  |  |
 | `spec.tests[].host` | `string` | yes |  |  |
 | `spec.tests[].path` | `string` | yes |  |  |
-| `spec.tests[].service` | `string \| valueFrom` |  |  |  |
+| `spec.tests[].service` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.tests[].description` | `string` |  |  |  |
 | `spec.tests[].expectedOutputUrl` | `string` |  |  |  |
 | `spec.tests[].expectedRedirectResponseCode` | `int32` |  |  |  |
@@ -636,12 +636,15 @@ scopes or regions.
 `string | valueFrom`
 
 The default target when no host/path rule matches — a backend service or
-backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-provide a self-link directly (a regional map takes only a regional
-GcpBackendService in its region). Exactly one of default_service,
-default_url_redirect, or default_route_action must be set. Mutable.
+backend bucket. Reference a GcpBackendService (the default kind) or a
+GcpBackendBucket (both are declared candidates, so the self_link output
+fills in), or provide a self-link directly (a regional map takes only a
+regional GcpBackendService in its region). Exactly one of
+default_service, default_url_redirect, or default_route_action must be
+set. Mutable.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.defaultUrlRedirect
 
@@ -1576,11 +1579,13 @@ The path matcher's name, referenced by host_rules.path_matcher.
 `string | valueFrom`
 
 The default target when no path_rule or route_rule matches — a backend
-service or backend bucket. Reference a GcpBackendService or
-GcpBackendBucket, or provide a self-link. Set exactly one of
-default_service, default_url_redirect, or default_route_action.
+service or backend bucket. Reference a GcpBackendService (the default
+kind) or a GcpBackendBucket (both are declared candidates), or provide a
+self-link. Set exactly one of default_service, default_url_redirect, or
+default_route_action.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.pathMatchers[].defaultUrlRedirect
 
@@ -2485,10 +2490,12 @@ a single "*" wildcard (e.g. "/api/*"). At least one required.
 `string | valueFrom`
 
 The target when a path matches — a backend service or backend bucket.
-Reference a GcpBackendService or GcpBackendBucket, or provide a self-link.
-Set exactly one of service, url_redirect, or route_action.
+Reference a GcpBackendService (the default kind) or a GcpBackendBucket
+(both are declared candidates), or provide a self-link. Set exactly one
+of service, url_redirect, or route_action.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.pathMatchers[].pathRules[].routeAction
 
@@ -4404,12 +4411,14 @@ The request path the test sends.
 `string | valueFrom`
 
 The backend service or backend bucket the request is expected to resolve
-to. Reference a GcpBackendService or GcpBackendBucket, or provide a
-self-link. Leave empty when asserting a redirect via
+to. Reference a GcpBackendService (the default kind) or a
+GcpBackendBucket (both are declared candidates), or provide a self-link.
+Leave empty when asserting a redirect via
 expected_redirect_response_code. Required on a regional map, whose
 tests can only assert a service.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.tests[].description
 
@@ -4502,12 +4511,18 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.defaultService` | GcpBackendService | `status.outputs.self_link` |
+| `spec.defaultService` | GcpBackendBucket | `status.outputs.self_link` |
 | `spec.defaultRouteAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.defaultRouteAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.defaultCustomErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
+| `spec.pathMatchers[].defaultService` | GcpBackendService | `status.outputs.self_link` |
+| `spec.pathMatchers[].defaultService` | GcpBackendBucket | `status.outputs.self_link` |
 | `spec.pathMatchers[].defaultRouteAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].defaultRouteAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].defaultCustomErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
+| `spec.pathMatchers[].pathRules[].service` | GcpBackendService | `status.outputs.self_link` |
+| `spec.pathMatchers[].pathRules[].service` | GcpBackendBucket | `status.outputs.self_link` |
 | `spec.pathMatchers[].pathRules[].routeAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].pathRules[].routeAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].pathRules[].customErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
@@ -4515,6 +4530,8 @@ Fields that can point at another resource's outputs:
 | `spec.pathMatchers[].routeRules[].routeAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].routeRules[].routeAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].routeRules[].customErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
+| `spec.tests[].service` | GcpBackendService | `status.outputs.self_link` |
+| `spec.tests[].service` | GcpBackendBucket | `status.outputs.self_link` |
 
 ## Referenced By
 
