@@ -6,6 +6,8 @@ metadata:
   name: e2e-product
   org: e2e-org
   env: testing
+  annotations:
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml
 spec:
   name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
   description: e2e ${E2E_RUN_ID}

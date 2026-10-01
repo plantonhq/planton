@@ -81,6 +81,32 @@ with offline plans against a seeded state: unchanged plans nothing, each tracked
 replacement, every other change stays in place, and a state without the tracker plans only the
 tracker's creation.
 
+The same tracker serves a value the provider can't READ BACK. Some vendors leave fields out of
+an object they return unless the read asks to expand them (Stripe's "includable" fields: a
+coupon's products and other-currency amounts, a price's other-currency amounts, a shipping rate's
+other-currency amounts, a portal's switchable products). A provider that never expands keeps a
+deployed object's configured value, so a plain deploy plans clean, but a blind import holds
+nothing, and the first plan after it re-sends the value or replaces the object. Read the
+provider's Read for its expand list, then probe the vendor once with and without expanding, and
+let the update path decide:
+- the field updates in place and re-sending it is a no-op: the provider's import catalog
+  declares it in `write_normalized_attributes` (a dotted sub-path when it is one leaf of a block),
+  with the reason, and the live round trip proves the reconcile-apply;
+- the field forces a replacement, or the vendor refuses re-sending it (Stripe refuses a new amount
+  for a currency a coupon already has): `lifecycle.ignore_changes` on the field plus the tracker,
+  so a blind import adopts the object untouched and a change still replaces it. `ignore_changes`
+  alone would silently drop every later change, and a tolerance can never cover a replacement;
+- the provider rejects its own create because the vendor's answer omits the field ("inconsistent
+  result after apply"): nothing in the module can hold it, so the kind can't offer the field on
+  that pin, and the gap goes to the product owner, never into a placeholder.
+
+A value the vendor normalizes on write (Stripe stores a Radar list's string, email and country
+values in lower case) is sent already normalized, keyed by the value as declared, or the
+provider rejects its own result after create. A default the vendor fills in when a block is
+omitted (a billing meter's payload keys) is sent explicitly with the vendor's own default, for
+the same reason. Both are found only by a live run; record each as "verified live" in the module
+comment beside the code that answers it.
+
 SEQUENTIAL STEPS
 1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
    ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the existing

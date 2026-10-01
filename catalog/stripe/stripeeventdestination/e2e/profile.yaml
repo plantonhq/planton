@@ -3,13 +3,13 @@ kind: ComponentE2EProfile
 metadata:
   name: stripeeventdestination
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key).
-  # A destination is deleted on destroy, and the verifier proves it is gone.
-  # Lanes create webhook destinations only; EventBridge and Event Grid
-  # destinations need a real cloud account on the receiving side. Awaiting its
-  # first live run, so no provisioner is claimed yet.
+  # Proven live on OpenTofu against the test sandbox: thin and snapshot
+  # webhook destinations, blind import (the url is read back only with include),
+  # a delete in the Dashboard recovered by forgetting it, and destroy deleting
+  # it. EventBridge and Event Grid destinations need a real cloud account on the
+  # receiving side and are not run.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

@@ -252,12 +252,13 @@ type StripeTaxRegistrationSpec struct {
 	Type StripeTaxRegistrationSpec_Type `protobuf:"varint,2,opt,name=type,proto3,enum=dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationSpec_Type" json:"type,omitempty"`
 	// active_from is when the registration starts, in Unix seconds (1767225600 is
 	// 2026-01-01T00:00:00Z; on Linux `date -u -d 2026-01-01T00:00:00Z +%s` computes one). Stripe
-	// accepts only now or a future time when the registration is created, so recreating a
-	// registration in a new account means moving a start date that has passed forward; an imported
-	// registration keeps Stripe's own value. It updates in place.
+	// accepts only now or a future time no more than five years ahead when the registration is
+	// created, so recreating a registration in a new account means moving a start date that has
+	// passed forward; an imported registration keeps Stripe's own value. It updates in place.
 	ActiveFrom int64 `protobuf:"varint,3,opt,name=active_from,json=activeFrom,proto3" json:"active_from,omitempty"`
 	// expires_at is when the registration stops, in Unix seconds, and the only way to stop Stripe
-	// collecting in that place. Unset, the registration never expires. It updates in place, but
+	// collecting in that place. Stripe refuses one more than five years ahead. Unset, the
+	// registration never expires. It updates in place, but
 	// removing it from the manifest does not clear it in Stripe: the stored date stays, and a new
 	// date is the only change.
 	ExpiresAt *int64 `protobuf:"varint,4,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`

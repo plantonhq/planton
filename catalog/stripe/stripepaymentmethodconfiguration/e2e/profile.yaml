@@ -3,13 +3,10 @@ kind: ComponentE2EProfile
 metadata:
   name: stripepaymentmethodconfiguration
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key). Stripe never deletes a
-  # configuration, so destroy deactivates it and the verifier proves it reads
-  # back inactive; every run's configuration carries the run in its name and
-  # stays in the sandbox. Awaiting its first live run, so no provisioner is
-  # claimed yet.
+  # Proven live on OpenTofu against the test sandbox: create, blind import,
+  # a method's preference changed in place, and destroy deactivating it.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

@@ -64,7 +64,8 @@ type StripePromotionCodeSpec struct {
 	CustomerAccount string `protobuf:"bytes,4,opt,name=customer_account,json=customerAccount,proto3" json:"customer_account,omitempty"`
 	// expires_at is the moment after which the code can no longer be redeemed, in Unix seconds
 	// (1798761599 is 2026-12-31T23:59:59Z; on Linux `date -u -d 2026-12-31T23:59:59Z +%s` computes
-	// one). It can't be later than the coupon's redeem_by. Changing it REPLACES the code.
+	// one). It can't be later than the coupon's redeem_by, and Stripe refuses one more than five
+	// years ahead. Changing it REPLACES the code.
 	ExpiresAt *int64 `protobuf:"varint,5,opt,name=expires_at,json=expiresAt,proto3,oneof" json:"expires_at,omitempty"`
 	// max_redemptions is how many times the code can be redeemed. It can't exceed the coupon's
 	// max_redemptions. Unset, no limit beyond the coupon's. Changing it REPLACES the code.

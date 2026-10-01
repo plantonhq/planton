@@ -4,7 +4,11 @@ metadata:
   name: stripecoupon
 spec:
   # A coupon imports by its Stripe id, which a prior deploy reports as its id output. Coupons made
-  # in the Dashboard or the API may carry an id the account chose.
+  # in the Dashboard or the API may carry an id the account chose. The module's tracker
+  # (terraform_data) is never imported: Stripe does not return a coupon's products or its amounts in
+  # other currencies to the provider's read, so the coupon ignores them after create and the
+  # tracker, created on the first apply after the import, carries them from then on. The imported
+  # coupon keeps its id.
   values:
     - name: coupon_id
       derivations:

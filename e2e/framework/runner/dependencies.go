@@ -21,6 +21,7 @@ import (
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"sigs.k8s.io/yaml"
 )
 
 // Dependency is a single prerequisite deployment that must exist before a
@@ -497,7 +498,7 @@ func prerequisiteManifestPath(repoRoot, componentProvider, consumer, slug string
 // which the HCL arm's Terratest calls run under. Returns the deployed states
 // (needed for teardown) and any error. On the first failure it stops and
 // returns whatever was already deployed so the caller can tear it down.
-func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentProvider, component, scenarioManifestPath, backendURL, runID string, harness provider.Harness) ([]DependencyState, error) {
+func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentProvider, component, scenarioManifestPath, backendURL, runID string, clock time.Time, harness provider.Harness) ([]DependencyState, error) {
 	deps, err := ResolveDependencies(repoRoot, componentProvider, component, scenarioManifestPath)
 	if err != nil {
 		return nil, err
@@ -532,7 +533,7 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentPr
 			// token-suffixed reference lines up with the prerequisite it points
 			// at) plus the scenario slug, so reservation-window identifiers can
 			// be scenario-unique (see ScenarioToken).
-			expandedManifestPath, err := ExpandManifestTokens(docDep.ManifestPath, runID, ScenarioSlug(scenarioManifestPath))
+			expandedManifestPath, err := ExpandManifestTokens(docDep.ManifestPath, runID, ScenarioSlug(scenarioManifestPath), clock)
 			if err != nil {
 				return deployed, errors.Wrapf(err, "failed to expand manifest tokens for dependency %q", dep.KindSlug)
 			}
@@ -1148,25 +1149,25 @@ func ScenarioMissingRequiredEnv(manifestPath string) ([]string, error) {
 
 // manifestAnnotation reads a single metadata annotation from a KRM manifest,
 // returning "" when the annotation (or the annotations map) is absent.
+// manifestAnnotation reads one metadata annotation straight from the YAML document, never through
+// the kind's typed message. Annotations are read from the scenario file as authored, before its
+// tokens expand, and a run token standing in a typed field (a number like
+// ${E2E_UNIX_TIME_PLUS:30d}) cannot parse into the kind's message until then -- annotations are
+// metadata, so reading them must not depend on the spec parsing.
 func manifestAnnotation(manifestPath, key string) (string, error) {
-	obj, err := manifest.LoadManifest(manifestPath)
+	data, err := os.ReadFile(manifestPath)
 	if err != nil {
-		return "", err
+		return "", errors.Wrapf(err, "reading %s", manifestPath)
 	}
-	top := obj.ProtoReflect()
-	metaFd := top.Descriptor().Fields().ByName("metadata")
-	if metaFd == nil || metaFd.Kind() != protoreflect.MessageKind {
-		return "", nil
+	var document struct {
+		Metadata struct {
+			Annotations map[string]string `json:"annotations"`
+		} `json:"metadata"`
 	}
-	annFd := metaFd.Message().Fields().ByName("annotations")
-	if annFd == nil || !annFd.IsMap() {
-		return "", nil
+	if err := yaml.Unmarshal(data, &document); err != nil {
+		return "", errors.Wrapf(err, "reading metadata.annotations of %s", manifestPath)
 	}
-	value := top.Get(metaFd).Message().Get(annFd).Map().Get(protoreflect.ValueOfString(key).MapKey())
-	if !value.IsValid() {
-		return "", nil
-	}
-	return value.String(), nil
+	return document.Metadata.Annotations[key], nil
 }
 
 // manifestMetadataName reads metadata.name from a KRM manifest. The name keys

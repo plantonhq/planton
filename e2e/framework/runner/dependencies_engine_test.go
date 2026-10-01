@@ -150,7 +150,7 @@ func TestDeployDependencies_StripePriceOnProductChainsOnOpenTofu(t *testing.T) {
 		return map[string]interface{}{"id": "price_chain"}, nil
 	}
 
-	states, err := DeployDependencies(context.Background(), t, repoRoot, "stripe", "stripebillingportalconfiguration", scenario, "", "a1b2c3d4", &recordingHarness{})
+	states, err := DeployDependencies(context.Background(), t, repoRoot, "stripe", "stripebillingportalconfiguration", scenario, "", "a1b2c3d4", LaneClock(), &recordingHarness{})
 	t.Cleanup(func() {
 		for _, s := range states {
 			s.terraformCleanup()

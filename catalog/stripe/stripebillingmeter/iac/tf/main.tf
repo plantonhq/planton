@@ -7,7 +7,7 @@
 # reference follows it.
 #
 # customer_mapping.type is always by_id: it is the only mapping Stripe offers, so the module sets
-# it and the spec names only the payload key.
+# it and the spec names only the payload key. Both payload keys are always sent (locals.tf).
 #
 # Destroy deactivates the meter (status inactive); Stripe keeps it. The provider has no handling
 # for a meter it cannot read: the next refresh fails, and the recovery is `tofu state rm` followed
@@ -21,19 +21,13 @@ resource "stripe_billing_meter" "this" {
     formula = var.spec.default_aggregation.formula
   }
 
-  dynamic "customer_mapping" {
-    for_each = local.customer_mapping == null ? [] : [local.customer_mapping]
-    content {
-      type              = "by_id"
-      event_payload_key = customer_mapping.value.event_payload_key
-    }
+  customer_mapping {
+    type              = "by_id"
+    event_payload_key = local.customer_payload_key
   }
 
-  dynamic "value_settings" {
-    for_each = local.value_settings == null ? [] : [local.value_settings]
-    content {
-      event_payload_key = value_settings.value.event_payload_key
-    }
+  value_settings {
+    event_payload_key = local.value_payload_key
   }
 }
 

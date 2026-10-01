@@ -11,6 +11,7 @@ go_library(
         "import_roundtrip.go",
         "lane_engine.go",
         "lifecycle.go",
+        "outofband.go",
         "outputs_verifier.go",
         "provider_config.go",
         "pulumi.go",
@@ -53,6 +54,7 @@ go_library(
         "@org_golang_google_protobuf//encoding/protojson",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
+        "@io_k8s_sigs_yaml//:yaml",
     ],
 )
 
@@ -65,6 +67,8 @@ go_test(
         "fixture_integrity_test.go",
         "import_roundtrip_test.go",
         "lane_engine_test.go",
+        "lifecycle_test.go",
+        "outofband_test.go",
         "outputs_verifier_test.go",
         "refresolve_test.go",
         "setupscript_test.go",

@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -42,6 +43,68 @@ const UnderscoreRunIDToken = "${E2E_RUN_ID_UNDERSCORE}"
 // reinstalls the same database override).
 const ScenarioToken = "${E2E_SCENARIO}"
 
+// TimeTokenPrefix opens a run-clock token: ${E2E_UNIX_TIME_PLUS:<offset>}
+// expands to a Unix timestamp in seconds, the run's clock plus the offset.
+// Some providers bound how far ahead a date may sit (Stripe refuses a
+// promotion code's expiry or a tax registration's start more than five years
+// out), so no literal date stays valid: a near one passes and the lane fails
+// the day it does, a far one is refused. The offset is days and then a Go
+// duration, either part optional ("30d", "365d", "365d1m", "90m"). The clock
+// is the lane's: read once when the lane starts and passed to every expansion
+// in it, so every manifest one lane expands -- the scenario, its
+// prerequisites, its second act -- names the same instant, a second act that
+// repeats the token changes nothing, and a lane that runs late in a long
+// process still gets dates measured from its own start.
+const TimeTokenPrefix = "${E2E_UNIX_TIME_PLUS:"
+
+// timeTokenPattern matches run-clock tokens; the offset is captured and
+// parsed by parseTimeOffset, so a malformed one fails loudly.
+var timeTokenPattern = regexp.MustCompile(`\$\{E2E_UNIX_TIME_PLUS:([^}]*)\}`)
+
+// parseTimeOffset reads a run-clock offset: an optional whole number of days
+// ("<N>d") followed by an optional Go duration ("1m", "2h30m").
+func parseTimeOffset(offset string) (time.Duration, error) {
+	rest := strings.TrimSpace(offset)
+	var total time.Duration
+	if i := strings.Index(rest, "d"); i > 0 {
+		if days, err := strconv.Atoi(rest[:i]); err == nil {
+			total = time.Duration(days) * 24 * time.Hour
+			rest = rest[i+1:]
+		}
+	}
+	if rest != "" {
+		d, err := time.ParseDuration(rest)
+		if err != nil {
+			return 0, errors.Errorf("run-clock offset %q is not days followed by a duration (like 30d or 365d1m)", offset)
+		}
+		total += d
+	}
+	if total <= 0 {
+		return 0, errors.Errorf("run-clock offset %q must point into the future", offset)
+	}
+	return total, nil
+}
+
+// LaneClock is the instant a lane's run-clock tokens count from: now, to the
+// second, in UTC.
+func LaneClock() time.Time {
+	return time.Now().UTC().Truncate(time.Second)
+}
+
+// expandRunClock replaces every run-clock token in text with its timestamp.
+func expandRunClock(text string, clock time.Time) (string, error) {
+	var offsetErr error
+	expanded := timeTokenPattern.ReplaceAllStringFunc(text, func(token string) string {
+		offset, err := parseTimeOffset(timeTokenPattern.FindStringSubmatch(token)[1])
+		if err != nil {
+			offsetErr = err
+			return token
+		}
+		return strconv.FormatInt(clock.Add(offset).Unix(), 10)
+	})
+	return expanded, offsetErr
+}
+
 // EnvTokenPrefix restricts which environment variables scenario manifests may
 // reference through ${E2E_ENV:...} tokens. Batched real-cluster lanes need
 // batch-specific values a committed manifest cannot carry honestly — IRSA
@@ -58,7 +121,8 @@ const EnvTokenPrefix = "PLANTON_E2E_"
 var envTokenPattern = regexp.MustCompile(`\$\{E2E_ENV:(` + EnvTokenPrefix + `[A-Z0-9_]+)\}`)
 
 // ExpandManifestTokens substitutes RunIDToken and ScenarioToken occurrences
-// in the manifest, expands ${E2E_ENV:PLANTON_E2E_*} environment tokens, and
+// in the manifest, expands run-clock tokens from clock (the lane's, see
+// LaneClock), expands ${E2E_ENV:PLANTON_E2E_*} environment tokens, and
 // returns the path to the expanded copy (a temp file, so the source manifest
 // is never modified). Manifests without tokens pass through untouched — the
 // original path is returned and no file is written. scenario is the running
@@ -69,14 +133,15 @@ var envTokenPattern = regexp.MustCompile(`\$\{E2E_ENV:(` + EnvTokenPrefix + `[A-
 // parsed, so the token can appear in any field. Only cloud-side identifier
 // fields should carry it: metadata names must stay stable because prerequisite
 // FK resolution and human debugging both key off them.
-func ExpandManifestTokens(manifestPath, runID, scenario string) (string, error) {
+func ExpandManifestTokens(manifestPath, runID, scenario string, clock time.Time) (string, error) {
 	raw, err := os.ReadFile(manifestPath)
 	if err != nil {
 		return "", errors.Wrapf(err, "failed to read manifest %s for token expansion", manifestPath)
 	}
 	hasEnvTokens := strings.Contains(string(raw), "${E2E_ENV:")
 	hasScenarioToken := strings.Contains(string(raw), ScenarioToken)
-	if !strings.Contains(string(raw), RunIDToken) && !strings.Contains(string(raw), UnderscoreRunIDToken) && !hasEnvTokens && !hasScenarioToken {
+	hasTimeTokens := strings.Contains(string(raw), TimeTokenPrefix)
+	if !strings.Contains(string(raw), RunIDToken) && !strings.Contains(string(raw), UnderscoreRunIDToken) && !hasEnvTokens && !hasScenarioToken && !hasTimeTokens {
 		return manifestPath, nil
 	}
 	if (strings.Contains(string(raw), RunIDToken) || strings.Contains(string(raw), UnderscoreRunIDToken)) && runID == "" {
@@ -92,6 +157,12 @@ func ExpandManifestTokens(manifestPath, runID, scenario string) (string, error) 
 	expanded := strings.ReplaceAll(string(raw), UnderscoreRunIDToken, strings.ReplaceAll(runID, "-", "_"))
 	expanded = strings.ReplaceAll(expanded, RunIDToken, runID)
 	expanded = strings.ReplaceAll(expanded, ScenarioToken, scenario)
+
+	if hasTimeTokens {
+		if expanded, err = expandRunClock(expanded, clock); err != nil {
+			return "", errors.Wrapf(err, "manifest %s", manifestPath)
+		}
+	}
 
 	if hasEnvTokens {
 		var missing []string

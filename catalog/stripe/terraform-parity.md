@@ -64,26 +64,26 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.
 
-**16 of 16 kinds are at total accounting; 0 proven live.**
+**16 of 16 kinds are at total accounting; 14 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
-| StripeBillingMeter | 10 | 6 | 2 | 2 | 0 | ✅ | — |
+| StripeBillingMeter | 10 | 6 | 2 | 2 | 0 | ✅ | ✅ tofu |
 | StripeBillingPortalConfiguration | 7 | 4 | 3 | 0 | 0 | ✅ | — |
-| StripeCoupon | 12 | 9 | 2 | 1 | 0 | ✅ | — |
-| StripeEntitlementFeature | 3 | 3 | 0 | 0 | 0 | ✅ | — |
-| StripeEventDestination | 13 | 10 | 1 | 2 | 0 | ✅ | — |
-| StripePaymentLink | 32 | 13 | 19 | 0 | 0 | ✅ | — |
-| StripePaymentMethodConfiguration | 62 | 3 | 59 | 0 | 0 | ✅ | — |
-| StripePaymentMethodDomain | 2 | 2 | 0 | 0 | 0 | ✅ | — |
-| StripePrice | 43 | 31 | 2 | 10 | 0 | ✅ | — |
-| StripeProduct | 38 | 16 | 1 | 21 | 0 | ✅ | — |
+| StripeCoupon | 12 | 9 | 2 | 1 | 0 | ✅ | ✅ tofu |
+| StripeEntitlementFeature | 3 | 3 | 0 | 0 | 0 | ✅ | ✅ tofu |
+| StripeEventDestination | 13 | 10 | 1 | 2 | 0 | ✅ | ✅ tofu |
+| StripePaymentLink | 32 | 13 | 19 | 0 | 0 | ✅ | ✅ tofu |
+| StripePaymentMethodConfiguration | 62 | 3 | 59 | 0 | 0 | ✅ | ✅ tofu |
+| StripePaymentMethodDomain | 2 | 2 | 0 | 0 | 0 | ✅ | ✅ tofu |
+| StripePrice | 43 | 31 | 2 | 10 | 0 | ✅ | ✅ tofu |
+| StripeProduct | 38 | 16 | 1 | 21 | 0 | ✅ | ✅ tofu |
 | StripePromotionCode | 14 | 10 | 2 | 2 | 0 | ✅ | — |
-| StripeRadarValueList | 6 | 4 | 1 | 1 | 0 | ✅ | — |
-| StripeShippingRate | 15 | 13 | 0 | 2 | 0 | ✅ | — |
-| StripeTaxRate | 10 | 10 | 0 | 0 | 0 | ✅ | — |
-| StripeTaxRegistration | 4 | 3 | 1 | 0 | 0 | ✅ | — |
-| StripeWebhookEndpoint | 6 | 6 | 0 | 0 | 0 | ✅ | — |
+| StripeRadarValueList | 6 | 4 | 1 | 1 | 0 | ✅ | ✅ tofu |
+| StripeShippingRate | 15 | 13 | 0 | 2 | 0 | ✅ | ✅ tofu |
+| StripeTaxRate | 10 | 10 | 0 | 0 | 0 | ✅ | ✅ tofu |
+| StripeTaxRegistration | 4 | 3 | 1 | 0 | 0 | ✅ | ✅ tofu |
+| StripeWebhookEndpoint | 6 | 6 | 0 | 0 | 0 | ✅ | ✅ tofu |
 
 ## Breadth: every GA resource, one disposition
 

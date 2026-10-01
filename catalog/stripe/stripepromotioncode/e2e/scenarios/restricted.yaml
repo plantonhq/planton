@@ -14,7 +14,7 @@ spec:
       name: e2e-coupon-prereq
   code: E2E-${E2E_RUN_ID}-${E2E_SCENARIO}
   maxRedemptions: 10
-  expiresAt: 4102444800
+  expiresAt: ${E2E_UNIX_TIME_PLUS:30d}
   restrictions:
     firstTimeTransaction: true
     minimumAmount: 5000

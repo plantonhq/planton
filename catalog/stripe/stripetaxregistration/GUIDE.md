@@ -40,7 +40,7 @@ The country decides which types exist:
 
 - **An EU member state**: `standard` (registered in that country), `oss_union` or `oss_non_union` (the One-Stop Shop, declared in the country you registered it in), or `ioss` (the Import One-Stop Shop). A `standard` registration may set `placeOfSupplyScheme`: `standard`, `small_seller` or `inbound_goods`.
 - **Canada**: `standard` (GST/HST), `province_standard` (a province's own tax, with `province`) or `simplified`.
-- **The United States**: `state_sales_tax`, `state_communications_tax` or `state_retail_delivery_fee`, each with `state`; or `local_amusement_tax` or `local_lease_tax`, with `state` and the local jurisdiction's FIPS code in `jurisdiction`. A `state_sales_tax` registration may carry `stateSalesTaxElections`.
+- **The United States**: `state_sales_tax`, `state_communications_tax` or `state_retail_delivery_fee`, each with `state`; or `local_amusement_tax` or `local_lease_tax`, with `state` and the local jurisdiction's FIPS code in `jurisdiction`. A `state_sales_tax` registration may carry `stateSalesTaxElections`. Each state offers its own elections, and Stripe refuses one the state doesn't take, naming those it does: Texas takes only `single_local_use_tax`.
 - **Standard only**: AE, AL, AO, AU, AW, BA, BB, BD, BF, BH, BS, CD, CH, ET, GB, GN, IS, JP, ME, MK, MR, NO, NZ, OM, RS, SG, SR, UY, ZA, ZW. A registration may set `placeOfSupplyScheme` to `standard` or `inbound_goods`.
 - **Simplified only**: AM, AZ, BJ, BY, CL, CM, CO, CR, CV, EC, EG, GE, ID, IN, KE, KG, KH, KR, KZ, LA, LK, MA, MD, MX, MY, NG, NP, PE, PH, RU, SA, SN, TH, TJ, TR, TW, TZ, UA, UG, UZ, VN, ZM.
 
@@ -50,7 +50,8 @@ The EU member states are AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU,
 
 Both dates are Unix seconds (`date -u -d 2026-01-01T00:00:00Z +%s` on Linux gives `1767225600`).
 
-- **`activeFrom` must be now or later when the registration is created.** Stripe refuses a start in the past. Recreating a registration in a new account from an old file means moving its start date forward first. An imported registration keeps Stripe's own start date.
+- **`activeFrom` must be now or later, and at most five years ahead, when the registration is created.** Stripe refuses a start in the past, and one further out than five years. Recreating a registration in a new account from an old file means moving its start date forward first. An imported registration keeps Stripe's own start date.
+- **`expiresAt` can't be more than five years ahead either.**
 - **`expiresAt` is the only way to stop collecting.** Set it and apply; the registration stops at that time.
 - **Removing `expiresAt` does not clear it.** The stored date stays. To change an expiry, set a new date.
 

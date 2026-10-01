@@ -1,22 +1,22 @@
 # =============================================================================
 # Stripe E2E Tests
 # =============================================================================
-# Compile gate for the Stripe E2E test package. No Docker, kind, or kubectl
-# needed -- Stripe objects are SaaS API objects behind api.stripe.com, and
-# Stripe kinds run on OpenTofu only.
+# Live proof of every Stripe kind against the dedicated test sandbox. No
+# Docker, kind, or kubectl needed -- Stripe objects are SaaS API objects behind
+# api.stripe.com, and Stripe kinds run on OpenTofu only.
 #
 # Architecture:
 #   1. build-check: compile E2E code + go vet (fast gate, every trigger)
+#   2. e2e: every lane, with the blind import round trip, against the test
+#      sandbox (manual dispatch only; never on a pull request)
 #
-# The live E2E job is added when the dedicated Stripe test sandbox's key
-# (STRIPE_API_KEY) is provisioned as a repository secret; the harness refuses
-# any key that is not a test-mode key, so a live key can never run a lane.
-# Until then this workflow guards the package against compile drift from
-# framework changes.
+# The live job reads the sandbox's restricted key from the repository secret
+# STRIPE_API_KEY, set from the vault. The harness refuses any key that is not a
+# test-mode key before its first call, so a live key can never run a lane.
 #
 # Triggers:
-#   - Pull requests (path-filtered)
-#   - Manual dispatch
+#   - Pull requests (path-filtered): build-check only
+#   - Manual dispatch: build-check, then the live lanes
 # =============================================================================
 
 name: e2e-stripe
@@ -56,3 +56,46 @@ jobs:
 
       - name: Vet Stripe E2E packages
         run: go vet -tags=e2e ./e2e/stripe/...
+
+  # ============================================================================
+  # E2E -- every Stripe lane against the test sandbox
+  # ============================================================================
+  e2e:
+    needs: build-check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    container: ghcr.io/plantonhq/planton/ci-toolchain:latest
+    timeout-minutes: 60
+    # One run against the sandbox at a time: two runs would race on the
+    # sandbox's one default portal configuration and on registrations that
+    # destroy only forgets.
+    concurrency:
+      group: e2e-stripe-sandbox
+      cancel-in-progress: false
+    env:
+      STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+      # The blind import round trip is a merge gate for every kind that ships
+      # an import map; it runs inside each lane.
+      PLANTON_E2E_IMPORT_ROUNDTRIP: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Stripe E2E tests
+        run: |
+          gotestsum \
+            --format=testdox \
+            --junitfile=results-stripe.xml \
+            -- \
+            -tags=e2e \
+            -timeout=55m \
+            -v \
+            -count=1 \
+            ./e2e/stripe/...
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results-stripe
+          path: results-stripe.xml
+          retention-days: 30

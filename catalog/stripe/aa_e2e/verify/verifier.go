@@ -5,6 +5,7 @@ package verify
 import (
 	"net/url"
 	"sort"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -26,11 +27,81 @@ type Verifier interface {
 	VerifyDestroyed(checker ResourceChecker, id string) error
 }
 
+// ResourceDeleter deletes a Stripe object by its API path. Only the out-of-band act uses it: it
+// deletes an object the way a person in the Dashboard would, behind the engine's back.
+type ResourceDeleter interface {
+	DeleteResource(path string) error
+}
+
+// OutOfBandDeletable is implemented by the verifier of a kind Stripe can delete outright, so the
+// out-of-band act (someone deletes the object in the Dashboard) applies to it. A kind whose
+// object Stripe only deactivates or forgets has nothing to delete and does not implement it.
+type OutOfBandDeletable interface {
+	DeleteOutOfBand(client ResourceClient, id string) error
+}
+
+// ResourceClient reads and deletes Stripe objects.
+type ResourceClient interface {
+	ResourceChecker
+	ResourceDeleter
+}
+
+// SecretVerifier is implemented by the verifier of a kind whose module reports a signing secret,
+// which Stripe returns only when it creates the object. The harness checks the secret's shape
+// after deploy and, without ever logging it, that a replaced or recreated object came with a new
+// one and an object updated in place kept its own.
+type SecretVerifier interface {
+	// SecretOutput is the name of the output that holds the secret; empty when the kind has none.
+	SecretOutput() string
+	// SecretRequired reports whether every deploy of the kind must report one (an event
+	// destination reports one only when it delivers to a webhook).
+	SecretRequired() bool
+}
+
+// signingSecretPrefix is how every Stripe signing secret begins.
+const signingSecretPrefix = "whsec_"
+
+// CheckSecretShape refuses a reported secret that is not a Stripe signing secret, and a missing
+// one the kind requires. It names the output, never the value.
+func CheckSecretShape(component string, sv SecretVerifier, secret string) error {
+	switch {
+	case secret == "" && sv.SecretRequired():
+		return errors.Errorf("%s: output %s is empty after create, but Stripe returns the signing secret at creation", component, sv.SecretOutput())
+	case secret != "" && !strings.HasPrefix(secret, signingSecretPrefix):
+		return errors.Errorf("%s: output %s is not a signing secret (it does not begin %s)", component, sv.SecretOutput(), signingSecretPrefix)
+	}
+	return nil
+}
+
 // deletedVerifier is for a kind whose destroy deletes the object: it must exist after deploy
-// and answer 404 after destroy.
+// and answer 404 after destroy. Stripe can delete such an object outright, so the out-of-band act
+// applies to it.
 type deletedVerifier struct {
 	component string
 	path      string // the API collection, e.g. "v1/webhook_endpoints"
+	// secretOutput names the module's signing-secret output, when the kind has one.
+	secretOutput   string
+	secretRequired bool
+}
+
+func (v *deletedVerifier) SecretOutput() string { return v.secretOutput }
+func (v *deletedVerifier) SecretRequired() bool { return v.secretRequired }
+
+// DeleteOutOfBand deletes the object through Stripe's API and confirms it now reads back absent,
+// so the act's later phases prove what the engine does with a missing object.
+func (v *deletedVerifier) DeleteOutOfBand(client ResourceClient, id string) error {
+	path := v.path + "/" + url.PathEscape(id)
+	if err := client.DeleteResource(path); err != nil {
+		return errors.Wrapf(err, "%s: deleting %s outside Planton", v.component, id)
+	}
+	_, exists, err := client.ReadResource(path)
+	if err != nil {
+		return errors.Wrapf(err, "%s: reading %s after deleting it outside Planton", v.component, id)
+	}
+	if exists {
+		return errors.Errorf("%s: %s still exists after Stripe answered its delete", v.component, id)
+	}
+	return nil
 }
 
 func (v *deletedVerifier) VerifyExists(checker ResourceChecker, id string) error {
@@ -157,6 +228,16 @@ type withChildren struct {
 
 func (v *withChildren) ChildOutput() string { return v.output }
 
+// DeleteOutOfBand deletes the parent the way its own verifier does; Stripe deletes a deleted
+// parent's children with it (a Radar list's items), and the recovery recreates both.
+func (v *withChildren) DeleteOutOfBand(client ResourceClient, id string) error {
+	d, ok := v.Verifier.(OutOfBandDeletable)
+	if !ok {
+		return errors.Errorf("%s: Stripe keeps this object after its destroy, so it cannot be deleted outside Planton", v.component)
+	}
+	return d.DeleteOutOfBand(client, id)
+}
+
 func (v *withChildren) VerifyChildrenExist(checker ResourceChecker, parentID string, childIDs map[string]string) error {
 	for _, key := range sortedKeys(childIDs) {
 		if err := v.requireChild(checker, parentID, key, childIDs[key], true, "after deploy"); err != nil {
@@ -205,8 +286,8 @@ func sortedKeys(m map[string]string) []string {
 
 // verifiers maps each Stripe component directory to its verifier.
 var verifiers = map[string]Verifier{
-	"stripewebhookendpoint":            &deletedVerifier{component: "stripewebhookendpoint", path: "v1/webhook_endpoints"},
-	"stripeeventdestination":           &deletedVerifier{component: "stripeeventdestination", path: "v2/core/event_destinations"},
+	"stripewebhookendpoint":            &deletedVerifier{component: "stripewebhookendpoint", path: "v1/webhook_endpoints", secretOutput: "secret", secretRequired: true},
+	"stripeeventdestination":           &deletedVerifier{component: "stripeeventdestination", path: "v2/core/event_destinations", secretOutput: "signing_secret"},
 	"stripebillingportalconfiguration": &deactivatedVerifier{component: "stripebillingportalconfiguration", path: "v1/billing_portal/configurations"},
 	"stripepaymentmethodconfiguration": &deactivatedVerifier{component: "stripepaymentmethodconfiguration", path: "v1/payment_method_configurations"},
 	"stripepaymentmethoddomain":        &forgottenVerifier{component: "stripepaymentmethoddomain", path: "v1/payment_method_domains"},

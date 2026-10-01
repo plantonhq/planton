@@ -1,6 +1,9 @@
 # A US state sales tax registration with a local-tax election, the deepest
-# shape the module writes, scheduled for 1 January 2100 and expiring a day
-# later.
+# shape the module writes. It starts a minute after the lane and ends ten
+# seconds later: Stripe holds one registration per state until it has ended,
+# so a run must leave its own ended for the next. Texas offers one election,
+# single_local_use_tax; Stripe refuses any other, naming the ones the state
+# takes.
 apiVersion: stripe.planton.dev/v1alpha1
 kind: StripeTaxRegistration
 metadata:
@@ -11,7 +14,7 @@ spec:
   country: US
   type: state_sales_tax
   state: TX
-  activeFrom: 4102444800
-  expiresAt: 4102531200
+  activeFrom: ${E2E_UNIX_TIME_PLUS:1m}
+  expiresAt: ${E2E_UNIX_TIME_PLUS:1m10s}
   stateSalesTaxElections:
-    - type: simplified_sellers_use_tax
+    - type: single_local_use_tax

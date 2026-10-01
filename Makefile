@@ -619,7 +619,9 @@ e2e-test-auth0-terraform:  ## Run Auth0 Terraform E2E tests only
 # ── Stripe E2E targets ───────────────────────────────────────────────────────
 # Stripe kinds run on OpenTofu only, so there is one lane. It runs only against
 # the dedicated test sandbox: the harness refuses any key that is not a
-# test-mode key (sk_test_/rk_test_) before a lane starts.
+# test-mode key (sk_test_/rk_test_) before a lane starts. Export
+# PLANTON_E2E_IMPORT_ROUNDTRIP=1 to add the blind import round trip to every
+# lane (the CI live job always does); every lane together takes minutes.
 
 .PHONY: e2e-test-stripe
 e2e-test-stripe:  ## Run Stripe E2E tests (requires STRIPE_API_KEY of the test sandbox; live keys are refused)

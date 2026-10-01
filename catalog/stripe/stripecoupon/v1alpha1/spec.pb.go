@@ -115,8 +115,8 @@ type StripeCouponSpec struct {
 	// amount_off, never with percent_off. Changing it REPLACES the coupon.
 	Currency string `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
 	// currency_options are amount_off in other currencies, keyed by lowercase currency code ("eur"),
-	// so a customer paying in theirs gets the same discount. Only with amount_off. They update in
-	// place.
+	// so a customer paying in theirs gets the same discount. Only with amount_off. Changing them
+	// REPLACES the coupon: Stripe refuses a new amount for a currency the coupon already has.
 	CurrencyOptions map[string]int64 `protobuf:"bytes,5,rep,name=currency_options,json=currencyOptions,proto3" json:"currency_options,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	// duration is how long the discount applies to a subscription. Unset, Stripe uses once.
 	// Changing it REPLACES the coupon.

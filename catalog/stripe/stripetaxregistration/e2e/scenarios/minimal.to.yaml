@@ -1,0 +1,18 @@
+# The second act of minimal: an earlier expiry, seventy seconds after the
+# lane's start, the change a registration takes in place. It ends the
+# registration shortly after the lane, so the next run can register India
+# again.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeTaxRegistration
+metadata:
+  name: e2e-tax-registration
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-second-act: minimal.yaml
+    planton.dev/e2e-expect-upgrade: in-place
+spec:
+  country: IN
+  type: simplified
+  activeFrom: ${E2E_UNIX_TIME_PLUS:1m}
+  expiresAt: ${E2E_UNIX_TIME_PLUS:1m10s}

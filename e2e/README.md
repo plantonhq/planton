@@ -271,6 +271,25 @@ run-scoped identifier lives in an underscore-only field. Do NOT fall back to
 a fixed identifier to dodge the character class — see the next paragraph for
 why that 400s.
 
+**Dates a provider bounds take the run-clock token,
+`${E2E_UNIX_TIME_PLUS:<offset>}`.** It expands to a Unix timestamp in
+seconds: the lane's start plus the offset, written as days and then a Go
+duration, either part optional (`30d`, `365d`, `1m10s`, `90m`). The clock is
+read once when the lane starts and passed to every expansion in it, so the
+scenario, its prerequisites and its second act all name the same instant, a
+second act that repeats the token changes nothing, and a lane that runs late
+in a long process still measures from its own start. A literal date is wrong either way once the provider bounds
+it: Stripe refuses a promotion code's expiry or a tax registration's start
+more than five years ahead (a far literal is refused today), and a near one
+fails the day it passes. An object that destroy only forgets, and that the
+vendor holds one of per place, must be left ended by the lane that made it:
+Stripe keeps one tax registration per country or state until it has ended
+(even a scheduled one blocks the next), so the tax-registration scenarios
+start a minute after the lane and expire seconds later, and the next run
+finds the place free. The base `e2e/manifest.yaml` is parsed as a typed example and takes no
+token in a number field; it carries a near-future literal with a note on the
+range the provider takes ([tokens.go](framework/runner/tokens.go)).
+
 **Some holds are keyed by a user-chosen SUB-resource ID and survive deleting
 the parent.** A Vertex AI DeployedIndex that is in a failed state or still
 undeploying holds its user-chosen `deployed_index_id` with a 400 ("It will
@@ -546,8 +565,9 @@ wrong-cause states (pull failures) rather than polling them into a timeout.
 The standard lifecycle proves one install. Some promises are about what
 happens NEXT -- a version bump re-applies what the module owns, a destroy
 keeps what it must keep and the next install re-adopts it, a change the
-module must refuse is refused before anything is touched. Three
-annotations on a scenario extend the lifecycle; all three reuse the same
+module must refuse is refused before anything is touched, an object
+someone deleted in the vendor's console comes back the way the GUIDE says.
+Four annotations on a scenario extend the lifecycle; each reuses the same
 engine input binding the first deploy used, so a second manifest reaches
 the engine exactly the way the first did (a fresh stack input for Pulumi, a
 regenerated tfvars in the same working directory for Terraform):
@@ -570,9 +590,34 @@ regenerated tfvars in the same working directory for Terraform):
   VERIFY-CLN: the same manifest deployed onto a cluster that may still
   carry what the first install deliberately kept.
 
+- **`planton.dev/e2e-out-of-band-delete: <recovery>`** adds
+  OUT-OF-BAND-DELETE -> DRIFT-PLAN -> RECOVER -> VERIFY-RECOVERED after
+  VERIFY-RES (and the import round-trip): the harness deletes the deployed
+  object through the vendor's own API (`provider.OutOfBandDeleter`,
+  confirming it reads back absent), the engine plans against the stale
+  state, and the outcome must match the recovery the GUIDE teaches.
+  `recreates` means the plan proposes creating the object again and a plain
+  apply brings it back; `forget:<address>[,<address>...]` means the plan
+  FAILS on the missing object (a provider without "not found" handling) and
+  the recovery forgets those addresses (`state rm`) before the apply. A
+  mismatch names the GUIDE sentence that is wrong. HCL lanes only: a Pulumi
+  lane carrying it is refused, never skipped.
+
 The second-act manifest carries **`planton.dev/e2e-second-act: <first-act
 file>`** so discovery never runs it as a lane of its own; it is reachable
-only through the first act's annotation. Every kind on the catalog's CRD
+only through the first act's annotation. The runner prepares it the way it
+prepared the first act: it is found beside the scenario as authored, its
+tokens expand to the FIRST act's run id and scenario slug (so a name built
+from them names the same object), and its references resolve against the
+same deployed prerequisites. During the second act the context carries the
+first act's manifest path too (`provider.FirstActManifestPathKey`), so a
+verifier can compare what the upgrade changed. A harness that can tell
+from the vendor's own ids whether an object kept its identity reads
+**`planton.dev/e2e-expect-upgrade: in-place | replaced`** from the second
+manifest: in place, the object keeps its id (and any signing secret);
+replaced, a new object exists and the old one meets the kind's delete truth
+(the Stripe harness requires the annotation on every second act, so an
+upgrade is never passed unjudged). Every kind on the catalog's CRD
 primitive runs the same five shapes (the OpenTelemetry, Solr and OpenSearch
 operators, and the generic Helm release on a CRD-bearing chart): `minimal`
 keeps its CRDs and reinstalls onto them, the cleanup lane turns keep off so

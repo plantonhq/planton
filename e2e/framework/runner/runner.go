@@ -77,7 +77,12 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 	// identifiers that cloud providers reserve across soft-delete windows get a
 	// fresh value on every run (and on each engine within a run).
 	expandRunID := EngineScopedRunID(tc.RunID, tc.Engine)
-	expandedPath, err := ExpandManifestTokens(tc.ManifestPath, expandRunID, ScenarioSlug(tc.ManifestPath))
+	// The scenario file as authored: lifecycle annotations name files beside
+	// IT, and a second act is expanded the way this one is (see
+	// prepareSecondAct), so both acts must start from the source.
+	sourceManifest := tc.ManifestPath
+	laneClock := LaneClock()
+	expandedPath, err := ExpandManifestTokens(tc.ManifestPath, expandRunID, ScenarioSlug(tc.ManifestPath), laneClock)
 	if err != nil {
 		result.Passed = false
 		result.Phases = append(result.Phases, PhaseResult{
@@ -95,13 +100,16 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 	// Phase 0: deploy dependencies (registry prerequisites merged with any the
 	// scenario manifest declares via its e2e-prerequisites annotation)
 	var dependencyStates []DependencyState
+	// depOutputs resolves the scenario's value_from refs; a second act's
+	// manifest resolves against the same outputs (prepareSecondAct).
+	var depOutputs DependencyOutputs
 	if tc.RepoRoot != "" {
 		depStart := time.Now()
 		var err error
 		// The engine-scoped id is passed down so prerequisite manifests expand to
 		// the same values as the scenario under test (their tokens must line up),
 		// and so each engine's prerequisite deploys get distinct identifiers.
-		dependencyStates, err = DeployDependencies(ctx, tc.T, tc.RepoRoot, tc.Provider, tc.Component, tc.ManifestPath, tc.BackendURL, expandRunID, harness)
+		dependencyStates, err = DeployDependencies(ctx, tc.T, tc.RepoRoot, tc.Provider, tc.Component, tc.ManifestPath, tc.BackendURL, expandRunID, laneClock, harness)
 		pr := PhaseResult{
 			Phase:    PhaseDepsUp,
 			Duration: time.Since(depStart),
@@ -130,7 +138,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		// prerequisites' outputs -- the orchestrator's resolution step, performed
 		// here so a composed topology (e.g. subnet -> vpc) can be tested standalone.
 		if len(dependencyStates) > 0 {
-			depOutputs := make(DependencyOutputs, len(dependencyStates))
+			depOutputs = make(DependencyOutputs, len(dependencyStates))
 			for _, depState := range dependencyStates {
 				kind := crkreflect.KindFromString(depState.Dependency.KindSlug)
 				if depOutputs[kind] == nil {
@@ -252,10 +260,16 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 	// same stack (upgrade, or an upgrade that must be refused) and a second
 	// install after the first destroy. They presuppose a successful first
 	// deploy, so they never combine with expect-deploy-failure.
-	lifecycle, lifecycleErr := readLifecycleAnnotations(tc.ManifestPath)
-	if lifecycleErr == nil && expectDeployFailure != "" && (lifecycle.upgradeManifest != "" || lifecycle.reinstall) {
+	lifecycle, lifecycleErr := readLifecycleAnnotations(sourceManifest)
+	if lifecycleErr == nil && expectDeployFailure != "" && (lifecycle.upgradeManifest != "" || lifecycle.reinstall || lifecycle.outOfBand != nil) {
 		lifecycleErr = errors.Errorf("scenario carries %s together with a lifecycle annotation -- a deploy that must fail has no second act",
 			ExpectDeployFailureAnnotation)
+	}
+	if lifecycleErr == nil && lifecycle.outOfBand != nil {
+		lifecycleErr = requireOutOfBandEngine(tc.Engine)
+	}
+	if lifecycleErr == nil && lifecycle.upgradeManifest != "" {
+		lifecycle.upgradeManifest, lifecycleErr = prepareSecondAct(lifecycle.upgradeManifest, expandRunID, ScenarioSlug(sourceManifest), laneClock, depOutputs)
 	}
 	if lifecycleErr != nil {
 		result.Passed = false
@@ -321,6 +335,24 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		if importRoundTripEnabled(tc) {
 			phases = append(phases, lifecyclePhase{PhaseImportRT, func() error { return runImportRoundTrip(tc) }})
 		}
+		// The out-of-band act (outofband.go): the object is deleted behind
+		// the engine's back, the next plan must behave as the GUIDE says, and
+		// the GUIDE's recovery must bring it back before anything else runs
+		// against it.
+		if lifecycle.outOfBand != nil {
+			recovery := lifecycle.outOfBand
+			phases = append(phases,
+				lifecyclePhase{PhaseOutOfBandDelete, func() error { return runOutOfBandDelete(verifyCtx, tc, harness) }},
+				lifecyclePhase{PhaseDriftPlan, func() error { return runDriftPlan(tc, recovery) }},
+				lifecyclePhase{PhaseRecover, func() error { return runRecover(tc, recovery) }},
+				lifecyclePhase{PhaseVerifyRecovered, func() error {
+					if err := runVerifyOutputs(tc); err != nil {
+						return err
+					}
+					return runVerifyResources(verifyCtx, tc, harness)
+				}},
+			)
+		}
 		// The second act (lifecycle.go). An upgrade re-deploys the same stack
 		// from the second manifest and verifies against THAT manifest; the
 		// destroy that follows tears down the upgraded state. An expected
@@ -336,6 +368,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 				}})
 			} else {
 				upgradedCtx := context.WithValue(ctx, provider.ManifestPathKey{}, upgradeManifest)
+				upgradedCtx = context.WithValue(upgradedCtx, provider.FirstActManifestPathKey{}, originalManifest)
 				cleanupCtx = upgradedCtx
 				phases = append(phases,
 					lifecyclePhase{PhaseUpgrade, func() error { return runUpgrade(tc, upgradeManifest) }},
@@ -389,7 +422,8 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 			result.Passed = false
 			switch p.phase {
 			case PhaseDeploy, PhaseIdempotency, PhaseVerifyOut, PhaseVerifyRes, PhaseVerifyCause, PhaseImportRT, PhaseExpectFail,
-				PhaseUpgrade, PhaseVerifyUpgraded, PhaseUpgradeExpectFail, PhaseReinstall, PhaseVerifyReinstalled:
+				PhaseUpgrade, PhaseVerifyUpgraded, PhaseUpgradeExpectFail, PhaseReinstall, PhaseVerifyReinstalled,
+				PhaseOutOfBandDelete, PhaseDriftPlan, PhaseRecover, PhaseVerifyRecovered:
 				// A failed DEPLOY-EXPECT-FAIL needs the cleanup destroy on BOTH
 				// branches: an unexpected deploy success leaves live resources,
 				// and a failed post-mortem leaves the tainted partial stack.

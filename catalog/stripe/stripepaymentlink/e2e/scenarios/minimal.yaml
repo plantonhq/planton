@@ -7,6 +7,8 @@ metadata:
   name: e2e-payment-link
   org: e2e-org
   env: testing
+  annotations:
+    planton.dev/e2e-upgrade-manifest: minimal.to.yaml
 spec:
   lineItems:
     - price:

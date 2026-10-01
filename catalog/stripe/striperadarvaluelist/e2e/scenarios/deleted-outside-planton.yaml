@@ -1,0 +1,20 @@
+# A list deleted in the Dashboard, behind Planton's back. Stripe deletes its
+# items with it, and the provider has no handling for an object it cannot read,
+# so the next plan fails; the GUIDE's recovery forgets the list and its items
+# from state and applies, which creates a new list with every item.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeRadarValueList
+metadata:
+  name: e2e-radarvaluelist-oob
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-out-of-band-delete: forget:stripe_radar_value_list.this,stripe_radar_value_list_item.this
+spec:
+  alias: e2e_oob_${E2E_RUN_ID_UNDERSCORE}
+  name: e2e ${E2E_RUN_ID} ${E2E_SCENARIO}
+  itemType: email
+  items:
+    - fraud@example.com
+  metadata:
+    planton_e2e_run: ${E2E_RUN_ID}

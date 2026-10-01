@@ -3,14 +3,12 @@ kind: ComponentE2EProfile
 metadata:
   name: stripeproduct
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key).
-  # A product is archived on destroy, and the verifier proves it reads back
-  # inactive; every run's product carries the run in its name and stays in the
-  # sandbox, archived. The features scenario deploys a run-named
-  # StripeEntitlementFeature as a prerequisite on OpenTofu. Awaiting its first
-  # live run, so no provisioner is claimed yet.
+  # Proven live on OpenTofu against the test sandbox: plain, shippable and
+  # feature-linked products (StripeEntitlementFeature deploys first), every
+  # feature link imported blind, an in-place update, and destroy archiving the
+  # product and deleting its feature links.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

@@ -51,8 +51,8 @@ message StripeCouponSpec {
   }];
 
   // currency_options are amount_off in other currencies, keyed by lowercase currency code ("eur"),
-  // so a customer paying in theirs gets the same discount. Only with amount_off. They update in
-  // place.
+  // so a customer paying in theirs gets the same discount. Only with amount_off. Changing them
+  // REPLACES the coupon: Stripe refuses a new amount for a currency the coupon already has.
   map<string, int64> currency_options = 5 [(buf.validate.field).map = {
     keys: {
       string: {pattern: "^[a-z]{3}$"}

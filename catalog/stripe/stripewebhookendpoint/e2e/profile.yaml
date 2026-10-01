@@ -3,11 +3,14 @@ kind: ComponentE2EProfile
 metadata:
   name: stripewebhookendpoint
 spec:
-  # Lanes run against the dedicated Stripe test sandbox only (STRIPE_API_KEY,
-  # refused unless it is a test-mode key). An endpoint is deleted on destroy,
-  # and the verifier proves it is gone. Awaiting its first live run, so no
-  # provisioner is claimed yet.
+  # Proven live on OpenTofu against the dedicated Stripe test sandbox
+  # (STRIPE_API_KEY, refused unless it is a test-mode key): create with a
+  # signing secret, blind import, an in-place update that keeps the endpoint and
+  # its secret, an API-version change that replaces it with a new secret, a
+  # delete in the Dashboard recovered by forgetting it and applying, and destroy
+  # deleting it.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - tofu
   timeout_minutes: 5

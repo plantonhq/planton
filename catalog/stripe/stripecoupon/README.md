@@ -33,7 +33,7 @@ spec:
 | `duration`, `durationInMonths` | `once` (Stripe's default), `repeating` for some months, or `forever`. **Replaces** |
 | `maxRedemptions`, `redeemBy` | Limits across all customers; `redeemBy` is Unix seconds. **Replaces** |
 | `appliesToProducts` | Only these products, by reference to StripeProduct. **Replaces** |
-| `currencyOptions` | `amountOff` in other currencies, keyed by currency. Changes in place |
+| `currencyOptions` | `amountOff` in other currencies, keyed by currency. Changing it replaces the coupon |
 | `name` | What customers see on invoices. Changes in place |
 | `metadata` | Key-value pairs stored on the coupon. Changes in place |
 

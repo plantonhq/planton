@@ -6,12 +6,22 @@
 #
 # Destroy deletes the list. Stripe refuses while a Radar rule still uses the list, and rules are
 # outside this module. The provider has no handling for a list it cannot read: the next refresh
-# fails, and the recovery is `tofu state rm` followed by an apply.
+# fails. Stripe deletes a list's items with it, so the recovery forgets both
+# (`tofu state rm stripe_radar_value_list.this stripe_radar_value_list_item.this`) and applies.
 resource "stripe_radar_value_list" "this" {
   alias     = var.spec.alias
   name      = var.spec.name
   item_type = local.item_type
   metadata  = local.metadata
+
+  lifecycle {
+    # Two declared values that differ only by case are one value once Stripe lowers them, so the
+    # list would hold one item where the file declares two. Refused before anything is created.
+    precondition {
+      condition     = length(distinct(values(local.items))) == length(local.items)
+      error_message = "Two items differ only by case. Stripe stores string, email and country values in lower case, so they are the same item: declare each value once."
+    }
+  }
 }
 
 # stripe_radar_value_list_item is one value in the list. An item cannot be updated: both fields

@@ -11,7 +11,7 @@ This preset is a state sales tax registration in Texas. It lets Stripe Tax colle
 
 - **State** (`state: TX`) -- the state you are registered in; changing it creates a new registration
 - **Type** (`type: state_sales_tax`) -- the state's sales tax; `state_communications_tax` and `state_retail_delivery_fee` are the other state-level types, and `local_amusement_tax` and `local_lease_tax` take a `jurisdiction`
-- **Start** (`activeFrom`) -- the preset's date is 1 January 2100, so applying it unchanged schedules a registration that never starts in practice. Set your real start: now or later, in Unix seconds
+- **Start** (`activeFrom`) -- the preset's date is 1 January 2028, a placeholder: applying it unchanged schedules a registration that starts collecting tax then. Set your real start: now or later, at most five years ahead, in Unix seconds
 - **Destroy only forgets** -- Stripe keeps collecting; set `expiresAt` and apply to stop
 
 ## Placeholders to Replace
