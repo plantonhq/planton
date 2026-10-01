@@ -1,0 +1,41 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonPlatform
+metadata:
+  name: planton
+spec:
+  namespace:
+    value: planton
+  create_namespace: true
+  # The first platform release whose control plane signs with an App the
+  # install declares. An older release offers no install App, so this preset
+  # never names a lower version.
+  version: v0.0.113
+  ingress:
+    enabled: true
+    hostname: planton.example.com
+    tls:
+      issuer:
+        name: letsencrypt
+        kind: ClusterIssuer
+  github:
+    hosts:
+      - host: github.com
+        # The App registered for the whole install on github.com: its webhook
+        # points at https://planton.example.com/webhooks/github. Its private
+        # key, exactly as GitHub generated it, and its webhook secret live in
+        # one Secret in the platform's namespace; create it before applying:
+        #
+        #   kubectl -n planton create secret generic planton-github-app \
+        #     --from-file=private-key.pem=./app.private-key.pem \
+        #     --from-literal=webhook-secret=...
+        #
+        # A rotated key is live on the next installation token, no restart.
+        app:
+          client_id: Iv23liExampleClientId
+          private_key_secret_ref:
+            name: planton-github-app
+            key: private-key.pem
+          webhook_secret_ref:
+            name: planton-github-app
+            key: webhook-secret
+    # Requires operator chart 0.14.1 or newer.

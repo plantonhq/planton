@@ -223,7 +223,20 @@ type KubernetesPlantonPlatformSpec struct {
 	// *
 	// Sizes OpenFGA, the platform's authorization engine. Requires a
 	// planton-operator chart >= 0.23.0.
-	Openfga       *KubernetesPlantonPlatformOpenFga `protobuf:"bytes,22,opt,name=openfga,proto3" json:"openfga,omitempty"`
+	Openfga *KubernetesPlantonPlatformOpenFga `protobuf:"bytes,22,opt,name=openfga,proto3" json:"openfga,omitempty"`
+	// *
+	// The GitHub hosts this install works with, the GitHub App registered for
+	// the whole install on each, and whether each host can deliver webhooks
+	// to the install. With an App declared, every organization connects in
+	// one click: the control plane signs installation tokens with the App's
+	// key and verifies its deliveries with the App's webhook secret, both
+	// read from Secrets in the platform's namespace as mounted files, so a
+	// rotated key is live on the next token. Absent, the install offers
+	// github.com with "bring your own App" and judges webhooks by the front
+	// door, the right posture for an adopter on github.com who has declared
+	// nothing. Requires a planton-operator chart that knows this field
+	// (0.14.1 or newer) and a platform version whose control plane reads it.
+	Github        *KubernetesPlantonPlatformGithub `protobuf:"bytes,23,opt,name=github,proto3" json:"github,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -412,6 +425,229 @@ func (x *KubernetesPlantonPlatformSpec) GetOpenfga() *KubernetesPlantonPlatformO
 	return nil
 }
 
+func (x *KubernetesPlantonPlatformSpec) GetGithub() *KubernetesPlantonPlatformGithub {
+	if x != nil {
+		return x.Github
+	}
+	return nil
+}
+
+// *
+// What the install knows about GitHub, declared once by the platform team
+// and read by every organization's connection wizard.
+type KubernetesPlantonPlatformGithub struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The GitHub hosts, in the order the connection wizard offers them.
+	// Declare github.com to give it an App or to say it explicitly; declare a
+	// GitHub Enterprise Server to make it the first choice. A host left out
+	// can still be typed by hand in a connection, without an install App.
+	Hosts []*KubernetesPlantonPlatformGithubHost `protobuf:"bytes,1,rep,name=hosts,proto3" json:"hosts,omitempty"`
+	// *
+	// Let connections use a GitHub sign-in the control plane's own process
+	// carries (a GITHUB_TOKEN in its environment). Off by default on a
+	// shared install, because that token would act for everyone.
+	HostLogin     bool `protobuf:"varint,2,opt,name=host_login,json=hostLogin,proto3" json:"host_login,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesPlantonPlatformGithub) Reset() {
+	*x = KubernetesPlantonPlatformGithub{}
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPlantonPlatformGithub) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPlantonPlatformGithub) ProtoMessage() {}
+
+func (x *KubernetesPlantonPlatformGithub) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPlantonPlatformGithub.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformGithub) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *KubernetesPlantonPlatformGithub) GetHosts() []*KubernetesPlantonPlatformGithubHost {
+	if x != nil {
+		return x.Hosts
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformGithub) GetHostLogin() bool {
+	if x != nil {
+		return x.HostLogin
+	}
+	return false
+}
+
+// *
+// One GitHub host and what the install offers on it.
+type KubernetesPlantonPlatformGithubHost struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The hostname as people type it in a browser: github.com, or a GitHub
+	// Enterprise Server such as github.example.com. A hostname, never a URL;
+	// the control plane derives the API address.
+	Host string `protobuf:"bytes,1,opt,name=host,proto3" json:"host,omitempty"`
+	// *
+	// A GitHub App registered on this host for the whole install. With it,
+	// every organization connects in one click and gets webhooks and check
+	// runs; without it, teams bring their own App. The App must be
+	// registered on this host: an App on github.com cannot sign for an
+	// enterprise server.
+	App *KubernetesPlantonPlatformGithubApp `protobuf:"bytes,2,opt,name=app,proto3" json:"app,omitempty"`
+	// *
+	// Whether this host can deliver webhooks to the install: auto (judge by
+	// the front door, reachable when it is on the public internet),
+	// reachable (an enterprise server on the install's private network), or
+	// unreachable (a public host that cannot reach a door public only inside
+	// a corporate perimeter). Where webhooks cannot arrive, Planton checks
+	// GitHub for pushes and every team is told so. Platform default: auto.
+	Webhooks      *string `protobuf:"bytes,3,opt,name=webhooks,proto3,oneof" json:"webhooks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesPlantonPlatformGithubHost) Reset() {
+	*x = KubernetesPlantonPlatformGithubHost{}
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPlantonPlatformGithubHost) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPlantonPlatformGithubHost) ProtoMessage() {}
+
+func (x *KubernetesPlantonPlatformGithubHost) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPlantonPlatformGithubHost.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformGithubHost) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *KubernetesPlantonPlatformGithubHost) GetHost() string {
+	if x != nil {
+		return x.Host
+	}
+	return ""
+}
+
+func (x *KubernetesPlantonPlatformGithubHost) GetApp() *KubernetesPlantonPlatformGithubApp {
+	if x != nil {
+		return x.App
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformGithubHost) GetWebhooks() string {
+	if x != nil && x.Webhooks != nil {
+		return *x.Webhooks
+	}
+	return ""
+}
+
+// *
+// The identity of a GitHub App registered for the install on one host. Its
+// private key stays in a Secret the adopter owns, exactly as GitHub
+// generated it.
+type KubernetesPlantonPlatformGithubApp struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The App's Client ID, from its settings page. Not a secret.
+	ClientId string `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	// *
+	// The Secret key holding the App's private key as GitHub generated it:
+	// the PEM text, unencoded.
+	PrivateKeySecretRef *KubernetesPlantonPlatformSecretKeyRef `protobuf:"bytes,2,opt,name=private_key_secret_ref,json=privateKeySecretRef,proto3" json:"private_key_secret_ref,omitempty"`
+	// *
+	// The Secret key holding the webhook secret set on the App, so its
+	// deliveries are verified as the App's own. Leave it out only on a host
+	// that cannot deliver webhooks at all.
+	WebhookSecretRef *KubernetesPlantonPlatformSecretKeyRef `protobuf:"bytes,3,opt,name=webhook_secret_ref,json=webhookSecretRef,proto3" json:"webhook_secret_ref,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *KubernetesPlantonPlatformGithubApp) Reset() {
+	*x = KubernetesPlantonPlatformGithubApp{}
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPlantonPlatformGithubApp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPlantonPlatformGithubApp) ProtoMessage() {}
+
+func (x *KubernetesPlantonPlatformGithubApp) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPlantonPlatformGithubApp.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformGithubApp) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *KubernetesPlantonPlatformGithubApp) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *KubernetesPlantonPlatformGithubApp) GetPrivateKeySecretRef() *KubernetesPlantonPlatformSecretKeyRef {
+	if x != nil {
+		return x.PrivateKeySecretRef
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonPlatformGithubApp) GetWebhookSecretRef() *KubernetesPlantonPlatformSecretKeyRef {
+	if x != nil {
+		return x.WebhookSecretRef
+	}
+	return nil
+}
+
 // *
 // Outbound email through the adopter's own provider — exactly one arm.
 type KubernetesPlantonPlatformEmail struct {
@@ -441,7 +677,7 @@ type KubernetesPlantonPlatformEmail struct {
 
 func (x *KubernetesPlantonPlatformEmail) Reset() {
 	*x = KubernetesPlantonPlatformEmail{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[1]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -453,7 +689,7 @@ func (x *KubernetesPlantonPlatformEmail) String() string {
 func (*KubernetesPlantonPlatformEmail) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformEmail) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[1]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -466,7 +702,7 @@ func (x *KubernetesPlantonPlatformEmail) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformEmail.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformEmail) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *KubernetesPlantonPlatformEmail) GetFrom() *KubernetesPlantonPlatformEmailFrom {
@@ -516,7 +752,7 @@ type KubernetesPlantonPlatformEmailFrom struct {
 
 func (x *KubernetesPlantonPlatformEmailFrom) Reset() {
 	*x = KubernetesPlantonPlatformEmailFrom{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -528,7 +764,7 @@ func (x *KubernetesPlantonPlatformEmailFrom) String() string {
 func (*KubernetesPlantonPlatformEmailFrom) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformEmailFrom) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -541,7 +777,7 @@ func (x *KubernetesPlantonPlatformEmailFrom) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesPlantonPlatformEmailFrom.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformEmailFrom) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *KubernetesPlantonPlatformEmailFrom) GetAddress() string {
@@ -613,7 +849,7 @@ type KubernetesPlantonPlatformEmailSmtp struct {
 
 func (x *KubernetesPlantonPlatformEmailSmtp) Reset() {
 	*x = KubernetesPlantonPlatformEmailSmtp{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -625,7 +861,7 @@ func (x *KubernetesPlantonPlatformEmailSmtp) String() string {
 func (*KubernetesPlantonPlatformEmailSmtp) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformEmailSmtp) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -638,7 +874,7 @@ func (x *KubernetesPlantonPlatformEmailSmtp) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesPlantonPlatformEmailSmtp.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformEmailSmtp) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *KubernetesPlantonPlatformEmailSmtp) GetHost() string {
@@ -711,7 +947,7 @@ type KubernetesPlantonPlatformEmailSmtpOauth2 struct {
 
 func (x *KubernetesPlantonPlatformEmailSmtpOauth2) Reset() {
 	*x = KubernetesPlantonPlatformEmailSmtpOauth2{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -723,7 +959,7 @@ func (x *KubernetesPlantonPlatformEmailSmtpOauth2) String() string {
 func (*KubernetesPlantonPlatformEmailSmtpOauth2) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformEmailSmtpOauth2) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -736,7 +972,7 @@ func (x *KubernetesPlantonPlatformEmailSmtpOauth2) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesPlantonPlatformEmailSmtpOauth2.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformEmailSmtpOauth2) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesPlantonPlatformEmailSmtpOauth2) GetUser() string {
@@ -789,7 +1025,7 @@ type KubernetesPlantonPlatformEmailResend struct {
 
 func (x *KubernetesPlantonPlatformEmailResend) Reset() {
 	*x = KubernetesPlantonPlatformEmailResend{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -801,7 +1037,7 @@ func (x *KubernetesPlantonPlatformEmailResend) String() string {
 func (*KubernetesPlantonPlatformEmailResend) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformEmailResend) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -814,7 +1050,7 @@ func (x *KubernetesPlantonPlatformEmailResend) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use KubernetesPlantonPlatformEmailResend.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformEmailResend) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesPlantonPlatformEmailResend) GetApiKeySecretRef() *KubernetesPlantonPlatformSecretKeyRef {
@@ -846,7 +1082,7 @@ type KubernetesPlantonPlatformRemoteRunners struct {
 
 func (x *KubernetesPlantonPlatformRemoteRunners) Reset() {
 	*x = KubernetesPlantonPlatformRemoteRunners{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -858,7 +1094,7 @@ func (x *KubernetesPlantonPlatformRemoteRunners) String() string {
 func (*KubernetesPlantonPlatformRemoteRunners) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformRemoteRunners) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -871,7 +1107,7 @@ func (x *KubernetesPlantonPlatformRemoteRunners) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesPlantonPlatformRemoteRunners.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformRemoteRunners) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesPlantonPlatformRemoteRunners) GetEnabled() bool {
@@ -899,7 +1135,7 @@ type KubernetesPlantonPlatformLicense struct {
 
 func (x *KubernetesPlantonPlatformLicense) Reset() {
 	*x = KubernetesPlantonPlatformLicense{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -911,7 +1147,7 @@ func (x *KubernetesPlantonPlatformLicense) String() string {
 func (*KubernetesPlantonPlatformLicense) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformLicense) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -924,7 +1160,7 @@ func (x *KubernetesPlantonPlatformLicense) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformLicense.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformLicense) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *KubernetesPlantonPlatformLicense) GetKey() string {
@@ -944,7 +1180,8 @@ func (x *KubernetesPlantonPlatformLicense) GetSecretKeyRef() *KubernetesPlantonP
 // *
 // A key in an existing Kubernetes Secret in the platform's namespace — the
 // one shape every by-reference credential on this spec uses (the license
-// key, the relay's CA bundle, the OAuth2 client secret, the Resend API key).
+// key, the relay's CA bundle, the OAuth2 client secret, the Resend API key,
+// a GitHub App's private key and webhook secret).
 type KubernetesPlantonPlatformSecretKeyRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
@@ -959,7 +1196,7 @@ type KubernetesPlantonPlatformSecretKeyRef struct {
 
 func (x *KubernetesPlantonPlatformSecretKeyRef) Reset() {
 	*x = KubernetesPlantonPlatformSecretKeyRef{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -971,7 +1208,7 @@ func (x *KubernetesPlantonPlatformSecretKeyRef) String() string {
 func (*KubernetesPlantonPlatformSecretKeyRef) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformSecretKeyRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -984,7 +1221,7 @@ func (x *KubernetesPlantonPlatformSecretKeyRef) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesPlantonPlatformSecretKeyRef.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformSecretKeyRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *KubernetesPlantonPlatformSecretKeyRef) GetName() string {
@@ -1021,7 +1258,7 @@ type KubernetesPlantonPlatformStorage struct {
 
 func (x *KubernetesPlantonPlatformStorage) Reset() {
 	*x = KubernetesPlantonPlatformStorage{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1033,7 +1270,7 @@ func (x *KubernetesPlantonPlatformStorage) String() string {
 func (*KubernetesPlantonPlatformStorage) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1046,7 +1283,7 @@ func (x *KubernetesPlantonPlatformStorage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformStorage.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformStorage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *KubernetesPlantonPlatformStorage) GetStorageClassName() string {
@@ -1079,7 +1316,7 @@ type KubernetesPlantonPlatformDatabase struct {
 
 func (x *KubernetesPlantonPlatformDatabase) Reset() {
 	*x = KubernetesPlantonPlatformDatabase{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1091,7 +1328,7 @@ func (x *KubernetesPlantonPlatformDatabase) String() string {
 func (*KubernetesPlantonPlatformDatabase) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformDatabase) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1104,7 +1341,7 @@ func (x *KubernetesPlantonPlatformDatabase) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesPlantonPlatformDatabase.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformDatabase) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *KubernetesPlantonPlatformDatabase) GetPostgresql() *KubernetesPlantonPlatformPostgresql {
@@ -1218,7 +1455,7 @@ type KubernetesPlantonPlatformPostgresql struct {
 
 func (x *KubernetesPlantonPlatformPostgresql) Reset() {
 	*x = KubernetesPlantonPlatformPostgresql{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1230,7 +1467,7 @@ func (x *KubernetesPlantonPlatformPostgresql) String() string {
 func (*KubernetesPlantonPlatformPostgresql) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformPostgresql) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1243,7 +1480,7 @@ func (x *KubernetesPlantonPlatformPostgresql) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use KubernetesPlantonPlatformPostgresql.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformPostgresql) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *KubernetesPlantonPlatformPostgresql) GetReplicas() int32 {
@@ -1327,7 +1564,7 @@ type KubernetesPlantonPlatformPostgresqlBackup struct {
 
 func (x *KubernetesPlantonPlatformPostgresqlBackup) Reset() {
 	*x = KubernetesPlantonPlatformPostgresqlBackup{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1339,7 +1576,7 @@ func (x *KubernetesPlantonPlatformPostgresqlBackup) String() string {
 func (*KubernetesPlantonPlatformPostgresqlBackup) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformPostgresqlBackup) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1352,7 +1589,7 @@ func (x *KubernetesPlantonPlatformPostgresqlBackup) ProtoReflect() protoreflect.
 
 // Deprecated: Use KubernetesPlantonPlatformPostgresqlBackup.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformPostgresqlBackup) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *KubernetesPlantonPlatformPostgresqlBackup) GetObjectStore() *KubernetesPlantonPlatformObjectStore {
@@ -1411,7 +1648,7 @@ type KubernetesPlantonPlatformPostgresqlRecoverFrom struct {
 
 func (x *KubernetesPlantonPlatformPostgresqlRecoverFrom) Reset() {
 	*x = KubernetesPlantonPlatformPostgresqlRecoverFrom{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1423,7 +1660,7 @@ func (x *KubernetesPlantonPlatformPostgresqlRecoverFrom) String() string {
 func (*KubernetesPlantonPlatformPostgresqlRecoverFrom) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformPostgresqlRecoverFrom) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1436,7 +1673,7 @@ func (x *KubernetesPlantonPlatformPostgresqlRecoverFrom) ProtoReflect() protoref
 
 // Deprecated: Use KubernetesPlantonPlatformPostgresqlRecoverFrom.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformPostgresqlRecoverFrom) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *KubernetesPlantonPlatformPostgresqlRecoverFrom) GetObjectStore() *KubernetesPlantonPlatformObjectStore {
@@ -1496,7 +1733,7 @@ type KubernetesPlantonPlatformObjectStore struct {
 
 func (x *KubernetesPlantonPlatformObjectStore) Reset() {
 	*x = KubernetesPlantonPlatformObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1508,7 +1745,7 @@ func (x *KubernetesPlantonPlatformObjectStore) String() string {
 func (*KubernetesPlantonPlatformObjectStore) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1521,7 +1758,7 @@ func (x *KubernetesPlantonPlatformObjectStore) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use KubernetesPlantonPlatformObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *KubernetesPlantonPlatformObjectStore) GetDestinationPath() string {
@@ -1653,7 +1890,7 @@ type KubernetesPlantonPlatformS3ObjectStore struct {
 
 func (x *KubernetesPlantonPlatformS3ObjectStore) Reset() {
 	*x = KubernetesPlantonPlatformS3ObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1665,7 +1902,7 @@ func (x *KubernetesPlantonPlatformS3ObjectStore) String() string {
 func (*KubernetesPlantonPlatformS3ObjectStore) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformS3ObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1678,7 +1915,7 @@ func (x *KubernetesPlantonPlatformS3ObjectStore) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesPlantonPlatformS3ObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformS3ObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *KubernetesPlantonPlatformS3ObjectStore) GetRegion() string {
@@ -1734,7 +1971,7 @@ type KubernetesPlantonPlatformS3AccessKeys struct {
 
 func (x *KubernetesPlantonPlatformS3AccessKeys) Reset() {
 	*x = KubernetesPlantonPlatformS3AccessKeys{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1746,7 +1983,7 @@ func (x *KubernetesPlantonPlatformS3AccessKeys) String() string {
 func (*KubernetesPlantonPlatformS3AccessKeys) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformS3AccessKeys) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1759,7 +1996,7 @@ func (x *KubernetesPlantonPlatformS3AccessKeys) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesPlantonPlatformS3AccessKeys.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformS3AccessKeys) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *KubernetesPlantonPlatformS3AccessKeys) GetAccessKeyId() string {
@@ -1805,7 +2042,7 @@ type KubernetesPlantonPlatformGcsObjectStore struct {
 
 func (x *KubernetesPlantonPlatformGcsObjectStore) Reset() {
 	*x = KubernetesPlantonPlatformGcsObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1817,7 +2054,7 @@ func (x *KubernetesPlantonPlatformGcsObjectStore) String() string {
 func (*KubernetesPlantonPlatformGcsObjectStore) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformGcsObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1830,7 +2067,7 @@ func (x *KubernetesPlantonPlatformGcsObjectStore) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesPlantonPlatformGcsObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformGcsObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *KubernetesPlantonPlatformGcsObjectStore) GetKeyless() bool {
@@ -1873,7 +2110,7 @@ type KubernetesPlantonPlatformAzureBlobObjectStore struct {
 
 func (x *KubernetesPlantonPlatformAzureBlobObjectStore) Reset() {
 	*x = KubernetesPlantonPlatformAzureBlobObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1885,7 +2122,7 @@ func (x *KubernetesPlantonPlatformAzureBlobObjectStore) String() string {
 func (*KubernetesPlantonPlatformAzureBlobObjectStore) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformAzureBlobObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1898,7 +2135,7 @@ func (x *KubernetesPlantonPlatformAzureBlobObjectStore) ProtoReflect() protorefl
 
 // Deprecated: Use KubernetesPlantonPlatformAzureBlobObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformAzureBlobObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *KubernetesPlantonPlatformAzureBlobObjectStore) GetStorageAccount() string {
@@ -1968,7 +2205,7 @@ type KubernetesPlantonPlatformR2ObjectStore struct {
 
 func (x *KubernetesPlantonPlatformR2ObjectStore) Reset() {
 	*x = KubernetesPlantonPlatformR2ObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1980,7 +2217,7 @@ func (x *KubernetesPlantonPlatformR2ObjectStore) String() string {
 func (*KubernetesPlantonPlatformR2ObjectStore) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformR2ObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1993,7 +2230,7 @@ func (x *KubernetesPlantonPlatformR2ObjectStore) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesPlantonPlatformR2ObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformR2ObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *KubernetesPlantonPlatformR2ObjectStore) GetAccountId() *v1.StringValueOrRef {
@@ -2049,7 +2286,7 @@ type KubernetesPlantonPlatformR2Credentials struct {
 
 func (x *KubernetesPlantonPlatformR2Credentials) Reset() {
 	*x = KubernetesPlantonPlatformR2Credentials{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2061,7 +2298,7 @@ func (x *KubernetesPlantonPlatformR2Credentials) String() string {
 func (*KubernetesPlantonPlatformR2Credentials) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformR2Credentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2074,7 +2311,7 @@ func (x *KubernetesPlantonPlatformR2Credentials) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesPlantonPlatformR2Credentials.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformR2Credentials) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *KubernetesPlantonPlatformR2Credentials) GetAccessKeyId() *v1.StringValueOrRef {
@@ -2131,7 +2368,7 @@ type KubernetesPlantonPlatformRedis struct {
 
 func (x *KubernetesPlantonPlatformRedis) Reset() {
 	*x = KubernetesPlantonPlatformRedis{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2143,7 +2380,7 @@ func (x *KubernetesPlantonPlatformRedis) String() string {
 func (*KubernetesPlantonPlatformRedis) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformRedis) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2156,7 +2393,7 @@ func (x *KubernetesPlantonPlatformRedis) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformRedis.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformRedis) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *KubernetesPlantonPlatformRedis) GetStorageSize() string {
@@ -2256,7 +2493,7 @@ type KubernetesPlantonPlatformIngress struct {
 
 func (x *KubernetesPlantonPlatformIngress) Reset() {
 	*x = KubernetesPlantonPlatformIngress{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2268,7 +2505,7 @@ func (x *KubernetesPlantonPlatformIngress) String() string {
 func (*KubernetesPlantonPlatformIngress) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformIngress) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2281,7 +2518,7 @@ func (x *KubernetesPlantonPlatformIngress) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformIngress.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformIngress) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *KubernetesPlantonPlatformIngress) GetEnabled() bool {
@@ -2368,7 +2605,7 @@ type KubernetesPlantonPlatformGatewayRef struct {
 
 func (x *KubernetesPlantonPlatformGatewayRef) Reset() {
 	*x = KubernetesPlantonPlatformGatewayRef{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2380,7 +2617,7 @@ func (x *KubernetesPlantonPlatformGatewayRef) String() string {
 func (*KubernetesPlantonPlatformGatewayRef) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformGatewayRef) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2393,7 +2630,7 @@ func (x *KubernetesPlantonPlatformGatewayRef) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use KubernetesPlantonPlatformGatewayRef.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformGatewayRef) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *KubernetesPlantonPlatformGatewayRef) GetName() *v1.StringValueOrRef {
@@ -2440,7 +2677,7 @@ type KubernetesPlantonPlatformIngressTls struct {
 
 func (x *KubernetesPlantonPlatformIngressTls) Reset() {
 	*x = KubernetesPlantonPlatformIngressTls{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2452,7 +2689,7 @@ func (x *KubernetesPlantonPlatformIngressTls) String() string {
 func (*KubernetesPlantonPlatformIngressTls) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformIngressTls) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2465,7 +2702,7 @@ func (x *KubernetesPlantonPlatformIngressTls) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use KubernetesPlantonPlatformIngressTls.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformIngressTls) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *KubernetesPlantonPlatformIngressTls) GetSecretName() string {
@@ -2498,7 +2735,7 @@ type KubernetesPlantonPlatformCertManagerIssuer struct {
 
 func (x *KubernetesPlantonPlatformCertManagerIssuer) Reset() {
 	*x = KubernetesPlantonPlatformCertManagerIssuer{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2510,7 +2747,7 @@ func (x *KubernetesPlantonPlatformCertManagerIssuer) String() string {
 func (*KubernetesPlantonPlatformCertManagerIssuer) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformCertManagerIssuer) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2523,7 +2760,7 @@ func (x *KubernetesPlantonPlatformCertManagerIssuer) ProtoReflect() protoreflect
 
 // Deprecated: Use KubernetesPlantonPlatformCertManagerIssuer.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformCertManagerIssuer) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *KubernetesPlantonPlatformCertManagerIssuer) GetName() string {
@@ -2571,7 +2808,7 @@ type KubernetesPlantonPlatformGateway struct {
 
 func (x *KubernetesPlantonPlatformGateway) Reset() {
 	*x = KubernetesPlantonPlatformGateway{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2583,7 +2820,7 @@ func (x *KubernetesPlantonPlatformGateway) String() string {
 func (*KubernetesPlantonPlatformGateway) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformGateway) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2596,7 +2833,7 @@ func (x *KubernetesPlantonPlatformGateway) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformGateway.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformGateway) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *KubernetesPlantonPlatformGateway) GetLocalPort() int32 {
@@ -2648,7 +2885,7 @@ type KubernetesPlantonPlatformIdentity struct {
 
 func (x *KubernetesPlantonPlatformIdentity) Reset() {
 	*x = KubernetesPlantonPlatformIdentity{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2660,7 +2897,7 @@ func (x *KubernetesPlantonPlatformIdentity) String() string {
 func (*KubernetesPlantonPlatformIdentity) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformIdentity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2673,7 +2910,7 @@ func (x *KubernetesPlantonPlatformIdentity) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesPlantonPlatformIdentity.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformIdentity) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *KubernetesPlantonPlatformIdentity) GetRealm() string {
@@ -2725,7 +2962,7 @@ type KubernetesPlantonPlatformBootstrap struct {
 
 func (x *KubernetesPlantonPlatformBootstrap) Reset() {
 	*x = KubernetesPlantonPlatformBootstrap{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2737,7 +2974,7 @@ func (x *KubernetesPlantonPlatformBootstrap) String() string {
 func (*KubernetesPlantonPlatformBootstrap) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformBootstrap) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2750,7 +2987,7 @@ func (x *KubernetesPlantonPlatformBootstrap) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesPlantonPlatformBootstrap.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformBootstrap) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *KubernetesPlantonPlatformBootstrap) GetOrganization() *KubernetesPlantonPlatformBootstrapOrg {
@@ -2804,7 +3041,7 @@ type KubernetesPlantonPlatformBootstrapOrg struct {
 
 func (x *KubernetesPlantonPlatformBootstrapOrg) Reset() {
 	*x = KubernetesPlantonPlatformBootstrapOrg{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2816,7 +3053,7 @@ func (x *KubernetesPlantonPlatformBootstrapOrg) String() string {
 func (*KubernetesPlantonPlatformBootstrapOrg) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformBootstrapOrg) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2829,7 +3066,7 @@ func (x *KubernetesPlantonPlatformBootstrapOrg) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesPlantonPlatformBootstrapOrg.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformBootstrapOrg) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *KubernetesPlantonPlatformBootstrapOrg) GetSlug() string {
@@ -2862,7 +3099,7 @@ type KubernetesPlantonPlatformBootstrapEnv struct {
 
 func (x *KubernetesPlantonPlatformBootstrapEnv) Reset() {
 	*x = KubernetesPlantonPlatformBootstrapEnv{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2874,7 +3111,7 @@ func (x *KubernetesPlantonPlatformBootstrapEnv) String() string {
 func (*KubernetesPlantonPlatformBootstrapEnv) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformBootstrapEnv) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2887,7 +3124,7 @@ func (x *KubernetesPlantonPlatformBootstrapEnv) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesPlantonPlatformBootstrapEnv.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformBootstrapEnv) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *KubernetesPlantonPlatformBootstrapEnv) GetSlug() string {
@@ -2923,7 +3160,7 @@ type KubernetesPlantonPlatformSecretBackend struct {
 
 func (x *KubernetesPlantonPlatformSecretBackend) Reset() {
 	*x = KubernetesPlantonPlatformSecretBackend{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2935,7 +3172,7 @@ func (x *KubernetesPlantonPlatformSecretBackend) String() string {
 func (*KubernetesPlantonPlatformSecretBackend) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformSecretBackend) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2948,7 +3185,7 @@ func (x *KubernetesPlantonPlatformSecretBackend) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesPlantonPlatformSecretBackend.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformSecretBackend) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *KubernetesPlantonPlatformSecretBackend) GetType() string {
@@ -2981,7 +3218,7 @@ type KubernetesPlantonPlatformAwsSecretsManager struct {
 
 func (x *KubernetesPlantonPlatformAwsSecretsManager) Reset() {
 	*x = KubernetesPlantonPlatformAwsSecretsManager{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2993,7 +3230,7 @@ func (x *KubernetesPlantonPlatformAwsSecretsManager) String() string {
 func (*KubernetesPlantonPlatformAwsSecretsManager) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformAwsSecretsManager) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3006,7 +3243,7 @@ func (x *KubernetesPlantonPlatformAwsSecretsManager) ProtoReflect() protoreflect
 
 // Deprecated: Use KubernetesPlantonPlatformAwsSecretsManager.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformAwsSecretsManager) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *KubernetesPlantonPlatformAwsSecretsManager) GetRegion() string {
@@ -3075,7 +3312,7 @@ type KubernetesPlantonPlatformRunner struct {
 
 func (x *KubernetesPlantonPlatformRunner) Reset() {
 	*x = KubernetesPlantonPlatformRunner{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3087,7 +3324,7 @@ func (x *KubernetesPlantonPlatformRunner) String() string {
 func (*KubernetesPlantonPlatformRunner) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformRunner) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3100,7 +3337,7 @@ func (x *KubernetesPlantonPlatformRunner) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformRunner.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformRunner) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *KubernetesPlantonPlatformRunner) GetEnabled() bool {
@@ -3168,7 +3405,7 @@ type KubernetesPlantonPlatformBuild struct {
 
 func (x *KubernetesPlantonPlatformBuild) Reset() {
 	*x = KubernetesPlantonPlatformBuild{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3180,7 +3417,7 @@ func (x *KubernetesPlantonPlatformBuild) String() string {
 func (*KubernetesPlantonPlatformBuild) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformBuild) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3193,7 +3430,7 @@ func (x *KubernetesPlantonPlatformBuild) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformBuild.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformBuild) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *KubernetesPlantonPlatformBuild) GetEnabled() bool {
@@ -3289,7 +3526,7 @@ type KubernetesPlantonPlatformVault struct {
 
 func (x *KubernetesPlantonPlatformVault) Reset() {
 	*x = KubernetesPlantonPlatformVault{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3301,7 +3538,7 @@ func (x *KubernetesPlantonPlatformVault) String() string {
 func (*KubernetesPlantonPlatformVault) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformVault) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3314,7 +3551,7 @@ func (x *KubernetesPlantonPlatformVault) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformVault.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformVault) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *KubernetesPlantonPlatformVault) GetEnabled() bool {
@@ -3382,7 +3619,7 @@ type KubernetesPlantonPlatformVaultAutoUnseal struct {
 
 func (x *KubernetesPlantonPlatformVaultAutoUnseal) Reset() {
 	*x = KubernetesPlantonPlatformVaultAutoUnseal{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[36]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3394,7 +3631,7 @@ func (x *KubernetesPlantonPlatformVaultAutoUnseal) String() string {
 func (*KubernetesPlantonPlatformVaultAutoUnseal) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformVaultAutoUnseal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[36]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3407,7 +3644,7 @@ func (x *KubernetesPlantonPlatformVaultAutoUnseal) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesPlantonPlatformVaultAutoUnseal.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformVaultAutoUnseal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *KubernetesPlantonPlatformVaultAutoUnseal) GetSeal() isKubernetesPlantonPlatformVaultAutoUnseal_Seal {
@@ -3513,7 +3750,7 @@ type KubernetesPlantonPlatformVaultAwsKmsSeal struct {
 
 func (x *KubernetesPlantonPlatformVaultAwsKmsSeal) Reset() {
 	*x = KubernetesPlantonPlatformVaultAwsKmsSeal{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[37]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3525,7 +3762,7 @@ func (x *KubernetesPlantonPlatformVaultAwsKmsSeal) String() string {
 func (*KubernetesPlantonPlatformVaultAwsKmsSeal) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformVaultAwsKmsSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[37]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3538,7 +3775,7 @@ func (x *KubernetesPlantonPlatformVaultAwsKmsSeal) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesPlantonPlatformVaultAwsKmsSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformVaultAwsKmsSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{37}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *KubernetesPlantonPlatformVaultAwsKmsSeal) GetRegion() string {
@@ -3614,7 +3851,7 @@ type KubernetesPlantonPlatformVaultGcpKmsSeal struct {
 
 func (x *KubernetesPlantonPlatformVaultGcpKmsSeal) Reset() {
 	*x = KubernetesPlantonPlatformVaultGcpKmsSeal{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[38]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3626,7 +3863,7 @@ func (x *KubernetesPlantonPlatformVaultGcpKmsSeal) String() string {
 func (*KubernetesPlantonPlatformVaultGcpKmsSeal) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformVaultGcpKmsSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[38]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3639,7 +3876,7 @@ func (x *KubernetesPlantonPlatformVaultGcpKmsSeal) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesPlantonPlatformVaultGcpKmsSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformVaultGcpKmsSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{38}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *KubernetesPlantonPlatformVaultGcpKmsSeal) GetProject() *v1.StringValueOrRef {
@@ -3704,7 +3941,7 @@ type KubernetesPlantonPlatformVaultAzureKeyVaultSeal struct {
 
 func (x *KubernetesPlantonPlatformVaultAzureKeyVaultSeal) Reset() {
 	*x = KubernetesPlantonPlatformVaultAzureKeyVaultSeal{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[39]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3716,7 +3953,7 @@ func (x *KubernetesPlantonPlatformVaultAzureKeyVaultSeal) String() string {
 func (*KubernetesPlantonPlatformVaultAzureKeyVaultSeal) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformVaultAzureKeyVaultSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[39]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3729,7 +3966,7 @@ func (x *KubernetesPlantonPlatformVaultAzureKeyVaultSeal) ProtoReflect() protore
 
 // Deprecated: Use KubernetesPlantonPlatformVaultAzureKeyVaultSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformVaultAzureKeyVaultSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{39}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *KubernetesPlantonPlatformVaultAzureKeyVaultSeal) GetVaultName() string {
@@ -3799,7 +4036,7 @@ type KubernetesPlantonPlatformVaultTransitSeal struct {
 
 func (x *KubernetesPlantonPlatformVaultTransitSeal) Reset() {
 	*x = KubernetesPlantonPlatformVaultTransitSeal{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[40]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3811,7 +4048,7 @@ func (x *KubernetesPlantonPlatformVaultTransitSeal) String() string {
 func (*KubernetesPlantonPlatformVaultTransitSeal) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformVaultTransitSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[40]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3824,7 +4061,7 @@ func (x *KubernetesPlantonPlatformVaultTransitSeal) ProtoReflect() protoreflect.
 
 // Deprecated: Use KubernetesPlantonPlatformVaultTransitSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformVaultTransitSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{40}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *KubernetesPlantonPlatformVaultTransitSeal) GetAddress() string {
@@ -3868,7 +4105,7 @@ type KubernetesPlantonPlatformComponents struct {
 
 func (x *KubernetesPlantonPlatformComponents) Reset() {
 	*x = KubernetesPlantonPlatformComponents{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[41]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3880,7 +4117,7 @@ func (x *KubernetesPlantonPlatformComponents) String() string {
 func (*KubernetesPlantonPlatformComponents) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformComponents) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[41]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3893,7 +4130,7 @@ func (x *KubernetesPlantonPlatformComponents) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use KubernetesPlantonPlatformComponents.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformComponents) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{41}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *KubernetesPlantonPlatformComponents) GetGraph() *KubernetesPlantonPlatformGraph {
@@ -3939,7 +4176,7 @@ type KubernetesPlantonPlatformGraph struct {
 
 func (x *KubernetesPlantonPlatformGraph) Reset() {
 	*x = KubernetesPlantonPlatformGraph{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[42]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3951,7 +4188,7 @@ func (x *KubernetesPlantonPlatformGraph) String() string {
 func (*KubernetesPlantonPlatformGraph) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformGraph) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[42]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3964,7 +4201,7 @@ func (x *KubernetesPlantonPlatformGraph) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformGraph.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformGraph) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{42}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *KubernetesPlantonPlatformGraph) GetEnabled() bool {
@@ -4024,7 +4261,7 @@ type KubernetesPlantonPlatformPrerequisites struct {
 
 func (x *KubernetesPlantonPlatformPrerequisites) Reset() {
 	*x = KubernetesPlantonPlatformPrerequisites{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[43]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4036,7 +4273,7 @@ func (x *KubernetesPlantonPlatformPrerequisites) String() string {
 func (*KubernetesPlantonPlatformPrerequisites) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformPrerequisites) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[43]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4049,7 +4286,7 @@ func (x *KubernetesPlantonPlatformPrerequisites) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use KubernetesPlantonPlatformPrerequisites.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformPrerequisites) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{43}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *KubernetesPlantonPlatformPrerequisites) GetPostgresOperator() string {
@@ -4126,7 +4363,7 @@ type KubernetesPlantonPlatformControlPlane struct {
 
 func (x *KubernetesPlantonPlatformControlPlane) Reset() {
 	*x = KubernetesPlantonPlatformControlPlane{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[44]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4138,7 +4375,7 @@ func (x *KubernetesPlantonPlatformControlPlane) String() string {
 func (*KubernetesPlantonPlatformControlPlane) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformControlPlane) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[44]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4151,7 +4388,7 @@ func (x *KubernetesPlantonPlatformControlPlane) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesPlantonPlatformControlPlane.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformControlPlane) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{44}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *KubernetesPlantonPlatformControlPlane) GetImage() *KubernetesPlantonPlatformImage {
@@ -4230,7 +4467,7 @@ type KubernetesPlantonPlatformConsole struct {
 
 func (x *KubernetesPlantonPlatformConsole) Reset() {
 	*x = KubernetesPlantonPlatformConsole{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[45]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4242,7 +4479,7 @@ func (x *KubernetesPlantonPlatformConsole) String() string {
 func (*KubernetesPlantonPlatformConsole) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformConsole) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[45]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4255,7 +4492,7 @@ func (x *KubernetesPlantonPlatformConsole) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformConsole.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformConsole) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{45}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *KubernetesPlantonPlatformConsole) GetImage() *KubernetesPlantonPlatformImage {
@@ -4303,7 +4540,7 @@ type KubernetesPlantonPlatformImage struct {
 
 func (x *KubernetesPlantonPlatformImage) Reset() {
 	*x = KubernetesPlantonPlatformImage{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[46]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4315,7 +4552,7 @@ func (x *KubernetesPlantonPlatformImage) String() string {
 func (*KubernetesPlantonPlatformImage) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformImage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[46]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4328,7 +4565,7 @@ func (x *KubernetesPlantonPlatformImage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformImage.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformImage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{46}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *KubernetesPlantonPlatformImage) GetRepository() string {
@@ -4366,7 +4603,7 @@ type KubernetesPlantonPlatformTemporal struct {
 
 func (x *KubernetesPlantonPlatformTemporal) Reset() {
 	*x = KubernetesPlantonPlatformTemporal{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[47]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4378,7 +4615,7 @@ func (x *KubernetesPlantonPlatformTemporal) String() string {
 func (*KubernetesPlantonPlatformTemporal) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformTemporal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[47]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4391,7 +4628,7 @@ func (x *KubernetesPlantonPlatformTemporal) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use KubernetesPlantonPlatformTemporal.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformTemporal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{47}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *KubernetesPlantonPlatformTemporal) GetFrontend() *KubernetesPlantonPlatformTemporalService {
@@ -4439,7 +4676,7 @@ type KubernetesPlantonPlatformTemporalService struct {
 
 func (x *KubernetesPlantonPlatformTemporalService) Reset() {
 	*x = KubernetesPlantonPlatformTemporalService{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[48]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4451,7 +4688,7 @@ func (x *KubernetesPlantonPlatformTemporalService) String() string {
 func (*KubernetesPlantonPlatformTemporalService) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformTemporalService) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[48]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4464,7 +4701,7 @@ func (x *KubernetesPlantonPlatformTemporalService) ProtoReflect() protoreflect.M
 
 // Deprecated: Use KubernetesPlantonPlatformTemporalService.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformTemporalService) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{48}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *KubernetesPlantonPlatformTemporalService) GetResources() *kubernetes.ContainerResources {
@@ -4497,7 +4734,7 @@ type KubernetesPlantonPlatformOpenFga struct {
 
 func (x *KubernetesPlantonPlatformOpenFga) Reset() {
 	*x = KubernetesPlantonPlatformOpenFga{}
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[49]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4509,7 +4746,7 @@ func (x *KubernetesPlantonPlatformOpenFga) String() string {
 func (*KubernetesPlantonPlatformOpenFga) ProtoMessage() {}
 
 func (x *KubernetesPlantonPlatformOpenFga) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[49]
+	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4522,7 +4759,7 @@ func (x *KubernetesPlantonPlatformOpenFga) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPlantonPlatformOpenFga.ProtoReflect.Descriptor instead.
 func (*KubernetesPlantonPlatformOpenFga) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{49}
+	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *KubernetesPlantonPlatformOpenFga) GetResources() *kubernetes.ContainerResources {
@@ -4536,7 +4773,7 @@ var File_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto protor
 
 const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe4\x1c\n" +
+	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd8\x1d\n" +
 	"\x1dKubernetesPlantonPlatformSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12!\n" +
@@ -4563,9 +4800,24 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x0eimage_registry\x18\x14 \x01(\tB\xcb\x01\xbaH\xc7\x01\xba\x01\xc0\x01\n" +
 	"\x15image_registry_format\x12yimage_registry is a registry root such as \"asia-south1-docker.pkg.dev/plantonhq/planton\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry\x12x\n" +
 	"\btemporal\x18\x15 \x01(\v2\\.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalR\btemporal\x12u\n" +
-	"\aopenfga\x18\x16 \x01(\v2[.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFgaR\aopenfga:\xf9\a\xbaH\xf5\a\x1a\xd5\x04\n" +
+	"\aopenfga\x18\x16 \x01(\v2[.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFgaR\aopenfga\x12r\n" +
+	"\x06github\x18\x17 \x01(\v2Z.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubR\x06github:\xf9\a\xbaH\xf5\a\x1a\xd5\x04\n" +
 	"&spec.vault.backup_needs_surviving_keys\x12\xa7\x02a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key\x1a\x80\x02!has(this.database) || !has(this.database.postgresql) || !has(this.database.postgresql.backup) || (has(this.vault) && has(this.vault.enabled) && !this.vault.enabled) || (has(this.vault) && (has(this.vault.auto_unseal) || this.vault.init_secret_name != ''))\x1a\x9a\x03\n" +
-	".spec.vault.disabled_needs_cloud_secret_backend\x12\xaf\x01bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager\x1a\xb5\x01!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled\"\xfd\x04\n" +
+	".spec.vault.disabled_needs_cloud_secret_backend\x12\xaf\x01bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager\x1a\xb5\x01!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled\"\xee\x02\n" +
+	"\x1fKubernetesPlantonPlatformGithub\x12~\n" +
+	"\x05hosts\x18\x01 \x03(\v2^.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubHostB\b\xbaH\x05\x92\x01\x02\x10\bR\x05hosts\x12\x1d\n" +
+	"\n" +
+	"host_login\x18\x02 \x01(\bR\thostLogin:\xab\x01\xbaH\xa7\x01\x1a\xa4\x01\n" +
+	"\x18spec.github.unique_hosts\x12Aeach GitHub host is declared once: two entries name the same host\x1aEthis.hosts.all(h, this.hosts.filter(o, o.host == h.host).size() == 1)\"\xd6\x02\n" +
+	"#KubernetesPlantonPlatformGithubHost\x12a\n" +
+	"\x04host\x18\x01 \x01(\tBM\xbaHJrH\x10\x01\x18\xfd\x012A^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)+$R\x04host\x12o\n" +
+	"\x03app\x18\x02 \x01(\v2].dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubAppR\x03app\x12N\n" +
+	"\bwebhooks\x18\x03 \x01(\tB-\xbaH\"r R\x00R\x04autoR\treachableR\vunreachable\x8a\xa6\x1d\x04autoH\x00R\bwebhooks\x88\x01\x01B\v\n" +
+	"\t_webhooks\"\xfb\x02\n" +
+	"\"KubernetesPlantonPlatformGithubApp\x12$\n" +
+	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x12\x9d\x01\n" +
+	"\x16private_key_secret_ref\x18\x02 \x01(\v2`.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRefB\x06\xbaH\x03\xc8\x01\x01R\x13privateKeySecretRef\x12\x8e\x01\n" +
+	"\x12webhook_secret_ref\x18\x03 \x01(\v2`.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRefR\x10webhookSecretRef\"\xfd\x04\n" +
 	"\x1eKubernetesPlantonPlatformEmail\x12y\n" +
 	"\x04from\x18\x01 \x01(\v2].dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailFromB\x06\xbaH\x03\xc8\x01\x01R\x04from\x12\x19\n" +
 	"\breply_to\x18\x02 \x01(\tR\areplyTo\x12q\n" +
@@ -4914,157 +5166,165 @@ func file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDe
 	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 55)
+var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 58)
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_goTypes = []any{
 	(*KubernetesPlantonPlatformSpec)(nil),                   // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec
-	(*KubernetesPlantonPlatformEmail)(nil),                  // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail
-	(*KubernetesPlantonPlatformEmailFrom)(nil),              // 2: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailFrom
-	(*KubernetesPlantonPlatformEmailSmtp)(nil),              // 3: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp
-	(*KubernetesPlantonPlatformEmailSmtpOauth2)(nil),        // 4: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2
-	(*KubernetesPlantonPlatformEmailResend)(nil),            // 5: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend
-	(*KubernetesPlantonPlatformRemoteRunners)(nil),          // 6: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunners
-	(*KubernetesPlantonPlatformLicense)(nil),                // 7: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense
-	(*KubernetesPlantonPlatformSecretKeyRef)(nil),           // 8: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	(*KubernetesPlantonPlatformStorage)(nil),                // 9: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStorage
-	(*KubernetesPlantonPlatformDatabase)(nil),               // 10: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase
-	(*KubernetesPlantonPlatformPostgresql)(nil),             // 11: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql
-	(*KubernetesPlantonPlatformPostgresqlBackup)(nil),       // 12: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup
-	(*KubernetesPlantonPlatformPostgresqlRecoverFrom)(nil),  // 13: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom
-	(*KubernetesPlantonPlatformObjectStore)(nil),            // 14: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
-	(*KubernetesPlantonPlatformS3ObjectStore)(nil),          // 15: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore
-	(*KubernetesPlantonPlatformS3AccessKeys)(nil),           // 16: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3AccessKeys
-	(*KubernetesPlantonPlatformGcsObjectStore)(nil),         // 17: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGcsObjectStore
-	(*KubernetesPlantonPlatformAzureBlobObjectStore)(nil),   // 18: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAzureBlobObjectStore
-	(*KubernetesPlantonPlatformR2ObjectStore)(nil),          // 19: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore
-	(*KubernetesPlantonPlatformR2Credentials)(nil),          // 20: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials
-	(*KubernetesPlantonPlatformRedis)(nil),                  // 21: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis
-	(*KubernetesPlantonPlatformIngress)(nil),                // 22: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress
-	(*KubernetesPlantonPlatformGatewayRef)(nil),             // 23: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef
-	(*KubernetesPlantonPlatformIngressTls)(nil),             // 24: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls
-	(*KubernetesPlantonPlatformCertManagerIssuer)(nil),      // 25: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformCertManagerIssuer
-	(*KubernetesPlantonPlatformGateway)(nil),                // 26: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGateway
-	(*KubernetesPlantonPlatformIdentity)(nil),               // 27: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIdentity
-	(*KubernetesPlantonPlatformBootstrap)(nil),              // 28: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap
-	(*KubernetesPlantonPlatformBootstrapOrg)(nil),           // 29: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapOrg
-	(*KubernetesPlantonPlatformBootstrapEnv)(nil),           // 30: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapEnv
-	(*KubernetesPlantonPlatformSecretBackend)(nil),          // 31: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend
-	(*KubernetesPlantonPlatformAwsSecretsManager)(nil),      // 32: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManager
-	(*KubernetesPlantonPlatformRunner)(nil),                 // 33: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner
-	(*KubernetesPlantonPlatformBuild)(nil),                  // 34: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBuild
-	(*KubernetesPlantonPlatformVault)(nil),                  // 35: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault
-	(*KubernetesPlantonPlatformVaultAutoUnseal)(nil),        // 36: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
-	(*KubernetesPlantonPlatformVaultAwsKmsSeal)(nil),        // 37: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
-	(*KubernetesPlantonPlatformVaultGcpKmsSeal)(nil),        // 38: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
-	(*KubernetesPlantonPlatformVaultAzureKeyVaultSeal)(nil), // 39: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
-	(*KubernetesPlantonPlatformVaultTransitSeal)(nil),       // 40: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
-	(*KubernetesPlantonPlatformComponents)(nil),             // 41: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents
-	(*KubernetesPlantonPlatformGraph)(nil),                  // 42: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
-	(*KubernetesPlantonPlatformPrerequisites)(nil),          // 43: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPrerequisites
-	(*KubernetesPlantonPlatformControlPlane)(nil),           // 44: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane
-	(*KubernetesPlantonPlatformConsole)(nil),                // 45: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole
-	(*KubernetesPlantonPlatformImage)(nil),                  // 46: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	(*KubernetesPlantonPlatformTemporal)(nil),               // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal
-	(*KubernetesPlantonPlatformTemporalService)(nil),        // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
-	(*KubernetesPlantonPlatformOpenFga)(nil),                // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga
-	nil,                                                     // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
-	nil,                                                     // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
-	nil,                                                     // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
-	nil,                                                     // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
-	nil,                                                     // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
-	(*v1.StringValueOrRef)(nil),                             // 55: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),                   // 56: dev.planton.kubernetes.ContainerResources
+	(*KubernetesPlantonPlatformGithub)(nil),                 // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithub
+	(*KubernetesPlantonPlatformGithubHost)(nil),             // 2: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubHost
+	(*KubernetesPlantonPlatformGithubApp)(nil),              // 3: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubApp
+	(*KubernetesPlantonPlatformEmail)(nil),                  // 4: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail
+	(*KubernetesPlantonPlatformEmailFrom)(nil),              // 5: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailFrom
+	(*KubernetesPlantonPlatformEmailSmtp)(nil),              // 6: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp
+	(*KubernetesPlantonPlatformEmailSmtpOauth2)(nil),        // 7: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2
+	(*KubernetesPlantonPlatformEmailResend)(nil),            // 8: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend
+	(*KubernetesPlantonPlatformRemoteRunners)(nil),          // 9: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunners
+	(*KubernetesPlantonPlatformLicense)(nil),                // 10: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense
+	(*KubernetesPlantonPlatformSecretKeyRef)(nil),           // 11: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	(*KubernetesPlantonPlatformStorage)(nil),                // 12: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStorage
+	(*KubernetesPlantonPlatformDatabase)(nil),               // 13: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase
+	(*KubernetesPlantonPlatformPostgresql)(nil),             // 14: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql
+	(*KubernetesPlantonPlatformPostgresqlBackup)(nil),       // 15: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup
+	(*KubernetesPlantonPlatformPostgresqlRecoverFrom)(nil),  // 16: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom
+	(*KubernetesPlantonPlatformObjectStore)(nil),            // 17: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
+	(*KubernetesPlantonPlatformS3ObjectStore)(nil),          // 18: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore
+	(*KubernetesPlantonPlatformS3AccessKeys)(nil),           // 19: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3AccessKeys
+	(*KubernetesPlantonPlatformGcsObjectStore)(nil),         // 20: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGcsObjectStore
+	(*KubernetesPlantonPlatformAzureBlobObjectStore)(nil),   // 21: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAzureBlobObjectStore
+	(*KubernetesPlantonPlatformR2ObjectStore)(nil),          // 22: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore
+	(*KubernetesPlantonPlatformR2Credentials)(nil),          // 23: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials
+	(*KubernetesPlantonPlatformRedis)(nil),                  // 24: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis
+	(*KubernetesPlantonPlatformIngress)(nil),                // 25: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress
+	(*KubernetesPlantonPlatformGatewayRef)(nil),             // 26: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef
+	(*KubernetesPlantonPlatformIngressTls)(nil),             // 27: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls
+	(*KubernetesPlantonPlatformCertManagerIssuer)(nil),      // 28: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformCertManagerIssuer
+	(*KubernetesPlantonPlatformGateway)(nil),                // 29: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGateway
+	(*KubernetesPlantonPlatformIdentity)(nil),               // 30: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIdentity
+	(*KubernetesPlantonPlatformBootstrap)(nil),              // 31: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap
+	(*KubernetesPlantonPlatformBootstrapOrg)(nil),           // 32: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapOrg
+	(*KubernetesPlantonPlatformBootstrapEnv)(nil),           // 33: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapEnv
+	(*KubernetesPlantonPlatformSecretBackend)(nil),          // 34: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend
+	(*KubernetesPlantonPlatformAwsSecretsManager)(nil),      // 35: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManager
+	(*KubernetesPlantonPlatformRunner)(nil),                 // 36: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner
+	(*KubernetesPlantonPlatformBuild)(nil),                  // 37: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBuild
+	(*KubernetesPlantonPlatformVault)(nil),                  // 38: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault
+	(*KubernetesPlantonPlatformVaultAutoUnseal)(nil),        // 39: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
+	(*KubernetesPlantonPlatformVaultAwsKmsSeal)(nil),        // 40: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
+	(*KubernetesPlantonPlatformVaultGcpKmsSeal)(nil),        // 41: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
+	(*KubernetesPlantonPlatformVaultAzureKeyVaultSeal)(nil), // 42: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
+	(*KubernetesPlantonPlatformVaultTransitSeal)(nil),       // 43: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
+	(*KubernetesPlantonPlatformComponents)(nil),             // 44: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents
+	(*KubernetesPlantonPlatformGraph)(nil),                  // 45: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
+	(*KubernetesPlantonPlatformPrerequisites)(nil),          // 46: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPrerequisites
+	(*KubernetesPlantonPlatformControlPlane)(nil),           // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane
+	(*KubernetesPlantonPlatformConsole)(nil),                // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole
+	(*KubernetesPlantonPlatformImage)(nil),                  // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	(*KubernetesPlantonPlatformTemporal)(nil),               // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal
+	(*KubernetesPlantonPlatformTemporalService)(nil),        // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	(*KubernetesPlantonPlatformOpenFga)(nil),                // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga
+	nil,                                                     // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
+	nil,                                                     // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
+	nil,                                                     // 55: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
+	nil,                                                     // 56: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
+	nil,                                                     // 57: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
+	(*v1.StringValueOrRef)(nil),                             // 58: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),                   // 59: dev.planton.kubernetes.ContainerResources
 }
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_depIdxs = []int32{
-	55, // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7,  // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.license:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense
-	9,  // 2: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.storage:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStorage
-	10, // 3: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.database:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase
-	22, // 4: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.ingress:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress
-	26, // 5: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.gateway:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGateway
-	27, // 6: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.identity:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIdentity
-	28, // 7: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.bootstrap:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap
-	33, // 8: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.runner:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner
-	34, // 9: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.build:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBuild
-	35, // 10: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault
-	41, // 11: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.components:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents
-	43, // 12: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.prerequisites:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPrerequisites
-	44, // 13: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.control_plane:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane
-	45, // 14: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.console:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole
-	6,  // 15: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.remote_runners:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunners
-	1,  // 16: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.email:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail
-	47, // 17: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.temporal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal
-	49, // 18: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.openfga:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga
-	2,  // 19: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailFrom
-	3,  // 20: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.smtp:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp
-	5,  // 21: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.resend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend
-	4,  // 22: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.oauth2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2
-	8,  // 23: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.ca_bundle_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	8,  // 24: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2.client_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	8,  // 25: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend.api_key_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	8,  // 26: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense.secret_key_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
-	11, // 27: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.postgresql:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql
-	21, // 28: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.redis:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis
-	12, // 29: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.backup:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup
-	13, // 30: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.recover_from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom
-	56, // 31: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	14, // 32: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
-	50, // 33: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
-	14, // 34: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
-	15, // 35: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore
-	17, // 36: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.gcs:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGcsObjectStore
-	18, // 37: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.azure_blob:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAzureBlobObjectStore
-	19, // 38: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.r2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore
-	16, // 39: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore.access_keys:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3AccessKeys
-	55, // 40: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	55, // 41: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	20, // 42: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.credentials:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials
-	55, // 43: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	55, // 44: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	56, // 45: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	51, // 46: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
-	24, // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.tls:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls
-	23, // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.gateway_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef
-	55, // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	55, // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls.issuer:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformCertManagerIssuer
-	56, // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGateway.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	56, // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIdentity.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	29, // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.organization:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapOrg
-	30, // 55: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.environment:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapEnv
-	31, // 56: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.secret_backend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend
-	32, // 57: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend.aws_secrets_manager:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManager
-	52, // 58: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
-	46, // 59: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	56, // 60: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	36, // 61: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
-	53, // 62: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
-	56, // 63: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	37, // 64: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
-	38, // 65: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
-	39, // 66: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
-	40, // 67: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
-	55, // 68: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	55, // 69: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	55, // 70: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	55, // 71: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	42, // 72: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents.graph:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
-	56, // 73: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	46, // 74: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	54, // 75: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
-	56, // 76: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	46, // 77: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	56, // 78: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	48, // 79: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.frontend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
-	48, // 80: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.history:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
-	48, // 81: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.matching:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
-	48, // 82: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.worker:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
-	56, // 83: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	56, // 84: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	85, // [85:85] is the sub-list for method output_type
-	85, // [85:85] is the sub-list for method input_type
-	85, // [85:85] is the sub-list for extension type_name
-	85, // [85:85] is the sub-list for extension extendee
-	0,  // [0:85] is the sub-list for field type_name
+	58, // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 1: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.license:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense
+	12, // 2: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.storage:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStorage
+	13, // 3: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.database:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase
+	25, // 4: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.ingress:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress
+	29, // 5: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.gateway:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGateway
+	30, // 6: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.identity:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIdentity
+	31, // 7: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.bootstrap:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap
+	36, // 8: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.runner:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner
+	37, // 9: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.build:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBuild
+	38, // 10: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault
+	44, // 11: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.components:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents
+	46, // 12: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.prerequisites:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPrerequisites
+	47, // 13: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.control_plane:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane
+	48, // 14: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.console:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole
+	9,  // 15: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.remote_runners:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunners
+	4,  // 16: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.email:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail
+	50, // 17: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.temporal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal
+	52, // 18: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.openfga:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga
+	1,  // 19: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.github:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithub
+	2,  // 20: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithub.hosts:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubHost
+	3,  // 21: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubHost.app:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubApp
+	11, // 22: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubApp.private_key_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	11, // 23: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGithubApp.webhook_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	5,  // 24: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailFrom
+	6,  // 25: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.smtp:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp
+	8,  // 26: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmail.resend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend
+	7,  // 27: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.oauth2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2
+	11, // 28: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtp.ca_bundle_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	11, // 29: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailSmtpOauth2.client_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	11, // 30: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailResend.api_key_secret_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	11, // 31: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformLicense.secret_key_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretKeyRef
+	14, // 32: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.postgresql:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql
+	24, // 33: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformDatabase.redis:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis
+	15, // 34: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.backup:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup
+	16, // 35: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.recover_from:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom
+	59, // 36: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresql.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	17, // 37: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
+	53, // 38: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlBackup.ServiceAccountAnnotationsEntry
+	17, // 39: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformPostgresqlRecoverFrom.object_store:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore
+	18, // 40: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore
+	20, // 41: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.gcs:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGcsObjectStore
+	21, // 42: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.azure_blob:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAzureBlobObjectStore
+	22, // 43: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformObjectStore.r2:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore
+	19, // 44: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3ObjectStore.access_keys:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformS3AccessKeys
+	58, // 45: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	58, // 46: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 47: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2ObjectStore.credentials:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials
+	58, // 48: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	58, // 49: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	59, // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRedis.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	54, // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.AnnotationsEntry
+	27, // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.tls:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls
+	26, // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngress.gateway_ref:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef
+	58, // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	58, // 55: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGatewayRef.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	28, // 56: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIngressTls.issuer:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformCertManagerIssuer
+	59, // 57: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGateway.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	59, // 58: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformIdentity.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	32, // 59: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.organization:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapOrg
+	33, // 60: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.environment:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrapEnv
+	34, // 61: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.secret_backend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend
+	35, // 62: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend.aws_secrets_manager:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManager
+	55, // 63: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
+	49, // 64: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	59, // 65: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	39, // 66: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
+	56, // 67: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
+	59, // 68: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	40, // 69: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
+	41, // 70: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
+	42, // 71: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
+	43, // 72: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
+	58, // 73: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	58, // 74: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	58, // 75: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	58, // 76: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	45, // 77: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents.graph:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
+	59, // 78: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	49, // 79: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	57, // 80: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
+	59, // 81: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	49, // 82: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	59, // 83: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	51, // 84: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.frontend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	51, // 85: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.history:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	51, // 86: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.matching:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	51, // 87: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporal.worker:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService
+	59, // 88: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformTemporalService.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	59, // 89: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOpenFga.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	90, // [90:90] is the sub-list for method output_type
+	90, // [90:90] is the sub-list for method input_type
+	90, // [90:90] is the sub-list for extension type_name
+	90, // [90:90] is the sub-list for extension extendee
+	0,  // [0:90] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_init() }
@@ -5073,43 +5333,44 @@ func file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_init(
 		return
 	}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{
 		(*KubernetesPlantonPlatformObjectStore_S3)(nil),
 		(*KubernetesPlantonPlatformObjectStore_Gcs)(nil),
 		(*KubernetesPlantonPlatformObjectStore_AzureBlob)(nil),
 		(*KubernetesPlantonPlatformObjectStore_R2)(nil),
 	}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[25].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[26].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[28].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[29].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[30].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[31].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[32].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[33].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[34].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[35].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[36].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[36].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[37].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[38].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[39].OneofWrappers = []any{
 		(*KubernetesPlantonPlatformVaultAutoUnseal_AwsKms)(nil),
 		(*KubernetesPlantonPlatformVaultAutoUnseal_GcpKms)(nil),
 		(*KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault)(nil),
 		(*KubernetesPlantonPlatformVaultAutoUnseal_Transit)(nil),
 	}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[40].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[43].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[44].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[45].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[46].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[47].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_msgTypes[48].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   55,
+			NumMessages:   58,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

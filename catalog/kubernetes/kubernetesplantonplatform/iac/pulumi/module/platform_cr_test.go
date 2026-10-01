@@ -506,3 +506,50 @@ func TestPlatformSpecBody_ImageRegistryAndRunnerImageRenderOnlyWhenDeclared(t *t
 		t.Errorf("runner = %#v, want %#v", got, want)
 	}
 }
+
+// GitHub renders only when declared, hosts in declaration order, an App's
+// secrets as Secret key references, and the webhook posture only when set,
+// so the CRD's own default (auto) decides an omitted one. The Terraform
+// module renders the same map (iac/tf/locals.tf).
+func TestPlatformSpecBody_GithubRendersTheDeclarationAsDeclared(t *testing.T) {
+	spec := platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{}))
+	if _, present := spec["github"]; present {
+		t.Errorf("github rendered when the manifest never set it: %#v", spec)
+	}
+
+	spec = platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Github: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformGithub{
+			Hosts: []*kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformGithubHost{
+				{
+					Host: "github.com",
+					App: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformGithubApp{
+						ClientId: "Iv23liExample",
+						PrivateKeySecretRef: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSecretKeyRef{
+							Name: "planton-github-app", Key: "private-key.pem",
+						},
+						WebhookSecretRef: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSecretKeyRef{
+							Name: "planton-github-app", Key: "webhook-secret",
+						},
+					},
+				},
+				{Host: "github.acme.com", Webhooks: proto.String("reachable")},
+			},
+		},
+	}))
+	want := map[string]interface{}{
+		"hosts": []interface{}{
+			map[string]interface{}{
+				"host": "github.com",
+				"app": map[string]interface{}{
+					"clientId":            "Iv23liExample",
+					"privateKeySecretRef": map[string]interface{}{"name": "planton-github-app", "key": "private-key.pem"},
+					"webhookSecretRef":    map[string]interface{}{"name": "planton-github-app", "key": "webhook-secret"},
+				},
+			},
+			map[string]interface{}{"host": "github.acme.com", "webhooks": "reachable"},
+		},
+	}
+	if got := spec["github"]; !reflect.DeepEqual(got, want) {
+		t.Errorf("github = %#v, want %#v", got, want)
+	}
+}

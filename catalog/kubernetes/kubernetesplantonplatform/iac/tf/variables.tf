@@ -267,6 +267,28 @@ variable "spec" {
         })
       }))
     }))
+    # GitHub hosts in the wizard's order, each with an optional install App
+    # (its key and webhook secret by Secret key reference, never values) and
+    # a webhook posture that rides the CRD default (auto) when omitted.
+    github = optional(object({
+      hosts = optional(list(object({
+        host = string
+        app = optional(object({
+          client_id = string
+          private_key_secret_ref = object({
+            name = string
+            key  = string
+          })
+          webhook_secret_ref = optional(object({
+            name = string
+            key  = string
+          }))
+        }))
+        # auto | reachable | unreachable; empty rides the CRD default (auto).
+        webhooks = optional(string)
+      })), [])
+      host_login = optional(bool, false)
+    }))
     vault = optional(object({
       resources = optional(object({
         requests = optional(object({
