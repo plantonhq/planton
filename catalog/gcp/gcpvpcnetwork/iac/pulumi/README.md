@@ -192,7 +192,7 @@ Use the `debug.sh` script to run the Pulumi program locally with debug output:
 ./debug.sh
 ```
 
-This sets `PULUMI_CONFIG_PASSPHRASE=password` and runs `pulumi up` with verbose logging.
+This sets a throwaway `PULUMI_CONFIG_PASSPHRASE` for a local scratch stack and runs `pulumi up` with verbose logging. Pulumi encrypts every secret value in the stack under that passphrase, so a stack that holds anything real gets a real passphrase you keep.
 
 ### Customizing the Module
 

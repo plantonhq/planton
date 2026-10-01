@@ -22,7 +22,7 @@ where the bytes live today and how fast the restore must be.
 CMEK only. `kmsKey` (with optional `kmsKeyServiceAccount`) encrypts the
 disk; `sourceImageEncryption` / `sourceSnapshotEncryption` decrypt encrypted
 sources. Customer-supplied raw keys (CSEK) are deliberately NOT modeled —
-the provider stores those arguments in plain-text state, and key material
+the provider keeps those arguments in state as ordinary values, and key material
 flowing through manifests contradicts the platform's secret posture; the
 recorded exclusions live in this component's parity manifest. If a workload
 genuinely requires CSEK, that is a platform-level conversation, not a field

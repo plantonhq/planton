@@ -255,9 +255,10 @@ The Slack channel to post to (for example "#alerts").
 The Slack incoming-webhook URL. A credential: DigitalOcean's API does
 not mark it sensitive, so it is marked sensitive here -- the platform
 accepts only a managed-secret reference ($secret/<name>) for it, never
-a literal URL, and the Pulumi module additionally encrypts it in stack
-state. Terraform state stores every value in plain text, so on that
-engine the protection is the state backend's own encryption.
+a literal URL, and the Pulumi module marks it secret, so Pulumi encrypts
+it in stack state. OpenTofu keeps every value in its state file and
+encrypts the whole file when it is given an encryption key, so on that
+engine the state's encryption is what protects it.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 

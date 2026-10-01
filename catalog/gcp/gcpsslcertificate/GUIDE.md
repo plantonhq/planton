@@ -37,7 +37,8 @@ around this kind.
 
 The private key must be unencrypted PEM (no passphrase) — GCP rejects
 encrypted keys. It is the only secret: marked sensitive, encrypted in
-both engines' state, write-only in GCP, never in outputs. The
+Pulumi state and in any OpenTofu state that has an encryption key,
+write-only in GCP, never in outputs. The
 certificate chain is public handshake material presented to every
 client; treating it as a secret only obscures audits. Chain order
 matters: leaf first, then intermediates, at most five certificates.

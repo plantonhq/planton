@@ -41,7 +41,8 @@ pulumi-gcp bump; the reason lives in the parity manifest).
 
 Same contract as the backend bucket: at most 3 keys, each immutable, so
 rotation is add new → re-sign → remove old. Key material is secret in
-both engines' state and never surfaces in outputs.
+Pulumi state and sensitive in OpenTofu's (whose state file is encrypted
+whole when given a key), and never surfaces in outputs.
 
 ## Teardown discipline
 

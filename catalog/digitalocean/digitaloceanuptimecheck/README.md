@@ -53,7 +53,7 @@ Deploy with either provisioner; both produce identical resources and outputs.
 - **Alert email goes only to verified team members.** DigitalOcean rejects any other address at create time; invite and verify the recipient first.
 - **Alert rows destroy with the check.** DigitalOcean deletes a check's alerts with it; the composed rows mirror that lifecycle exactly, and the verifier probes each row after destroy.
 - **Alert row ids are outputs.** `alert_ids` carries each row's UUID under the same key both provisioners address the row by, so an adoption of the whole check needs no manual lookup.
-- **Slack webhook URLs are credentials.** DigitalOcean does not mark them sensitive; this spec does -- the platform accepts only `$secret/<name>` references, and the Pulumi module encrypts the value in stack state (Terraform state stores every value in plain text; protect the backend).
+- **Slack webhook URLs are credentials.** DigitalOcean does not mark them sensitive; this spec does -- the platform accepts only `$secret/<name>` references, and the Pulumi module encrypts the value in stack state (OpenTofu encrypts its whole state file when given an encryption key; keep one on that state).
 - **The two comparison spellings never mix.** Uptime alerts speak snake_case (`greater_than`); monitor alerts speak CamelCase (`GreaterThan`). Two different DigitalOcean APIs, deliberately not unified.
 
 ## Module layout
