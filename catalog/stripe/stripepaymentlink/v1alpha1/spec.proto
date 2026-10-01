@@ -281,19 +281,20 @@ message StripePaymentLinkAdjustableQuantity {
 }
 
 // StripePaymentLinkAfterCompletion is what the buyer sees after paying: Stripe's confirmation
-// page, or a redirect to the account's site. The block that is set is the behavior.
+// page, or a redirect to the account's site.
 message StripePaymentLinkAfterCompletion {
-  // hosted_confirmation shows Stripe's confirmation page, optionally with a custom message.
-  StripePaymentLinkHostedConfirmation hosted_confirmation = 1;
+  // behavior is the one thing that happens after paying. The member that is set is the behavior;
+  // an after_completion block names exactly one.
+  oneof behavior {
+    option (buf.validate.oneof).required = true;
 
-  // redirect sends the buyer to the account's site.
-  StripePaymentLinkRedirect redirect = 2;
+    // hosted_confirmation shows Stripe's confirmation page, optionally with a custom message
+    // (hosted_confirmation: {} is Stripe's page as it is).
+    StripePaymentLinkHostedConfirmation hosted_confirmation = 1;
 
-  option (buf.validate.message).cel = {
-    id: "after_completion.one_behavior"
-    message: "after_completion sets exactly one of hosted_confirmation and redirect"
-    expression: "has(this.hosted_confirmation) != has(this.redirect)"
-  };
+    // redirect sends the buyer to the account's site.
+    StripePaymentLinkRedirect redirect = 2;
+  }
 }
 
 // StripePaymentLinkHostedConfirmation customizes Stripe's confirmation page.
@@ -383,18 +384,19 @@ message StripePaymentLinkCustomField {
   ];
   // optional lets the buyer skip the question.
   optional bool optional = 3;
-  // dropdown makes the answer a choice from a list. The block that is set is the field's type.
-  StripePaymentLinkDropdown dropdown = 4;
-  // numeric makes the answer a number (numeric: {} with no bounds is enough to choose it).
-  StripePaymentLinkTextBounds numeric = 5;
-  // text makes the answer free text.
-  StripePaymentLinkTextBounds text = 6;
 
-  option (buf.validate.message).cel = {
-    id: "custom_field.one_type"
-    message: "a custom field sets exactly one of dropdown, numeric and text"
-    expression: "(has(this.dropdown) ? 1 : 0) + (has(this.numeric) ? 1 : 0) + (has(this.text) ? 1 : 0) == 1"
-  };
+  // type is the kind of answer the question takes. The member that is set is the type; every
+  // custom field names exactly one.
+  oneof type {
+    option (buf.validate.oneof).required = true;
+
+    // dropdown makes the answer a choice from a list.
+    StripePaymentLinkDropdown dropdown = 4;
+    // numeric makes the answer a number (numeric: {} with no bounds is enough to choose it).
+    StripePaymentLinkTextBounds numeric = 5;
+    // text makes the answer free text (text: {} with no bounds is enough to choose it).
+    StripePaymentLinkTextBounds text = 6;
+  }
 }
 
 // StripePaymentLinkDropdown is a custom field's choices.

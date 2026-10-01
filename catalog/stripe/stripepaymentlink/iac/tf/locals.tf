@@ -7,10 +7,10 @@
 # arrives as a resolved id: a reference to a StripePrice or StripeShippingRate is resolved before
 # this module runs.
 #
-# The spec models three of Stripe's "type" discriminators as the block that is set: after
-# completion (hosted_confirmation or redirect), a custom field (dropdown, numeric or text), and an
-# account reference (a connected account, or the link's own account when none is named). The
-# module writes each type from that shape.
+# The spec models three of Stripe's "type" discriminators by shape instead of a type string: after
+# completion and a custom field are oneofs (hosted_confirmation or redirect; dropdown, numeric or
+# text), so the member that is set is the type, and an account reference is a connected account,
+# or the link's own account when none is named. The module writes each type from that shape.
 locals {
   inactive_message           = try(var.spec.inactive_message, "") != "" ? var.spec.inactive_message : null
   billing_address_collection = try(var.spec.billing_address_collection, "") != "" ? var.spec.billing_address_collection : null

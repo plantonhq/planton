@@ -10,7 +10,7 @@ This preset takes 10 dollars off a customer's first invoice, with the same disco
 ## Key Configuration Choices
 
 - **Amount** (`amountOff: 1000`, `currency: usd`) -- in cents; changing either creates a new coupon
-- **Other currencies** (`currencyOptions`) -- update in place
+- **Other currencies** (`currencyOptions`) -- changing them creates a new coupon too, because Stripe refuses a new amount for a currency the coupon already has
 - **Once** (`duration: once`) -- the first invoice only
 - **No limits** -- add `maxRedemptions` or `redeemBy` to cap it, or limit it per code with a StripePromotionCode
 

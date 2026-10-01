@@ -1166,13 +1166,17 @@ func (x *StripePaymentLinkAdjustableQuantity) GetMaximum() int64 {
 }
 
 // StripePaymentLinkAfterCompletion is what the buyer sees after paying: Stripe's confirmation
-// page, or a redirect to the account's site. The block that is set is the behavior.
+// page, or a redirect to the account's site.
 type StripePaymentLinkAfterCompletion struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// hosted_confirmation shows Stripe's confirmation page, optionally with a custom message.
-	HostedConfirmation *StripePaymentLinkHostedConfirmation `protobuf:"bytes,1,opt,name=hosted_confirmation,json=hostedConfirmation,proto3" json:"hosted_confirmation,omitempty"`
-	// redirect sends the buyer to the account's site.
-	Redirect      *StripePaymentLinkRedirect `protobuf:"bytes,2,opt,name=redirect,proto3" json:"redirect,omitempty"`
+	// behavior is the one thing that happens after paying. The member that is set is the behavior;
+	// an after_completion block names exactly one.
+	//
+	// Types that are valid to be assigned to Behavior:
+	//
+	//	*StripePaymentLinkAfterCompletion_HostedConfirmation
+	//	*StripePaymentLinkAfterCompletion_Redirect
+	Behavior      isStripePaymentLinkAfterCompletion_Behavior `protobuf_oneof:"behavior"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1207,19 +1211,50 @@ func (*StripePaymentLinkAfterCompletion) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
+func (x *StripePaymentLinkAfterCompletion) GetBehavior() isStripePaymentLinkAfterCompletion_Behavior {
+	if x != nil {
+		return x.Behavior
+	}
+	return nil
+}
+
 func (x *StripePaymentLinkAfterCompletion) GetHostedConfirmation() *StripePaymentLinkHostedConfirmation {
 	if x != nil {
-		return x.HostedConfirmation
+		if x, ok := x.Behavior.(*StripePaymentLinkAfterCompletion_HostedConfirmation); ok {
+			return x.HostedConfirmation
+		}
 	}
 	return nil
 }
 
 func (x *StripePaymentLinkAfterCompletion) GetRedirect() *StripePaymentLinkRedirect {
 	if x != nil {
-		return x.Redirect
+		if x, ok := x.Behavior.(*StripePaymentLinkAfterCompletion_Redirect); ok {
+			return x.Redirect
+		}
 	}
 	return nil
 }
+
+type isStripePaymentLinkAfterCompletion_Behavior interface {
+	isStripePaymentLinkAfterCompletion_Behavior()
+}
+
+type StripePaymentLinkAfterCompletion_HostedConfirmation struct {
+	// hosted_confirmation shows Stripe's confirmation page, optionally with a custom message
+	// (hosted_confirmation: {} is Stripe's page as it is).
+	HostedConfirmation *StripePaymentLinkHostedConfirmation `protobuf:"bytes,1,opt,name=hosted_confirmation,json=hostedConfirmation,proto3,oneof"`
+}
+
+type StripePaymentLinkAfterCompletion_Redirect struct {
+	// redirect sends the buyer to the account's site.
+	Redirect *StripePaymentLinkRedirect `protobuf:"bytes,2,opt,name=redirect,proto3,oneof"`
+}
+
+func (*StripePaymentLinkAfterCompletion_HostedConfirmation) isStripePaymentLinkAfterCompletion_Behavior() {
+}
+
+func (*StripePaymentLinkAfterCompletion_Redirect) isStripePaymentLinkAfterCompletion_Behavior() {}
 
 // StripePaymentLinkHostedConfirmation customizes Stripe's confirmation page.
 type StripePaymentLinkHostedConfirmation struct {
@@ -1535,12 +1570,15 @@ type StripePaymentLinkCustomField struct {
 	Label string `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
 	// optional lets the buyer skip the question.
 	Optional *bool `protobuf:"varint,3,opt,name=optional,proto3,oneof" json:"optional,omitempty"`
-	// dropdown makes the answer a choice from a list. The block that is set is the field's type.
-	Dropdown *StripePaymentLinkDropdown `protobuf:"bytes,4,opt,name=dropdown,proto3" json:"dropdown,omitempty"`
-	// numeric makes the answer a number (numeric: {} with no bounds is enough to choose it).
-	Numeric *StripePaymentLinkTextBounds `protobuf:"bytes,5,opt,name=numeric,proto3" json:"numeric,omitempty"`
-	// text makes the answer free text.
-	Text          *StripePaymentLinkTextBounds `protobuf:"bytes,6,opt,name=text,proto3" json:"text,omitempty"`
+	// type is the kind of answer the question takes. The member that is set is the type; every
+	// custom field names exactly one.
+	//
+	// Types that are valid to be assigned to Type:
+	//
+	//	*StripePaymentLinkCustomField_Dropdown
+	//	*StripePaymentLinkCustomField_Numeric
+	//	*StripePaymentLinkCustomField_Text
+	Type          isStripePaymentLinkCustomField_Type `protobuf_oneof:"type"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1596,26 +1634,64 @@ func (x *StripePaymentLinkCustomField) GetOptional() bool {
 	return false
 }
 
+func (x *StripePaymentLinkCustomField) GetType() isStripePaymentLinkCustomField_Type {
+	if x != nil {
+		return x.Type
+	}
+	return nil
+}
+
 func (x *StripePaymentLinkCustomField) GetDropdown() *StripePaymentLinkDropdown {
 	if x != nil {
-		return x.Dropdown
+		if x, ok := x.Type.(*StripePaymentLinkCustomField_Dropdown); ok {
+			return x.Dropdown
+		}
 	}
 	return nil
 }
 
 func (x *StripePaymentLinkCustomField) GetNumeric() *StripePaymentLinkTextBounds {
 	if x != nil {
-		return x.Numeric
+		if x, ok := x.Type.(*StripePaymentLinkCustomField_Numeric); ok {
+			return x.Numeric
+		}
 	}
 	return nil
 }
 
 func (x *StripePaymentLinkCustomField) GetText() *StripePaymentLinkTextBounds {
 	if x != nil {
-		return x.Text
+		if x, ok := x.Type.(*StripePaymentLinkCustomField_Text); ok {
+			return x.Text
+		}
 	}
 	return nil
 }
+
+type isStripePaymentLinkCustomField_Type interface {
+	isStripePaymentLinkCustomField_Type()
+}
+
+type StripePaymentLinkCustomField_Dropdown struct {
+	// dropdown makes the answer a choice from a list.
+	Dropdown *StripePaymentLinkDropdown `protobuf:"bytes,4,opt,name=dropdown,proto3,oneof"`
+}
+
+type StripePaymentLinkCustomField_Numeric struct {
+	// numeric makes the answer a number (numeric: {} with no bounds is enough to choose it).
+	Numeric *StripePaymentLinkTextBounds `protobuf:"bytes,5,opt,name=numeric,proto3,oneof"`
+}
+
+type StripePaymentLinkCustomField_Text struct {
+	// text makes the answer free text (text: {} with no bounds is enough to choose it).
+	Text *StripePaymentLinkTextBounds `protobuf:"bytes,6,opt,name=text,proto3,oneof"`
+}
+
+func (*StripePaymentLinkCustomField_Dropdown) isStripePaymentLinkCustomField_Type() {}
+
+func (*StripePaymentLinkCustomField_Numeric) isStripePaymentLinkCustomField_Type() {}
+
+func (*StripePaymentLinkCustomField_Text) isStripePaymentLinkCustomField_Type() {}
 
 // StripePaymentLinkDropdown is a custom field's choices.
 type StripePaymentLinkDropdown struct {
@@ -3220,11 +3296,11 @@ const file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"\b_minimumB\n" +
 	"\n" +
-	"\b_maximum\"\xb3\x03\n" +
-	" StripePaymentLinkAfterCompletion\x12\x83\x01\n" +
-	"\x13hosted_confirmation\x18\x01 \x01(\v2R.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkHostedConfirmationR\x12hostedConfirmation\x12d\n" +
-	"\bredirect\x18\x02 \x01(\v2H.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkRedirectR\bredirect:\xa2\x01\xbaH\x9e\x01\x1a\x9b\x01\n" +
-	"\x1dafter_completion.one_behavior\x12Eafter_completion sets exactly one of hosted_confirmation and redirect\x1a3has(this.hosted_confirmation) != has(this.redirect)\"L\n" +
+	"\b_maximum\"\xa5\x02\n" +
+	" StripePaymentLinkAfterCompletion\x12\x85\x01\n" +
+	"\x13hosted_confirmation\x18\x01 \x01(\v2R.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkHostedConfirmationH\x00R\x12hostedConfirmation\x12f\n" +
+	"\bredirect\x18\x02 \x01(\v2H.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkRedirectH\x00R\bredirectB\x11\n" +
+	"\bbehavior\x12\x05\xbaH\x02\b\x01\"L\n" +
 	"#StripePaymentLinkHostedConfirmation\x12%\n" +
 	"\x0ecustom_message\x18\x01 \x01(\tR\rcustomMessage\"\xb1\x01\n" +
 	"\x19StripePaymentLinkRedirect\x12\x93\x01\n" +
@@ -3254,16 +3330,16 @@ const file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_rawDesc = "" +
 	"\x14position_unspecified\x10\x00\x12\b\n" +
 	"\x04auto\x10\x01\x12\n" +
 	"\n" +
-	"\x06hidden\x10\x02\"\x88\x05\n" +
+	"\x06hidden\x10\x02\"\xe1\x03\n" +
 	"\x1cStripePaymentLinkCustomField\x120\n" +
 	"\x03key\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x162\x14^[a-zA-Z0-9]{1,200}$R\x03key\x12 \n" +
 	"\x05label\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x182R\x05label\x12\x1f\n" +
-	"\boptional\x18\x03 \x01(\bH\x00R\boptional\x88\x01\x01\x12d\n" +
-	"\bdropdown\x18\x04 \x01(\v2H.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkDropdownR\bdropdown\x12d\n" +
-	"\anumeric\x18\x05 \x01(\v2J.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkTextBoundsR\anumeric\x12^\n" +
-	"\x04text\x18\x06 \x01(\v2J.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkTextBoundsR\x04text:\xb9\x01\xbaH\xb5\x01\x1a\xb2\x01\n" +
-	"\x15custom_field.one_type\x12=a custom field sets exactly one of dropdown, numeric and text\x1aZ(has(this.dropdown) ? 1 : 0) + (has(this.numeric) ? 1 : 0) + (has(this.text) ? 1 : 0) == 1B\v\n" +
+	"\boptional\x18\x03 \x01(\bH\x01R\boptional\x88\x01\x01\x12f\n" +
+	"\bdropdown\x18\x04 \x01(\v2H.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkDropdownH\x00R\bdropdown\x12f\n" +
+	"\anumeric\x18\x05 \x01(\v2J.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkTextBoundsH\x00R\anumeric\x12`\n" +
+	"\x04text\x18\x06 \x01(\v2J.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkTextBoundsH\x00R\x04textB\r\n" +
+	"\x04type\x12\x05\xbaH\x02\b\x01B\v\n" +
 	"\t_optional\"\xb7\x01\n" +
 	"\x19StripePaymentLinkDropdown\x12u\n" +
 	"\aoptions\x18\x01 \x03(\v2N.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkDropdownOptionB\v\xbaH\b\x92\x01\x05\b\x01\x10\xc8\x01R\aoptions\x12#\n" +
@@ -3566,7 +3642,15 @@ func file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
-	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
+	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{
+		(*StripePaymentLinkAfterCompletion_HostedConfirmation)(nil),
+		(*StripePaymentLinkAfterCompletion_Redirect)(nil),
+	}
+	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{
+		(*StripePaymentLinkCustomField_Dropdown)(nil),
+		(*StripePaymentLinkCustomField_Numeric)(nil),
+		(*StripePaymentLinkCustomField_Text)(nil),
+	}
 	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
 	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[21].OneofWrappers = []any{}
 	file_catalog_stripe_stripepaymentlink_v1alpha1_spec_proto_msgTypes[23].OneofWrappers = []any{}
