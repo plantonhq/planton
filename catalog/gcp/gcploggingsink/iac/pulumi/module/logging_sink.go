@@ -33,7 +33,7 @@ func loggingSink(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	scope := spec.Scope
 
 	switch {
-	case scope != nil && scope.FolderId != "":
+	case scope != nil && scope.FolderId.GetValue() != "":
 		return folderSink(ctx, locals, gcpProvider)
 	case scope != nil && scope.OrganizationId != "":
 		return organizationSink(ctx, locals, gcpProvider)
@@ -130,7 +130,7 @@ func folderSink(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 
 	args := &logging.FolderSinkArgs{
 		Name:        pulumi.String(locals.SinkName),
-		Folder:      pulumi.String(spec.Scope.FolderId),
+		Folder:      pulumi.String(spec.Scope.FolderId.GetValue()),
 		Destination: pulumi.String(locals.Destination),
 	}
 	if spec.Filter != "" {

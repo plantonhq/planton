@@ -217,12 +217,12 @@ var _ = ginkgo.Describe("GcpDialogflowCxAgentSpec", func() {
 		service.RequestBody = `{"order": "$session.params.order_id"}`
 		service.ParameterMapping = map[string]string{"status": "$.status"}
 		service.RequestHeaders = map[string]string{"X-Source": "dialogflow"}
-		service.SecretVersionsForRequestHeaders = []*GcpDialogflowCxAgentSecretHeader{{Key: "X-Api-Key", SecretVersion: secretVersion}}
-		service.SecretVersionForUsernamePassword = secretVersion
+		service.SecretVersionsForRequestHeaders = []*GcpDialogflowCxAgentSecretHeader{{Key: "X-Api-Key", SecretVersion: nameRef("orders-api-key")}}
+		service.SecretVersionForUsernamePassword = litRef(secretVersion)
 		service.OauthConfig = &GcpDialogflowCxAgentOauthConfig{
 			ClientId:                     "client",
 			TokenEndpoint:                "https://auth.example.com/token",
-			SecretVersionForClientSecret: secretVersion,
+			SecretVersionForClientSecret: litRef(secretVersion),
 			Scopes:                       []string{"orders.read"},
 		}
 		service.ServiceAgentAuth = "ID_TOKEN"
@@ -232,11 +232,70 @@ var _ = ginkgo.Describe("GcpDialogflowCxAgentSpec", func() {
 
 	ginkgo.It("should reject a malformed Secret Manager version or Service Directory service", func() {
 		msg := full()
-		msg.Spec.Webhooks[0].GenericWebService.SecretVersionForUsernamePassword = "webhook-password"
+		msg.Spec.Webhooks[0].GenericWebService.SecretVersionForUsernamePassword = litRef("webhook-password")
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = full()
 		msg.Spec.Webhooks[1].ServiceDirectory.Service = "billing-api"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should check only the literal arm of every Secret Manager version reference", func() {
+		webhook := func() (*GcpDialogflowCxAgent, *GcpDialogflowCxAgentGenericWebService) {
+			msg := full()
+			return msg, msg.Spec.Webhooks[0].GenericWebService
+		}
+		tool := func() (*GcpDialogflowCxAgent, *GcpDialogflowCxAgentToolAuthentication) {
+			msg := full()
+			msg.Spec.Tools[0].OpenApiSpec.Authentication = &GcpDialogflowCxAgentToolAuthentication{}
+			return msg, msg.Spec.Tools[0].OpenApiSpec.Authentication
+		}
+		for _, ref := range []*foreignkeyv1.StringValueOrRef{litRef(secretVersion), nameRef("webhook-secret")} {
+			msg, service := webhook()
+			service.SecretVersionForUsernamePassword = ref
+			service.SecretVersionsForRequestHeaders = []*GcpDialogflowCxAgentSecretHeader{{Key: "X-Api-Key", SecretVersion: ref}}
+			service.OauthConfig = &GcpDialogflowCxAgentOauthConfig{ClientId: "c", TokenEndpoint: "https://auth.example.com/token", SecretVersionForClientSecret: ref}
+			gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+
+			for _, auth := range []func(a *GcpDialogflowCxAgentToolAuthentication){
+				func(a *GcpDialogflowCxAgentToolAuthentication) {
+					a.ApiKeyConfig = &GcpDialogflowCxAgentToolApiKeyConfig{KeyName: "k", RequestLocation: "HEADER", SecretVersionForApiKey: ref}
+				},
+				func(a *GcpDialogflowCxAgentToolAuthentication) {
+					a.BearerTokenConfig = &GcpDialogflowCxAgentToolBearerTokenConfig{SecretVersionForToken: ref}
+				},
+				func(a *GcpDialogflowCxAgentToolAuthentication) {
+					a.OauthConfig = &GcpDialogflowCxAgentToolOauthConfig{ClientId: "c", OauthGrantType: "CLIENT_CREDENTIAL", TokenEndpoint: "https://auth.example.com/token", SecretVersionForClientSecret: ref}
+				},
+			} {
+				msg, authentication := tool()
+				auth(authentication)
+				gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+			}
+		}
+
+		bad := litRef("projects/p/secrets/s")
+		msg, service := webhook()
+		service.SecretVersionsForRequestHeaders = []*GcpDialogflowCxAgentSecretHeader{{Key: "X-Api-Key", SecretVersion: bad}}
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("secret_version must be a secret version name"))
+		msg, service = webhook()
+		service.SecretVersionsForRequestHeaders = []*GcpDialogflowCxAgentSecretHeader{{Key: "X-Api-Key"}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg, service = webhook()
+		service.OauthConfig = &GcpDialogflowCxAgentOauthConfig{ClientId: "c", TokenEndpoint: "https://auth.example.com/token", SecretVersionForClientSecret: bad}
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("secret_version_for_client_secret must be a secret version name"))
+		msg, service = webhook()
+		service.SecretVersionForUsernamePassword = bad
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("secret_version_for_username_password must be a secret version name"))
+
+		msg, authentication := tool()
+		authentication.ApiKeyConfig = &GcpDialogflowCxAgentToolApiKeyConfig{KeyName: "k", RequestLocation: "HEADER", SecretVersionForApiKey: bad}
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("secret_version_for_api_key must be a secret version name"))
+		msg, authentication = tool()
+		authentication.BearerTokenConfig = &GcpDialogflowCxAgentToolBearerTokenConfig{SecretVersionForToken: bad}
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("secret_version_for_token must be a secret version name"))
+		msg, authentication = tool()
+		authentication.OauthConfig = &GcpDialogflowCxAgentToolOauthConfig{ClientId: "c", OauthGrantType: "CLIENT_CREDENTIAL", TokenEndpoint: "https://auth.example.com/token", SecretVersionForClientSecret: bad}
+		gomega.Expect(validator.Validate(msg).Error()).To(gomega.ContainSubstring("secret_version_for_client_secret must be a secret version name"))
 	})
 
 	ginkgo.It("should require a tool and its snapshot to be exactly one specification", func() {
@@ -254,7 +313,7 @@ var _ = ginkgo.Describe("GcpDialogflowCxAgentSpec", func() {
 	ginkgo.It("should accept one authentication method and reject two", func() {
 		msg := full()
 		msg.Spec.Tools[0].OpenApiSpec.Authentication = &GcpDialogflowCxAgentToolAuthentication{
-			ApiKeyConfig: &GcpDialogflowCxAgentToolApiKeyConfig{KeyName: "X-Api-Key", RequestLocation: "HEADER", SecretVersionForApiKey: secretVersion},
+			ApiKeyConfig: &GcpDialogflowCxAgentToolApiKeyConfig{KeyName: "X-Api-Key", RequestLocation: "HEADER", SecretVersionForApiKey: nameRef("orders-api-key")},
 		}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.Tools[0].OpenApiSpec.Authentication.BearerTokenConfig = &GcpDialogflowCxAgentToolBearerTokenConfig{Token: "t"}

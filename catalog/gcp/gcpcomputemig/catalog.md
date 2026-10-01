@@ -48,7 +48,8 @@ spec:
     machineType: e2-small
     disks:
       - boot: true
-        sourceImage: debian-cloud/debian-12
+        sourceImage:
+          value: debian-cloud/debian-12
     networkInterfaces:
       - subnetwork:
           valueFrom:
@@ -131,6 +132,7 @@ These are the most important decisions when configuring a managed instance group
 | **GcpHealthCheck** (optional) | `autoHealing.healthCheck` | `status.outputs.self_link` |
 | **GcpServiceAccount** (optional) | `template.serviceAccount.email` | `status.outputs.email` |
 | **GcpKmsKey** (optional) | `template.disks[].diskEncryption.kmsKey` | `status.outputs.key_id` |
+| **GcpComputeImage** (optional) | `template.disks[].sourceImage` | `status.outputs.self_link` |
 | **GcpComputeDisk** (optional) | `template.disks[].source`, `perInstanceConfigs[].preservedState.disks[].source` | `status.outputs.self_link` |
 | **GcpAddress** (optional) | `perInstanceConfigs[].preservedState.externalIps[].address` | `status.outputs.address` |
 

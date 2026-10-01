@@ -494,6 +494,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpComputeImage,
 | `status.outputs.self_link` | `string` | Self-link URL of the image -- what a disk's image, an instance's boot disk image, or another image's source_image consumes. |
 | `status.outputs.family` | `string` | The image's family, or empty when it has none. Consumers that should always boot the newest build use "projects/{project}/global/images/family/{family}". |
 | `status.outputs.disk_size_gb` | `int32` | The image's size in GB. |
+| `status.outputs.image_id` | `string` | The image's resource ID: projects/{project}/global/images/{name} -- the relative form, without self_link's https://www.googleapis.com/compute/v1/ prefix. Consume self_link where a field takes an image URL (a disk's image, an instance's boot disk, a managed instance group's source_image, another image's source_image); consume image_id where Google documents the relative form only, such as a GKE node pool's secondary boot disk image. |
 
 ## References
 
@@ -516,7 +517,11 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpComputeDisk | `spec.image` | `status.outputs.self_link` |
 | GcpComputeImage | `spec.sourceImage` | `status.outputs.self_link` |
+| GcpComputeInstance | `spec.bootDisk.image` | `status.outputs.self_link` |
+| GcpComputeMig | `spec.template.disks[].sourceImage` | `status.outputs.self_link` |
+| GcpGkeNodePool | `spec.nodeConfig.secondaryBootDisks[].diskImage` | `status.outputs.image_id` |
 
 ## See Also
 

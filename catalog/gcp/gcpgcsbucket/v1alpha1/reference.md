@@ -673,6 +673,13 @@ Public access: grant roles/storage.objectViewer to "allUsers" (also
 requires public_access_prevention to be "inherited" and the org policy
 to allow it).
 
+A grantee that depends on this bucket -- a GcpLoggingSink exporting
+into it, whose writer identity needs roles/storage.objectCreator here --
+cannot be referenced from this list without a dependency cycle (the
+sink already references the bucket). Grant it with a standalone
+GcpGcsBucketIamMember, which depends on both. Never declare the same
+(role, member) pair in both places: removing either removes the grant.
+
 ### spec.iamMembers[].role
 
 `string` · required
@@ -1075,6 +1082,7 @@ Fields on other kinds that can point at this resource:
 | GcpDeployTarget | `spec.executionConfigs[].privatePool.artifactStorage` | `status.outputs.url` |
 | GcpDialogflowCxSecuritySettings | `spec.audioExportSettings.gcsBucket` | `status.outputs.bucket_name` |
 | GcpGcsBucket | `spec.logging.logBucket` | `status.outputs.bucket_id` |
+| GcpGcsBucketIamMember | `spec.bucket` | `status.outputs.bucket_id` |
 | GcpLoggingSink | `spec.destination.gcsBucket` | `status.outputs.bucket_id` |
 | GcpPrivateCaCertificateAuthority | `spec.gcsBucket` | `status.outputs.bucket_name` |
 | GcpPubSubSubscription | `spec.cloudStorageConfig.bucket` | `status.outputs.bucket_id` |

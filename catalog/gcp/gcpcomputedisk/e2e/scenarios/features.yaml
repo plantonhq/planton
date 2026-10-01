@@ -20,7 +20,8 @@ metadata:
 spec:
   zone: us-central1-a
   type: pd-balanced
-  image: debian-cloud/debian-12
+  image:
+    value: debian-cloud/debian-12
   guestOsFeatures:
     - UEFI_COMPATIBLE
     - GVNIC

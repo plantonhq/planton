@@ -698,9 +698,13 @@ variable "spec" {
       # to the running service — runtime env lives on the containers).
       environment_variables = optional(map(string), {})
 
-      # Cloud Build Custom Worker Pool to run the build in, as
-      # "projects/{project}/locations/{region}/workerPools/{workerPool}".
-      # For builds that must run inside a private network perimeter.
+      # The Cloud Build private worker pool the build runs in, as
+      # projects/{project}/locations/{location}/workerPools/{pool}: a
+      # GcpCloudBuildWorkerPool reference (its name output), or the literal
+      # name. Use one when the build must reach a private network (a private
+      # package index, an internal artifact store). Empty runs the build on
+      # Google's default pool.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       worker_pool = optional(string, "")
 
       # Service account the BUILD runs as, in the full resource form

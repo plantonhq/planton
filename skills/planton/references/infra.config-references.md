@@ -102,14 +102,18 @@ marks:
   to move it to — the component's SECRET HOME, which keeps the value in a
   secret store the workload reads by reference.
 
-On the three targets a service deploys to, the pattern is one field for
-configuration and a sibling for secrets. Read the marks on the page rather
+On every runtime that takes environment variables, the pattern is one field
+for configuration and a sibling for secrets. Read the marks on the page rather
 than memorizing this table — it shows the shape, not the full list:
 
 | Kind | Configuration (every viewer reads it) | A Planton secret goes in |
 |---|---|---|
 | `KubernetesDeployment` (any Kubernetes workload) | `env.variables[].value` | `env.secrets[].value` — kept in a Kubernetes Secret the workload owns |
 | `GcpCloudRun`, `GcpCloudRunJob` | `env[].value` | `env[].secretValue` — a Secret Manager secret the service owns |
+| `GcpCloudFunction` | `serviceConfig.environmentVariables` | `serviceConfig.secretEnvironmentVariables[].value` — a Secret Manager secret the function owns, read natively |
+| `GcpVertexAiAgentEngine` | `spec.deploymentSpec.env[].value` | `spec.deploymentSpec.secretEnv[].value` — a Secret Manager secret the engine owns, read natively (not with `identityType: AGENT_IDENTITY`, whose identity exists only after create) |
+| `GcpWorkflow` | `userEnvVars` | `secretEnvVars` — a Secret Manager secret the workflow owns; the variable holds the version's resource name |
+| `GcpCloudComposerEnvironment` | `softwareConfig.envVariables` | `softwareConfig.secretEnvVariables` — a Secret Manager secret the environment owns; the variable holds the version's resource name |
 | `AwsEcsTaskDefinition` | `environment` | `secretEnvironment` — a Secrets Manager secret only the execution role reads |
 
 ```yaml
@@ -134,7 +138,11 @@ What a developer should hear, in their terms, when you choose the home:
   belongs to the workload: deleting the service deletes it. Only the
   workload's runtime identity can read it (on Cloud Run, give the service a
   dedicated service account; without one the grant goes to the project's
-  shared Compute Engine default account).
+  shared Compute Engine default account, or on Agent Engine to the
+  project's Reasoning Engine service agent). On Workflows and Composer,
+  which cannot inject a secret themselves, the variable holds the stored
+  version's resource name and the code reads the value from Secret
+  Manager.
 - **Rotation is a deploy.** The workload is pinned to the exact version
   stored, so changing the secret in Planton redeploys nothing by itself;
   the next deploy of that environment — a push, a promotion, a rollback, a
@@ -147,8 +155,9 @@ What a developer should hear, in their terms, when you choose the home:
   organization can name.
 - **When the secret has another owner** (another team rotates it, several
   services share it), point at the store directly instead: Cloud Run's
-  `valueFromSecret`, ECS's `secrets` (an ARN), a Kubernetes
-  `env.secrets[].secretRef`. Then the grant and the rotation are the
+  `valueFromSecret`, Cloud Functions' `secretEnvironmentVariables[].secret`,
+  Agent Engine's `secretEnv[].secretRef`, ECS's `secrets` (an ARN), a
+  Kubernetes `env.secrets[].secretRef`. Then the grant and the rotation are the
   owner's.
 
 The refusal, when it happens, names the field and the home: "…

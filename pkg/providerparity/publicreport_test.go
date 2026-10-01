@@ -20,7 +20,7 @@ func TestRenderPublicReport_Hermetic(t *testing.T) {
 	// wants a clean breadth story.
 	ledger = ledger[:1]
 	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger, nil)
-	rep := buildReport("gcp", spec, modules, schemas)
+	rep := buildReport("gcp", spec, modules, schemas, nil)
 	proofs := map[string]E2EProof{
 		"TestWidget": {Green: true, Engines: []string{"pulumi", "terraform"}},
 		"TestPlain":  {Green: true, Engines: []string{"pulumi"}},
@@ -68,7 +68,7 @@ func TestRenderPublicReport_BaselineListsOnlyOwnSchemas(t *testing.T) {
 	schemas["aws"] = &Schema{Provider: "aws", Source: "hashicorp/aws", Version: "6.58.0"}
 	schemas["google-beta"] = &Schema{Provider: "google-beta", Source: "hashicorp/google-beta", Version: "6.50.0"}
 	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger, nil)
-	rep := buildReport("gcp", spec, modules, schemas)
+	rep := buildReport("gcp", spec, modules, schemas, nil)
 
 	page := RenderPublicReport(rep, acc, nil)
 	if !strings.Contains(page, "`google@6.50.0`") {
@@ -86,7 +86,7 @@ func TestRenderPublicReport_BaselineListsOnlyOwnSchemas(t *testing.T) {
 		modules[0].Pins = map[string]string{}
 	}
 	modules[0].Pins["google-beta"] = "~> 6.0"
-	rep = buildReport("gcp", spec, modules, schemas)
+	rep = buildReport("gcp", spec, modules, schemas, nil)
 	if page := RenderPublicReport(rep, acc, nil); !strings.Contains(page, "`google-beta@6.50.0`") {
 		t.Error("pinned secondary-channel schema missing from the measurement baseline table")
 	}

@@ -77,8 +77,10 @@ resource "google_composer_environment" "environment" {
         image_version            = software_config.value.image_version != "" ? software_config.value.image_version : null
         airflow_config_overrides = length(software_config.value.airflow_config_overrides) > 0 ? software_config.value.airflow_config_overrides : null
         pypi_packages            = length(software_config.value.pypi_packages) > 0 ? software_config.value.pypi_packages : null
-        env_variables            = length(software_config.value.env_variables) > 0 ? software_config.value.env_variables : null
-        web_server_plugins_mode  = software_config.value.web_server_plugins_mode != "" ? software_config.value.web_server_plugins_mode : null
+        # The literals plus each stored secret's version resource name (see
+        # secrets.tf); never a secret value.
+        env_variables           = length(local.env_variables) > 0 ? local.env_variables : null
+        web_server_plugins_mode = software_config.value.web_server_plugins_mode != "" ? software_config.value.web_server_plugins_mode : null
 
         # Automatic dataset lineage reporting into Dataplex.
         dynamic "cloud_data_lineage_integration" {
@@ -266,7 +268,9 @@ resource "google_composer_environment" "environment" {
     enable_private_builds_only = var.spec.enable_private_builds_only ? true : null
   }
 
+  # Created after the grants so the first DAG run can read its secrets.
   depends_on = [
     google_project_service.composer_api,
+    google_secret_manager_secret_iam_member.env,
   ]
 }

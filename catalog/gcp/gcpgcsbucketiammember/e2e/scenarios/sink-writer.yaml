@@ -1,0 +1,34 @@
+# GcpGcsBucketIamMember scenario: the composition this kind exists for.
+# The bucket fixture, then a project sink exporting to it, then this grant:
+# bucket from the bucket's `bucket_id`, member from the sink's
+# `writer_identity`. Declared in the bucket's own iam_members, the grant
+# could not reference the sink without a cycle; this one depends on both.
+# Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucketIamMember
+metadata:
+  name: planton-oss-e2e-gcpgcsim-sinkwriter
+  id: planton-oss-e2e-gcpgcsim-sinkwriter
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgcsbucketiammember
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpLoggingSink"
+  tags:
+    - planton-e2e
+spec:
+  bucket:
+    valueFrom:
+      kind: GcpGcsBucket
+      name: planton-oss-e2e-gcpgcsim-bucket
+      fieldPath: status.outputs.bucket_id
+  role:
+    value: roles/storage.objectCreator
+  member:
+    valueFrom:
+      kind: GcpLoggingSink
+      name: planton-oss-e2e-gcpgcsim-sink
+      fieldPath: status.outputs.writer_identity

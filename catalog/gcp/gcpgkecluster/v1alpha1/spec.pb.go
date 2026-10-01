@@ -322,10 +322,17 @@ type GcpGkeClusterSpec struct {
 	// Autopilot only: permit workloads with NET_ADMIN capability (needed by
 	// some networking agents/service meshes on Autopilot).
 	AllowNetAdmin bool `protobuf:"varint,55,opt,name=allow_net_admin,json=allowNetAdmin,proto3" json:"allow_net_admin,omitempty"`
-	// Registers the cluster with a fleet in the given project (the hub for
-	// multi-cluster features: multi-cluster ingress/services, config
-	// management, team scopes).
-	FleetProject string `protobuf:"bytes,56,opt,name=fleet_project,json=fleetProject,proto3" json:"fleet_project,omitempty"`
+	// Registers the cluster with the fleet of the given project (the hub
+	// for multi-cluster features: multi-cluster ingress/services, config
+	// management, team scopes) -- the fleet host project's ID. Point it at
+	// the GcpGkeFleet that declares the fleet (its project_id, the default):
+	// the reference orders the registration after the fleet exists, and a
+	// fleet declared after a cluster registers collides with the one the
+	// registration created. Point it at a GcpProject (its project_id) only
+	// when no GcpGkeFleet is declared and the registration may create the
+	// project's fleet itself. A literal project ID also works. The fleet
+	// project may differ from the cluster's own project.
+	FleetProject *v1.StringValueOrRef `protobuf:"bytes,56,opt,name=fleet_project,json=fleetProject,proto3" json:"fleet_project,omitempty"`
 	// Fleet membership type. LIGHTWEIGHT registers a lightweight membership
 	// (reduced fleet feature surface, no Connect agent). Empty uses the
 	// fleet default (full membership).
@@ -835,11 +842,11 @@ func (x *GcpGkeClusterSpec) GetAllowNetAdmin() bool {
 	return false
 }
 
-func (x *GcpGkeClusterSpec) GetFleetProject() string {
+func (x *GcpGkeClusterSpec) GetFleetProject() *v1.StringValueOrRef {
 	if x != nil {
 		return x.FleetProject
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpGkeClusterSpec) GetFleetMembershipType() string {
@@ -1685,15 +1692,20 @@ func (x *GcpGkeClusterRegistryHostEndpoint) GetHeaders() map[string]string {
 // customer-managed CAs and KMS keys.
 type GcpGkeClusterUserManagedKeys struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// CA Service CaPool issuing the cluster CA
-	// ("projects/{p}/locations/{l}/caPools/{pool}").
-	ClusterCa string `protobuf:"bytes,1,opt,name=cluster_ca,json=clusterCa,proto3" json:"cluster_ca,omitempty"`
-	// CA Service CaPool for the etcd API CA.
-	EtcdApiCa string `protobuf:"bytes,2,opt,name=etcd_api_ca,json=etcdApiCa,proto3" json:"etcd_api_ca,omitempty"`
-	// CA Service CaPool for the etcd peer CA.
-	EtcdPeerCa string `protobuf:"bytes,3,opt,name=etcd_peer_ca,json=etcdPeerCa,proto3" json:"etcd_peer_ca,omitempty"`
-	// CA Service CaPool for the aggregation layer CA.
-	AggregationCa string `protobuf:"bytes,4,opt,name=aggregation_ca,json=aggregationCa,proto3" json:"aggregation_ca,omitempty"`
+	// CA Service pool issuing the cluster CA -- a GcpPrivateCaPool
+	// reference (its full name) or a literal
+	// projects/{project}/locations/{location}/caPools/{pool}. Each of the
+	// four CA fields accepts the same forms.
+	ClusterCa *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=cluster_ca,json=clusterCa,proto3" json:"cluster_ca,omitempty"`
+	// CA Service pool for the etcd API CA: a GcpPrivateCaPool reference or
+	// the pool's full name.
+	EtcdApiCa *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=etcd_api_ca,json=etcdApiCa,proto3" json:"etcd_api_ca,omitempty"`
+	// CA Service pool for the etcd peer CA: a GcpPrivateCaPool reference or
+	// the pool's full name.
+	EtcdPeerCa *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=etcd_peer_ca,json=etcdPeerCa,proto3" json:"etcd_peer_ca,omitempty"`
+	// CA Service pool for the aggregation layer CA: a GcpPrivateCaPool
+	// reference or the pool's full name.
+	AggregationCa *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=aggregation_ca,json=aggregationCa,proto3" json:"aggregation_ca,omitempty"`
 	// KMS key encrypting the control-plane disks
 	// ("projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}"). Accepts a
 	// literal path or a reference to a GcpKmsKey resource.
@@ -1741,32 +1753,32 @@ func (*GcpGkeClusterUserManagedKeys) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *GcpGkeClusterUserManagedKeys) GetClusterCa() string {
+func (x *GcpGkeClusterUserManagedKeys) GetClusterCa() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ClusterCa
 	}
-	return ""
+	return nil
 }
 
-func (x *GcpGkeClusterUserManagedKeys) GetEtcdApiCa() string {
+func (x *GcpGkeClusterUserManagedKeys) GetEtcdApiCa() *v1.StringValueOrRef {
 	if x != nil {
 		return x.EtcdApiCa
 	}
-	return ""
+	return nil
 }
 
-func (x *GcpGkeClusterUserManagedKeys) GetEtcdPeerCa() string {
+func (x *GcpGkeClusterUserManagedKeys) GetEtcdPeerCa() *v1.StringValueOrRef {
 	if x != nil {
 		return x.EtcdPeerCa
 	}
-	return ""
+	return nil
 }
 
-func (x *GcpGkeClusterUserManagedKeys) GetAggregationCa() string {
+func (x *GcpGkeClusterUserManagedKeys) GetAggregationCa() *v1.StringValueOrRef {
 	if x != nil {
 		return x.AggregationCa
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpGkeClusterUserManagedKeys) GetControlPlaneDiskEncryptionKey() *v1.StringValueOrRef {
@@ -4307,7 +4319,7 @@ var File_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto protoreflect.FileDescript
 
 const file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/gcp/gcpgkecluster/v1alpha1/spec.proto\x12&dev.planton.gcp.gcpgkecluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xabU\n" +
+	"-catalog/gcp/gcpgkecluster/v1alpha1/spec.proto\x12&dev.planton.gcp.gcpgkecluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xccV\n" +
 	"\x11GcpGkeClusterSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12N\n" +
@@ -4380,8 +4392,8 @@ const file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15resource_usage_export\x184 \x01(\v2H.dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterResourceUsageExportR\x13resourceUsageExport\x12S\n" +
 	"\x06addons\x185 \x01(\v2;.dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAddonsR\x06addons\x12)\n" +
 	"\x10enable_autopilot\x186 \x01(\bR\x0fenableAutopilot\x12&\n" +
-	"\x0fallow_net_admin\x187 \x01(\bR\rallowNetAdmin\x12#\n" +
-	"\rfleet_project\x188 \x01(\tR\ffleetProject\x12\xb0\x01\n" +
+	"\x0fallow_net_admin\x187 \x01(\bR\rallowNetAdmin\x12\xc3\x01\n" +
+	"\rfleet_project\x188 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBj\x88\xd4a\xa8\x19\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01\xa2\xd4a\x1e\b\xa8\x19\x12\x19status.outputs.project_id\xa2\xd4a\x1e\b\xc1\x17\x12\x19status.outputs.project_idR\ffleetProject\x12\xb0\x01\n" +
 	"\x15fleet_membership_type\x189 \x01(\tB|\xbaHy\xba\x01v\n" +
 	"\x1bfleet_membership_type_valid\x122fleet_membership_type must be empty or LIGHTWEIGHT\x1a#this == '' || this == 'LIGHTWEIGHT'R\x13fleetMembershipType\x12\xbd\x01\n" +
 	"\x0fdeletion_policy\x18: \x01(\tB\x93\x01\xbaH\x8f\x01\xba\x01\x8b\x01\n" +
@@ -4491,14 +4503,18 @@ const file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\fHeadersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x10\n" +
-	"\x0e_override_path\"\xfd\x06\n" +
-	"\x1cGcpGkeClusterUserManagedKeys\x12\x1d\n" +
+	"\x0e_override_path\"\x93\x10\n" +
+	"\x1cGcpGkeClusterUserManagedKeys\x12\xbe\x02\n" +
 	"\n" +
-	"cluster_ca\x18\x01 \x01(\tR\tclusterCa\x12\x1e\n" +
-	"\vetcd_api_ca\x18\x02 \x01(\tR\tetcdApiCa\x12 \n" +
-	"\fetcd_peer_ca\x18\x03 \x01(\tR\n" +
-	"etcdPeerCa\x12%\n" +
-	"\x0eaggregation_ca\x18\x04 \x01(\tR\raggregationCa\x12\xea\x01\n" +
+	"cluster_ca\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xea\x01\xbaH\xc6\x01\xba\x01\xc2\x01\n" +
+	"\x11cluster_ca_format\x12Sa literal cluster_ca must be projects/{project}/locations/{location}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\tclusterCa\x12\xc1\x02\n" +
+	"\vetcd_api_ca\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xec\x01\xbaH\xc8\x01\xba\x01\xc4\x01\n" +
+	"\x12etcd_api_ca_format\x12Ta literal etcd_api_ca must be projects/{project}/locations/{location}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\tetcdApiCa\x12\xc5\x02\n" +
+	"\fetcd_peer_ca\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xee\x01\xbaH\xca\x01\xba\x01\xc6\x01\n" +
+	"\x13etcd_peer_ca_format\x12Ua literal etcd_peer_ca must be projects/{project}/locations/{location}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\n" +
+	"etcdPeerCa\x12\xce\x02\n" +
+	"\x0eaggregation_ca\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf2\x01\xbaH\xce\x01\xba\x01\xca\x01\n" +
+	"\x15aggregation_ca_format\x12Wa literal aggregation_ca must be projects/{project}/locations/{location}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\raggregationCa\x12\xea\x01\n" +
 	"!control_plane_disk_encryption_key\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBl\xaa\xa6\x1dJCloud KMS crypto key resource path (a reference), not secret key material.\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x1dcontrolPlaneDiskEncryptionKey\x12\xea\x01\n" +
 	"!gkeops_etcd_backup_encryption_key\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBl\xaa\xa6\x1dJCloud KMS crypto key resource path (a reference), not secret key material.\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x1dgkeopsEtcdBackupEncryptionKey\x12\xa7\x01\n" +
 	"\x1cservice_account_signing_keys\x18\a \x03(\tBf\xbaH\x03\xd8\x01\x01\xaa\xa6\x1d\\Cloud KMS cryptoKeyVersion resource paths (references) — the private keys never leave KMS.R\x19serviceAccountSigningKeys\x12Q\n" +
@@ -4867,51 +4883,56 @@ var file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_depIdxs = []int32{
 	41, // 17: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.notification_pubsub:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNotificationPubSub
 	42, // 18: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.resource_usage_export:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterResourceUsageExport
 	43, // 19: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.addons:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAddons
-	3,  // 20: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.rbac_binding_config:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRbacBindingConfig
-	4,  // 21: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.autopilot_policy:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutopilotPolicy
-	5,  // 22: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.node_pool_auto_config:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolAutoConfig
-	6,  // 23: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.node_pool_defaults:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolDefaults
-	12, // 24: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.user_managed_keys:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys
-	13, // 25: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.secret_manager_rotation:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSecretRotation
-	14, // 26: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.secret_sync:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSecretSync
-	2,  // 27: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.rollback_safe_upgrade:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRollbackSafeUpgrade
-	45, // 28: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolAutoConfig.resource_manager_tags:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolAutoConfig.ResourceManagerTagsEntry
-	7,  // 29: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolDefaults.containerd_config:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterContainerdDefaults
-	8,  // 30: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterContainerdDefaults.private_registry_access:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterPrivateRegistryAccess
-	10, // 31: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterContainerdDefaults.registry_hosts:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHost
-	9,  // 32: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterPrivateRegistryAccess.certificate_authority_domains:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryCaDomain
-	11, // 33: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHost.hosts:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHostEndpoint
-	46, // 34: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHostEndpoint.headers:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHostEndpoint.HeadersEntry
-	47, // 35: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.control_plane_disk_encryption_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 36: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.gkeops_etcd_backup_encryption_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 37: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterIpAllocation.cluster_secondary_range_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 38: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterIpAllocation.services_secondary_range_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 39: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterIpAllocation.additional_ip_ranges:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAdditionalIpRange
-	47, // 40: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAdditionalIpRange.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 41: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterPrivateCluster.private_endpoint_subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	20, // 42: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMasterAuthorizedNetworks.cidr_blocks:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMasterAuthorizedNetworkCidr
-	24, // 43: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.daily_window:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterDailyMaintenanceWindow
-	25, // 44: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.recurring_window:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringMaintenanceWindow
-	26, // 45: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.recurring_time_window:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringTimeMaintenanceWindow
-	29, // 46: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.exclusions:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenanceExclusion
-	23, // 47: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.disruption_budget:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterDisruptionBudget
-	27, // 48: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringTimeMaintenanceWindow.window_start_time:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterTimeOfDay
-	28, // 49: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringTimeMaintenanceWindow.delay_until:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterCalendarDate
-	31, // 50: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoscaling.resource_limits:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoscalingResourceLimit
-	32, // 51: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoscaling.auto_provisioning_defaults:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults
-	47, // 52: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 53: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults.boot_disk_kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 54: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults.upgrade_settings:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapUpgradeSettings
-	34, // 55: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapUpgradeSettings.blue_green_settings:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapBlueGreenSettings
-	35, // 56: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapBlueGreenSettings.standard_rollout_policy:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapStandardRolloutPolicy
-	47, // 57: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterDatabaseEncryption.key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 58: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNotificationPubSub.topic:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 59: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterResourceUsageExport.bigquery_dataset_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	60, // [60:60] is the sub-list for method output_type
-	60, // [60:60] is the sub-list for method input_type
-	60, // [60:60] is the sub-list for extension type_name
-	60, // [60:60] is the sub-list for extension extendee
-	0,  // [0:60] is the sub-list for field type_name
+	47, // 20: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.fleet_project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3,  // 21: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.rbac_binding_config:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRbacBindingConfig
+	4,  // 22: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.autopilot_policy:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutopilotPolicy
+	5,  // 23: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.node_pool_auto_config:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolAutoConfig
+	6,  // 24: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.node_pool_defaults:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolDefaults
+	12, // 25: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.user_managed_keys:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys
+	13, // 26: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.secret_manager_rotation:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSecretRotation
+	14, // 27: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.secret_sync:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSecretSync
+	2,  // 28: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterSpec.rollback_safe_upgrade:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRollbackSafeUpgrade
+	45, // 29: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolAutoConfig.resource_manager_tags:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolAutoConfig.ResourceManagerTagsEntry
+	7,  // 30: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNodePoolDefaults.containerd_config:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterContainerdDefaults
+	8,  // 31: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterContainerdDefaults.private_registry_access:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterPrivateRegistryAccess
+	10, // 32: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterContainerdDefaults.registry_hosts:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHost
+	9,  // 33: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterPrivateRegistryAccess.certificate_authority_domains:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryCaDomain
+	11, // 34: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHost.hosts:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHostEndpoint
+	46, // 35: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHostEndpoint.headers:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRegistryHostEndpoint.HeadersEntry
+	47, // 36: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.cluster_ca:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 37: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.etcd_api_ca:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 38: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.etcd_peer_ca:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 39: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.aggregation_ca:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 40: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.control_plane_disk_encryption_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 41: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterUserManagedKeys.gkeops_etcd_backup_encryption_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 42: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterIpAllocation.cluster_secondary_range_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 43: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterIpAllocation.services_secondary_range_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 44: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterIpAllocation.additional_ip_ranges:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAdditionalIpRange
+	47, // 45: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAdditionalIpRange.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 46: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterPrivateCluster.private_endpoint_subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	20, // 47: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMasterAuthorizedNetworks.cidr_blocks:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMasterAuthorizedNetworkCidr
+	24, // 48: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.daily_window:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterDailyMaintenanceWindow
+	25, // 49: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.recurring_window:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringMaintenanceWindow
+	26, // 50: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.recurring_time_window:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringTimeMaintenanceWindow
+	29, // 51: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.exclusions:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenanceExclusion
+	23, // 52: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterMaintenancePolicy.disruption_budget:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterDisruptionBudget
+	27, // 53: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringTimeMaintenanceWindow.window_start_time:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterTimeOfDay
+	28, // 54: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterRecurringTimeMaintenanceWindow.delay_until:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterCalendarDate
+	31, // 55: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoscaling.resource_limits:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoscalingResourceLimit
+	32, // 56: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoscaling.auto_provisioning_defaults:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults
+	47, // 57: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 58: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults.boot_disk_kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 59: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAutoProvisioningDefaults.upgrade_settings:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapUpgradeSettings
+	34, // 60: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapUpgradeSettings.blue_green_settings:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapBlueGreenSettings
+	35, // 61: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapBlueGreenSettings.standard_rollout_policy:type_name -> dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNapStandardRolloutPolicy
+	47, // 62: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterDatabaseEncryption.key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 63: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterNotificationPubSub.topic:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 64: dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterResourceUsageExport.bigquery_dataset_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	65, // [65:65] is the sub-list for method output_type
+	65, // [65:65] is the sub-list for method input_type
+	65, // [65:65] is the sub-list for extension type_name
+	65, // [65:65] is the sub-list for extension extendee
+	0,  // [0:65] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_init() }

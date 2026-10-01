@@ -46,14 +46,20 @@ spec:
           - compute.autoscalers.update
           - compute.autoscalers.delete
         provenance: derived
+        condition:
+          spec_field_set: autoscaler
         notes: Required only when spec.autoscaler is set (google_compute_autoscaler / _region_autoscaler). GCP defines NO compute.regionAutoscalers permissions (verified against the IAM inventory) -- regional autoscalers authorize under these same names.
       - purpose: UseHealthCheck
         permissions:
           - compute.healthChecks.useReadOnly
         provenance: derived
+        condition:
+          spec_field_set: auto_healing.health_check
         notes: Required only when auto_healing references a health check by self link -- the group manager reads it to wire auto-healing.
       - purpose: ActAsServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
+        condition:
+          spec_field_set: template.service_account.email
         notes: Required only when template.service_account.email attaches an identity to the fleet -- GCP demands actAs on that account before creating instances running as it. Not needed when the block is omitted.

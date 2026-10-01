@@ -123,7 +123,8 @@ spec:
     insecureKubeletReadonlyPortEnabled: "FALSE"
     loggingVariant: DEFAULT
   userManagedKeys:
-    clusterCa: projects/test-project-123/locations/us-central1/caPools/test-cluster-ca
+    clusterCa:
+      value: projects/test-project-123/locations/us-central1/caPools/test-cluster-ca
     controlPlaneDiskEncryptionKey:
       value: projects/test-project-123/locations/us-central1/keyRings/test-ring/cryptoKeys/cp-disk-key
   addons:
@@ -327,7 +328,7 @@ spec:
 | `spec.addons.nodeReadinessControllerEnabled` | `bool` |  |  |  |
 | `spec.enableAutopilot` | `bool` |  |  |  |
 | `spec.allowNetAdmin` | `bool` |  |  |  |
-| `spec.fleetProject` | `string` |  |  |  |
+| `spec.fleetProject` | `string \| valueFrom` |  |  | GcpGkeFleet (`status.outputs.project_id`), GcpProject (`status.outputs.project_id`) |
 | `spec.fleetMembershipType` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
 | `spec.ignoreNodeCountChanges` | `bool` |  |  |  |
@@ -376,10 +377,10 @@ spec:
 | `spec.nodePoolDefaults.containerdConfig.registryHosts[].hosts[].headers` | `map<string, string>` |  |  |  |
 | `spec.nodePoolDefaults.containerdConfig.writableCgroupsEnabled` | `bool` |  |  |  |
 | `spec.userManagedKeys` | `GcpGkeClusterUserManagedKeys` |  |  |  |
-| `spec.userManagedKeys.clusterCa` | `string` |  |  |  |
-| `spec.userManagedKeys.etcdApiCa` | `string` |  |  |  |
-| `spec.userManagedKeys.etcdPeerCa` | `string` |  |  |  |
-| `spec.userManagedKeys.aggregationCa` | `string` |  |  |  |
+| `spec.userManagedKeys.clusterCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
+| `spec.userManagedKeys.etcdApiCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
+| `spec.userManagedKeys.etcdPeerCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
+| `spec.userManagedKeys.aggregationCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.userManagedKeys.controlPlaneDiskEncryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
 | `spec.userManagedKeys.gkeopsEtcdBackupEncryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
 | `spec.userManagedKeys.serviceAccountSigningKeys` | `[]string` |  |  |  |
@@ -1971,11 +1972,21 @@ some networking agents/service meshes on Autopilot).
 
 ### spec.fleetProject
 
-`string`
+`string | valueFrom`
 
-Registers the cluster with a fleet in the given project (the hub for
-multi-cluster features: multi-cluster ingress/services, config
-management, team scopes).
+Registers the cluster with the fleet of the given project (the hub
+for multi-cluster features: multi-cluster ingress/services, config
+management, team scopes) -- the fleet host project's ID. Point it at
+the GcpGkeFleet that declares the fleet (its project_id, the default):
+the reference orders the registration after the fleet exists, and a
+fleet declared after a cluster registers collides with the one the
+registration created. Point it at a GcpProject (its project_id) only
+when no GcpGkeFleet is declared and the registration may create the
+project's fleet itself. A literal project ID also works. The fleet
+project may differ from the cluster's own project.
+
+- references: GcpGkeFleet (`status.outputs.project_id`), GcpProject (`status.outputs.project_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpGkeFleet, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
 ### spec.fleetMembershipType
 
@@ -2356,28 +2367,49 @@ environments that must own the entire trust chain. Immutable.
 
 ### spec.userManagedKeys.clusterCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool issuing the cluster CA
-("projects/{p}/locations/{l}/caPools/{pool}").
+CA Service pool issuing the cluster CA -- a GcpPrivateCaPool
+reference (its full name) or a literal
+projects/{project}/locations/{location}/caPools/{pool}. Each of the
+four CA fields accepts the same forms.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal cluster_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.etcdApiCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool for the etcd API CA.
+CA Service pool for the etcd API CA: a GcpPrivateCaPool reference or
+the pool's full name.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal etcd_api_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.etcdPeerCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool for the etcd peer CA.
+CA Service pool for the etcd peer CA: a GcpPrivateCaPool reference or
+the pool's full name.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal etcd_peer_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.aggregationCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool for the aggregation layer CA.
+CA Service pool for the aggregation layer CA: a GcpPrivateCaPool
+reference or the pool's full name.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal aggregation_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.controlPlaneDiskEncryptionKey
 
@@ -2551,6 +2583,12 @@ Fields that can point at another resource's outputs:
 | `spec.databaseEncryption.keyName` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.notificationPubsub.topic` | GcpPubSubTopic | `status.outputs.topic_id` |
 | `spec.resourceUsageExport.bigqueryDatasetId` | GcpBigQueryDataset | `status.outputs.dataset_id` |
+| `spec.fleetProject` | GcpGkeFleet | `status.outputs.project_id` |
+| `spec.fleetProject` | GcpProject | `status.outputs.project_id` |
+| `spec.userManagedKeys.clusterCa` | GcpPrivateCaPool | `status.outputs.name` |
+| `spec.userManagedKeys.etcdApiCa` | GcpPrivateCaPool | `status.outputs.name` |
+| `spec.userManagedKeys.etcdPeerCa` | GcpPrivateCaPool | `status.outputs.name` |
+| `spec.userManagedKeys.aggregationCa` | GcpPrivateCaPool | `status.outputs.name` |
 | `spec.userManagedKeys.controlPlaneDiskEncryptionKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.userManagedKeys.gkeopsEtcdBackupEncryptionKey` | GcpKmsKey | `status.outputs.key_id` |
 

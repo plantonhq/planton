@@ -36,8 +36,12 @@ type Report struct {
 	// DistinctResources, at the pinned versions.
 	TotalConfigurableArgs int `json:"totalConfigurableArgs"`
 	// UnknownResources are consumed resource types absent from every loaded
-	// schema -- a module using a resource its declared pin does not serve
-	// (or a schema artifact behind the modules). Always investigate.
+	// schema that the consuming kind's manifest does not judge internal -- a
+	// module using a resource its declared pin does not serve (or a schema
+	// artifact behind the modules). Always investigate. A utility-provider
+	// resource a manifest judges internal (hashicorp/random's
+	// random_password minting a credential, hashicorp/time's time_sleep) is
+	// module plumbing, the same judgment the accounting honors.
 	UnknownResources []string `json:"unknownResources,omitempty"`
 	// PinDistribution counts modules per declared provider constraint,
 	// e.g. {"google": {"~> 6.0": 78, "~> 5.0": 1}} -- a single-pin catalog
@@ -76,10 +80,31 @@ func BuildReport(repoRoot string, provider cloudresourcekind.CloudResourceProvid
 	if err != nil {
 		return Report{}, err
 	}
-	return buildReport(crkreflect.ProviderDirName(provider), spec, modules, schemas), nil
+	internal := map[string]map[string]bool{}
+	for _, m := range modules {
+		manifest, err := LoadKindManifest(repoRoot, provider, crkreflect.KindFromString(m.Kind))
+		if err != nil {
+			return Report{}, err
+		}
+		if manifest == nil {
+			continue
+		}
+		for res, judgment := range manifest.Resources {
+			if judgment != nil && judgment.Internal != "" {
+				if internal[m.Kind] == nil {
+					internal[m.Kind] = map[string]bool{}
+				}
+				internal[m.Kind][res] = true
+			}
+		}
+	}
+	return buildReport(crkreflect.ProviderDirName(provider), spec, modules, schemas, internal), nil
 }
 
-func buildReport(cloudProvider string, spec []KindCensus, modules []ModuleCensus, schemas map[string]*Schema) Report {
+// buildReport joins the censuses. internal maps a kind to the resources its
+// manifest judges internal; a judged resource no schema serves is plumbing,
+// not an unknown.
+func buildReport(cloudProvider string, spec []KindCensus, modules []ModuleCensus, schemas map[string]*Schema, internal map[string]map[string]bool) Report {
 	schemaNames := make([]string, 0, len(schemas))
 	versions := map[string]string{}
 	for name, s := range schemas {
@@ -101,6 +126,7 @@ func buildReport(cloudProvider string, spec []KindCensus, modules []ModuleCensus
 	}
 
 	distinct := map[string]ResourceUse{}
+	unknown := map[string]bool{}
 	for _, m := range modules {
 		kr := KindReport{
 			Kind:       m.Kind,
@@ -118,6 +144,8 @@ func buildReport(cloudProvider string, spec []KindCensus, modules []ModuleCensus
 				use.Schema = name
 				use.ConfigurableArgs = block.ConfigurableArgCount()
 				use.Deprecated = block.Deprecated
+			} else if !internal[m.Kind][res] {
+				unknown[res] = true
 			}
 			kr.Resources = append(kr.Resources, use)
 			distinct[res] = use
@@ -141,12 +169,10 @@ func buildReport(cloudProvider string, spec []KindCensus, modules []ModuleCensus
 	}
 	sort.Strings(names)
 	for _, name := range names {
-		use := distinct[name]
-		if use.Schema == "" {
+		if unknown[name] {
 			report.UnknownResources = append(report.UnknownResources, name)
-			continue
 		}
-		report.TotalConfigurableArgs += use.ConfigurableArgs
+		report.TotalConfigurableArgs += distinct[name].ConfigurableArgs
 	}
 	return report
 }

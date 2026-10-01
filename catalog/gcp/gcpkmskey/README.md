@@ -54,7 +54,7 @@ This creates a symmetric encryption key with 90-day automatic rotation — the m
 | `versionTemplate.protectionLevel` | string | No | `SOFTWARE` (default), `HSM`, `EXTERNAL`, `EXTERNAL_VPC`. Immutable |
 | `skipInitialVersionCreation` | bool | No | Create the key empty (required for import-only keys). Create-time only |
 | `importOnly` | bool | No | BYOK container: only imported versions ever. Immutable; requires `skipInitialVersionCreation` |
-| `cryptoKeyBackend` | StringValueOrRef | No | EKM connection path backing `EXTERNAL_VPC` keys. Immutable |
+| `cryptoKeyBackend` | string | No | Full name of the EKM connection (made outside the catalog) backing `EXTERNAL_VPC` keys. Immutable |
 | `labels` | map | No | User labels, merged beneath Planton's attribution labels. Mutable |
 | `deletionPolicy` | string | No | `DELETE` (default: destroy schedules EVERY key version for destruction — data becomes unrecoverable), `PREVENT` (destroy fails — the safe posture for production keys), `ABANDON` (the key leaves management with all versions intact). Mutable |
 

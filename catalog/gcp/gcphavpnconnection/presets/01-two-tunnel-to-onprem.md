@@ -14,16 +14,18 @@ two BGP sessions with BFD, protected against destroy.
 - `tunnels` — `hq-tunnel-0` from gateway interface 0 to device interface 0,
   `hq-tunnel-1` from 1 to 1; each with its own link-local /30 and a BGP
   session to the device's ASN; BFD `ACTIVE` for ~1 s failure detection.
-- `sharedSecret` — wired from a secrets manager, never written into the
-  manifest.
+- `sharedSecret` — one pre-shared key for both tunnels, at the connection
+  level, wired from a secrets manager and never written into the manifest.
+  Leave it out and the module generates one; read it from the
+  connection's `shared_secret` output and configure the device with it.
 - `deletionPolicy: PREVENT` — a production site link.
 
 ## Adjust before deploying
 
 - **`gateway`/`router`/`region` `valueFrom.name`** — your gateway's manifest
   name.
-- **The two `ipAddress`es**, **`peerAsn`**, and the two secrets — from the
-  on-premises team; configure the device toward the gateway's
+- **The two `ipAddress`es**, **`peerAsn`**, and the secret (or none, to
+  have it generated) — from the on-premises team; configure the device toward the gateway's
   `interface_0_ip_address` / `interface_1_ip_address` outputs with
   `169.254.10.2` and `169.254.11.2` as its BGP addresses and the gateway's
   `router_asn` as its neighbor ASN.

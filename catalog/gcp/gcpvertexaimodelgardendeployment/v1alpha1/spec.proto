@@ -16,7 +16,13 @@ message GcpVertexAiModelGardenDeploymentEnvVar {
   ];
 
   // Literal value. Variables may reference each other as $(VAR_NAME);
-  // the reference is expanded regardless of declaration order.
+  // the reference is expanded regardless of declaration order. Stored in
+  // the uploaded model in plain text, where anyone who can view the model
+  // reads it: never a secret. Model Garden's serving containers read
+  // their environment literally and have no Secret Manager path, so there
+  // is no safe home for one here; a gated Hugging Face model's token goes
+  // in model_config.hugging_face_access_token, the sensitive field built
+  // for it.
   string value = 2 [(buf.validate.field).required = true];
 }
 

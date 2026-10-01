@@ -33,7 +33,8 @@ spec:
       hostErrorTimeoutSeconds: 120
     disks:
       - boot: true
-        sourceImage: debian-cloud/debian-12
+        sourceImage:
+          value: debian-cloud/debian-12
     networkInterfaces:
       - network:
           valueFrom:

@@ -21,10 +21,23 @@ account — and the module creates the matching GCP resource
 
 THE post-create step every sink needs: GCP mints a `writer_identity`
 service account for the sink, and that identity must be GRANTED write
-access on the destination (e.g. roles/storage.objectCreator on the
-bucket) or the sink silently exports nothing. The writer_identity stack
-output exists exactly for that wiring — grant it through the destination
-kind's iam_members in the same chart.
+access on the destination or the sink silently exports nothing. The
+writer_identity stack output (already in IAM member form,
+serviceAccount:{email}) exists exactly for that wiring. Grant it with a
+standalone grant that depends on both the sink and the destination,
+its member referencing this sink's writer_identity output:
+  GCS bucket       -- a GcpGcsBucketIamMember, role
+                      roles/storage.objectCreator
+  Pub/Sub topic    -- a GcpPubSubTopicIamMember, role
+                      roles/pubsub.publisher
+  BigQuery dataset -- roles/bigquery.dataEditor, granted outside the
+                      catalog or as a literal entry in the
+                      GcpBigQueryDataset's access list once the identity
+                      is known (the dataset's access list is
+                      authoritative, so there is no separate grant kind)
+Never grant it through the destination kind's own IAM fields: the sink
+references its destination, so a destination that references the
+sink's identity back is a dependency cycle.
 
 ## Example
 
@@ -87,7 +100,7 @@ spec:
 |---|---|---|---|---|
 | `spec.scope` | `GcpLoggingSinkScope` |  |  |  |
 | `spec.scope.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
-| `spec.scope.folderId` | `string` |  |  |  |
+| `spec.scope.folderId` | `string \| valueFrom` |  |  | GcpFolder (`status.outputs.folder_id`) |
 | `spec.scope.organizationId` | `string` |  |  |  |
 | `spec.scope.billingAccount` | `string` |  |  |  |
 | `spec.sinkName` | `string` |  |  |  |
@@ -134,10 +147,15 @@ to a GcpProject resource.
 
 ### spec.scope.folderId
 
-`string`
+`string | valueFrom`
 
-Folder sink: the folder ID (numeric, with or without the "folders/"
-prefix).
+Folder sink: the folder's numeric ID (with or without the "folders/"
+prefix) -- a literal, or a reference to a GcpFolder resource (its
+folder_id output). The sink lives in the folder and, with
+include_children, sees every project and folder beneath it.
+
+- references: GcpFolder (`status.outputs.folder_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpFolder, name: <that resource's name>, fieldPath: status.outputs.folder_id}} -- a bare string does not parse
 
 ### spec.scope.organizationId
 
@@ -177,7 +195,9 @@ Where matching log entries are exported. Exactly one destination arm.
 Export to a Cloud Storage bucket (hourly batches of JSON files). The
 bucket NAME — a literal or a reference to a GcpGcsBucket resource.
 Rendered as storage.googleapis.com/{bucket}. Grant the sink's
-writer_identity roles/storage.objectCreator on the bucket.
+writer_identity roles/storage.objectCreator on the bucket with a
+GcpGcsBucketIamMember whose member references the writer_identity
+output.
 
 - references: GcpGcsBucket (`status.outputs.bucket_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpGcsBucket, name: <that resource's name>, fieldPath: status.outputs.bucket_id}} -- a bare string does not parse
@@ -191,7 +211,10 @@ dataset SELF LINK (https://bigquery.googleapis.com/bigquery/v2/projects/
 {p}/datasets/{d} — the GcpBigQueryDataset self_link output) or a bare
 projects/{p}/datasets/{d} path; the module normalizes either into the
 bigquery.googleapis.com/... destination URI. Grant the writer_identity
-roles/bigquery.dataEditor on the dataset. The reference is
+roles/bigquery.dataEditor on the dataset -- outside the catalog, or as
+a literal entry in the GcpBigQueryDataset's access list once the
+identity is known (a reference there would make the dataset depend on
+the sink that depends on it). The reference is
 containment-exempt: the sink EXPORTS INTO the dataset, it does not live
 inside it (the sink's home is its scope).
 
@@ -215,7 +238,9 @@ Export to a Pub/Sub topic (streaming; the front door to third-party
 log pipelines). The full topic path projects/{p}/topics/{t} — a literal
 or a reference to a GcpPubSubTopic resource (its topic_id output).
 Rendered as pubsub.googleapis.com/projects/{p}/topics/{t}. Grant the
-writer_identity roles/pubsub.publisher on the topic.
+writer_identity roles/pubsub.publisher on the topic with a
+GcpPubSubTopicIamMember whose member references the writer_identity
+output.
 
 - references: GcpPubSubTopic (`status.outputs.topic_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpPubSubTopic, name: <that resource's name>, fieldPath: status.outputs.topic_id}} -- a bare string does not parse
@@ -369,7 +394,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpLoggingSink, 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.sink_name` | `string` | The sink name as it exists in GCP. |
-| `status.outputs.writer_identity` | `string` | The service-account identity GCP minted (or adopted) for this sink — format "serviceAccount:{email}". THE chart output: grant this identity write access on the destination (roles/storage.objectCreator on a bucket, roles/bigquery.dataEditor on a dataset, roles/pubsub.publisher on a topic) via the destination kind's iam_members, or the sink silently exports nothing. |
+| `status.outputs.writer_identity` | `string` | The service-account identity GCP minted (or adopted) for this sink — format "serviceAccount:{email}", exactly the value an IAM member field takes. THE chart output: grant this identity write access on the destination, or the sink silently exports nothing -- through a standalone grant whose member references this output: a GcpGcsBucketIamMember with roles/storage.objectCreator on a bucket, a GcpPubSubTopicIamMember with roles/pubsub.publisher on a topic. A BigQuery dataset takes roles/bigquery.dataEditor outside the catalog or as a literal entry in its access list once the identity is known. Never through the destination kind's own IAM fields: the sink already depends on the destination, so that grant would be a cycle. |
 
 ## References
 
@@ -378,9 +403,19 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.scope.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.scope.folderId` | GcpFolder | `status.outputs.folder_id` |
 | `spec.destination.gcsBucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.destination.bigqueryDataset` | GcpBigQueryDataset | `status.outputs.self_link` |
 | `spec.destination.pubsubTopic` | GcpPubSubTopic | `status.outputs.topic_id` |
+
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpGcsBucketIamMember | `spec.member` | `status.outputs.writer_identity` |
+| GcpPubSubTopicIamMember | `spec.member` | `status.outputs.writer_identity` |
 
 ## See Also
 

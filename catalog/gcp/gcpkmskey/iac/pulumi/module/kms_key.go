@@ -96,8 +96,8 @@ func kmsKey(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 
 	// EKM connection for EXTERNAL_VPC keys (the spec enforces the pairing
 	// pre-deploy). Absent for the SOFTWARE/HSM/EXTERNAL protection levels.
-	if spec.CryptoKeyBackend != nil && spec.CryptoKeyBackend.GetValue() != "" {
-		args.CryptoKeyBackend = pulumi.StringPtr(spec.CryptoKeyBackend.GetValue())
+	if spec.CryptoKeyBackend != "" {
+		args.CryptoKeyBackend = pulumi.StringPtr(spec.CryptoKeyBackend)
 	}
 
 	// Version template: algorithm affects only versions created after a

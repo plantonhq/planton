@@ -45,7 +45,7 @@ var _ = ginkgo.Describe("GcpComputeMigSpec", func() {
 					Disks: []*GcpComputeMigTemplateDisk{
 						{
 							Boot:        true,
-							SourceImage: "debian-cloud/debian-12",
+							SourceImage: strVal("debian-cloud/debian-12"),
 						},
 					},
 					NetworkInterfaces: []*GcpComputeMigTemplateNetworkInterface{
@@ -178,14 +178,14 @@ var _ = ginkgo.Describe("GcpComputeMigSpec", func() {
 			m = minimal()
 			m.Spec.Template.Disks = append(m.Spec.Template.Disks, &GcpComputeMigTemplateDisk{
 				Boot:        true,
-				SourceImage: "debian-cloud/debian-12",
+				SourceImage: strVal("debian-cloud/debian-12"),
 			})
 			gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed(), "two boot disks")
 		})
 
 		ginkgo.It("requires the boot disk to carry an OS source", func() {
 			m := minimal()
-			m.Spec.Template.Disks[0].SourceImage = ""
+			m.Spec.Template.Disks[0].SourceImage = nil
 			gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed())
 		})
 
@@ -196,9 +196,22 @@ var _ = ginkgo.Describe("GcpComputeMigSpec", func() {
 			})
 			gomega.Expect(validator.Validate(m)).To(gomega.Succeed(), "blank data disk")
 
-			m.Spec.Template.Disks[1].SourceImage = "debian-cloud/debian-12"
+			m.Spec.Template.Disks[1].SourceImage = strVal("debian-cloud/debian-12")
 			m.Spec.Template.Disks[1].SourceSnapshot = "snap-1"
 			gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed(), "image + snapshot")
+		})
+
+		ginkgo.It("accepts a GcpComputeImage reference as the boot disk's source", func() {
+			m := minimal()
+			m.Spec.Template.Disks[0].SourceImage = &foreignkeyv1.StringValueOrRef{
+				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+					ValueFrom: &foreignkeyv1.ValueFromRef{Name: "web-base", FieldPath: "status.outputs.self_link"},
+				},
+			}
+			gomega.Expect(validator.Validate(m)).To(gomega.Succeed())
+
+			m.Spec.Template.Disks[0].SourceSnapshot = "snap-1"
+			gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed(), "image reference + snapshot")
 		})
 
 		ginkgo.It("pairs source encryption with its source", func() {

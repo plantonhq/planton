@@ -97,7 +97,7 @@ spec:
 | `spec.certificateManagerCertificates` | `[]string \| valueFrom` |  |  | GcpCertManagerCert (`status.outputs.certificate_name`) |
 | `spec.certificateMap` | `string` |  |  |  |
 | `spec.sslPolicy` | `string \| valueFrom` |  |  | GcpSslPolicy (`status.outputs.self_link`) |
-| `spec.serverTlsPolicy` | `string \| valueFrom` |  |  |  |
+| `spec.serverTlsPolicy` | `string` |  |  |  |
 | `spec.quicOverride` | `string` |  |  |  |
 | `spec.tlsEarlyData` | `string` |  |  |  |
 | `spec.httpKeepAliveTimeoutSec` | `int32` |  |  |  |
@@ -249,7 +249,7 @@ one to enforce modern TLS for compliance. Mutable: GCP swaps it in place
 
 ### spec.serverTlsPolicy
 
-`string | valueFrom`
+`string`
 
 A network security ServerTlsPolicy resource that configures server-side
 TLS — the mTLS mechanism: it can demand and validate client
@@ -257,11 +257,11 @@ certificates. Applies to global proxies behind EXTERNAL /
 EXTERNAL_MANAGED / INTERNAL_SELF_MANAGED forwarding rules and to
 regional proxies (a regional policy in the proxy's region); for Traffic
 Director this is the ONLY TLS lever (ssl_certificates are ignored).
-Format: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
+The policy is made outside the catalog (in Network Security, with its
+trust config of CA anchors; no catalog kind produces it), so write its
+full name: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
 If left blank, no server-side TLS policy applies. Mutable — and
 clearable: removing it PATCHes the proxy back to no policy.
-
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.quicOverride
 

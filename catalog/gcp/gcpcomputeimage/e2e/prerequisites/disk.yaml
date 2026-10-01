@@ -19,4 +19,5 @@ spec:
   zone: us-east1-b
   type: pd-standard
   sizeGb: 10
-  image: projects/debian-cloud/global/images/family/debian-12
+  image:
+    value: projects/debian-cloud/global/images/family/debian-12

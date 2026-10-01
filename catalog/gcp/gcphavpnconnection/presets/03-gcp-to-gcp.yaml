@@ -27,13 +27,16 @@ spec:
   tunnels:
     - name: hub-to-spoke-0
       vpnGatewayInterface: 0
-      sharedSecret: ${secrets-group.hub-spoke-vpn.psk-0}
       bgpSession:
         interfaceIpRange: 169.254.30.1/30
         peerAsn: 64515
     - name: hub-to-spoke-1
       vpnGatewayInterface: 1
-      sharedSecret: ${secrets-group.hub-spoke-vpn.psk-1}
       bgpSession:
         interfaceIpRange: 169.254.31.1/30
         peerAsn: 64515
+  sharedSecret:
+    valueFrom:
+      kind: GcpHaVpnConnection
+      name: spoke-to-hub
+      fieldPath: status.outputs.shared_secret

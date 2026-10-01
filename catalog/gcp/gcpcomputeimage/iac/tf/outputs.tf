@@ -20,3 +20,8 @@ output "disk_size_gb" {
   description = "The image's size in GB"
   value       = google_compute_image.this.disk_size_gb
 }
+
+output "image_id" {
+  description = "The image's resource ID, projects/{project}/global/images/{name} -- the relative form GKE secondary boot disks consume"
+  value       = google_compute_image.this.id
+}

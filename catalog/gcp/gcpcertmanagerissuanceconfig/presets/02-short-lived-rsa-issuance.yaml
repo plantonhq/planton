@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerIssuanceConfig
+metadata:
+  name: my-legacy-client-issuance
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: RSA-2048 certificates with the minimum lifetime, for older clients
+  caPool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: "<ca-pool-resource-name>"
+      fieldPath: status.outputs.name
+  keyAlgorithm: RSA_2048
+  # 21 days, the minimum Google allows -- a leaked key is useful for less time.
+  lifetime: 1814400s
+  # Renew on day 14, exactly 7 days before expiry -- the latest point a
+  # 21-day lifetime permits (34-66).
+  rotationWindowPercentage: 66
+  # Certificates depend on this config for renewal.
+  deletionPolicy: PREVENT

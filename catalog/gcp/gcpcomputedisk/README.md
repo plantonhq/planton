@@ -6,7 +6,7 @@ Deploys a zonal Google Compute Engine persistent disk (`google_compute_disk`) �
 
 A disk is a first-class node with its own lifecycle: create it once, attach it to a `GcpComputeInstance` by reference, and the data survives instance replacement, resizing, and rescheduling. The spec covers the full zonal-disk surface:
 
-- **Sources** — at most one of `image` (bootable), `sourceSnapshot` (restore), or `sourceDisk` (clone another `GcpComputeDisk`); omit all three for an empty data disk (the common case, which then requires `sizeGb`).
+- **Sources** — at most one of `image` (bootable; a `GcpComputeImage` reference or a family/image path), `sourceSnapshot` (restore), or `sourceDisk` (clone another `GcpComputeDisk`); omit all three for an empty data disk (the common case, which then requires `sizeGb`).
 - **Performance** — the pd family (`pd-standard`, `pd-balanced`, `pd-ssd`, `pd-extreme`) and the hyperdisk family, with `provisionedIops` and `provisionedThroughput` tunable in place on hyperdisk types (at most every 4 hours).
 - **Encryption** — customer-managed keys (CMEK) via a `GcpKmsKey` reference; confidential-compute mode on hyperdisk SKUs.
 - **Safety** — `createSnapshotBeforeDestroy` takes a final snapshot during destroy, a last-resort recovery net for precious volumes.
@@ -50,7 +50,7 @@ This creates an empty 100 GB pd-balanced data disk named `app-data` (the disk na
 | `description` | string | No | Human-readable description |
 | `type` | string | No | `pd-standard`, `pd-balanced` (GCP default), `pd-ssd`, `pd-extreme`, or `hyperdisk-*`. Immutable |
 | `sizeGb` | int | Empty disks | Size in GB (1–65536). Required with no source; grows in place, never shrinks |
-| `image` | string | No | Source image (family or self link) — makes the disk bootable. Create-time only |
+| `image` | StringValueOrRef | No | Source image — a `GcpComputeImage` reference (its `self_link`) or a literal family or image path — makes the disk bootable. Create-time only |
 | `sourceSnapshot` | string | No | Snapshot (name or self link) to restore from. Create-time only |
 | `sourceDisk` | StringValueOrRef | No | Existing `GcpComputeDisk` to clone (or a literal self link). Create-time only |
 | `kmsKey` | StringValueOrRef | No | CMEK key (reference a `GcpKmsKey`); omitted means Google-managed encryption. Immutable |

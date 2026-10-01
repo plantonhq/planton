@@ -345,6 +345,7 @@ Fields on other kinds that can point at this resource:
 | GcpEventarcMessageBus | `spec.pipelines[].authentication.oauthToken.serviceAccount` | `status.outputs.email` |
 | GcpEventarcTrigger | `spec.serviceAccount` | `status.outputs.email` |
 | GcpGcsBucket | `spec.iamMembers[].member` | `status.outputs.member` |
+| GcpGcsBucketIamMember | `spec.member` | `status.outputs.member` |
 | GcpGkeCluster | `spec.clusterAutoscaling.autoProvisioningDefaults.serviceAccount` | `status.outputs.email` |
 | GcpGkeFleetFeature | `spec.fleetDefaultMemberConfig.configmanagement.configSync.git.gcpServiceAccountEmail` | `status.outputs.email` |
 | GcpGkeFleetFeature | `spec.fleetDefaultMemberConfig.configmanagement.configSync.oci.gcpServiceAccountEmail` | `status.outputs.email` |
@@ -369,6 +370,7 @@ Fields on other kinds that can point at this resource:
 | GcpPubSubTopic | `spec.ingestionDataSourceSettings.azureEventHubs.gcpServiceAccount` | `status.outputs.email` |
 | GcpPubSubTopic | `spec.ingestionDataSourceSettings.confluentCloud.gcpServiceAccount` | `status.outputs.email` |
 | GcpPubSubTopic | `spec.messageTransforms[].aiInference.serviceAccountEmail` | `status.outputs.email` |
+| GcpPubSubTopicIamMember | `spec.member` | `status.outputs.member` |
 | GcpSecretManagerSecret | `spec.iamMembers[].member` | `status.outputs.member` |
 | GcpServiceAccountIamMember | `spec.serviceAccountId` | `status.outputs.name` |
 | GcpServiceAccountIamMember | `spec.member` | `status.outputs.member` |

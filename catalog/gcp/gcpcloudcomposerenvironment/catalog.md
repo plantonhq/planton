@@ -112,7 +112,7 @@ These are the most important decisions when configuring a Cloud Composer environ
 
 **Private networking** -- For Composer 2.x, configure `privateEnvironmentConfig` with VPC peering (`connectionType: VPC_PEERING`) or Private Service Connect. Set `enablePrivateEndpoint: true` to restrict the Airflow web UI to private IP only. For Composer 3, use `enablePrivateEnvironment` and `nodeConfig.composerNetworkAttachment` instead.
 
-**Software and packages** -- Set `softwareConfig.imageVersion` to pin a specific Composer/Airflow version (e.g., `"composer-2.9.7-airflow-2.9.3"`). Add custom Python packages via `pypiPackages` and override Airflow configuration via `airflowConfigOverrides`. Environment variables set via `envVariables` are available to all DAGs.
+**Software and packages** -- Set `softwareConfig.imageVersion` to pin a specific Composer/Airflow version (e.g., `"composer-2.9.7-airflow-2.9.3"`). Add custom Python packages via `pypiPackages` and override Airflow configuration via `airflowConfigOverrides`. Environment variables set via `envVariables` are available to all DAGs as plain text. Put secrets in `secretEnvVariables` instead: the module stores each value in its own Secret Manager secret, grants `nodeConfig.serviceAccount` (or the default compute account) access to it alone, and the env var holds the version's resource name for DAGs to read. Airflow's own Secret Manager backend (`secrets-backend` in `airflowConfigOverrides`) remains the way to serve Airflow connections and variables.
 
 ## Outputs and Dependencies
 

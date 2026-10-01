@@ -57,7 +57,7 @@ spec:
 | `spec.description` | `string` |  |  |  |
 | `spec.type` | `string` |  |  |  |
 | `spec.sizeGb` | `int32` |  |  |  |
-| `spec.image` | `string` |  |  |  |
+| `spec.image` | `string \| valueFrom` |  |  | GcpComputeImage (`status.outputs.self_link`) |
 | `spec.sourceSnapshot` | `string` |  |  |  |
 | `spec.sourceDisk` | `string \| valueFrom` |  |  | GcpComputeDisk (`status.outputs.self_link`) |
 | `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
@@ -147,11 +147,18 @@ place; shrinking is impossible.
 
 ### spec.image
 
-`string`
+`string | valueFrom`
 
 Source image to initialize the disk from — makes the disk bootable.
-Accepts an image family ("debian-cloud/debian-12") or a specific
-image self link. Create-time only.
+A GcpComputeImage reference (its self_link, pinning that exact build)
+or a literal Google accepts: a public image family short form
+("debian-cloud/debian-12"), a family path
+("projects/{project}/global/images/family/{family}", which follows
+the family's newest image), or a specific image's path or self link.
+Create-time only.
+
+- references: GcpComputeImage (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeImage, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.sourceSnapshot
 
@@ -433,6 +440,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.image` | GcpComputeImage | `status.outputs.self_link` |
 | `spec.sourceDisk` | GcpComputeDisk | `status.outputs.self_link` |
 | `spec.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |

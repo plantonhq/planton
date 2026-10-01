@@ -13,6 +13,9 @@ other as standby.
 - `tunnels` — tunnels 0 and 1 from gateway interface 0 to device interfaces
   0 and 1; tunnels 2 and 3 from gateway interface 1 to device interfaces 2
   and 3; each on its own /30.
+- `sharedSecret` on each tunnel — per-tunnel overrides, for a data center
+  whose two devices each hold their own keys. A tunnel that declares none
+  uses the connection's `sharedSecret`, or the key the module generates.
 - `advertisedRoutePriority` 100 / 200 — the MED the peer sees; the lower
   value wins, so the device prefers tunnels 0 and 2 and fails over to 1 and
   3. Equal values would split traffic across all four.

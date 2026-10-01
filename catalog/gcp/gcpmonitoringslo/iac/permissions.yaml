@@ -25,11 +25,23 @@ spec:
           - monitoring.slos.delete
         provenance: derived
         notes: Covers google_monitoring_slo -- create, read/refresh, in-place updates (goal, display name, SLI tuning), and destroy. All four verified present in IAM's testable-permissions inventory. Measuring an EXISTING service (service.service_id) needs no service-side permission -- the SLO API stores the parent service name without a separate read.
-      - purpose: ManageMonitoringService
+      - purpose: ManageCustomMonitoringService
         permissions:
           - monitoring.services.create
           - monitoring.services.get
           - monitoring.services.update
           - monitoring.services.delete
         provenance: derived
-        notes: Required only when the spec's service arm CREATES a service -- google_monitoring_custom_service (service.custom_service) or google_monitoring_service (service.basic_service); the existing-service arm never touches the services API. All four verified present in IAM's testable-permissions inventory.
+        condition:
+          spec_field_set: service.custom_service
+        notes: Covers google_monitoring_custom_service, the service the service.custom_service arm creates; the existing-service arm never touches the services API. All four verified present in IAM's testable-permissions inventory.
+      - purpose: ManageBasicMonitoringService
+        permissions:
+          - monitoring.services.create
+          - monitoring.services.get
+          - monitoring.services.update
+          - monitoring.services.delete
+        provenance: derived
+        condition:
+          spec_field_set: service.basic_service
+        notes: Covers google_monitoring_service, the service the service.basic_service arm creates; the existing-service arm never touches the services API. All four verified present in IAM's testable-permissions inventory.

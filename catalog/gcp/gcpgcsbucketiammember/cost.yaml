@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpgcsbucketiammember
+spec:
+  billing_model: free
+  free_tier: "The IAM billing-questions page states Identity and Access Management is offered at no additional charge for all Google Cloud customers, and Cloud Storage's pricing page meters stored data, operations, retrieval, and network egress -- never a bucket's IAM policy. This resource is one additive (role, member) entry in a bucket's IAM policy, so creating, holding, and evaluating it costs nothing at any grant count."
+  notes: "No field on this spec starts a meter, but the grant's purpose is to unlock some: once a sink's writer identity holds roles/storage.objectCreator here, every hourly batch it writes adds stored data and write operations to the bucket, billed to the bucket's project at the bucket's storage class. A broad sink filter routed through this grant grows the archive without bound -- pair it with the bucket's lifecycle rules. A read role (objectViewer, objectUser) granted to a consumer outside the bucket's location adds retrieval and egress charges on that consumer's reads. Removing the grant is free and instant; a sink whose writer grant is removed silently stops exporting."

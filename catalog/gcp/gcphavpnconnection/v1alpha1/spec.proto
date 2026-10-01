@@ -236,28 +236,31 @@ message GcpHaVpnConnectionBgpBfd {
   }];
 }
 
-// GcpHaVpnConnectionBgpMd5AuthenticationKey authenticates the BGP session
-// with a shared MD5 key both routers know. The key is stored on the Cloud
-// Router's key table under `name` and attached to this session; Google
-// requires each key to be used by exactly one session, so every session
-// that wants MD5 declares its own key.
+// GcpHaVpnConnectionBgpMd5AuthenticationKey turns on MD5 authentication of
+// the BGP session: declaring the block (even empty) enables MD5 on this
+// session; omitting it leaves the session unauthenticated. The key is
+// stored in the Cloud Router's key table under `name` and attached to this
+// session. Google requires each key-table entry to be used by exactly one
+// session, so every session gets its own entry -- the key MATERIAL may be
+// the same across sessions, which is what the connection-level key does.
 message GcpHaVpnConnectionBgpMd5AuthenticationKey {
-  // Name of the key. RFC 1035, 1-63 characters. Defaults to the tunnel's
-  // name with a `-md5` suffix when empty.
+  // Name of the key-table entry. RFC 1035, 1-63 characters; unique on the
+  // router. Defaults to the tunnel's name with a `-md5` suffix when empty.
   string name = 1 [(buf.validate.field).cel = {
     id: "valid_md5_key_name"
     message: "md5 key name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen"
     expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
   }];
 
-  // The key material -- the same string configured on the peer router.
-  // Sensitive: never logged or exported. No content rule, because sensitive
-  // fields hold a managed-secret reference on consuming platforms and a
-  // content-shape rule would reject every reference.
-  string key = 2 [
-    (buf.validate.field).string.min_len = 1,
-    (dev.planton.shared.options.sensitive) = true
-  ];
+  // This session's own key material, the same string configured on the
+  // peer router's matching session -- a per-session override. Leave empty
+  // to use the connection's md5_authentication_key, or the key the modules
+  // generate when that is empty too. Google accepts up to 80 printable
+  // ASCII characters. Sensitive: never logged or exported. No content
+  // rule, because sensitive fields hold a managed-secret reference on
+  // consuming platforms and a content-shape rule would reject every
+  // reference.
+  string key = 2 [(dev.planton.shared.options.sensitive) = true];
 }
 
 // GcpHaVpnConnectionBgpSession is the BGP session that runs INSIDE one
@@ -441,10 +444,13 @@ message GcpHaVpnConnectionBgpSession {
   // on BGP keepalives alone.
   GcpHaVpnConnectionBgpBfd bfd = 19;
 
-  // MD5 authentication of the BGP session. Leave unset for an
-  // unauthenticated session (the tunnel's IPsec already protects the
-  // control traffic; MD5 defends against a misconfigured peer, not an
-  // attacker).
+  // MD5 authentication of the BGP session. Declare the block (an empty
+  // block is enough) to enable MD5; the key is the block's own key, else
+  // the connection's md5_authentication_key, else the one the modules
+  // generate. Leave unset for an unauthenticated session (the tunnel's
+  // IPsec already protects the control traffic; MD5 defends against a
+  // misconfigured peer, not an attacker). Both ends of a session must
+  // agree: MD5 on one side only keeps the session down.
   GcpHaVpnConnectionBgpMd5AuthenticationKey md5_authentication_key = 20;
 
   // Names of route policies (ROUTE_POLICY_TYPE_IMPORT) on the router,
@@ -465,7 +471,8 @@ message GcpHaVpnConnectionBgpSession {
 // inside it. Every field except labels is IMMUTABLE: a new pre-shared key,
 // cipher set, or interface pairing recreates the tunnel and drops its
 // traffic for the duration, so rotate a secret by adding a tunnel with the
-// new key and removing the old one, never by editing in place.
+// new key (its own shared_secret) and removing the old one, never by
+// editing in place.
 message GcpHaVpnConnectionTunnel {
   // Name of the tunnel in GCP. Required; unique in the region. 1-63
   // characters, lowercase letters, digits, and hyphens, starting with a
@@ -491,16 +498,16 @@ message GcpHaVpnConnectionTunnel {
     lte: 3
   }];
 
-  // The IKE pre-shared key both ends authenticate with. Sensitive: never
-  // logged or exported; in Terraform state only its hash is kept. No
-  // content rule, because sensitive fields hold a managed-secret reference
-  // on consuming platforms and a content-shape rule would reject every
-  // reference. Google accepts 1-63 printable characters. Immutable: a
-  // rotation recreates the tunnel.
-  string shared_secret = 4 [
-    (buf.validate.field).string.min_len = 1,
-    (dev.planton.shared.options.sensitive) = true
-  ];
+  // This tunnel's own IKE pre-shared key -- a per-tunnel override for a
+  // device configured with a different key on each tunnel. Leave empty to
+  // use the connection's shared_secret, or the key the modules generate
+  // when that is empty too. Google accepts 1-63 printable characters.
+  // Sensitive: never logged or exported; in Terraform state only its hash
+  // is kept. No content rule, because sensitive fields hold a
+  // managed-secret reference on consuming platforms and a content-shape
+  // rule would reject every reference. Immutable: a rotation recreates the
+  // tunnel.
+  string shared_secret = 4 [(dev.planton.shared.options.sensitive) = true];
 
   // IKE protocol version: 1 or 2. 2 when empty (Google's default and the
   // only version that supports IPv6, BFD-friendly rekeying, and modern
@@ -565,6 +572,13 @@ message GcpHaVpnConnectionTunnel {
 // and one BGP peer per tunnel on the gateway's router, and -- when the
 // peer is an external device -- the external VPN gateway resource that
 // holds its addresses. Nothing here has a life apart from the connection.
+//
+// Keys: the IKE pre-shared key and the BGP MD5 key are never required.
+// Each tunnel (session) uses its own key, else the connection-level
+// shared_secret (md5_authentication_key), else one key the modules
+// generate and report as a sensitive output. Between two Google Cloud
+// gateways exactly one side generates and the other references its
+// outputs.
 //
 // Cost: Google bills each tunnel per hour while it exists (a two-tunnel
 // connection is two tunnel-hours per hour) plus the traffic that leaves
@@ -637,6 +651,51 @@ message GcpHaVpnConnectionSpec {
   repeated GcpHaVpnConnectionTunnel tunnels = 6 [
     (buf.validate.field).repeated.min_items = 1,
     (buf.validate.field).repeated.max_items = 4
+  ];
+
+  // The IKE pre-shared key every tunnel uses unless it declares its own
+  // tunnels[].shared_secret. Leave it empty and the modules GENERATE one
+  // key (32 letters and digits) for every tunnel that declares none, and
+  // report it in the shared_secret output; a declared key is used as given
+  // and never echoed back. One key for all tunnels is Google's own shape
+  // for HA VPN.
+  //
+  // In a Google-to-Google pair EXACTLY ONE side generates: deploy that
+  // side first with this field empty, and point the other side's field at
+  // its output (a GcpHaVpnConnection reference to
+  // status.outputs.shared_secret). If both sides leave it empty, each
+  // generates its own key and the tunnels never come up. For an external
+  // peer, read the generated key from the shared_secret output and
+  // configure the device with it, or declare the device's key here.
+  //
+  // Google accepts 1-63 printable characters. Immutable: a change
+  // recreates every tunnel that uses it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef shared_secret = 9 [
+    (dev.planton.shared.options.sensitive) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpHaVpnConnection,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.shared_secret"
+  ];
+
+  // The BGP MD5 key every session that declares a
+  // bgp_session.md5_authentication_key block uses unless the block carries
+  // its own key. Setting this alone enables nothing: MD5 is on exactly for
+  // the sessions that declare the block. Leave it empty and the modules
+  // GENERATE one key (24 letters and digits -- short enough for devices
+  // that cap BGP passwords at 25 characters) for every such session
+  // without its own key, and report it in the md5_authentication_key
+  // output; a declared key is used as given and never echoed back.
+  //
+  // The Google-to-Google rule is the same as shared_secret's: exactly one
+  // side generates and the other points this field at its output
+  // (status.outputs.md5_authentication_key); both sides empty means two
+  // different keys and sessions that never establish.
+  //
+  // Google accepts up to 80 printable ASCII characters. Mutable: a change
+  // re-keys every session that uses it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef md5_authentication_key = 10 [
+    (dev.planton.shared.options.sensitive) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpHaVpnConnection,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.md5_authentication_key"
   ];
 
   // Resource Manager tags bound to every tunnel (and the external gateway,

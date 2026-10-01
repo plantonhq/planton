@@ -802,4 +802,40 @@ var _ = ginkgo.Describe("GcpCloudComposerEnvironmentSpec", func() {
 		err := validator.Validate(msg)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
+
+	// ──────────────── Secret environment variables ────────────────
+
+	withSecrets := func() *GcpCloudComposerEnvironment {
+		msg := minimal()
+		msg.Spec.SoftwareConfig = &GcpCloudComposerSoftwareConfig{
+			EnvVariables:       map[string]string{"MODE": "prod"},
+			SecretEnvVariables: map[string]string{"WAREHOUSE_PASSWORD": "pw"},
+		}
+		return msg
+	}
+
+	ginkgo.It("should accept secret env variables beside literals, with or without a node service account", func() {
+		msg := withSecrets()
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.NodeConfig = &GcpCloudComposerNodeConfig{ServiceAccount: svr("projects/my-gcp-project/serviceAccounts/airflow@my-gcp-project.iam.gserviceaccount.com")}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a variable in both env_variables and secret_env_variables", func() {
+		msg := withSecrets()
+		msg.Spec.SoftwareConfig.EnvVariables["WAREHOUSE_PASSWORD"] = "literal"
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("never both"))
+	})
+
+	ginkgo.It("should reject secret env variables when the node service account is not named by email", func() {
+		msg := withSecrets()
+		msg.Spec.NodeConfig = &GcpCloudComposerNodeConfig{ServiceAccount: svr("projects/my-gcp-project/serviceAccounts/104510491012345678901")}
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("must name the account by email"))
+		msg.Spec.SoftwareConfig.SecretEnvVariables = nil
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
 })

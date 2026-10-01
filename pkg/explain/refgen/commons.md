@@ -103,6 +103,13 @@ env:
     secretValue: $secret/stripe-key   # kept in Secret Manager for this service
 ```
 
+Some runtimes cannot inject a secret into an environment variable at all:
+Cloud Workflows and Cloud Composer. Their secret home stores the value the
+same way, but the variable of the same name holds the stored secret
+version's resource name (`projects/<p>/secrets/<id>/versions/<n>`), never
+the value, and the workflow or DAG reads the value from Secret Manager with
+that name.
+
 A field with neither mark takes a reference like any string, and the value
 lands wherever that field lands -- read the field's docs before putting a
 secret in one. Every deploy resolves a reference again, so a changed secret

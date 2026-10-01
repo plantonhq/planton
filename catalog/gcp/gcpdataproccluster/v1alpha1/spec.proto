@@ -660,11 +660,11 @@ message GcpDataprocClusterLifecycleConfig {
 // Dataproc Metastore service, giving jobs a persistent, shared Hive
 // metastore that outlives ephemeral clusters.
 message GcpDataprocClusterMetastoreConfig {
-  // Resource name of an existing Dataproc Metastore service.
-  // Format: projects/{project}/locations/{location}/services/{service}
-  // Accepts a literal resource name today; references attach when a
-  // metastore-service kind lands in the catalog.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef dataproc_metastore_service = 1 [(buf.validate.field).required = true];
+  // Full resource name of an existing Dataproc Metastore service:
+  // projects/{project}/locations/{location}/services/{service}. The
+  // service is made outside the catalog (no catalog kind produces it), so
+  // write its full name. Required.
+  string dataproc_metastore_service = 1 [(buf.validate.field).required = true];
 }
 
 // GcpDataprocClusterMetric selects one metric source (and optionally

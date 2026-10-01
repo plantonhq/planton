@@ -13,7 +13,8 @@ spec:
     machineType: e2-micro
     disks:
       - boot: true
-        sourceImage: debian-cloud/debian-12
+        sourceImage:
+          value: debian-cloud/debian-12
     networkInterfaces:
       # Private fleet on the E2E VPC fixture (auto-mode, so the bare
       # network reference is a sufficient attachment point). No

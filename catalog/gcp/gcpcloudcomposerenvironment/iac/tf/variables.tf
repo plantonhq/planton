@@ -110,8 +110,16 @@ variable "spec" {
       pypi_packages = optional(map(string), {})
 
       # Additional environment variables available to all Airflow components.
-      # Variable names starting with "AIRFLOW__" are reserved by Airflow and
-      # should not be set here.
+      # Values are written into the environment's configuration, where anyone
+      # who can view the environment reads them: configuration only, never a
+      # credential -- a credential goes in secret_env_variables. Names must
+      # match [a-zA-Z_][a-zA-Z0-9_]*, must not be Airflow configuration
+      # overrides (AIRFLOW__<SECTION>__<KEY>; use airflow_config_overrides),
+      # and must not be one of Composer's reserved names (AIRFLOW_HOME,
+      # C_FORCE_ROOT, CONTAINER_NAME, DAGS_FOLDER, GCP_PROJECT, GCS_BUCKET,
+      # GKE_CLUSTER_NAME, SQL_DATABASE, SQL_INSTANCE, SQL_PASSWORD,
+      # SQL_PROJECT, SQL_REGION, SQL_USER, among others Google lists). Map keys
+      # are not CEL-addressable, so the API enforces these at deploy.
       env_variables = optional(map(string), {})
 
       # Web server plugins mode for Composer 3 environments.
@@ -126,6 +134,29 @@ variable "spec" {
         # Whether the integration is enabled.
         enabled = optional(bool, false)
       }))
+
+      # Secret values Airflow reads at run time, keyed by environment variable
+      # name. Composer has no secret field for environment variables, so the
+      # component never puts the value on the environment: it keeps each one
+      # in a Secret Manager secret it owns (id
+      # composer_<region>_<environment name>_<key>, replicated only in the
+      # environment's region), grants the environment's node service account
+      # (node_config.service_account, or the project's Compute Engine default
+      # service account when unset) secretAccessor on that secret alone, and
+      # sets the variable to the version's resource name,
+      # projects/<project>/secrets/<id>/versions/<n>. DAG and plugin code reads
+      # the value with the Secret Manager client:
+      #
+      #   from google.cloud import secretmanager
+      #   token = secretmanager.SecretManagerServiceClient().access_secret_version(
+      #       name=os.environ["API_TOKEN"]).payload.data.decode()
+      #
+      # A changed value adds a version, which changes the variable and runs an
+      # environment update (Composer restarts its Airflow components, which
+      # takes several minutes), so rotation is a deploy; destroying the
+      # environment removes the secrets. The same name rules as env_variables
+      # apply, and a name may not appear in both maps.
+      secret_env_variables = optional(map(string), {})
     }))
 
     # Private networking configuration for Composer 2.x environments using

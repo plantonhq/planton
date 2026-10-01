@@ -32,4 +32,6 @@ spec:
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
-        notes: Required only when service_account pins a VM identity (the 03-secure-private-notebook preset does) -- GCP demands actAs on that account before provisioning a VM running as it. Not needed when the field is omitted and the instance falls to the default compute service account.
+        condition:
+          spec_field_set: service_account
+        notes: GCP demands actAs on the VM identity service_account pins (the 03-secure-private-notebook preset does) before provisioning a VM running as it.

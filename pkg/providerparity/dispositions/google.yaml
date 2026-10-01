@@ -386,12 +386,6 @@ resources:
   - resource: google_blockchain_node_engine_blockchain_nodes
     disposition: excluded-deprecated
     reason: "Blockchain Node Engine is sunset by Google"
-  - resource: google_certificate_manager_certificate_issuance_config
-    disposition: model-planned
-    reason: "planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration)"
-  - resource: google_certificate_manager_trust_config
-    disposition: model-planned
-    reason: "planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration)"
   - resource: google_ces_agent
     disposition: deferred
     reason: "Customer Engagement Suite conversational-agent authoring is a specialty family; deferred pending demand"

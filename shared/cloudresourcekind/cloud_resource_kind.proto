@@ -5051,6 +5051,17 @@ enum CloudResourceKind {
     id_prefix: "gcppsch"
     service_group: gcp_data_analytics
   }];
+  // One additive grant on a topic. Its own kind, not a field on the topic,
+  // because the identities that most need it (a logging sink's writer, a
+  // Security Command Center export's publisher) belong to resources that
+  // name the topic themselves; a grant on the topic that referenced them
+  // back would be a dependency cycle.
+  GcpPubSubTopicIamMember = 3065 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppstim"
+    service_group: gcp_data_analytics
+  }];
   GcpVertexAiNotebook = 3070 [(kind_meta) = {
     provider: gcp
     version: "v1alpha1"
@@ -5181,6 +5192,15 @@ enum CloudResourceKind {
     prerequisites: [GcpServiceAccount]
     service_group: gcp_identity_access
   }];
+  // One additive grant on a bucket, for a grantee that depends on the
+  // bucket itself (a logging sink writing into it): the bucket's own
+  // iam_members cannot reference such an identity without a cycle.
+  GcpGcsBucketIamMember = 3104 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpgcsim"
+    service_group: gcp_storage
+  }];
   // 3110–3119: networking/load-balancer family (overflow block; the 3023–3029
   // LB sub-band is fully allocated)
   GcpGlobalForwardingRule = 3110 [(kind_meta) = {
@@ -5249,6 +5269,23 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "gcpcmap"
     prerequisites: [GcpCertManagerCert]
+    service_group: gcp_security
+  }];
+  // The CA certificates a load balancer validates client certificates
+  // against (mutual TLS). Its own kind: TLS policies reference it, never a
+  // certificate.
+  GcpCertManagerTrustConfig = 3118 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcmtc"
+    service_group: gcp_security
+  }];
+  // How Google-managed certificates are issued from a private CA pool. Its
+  // own kind: many certificates share one config by name.
+  GcpCertManagerIssuanceConfig = 3119 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcmic"
     service_group: gcp_security
   }];
 

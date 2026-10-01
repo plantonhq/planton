@@ -183,8 +183,10 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpGcsBucketIamMember | `spec.role` | `status.outputs.name` |
 | GcpKmsKeyIamMember | `spec.role` | `status.outputs.name` |
 | GcpProjectIamMember | `spec.role` | `status.outputs.name` |
+| GcpPubSubTopicIamMember | `spec.role` | `status.outputs.name` |
 | GcpServiceAccountIamMember | `spec.role` | `status.outputs.name` |
 
 ## See Also

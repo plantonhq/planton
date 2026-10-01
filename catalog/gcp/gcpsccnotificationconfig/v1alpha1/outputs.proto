@@ -10,7 +10,16 @@ message GcpSccNotificationConfigStackOutputs {
   string name = 1;
 
   // The Security Command Center service account that publishes the
-  // notifications. Grant it roles/pubsub.publisher on the topic, or
-  // notifications are dropped.
+  // notifications, as a bare email. It needs roles/pubsub.publisher on the
+  // topic, or notifications are silently dropped; grant it through a
+  // GcpPubSubTopicIamMember whose member references service_account_member
+  // (this email in IAM member form).
   string service_account = 2;
+
+  // The publisher in IAM member form, "serviceAccount:" + service_account
+  // -- the exact value an IAM member field takes. Reference it from a
+  // GcpPubSubTopicIamMember's member, with role roles/pubsub.publisher on
+  // the config's topic, so notifications are published rather than
+  // dropped.
+  string service_account_member = 3;
 }

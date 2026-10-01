@@ -29,17 +29,17 @@ import "shared/foreignkey/v1/foreign_key.proto";
 message GcpComputeDiskSpec {
   option (buf.validate.message).cel = {
     id: "disk_at_most_one_source"
-    expression: "(this.image != '' ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + (this.source_instant_snapshot != '' ? 1 : 0) + (this.source_storage_object != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) <= 1"
+    expression: "((has(this.image) && (has(this.image.value) || has(this.image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + (this.source_instant_snapshot != '' ? 1 : 0) + (this.source_storage_object != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) <= 1"
     message: "at most one disk source may be set: image, source_snapshot, source_instant_snapshot, source_storage_object, or source_disk — omit all for an empty disk"
   };
   option (buf.validate.message).cel = {
     id: "empty_disk_requires_size"
-    expression: "this.image != '' || this.source_snapshot != '' || this.source_instant_snapshot != '' || this.source_storage_object != '' || (has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) || this.size_gb > 0"
+    expression: "(has(this.image) && (has(this.image.value) || has(this.image.value_from))) || this.source_snapshot != '' || this.source_instant_snapshot != '' || this.source_storage_object != '' || (has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) || this.size_gb > 0"
     message: "an empty disk (no image, snapshot, or source disk) must declare size_gb"
   };
   option (buf.validate.message).cel = {
     id: "image_encryption_requires_image"
-    expression: "!has(this.source_image_encryption) || this.image != ''"
+    expression: "!has(this.source_image_encryption) || (has(this.image) && (has(this.image.value) || has(this.image.value_from)))"
     message: "source_image_encryption is only valid together with image"
   };
   option (buf.validate.message).cel = {
@@ -100,9 +100,16 @@ message GcpComputeDiskSpec {
   ];
 
   // Source image to initialize the disk from — makes the disk bootable.
-  // Accepts an image family ("debian-cloud/debian-12") or a specific
-  // image self link. Create-time only.
-  string image = 7;
+  // A GcpComputeImage reference (its self_link, pinning that exact build)
+  // or a literal Google accepts: a public image family short form
+  // ("debian-cloud/debian-12"), a family path
+  // ("projects/{project}/global/images/family/{family}", which follows
+  // the family's newest image), or a specific image's path or self link.
+  // Create-time only.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef image = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeImage,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
 
   // Source snapshot to restore the disk from (name or self link).
   // Create-time only.

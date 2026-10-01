@@ -1,0 +1,18 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpgcsbucketiammember
+spec:
+  gcp:
+    groups:
+      - purpose: ManageBucketIamGrant
+        permissions:
+          - storage.buckets.getIamPolicy
+          - storage.buckets.setIamPolicy
+        provenance: derived
+        notes: "Covers google_storage_bucket_iam_member (Pulumi storage.BucketIAMMember) -- the provider implements the additive grant as a read-modify-write of the bucket's IAM policy, requesting policy version 3 so conditional bindings round-trip: getIamPolicy on create, every refresh, and destroy; setIamPolicy on create (merging the pair in) and destroy (subtracting exactly it). Both permissions authorize on the bucket itself and are satisfied by a grant on the bucket or its project; roles/storage.admin carries them. State the privilege honestly: setIamPolicy writes the bucket's WHOLE policy, so a runner holding it can grant any principal any storage role on the bucket -- including itself, which is the power to read every object; scope the runner's grant to the buckets it manages. The modules create nothing else and make no other API calls (no project lookup, no service enablement)."

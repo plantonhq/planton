@@ -12,6 +12,11 @@
 # 1:1:1 shape, declared inline on the tunnel as bgp_session.
 
 resources:
+  # random_password mints the connection's pre-shared key and MD5 key when
+  # the spec declares neither and some tunnel or session needs one.
+  random_password:
+    internal: key-minting utility from the hashicorp/random provider (the connection-level shared_secret and md5_authentication_key, generated only when undeclared and needed, reported as sensitive outputs) -- no GCP surface
+
   google_compute_vpn_tunnel:
     # Instantiated per entry of spec.tunnels.
     specRoot: spec.tunnels
@@ -40,6 +45,12 @@ resources:
       # The kind-level deletion_policy fans to every tunnel.
       - spec: spec.deletion_policy
         arg: deletion_policy
+      # A tunnel's own key wins; the connection-level key fills every
+      # tunnel that declares none (and is minted when undeclared and needed).
+      - spec: spec.shared_secret
+        arg: shared_secret
+      - spec: spec.tunnels.shared_secret
+        arg: shared_secret
     exclusions:
       - arg: peer_external_gateway
         reason: >-
@@ -125,6 +136,13 @@ resources:
       # The kind-level deletion_policy fans to every peer.
       - spec: spec.deletion_policy
         arg: deletion_policy
+      # A session's own MD5 key wins; the connection-level key fills every
+      # session that declares an MD5 block without key material (and is
+      # minted when undeclared and needed).
+      - spec: spec.md5_authentication_key
+        arg: md5_authentication_key.key
+      - spec: spec.tunnels.bgp_session.md5_authentication_key.key
+        arg: md5_authentication_key.key
     exclusions:
       - arg: interface
         reason: wired by the module to the router interface it creates for the same tunnel

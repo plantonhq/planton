@@ -89,11 +89,17 @@ Cloud) per topic.
 returns the transformed message (or null/undefined to drop it); a `disabled`
 transform keeps its position in the pipeline without being applied.
 
-### Deliberately not modeled (recorded reasons)
+### Grants on a topic
 
-- **Per-topic IAM (`google_pubsub_topic_iam_*`)** — resource-scoped IAM stays
-  out of the catalog pending concrete pull (the additive project-level grant,
-  `GcpProjectIamMember`, covers the real cases).
+Per-topic IAM is its own kind, `GcpPubSubTopicIamMember`: one additive
+(role, member) grant on this topic. It is a separate block, not a field
+here, because the identities that most need publish rights -- a
+`GcpLoggingSink`'s writer identity, a `GcpSccNotificationConfig`'s
+publisher -- belong to resources that name this topic themselves; a grant
+declared on the topic that referenced them back would be a dependency cycle.
+The grant block depends on both and always lands last. The authoritative
+binding and policy forms (`google_pubsub_topic_iam_binding` /
+`_iam_policy`) are deliberately not modeled.
 
 Every configurable argument of `google_pubsub_topic` at the pinned provider
 version is representable through this spec; the recorded judgment lives in

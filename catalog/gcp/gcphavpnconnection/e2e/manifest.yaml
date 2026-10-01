@@ -44,23 +44,30 @@ spec:
         name: planton-oss-e2e-gcpvpncn-spoke-gw
         fieldPath: status.outputs.gateway_self_link
 
-  # Two tunnels, one per gateway interface -- the 99.99% shape. The secrets
-  # are fixture literals (the peer is our own fixture); a real manifest wires
-  # them from a secrets manager. Tunnel names are project+region-scoped with
-  # no soft-delete reservation.
+  # Two tunnels, one per gateway interface -- the 99.99% shape. Neither
+  # declares a key, so both use the connection's. Tunnel names are
+  # project+region-scoped with no soft-delete reservation.
   tunnels:
     - name: planton-oss-e2e-gcpvpncn-h2s-0
       vpnGatewayInterface: 0
-      sharedSecret: planton-e2e-psk-0-not-a-real-secret
       bgpSession:
         interfaceIpRange: 169.254.100.1/30
         peerAsn: 64515
     - name: planton-oss-e2e-gcpvpncn-h2s-1
       vpnGatewayInterface: 1
-      sharedSecret: planton-e2e-psk-1-not-a-real-secret
       bgpSession:
         interfaceIpRange: 169.254.101.1/30
         peerAsn: 64515
+
+  # The pre-shared key: the reverse fixture deploys first with no key and
+  # generates one; this side, deployed after it, reads it from that
+  # connection's output. Exactly one side of a Google-to-Google pair
+  # generates -- two generating sides would hold two different keys.
+  sharedSecret:
+    valueFrom:
+      kind: GcpHaVpnConnection
+      name: planton-oss-e2e-gcpvpncn-spoke-to-hub
+      fieldPath: status.outputs.shared_secret
 
   # DELETE (default), PREVENT, ABANDON -- fanned to every resource.
   deletionPolicy: DELETE

@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	gcpcloudrunv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrun/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -43,7 +43,7 @@ func service(
 
 	// Secret values the env carries are stored in Secret Manager before the
 	// service exists, and the service reads each one by reference.
-	storedSecrets, err := cloudrunenv.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
+	storedSecrets, err := envsecrets.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to store the environment's secret values")
 	}
@@ -134,8 +134,8 @@ func service(
 		if len(spec.BuildConfig.EnvironmentVariables) > 0 {
 			buildConfig.EnvironmentVariables = pulumi.ToStringMap(spec.BuildConfig.EnvironmentVariables)
 		}
-		if spec.BuildConfig.WorkerPool != "" {
-			buildConfig.WorkerPool = pulumi.String(spec.BuildConfig.WorkerPool)
+		if spec.BuildConfig.WorkerPool.GetValue() != "" {
+			buildConfig.WorkerPool = pulumi.String(spec.BuildConfig.WorkerPool.GetValue())
 		}
 		if spec.BuildConfig.ServiceAccount != "" {
 			buildConfig.ServiceAccount = pulumi.String(spec.BuildConfig.ServiceAccount)
@@ -261,7 +261,7 @@ func service(
 
 // buildTemplate maps the spec's revision-level surface onto the v2 revision
 // template: containers, volumes, scaling, networking, and hardware.
-func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) *cloudrunv2.ServiceTemplateArgs {
+func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[envsecrets.Key]envsecrets.Ref) *cloudrunv2.ServiceTemplateArgs {
 	template := &cloudrunv2.ServiceTemplateArgs{
 		Containers: buildContainers(spec, secretRefs),
 	}
@@ -496,7 +496,7 @@ func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[clo
 
 // buildContainers maps the spec's containers — the serving container plus
 // any sidecars sharing localhost and volumes, ordered by depends_on.
-func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) cloudrunv2.ServiceTemplateContainerArray {
+func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[envsecrets.Key]envsecrets.Ref) cloudrunv2.ServiceTemplateContainerArray {
 	containers := cloudrunv2.ServiceTemplateContainerArray{}
 
 	for containerIndex, container := range spec.Containers {
@@ -540,7 +540,7 @@ func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[c
 				envArgs := &cloudrunv2.ServiceTemplateContainerEnvArgs{
 					Name: pulumi.String(envVar.Name),
 				}
-				if ref, stored := secretRefs[cloudrunenv.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
+				if ref, stored := secretRefs[envsecrets.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
 					envArgs.ValueSource = &cloudrunv2.ServiceTemplateContainerEnvValueSourceArgs{
 						SecretKeyRef: &cloudrunv2.ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs{
 							Secret:  ref.Secret,

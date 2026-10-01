@@ -33,6 +33,8 @@ spec:
           - compute.disks.createSnapshot
           - compute.snapshots.create
         provenance: derived
+        condition:
+          spec_field_set: create_snapshot_before_destroy
         notes: Required only when create_snapshot_before_destroy is set (the 02-encrypted-database-volume preset does) -- the destroy path first captures a final snapshot, which checks createSnapshot on the disk and create on the snapshot resource.
       - purpose: ReadDiskSources
         permissions:
@@ -46,4 +48,6 @@ spec:
         permissions:
           - compute.storagePools.use
         provenance: derived
+        condition:
+          spec_field_set: storage_pool
         notes: Required only when storage_pool places the disk in a hyperdisk storage pool.

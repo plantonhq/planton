@@ -1,0 +1,66 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcertmanagertrustconfig
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The trust config stores only public certificate material -- CA and allowlisted certificates, never a private key -- as Certificate Manager control-plane metadata inside Google's infrastructure.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No secret data at rest to key (see enc-at-rest); Certificate Manager exposes no KMS surface for trust configs.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The trust config terminates no connections. It is the validation list a load balancer consults during mutual-TLS handshakes; the transport encryption posture lives on the target HTTPS proxy, its certificates, and its SSL policy.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: No network endpoint exists to expose; the trust config is read only by Google's load balancers through the TLS policy that names it.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network surface of its own to filter. It is an identity control FOR ingress -- only clients presenting a certificate that chains to a trust anchor, or that is allowlisted, complete a mutual-TLS handshake -- but where it applies is decided by the server TLS policy and the proxy that attaches it, not by this resource.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The trust config receives no HTTP requests; request filters attach to the load balancer's backend services.
+    - control_id: rbac
+      status: not_applicable
+      notes: Management access is project IAM posture (Certificate Manager roles), not a component choice; the trust config exposes no authorization plane of its own.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The trust config runs no workloads and holds no credentials. It authenticates CLIENTS by certificate on the load balancer's behalf; the clients' identities are their certificates, issued outside this resource.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths of its own exist to retire.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit surface. Control-plane changes land in Cloud Audit Logs as project-level posture, and per-connection mTLS outcomes are logged by the load balancer, not configured here.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The trust config publishes no metrics; mutual-TLS validation results surface in the load balancer's request logs and metrics.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from the manifest -- the certificates it holds are public and live in source control with it.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: A control-plane object with no zonal placement; Google serves it through the Certificate Manager control plane in its location.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset defaults to DELETE; setting deletion_policy=PREVENT makes destroy fail before touching the trust config -- a guard for a trust config live mutual-TLS traffic depends on. Google additionally refuses deletion while a TLS policy still references it.
+      notes: No preset sets PREVENT; ABANDON leaves the trust config validating clients in GCP after it leaves management.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software to patch; the certificates it holds expire on their own schedule and are rotated by spec updates.

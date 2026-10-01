@@ -2,9 +2,10 @@
 // +build !codegen
 
 // The dispositions ledger: recorded breadth judgment over the GA provider
-// surface. Two disposition classes are COMPUTED and never appear here --
-// modeled (the module census proves consumption) and iam-covered (the
-// *_iam_* pattern) -- plus schema-flagged deprecations. The ledger records
+// surface. Three disposition classes are COMPUTED and never appear here --
+// modeled (the module census proves consumption), and iam-covered and
+// iam-uncovered (the *_iam_* pattern, split by whether a module consumes a
+// sibling form) -- plus schema-flagged deprecations. The ledger records
 // only what requires judgment: composed (covered by an existing kind's
 // fields), model-planned (covered by a planned kind not built yet -- its
 // own or one it composes into), deferred (with the reason), and doc-level
@@ -77,7 +78,7 @@ func LoadLedger(path, gaSchema string) ([]LedgerEntry, error) {
 		seen[e.Resource] = true
 		if !ledgerDispositions[e.Disposition] {
 			return nil, errors.Errorf(
-				"dispositions ledger %s: %s carries disposition %q -- the ledger records composed/model-planned/deferred/excluded-deprecated (modeled and iam-covered are computed)",
+				"dispositions ledger %s: %s carries disposition %q -- the ledger records composed/model-planned/deferred/excluded-deprecated (modeled, iam-covered, and iam-uncovered are computed)",
 				path, e.Resource, e.Disposition)
 		}
 		if e.Reason == "" {

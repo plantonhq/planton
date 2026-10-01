@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcppubsubtopiciammember.v1alpha1;
+
+// Outputs produced after applying a topic-scoped IAM member grant. The grant
+// has no server-generated identity beyond its inputs; the outputs echo the
+// resolved grant so audits see exactly what was applied without re-resolving
+// references.
+message GcpPubSubTopicIamMemberStackOutputs {
+  // The topic whose IAM policy received the grant, as configured
+  // (projects/<project>/topics/<topic>), after reference resolution.
+  string topic = 1;
+
+  // The role that was granted, after reference resolution.
+  string role = 2;
+
+  // The member the role was granted to, in IAM member format, after
+  // reference resolution.
+  string member = 3;
+
+  // The etag of the topic's IAM policy after this grant was applied -- a
+  // fingerprint of the policy version, useful for audit correlation.
+  string etag = 4;
+}

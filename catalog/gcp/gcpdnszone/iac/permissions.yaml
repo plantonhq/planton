@@ -29,4 +29,20 @@ spec:
         permissions:
           - dns.networks.bindPrivateDNSZone
         provenance: derived
-        notes: Required only for private zones -- binding the zone's resolution scope to the VPC networks in private_visibility_config demands this permission on each network's project. Peering zones additionally need dns.networks.targetWithPeeringZone on the target network.
+        condition:
+          spec_field_set: private_visibility_config.networks
+        notes: Binding a private zone's resolution scope to the VPC networks in private_visibility_config demands this permission on each network's project.
+      - purpose: BindPrivateZoneGkeClusters
+        permissions:
+          - dns.gkeClusters.bindPrivateDNSZone
+        provenance: derived
+        condition:
+          spec_field_set: private_visibility_config.gke_clusters
+        notes: Binding a private zone to the GKE clusters in private_visibility_config.gke_clusters demands this permission on each cluster's project.
+      - purpose: TargetPeeringNetwork
+        permissions:
+          - dns.networks.targetWithPeeringZone
+        provenance: derived
+        condition:
+          spec_field_set: peering_config
+        notes: A peering zone resolves through peering_config's target network, which demands this permission on that network's project.

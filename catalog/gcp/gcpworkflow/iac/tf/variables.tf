@@ -88,11 +88,14 @@ variable "spec" {
     execution_history_level = optional(string, "")
 
     # Environment variables visible to the workflow source via sys.get_env().
-    # At most 20 entries (the API's own cap, enforced here); each value up to
-    # 4KiB. Keys must be non-empty and must NOT start with "GOOGLE" or
-    # "WORKFLOWS" (reserved prefixes the API rejects — key-shape rules live
-    # here in the comment because map KEYS are not CEL-addressable). Changing
-    # env vars deploys a NEW revision.
+    # Values are written into the workflow revision, where anyone who can
+    # view the workflow reads them: configuration only, never a credential
+    # -- a credential goes in secret_env_vars. At most 20 entries across
+    # user_env_vars and secret_env_vars together (the API's own cap,
+    # enforced here); each value up to 4KiB. Keys must be non-empty and must
+    # NOT start with "GOOGLE" or "WORKFLOWS" (reserved prefixes the API
+    # rejects — key-shape rules live here in the comment because map KEYS
+    # are not CEL-addressable). Changing env vars deploys a NEW revision.
     user_env_vars = optional(map(string), {})
 
     # Resource manager tags bound at workflow creation, keyed
@@ -118,5 +121,37 @@ variable "spec" {
     #   "ABANDON" -- the workflow is removed from management but keeps
     #                running in GCP
     deletion_policy = optional(string, "")
+
+    # Secret values the workflow reads at run time, keyed by environment
+    # variable name. Cloud Workflows has no secret field, so the component
+    # never puts the value on the workflow: it keeps each one in a Secret
+    # Manager secret it owns (id workflow_<region>_<workflow name>_<key>,
+    # replicated only in the workflow's region), grants the workflow's
+    # runtime identity (service_account, or the project's Compute Engine
+    # default service account when unset) secretAccessor on that secret
+    # alone, and sets the variable to the version's resource name,
+    # projects/<project>/secrets/<id>/versions/<n>. The workflow reads the
+    # value through the Secret Manager connector, which returns the payload
+    # base64-encoded:
+    #
+    #   - read_token:
+    #       call: googleapis.secretmanager.v1.projects.secrets.versions.access
+    #       args:
+    #         name: ${sys.get_env("API_TOKEN")}
+    #       result: token_version
+    #   - decode_token:
+    #       assign:
+    #         - api_token: ${text.decode(base64.decode(token_version.payload.data))}
+    #
+    # (The accessString helper returns the decoded string, but takes the
+    # secret's short id, version, and project as separate arguments rather
+    # than the full name.) A changed value adds a version, which changes the
+    # variable and deploys a new revision, so rotation is a deploy;
+    # destroying the workflow removes the secrets.
+    # The variable itself counts toward the 20-variable cap and carries the
+    # same key rules as user_env_vars; a key may not appear in both maps,
+    # region must be set (the secrets replicate there), and a literal
+    # service_account must name the account by email.
+    secret_env_vars = optional(map(string), {})
   })
 }

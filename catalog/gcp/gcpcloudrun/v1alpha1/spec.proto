@@ -1283,10 +1283,21 @@ message GcpCloudRunBuildConfig {
   // to the running service — runtime env lives on the containers).
   map<string, string> environment_variables = 6;
 
-  // Cloud Build Custom Worker Pool to run the build in, as
-  // "projects/{project}/locations/{region}/workerPools/{workerPool}".
-  // For builds that must run inside a private network perimeter.
-  string worker_pool = 7;
+  // The Cloud Build private worker pool the build runs in, as
+  // projects/{project}/locations/{location}/workerPools/{pool}: a
+  // GcpCloudBuildWorkerPool reference (its name output), or the literal
+  // name. Use one when the build must reach a private network (a private
+  // package index, an internal artifact store). Empty runs the build on
+  // Google's default pool.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef worker_pool = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildWorkerPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "worker_pool.format"
+      message: "worker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$')"
+    }
+  ];
 
   // Service account the BUILD runs as, in the full resource form
   // "projects/{projectId}/serviceAccounts/{email}" (note: not a bare

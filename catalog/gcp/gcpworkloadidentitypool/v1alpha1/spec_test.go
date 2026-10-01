@@ -20,6 +20,18 @@ func ptr(s string) *string {
 	return &s
 }
 
+func litRef(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{
+		LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v},
+	}
+}
+
+func nameRef(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{
+		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Name: v}},
+	}
+}
+
 var _ = ginkgo.Describe("GcpWorkloadIdentityPoolSpec", func() {
 	var validator protovalidate.Validator
 
@@ -89,8 +101,8 @@ var _ = ginkgo.Describe("GcpWorkloadIdentityPoolSpec", func() {
 	ginkgo.It("should accept certificate issuance with own CA pools", func() {
 		msg := minimal()
 		msg.Spec.InlineCertificateIssuanceConfig = &GcpWorkloadIdentityPoolCertificateIssuance{
-			CaPools: map[string]string{
-				"us-central1": "projects/my-project/locations/us-central1/caPools/my-pool",
+			CaPools: map[string]*foreignkeyv1.StringValueOrRef{
+				"us-central1": litRef("projects/my-project/locations/us-central1/caPools/my-pool"),
 			},
 			KeyAlgorithm:             ptr("ECDSA_P256"),
 			Lifetime:                 ptr("86400s"),
@@ -186,10 +198,34 @@ var _ = ginkgo.Describe("GcpWorkloadIdentityPoolSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should accept GcpPrivateCaPool references as ca_pools values", func() {
+		msg := minimal()
+		msg.Spec.InlineCertificateIssuanceConfig = &GcpWorkloadIdentityPoolCertificateIssuance{
+			CaPools: map[string]*foreignkeyv1.StringValueOrRef{
+				"us-central1":  nameRef("workload-ca-us-central1"),
+				"europe-west1": litRef("projects/p/locations/europe-west1/caPools/workload-ca"),
+			},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed literal ca_pools value", func() {
+		msg := minimal()
+		msg.Spec.InlineCertificateIssuanceConfig = &GcpWorkloadIdentityPoolCertificateIssuance{
+			CaPools: map[string]*foreignkeyv1.StringValueOrRef{
+				"us-central1":  nameRef("workload-ca-us-central1"),
+				"europe-west1": litRef("workload-ca"),
+			},
+		}
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("a literal ca_pools value must be"))
+	})
+
 	ginkgo.It("should reject an invalid key_algorithm", func() {
 		msg := minimal()
 		msg.Spec.InlineCertificateIssuanceConfig = &GcpWorkloadIdentityPoolCertificateIssuance{
-			CaPools:      map[string]string{"us-central1": "projects/p/locations/us-central1/caPools/c"},
+			CaPools:      map[string]*foreignkeyv1.StringValueOrRef{"us-central1": litRef("projects/p/locations/us-central1/caPools/c")},
 			KeyAlgorithm: ptr("ED25519"),
 		}
 		err := validator.Validate(msg)
@@ -199,7 +235,7 @@ var _ = ginkgo.Describe("GcpWorkloadIdentityPoolSpec", func() {
 	ginkgo.It("should reject a lifetime without the seconds suffix", func() {
 		msg := minimal()
 		msg.Spec.InlineCertificateIssuanceConfig = &GcpWorkloadIdentityPoolCertificateIssuance{
-			CaPools:  map[string]string{"us-central1": "projects/p/locations/us-central1/caPools/c"},
+			CaPools:  map[string]*foreignkeyv1.StringValueOrRef{"us-central1": litRef("projects/p/locations/us-central1/caPools/c")},
 			Lifetime: ptr("24h"),
 		}
 		err := validator.Validate(msg)
@@ -209,7 +245,7 @@ var _ = ginkgo.Describe("GcpWorkloadIdentityPoolSpec", func() {
 	ginkgo.It("should reject a rotation window outside 50-80", func() {
 		msg := minimal()
 		msg.Spec.InlineCertificateIssuanceConfig = &GcpWorkloadIdentityPoolCertificateIssuance{
-			CaPools:                  map[string]string{"us-central1": "projects/p/locations/us-central1/caPools/c"},
+			CaPools:                  map[string]*foreignkeyv1.StringValueOrRef{"us-central1": litRef("projects/p/locations/us-central1/caPools/c")},
 			RotationWindowPercentage: int32Ptr(90),
 		}
 		err := validator.Validate(msg)
@@ -259,7 +295,7 @@ var _ = ginkgo.Describe("GcpWorkloadIdentityPoolSpec", func() {
 	ginkgo.It("should reject certificate issuance with both CA sources", func() {
 		msg := minimal()
 		msg.Spec.InlineCertificateIssuanceConfig = &GcpWorkloadIdentityPoolCertificateIssuance{
-			CaPools:            map[string]string{"us-central1": "projects/p/locations/us-central1/caPools/pool"},
+			CaPools:            map[string]*foreignkeyv1.StringValueOrRef{"us-central1": litRef("projects/p/locations/us-central1/caPools/pool")},
 			UseDefaultSharedCa: true,
 		}
 		err := validator.Validate(msg)

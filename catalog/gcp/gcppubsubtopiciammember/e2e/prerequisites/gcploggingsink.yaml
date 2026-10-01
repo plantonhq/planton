@@ -1,0 +1,31 @@
+# Consumer-scoped GcpLoggingSink install profile for the gcppstim
+# sink-publisher scenario: a project sink exporting to the topic fixture.
+# Its filter names a log no workload writes, so nothing is ever published;
+# the sink exists to mint the writer identity the scenario grants. The
+# sink name carries ${E2E_RUN_ID} so parallel engine runs never collide.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpLoggingSink
+metadata:
+  name: planton-oss-e2e-gcppstim-sink
+  id: planton-oss-e2e-gcppstim-sink
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcploggingsink
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  sinkName: planton-e2e-pstim-${E2E_RUN_ID}
+  destination:
+    pubsubTopic:
+      valueFrom:
+        kind: GcpPubSubTopic
+        name: planton-oss-e2e-gcppstim-topic
+        fieldPath: status.outputs.topic_id
+  filter: logName:"planton-e2e-no-such-log"
+  description: Planton E2E sink minting a writer identity for a topic grant; exports nothing; safe to delete
+  uniqueWriterIdentity: true
+  deletionPolicy: DELETE

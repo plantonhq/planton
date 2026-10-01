@@ -29,10 +29,14 @@ spec:
         permissions:
           - pubsub.schemas.attach
         provenance: derived
-        notes: Required only when schema_settings references a schema -- attaching a schema for publish-time validation is authorized on the schema side by pubsub.schemas.attach on the referenced schema (which may live in another project). Not needed for topics without schema validation.
+        condition:
+          spec_field_set: schema_settings
+        notes: Attaching the schema schema_settings references for publish-time validation is authorized on the schema side by pubsub.schemas.attach on the referenced schema (which may live in another project).
       - purpose: ApplyResourceManagerTags
         permissions:
           - pubsub.topics.createTagBinding
           - resourcemanager.tagValueBindings.create
         provenance: derived
-        notes: Required only when resource_manager_tags is set -- attaching a tag at create time authorizes on both sides, the binding on the topic and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). Tags bind at create time only; a tag change replaces the topic and detaches every subscription, re-running these checks. Not needed for untagged topics.
+        condition:
+          spec_field_set: resource_manager_tags
+        notes: Attaching a tag at create time authorizes on both sides, the binding on the topic and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). Tags bind at create time only; a tag change replaces the topic and detaches every subscription, re-running these checks.

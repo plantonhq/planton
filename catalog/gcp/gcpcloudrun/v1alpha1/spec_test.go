@@ -879,6 +879,20 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			spec.Containers[0].BaseImageUri = "us-central1-docker.pkg.dev/serverless-runtimes/google-24-full/runtimes/nodejs24"
 			Expect(protovalidate.Validate(spec)).To(BeNil())
 		})
+
+		It("takes the build worker pool as a reference or a full literal name", func() {
+			spec := makeValidSpec()
+			spec.BuildConfig = &GcpCloudRunBuildConfig{SourceLocation: "gs://my-bucket/source.zip", WorkerPool: strRef("GcpCloudBuildWorkerPool", "private-builds")}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+			spec.BuildConfig.WorkerPool = strVal("projects/my-gcp-project/locations/us-central1/workerPools/private")
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a literal build worker pool that is not a full name", func() {
+			spec := makeValidSpec()
+			spec.BuildConfig = &GcpCloudRunBuildConfig{SourceLocation: "gs://my-bucket/source.zip", WorkerPool: strVal("private")}
+			Expect(violatedRules(protovalidate.Validate(spec))).To(ContainElement("worker_pool.format"))
+		})
 	})
 
 	Context("Deletion policy", func() {

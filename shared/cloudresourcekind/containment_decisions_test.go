@@ -297,10 +297,16 @@ func fieldOptions(fd protoreflect.FieldDescriptor) *descriptorOptions {
 }
 
 func isReferenceField(fd protoreflect.FieldDescriptor) bool {
-	if fd.Kind() != protoreflect.MessageKind {
+	md := fd.Message()
+	// A map whose values are references (one reference per key) is a
+	// reference field, as pkg/refcheck and the manifest resolver read it.
+	if fd.IsMap() {
+		md = fd.MapValue().Message()
+	}
+	if md == nil {
 		return false
 	}
-	name := fd.Message().FullName()
+	name := md.FullName()
 	return name == stringValueOrRefFQN || name == valueFromRefFQN
 }
 

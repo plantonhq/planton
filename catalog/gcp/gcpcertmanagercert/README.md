@@ -11,10 +11,11 @@ Exactly one of two arms is configured:
 
 - **managed** — Google provisions and RENEWS the certificate for the
   listed domains. Domain control is proven through referenced
-  `GcpCertManagerDnsAuthorization` resources (required for wildcards, and
-  the only way to issue before traffic serves), through a private-PKI
-  issuance config, or — when neither is set — through load-balancer
-  authorization once traffic reaches the proxy.
+  `GcpCertManagerDnsAuthorization` resources (required for public
+  wildcards, and the only way to issue before traffic serves), through a
+  referenced `GcpCertManagerIssuanceConfig` that has your private CA pool
+  issue it, or — when neither is set — through load-balancer authorization
+  once traffic reaches the proxy.
 - **selfManaged** — you upload a PEM chain and private key; the key is
   secret material (masked everywhere), and rotation is an in-place update.
 
@@ -25,8 +26,9 @@ The classic compute certificates are separate kinds:
 ## Key Features
 
 - Managed XOR self-managed arms with pre-deploy coherence validation
-  (wildcards require DNS authorization; DNS authorizations and issuance
-  config are mutually exclusive; swapped PEM material is rejected).
+  (wildcards require DNS authorization or an issuance config; DNS
+  authorizations and issuance config are mutually exclusive; swapped PEM
+  material is rejected).
 - First-class DNS authorizations: the certificate references
   `GcpCertManagerDnsAuthorization` resources instead of creating hidden
   ones — the authorization, its validation `GcpDnsRecord`, and the

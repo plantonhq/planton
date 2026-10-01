@@ -145,10 +145,12 @@ type GcpTargetHttpsProxySpec struct {
 	// EXTERNAL_MANAGED / INTERNAL_SELF_MANAGED forwarding rules and to
 	// regional proxies (a regional policy in the proxy's region); for Traffic
 	// Director this is the ONLY TLS lever (ssl_certificates are ignored).
-	// Format: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
+	// The policy is made outside the catalog (in Network Security, with its
+	// trust config of CA anchors; no catalog kind produces it), so write its
+	// full name: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
 	// If left blank, no server-side TLS policy applies. Mutable — and
 	// clearable: removing it PATCHes the proxy back to no policy.
-	ServerTlsPolicy *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=server_tls_policy,json=serverTlsPolicy,proto3" json:"server_tls_policy,omitempty"`
+	ServerTlsPolicy string `protobuf:"bytes,9,opt,name=server_tls_policy,json=serverTlsPolicy,proto3" json:"server_tls_policy,omitempty"`
 	// QUIC (HTTP/3) negotiation policy. NONE lets Google decide (currently
 	// enables QUIC), ENABLE forces QUIC negotiation on, DISABLE turns it off.
 	// GCP default: NONE. Global proxies only — regional ALBs do not negotiate
@@ -289,11 +291,11 @@ func (x *GcpTargetHttpsProxySpec) GetSslPolicy() *v1.StringValueOrRef {
 	return nil
 }
 
-func (x *GcpTargetHttpsProxySpec) GetServerTlsPolicy() *v1.StringValueOrRef {
+func (x *GcpTargetHttpsProxySpec) GetServerTlsPolicy() string {
 	if x != nil {
 		return x.ServerTlsPolicy
 	}
-	return nil
+	return ""
 }
 
 func (x *GcpTargetHttpsProxySpec) GetQuicOverride() string {
@@ -335,7 +337,7 @@ var File_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcptargethttpsproxy/v1alpha1/spec.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xac\x1d\n" +
+	"3catalog/gcp/gcptargethttpsproxy/v1alpha1/spec.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf8\x1c\n" +
 	"\x17GcpTargetHttpsProxySpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x87\x02\n" +
@@ -350,8 +352,8 @@ const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_rawDesc = "" +
 	" certificate_manager_certificates\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\xc8\x17\x92\xd4a\x1fstatus.outputs.certificate_nameR\x1ecertificateManagerCertificates\x121\n" +
 	"\x0fcertificate_map\x18\a \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\x0ecertificateMap\x12t\n" +
 	"\n" +
-	"ssl_policy\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xa7\x18\x92\xd4a\x18status.outputs.self_linkR\tsslPolicy\x12^\n" +
-	"\x11server_tls_policy\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x0fserverTlsPolicy\x12\xb4\x01\n" +
+	"ssl_policy\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xa7\x18\x92\xd4a\x18status.outputs.self_linkR\tsslPolicy\x12*\n" +
+	"\x11server_tls_policy\x18\t \x01(\tR\x0fserverTlsPolicy\x12\xb4\x01\n" +
 	"\rquic_override\x18\n" +
 	" \x01(\tB\x89\x01\xbaH\x85\x01\xba\x01\x81\x01\n" +
 	"\x13valid_quic_override\x125quic_override must be one of NONE, ENABLE, or DISABLE\x1a3this == '' || this in ['NONE', 'ENABLE', 'DISABLE']H\x00R\fquicOverride\x88\x01\x01\x12\xde\x01\n" +
@@ -394,12 +396,11 @@ var file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_depIdxs = []int32{
 	1, // 2: dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxySpec.ssl_certificates:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1, // 3: dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxySpec.certificate_manager_certificates:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1, // 4: dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxySpec.ssl_policy:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1, // 5: dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxySpec.server_tls_policy:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_init() }

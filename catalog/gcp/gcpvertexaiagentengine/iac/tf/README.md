@@ -18,6 +18,7 @@ enablement) and one `google_vertex_ai_reasoning_engine`.
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, the display name defaulted from `metadata.name`, null-for-empty optionals, the `planton-ai_*` labels |
 | `main.tf` | `google_project_service`, `google_vertex_ai_reasoning_engine` (the agent `spec` and the memory bank as nested `dynamic` blocks) |
+| `secrets.tf` | The Secret Manager API, one secret and pinned version per `secret_env` entry with a `value`, and the accessor grant to the runtime identity |
 | `outputs.tf` | `name`, `reasoning_engine_id`, `location`, `create_time`, `update_time` |
 
 ## Send Posture
@@ -30,6 +31,7 @@ enablement) and one `google_vertex_ai_reasoning_engine`.
 - **Memory-bank example parts** -- every payload but `audio_transcription` (an SDK gap held out on both engines).
 - **`name`** -- the resource id (the full path); `reasoning_engine_id` the provider's numeric `name` attribute.
 - **`deletion_policy`** -- null when empty.
+- **`secret_env`** -- a `secret_ref` entry passes through; a `value` entry gets its own secret (user-managed replication in `location`), a pinned version, and a `secretmanager.secretAccessor` grant on that secret alone to `service_account`, or to the project's Reasoning Engine service agent when it is empty -- PARITY with the Pulumi module.
 
 ## Usage
 

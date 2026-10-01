@@ -1815,11 +1815,11 @@ func (x *GcpDataprocClusterLifecycleConfig) GetAutoStopTime() string {
 // metastore that outlives ephemeral clusters.
 type GcpDataprocClusterMetastoreConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Resource name of an existing Dataproc Metastore service.
-	// Format: projects/{project}/locations/{location}/services/{service}
-	// Accepts a literal resource name today; references attach when a
-	// metastore-service kind lands in the catalog.
-	DataprocMetastoreService *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=dataproc_metastore_service,json=dataprocMetastoreService,proto3" json:"dataproc_metastore_service,omitempty"`
+	// Full resource name of an existing Dataproc Metastore service:
+	// projects/{project}/locations/{location}/services/{service}. The
+	// service is made outside the catalog (no catalog kind produces it), so
+	// write its full name. Required.
+	DataprocMetastoreService string `protobuf:"bytes,1,opt,name=dataproc_metastore_service,json=dataprocMetastoreService,proto3" json:"dataproc_metastore_service,omitempty"`
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache
 }
@@ -1854,11 +1854,11 @@ func (*GcpDataprocClusterMetastoreConfig) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
 }
 
-func (x *GcpDataprocClusterMetastoreConfig) GetDataprocMetastoreService() *v1.StringValueOrRef {
+func (x *GcpDataprocClusterMetastoreConfig) GetDataprocMetastoreService() string {
 	if x != nil {
 		return x.DataprocMetastoreService
 	}
-	return nil
+	return ""
 }
 
 // GcpDataprocClusterMetric selects one metric source (and optionally
@@ -3273,9 +3273,9 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x10auto_delete_time\x18\x02 \x01(\tR\x0eautoDeleteTime\x12\xa7\x01\n" +
 	"\ridle_stop_ttl\x18\x03 \x01(\tB\x82\x01\xbaH\x7f\xba\x01|\n" +
 	"\x14idle_stop_ttl_format\x12;idle_stop_ttl must be a duration in seconds (e.g., '1800s')\x1a'this == '' || this.matches('^[0-9]+s$')R\vidleStopTtl\x12$\n" +
-	"\x0eauto_stop_time\x18\x04 \x01(\tR\fautoStopTime\"\x9d\x01\n" +
-	"!GcpDataprocClusterMetastoreConfig\x12x\n" +
-	"\x1adataproc_metastore_service\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x18dataprocMetastoreService\"\xc5\x01\n" +
+	"\x0eauto_stop_time\x18\x04 \x01(\tR\fautoStopTime\"i\n" +
+	"!GcpDataprocClusterMetastoreConfig\x12D\n" +
+	"\x1adataproc_metastore_service\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x18dataprocMetastoreService\"\xc5\x01\n" +
 	"\x18GcpDataprocClusterMetric\x12~\n" +
 	"\rmetric_source\x18\x01 \x01(\tBY\xbaHV\xc8\x01\x01rQR\x19MONITORING_AGENT_DEFAULTSR\x04HDFSR\x05SPARKR\x04YARNR\x14SPARK_HISTORY_SERVERR\vHIVESERVER2R\fmetricSource\x12)\n" +
 	"\x10metric_overrides\x18\x02 \x03(\tR\x0fmetricOverrides\"\x8b\x01\n" +
@@ -3472,52 +3472,51 @@ var file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_depIdxs = []int32{
 	40, // 23: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.user_service_account_mapping:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.UserServiceAccountMappingEntry
 	16, // 24: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig.kerberos_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKerberosConfig
 	17, // 25: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig.identity_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig
-	44, // 26: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig.dataproc_metastore_service:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 27: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig.metrics:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetric
-	0,  // 28: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
-	2,  // 29: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
-	24, // 30: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup.node_group_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig
-	44, // 31: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	44, // 32: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.temp_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7,  // 33: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.gce_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig
-	8,  // 34: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.master_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig
-	9,  // 35: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig
-	13, // 36: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.secondary_worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig
-	14, // 37: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig
-	15, // 38: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.initialization_actions:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInitAction
-	44, // 39: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.autoscaling_policy_uri:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	44, // 40: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.encryption_kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	18, // 41: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.security_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig
-	19, // 42: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.endpoint_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterEndpointConfig
-	20, // 43: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.lifecycle_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterLifecycleConfig
-	21, // 44: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
-	23, // 45: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.dataproc_metric_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig
-	25, // 46: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.auxiliary_node_groups:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup
-	41, // 47: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.component_version:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.ComponentVersionEntry
-	42, // 48: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.properties:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.PropertiesEntry
-	28, // 49: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig.autoscaling:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolAutoscaling
-	44, // 50: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 51: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig
-	44, // 52: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.gke_cluster_target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	30, // 53: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.node_pool_target:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget
-	44, // 54: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	31, // 55: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.gke_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig
-	27, // 56: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig
-	44, // 57: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig.dataproc_cluster:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 58: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
-	33, // 59: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.spark_history_server_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig
-	44, // 60: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	32, // 61: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.kubernetes_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig
-	34, // 62: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.auxiliary_services_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig
-	44, // 63: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	26, // 64: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig
-	35, // 65: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.virtual_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig
-	43, // 66: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.labels:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.LabelsEntry
-	67, // [67:67] is the sub-list for method output_type
-	67, // [67:67] is the sub-list for method input_type
-	67, // [67:67] is the sub-list for extension type_name
-	67, // [67:67] is the sub-list for extension extendee
-	0,  // [0:67] is the sub-list for field type_name
+	22, // 26: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig.metrics:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetric
+	0,  // 27: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
+	2,  // 28: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
+	24, // 29: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup.node_group_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig
+	44, // 30: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 31: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.temp_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 32: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.gce_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig
+	8,  // 33: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.master_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig
+	9,  // 34: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig
+	13, // 35: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.secondary_worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig
+	14, // 36: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig
+	15, // 37: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.initialization_actions:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInitAction
+	44, // 38: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.autoscaling_policy_uri:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 39: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.encryption_kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 40: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.security_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig
+	19, // 41: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.endpoint_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterEndpointConfig
+	20, // 42: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.lifecycle_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterLifecycleConfig
+	21, // 43: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
+	23, // 44: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.dataproc_metric_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig
+	25, // 45: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.auxiliary_node_groups:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup
+	41, // 46: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.component_version:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.ComponentVersionEntry
+	42, // 47: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.properties:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.PropertiesEntry
+	28, // 48: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig.autoscaling:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolAutoscaling
+	44, // 49: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	29, // 50: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig
+	44, // 51: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.gke_cluster_target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 52: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.node_pool_target:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget
+	44, // 53: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	31, // 54: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.gke_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig
+	27, // 55: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig
+	44, // 56: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig.dataproc_cluster:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	21, // 57: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
+	33, // 58: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.spark_history_server_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig
+	44, // 59: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 60: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.kubernetes_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig
+	34, // 61: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.auxiliary_services_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig
+	44, // 62: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	26, // 63: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig
+	35, // 64: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.virtual_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig
+	43, // 65: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.labels:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.LabelsEntry
+	66, // [66:66] is the sub-list for method output_type
+	66, // [66:66] is the sub-list for method input_type
+	66, // [66:66] is the sub-list for extension type_name
+	66, // [66:66] is the sub-list for extension extendee
+	0,  // [0:66] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_init() }

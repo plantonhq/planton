@@ -95,7 +95,7 @@ These are the most important decisions when configuring a workflow. Explore the 
 
 **Observability levels** -- `callLogLevel` and `executionHistoryLevel` set how much call and step detail lands in Cloud Logging and execution history. `LOG_ALL_CALLS` plus `EXECUTION_HISTORY_DETAILED` while developing; scale back for cost in steady state — all-calls logging on a busy workflow is a real log bill.
 
-**Environment variables** -- `userEnvVars` are visible to the source via `sys.get_env()`: at most 20 entries, and keys must not start with `GOOGLE` or `WORKFLOWS` (reserved prefixes the API rejects). An env-var change deploys a new revision.
+**Environment variables** -- `userEnvVars` are visible to the source via `sys.get_env()`: at most 20 entries, and keys must not start with `GOOGLE` or `WORKFLOWS` (reserved prefixes the API rejects). An env-var change deploys a new revision. Secrets go in `secretEnvVars`: each value is stored in its own Secret Manager secret, readable only by the workflow's service account, and the env var of the same name holds the version's resource name for the source to read with the Secret Manager connector. The 20-entry limit counts both maps together, and the two maps cannot share a key.
 
 **Resource manager tags** -- `resourceManagerTags` bind org-policy/cost tags at creation and are ForceNew: a tag change REPLACES the workflow, and the replacement starts with a fresh, empty execution history. Plan tag changes deliberately.
 

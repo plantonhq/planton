@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Compute Engine custom
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Project, name default, optional strings and lists as null, attribution labels, the source keys |
 | `main.tf` | `google_project_service`, `google_compute_image` |
-| `outputs.tf` | `name`, `self_link`, `family`, `disk_size_gb` |
+| `outputs.tf` | `name`, `self_link`, `family`, `disk_size_gb`, `image_id` (the resource's `id`) |
 
 ## Send Posture
 

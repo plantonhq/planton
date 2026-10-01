@@ -28,7 +28,7 @@ Clusters are always VPC-native (alias IP): pods and services draw from secondary
 - **Observability**: per-component logging/monitoring (incl. KCP components), managed Prometheus (+ auto-monitoring scope), Pub/Sub lifecycle notifications, cost allocation, BigQuery usage export
 - **Addons**: HTTP LB, HPA, PD/Filestore/GCS-Fuse/Parallelstore/Lustre CSI drivers, Backup for GKE, NodeLocal DNSCache, Config Connector, Stateful HA, Ray operator (+ logging/monitoring), Cloud Run, pod snapshots, agent sandbox, slice controller, Slurm operator
 - **Node-pool defaults**: creation-time defaults for every pool (image streaming, kubelet read-only port, logging variant, containerd private-registry access)
-- **Fleet registration**: `fleet_project` + membership type for multi-cluster features; Google creates the membership and the cluster exports its name as `fleet_membership`, which team scopes and per-cluster fleet feature settings reference
+- **Fleet registration**: `fleet_project` (a `GcpGkeFleet` or `GcpProject` reference, or a project ID) + membership type for multi-cluster features; Google creates the membership and the cluster exports its name as `fleet_membership`, which team scopes and per-cluster fleet feature settings reference
 - **Lifecycle & scale**: engine-side `deletion_policy` (DELETE/PREVENT/ABANDON) under `deletion_protection`, alpha clusters and beta API groups for evaluation, and read-side performance switches for very large clusters (`ignore_node_count_changes`, `skip_node_pool_refresh`)
 
 ## Stack Outputs

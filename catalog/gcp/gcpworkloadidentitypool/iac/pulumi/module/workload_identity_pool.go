@@ -66,7 +66,7 @@ func workloadIdentityPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.
 		if len(cert.CaPools) > 0 {
 			caPools := pulumi.StringMap{}
 			for region, caPool := range cert.CaPools {
-				caPools[region] = pulumi.String(caPool)
+				caPools[region] = pulumi.String(caPool.GetValue())
 			}
 			certArgs.CaPools = caPools
 		}

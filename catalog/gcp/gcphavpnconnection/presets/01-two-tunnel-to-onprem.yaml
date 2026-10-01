@@ -31,7 +31,6 @@ spec:
     - name: hq-tunnel-0
       vpnGatewayInterface: 0
       peerExternalGatewayInterface: 0
-      sharedSecret: ${secrets-group.hq-vpn.psk-0}
       bgpSession:
         interfaceIpRange: 169.254.10.1/30
         peerAsn: 65001
@@ -40,10 +39,11 @@ spec:
     - name: hq-tunnel-1
       vpnGatewayInterface: 1
       peerExternalGatewayInterface: 1
-      sharedSecret: ${secrets-group.hq-vpn.psk-1}
       bgpSession:
         interfaceIpRange: 169.254.11.1/30
         peerAsn: 65001
         bfd:
           sessionInitializationMode: ACTIVE
+  sharedSecret:
+    value: ${secrets-group.hq-vpn.psk}
   deletionPolicy: PREVENT

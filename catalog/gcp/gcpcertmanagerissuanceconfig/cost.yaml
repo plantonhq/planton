@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcertmanagerissuanceconfig
+spec:
+  billing_model: free
+  free_tier: An issuance config carries no meter of its own -- Certificate Manager's pricing page bills certificates per month, TLS connections that use large-key certificates, and mutual-TLS connections, and an issuance config is none of those. It is the issuance policy (pool, key algorithm, lifetime, rotation window) that Google-managed certificates follow, and holding it costs nothing at any count, in any location.
+  notes: "No field of this spec buys anything, but the config switches on two meters elsewhere the moment a certificate names it. Every GcpCertManagerCert issued through it counts toward Certificate Manager's per-project certificate meter. And every issuance -- the first and each automatic renewal -- is a certificate request against the GcpPrivateCaPool named by ca_pool, billed by Certificate Authority Service at the pool's tier, on top of the authority's own monthly fee. lifetime and rotation_window_percentage therefore set the renewal frequency and with it the issuance count: a shorter lifetime or an earlier window means more requests per certificate per year."

@@ -40,7 +40,9 @@ variable "spec" {
     # The topic findings are published to: a literal
     # projects/{project}/topics/{topic} or a GcpPubSubTopic reference.
     # Required on folder and organization configs; Google lets a project
-    # config omit it.
+    # config omit it. Grant the config's publisher on it with a
+    # GcpPubSubTopicIamMember (role roles/pubsub.publisher, member
+    # referencing the service_account_member output).
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     pubsub_topic = optional(string, "")
 

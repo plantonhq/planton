@@ -684,6 +684,7 @@ Fields on other kinds that can point at this resource:
 | GcpLoggingSink | `spec.destination.pubsubTopic` | `status.outputs.topic_id` |
 | GcpPubSubSubscription | `spec.topic` | `status.outputs.topic_id` |
 | GcpPubSubSubscription | `spec.deadLetterPolicy.deadLetterTopic` | `status.outputs.topic_id` |
+| GcpPubSubTopicIamMember | `spec.topic` | `status.outputs.topic_id` |
 | GcpSccNotificationConfig | `spec.pubsubTopic` | `status.outputs.topic_id` |
 | GcpSecretManagerSecret | `spec.topics` | `status.outputs.topic_id` |
 

@@ -23,4 +23,6 @@ spec:
           - iam.workloadIdentityPools.getAttestationRules
           - iam.workloadIdentityPools.setAttestationRules
         provenance: derived
+        condition:
+          spec_field_set: attestation_rules
         notes: Required only when attestation_rules is set (TRUST_DOMAIN pools allowlisting which Google Cloud workloads may receive a managed identity). GCP applies the rules through a separate API call after the pool itself is created -- both modules document that a failed apply can leave a pool without its rules until re-apply -- and the provider reads the rules back on refresh under the get permission.

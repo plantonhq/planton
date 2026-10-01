@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### Optional Dependencies
 
 - **`GcpServiceAccount`** -- a custom identity for the agent (`spec.serviceAccount`).
-- **`GcpSecretManagerSecret`** -- secrets injected as environment variables (`spec.deploymentSpec.secretEnv[]`).
+- **`GcpSecretManagerSecret`** -- secrets injected as environment variables (`spec.deploymentSpec.secretEnv[].secretRef`). A `secretEnv` entry can carry a `value` instead, and the module stores it in a Secret Manager secret of its own.
 - **`GcpKmsKey`** -- customer-managed encryption (`kmsKeyName`). Immutable.
 - **`GcpProject`, `GcpVpcNetwork`** -- the DNS peering targets of a Private Service Connect interface.
 
@@ -73,7 +73,7 @@ planton apply -f agent-engine.yaml
 | `spec.sourceCodeSpec` | `object` | none | Exactly one source (`inlineSource.sourceArchive`, `developerConnectSource.config`, `agentConfigSource.adkConfig`) and exactly one build (`pythonSpec { version, entrypointModule, entrypointObject, requirementsFile }` or `imageSpec { buildArgs }`). |
 | `spec.packageSpec` | `object` | none | The legacy pickled-object package: `pickleObjectGcsUri`, `dependencyFilesGcsUri`, `requirementsGcsUri`, `pythonVersion`. |
 | `spec.buildSpec.workerPool` | `StringValueOrRef` | none | A Cloud Build private worker pool for the source build: a `GcpCloudBuildWorkerPool` reference (its `name` output) or the full `projects/{p}/locations/{l}/workerPools/{pool}` name. |
-| `spec.deploymentSpec` | `object` | Google's defaults | `env[]`, `secretEnv[]` (`GcpSecretManagerSecret` references), `minInstances` (0-10), `maxInstances` (1-1000), `containerConcurrency`, `resourceLimits { cpu, memory }`, `pscInterfaceConfig { networkAttachment, dnsPeeringConfigs[] }`, `agentGatewayConfig { clientToAgentConfig, agentToAnywhereConfig }`. |
+| `spec.deploymentSpec` | `object` | Google's defaults | `env[]` (plain text), `secretEnv[]` (each entry either a `secretRef` to a `GcpSecretManagerSecret` or a `value` the module stores in its own secret, granting the runtime identity access to it alone; a `value` is refused with `identityType: AGENT_IDENTITY`), `minInstances` (0-10), `maxInstances` (1-1000), `containerConcurrency`, `resourceLimits { cpu, memory }`, `pscInterfaceConfig { networkAttachment, dnsPeeringConfigs[] }`, `agentGatewayConfig { clientToAgentConfig, agentToAnywhereConfig }`. |
 | `contextSpec.memoryBankConfig` | `object` | none | `generationConfig { model, generationTriggerConfig.generationRule }`, `similaritySearchConfig.embeddingModel`, `ttlConfig`, `disableMemoryRevisions`, `structuredMemoryConfigs[]`, `customizationConfigs[]` (scope keys, topics, worked examples, consolidation, generation flags). |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 

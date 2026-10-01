@@ -81,10 +81,14 @@ variable "spec" {
         # Exactly one disk in the template must set this.
         boot = optional(bool, false)
 
-        # Source image for a fresh disk on each VM. Accepts an image family
-        # ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64")
-        # or a specific image self link. Families resolve to the newest image
-        # at template creation.
+        # Source image for a fresh disk on each VM: a GcpComputeImage reference
+        # (its self_link, pinning that exact build fleet-wide) or a literal
+        # Google accepts -- an image family short form
+        # ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a
+        # family path ("projects/{project}/global/images/family/{family}"), or a
+        # specific image's path or self link. Families resolve to the newest
+        # image at template creation.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         source_image = optional(string, "")
 
         # Source snapshot each VM's disk is restored from (name or self

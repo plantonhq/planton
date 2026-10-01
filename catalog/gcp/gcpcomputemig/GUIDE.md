@@ -8,7 +8,10 @@ things the spec reference cannot tell you.
 Every `template` change rotates the template and — with `updatePolicy`
 `PROACTIVE` — rolls the fleet. That makes this ONE resource your VM
 deploy pipeline: bake an image, change `sourceImage`, apply, and the
-group replaces instances within the surge/unavailability budget. Two
+group replaces instances within the surge/unavailability budget. With
+the baked image declared as a `GcpComputeImage`, `sourceImage` is a
+`valueFrom` to its `self_link`: pointing it at the next build's block
+is the whole rollout. Two
 consequences worth internalizing: (1) size the budget for your traffic —
 `maxSurgeFixed` above zero buys zero-unavailability rollouts at
 temporary double-capacity cost; (2) `OPPORTUNISTIC` means an applied

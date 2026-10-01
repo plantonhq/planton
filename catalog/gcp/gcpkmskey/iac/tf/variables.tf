@@ -126,11 +126,10 @@ variable "spec" {
 
     # The EKM connection through which an external key manager backs this
     # key's versions. Applies only when version_template.protection_level is
-    # EXTERNAL_VPC (enforced pre-deploy). Accepts the fully qualified
-    # connection path
+    # EXTERNAL_VPC (enforced pre-deploy). The EKM connection is made outside
+    # the catalog (no catalog kind produces it), so write its full name:
     #   projects/{project}/locations/{location}/ekmConnections/{name}
     # Immutable after creation.
-    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     crypto_key_backend = optional(string, "")
 
     # User-defined labels attached to the key, for cost attribution and

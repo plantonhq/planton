@@ -16,7 +16,15 @@ spec:
   # can 400 with "Workflows service agent does not exist" — the agent
   # provisions asynchronously seconds-to-minutes after enablement
   # (generateServiceIdentity pre-provisions it; see e2e/README).
+  #
+  # Awaiting re-proof: secretEnvVars stores each value in its own Secret
+  # Manager secret and hands the workflow the version's resource name
+  # (with-secret-env). Offline bar met: both modules build and validate,
+  # plans are clean, and no value reaches the workflow. Live facts the
+  # proof lane confirms: an execution reads the value through the
+  # Secret Manager connector as the default compute account, re-plans
+  # clean, and destroy removes the secret.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 15

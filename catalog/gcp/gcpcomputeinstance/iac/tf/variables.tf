@@ -46,10 +46,14 @@ variable "spec" {
 
     # Boot disk configuration — the disk the OS boots from.
     boot_disk = object({
-      # Source image for a fresh boot disk. Accepts an image family
-      # ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64") or
-      # a specific image self link. Families resolve to the newest image at
+      # Source image for a fresh boot disk: a GcpComputeImage reference (its
+      # self_link, pinning that exact build) or a literal Google accepts -- an
+      # image family short form ("debian-cloud/debian-12",
+      # "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a family path
+      # ("projects/{project}/global/images/family/{family}"), or a specific
+      # image's path or self link. Families resolve to the newest image at
       # create time. Create-time only.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       image = optional(string, "")
 
       # Source snapshot to restore the boot disk from (name or self link).

@@ -26,10 +26,22 @@ spec:
           - iam.serviceAccountKeys.get
           - iam.serviceAccountKeys.delete
         provenance: derived
-        notes: Covers google_service_account_key (Pulumi serviceaccount.Key), created only when spec.user_managed_key is present -- keyless is the default and needs nothing here. Both flows use the same permissions (generate returns the private key once; upload sends public_key_data), and a keepers-triggered rotation is a delete plus create. These are the heart of roles/iam.serviceAccountKeyAdmin (verified live) -- a deliberately separate role from serviceAccountAdmin, so key-capable deployers are an explicit grant.
+        condition:
+          spec_field_set: user_managed_key
+        notes: Covers google_service_account_key (Pulumi serviceaccount.Key), created when user_managed_key is present -- keyless is the default. Both flows use the same permissions (generate returns the private key once; upload sends public_key_data), and a keepers-triggered rotation is a delete plus create. These are the heart of roles/iam.serviceAccountKeyAdmin (verified live) -- a deliberately separate role from serviceAccountAdmin, so key-capable deployers are an explicit grant.
       - purpose: GrantIamRoles
         permissions:
           - resourcemanager.projects.getIamPolicy
           - resourcemanager.projects.setIamPolicy
         provenance: derived
-        notes: Required only when project_iam_roles is set -- covers google_project_iam_member's read-modify-write of the project allow policy, one additive (role, member) grant per listed role, on the account's home project. The pair lives inside roles/resourcemanager.projectIamAdmin (verified live). ORG grants need one more pair this list cannot carry -- google_organization_iam_member (used when org_iam_roles is set) authorizes as resourcemanager.organizations.getIamPolicy and resourcemanager.organizations.setIamPolicy on the ORGANIZATION itself, permissions that appear only in org-scoped inventories (verified live against Google's Resource Manager permissions reference; they are the heart of roles/resourcemanager.organizationAdmin). Grant that pair to the deploying principal on the org whenever org_iam_roles is used.
+        condition:
+          spec_field_set: project_iam_roles
+        notes: Covers google_project_iam_member's read-modify-write of the project allow policy, one additive (role, member) grant per listed role, on the account's home project. The pair lives inside roles/resourcemanager.projectIamAdmin (verified live).
+      - purpose: GrantOrgIamRoles
+        permissions:
+          - resourcemanager.organizations.getIamPolicy
+          - resourcemanager.organizations.setIamPolicy
+        provenance: derived
+        condition:
+          spec_field_set: org_iam_roles
+        notes: Covers google_organization_iam_member's read-modify-write of the organization allow policy, one additive grant per role in org_iam_roles, on the organization named by org_id. The pair authorizes on the ORGANIZATION itself and is the heart of roles/resourcemanager.organizationAdmin; grant it to the deploying principal on the org.

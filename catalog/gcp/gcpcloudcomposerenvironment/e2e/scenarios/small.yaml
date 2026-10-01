@@ -1,7 +1,10 @@
 # GcpCloudComposerEnvironment scenario: a small Composer 3 environment on
 # the prerequisite VPC/subnetwork. project_id is deliberately omitted
 # (ambient project); the cloud-side environment name carries
-# ${E2E_RUN_ID}. Creation takes 25-45 minutes (Composer assembles a GKE
+# ${E2E_RUN_ID}. One literal and one stored secret environment variable
+# prove the pointer form: the secret replicated in us-central1, granted to
+# the prerequisite service account, and the variable holding the version's
+# resource name. Creation takes 25-45 minutes (Composer assembles a GKE
 # cluster, database, web server, and DAG bucket) — the posture verifier
 # asserts all of it actually came up (RUNNING + Airflow UI + DAG bucket).
 apiVersion: gcp.planton.dev/v1alpha1
@@ -44,5 +47,13 @@ spec:
         fieldPath: status.outputs.email
   softwareConfig:
     imageVersion: composer-3-airflow-2
+    envVariables:
+      E2E_MODE: smoke
+    # Stored by the module in a Secret Manager secret granted to the node
+    # service account alone; Airflow receives the version's resource name.
+    # A literal because this lane runs without a platform; on Planton the
+    # field takes only a $secret/ reference.
+    secretEnvVariables:
+      E2E_TOKEN: e2e-not-a-real-secret
   environmentSize: ENVIRONMENT_SIZE_SMALL
   deletionPolicy: DELETE

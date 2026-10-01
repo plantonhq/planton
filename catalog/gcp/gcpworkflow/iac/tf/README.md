@@ -38,7 +38,8 @@ This directory contains the Terraform/OpenTofu implementation for deploying a Cl
 | `crypto_key` | `crypto_key_name` | CMEK; references a GcpKmsKey's `key_id` output |
 | `call_log_level` | `call_log_level` | Provider ValidateEnum values |
 | `execution_history_level` | `execution_history_level` | Provider ValidateEnum values |
-| `user_env_vars` | `user_env_vars` | ≤20 entries; keys must not start GOOGLE/WORKFLOWS |
+| `user_env_vars` | `user_env_vars` | ≤20 entries together with `secret_env_vars`; keys must not start GOOGLE/WORKFLOWS |
+| `secret_env_vars` | `user_env_vars` (merged) | Each value stored in its own Secret Manager secret, accessor granted to the service account on it alone; the merged env var holds the version's resource name |
 | `resource_manager_tags` | `tags` | ForceNew — a tag change REPLACES the workflow |
 | `deletion_protection` | `deletion_protection` | Sent EXPLICITLY on every apply — a true→false transition must reach the engine |
 | `project_id` | `project` | `null` when empty — the provider's default project applies |

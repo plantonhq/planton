@@ -247,13 +247,22 @@ variable "spec" {
           # The header name, e.g. "X-Api-Key".
           key = string
 
-          # The Secret Manager secret version holding the header value:
+          # The Secret Manager secret VERSION holding the header value -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+          # when the secret declares an initial version) or a literal
           # projects/{project}/secrets/{secret}/versions/{version}.
-          secret_version = optional(string, "")
+          # The Dialogflow service agent reads it
+          # (roles/secretmanager.secretAccessor on the secret).
+          # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+          secret_version = string
         })), [])
 
-        # The Secret Manager secret version holding "username:password" for HTTP
-        # Basic authentication: projects/{project}/secrets/{secret}/versions/{version}.
+        # The Secret Manager secret VERSION holding "username:password" for HTTP
+        # Basic authentication -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+        # when the secret declares an initial version) or a literal
+        # projects/{project}/secrets/{secret}/versions/{version}.
+        # The Dialogflow service agent reads it
+        # (roles/secretmanager.secretAccessor on the secret).
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         secret_version_for_username_password = optional(string, "")
 
         # Authenticate with the OAuth client-credentials flow.
@@ -273,9 +282,13 @@ variable "spec" {
           # The OAuth scopes to request.
           scopes = optional(list(string), [])
 
-          # The Secret Manager secret version holding the client secret:
-          # projects/{project}/secrets/{secret}/versions/{version}. Wins over
+          # The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+          # when the secret declares an initial version) or a literal
+          # projects/{project}/secrets/{secret}/versions/{version}.
+          # The Dialogflow service agent reads it
+          # (roles/secretmanager.secretAccessor on the secret). Wins over
           # client_secret.
+          # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           secret_version_for_client_secret = optional(string, "")
         }))
 
@@ -341,13 +354,22 @@ variable "spec" {
             # The header name, e.g. "X-Api-Key".
             key = string
 
-            # The Secret Manager secret version holding the header value:
+            # The Secret Manager secret VERSION holding the header value -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+            # when the secret declares an initial version) or a literal
             # projects/{project}/secrets/{secret}/versions/{version}.
-            secret_version = optional(string, "")
+            # The Dialogflow service agent reads it
+            # (roles/secretmanager.secretAccessor on the secret).
+            # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+            secret_version = string
           })), [])
 
-          # The Secret Manager secret version holding "username:password" for HTTP
-          # Basic authentication: projects/{project}/secrets/{secret}/versions/{version}.
+          # The Secret Manager secret VERSION holding "username:password" for HTTP
+          # Basic authentication -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+          # when the secret declares an initial version) or a literal
+          # projects/{project}/secrets/{secret}/versions/{version}.
+          # The Dialogflow service agent reads it
+          # (roles/secretmanager.secretAccessor on the secret).
+          # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           secret_version_for_username_password = optional(string, "")
 
           # Authenticate with the OAuth client-credentials flow.
@@ -367,9 +389,13 @@ variable "spec" {
             # The OAuth scopes to request.
             scopes = optional(list(string), [])
 
-            # The Secret Manager secret version holding the client secret:
-            # projects/{project}/secrets/{secret}/versions/{version}. Wins over
+            # The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+            # when the secret declares an initial version) or a literal
+            # projects/{project}/secrets/{secret}/versions/{version}.
+            # The Dialogflow service agent reads it
+            # (roles/secretmanager.secretAccessor on the secret). Wins over
             # client_secret.
+            # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
             secret_version_for_client_secret = optional(string, "")
           }))
 
@@ -425,9 +451,12 @@ variable "spec" {
             # prefer that. Google never returns it.
             api_key = optional(string, "")
 
-            # The Secret Manager secret version holding the key:
-            # projects/{project}/secrets/{secret}/versions/{version}. Wins over
-            # api_key.
+            # The Secret Manager secret VERSION holding the key -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+            # when the secret declares an initial version) or a literal
+            # projects/{project}/secrets/{secret}/versions/{version}.
+            # The Dialogflow service agent reads it
+            # (roles/secretmanager.secretAccessor on the secret). Wins over api_key.
+            # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
             secret_version_for_api_key = optional(string, "")
           }))
 
@@ -438,9 +467,12 @@ variable "spec" {
             # secret_version_for_token is set. Google never returns it.
             token = optional(string, "")
 
-            # The Secret Manager secret version holding the token:
-            # projects/{project}/secrets/{secret}/versions/{version}. Wins over
-            # token.
+            # The Secret Manager secret VERSION holding the token -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+            # when the secret declares an initial version) or a literal
+            # projects/{project}/secrets/{secret}/versions/{version}.
+            # The Dialogflow service agent reads it
+            # (roles/secretmanager.secretAccessor on the secret). Wins over token.
+            # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
             secret_version_for_token = optional(string, "")
           }))
 
@@ -462,9 +494,13 @@ variable "spec" {
             # The OAuth scopes to request.
             scopes = optional(list(string), [])
 
-            # The Secret Manager secret version holding the client secret:
-            # projects/{project}/secrets/{secret}/versions/{version}. Wins over
+            # The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+            # when the secret declares an initial version) or a literal
+            # projects/{project}/secrets/{secret}/versions/{version}.
+            # The Dialogflow service agent reads it
+            # (roles/secretmanager.secretAccessor on the secret). Wins over
             # client_secret.
+            # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
             secret_version_for_client_secret = optional(string, "")
           }))
 
@@ -562,9 +598,12 @@ variable "spec" {
                 # prefer that. Google never returns it.
                 api_key = optional(string, "")
 
-                # The Secret Manager secret version holding the key:
-                # projects/{project}/secrets/{secret}/versions/{version}. Wins over
-                # api_key.
+                # The Secret Manager secret VERSION holding the key -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+                # when the secret declares an initial version) or a literal
+                # projects/{project}/secrets/{secret}/versions/{version}.
+                # The Dialogflow service agent reads it
+                # (roles/secretmanager.secretAccessor on the secret). Wins over api_key.
+                # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
                 secret_version_for_api_key = optional(string, "")
               }))
 
@@ -575,9 +614,12 @@ variable "spec" {
                 # secret_version_for_token is set. Google never returns it.
                 token = optional(string, "")
 
-                # The Secret Manager secret version holding the token:
-                # projects/{project}/secrets/{secret}/versions/{version}. Wins over
-                # token.
+                # The Secret Manager secret VERSION holding the token -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+                # when the secret declares an initial version) or a literal
+                # projects/{project}/secrets/{secret}/versions/{version}.
+                # The Dialogflow service agent reads it
+                # (roles/secretmanager.secretAccessor on the secret). Wins over token.
+                # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
                 secret_version_for_token = optional(string, "")
               }))
 
@@ -599,9 +641,13 @@ variable "spec" {
                 # The OAuth scopes to request.
                 scopes = optional(list(string), [])
 
-                # The Secret Manager secret version holding the client secret:
-                # projects/{project}/secrets/{secret}/versions/{version}. Wins over
+                # The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+                # when the secret declares an initial version) or a literal
+                # projects/{project}/secrets/{secret}/versions/{version}.
+                # The Dialogflow service agent reads it
+                # (roles/secretmanager.secretAccessor on the secret). Wins over
                 # client_secret.
+                # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
                 secret_version_for_client_secret = optional(string, "")
               }))
 

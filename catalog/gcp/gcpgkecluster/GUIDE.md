@@ -94,7 +94,10 @@ turn them off in the same change that means it.
 ## Fleets and team scopes
 
 `fleetProject` registers the cluster with that project's fleet as part of
-creating it: Google creates the membership, and the cluster exports its
+creating it. Point it at the `GcpGkeFleet` with `valueFrom` (its
+`status.outputs.project_id`) so the registration waits for the fleet; a
+`GcpProject` reference or a literal project ID works when no fleet is
+declared. Google creates the membership, and the cluster exports its
 full name as `fleet_membership`. To give the cluster to a team, reference
 that output from the team's `GcpGkeFleetScope.membershipBindings`; to
 override a fleet feature's default for this cluster, reference it from
@@ -122,5 +125,7 @@ scaffolding — the diagram shows a control plane waiting for compute.
   images.
 - `GcpKmsKey` — etcd CMEK, NAP boot disks, and `userManagedKeys` for
   regulated estates.
+- `GcpPrivateCaPool` — the customer-managed control-plane CAs in
+  `userManagedKeys` (cluster, etcd API, etcd peer, aggregation).
 - `GcpSubnetwork` — plan the secondary ranges there first; the cluster
   only names them.

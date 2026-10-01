@@ -8,8 +8,9 @@ import (
 )
 
 // Resources provisions one site connection on an existing HA VPN gateway:
-// the external VPN gateway (when the peer is an external device), then one
-// tunnel, one Cloud Router interface, and one BGP peer per tunnels[] entry.
+// the keys it mints when the spec declares none, the external VPN gateway
+// (when the peer is an external device), then one tunnel, one Cloud Router
+// interface, and one BGP peer per tunnels[] entry.
 func Resources(ctx *pulumi.Context, stackInput *gcphavpnconnectionv1alpha1.GcpHaVpnConnectionStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
 
@@ -18,14 +19,21 @@ func Resources(ctx *pulumi.Context, stackInput *gcphavpnconnectionv1alpha1.GcpHa
 		return errors.Wrap(err, "failed to setup google provider")
 	}
 
+	keys, err := mintKeys(ctx, locals)
+	if err != nil {
+		return errors.Wrap(err, "failed to resolve the connection keys")
+	}
+
 	createdExternalGateway, err := externalGateway(ctx, locals, gcpProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create external vpn gateway")
 	}
 
-	if err := tunnels(ctx, locals, gcpProvider, createdExternalGateway); err != nil {
+	if err := tunnels(ctx, locals, gcpProvider, keys, createdExternalGateway); err != nil {
 		return errors.Wrap(err, "failed to create vpn tunnels")
 	}
+
+	exportMintedKeys(ctx, keys)
 
 	return nil
 }

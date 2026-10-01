@@ -14,7 +14,7 @@ Page the team that owns a project when Security Command Center finds an active h
 - The Security Command Center API on the project
 - A notification config streaming active, unmuted high and critical findings to the topic
 
-Grant the config's `service_account` output `roles/pubsub.publisher` on the topic.
+Grant the config's publisher `roles/pubsub.publisher` on the topic with a `GcpPubSubTopicIamMember` whose `member` references the config's `status.outputs.service_account_member`.
 
 ## Customize
 

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgcsbucketiammember.v1alpha1;
+
+// Outputs produced after applying a bucket-scoped IAM member grant. The grant
+// has no server-generated identity beyond its inputs; the outputs echo the
+// resolved grant so audits see exactly what was applied without re-resolving
+// references.
+message GcpGcsBucketIamMemberStackOutputs {
+  // The bucket whose IAM policy received the grant, after reference
+  // resolution.
+  string bucket = 1;
+
+  // The role that was granted, after reference resolution.
+  string role = 2;
+
+  // The member the role was granted to, in IAM member format, after
+  // reference resolution.
+  string member = 3;
+
+  // The etag of the bucket's IAM policy after this grant was applied -- a
+  // fingerprint of the policy version, useful for audit correlation.
+  string etag = 4;
+}

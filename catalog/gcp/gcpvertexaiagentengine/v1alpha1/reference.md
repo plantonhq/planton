@@ -104,14 +104,15 @@ spec:
 | `spec.spec.buildSpec` | `GcpVertexAiAgentEngineBuildSpec` |  |  |  |
 | `spec.spec.buildSpec.workerPool` | `string \| valueFrom` |  |  | GcpCloudBuildWorkerPool (`status.outputs.name`) |
 | `spec.spec.deploymentSpec` | `GcpVertexAiAgentEngineDeploymentSpec` |  |  |  |
-| `spec.spec.deploymentSpec.env` | `[]GcpVertexAiAgentEngineEnvVar` |  |  |  |
+| `spec.spec.deploymentSpec.env` | `[]GcpVertexAiAgentEngineEnvVar` (no secrets: use `secretEnv`) |  |  |  |
 | `spec.spec.deploymentSpec.env[].name` | `string` | yes |  |  |
 | `spec.spec.deploymentSpec.env[].value` | `string` | yes |  |  |
 | `spec.spec.deploymentSpec.secretEnv` | `[]GcpVertexAiAgentEngineSecretEnvVar` |  |  |  |
 | `spec.spec.deploymentSpec.secretEnv[].name` | `string` | yes |  |  |
-| `spec.spec.deploymentSpec.secretEnv[].secretRef` | `GcpVertexAiAgentEngineSecretRef` | yes |  |  |
+| `spec.spec.deploymentSpec.secretEnv[].secretRef` | `GcpVertexAiAgentEngineSecretRef` |  |  |  |
 | `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | `string \| valueFrom` | yes |  | GcpSecretManagerSecret (`status.outputs.secret_id`) |
 | `spec.spec.deploymentSpec.secretEnv[].secretRef.version` | `string` |  |  |  |
+| `spec.spec.deploymentSpec.secretEnv[].value` | `string` (sensitive) | yes |  |  |
 | `spec.spec.deploymentSpec.minInstances` | `int32` |  |  |  |
 | `spec.spec.deploymentSpec.maxInstances` | `int32` |  |  |  |
 | `spec.spec.deploymentSpec.containerConcurrency` | `int32` |  |  |  |
@@ -264,6 +265,7 @@ The agent: its code, identity, and deployment shape.
 
 - rule: container_spec and source_code_spec cannot both be set
 - rule: service_account must not be set when identity_type is AGENT_IDENTITY
+- rule: secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account
 
 ### spec.spec.agentFramework
 
@@ -551,10 +553,14 @@ Instances, resources, environment, secrets, networking, gateway.
 
 ### spec.spec.deploymentSpec.env
 
-`[]GcpVertexAiAgentEngineEnvVar`
+`[]GcpVertexAiAgentEngineEnvVar` · no secrets
 
-Literal environment variables.
+Literal environment variables, written into the agent where anyone who
+can view it reads them. Configuration only -- a credential goes in
+secret_env, as a value this component stores in Secret Manager or a
+secret you already own.
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretEnv`, which keeps it in a secret store the workload reads by reference
 ### spec.spec.deploymentSpec.env[].name
 
 `string` · required
@@ -567,7 +573,9 @@ Variable name.
 
 `string` · required
 
-Literal value. Never a credential -- use secret_env for those.
+Literal value, written into the agent where anyone who can view it
+reads it. Fine for configuration; never a credential -- a credential
+goes in deployment_spec.secret_env.
 
 - rule: {"required":true}
 
@@ -575,7 +583,9 @@ Literal value. Never a credential -- use secret_env for those.
 
 `[]GcpVertexAiAgentEngineSecretEnvVar`
 
-Environment variables filled from Secret Manager.
+Environment variables filled from Secret Manager at instance start:
+each from a secret you own (secret_ref) or from a value this
+component stores for you (value).
 
 ### spec.spec.deploymentSpec.secretEnv[].name
 
@@ -587,11 +597,10 @@ Variable name.
 
 ### spec.spec.deploymentSpec.secretEnv[].secretRef
 
-`GcpVertexAiAgentEngineSecretRef` · required
+`GcpVertexAiAgentEngineSecretRef`
 
-The secret version the value comes from.
-
-- rule: {"required":true}
+A Secret Manager secret version you already own. The agent's
+identity needs roles/secretmanager.secretAccessor on the secret.
 
 ### spec.spec.deploymentSpec.secretEnv[].secretRef.secret
 
@@ -611,6 +620,28 @@ The agent's identity needs roles/secretmanager.secretAccessor on it.
 
 The version to resolve: a version number or "latest" (Google's
 default when empty).
+
+### spec.spec.deploymentSpec.secretEnv[].value
+
+`string` · required · sensitive
+
+A secret value this component keeps in Secret Manager for you: on
+Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
+without the platform, the literal. The component creates one secret
+for this variable, replicated only in the agent's location, stores
+the value as a version, grants the agent's identity (spec.service_account,
+or the project's Vertex AI Reasoning Engine service agent
+service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+when unset) secretAccessor on that secret alone, and points the
+variable at that exact version -- the agent carries a reference,
+never the value. A changed value adds a version and redeploys the
+agent, so rotation is a deploy; destroying the agent removes the
+secret. The secret's id is
+agentengine_<location>_<metadata.name>_<variable> ('.' in the name
+becomes '-'). Not available with identity_type AGENT_IDENTITY (see
+the rule on GcpVertexAiAgentEngineSpecConfig).
+
+- rule: {"string":{"minLen":"1"}}
 
 ### spec.spec.deploymentSpec.minInstances
 

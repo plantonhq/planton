@@ -114,10 +114,11 @@ variable "spec" {
     # EXTERNAL_MANAGED / INTERNAL_SELF_MANAGED forwarding rules and to
     # regional proxies (a regional policy in the proxy's region); for Traffic
     # Director this is the ONLY TLS lever (ssl_certificates are ignored).
-    # Format: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
+    # The policy is made outside the catalog (in Network Security, with its
+    # trust config of CA anchors; no catalog kind produces it), so write its
+    # full name: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
     # If left blank, no server-side TLS policy applies. Mutable — and
     # clearable: removing it PATCHes the proxy back to no policy.
-    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     server_tls_policy = optional(string, "")
 
     # QUIC (HTTP/3) negotiation policy. NONE lets Google decide (currently

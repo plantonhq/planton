@@ -1,0 +1,31 @@
+# Consumer-scoped GcpLoggingSink install profile for the gcpgcsim
+# scenario: a project sink exporting to the bucket fixture. Its filter
+# names a log no workload writes, so nothing is ever exported; the sink
+# exists to mint the writer identity the scenario grants. The sink name
+# carries ${E2E_RUN_ID} so parallel engine runs never collide.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpLoggingSink
+metadata:
+  name: planton-oss-e2e-gcpgcsim-sink
+  id: planton-oss-e2e-gcpgcsim-sink
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcploggingsink
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  sinkName: planton-e2e-gcsim-${E2E_RUN_ID}
+  destination:
+    gcsBucket:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: planton-oss-e2e-gcpgcsim-bucket
+        fieldPath: status.outputs.bucket_id
+  filter: logName:"planton-e2e-no-such-log"
+  description: Planton E2E sink minting a writer identity for a bucket grant; exports nothing; safe to delete
+  uniqueWriterIdentity: true
+  deletionPolicy: DELETE

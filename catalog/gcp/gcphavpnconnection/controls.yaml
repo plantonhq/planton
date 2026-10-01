@@ -13,7 +13,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: The only secrets the connection holds -- each tunnel's IKE pre-shared key and any BGP MD5 key -- are spec fields marked sensitive; the Pulumi module stores them as Pulumi secrets (encrypted in state) and the Terraform module keeps only the shared_secret hash in state, as the provider does. Google holds the keys on its encrypted control plane.
+        reference: The only secrets the connection holds -- the IKE pre-shared keys and any BGP MD5 keys -- are spec fields marked sensitive or keys the modules generate when none is declared. The Pulumi module stores every key as a Pulumi secret (encrypted in state) and exports a generated key only as a secret; the Terraform module keeps only the tunnel's shared_secret hash on the tunnel, as the provider does, while a generated key lives in state as the random_password result and leaves only through a sensitive output. Google holds the keys on its encrypted control plane.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: The pre-shared keys are held by Google's Cloud VPN control plane with no customer-managed key option; the spec exposes no Cloud KMS surface.

@@ -32,4 +32,6 @@ spec:
           - compute.addresses.use
           - compute.addresses.get
         provenance: derived
-        notes: Required only when nat_ips assigns reserved GcpAddress reservations to the gateway -- attaching an address a resource does not own demands use on it. Not needed with auto-allocated addresses.
+        condition:
+          spec_field_set: nat_ips
+        notes: Assigning the reserved GcpAddress reservations nat_ips names to the gateway demands use on each -- attaching an address a resource does not own demands use on it.

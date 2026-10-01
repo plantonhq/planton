@@ -362,8 +362,8 @@ func zonalTemplateDisks(template *gcpcomputemigv1alpha1.GcpComputeMigTemplate) c
 		if disk.Boot {
 			diskArgs.Boot = pulumi.BoolPtr(true)
 		}
-		if disk.SourceImage != "" {
-			diskArgs.SourceImage = pulumi.StringPtr(disk.SourceImage)
+		if disk.SourceImage.GetValue() != "" {
+			diskArgs.SourceImage = pulumi.StringPtr(disk.SourceImage.GetValue())
 		}
 		if disk.SourceSnapshot != "" {
 			diskArgs.SourceSnapshot = pulumi.StringPtr(disk.SourceSnapshot)
@@ -470,8 +470,8 @@ func regionalTemplateDisks(template *gcpcomputemigv1alpha1.GcpComputeMigTemplate
 		if disk.Boot {
 			diskArgs.Boot = pulumi.BoolPtr(true)
 		}
-		if disk.SourceImage != "" {
-			diskArgs.SourceImage = pulumi.StringPtr(disk.SourceImage)
+		if disk.SourceImage.GetValue() != "" {
+			diskArgs.SourceImage = pulumi.StringPtr(disk.SourceImage.GetValue())
 		}
 		if disk.SourceSnapshot != "" {
 			diskArgs.SourceSnapshot = pulumi.StringPtr(disk.SourceSnapshot)

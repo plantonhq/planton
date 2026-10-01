@@ -6,7 +6,8 @@ spec:
   zone: us-central1-a # replace — must be inside the subnetwork's region
   machineType: e2-standard-2
   bootDisk:
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
     sizeGb: 20
     type: pd-balanced
   networkInterfaces:

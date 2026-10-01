@@ -20,8 +20,10 @@ resource "google_project_service" "logging_api" {
 # THE post-create step every sink needs: grant the writer_identity output
 # write access on the destination (roles/storage.objectCreator on a bucket,
 # roles/bigquery.dataEditor on a dataset, roles/pubsub.publisher on a
-# topic) — via the destination kind's iam_members — or the sink silently
-# exports nothing.
+# topic) — through a standalone grant (GcpGcsBucketIamMember,
+# GcpPubSubTopicIamMember) whose member references writer_identity, never
+# the destination's own IAM fields, which would form a cycle — or the sink
+# silently exports nothing.
 #
 # unique_writer_identity is sent EXPLICITLY on the project sink: it is
 # Optional in the provider with default true, and a spec transition

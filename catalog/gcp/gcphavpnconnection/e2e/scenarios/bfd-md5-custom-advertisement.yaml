@@ -1,6 +1,9 @@
 # GcpHaVpnConnection scenario exercising the BGP-session knobs the reference
-# manifest leaves at their defaults: BFD (ACTIVE, explicit intervals), an MD5
-# key per session, CUSTOM advertisement with a range, distinct route
+# manifest leaves at their defaults: BFD (ACTIVE, explicit intervals), MD5 on
+# one session with a named key-table entry and the connection's declared MD5
+# key (a declared key is used as given and never echoed back), the
+# pre-shared key read from the reverse fixture's generated output, CUSTOM
+# advertisement with a range, distinct route
 # priorities (active/passive), explicit IKE version, explicit peer address,
 # a cipher-suite restriction, tunnel labels and descriptions, and a named
 # session. Same Google-to-Google chain and fixtures as the reference manifest;
@@ -48,7 +51,6 @@ spec:
     - name: planton-oss-e2e-gcpvpncn-knobs-0
       description: Planton E2E tunnel with every knob; safe to delete
       vpnGatewayInterface: 0
-      sharedSecret: planton-e2e-psk-0-not-a-real-secret
       ikeVersion: 2
       cipherSuite:
         phase1:
@@ -88,12 +90,18 @@ spec:
           minTransmitInterval: 1000
           multiplier: 5
         md5AuthenticationKey:
-          key: planton-e2e-md5-not-a-real-key
+          name: planton-oss-e2e-gcpvpncn-knobs-s0-md5
     - name: planton-oss-e2e-gcpvpncn-knobs-1
       vpnGatewayInterface: 1
-      sharedSecret: planton-e2e-psk-1-not-a-real-secret
       bgpSession:
         interfaceIpRange: 169.254.101.1/30
         peerAsn: 64515
         advertisedRoutePriority: 200
+  sharedSecret:
+    valueFrom:
+      kind: GcpHaVpnConnection
+      name: planton-oss-e2e-gcpvpncn-spoke-to-hub
+      fieldPath: status.outputs.shared_secret
+  md5AuthenticationKey:
+    value: planton-e2e-md5-not-a-real-key
   deletionPolicy: DELETE

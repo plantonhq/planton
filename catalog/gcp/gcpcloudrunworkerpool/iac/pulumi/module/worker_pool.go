@@ -3,7 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	gcpcloudrunworkerpoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunworkerpool/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -41,7 +41,7 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 
 	// Secret values the env carries are stored in Secret Manager before the
 	// pool exists, and each instance reads them by reference.
-	storedSecrets, err := cloudrunenv.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
+	storedSecrets, err := envsecrets.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to store the environment's secret values")
 	}
@@ -169,7 +169,7 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 // pool template: containers, volumes, networking, hardware, encryption.
 func buildTemplate(
 	spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSpec,
-	secretRefs map[cloudrunenv.Key]cloudrunenv.Ref,
+	secretRefs map[envsecrets.Key]envsecrets.Ref,
 ) *cloudrunv2.WorkerPoolTemplateArgs {
 	template := &cloudrunv2.WorkerPoolTemplateArgs{
 		Containers: buildContainers(spec, secretRefs),
@@ -330,7 +330,7 @@ func buildTemplate(
 // sidecars sharing localhost and volumes, ordered by depends_on.
 func buildContainers(
 	spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSpec,
-	secretRefs map[cloudrunenv.Key]cloudrunenv.Ref,
+	secretRefs map[envsecrets.Key]envsecrets.Ref,
 ) cloudrunv2.WorkerPoolTemplateContainerArray {
 	containers := cloudrunv2.WorkerPoolTemplateContainerArray{}
 
@@ -363,7 +363,7 @@ func buildContainers(
 				}
 				// A literal, a Secret Manager secret the author owns, or a
 				// secret value this module stored (one of the three).
-				if ref, stored := secretRefs[cloudrunenv.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
+				if ref, stored := secretRefs[envsecrets.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
 					envArgs.ValueSource = &cloudrunv2.WorkerPoolTemplateContainerEnvValueSourceArgs{
 						SecretKeyRef: &cloudrunv2.WorkerPoolTemplateContainerEnvValueSourceSecretKeyRefArgs{
 							Secret:  ref.Secret,

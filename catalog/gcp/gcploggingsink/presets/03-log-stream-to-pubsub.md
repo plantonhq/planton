@@ -15,7 +15,8 @@ Pub/Sub topic in near real time, where Datadog/Splunk-class collectors
 ## The deploy's second half
 
 Grant the sink's `writer_identity` output `roles/pubsub.publisher` on
-the topic — through the topic's `iamMembers` in the same chart.
+the topic — through a `GcpPubSubTopicIamMember` in the same chart whose
+`member` references the sink's `status.outputs.writer_identity`.
 
 ## Adjust before deploying
 

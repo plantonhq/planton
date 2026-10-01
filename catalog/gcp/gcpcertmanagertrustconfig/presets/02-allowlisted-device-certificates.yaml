@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerTrustConfig
+metadata:
+  name: my-device-allowlist
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Individually accepted device certificates; no CA is trusted
+  # Each certificate is accepted on its own, even though it chains to no
+  # anchor. It must still parse, prove possession of its private key, and
+  # satisfy its SAN constraints.
+  allowlistedCertificates:
+    - |
+      -----BEGIN CERTIFICATE-----
+      <device-certificate-pem-body>
+      -----END CERTIFICATE-----

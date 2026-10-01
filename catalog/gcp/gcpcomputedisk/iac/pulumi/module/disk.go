@@ -69,8 +69,8 @@ func computeDisk(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	if spec.SizeGb > 0 {
 		args.Size = pulumi.IntPtr(int(spec.SizeGb))
 	}
-	if spec.Image != "" {
-		args.Image = pulumi.StringPtr(spec.Image)
+	if spec.Image.GetValue() != "" {
+		args.Image = pulumi.StringPtr(spec.Image.GetValue())
 	}
 	if spec.SourceSnapshot != "" {
 		args.Snapshot = pulumi.StringPtr(spec.SourceSnapshot)

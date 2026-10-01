@@ -236,7 +236,7 @@ spec:
 | `spec.nodeConfig.reservationAffinity.key` | `string` |  |  |  |
 | `spec.nodeConfig.reservationAffinity.values` | `[]string` |  |  |  |
 | `spec.nodeConfig.secondaryBootDisks` | `[]GcpGkeNodePoolSecondaryBootDisk` |  |  |  |
-| `spec.nodeConfig.secondaryBootDisks[].diskImage` | `string` | yes |  |  |
+| `spec.nodeConfig.secondaryBootDisks[].diskImage` | `string \| valueFrom` | yes |  | GcpComputeImage (`status.outputs.image_id`) |
 | `spec.nodeConfig.secondaryBootDisks[].mode` | `string` |  |  |  |
 | `spec.nodeConfig.kubeletConfig` | `GcpGkeNodePoolKubeletConfig` |  |  |  |
 | `spec.nodeConfig.kubeletConfig.cpuManagerPolicy` | `string` |  |  |  |
@@ -1252,12 +1252,19 @@ node — cold-start acceleration for very large images. Immutable.
 
 ### spec.nodeConfig.secondaryBootDisks[].diskImage
 
-`string` · required
+`string | valueFrom` · required
 
-Disk image to create the secondary boot disk from (a prepared image
-containing the container images/data to preload).
+Disk image to create the secondary boot disk from: a prepared image
+containing the container images or data to preload (the output of
+Google's gke-disk-image-builder, or any image built for the purpose).
+A GcpComputeImage reference (its image_id,
+projects/{project}/global/images/{name}) or a literal in a form Google
+documents: global/images/{name} (an image in the pool's project) or
+projects/{project}/global/images/{name}. Required. Immutable.
 
+- references: GcpComputeImage (`status.outputs.image_id`)
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeImage, name: <that resource's name>, fieldPath: status.outputs.image_id}} -- a bare string does not parse
 
 ### spec.nodeConfig.secondaryBootDisks[].mode
 
@@ -2356,6 +2363,7 @@ Fields that can point at another resource's outputs:
 | `spec.networkConfig.additionalPodNetworks[].subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_self_link` |
 | `spec.nodeConfig.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.nodeConfig.bootDiskKmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.nodeConfig.secondaryBootDisks[].diskImage` | GcpComputeImage | `status.outputs.image_id` |
 
 ## Referenced By
 

@@ -63,7 +63,7 @@ spec:
 | `spec.managed` | `GcpCertManagerCertManaged` |  |  |  |
 | `spec.managed.domains` | `[]string` | yes |  |  |
 | `spec.managed.dnsAuthorizations` | `[]string \| valueFrom` |  |  | GcpCertManagerDnsAuthorization (`status.outputs.authorization_id`) |
-| `spec.managed.issuanceConfig` | `string` |  |  |  |
+| `spec.managed.issuanceConfig` | `string \| valueFrom` |  |  | GcpCertManagerIssuanceConfig (`status.outputs.issuance_config_id`) |
 | `spec.selfManaged` | `GcpCertManagerCertSelfManaged` |  |  |  |
 | `spec.selfManaged.pemCertificate` | `string` | yes |  |  |
 | `spec.selfManaged.pemPrivateKey` | `string` (sensitive) | yes |  |  |
@@ -157,12 +157,19 @@ Omit (with no issuance_config) for load-balancer authorization.
 
 ### spec.managed.issuanceConfig
 
-`string`
+`string | valueFrom`
 
-Private-PKI issuance: the CertificateIssuanceConfig resource name
-(projects/*/locations/*/certificateIssuanceConfigs/*) that signs
-certificates from your own CA instead of a public one.
-Mutually exclusive with dns_authorizations.
+Private-PKI issuance: the certificate issuance config that has your own
+Certificate Authority Service pool sign this certificate instead of a
+public CA, by full name
+(projects/{project}/locations/{location}/certificateIssuanceConfigs/{name}).
+Reference a GcpCertManagerIssuanceConfig -- its `issuance_config_id`
+output is exactly this value, and the reference orders the certificate
+after the config. Mutually exclusive with dns_authorizations. Immutable.
+
+- references: GcpCertManagerIssuanceConfig (`status.outputs.issuance_config_id`)
+- rule: a literal issuance_config must be projects/{project}/locations/{location}/certificateIssuanceConfigs/{name}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpCertManagerIssuanceConfig, name: <that resource's name>, fieldPath: status.outputs.issuance_config_id}} -- a bare string does not parse
 
 ### spec.selfManaged
 
@@ -242,6 +249,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.managed.dnsAuthorizations` | GcpCertManagerDnsAuthorization | `status.outputs.authorization_id` |
+| `spec.managed.issuanceConfig` | GcpCertManagerIssuanceConfig | `status.outputs.issuance_config_id` |
 
 ## Referenced By
 

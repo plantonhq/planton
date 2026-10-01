@@ -1,6 +1,7 @@
 package gcphavpnconnectionv1alpha1
 
 import (
+	"strings"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -101,6 +102,29 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 
 	ginkgo.It("should accept two tunnels to a two-address on-premises device", func() {
 		gomega.Expect(validator.Validate(toOnprem())).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept tunnels and MD5 sessions that declare no keys, so the modules generate them", func() {
+		target := toGcp()
+		for _, t := range target.Spec.Tunnels {
+			t.SharedSecret = ""
+			t.BgpSession.Md5AuthenticationKey = &GcpHaVpnConnectionBgpMd5AuthenticationKey{}
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept connection-level keys as literals, as references to the peer connection, and beside per-tunnel overrides", func() {
+		target := toGcp()
+		target.Spec.Tunnels[1].SharedSecret = ""
+		target.Spec.Tunnels[1].BgpSession.Md5AuthenticationKey = &GcpHaVpnConnectionBgpMd5AuthenticationKey{Name: "to-spoke-1-md5"}
+		target.Spec.SharedSecret = litRef(strings.Repeat("k", 63))
+		target.Spec.Md5AuthenticationKey = litRef("Printable ASCII ~!@#$%^&*()_+ " + strings.Repeat("k", 50))
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+
+		target = toGcp()
+		target.Spec.SharedSecret = nameRef("spoke-to-hub")
+		target.Spec.Md5AuthenticationKey = nameRef("spoke-to-hub")
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should accept two tunnels to another Google Cloud gateway with the gateway trio by reference", func() {
@@ -277,12 +301,8 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		expectError(target, "must be a different /30")
 	})
 
-	ginkgo.It("should reject a tunnel without a secret, a session, or a valid name", func() {
+	ginkgo.It("should reject a tunnel without a session or a valid name", func() {
 		target := toGcp()
-		target.Spec.Tunnels[0].SharedSecret = ""
-		expectError(target, "shared_secret")
-
-		target = toGcp()
 		target.Spec.Tunnels[0].BgpSession = nil
 		expectError(target, "bgp_session")
 
@@ -343,12 +363,17 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		expectError(target, "vpn_gateway_interface")
 	})
 
-	ginkgo.It("should reject an MD5 key without material and malformed traffic selectors", func() {
+	ginkgo.It("should accept a managed-secret reference on the connection-level keys", func() {
+		// Sensitive fields carry no content rule: a platform secret reference
+		// resolves only at deploy, so the spec must accept it as written.
 		target := toGcp()
-		target.Spec.Tunnels[0].BgpSession.Md5AuthenticationKey = &GcpHaVpnConnectionBgpMd5AuthenticationKey{Name: "k"}
-		expectError(target, "key")
+		target.Spec.SharedSecret = litRef("$secret/@prod/vpn-psk")
+		target.Spec.Md5AuthenticationKey = litRef("$secret/@prod/vpn-md5")
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
 
-		target = toGcp()
+	ginkgo.It("should reject malformed traffic selectors", func() {
+		target := toGcp()
 		target.Spec.Tunnels[0].LocalTrafficSelector = []string{"10.0.0.0"}
 		expectError(target, "each traffic selector must be an IPv4 CIDR")
 	})

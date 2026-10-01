@@ -11,6 +11,13 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 8.3"
     }
+    # random mints the IKE pre-shared key and the BGP MD5 key when the spec
+    # declares none (a key the module can mint is never asked of the
+    # person). Twin: the Pulumi module's pulumi-random dependency.
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
+    }
   }
 }
 

@@ -68,13 +68,14 @@ locals {
   direct_vpc        = try(local.service_config.direct_vpc_network_interface, null)
   direct_vpc_egress = local.direct_vpc != null ? "VPC_EGRESS_${try(local.service_config.direct_vpc_egress, "") != "" ? local.service_config.direct_vpc_egress : "PRIVATE_RANGES_ONLY"}" : null
 
-  # A Secret Manager entry that omits its project needs a concrete project
-  # id in the API payload. Only when the function itself also rides the
-  # ambient project (spec.project_id empty) must the module LOOK UP that
-  # project — count-gating the data source keeps every explicitly-scoped
-  # plan credential-free.
+  # A Secret Manager entry naming a secret the author owns that omits its
+  # project needs a concrete project id in the API payload (a stored
+  # value's project comes from the secret secrets.tf created). Only when
+  # the function itself also rides the ambient project (spec.project_id
+  # empty) must the module LOOK UP that project — count-gating the data
+  # source keeps every explicitly-scoped plan credential-free.
   needs_project_lookup = local.project_id == null && local.service_config != null && (
-    length([for s in try(local.service_config.secret_environment_variables, []) : s if s.project_id == ""]) > 0 ||
+    length([for s in try(local.service_config.secret_environment_variables, []) : s if s.secret != "" && s.project_id == ""]) > 0 ||
     length([for v in try(local.service_config.secret_volumes, []) : v if v.project_id == ""]) > 0
   )
 

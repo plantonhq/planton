@@ -19,6 +19,10 @@ quietly over-privileged. Mint a dedicated GcpServiceAccount per workflow
 and grant it exactly the target services' invoke/read roles — the
 workflow is then an auditable principal like any other service.
 
+## Secrets are pointers, not values
+
+Cloud Workflows has no native secret injection, so never put a secret in `userEnvVars`. Put it in `secretEnvVars` instead. The module stores each value in its own Secret Manager secret and grants the workflow's service account `secretmanager.secretAccessor` on that secret alone. The workflow's environment variable then holds only the version's resource name (`projects/<p>/secrets/<id>/versions/<n>`). The source reads the value when it needs it, with `googleapis.secretmanager.v1.projects.secrets.versions.access` and `text.decode(base64.decode(...))`. Secrets need `region`. The grant goes to `serviceAccount`, which must then be an email, or to the default compute account when it is empty. The 20-variable limit counts both maps together.
+
 ## Execution history dies with the workflow
 
 Deleting a workflow deletes its execution history — there is no undelete

@@ -1,0 +1,34 @@
+# GcpCertManagerIssuanceConfig leaf scenario: a global issuance config
+# naming a consumer-scoped DevOps pool that holds an enabled self-signed
+# root. ECDSA keys, the 30-day maximum lifetime, renewal at 66% (inside the
+# 24-76 range). Location is left empty so the provider's "global" default
+# is proven. No certificate is issued.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerIssuanceConfig
+metadata:
+  name: planton-oss-e2e-gcpcmic-devops
+  id: planton-oss-e2e-gcpcmic-devops
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcertmanagerissuanceconfig
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpPrivateCaCertificateAuthority"
+  tags:
+    - planton-e2e
+spec:
+  issuanceConfigName: planton-e2e-cmic-${E2E_RUN_ID}
+  description: Planton E2E issuance config; safe to delete
+  caPool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: planton-oss-e2e-gcpcmic-pool
+      fieldPath: status.outputs.name
+  keyAlgorithm: ECDSA_P256
+  lifetime: 2592000s
+  rotationWindowPercentage: 66
+  labels:
+    e2e-arm: devops-pool
+  deletionPolicy: DELETE

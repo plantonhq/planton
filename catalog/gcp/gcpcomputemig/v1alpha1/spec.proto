@@ -503,17 +503,17 @@ message GcpComputeMigWorkloadIdentityConfig {
 message GcpComputeMigTemplateDisk {
   option (buf.validate.message).cel = {
     id: "disk_at_most_one_source"
-    expression: "(this.source_image != '' ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source) && (has(this.source.value) || has(this.source.value_from))) ? 1 : 0) <= 1"
+    expression: "((has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source) && (has(this.source.value) || has(this.source.value_from))) ? 1 : 0) <= 1"
     message: "a disk takes at most one source: source_image (fresh install), source_snapshot (restore), or source (attach an existing disk); leave all unset for a blank disk"
   };
   option (buf.validate.message).cel = {
     id: "boot_disk_requires_image_or_snapshot_or_source"
-    expression: "!this.boot || this.source_image != '' || this.source_snapshot != '' || (has(this.source) && (has(this.source.value) || has(this.source.value_from)))"
+    expression: "!this.boot || (has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from))) || this.source_snapshot != '' || (has(this.source) && (has(this.source.value) || has(this.source.value_from)))"
     message: "the boot disk needs an OS to boot from — set source_image (e.g. debian-cloud/debian-12), source_snapshot, or source"
   };
   option (buf.validate.message).cel = {
     id: "source_image_encryption_requires_image"
-    expression: "!has(this.source_image_encryption) || this.source_image != ''"
+    expression: "!has(this.source_image_encryption) || (has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from)))"
     message: "source_image_encryption is only valid together with source_image"
   };
   option (buf.validate.message).cel = {
@@ -526,11 +526,17 @@ message GcpComputeMigTemplateDisk {
   // Exactly one disk in the template must set this.
   bool boot = 1;
 
-  // Source image for a fresh disk on each VM. Accepts an image family
-  // ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64")
-  // or a specific image self link. Families resolve to the newest image
-  // at template creation.
-  string source_image = 2;
+  // Source image for a fresh disk on each VM: a GcpComputeImage reference
+  // (its self_link, pinning that exact build fleet-wide) or a literal
+  // Google accepts -- an image family short form
+  // ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a
+  // family path ("projects/{project}/global/images/family/{family}"), or a
+  // specific image's path or self link. Families resolve to the newest
+  // image at template creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef source_image = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeImage,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
 
   // Source snapshot each VM's disk is restored from (name or self
   // link).

@@ -7,6 +7,7 @@
 package gcphavpnconnectionv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -22,9 +23,9 @@ const (
 )
 
 // GcpHaVpnConnectionStackOutputs captures the identities of everything the
-// connection created. The tunnel lists are index-aligned with spec.tunnels
-// -- the one place a repeated output is right, because the tunnels are the
-// connection's own many.
+// connection created, and the keys the modules generated. The tunnel lists
+// are index-aligned with spec.tunnels -- the one place a repeated output
+// is right, because the tunnels are the connection's own many.
 type GcpHaVpnConnectionStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The self links of the tunnels, in spec order.
@@ -45,9 +46,23 @@ type GcpHaVpnConnectionStackOutputs struct {
 	// reference).
 	GatewaySelfLink string `protobuf:"bytes,6,opt,name=gateway_self_link,json=gatewaySelfLink,proto3" json:"gateway_self_link,omitempty"`
 	// The Cloud Router the sessions run on, by name (the resolved reference).
-	RouterName    string `protobuf:"bytes,7,opt,name=router_name,json=routerName,proto3" json:"router_name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	RouterName string `protobuf:"bytes,7,opt,name=router_name,json=routerName,proto3" json:"router_name,omitempty"`
+	// The IKE pre-shared key the modules generated, set ONLY when
+	// spec.shared_secret was left empty and at least one tunnel declares no
+	// key of its own; every such tunnel uses it. A declared key is never
+	// echoed back. The other side reads it from here: the peer
+	// GcpHaVpnConnection's spec.shared_secret references this output, or an
+	// operator configures an external device with it.
+	SharedSecret string `protobuf:"bytes,8,opt,name=shared_secret,json=sharedSecret,proto3" json:"shared_secret,omitempty"`
+	// The BGP MD5 key the modules generated, set ONLY when
+	// spec.md5_authentication_key was left empty and at least one session
+	// declares an md5_authentication_key block without its own key; every
+	// such session uses it. A declared key is never echoed back. The peer
+	// GcpHaVpnConnection's spec.md5_authentication_key references this
+	// output, or an operator configures an external device with it.
+	Md5AuthenticationKey string `protobuf:"bytes,9,opt,name=md5_authentication_key,json=md5AuthenticationKey,proto3" json:"md5_authentication_key,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *GcpHaVpnConnectionStackOutputs) Reset() {
@@ -129,11 +144,25 @@ func (x *GcpHaVpnConnectionStackOutputs) GetRouterName() string {
 	return ""
 }
 
+func (x *GcpHaVpnConnectionStackOutputs) GetSharedSecret() string {
+	if x != nil {
+		return x.SharedSecret
+	}
+	return ""
+}
+
+func (x *GcpHaVpnConnectionStackOutputs) GetMd5AuthenticationKey() string {
+	if x != nil {
+		return x.Md5AuthenticationKey
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcphavpnconnection/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcphavpnconnection.v1alpha1\"\xd5\x02\n" +
+	"5catalog/gcp/gcphavpnconnection/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcphavpnconnection.v1alpha1\x1a\x1cshared/options/options.proto\"\xbc\x03\n" +
 	"\x1eGcpHaVpnConnectionStackOutputs\x12*\n" +
 	"\x11tunnel_self_links\x18\x01 \x03(\tR\x0ftunnelSelfLinks\x12!\n" +
 	"\ftunnel_names\x18\x02 \x03(\tR\vtunnelNames\x124\n" +
@@ -142,7 +171,9 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x1aexternal_gateway_self_link\x18\x05 \x01(\tR\x17externalGatewaySelfLink\x12*\n" +
 	"\x11gateway_self_link\x18\x06 \x01(\tR\x0fgatewaySelfLink\x12\x1f\n" +
 	"\vrouter_name\x18\a \x01(\tR\n" +
-	"routerNameB\xf1\x02\n" +
+	"routerName\x12)\n" +
+	"\rshared_secret\x18\b \x01(\tB\x04\xa0\xa6\x1d\x01R\fsharedSecret\x12:\n" +
+	"\x16md5_authentication_key\x18\t \x01(\tB\x04\xa0\xa6\x1d\x01R\x14md5AuthenticationKeyB\xf1\x02\n" +
 	"/com.dev.planton.gcp.gcphavpnconnection.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcphavpnconnection/v1alpha1;gcphavpnconnectionv1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcphavpnconnection.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcphavpnconnection\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcphavpnconnection\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcphavpnconnection::V1alpha1b\x06proto3"
 
 var (

@@ -29,6 +29,7 @@ pulumi up --stack dev
 - `module/main.go` — provider setup and resource orchestration
 - `module/locals.go` — metadata-derived values and the label merge
 - `module/composer_environment.go` — API enablement + the environment resource with all configuration blocks
+- `module/env_secrets.go` — one Secret Manager secret, pinned version, and accessor grant per `secret_env_variables` entry; merges the version names into `env_variables`
 - `module/outputs.go` — stack output keys (must match `outputs.proto`)
 
 ## Outputs
@@ -43,4 +44,4 @@ pulumi up --stack dev
 
 ## Lifecycle Notes
 
-The immutables (ForceNew): `region`, `environment_name`, node networking (network, subnetwork, network attachment, IP allocation), the private environment configuration, `kms_key_name`, and `storage_bucket`. Workload sizing, environment size, resilience mode, software configuration, maintenance window, access control, retention, and labels update in place. The triggerer block sends `cpu`, `memory_gb`, and `count` unconditionally — the API requires all three when the block is present.
+The immutables (ForceNew): `region`, `environment_name`, node networking (network, subnetwork, network attachment, IP allocation), the private environment configuration, `kms_key_name`, and `storage_bucket`. Workload sizing, environment size, resilience mode, software configuration, maintenance window, access control, retention, and labels update in place. Each `secret_env_variables` entry gets its own Secret Manager secret (user-managed replication in `region`), a pinned version with `create_before_destroy`, and a `secretmanager.secretAccessor` grant on that secret alone to `node_config.service_account`, or to the default compute account when it is empty; the environment's env var holds the version's resource name and the environment depends on the grant. The triggerer block sends `cpu`, `memory_gb`, and `count` unconditionally — the API requires all three when the block is present.

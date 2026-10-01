@@ -63,7 +63,7 @@ func genericWebServiceArgs(service *gcpdialogflowcxagentv1alpha1.GcpDialogflowCx
 		RequestBody:                      optionalString(service.RequestBody),
 		ParameterMapping:                 optionalStringMap(service.ParameterMapping),
 		RequestHeaders:                   optionalStringMap(service.RequestHeaders),
-		SecretVersionForUsernamePassword: optionalString(service.SecretVersionForUsernamePassword),
+		SecretVersionForUsernamePassword: optionalString(service.SecretVersionForUsernamePassword.GetValue()),
 		ServiceAgentAuth:                 optionalString(service.ServiceAgentAuth),
 		AllowedCaCerts:                   optionalStringArray(service.AllowedCaCerts),
 	}
@@ -72,7 +72,7 @@ func genericWebServiceArgs(service *gcpdialogflowcxagentv1alpha1.GcpDialogflowCx
 		for _, header := range service.SecretVersionsForRequestHeaders {
 			headers = append(headers, &diagflow.CxWebhookGenericWebServiceSecretVersionsForRequestHeaderArgs{
 				Key:           pulumi.String(header.Key),
-				SecretVersion: pulumi.String(header.SecretVersion),
+				SecretVersion: pulumi.String(header.SecretVersion.GetValue()),
 			})
 		}
 		args.SecretVersionsForRequestHeaders = headers
@@ -83,7 +83,7 @@ func genericWebServiceArgs(service *gcpdialogflowcxagentv1alpha1.GcpDialogflowCx
 			TokenEndpoint:                pulumi.String(oauth.TokenEndpoint),
 			ClientSecret:                 optionalSecret(oauth.ClientSecret),
 			Scopes:                       optionalStringArray(oauth.Scopes),
-			SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret),
+			SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret.GetValue()),
 		}
 	}
 	// The spec lifts the block's one field.
@@ -105,7 +105,7 @@ func serviceDirectoryGenericWebServiceArgs(service *gcpdialogflowcxagentv1alpha1
 		RequestBody:                      optionalString(service.RequestBody),
 		ParameterMapping:                 optionalStringMap(service.ParameterMapping),
 		RequestHeaders:                   optionalStringMap(service.RequestHeaders),
-		SecretVersionForUsernamePassword: optionalString(service.SecretVersionForUsernamePassword),
+		SecretVersionForUsernamePassword: optionalString(service.SecretVersionForUsernamePassword.GetValue()),
 		ServiceAgentAuth:                 optionalString(service.ServiceAgentAuth),
 		AllowedCaCerts:                   optionalStringArray(service.AllowedCaCerts),
 	}
@@ -114,7 +114,7 @@ func serviceDirectoryGenericWebServiceArgs(service *gcpdialogflowcxagentv1alpha1
 		for _, header := range service.SecretVersionsForRequestHeaders {
 			headers = append(headers, &diagflow.CxWebhookServiceDirectoryGenericWebServiceSecretVersionsForRequestHeaderArgs{
 				Key:           pulumi.String(header.Key),
-				SecretVersion: pulumi.String(header.SecretVersion),
+				SecretVersion: pulumi.String(header.SecretVersion.GetValue()),
 			})
 		}
 		args.SecretVersionsForRequestHeaders = headers
@@ -125,7 +125,7 @@ func serviceDirectoryGenericWebServiceArgs(service *gcpdialogflowcxagentv1alpha1
 			TokenEndpoint:                pulumi.String(oauth.TokenEndpoint),
 			ClientSecret:                 optionalSecret(oauth.ClientSecret),
 			Scopes:                       optionalStringArray(oauth.Scopes),
-			SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret),
+			SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret.GetValue()),
 		}
 	}
 	if service.ServiceAccount.GetValue() != "" {

@@ -31,9 +31,7 @@ service agent. Name a `GcpServiceAccount` in `spec.serviceAccount` to run
 as a custom identity you grant roles to (the deploying principal needs
 `iam.serviceAccounts.actAs` on it). `identityType: AGENT_IDENTITY` gives
 the agent its own Agent Identity instead; `serviceAccount` must then be
-unset. Secrets never go in `env`; `secretEnv` injects Secret Manager
-versions at instance start, and the agent's identity needs
-`roles/secretmanager.secretAccessor` on each.
+unset. Secrets never go in `env`; `secretEnv` injects Secret Manager versions at instance start. A `secretEnv` entry either references a secret you manage with `secretRef`, and then granting the agent's identity `roles/secretmanager.secretAccessor` is yours, or carries a `value`. For a `value`, the module creates one secret per variable in `location`, stores the value as a pinned version, and grants the runtime identity access to that secret alone before the engine is created. That identity is `serviceAccount`, or the project's Reasoning Engine service agent when it is empty. A `value` cannot be combined with `identityType: AGENT_IDENTITY`: that identity exists only once the engine does, and the engine's instances read their secrets while it is being created, so there is nothing to grant to in time. Use `secretRef` and grant access yourself after the identity exists.
 
 ## How big it may grow
 

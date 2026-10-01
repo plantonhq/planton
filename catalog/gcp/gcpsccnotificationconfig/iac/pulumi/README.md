@@ -9,7 +9,7 @@ This directory contains the Pulumi implementation for a Security Command Center 
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and the resource function |
 | `module/locals.go` | Stack input holder |
 | `module/notification_config.go` | The scope switch, project resolution and API enablement, the resource, the outputs |
-| `module/outputs.go` | Output key constants (`name`, `service_account`) |
+| `module/outputs.go` | Output key constants (`name`, `service_account`, `service_account_member`) and `exportOutputs`, which composes `serviceAccount:` + the email |
 
 ## Send Posture (parity with Terraform)
 

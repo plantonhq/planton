@@ -22,8 +22,11 @@ variable "spec" {
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       project_id = optional(string, "")
 
-      # Folder sink: the folder ID (numeric, with or without the "folders/"
-      # prefix).
+      # Folder sink: the folder's numeric ID (with or without the "folders/"
+      # prefix) -- a literal, or a reference to a GcpFolder resource (its
+      # folder_id output). The sink lives in the folder and, with
+      # include_children, sees every project and folder beneath it.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       folder_id = optional(string, "")
 
       # Organization sink: the numeric organization ID.
@@ -44,7 +47,9 @@ variable "spec" {
       # Export to a Cloud Storage bucket (hourly batches of JSON files). The
       # bucket NAME — a literal or a reference to a GcpGcsBucket resource.
       # Rendered as storage.googleapis.com/{bucket}. Grant the sink's
-      # writer_identity roles/storage.objectCreator on the bucket.
+      # writer_identity roles/storage.objectCreator on the bucket with a
+      # GcpGcsBucketIamMember whose member references the writer_identity
+      # output.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       gcs_bucket = optional(string, "")
 
@@ -53,7 +58,10 @@ variable "spec" {
       # {p}/datasets/{d} — the GcpBigQueryDataset self_link output) or a bare
       # projects/{p}/datasets/{d} path; the module normalizes either into the
       # bigquery.googleapis.com/... destination URI. Grant the writer_identity
-      # roles/bigquery.dataEditor on the dataset. The reference is
+      # roles/bigquery.dataEditor on the dataset -- outside the catalog, or as
+      # a literal entry in the GcpBigQueryDataset's access list once the
+      # identity is known (a reference there would make the dataset depend on
+      # the sink that depends on it). The reference is
       # containment-exempt: the sink EXPORTS INTO the dataset, it does not live
       # inside it (the sink's home is its scope).
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
@@ -69,7 +77,9 @@ variable "spec" {
       # log pipelines). The full topic path projects/{p}/topics/{t} — a literal
       # or a reference to a GcpPubSubTopic resource (its topic_id output).
       # Rendered as pubsub.googleapis.com/projects/{p}/topics/{t}. Grant the
-      # writer_identity roles/pubsub.publisher on the topic.
+      # writer_identity roles/pubsub.publisher on the topic with a
+      # GcpPubSubTopicIamMember whose member references the writer_identity
+      # output.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       pubsub_topic = optional(string, "")
 

@@ -61,4 +61,6 @@ spec:
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
+        condition:
+          spec_field_set: service_account.email
         notes: Required only when service_account.email attaches an identity to the VM (the 02-hardened-web-server preset does) -- GCP demands actAs on that account before provisioning a VM running as it. Not needed when the block is omitted.

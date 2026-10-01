@@ -655,20 +655,26 @@ func (x *GcpHaVpnConnectionBgpBfd) GetMultiplier() int32 {
 	return 0
 }
 
-// GcpHaVpnConnectionBgpMd5AuthenticationKey authenticates the BGP session
-// with a shared MD5 key both routers know. The key is stored on the Cloud
-// Router's key table under `name` and attached to this session; Google
-// requires each key to be used by exactly one session, so every session
-// that wants MD5 declares its own key.
+// GcpHaVpnConnectionBgpMd5AuthenticationKey turns on MD5 authentication of
+// the BGP session: declaring the block (even empty) enables MD5 on this
+// session; omitting it leaves the session unauthenticated. The key is
+// stored in the Cloud Router's key table under `name` and attached to this
+// session. Google requires each key-table entry to be used by exactly one
+// session, so every session gets its own entry -- the key MATERIAL may be
+// the same across sessions, which is what the connection-level key does.
 type GcpHaVpnConnectionBgpMd5AuthenticationKey struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Name of the key. RFC 1035, 1-63 characters. Defaults to the tunnel's
-	// name with a `-md5` suffix when empty.
+	// Name of the key-table entry. RFC 1035, 1-63 characters; unique on the
+	// router. Defaults to the tunnel's name with a `-md5` suffix when empty.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The key material -- the same string configured on the peer router.
-	// Sensitive: never logged or exported. No content rule, because sensitive
-	// fields hold a managed-secret reference on consuming platforms and a
-	// content-shape rule would reject every reference.
+	// This session's own key material, the same string configured on the
+	// peer router's matching session -- a per-session override. Leave empty
+	// to use the connection's md5_authentication_key, or the key the modules
+	// generate when that is empty too. Google accepts up to 80 printable
+	// ASCII characters. Sensitive: never logged or exported. No content
+	// rule, because sensitive fields hold a managed-secret reference on
+	// consuming platforms and a content-shape rule would reject every
+	// reference.
 	Key           string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -820,10 +826,13 @@ type GcpHaVpnConnectionBgpSession struct {
 	// BFD for fast failure detection on this session. Leave unset to rely
 	// on BGP keepalives alone.
 	Bfd *GcpHaVpnConnectionBgpBfd `protobuf:"bytes,19,opt,name=bfd,proto3" json:"bfd,omitempty"`
-	// MD5 authentication of the BGP session. Leave unset for an
-	// unauthenticated session (the tunnel's IPsec already protects the
-	// control traffic; MD5 defends against a misconfigured peer, not an
-	// attacker).
+	// MD5 authentication of the BGP session. Declare the block (an empty
+	// block is enough) to enable MD5; the key is the block's own key, else
+	// the connection's md5_authentication_key, else the one the modules
+	// generate. Leave unset for an unauthenticated session (the tunnel's
+	// IPsec already protects the control traffic; MD5 defends against a
+	// misconfigured peer, not an attacker). Both ends of a session must
+	// agree: MD5 on one side only keeps the session down.
 	Md5AuthenticationKey *GcpHaVpnConnectionBgpMd5AuthenticationKey `protobuf:"bytes,20,opt,name=md5_authentication_key,json=md5AuthenticationKey,proto3" json:"md5_authentication_key,omitempty"`
 	// Names of route policies (ROUTE_POLICY_TYPE_IMPORT) on the router,
 	// applied to routes learned from this peer in order. Route policies are
@@ -1028,7 +1037,8 @@ func (x *GcpHaVpnConnectionBgpSession) GetExportPolicies() []string {
 // inside it. Every field except labels is IMMUTABLE: a new pre-shared key,
 // cipher set, or interface pairing recreates the tunnel and drops its
 // traffic for the duration, so rotate a secret by adding a tunnel with the
-// new key and removing the old one, never by editing in place.
+// new key (its own shared_secret) and removing the old one, never by
+// editing in place.
 type GcpHaVpnConnectionTunnel struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the tunnel in GCP. Required; unique in the region. 1-63
@@ -1043,12 +1053,15 @@ type GcpHaVpnConnectionTunnel struct {
 	// device; leave empty when the peer is a Google Cloud gateway (Google
 	// pairs interfaces itself). Sent only when set. Immutable.
 	PeerExternalGatewayInterface *int32 `protobuf:"varint,3,opt,name=peer_external_gateway_interface,json=peerExternalGatewayInterface,proto3,oneof" json:"peer_external_gateway_interface,omitempty"`
-	// The IKE pre-shared key both ends authenticate with. Sensitive: never
-	// logged or exported; in Terraform state only its hash is kept. No
-	// content rule, because sensitive fields hold a managed-secret reference
-	// on consuming platforms and a content-shape rule would reject every
-	// reference. Google accepts 1-63 printable characters. Immutable: a
-	// rotation recreates the tunnel.
+	// This tunnel's own IKE pre-shared key -- a per-tunnel override for a
+	// device configured with a different key on each tunnel. Leave empty to
+	// use the connection's shared_secret, or the key the modules generate
+	// when that is empty too. Google accepts 1-63 printable characters.
+	// Sensitive: never logged or exported; in Terraform state only its hash
+	// is kept. No content rule, because sensitive fields hold a
+	// managed-secret reference on consuming platforms and a content-shape
+	// rule would reject every reference. Immutable: a rotation recreates the
+	// tunnel.
 	SharedSecret string `protobuf:"bytes,4,opt,name=shared_secret,json=sharedSecret,proto3" json:"shared_secret,omitempty"`
 	// IKE protocol version: 1 or 2. 2 when empty (Google's default and the
 	// only version that supports IPv6, BFD-friendly rekeying, and modern
@@ -1203,6 +1216,13 @@ func (x *GcpHaVpnConnectionTunnel) GetDescription() string {
 // peer is an external device -- the external VPN gateway resource that
 // holds its addresses. Nothing here has a life apart from the connection.
 //
+// Keys: the IKE pre-shared key and the BGP MD5 key are never required.
+// Each tunnel (session) uses its own key, else the connection-level
+// shared_secret (md5_authentication_key), else one key the modules
+// generate and report as a sensitive output. Between two Google Cloud
+// gateways exactly one side generates and the other references its
+// outputs.
+//
 // Cost: Google bills each tunnel per hour while it exists (a two-tunnel
 // connection is two tunnel-hours per hour) plus the traffic that leaves
 // Google through the tunnels at internet egress rates. Tunnels bill from
@@ -1232,6 +1252,41 @@ type GcpHaVpnConnectionSpec struct {
 	// The tunnels, one to four, each with its BGP session. Two -- one per
 	// gateway interface -- is the recommended HA shape.
 	Tunnels []*GcpHaVpnConnectionTunnel `protobuf:"bytes,6,rep,name=tunnels,proto3" json:"tunnels,omitempty"`
+	// The IKE pre-shared key every tunnel uses unless it declares its own
+	// tunnels[].shared_secret. Leave it empty and the modules GENERATE one
+	// key (32 letters and digits) for every tunnel that declares none, and
+	// report it in the shared_secret output; a declared key is used as given
+	// and never echoed back. One key for all tunnels is Google's own shape
+	// for HA VPN.
+	//
+	// In a Google-to-Google pair EXACTLY ONE side generates: deploy that
+	// side first with this field empty, and point the other side's field at
+	// its output (a GcpHaVpnConnection reference to
+	// status.outputs.shared_secret). If both sides leave it empty, each
+	// generates its own key and the tunnels never come up. For an external
+	// peer, read the generated key from the shared_secret output and
+	// configure the device with it, or declare the device's key here.
+	//
+	// Google accepts 1-63 printable characters. Immutable: a change
+	// recreates every tunnel that uses it.
+	SharedSecret *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=shared_secret,json=sharedSecret,proto3" json:"shared_secret,omitempty"`
+	// The BGP MD5 key every session that declares a
+	// bgp_session.md5_authentication_key block uses unless the block carries
+	// its own key. Setting this alone enables nothing: MD5 is on exactly for
+	// the sessions that declare the block. Leave it empty and the modules
+	// GENERATE one key (24 letters and digits -- short enough for devices
+	// that cap BGP passwords at 25 characters) for every such session
+	// without its own key, and report it in the md5_authentication_key
+	// output; a declared key is used as given and never echoed back.
+	//
+	// The Google-to-Google rule is the same as shared_secret's: exactly one
+	// side generates and the other points this field at its output
+	// (status.outputs.md5_authentication_key); both sides empty means two
+	// different keys and sessions that never establish.
+	//
+	// Google accepts up to 80 printable ASCII characters. Mutable: a change
+	// re-keys every session that uses it.
+	Md5AuthenticationKey *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=md5_authentication_key,json=md5AuthenticationKey,proto3" json:"md5_authentication_key,omitempty"`
 	// Resource Manager tags bound to every tunnel (and the external gateway,
 	// when created) for org-policy and IAM conditions. Keys `tagKeys/{id}`,
 	// values `tagValues/{id}`. Create-time only: a change replaces the
@@ -1321,6 +1376,20 @@ func (x *GcpHaVpnConnectionSpec) GetTunnels() []*GcpHaVpnConnectionTunnel {
 	return nil
 }
 
+func (x *GcpHaVpnConnectionSpec) GetSharedSecret() *v1.StringValueOrRef {
+	if x != nil {
+		return x.SharedSecret
+	}
+	return nil
+}
+
+func (x *GcpHaVpnConnectionSpec) GetMd5AuthenticationKey() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Md5AuthenticationKey
+	}
+	return nil
+}
+
 func (x *GcpHaVpnConnectionSpec) GetResourceManagerTags() map[string]string {
 	if x != nil {
 		return x.ResourceManagerTags
@@ -1402,11 +1471,11 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"multiplier\x18\x04 \x01(\x05Bi\xbaHf\xba\x01c\n" +
 	"\x14bfd_multiplier_range\x12#multiplier must be between 5 and 16\x1a&this == 0 || (this >= 5 && this <= 16)R\n" +
-	"multiplier\"\xc5\x02\n" +
+	"multiplier\"\xbe\x02\n" +
 	")GcpHaVpnConnectionBgpMd5AuthenticationKey\x12\xf8\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xe3\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
-	"\x12valid_md5_key_name\x12\x83\x01md5 key name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x04name\x12\x1d\n" +
-	"\x03key\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\x03key\"\xde\x1b\n" +
+	"\x12valid_md5_key_name\x12\x83\x01md5 key name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x04name\x12\x16\n" +
+	"\x03key\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x03key\"\xde\x1b\n" +
 	"\x1cGcpHaVpnConnectionBgpSession\x12\xf8\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xe3\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
 	"\x12valid_session_name\x12\x83\x01session name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x04name\x12\x8a\x02\n" +
@@ -1456,12 +1525,12 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1a_peer_ipv6_nexthop_addressB\x17\n" +
 	"\x15_ipv4_nexthop_addressB\x1c\n" +
 	"\x1a_peer_ipv4_nexthop_addressB \n" +
-	"\x1e_custom_learned_route_priority\"\xff\b\n" +
+	"\x1e_custom_learned_route_priority\"\xf8\b\n" +
 	"\x18GcpHaVpnConnectionTunnel\x12?\n" +
 	"\x04name\x18\x01 \x01(\tB+\xbaH(\xc8\x01\x01r#2!^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$R\x04name\x12=\n" +
 	"\x15vpn_gateway_interface\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x01(\x00R\x13vpnGatewayInterface\x12U\n" +
-	"\x1fpeer_external_gateway_interface\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x03(\x00H\x00R\x1cpeerExternalGatewayInterface\x88\x01\x01\x120\n" +
-	"\rshared_secret\x18\x04 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\fsharedSecret\x124\n" +
+	"\x1fpeer_external_gateway_interface\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x03(\x00H\x00R\x1cpeerExternalGatewayInterface\x88\x01\x01\x12)\n" +
+	"\rshared_secret\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\fsharedSecret\x124\n" +
 	"\vike_version\x18\x05 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\x02(\x01\x8a\xa6\x1d\x012H\x01R\n" +
 	"ikeVersion\x88\x01\x01\x12\x9e\x01\n" +
 	"\x16local_traffic_selector\x18\x06 \x03(\tBh\xbaHe\x92\x01b\"`\xba\x01]\n" +
@@ -1480,7 +1549,7 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\"\n" +
 	" _peer_external_gateway_interfaceB\x0e\n" +
-	"\f_ike_version\"\x88\x11\n" +
+	"\f_ike_version\"\xac\x13\n" +
 	"\x16GcpHaVpnConnectionSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12}\n" +
@@ -1489,7 +1558,10 @@ const file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_rawDesc = "" +
 	"\x06region\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xef\x18\x92\xd4a\x15status.outputs.regionR\x06region\x12_\n" +
 	"\x04peer\x18\x05 \x01(\v2C.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionPeerB\x06\xbaH\x03\xc8\x01\x01R\x04peer\x12k\n" +
 	"\atunnels\x18\x06 \x03(\v2E.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnelB\n" +
-	"\xbaH\a\x92\x01\x04\b\x01\x10\x04R\atunnels\x12\x90\x01\n" +
+	"\xbaH\a\x92\x01\x04\b\x01\x10\x04R\atunnels\x12\x82\x01\n" +
+	"\rshared_secret\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xa0\xa6\x1d\x01\x88\xd4a\xf4\x18\x92\xd4a\x1cstatus.outputs.shared_secretR\fsharedSecret\x12\x9c\x01\n" +
+	"\x16md5_authentication_key\x18\n" +
+	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xa0\xa6\x1d\x01\x88\xd4a\xf4\x18\x92\xd4a%status.outputs.md5_authentication_keyR\x14md5AuthenticationKey\x12\x90\x01\n" +
 	"\x15resource_manager_tags\x18\a \x03(\v2\\.dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.ResourceManagerTagsEntryR\x13resourceManagerTags\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\b \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1aF\n" +
@@ -1554,12 +1626,14 @@ var file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_depIdxs = []int32{
 	16, // 16: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.region:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	2,  // 17: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.peer:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionPeer
 	11, // 18: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.tunnels:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionTunnel
-	15, // 19: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.ResourceManagerTagsEntry
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	16, // 19: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.shared_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 20: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.md5_authentication_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 21: dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.ResourceManagerTagsEntry
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcphavpnconnection_v1alpha1_spec_proto_init() }

@@ -152,8 +152,12 @@ variable "spec" {
       # Immutable after creation.
       server_ca_mode = optional(string, "")
 
-      # The CA Service CA pool (full resource path) that signs the server
-      # certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
+      # The CA Service CA pool that signs the server certificate when
+      # server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a GcpPrivateCaPool
+      # reference (its full name) or a literal
+      # projects/{project}/locations/{region}/caPools/{pool}. The pool must be
+      # in the instance's region.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       server_ca_pool = optional(string, "")
 
       # Additional DNS names embedded in the server certificate (customer-

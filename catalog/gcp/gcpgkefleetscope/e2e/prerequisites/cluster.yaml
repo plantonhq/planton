@@ -30,5 +30,6 @@ spec:
       kind: GcpSubnetwork
       name: planton-oss-e2e-gcpflsc-subnet
       fieldPath: status.outputs.subnetwork_self_link
-  fleetProject: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  fleetProject:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
   deletionProtection: false

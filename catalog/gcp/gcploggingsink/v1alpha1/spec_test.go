@@ -22,6 +22,12 @@ func litRef(v string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
+func nameRef(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{
+		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Name: v}},
+	}
+}
+
 var _ = ginkgo.Describe("GcpLoggingSinkSpec", func() {
 	var validator protovalidate.Validator
 
@@ -87,7 +93,15 @@ var _ = ginkgo.Describe("GcpLoggingSinkSpec", func() {
 
 	ginkgo.It("should accept a folder sink with children flags", func() {
 		target := minimal()
-		target.Spec.Scope = &GcpLoggingSinkScope{FolderId: "123456789"}
+		target.Spec.Scope = &GcpLoggingSinkScope{FolderId: litRef("123456789")}
+		target.Spec.IncludeChildren = true
+		target.Spec.InterceptChildren = true
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept a folder sink whose folder is a GcpFolder reference, with children flags", func() {
+		target := minimal()
+		target.Spec.Scope = &GcpLoggingSinkScope{FolderId: nameRef("security-folder")}
 		target.Spec.IncludeChildren = true
 		target.Spec.InterceptChildren = true
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
@@ -167,10 +181,24 @@ var _ = ginkgo.Describe("GcpLoggingSinkSpec", func() {
 	ginkgo.It("should reject two scopes at once", func() {
 		target := minimal()
 		target.Spec.Scope = &GcpLoggingSinkScope{
-			FolderId:       "123",
+			FolderId:       litRef("123"),
 			OrganizationId: "456",
 		}
 		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
+
+		target = minimal()
+		target.Spec.Scope = &GcpLoggingSinkScope{
+			ProjectId: litRef("my-project"),
+			FolderId:  nameRef("security-folder"),
+		}
+		gomega.Expect(validator.Validate(target).Error()).To(gomega.ContainSubstring("set at most one of project_id, folder_id"))
+	})
+
+	ginkgo.It("should reject children flags on a project scope given by reference", func() {
+		target := minimal()
+		target.Spec.Scope = &GcpLoggingSinkScope{ProjectId: nameRef("app-project")}
+		target.Spec.IncludeChildren = true
+		gomega.Expect(validator.Validate(target).Error()).To(gomega.ContainSubstring("include_children and intercept_children apply only to folder or organization scoped sinks"))
 	})
 
 	ginkgo.It("should reject children flags on project and billing scopes", func() {
@@ -186,10 +214,15 @@ var _ = ginkgo.Describe("GcpLoggingSinkSpec", func() {
 
 	ginkgo.It("should reject writer identity controls on non-project scopes", func() {
 		folder := minimal()
-		folder.Spec.Scope = &GcpLoggingSinkScope{FolderId: "123"}
+		folder.Spec.Scope = &GcpLoggingSinkScope{FolderId: litRef("123")}
 		uw := false
 		folder.Spec.UniqueWriterIdentity = &uw
 		gomega.Expect(validator.Validate(folder)).ToNot(gomega.Succeed())
+
+		folderRef := minimal()
+		folderRef.Spec.Scope = &GcpLoggingSinkScope{FolderId: nameRef("security-folder")}
+		folderRef.Spec.CustomWriterIdentity = "writer@p.iam.gserviceaccount.com"
+		gomega.Expect(validator.Validate(folderRef).Error()).To(gomega.ContainSubstring("apply only to project-scoped sinks"))
 
 		org := minimal()
 		org.Spec.Scope = &GcpLoggingSinkScope{OrganizationId: "456"}

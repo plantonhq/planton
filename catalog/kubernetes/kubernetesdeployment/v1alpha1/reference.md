@@ -1695,6 +1695,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -1710,6 +1711,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -1718,6 +1720,8 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
 - `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
@@ -2692,6 +2696,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -2707,6 +2712,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -2715,6 +2721,8 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
 - `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
@@ -4885,6 +4893,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -4900,6 +4909,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -4908,6 +4918,8 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
 - `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
@@ -5882,6 +5894,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -5897,6 +5910,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -5905,6 +5919,8 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
 - `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
@@ -8194,6 +8210,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -8209,6 +8226,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -8217,6 +8235,8 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
 - `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
@@ -9191,6 +9211,7 @@ Allowed values (use exactly as shown):
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -9206,6 +9227,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -9214,6 +9236,8 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
 - `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.

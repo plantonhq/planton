@@ -33,7 +33,9 @@ spec:
           - compute.regionSecurityPolicies.update
           - compute.regionSecurityPolicies.delete
         provenance: derived
-        notes: Covers google_compute_region_security_policy (Terraform) / compute.RegionSecurityPolicy (Pulumi), built instead of the global policy when spec.region is set -- create, read/refresh, in-place updates (the rules list, user_defined_fields, ddos_protection_config, advanced_options_config), and destroy under deletion_policy DELETE. The regional collection has no labels, so no setLabels permission applies.
+        condition:
+          spec_field_set: region
+        notes: Covers google_compute_region_security_policy (Terraform) / compute.RegionSecurityPolicy (Pulumi), built instead of the global policy when region is set -- create, read/refresh, in-place updates (the rules list, user_defined_fields, ddos_protection_config, advanced_options_config), and destroy under deletion_policy DELETE. The regional collection has no labels, so no setLabels permission applies.
       - purpose: ManageNetworkEdgeSecurityService
         permissions:
           - compute.networkEdgeSecurityServices.create
@@ -41,4 +43,6 @@ spec:
           - compute.networkEdgeSecurityServices.update
           - compute.networkEdgeSecurityServices.delete
         provenance: derived
-        notes: Covers google_compute_network_edge_security_service (Terraform) / compute.NetworkEdgeSecurityService (Pulumi), created only when a regional CLOUD_ARMOR_NETWORK policy declares spec.network_edge_security_service -- the region's enrollment in advanced network DDoS protection with this policy attached.
+        condition:
+          spec_field_set: network_edge_security_service
+        notes: Covers google_compute_network_edge_security_service (Terraform) / compute.NetworkEdgeSecurityService (Pulumi), created when a regional CLOUD_ARMOR_NETWORK policy declares network_edge_security_service -- the region's enrollment in advanced network DDoS protection with this policy attached.

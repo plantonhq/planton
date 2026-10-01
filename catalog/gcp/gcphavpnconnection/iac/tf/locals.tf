@@ -26,11 +26,29 @@ locals {
   # Empty defers to the provider default (DELETE); applied to every companion.
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 
+  # Keys are never required. A tunnel uses its own shared_secret, else the
+  # connection's, else ONE key minted for every tunnel that declares none
+  # (Google's HA VPN shape: one key for all tunnels). The same rule holds for
+  # the MD5 key of every session that declares an md5_authentication_key
+  # block. A key is minted exactly when the connection declares none and at
+  # least one tunnel (session) leaves its own empty. Identical predicates in
+  # the Pulumi module's locals.go.
+  generate_shared_secret = var.spec.shared_secret == "" && anytrue([
+    for t in var.spec.tunnels : t.shared_secret == ""
+  ])
+  generate_md5_authentication_key = var.spec.md5_authentication_key == "" && anytrue([
+    for t in var.spec.tunnels : try(t.bgp_session.md5_authentication_key.key == "", false)
+  ])
+
+  connection_shared_secret          = local.generate_shared_secret ? random_password.shared_secret[0].result : var.spec.shared_secret
+  connection_md5_authentication_key = local.generate_md5_authentication_key ? random_password.md5_authentication_key[0].result : var.spec.md5_authentication_key
+
   # Tunnels keyed by name so a tunnel added or removed in the middle of the
   # list never renumbers (and so recreates) its neighbours. Each entry
-  # carries the derived session and MD5 key names both engines share: the
-  # session (router interface and BGP peer) is bgp_session.name or the
-  # tunnel's name; the MD5 key is its declared name or `<tunnel>-md5`.
+  # carries the derivations both engines share: the session (router
+  # interface and BGP peer) is bgp_session.name or the tunnel's name; the
+  # MD5 key is its declared name or `<tunnel>-md5`; the effective keys
+  # follow the own-else-connection-else-minted rule above.
   tunnels = {
     for t in var.spec.tunnels : t.name => merge(t, {
       session_name = t.bgp_session.name != "" ? t.bgp_session.name : t.name
@@ -38,6 +56,12 @@ locals {
         t.bgp_session.md5_authentication_key != null
         ? (t.bgp_session.md5_authentication_key.name != "" ? t.bgp_session.md5_authentication_key.name : "${t.name}-md5")
         : ""
+      )
+      shared_secret = t.shared_secret != "" ? t.shared_secret : local.connection_shared_secret
+      md5_key = (
+        t.bgp_session.md5_authentication_key != null
+        ? (t.bgp_session.md5_authentication_key.key != "" ? t.bgp_session.md5_authentication_key.key : local.connection_md5_authentication_key)
+        : null
       )
       # Always sent: the provider defaults, made explicit so the spec is the
       # single source of truth (ike_version 2; enable true).

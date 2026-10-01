@@ -112,5 +112,7 @@ exactly the risk it is.
   Engine default everywhere it matters.
 - `GcpKmsKey` — CMEK for boot disks (and local-SSD ephemeral-key
   encryption for data that must die with the node).
+- `GcpComputeImage` — the preloaded-data image a secondary boot disk
+  starts from (`secondaryBootDisks[].diskImage`, its `image_id`).
 - `GcpGkeWorkloadIdentityBinding` — workload identity for the pods this
   pool runs; pair with `workloadMetadataMode: GKE_METADATA`.

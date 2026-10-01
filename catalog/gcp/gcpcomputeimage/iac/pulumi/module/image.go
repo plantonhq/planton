@@ -140,6 +140,9 @@ func image(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error
 		return *family
 	}).(pulumi.StringOutput))
 	ctx.Export(OpDiskSizeGb, created.DiskSizeGb)
+	// The provider's resource ID is projects/{project}/global/images/{name},
+	// the same string the Terraform module exports from the resource's id.
+	ctx.Export(OpImageId, created.ID().ToStringOutput())
 	return nil
 }
 

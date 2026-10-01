@@ -1,0 +1,23 @@
+# Consumer-scoped GcpPubSubTopic install profile for the gcppstim
+# scenarios: the topic the grants land on and, in sink-publisher, the
+# sink's destination. Nothing real publishes to it. The cloud-side topic
+# name carries ${E2E_RUN_ID}; metadata.name stays fixed for reference
+# resolution.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopic
+metadata:
+  name: planton-oss-e2e-gcppstim-topic
+  id: planton-oss-e2e-gcppstim-topic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcppubsubtopic
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  topicName: e2e-pstim-${E2E_RUN_ID}
+  messageRetentionDuration: "3600s"
+  deletionPolicy: DELETE

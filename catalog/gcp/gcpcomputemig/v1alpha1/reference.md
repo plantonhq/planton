@@ -52,7 +52,8 @@ spec:
     machineType: e2-micro
     disks:
       - boot: true
-        sourceImage: debian-cloud/debian-12
+        sourceImage:
+          value: debian-cloud/debian-12
     networkInterfaces:
       # Private fleet on the E2E VPC fixture (auto-mode, so the bare
       # network reference is a sufficient attachment point). No
@@ -97,7 +98,7 @@ spec:
 | `spec.template.instanceDescription` | `string` |  |  |  |
 | `spec.template.disks` | `[]GcpComputeMigTemplateDisk` | yes |  |  |
 | `spec.template.disks[].boot` | `bool` |  |  |  |
-| `spec.template.disks[].sourceImage` | `string` |  |  |  |
+| `spec.template.disks[].sourceImage` | `string \| valueFrom` |  |  | GcpComputeImage (`status.outputs.self_link`) |
 | `spec.template.disks[].sourceSnapshot` | `string` |  |  |  |
 | `spec.template.disks[].source` | `string \| valueFrom` |  |  | GcpComputeDisk (`status.outputs.self_link`) |
 | `spec.template.disks[].sizeGb` | `int32` |  |  |  |
@@ -450,12 +451,18 @@ Exactly one disk in the template must set this.
 
 ### spec.template.disks[].sourceImage
 
-`string`
+`string | valueFrom`
 
-Source image for a fresh disk on each VM. Accepts an image family
-("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64")
-or a specific image self link. Families resolve to the newest image
-at template creation.
+Source image for a fresh disk on each VM: a GcpComputeImage reference
+(its self_link, pinning that exact build fleet-wide) or a literal
+Google accepts -- an image family short form
+("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a
+family path ("projects/{project}/global/images/family/{family}"), or a
+specific image's path or self link. Families resolve to the newest
+image at template creation.
+
+- references: GcpComputeImage (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeImage, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.template.disks[].sourceSnapshot
 
@@ -2511,6 +2518,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.template.disks[].sourceImage` | GcpComputeImage | `status.outputs.self_link` |
 | `spec.template.disks[].source` | GcpComputeDisk | `status.outputs.self_link` |
 | `spec.template.disks[].diskEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.template.disks[].sourceImageEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |

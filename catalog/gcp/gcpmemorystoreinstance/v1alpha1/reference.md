@@ -142,7 +142,7 @@ spec:
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.deletionProtectionEnabled` | `bool` |  | `true` |  |
 | `spec.serverCaMode` | `string` |  |  |  |
-| `spec.serverCaPool` | `string` |  |  |  |
+| `spec.serverCaPool` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.maintenanceVersion` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
 | `spec.aclPolicy` | `string` |  |  |  |
@@ -601,12 +601,17 @@ Immutable after creation.
 
 ### spec.serverCaPool
 
-`string`
+`string | valueFrom`
 
 The Certificate Authority Service CA pool that signs the server
-certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-Format: projects/{project}/locations/{region}/caPools/{caPoolId}.
-Immutable after creation.
+certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a
+GcpPrivateCaPool reference (its full name) or a literal
+projects/{project}/locations/{region}/caPools/{caPoolId}. Immutable
+after creation.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.maintenanceVersion
 
@@ -682,6 +687,7 @@ Fields that can point at another resource's outputs:
 | `spec.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.crossInstanceReplicationConfig.primaryInstance.instance` | GcpMemorystoreInstance | `status.outputs.name` |
 | `spec.crossInstanceReplicationConfig.secondaryInstances[].instance` | GcpMemorystoreInstance | `status.outputs.name` |
+| `spec.serverCaPool` | GcpPrivateCaPool | `status.outputs.name` |
 
 ## Referenced By
 

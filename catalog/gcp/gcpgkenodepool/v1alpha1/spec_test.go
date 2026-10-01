@@ -301,10 +301,28 @@ var _ = ginkgo.Describe("GcpGkeNodePoolSpec Custom Validation Tests", func() {
 			spec.MaxPodsPerNode = proto.Int32(64)
 			spec.NodeConfig = &GcpGkeNodePoolNodeConfig{
 				SecondaryBootDisks: []*GcpGkeNodePoolSecondaryBootDisk{
-					{DiskImage: "projects/p/global/images/preloaded", Mode: "CONTAINER_IMAGE_CACHE"},
+					{DiskImage: literal("projects/p/global/images/preloaded"), Mode: "CONTAINER_IMAGE_CACHE"},
 				},
 			}
 			gomega.Expect(protovalidate.Validate(newNodePool(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a GcpComputeImage reference as a secondary boot disk image", func() {
+			spec := minimalSpec()
+			spec.NodeConfig = &GcpGkeNodePoolNodeConfig{
+				SecondaryBootDisks: []*GcpGkeNodePoolSecondaryBootDisk{
+					{DiskImage: ref("preloaded-images"), Mode: "CONTAINER_IMAGE_CACHE"},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a secondary boot disk without a disk image", func() {
+			spec := minimalSpec()
+			spec.NodeConfig = &GcpGkeNodePoolNodeConfig{
+				SecondaryBootDisks: []*GcpGkeNodePoolSecondaryBootDisk{{Mode: "CONTAINER_IMAGE_CACHE"}},
+			}
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).ToNot(gomega.BeNil())
 		})
 
 		ginkgo.It("accepts flex-start with a max run duration", func() {
@@ -672,7 +690,7 @@ var _ = ginkgo.Describe("GcpGkeNodePoolSpec Custom Validation Tests", func() {
 			spec := minimalSpec()
 			spec.NodeConfig = &GcpGkeNodePoolNodeConfig{
 				SecondaryBootDisks: []*GcpGkeNodePoolSecondaryBootDisk{
-					{DiskImage: "img", Mode: "DATA_CACHE"},
+					{DiskImage: literal("img"), Mode: "DATA_CACHE"},
 				},
 			}
 			gomega.Expect(protovalidate.Validate(newNodePool(spec))).ToNot(gomega.BeNil())

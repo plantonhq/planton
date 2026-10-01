@@ -549,11 +549,14 @@ func (x *GcpComputeInstanceWorkloadIdentityConfig) GetIdentityCertificateEnabled
 // (restore), or an existing bootable GcpComputeDisk.
 type GcpComputeInstanceBootDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Source image for a fresh boot disk. Accepts an image family
-	// ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64") or
-	// a specific image self link. Families resolve to the newest image at
+	// Source image for a fresh boot disk: a GcpComputeImage reference (its
+	// self_link, pinning that exact build) or a literal Google accepts -- an
+	// image family short form ("debian-cloud/debian-12",
+	// "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a family path
+	// ("projects/{project}/global/images/family/{family}"), or a specific
+	// image's path or self link. Families resolve to the newest image at
 	// create time. Create-time only.
-	Image string `protobuf:"bytes,1,opt,name=image,proto3" json:"image,omitempty"`
+	Image *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=image,proto3" json:"image,omitempty"`
 	// Source snapshot to restore the boot disk from (name or self link).
 	// Create-time only.
 	SourceSnapshot string `protobuf:"bytes,2,opt,name=source_snapshot,json=sourceSnapshot,proto3" json:"source_snapshot,omitempty"`
@@ -695,11 +698,11 @@ func (*GcpComputeInstanceBootDisk) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GcpComputeInstanceBootDisk) GetImage() string {
+func (x *GcpComputeInstanceBootDisk) GetImage() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Image
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpComputeInstanceBootDisk) GetSourceSnapshot() string {
@@ -2363,9 +2366,9 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1a_allow_stopping_for_update\"\x9f\x01\n" +
 	"(GcpComputeInstanceWorkloadIdentityConfig\x121\n" +
 	"\bidentity\x18\x01 \x01(\tB\x15\xbaH\x12\xc8\x01\x01r\r\x10\x01:\tspiffe://R\bidentity\x12@\n" +
-	"\x1cidentity_certificate_enabled\x18\x02 \x01(\bR\x1aidentityCertificateEnabled\"\xe6\x19\n" +
-	"\x1aGcpComputeInstanceBootDisk\x12\x14\n" +
-	"\x05image\x18\x01 \x01(\tR\x05image\x12'\n" +
+	"\x1cidentity_certificate_enabled\x18\x02 \x01(\bR\x1aidentityCertificateEnabled\"\xb1\x1b\n" +
+	"\x1aGcpComputeInstanceBootDisk\x12k\n" +
+	"\x05image\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xac\x19\x92\xd4a\x18status.outputs.self_linkR\x05image\x12'\n" +
 	"\x0fsource_snapshot\x18\x02 \x01(\tR\x0esourceSnapshot\x12v\n" +
 	"\vsource_disk\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xba\x18\x92\xd4a\x18status.outputs.self_linkR\n" +
 	"sourceDisk\x12'\n" +
@@ -2403,9 +2406,9 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9a\b\xbaH\x96\b\x1a\xd4\x02\n" +
-	"\x1cboot_disk_exactly_one_source\x12\x81\x01exactly one boot source is required: image (fresh install), source_snapshot (restore), or source_disk (pre-created bootable disk)\x1a\xaf\x01(this.image != '' ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) == 1\x1a\x9b\x01\n" +
-	"&source_image_encryption_requires_image\x129source_image_encryption is only valid together with image\x1a6!has(this.source_image_encryption) || this.image != ''\x1a\xbb\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x8e\t\xbaH\x8a\t\x1a\x8e\x03\n" +
+	"\x1cboot_disk_exactly_one_source\x12\x81\x01exactly one boot source is required: image (fresh install), source_snapshot (restore), or source_disk (pre-created bootable disk)\x1a\xe9\x01((has(this.image) && (has(this.image.value) || has(this.image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) == 1\x1a\xd5\x01\n" +
+	"&source_image_encryption_requires_image\x129source_image_encryption is only valid together with image\x1ap!has(this.source_image_encryption) || (has(this.image) && (has(this.image.value) || has(this.image.value_from)))\x1a\xbb\x01\n" +
 	",source_snapshot_encryption_requires_snapshot\x12Fsource_snapshot_encryption is only valid together with source_snapshot\x1aC!has(this.source_snapshot_encryption) || this.source_snapshot != ''\x1a\xe0\x02\n" +
 	"%replica_zones_require_snapshot_source\x12\xf9\x01replica_zones requires a source_snapshot boot source — GCP cannot create a regional boot disk from an image (API 400: \"Creating a regional disk from a source image is not supported yet\"), and a pre-created source_disk already carries its own zones\x1a;size(this.replica_zones) == 0 || this.source_snapshot != ''B\x0e\n" +
 	"\f_auto_deleteB\x13\n" +
@@ -2609,31 +2612,32 @@ var file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_depIdxs = []int32{
 	22, // 14: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.ResourceManagerTagsEntry
 	18, // 15: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.instance_encryption_key:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey
 	1,  // 16: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.workload_identity_config:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceWorkloadIdentityConfig
-	25, // 17: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 18: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	23, // 19: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.DiskLabelsEntry
-	24, // 20: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.ResourceManagerTagsEntry
-	19, // 21: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
-	19, // 22: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
-	25, // 23: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 24: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 25: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 26: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 27: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	6,  // 28: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig
-	7,  // 29: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceIpv6AccessConfig
-	8,  // 30: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAliasIpRange
-	25, // 31: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig.nat_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 32: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	11, // 33: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNodeAffinity
-	17, // 34: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpecificReservation
-	25, // 35: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 36: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	37, // [37:37] is the sub-list for method output_type
-	37, // [37:37] is the sub-list for method input_type
-	37, // [37:37] is the sub-list for extension type_name
-	37, // [37:37] is the sub-list for extension extendee
-	0,  // [0:37] is the sub-list for field type_name
+	25, // 17: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.image:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 18: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 19: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 20: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.DiskLabelsEntry
+	24, // 21: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.ResourceManagerTagsEntry
+	19, // 22: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
+	19, // 23: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
+	25, // 24: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 25: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 26: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 27: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 28: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6,  // 29: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig
+	7,  // 30: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceIpv6AccessConfig
+	8,  // 31: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAliasIpRange
+	25, // 32: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig.nat_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 33: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 34: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNodeAffinity
+	17, // 35: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpecificReservation
+	25, // 36: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 37: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	38, // [38:38] is the sub-list for method output_type
+	38, // [38:38] is the sub-list for method input_type
+	38, // [38:38] is the sub-list for extension type_name
+	38, // [38:38] is the sub-list for extension extendee
+	0,  // [0:38] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_init() }

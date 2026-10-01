@@ -72,7 +72,7 @@ spec:
 | `spec.disabled` | `bool` |  |  |  |
 | `spec.mode` | `string` |  | `FEDERATION_ONLY` |  |
 | `spec.inlineCertificateIssuanceConfig` | `GcpWorkloadIdentityPoolCertificateIssuance` |  |  |  |
-| `spec.inlineCertificateIssuanceConfig.caPools` | `map<string, string>` |  |  |  |
+| `spec.inlineCertificateIssuanceConfig.caPools` | `map<string, string \| valueFrom>` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.inlineCertificateIssuanceConfig.keyAlgorithm` | `string` |  |  |  |
 | `spec.inlineCertificateIssuanceConfig.lifetime` | `string` |  |  |  |
 | `spec.inlineCertificateIssuanceConfig.rotationWindowPercentage` | `int32` |  |  |  |
@@ -171,13 +171,17 @@ Leave unset for token-exchange federation (FEDERATION_ONLY pools).
 
 ### spec.inlineCertificateIssuanceConfig.caPools
 
-`map<string, string>`
+`map<string, string | valueFrom>`
 
-Maps a cloud region to the Certificate Authority Service CA pool (full
-resource path projects/<project>/locations/<location>/caPools/<pool>)
-that issues certificates for workloads in that region. The region in the
-key must match the CA pool's own region. Exactly one of ca_pools or
+Maps a cloud region to the Certificate Authority Service CA pool that
+issues certificates for workloads in that region. Each value is a
+GcpPrivateCaPool reference (its full name) or a literal
+projects/<project>/locations/<location>/caPools/<pool>. The region in
+the key must match the CA pool's own region. Exactly one of ca_pools or
 use_default_shared_ca supplies the signing authority.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal ca_pools value must be projects/{project}/locations/{location}/caPools/{pool}
 
 ### spec.inlineCertificateIssuanceConfig.keyAlgorithm
 
@@ -331,6 +335,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.inlineCertificateIssuanceConfig.caPools` | GcpPrivateCaPool | `status.outputs.name` |
 
 ## Referenced By
 

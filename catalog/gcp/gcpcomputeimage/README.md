@@ -78,6 +78,7 @@ planton apply -f compute-image.yaml
 | `self_link` | `string` | What disks, instances, and other images boot or copy from |
 | `family` | `string` | The image's family, or empty |
 | `disk_size_gb` | `int32` | The image's size in GB |
+| `image_id` | `string` | `projects/{project}/global/images/{name}` -- the relative form GKE node pools' secondary boot disks consume |
 
 ## Deployment Methods
 

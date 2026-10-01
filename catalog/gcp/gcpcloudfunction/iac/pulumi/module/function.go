@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	gcpcloudfunctionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudfunction/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudfunctionsv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
@@ -55,6 +56,15 @@ func function(
 		createdServices = append(createdServices, createdService)
 	}
 
+	// Secret values the service config carries are stored in Secret Manager
+	// before the function exists, and the function reads them by reference.
+	// The function is created after the grants: instances read every
+	// referenced secret at start, so a deploy that races its grant fails.
+	storedSecrets, err := envsecrets.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to store the environment's secret values")
+	}
+
 	// Secret Manager entries require an explicit project id on every entry
 	// even when the function rides the ambient project — resolve the
 	// effective project once (mirrors the Terraform module's
@@ -94,7 +104,7 @@ func function(
 		args.DeletionPolicy = pulumi.StringPtr(spec.DeletionPolicy)
 	}
 	if spec.ServiceConfig != nil {
-		args.ServiceConfig = serviceConfig(spec, effectiveProject)
+		args.ServiceConfig = serviceConfig(spec, effectiveProject, storedSecrets.Refs)
 	}
 	if isEventTrigger(spec) {
 		args.EventTrigger = eventTrigger(spec)
@@ -104,7 +114,7 @@ func function(
 		locals.GcpCloudFunction.Metadata.Name,
 		args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn(createdServices),
+		pulumi.DependsOn(append(createdServices, storedSecrets.Grants...)),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create cloud function")
@@ -146,14 +156,16 @@ func isEventTrigger(spec *gcpcloudfunctionv1alpha1.GcpCloudFunctionSpec) bool {
 		spec.Trigger.EventTrigger != nil
 }
 
-// needsEffectiveProject reports whether any Secret Manager entry omits its
-// project — the only place the module must materialize the ambient project.
+// needsEffectiveProject reports whether any Secret Manager entry naming a
+// secret the author owns omits its project — the only place the module must
+// materialize the ambient project (a stored value's project comes from the
+// secret the module created).
 func needsEffectiveProject(spec *gcpcloudfunctionv1alpha1.GcpCloudFunctionSpec) bool {
 	if spec.ServiceConfig == nil {
 		return false
 	}
 	for _, sev := range spec.ServiceConfig.SecretEnvironmentVariables {
-		if sev.ProjectId == "" {
+		if sev.Secret != "" && sev.ProjectId == "" {
 			return true
 		}
 	}
@@ -219,8 +231,8 @@ func buildConfig(spec *gcpcloudfunctionv1alpha1.GcpCloudFunctionSpec) *cloudfunc
 	if bc.ServiceAccount.GetValue() != "" {
 		buildArgs.ServiceAccount = pulumi.String(bc.ServiceAccount.GetValue())
 	}
-	if bc.WorkerPool != "" {
-		buildArgs.WorkerPool = pulumi.String(bc.WorkerPool)
+	if bc.WorkerPool.GetValue() != "" {
+		buildArgs.WorkerPool = pulumi.String(bc.WorkerPool.GetValue())
 	}
 	if bc.DockerRepository.GetValue() != "" {
 		buildArgs.DockerRepository = pulumi.String(bc.DockerRepository.GetValue())
@@ -237,7 +249,11 @@ func buildConfig(spec *gcpcloudfunctionv1alpha1.GcpCloudFunctionSpec) *cloudfunc
 	return buildArgs
 }
 
-func serviceConfig(spec *gcpcloudfunctionv1alpha1.GcpCloudFunctionSpec, effectiveProject string) *cloudfunctionsv2.FunctionServiceConfigArgs {
+func serviceConfig(
+	spec *gcpcloudfunctionv1alpha1.GcpCloudFunctionSpec,
+	effectiveProject string,
+	secretRefs map[envsecrets.Key]envsecrets.Ref,
+) *cloudfunctionsv2.FunctionServiceConfigArgs {
 	sc := spec.ServiceConfig
 
 	serviceArgs := &cloudfunctionsv2.FunctionServiceConfigArgs{}
@@ -271,11 +287,22 @@ func serviceConfig(spec *gcpcloudfunctionv1alpha1.GcpCloudFunctionSpec, effectiv
 	}
 
 	// Secret Manager references resolved at instance start — material never
-	// appears in configuration or state. The API requires an explicit
+	// appears in configuration. An entry is a secret the author owns or a
+	// value this module stored (one of the two); a stored value reads the
+	// exact version the module created. The API requires an explicit
 	// project on every entry; default to the function's effective project.
 	if len(sc.SecretEnvironmentVariables) > 0 {
 		secretEnvs := cloudfunctionsv2.FunctionServiceConfigSecretEnvironmentVariableArray{}
 		for _, sev := range sc.SecretEnvironmentVariables {
+			if ref, stored := secretRefs[envsecrets.Key{Name: sev.Key}]; stored {
+				secretEnvs = append(secretEnvs, &cloudfunctionsv2.FunctionServiceConfigSecretEnvironmentVariableArgs{
+					Key:       pulumi.String(sev.Key),
+					Secret:    ref.Secret,
+					Version:   ref.Version,
+					ProjectId: ref.Project,
+				})
+				continue
+			}
 			project := sev.ProjectId
 			if project == "" {
 				project = effectiveProject

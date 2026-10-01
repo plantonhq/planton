@@ -93,8 +93,8 @@ func computeInstance(
 		bootDiskArgs.Source = pulumi.StringPtr(spec.BootDisk.SourceDisk.GetValue())
 	} else {
 		initializeParams := &compute.InstanceBootDiskInitializeParamsArgs{}
-		if spec.BootDisk.Image != "" {
-			initializeParams.Image = pulumi.StringPtr(spec.BootDisk.Image)
+		if spec.BootDisk.Image.GetValue() != "" {
+			initializeParams.Image = pulumi.StringPtr(spec.BootDisk.Image.GetValue())
 		}
 		if spec.BootDisk.SourceSnapshot != "" {
 			initializeParams.Snapshot = pulumi.StringPtr(spec.BootDisk.SourceSnapshot)

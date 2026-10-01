@@ -1,0 +1,24 @@
+# Consumer-scoped GcpGcsBucket install profile for the gcpgcsim scenario:
+# the bucket the grant lands on and the sink's destination. Bucket names
+# are global across all of GCP, so the cloud name carries ${E2E_RUN_ID};
+# metadata.name stays fixed for reference resolution. force_destroy lets
+# teardown delete it even if a batch was ever written.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucket
+metadata:
+  name: planton-oss-e2e-gcpgcsim-bucket
+  id: planton-oss-e2e-gcpgcsim-bucket
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgcsbucket
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  bucketName: planton-oss-e2e-gcsim-${E2E_RUN_ID}
+  location: US
+  uniformBucketLevelAccessEnabled: true
+  forceDestroy: true

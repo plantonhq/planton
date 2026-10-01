@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcppubsubtopiciammember.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpPubSubTopicIamMemberSpec defines a single ADDITIVE IAM grant ON a Pub/Sub
+// topic: one role, to one member, on one topic.
+//
+// The canonical use is letting a Google-managed identity publish to a topic
+// it delivers into:
+//   roles/pubsub.publisher -- what a GcpLoggingSink's writer identity needs
+//     on its destination topic, what a GcpSccNotificationConfig's service
+//     account needs on its notification topic, and what any workload's
+//     service account needs to publish.
+//   roles/pubsub.subscriber -- attach subscriptions to the topic (pull or
+//     push consumers in another project).
+//   roles/pubsub.viewer -- read the topic's configuration.
+//
+// Why a standalone grant and not a field on GcpPubSubTopic: the identities
+// that most need publish rights belong to resources that name the topic
+// themselves (a sink's destination, a notification config's topic). A grant
+// declared on the topic that referenced those identities would make the
+// topic depend on the sink while the sink depends on the topic -- a cycle no
+// chart can deploy. This grant depends on both, so the order is always
+// topic, then sink, then grant.
+//
+// Additive semantics: the grant merges into the topic's IAM policy without
+// touching any other member's bindings on the same role, and removal
+// subtracts only this exact (role, member) entry. Grants from
+// other charts, teams, or tools never fight over the policy. (Authoritative
+// binding and policy management, which clobbers everything not listed, is
+// deliberately not modeled.)
+//
+// Every field is immutable, mirroring the API: an IAM grant has no update --
+// changing the topic, role, or member replaces the grant.
+//
+// No IAM Condition: Pub/Sub topics do not accept conditional role bindings
+// (the provider reads and writes a topic's policy without requesting policy
+// version 3, which conditions require, and documents no condition support
+// for topic IAM). Scope access by the topic and the role; a time-boxed grant
+// belongs on the project.
+message GcpPubSubTopicIamMemberSpec {
+  // The topic whose IAM policy receives this grant, by its full resource
+  // name: projects/<project>/topics/<topic>. Reference a GcpPubSubTopic --
+  // its `topic_id` output is exactly this value. The project is read from
+  // the name, so there is no separate project field, and a topic in another
+  // project is granted the same way.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef topic = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id",
+    (buf.validate.field).cel = {
+      id: "topic.format"
+      message: "a literal topic must be its full resource name: projects/{project}/topics/{topic}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/topics/[^/]+$')"
+    }
+  ];
+
+  // The role to grant on the topic. A predefined role
+  // ("roles/pubsub.publisher", "roles/pubsub.subscriber",
+  // "roles/pubsub.viewer", "roles/pubsub.editor", "roles/pubsub.admin") or a
+  // custom role's full name ("projects/<project>/roles/<role_id>" or
+  // "organizations/<org>/roles/<role_id>"). Reference a GcpIamCustomRole to
+  // grant a custom role -- its `name` output is exactly this value.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef role = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpIamCustomRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "role.format"
+      message: "a literal role must be roles/<name>, projects/<project>/roles/<id>, or organizations/<org>/roles/<id>"
+      expression: "!has(this.value) || this.value.matches('^(roles/[A-Za-z0-9_.]+|projects/[^/]+/roles/[A-Za-z0-9_.]+|organizations/[0-9]+/roles/[A-Za-z0-9_.]+)$')"
+    }
+  ];
+
+  // The identity receiving the grant, in IAM member format:
+  //   serviceAccount:<email>  -- a service account or Google service agent.
+  //                              Reference GcpServiceAccount (`member`), a
+  //                              GcpLoggingSink (`writer_identity`, the
+  //                              sink's writer, already in this format), or
+  //                              a GcpSccNotificationConfig
+  //                              (`service_account_member`, the identity
+  //                              that publishes its notifications).
+  //   user:<email>, group:<email>, domain:<domain>
+  //   principal://... / principalSet://... -- workload identity federation
+  //   allUsers / allAuthenticatedUsers     -- public grants; avoid on topics
+  // Grants to deleted principals ("deleted:...") are not supported.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef member = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.member",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpServiceAccount
+      field_path: "status.outputs.member"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpLoggingSink
+      field_path: "status.outputs.writer_identity"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpSccNotificationConfig
+      field_path: "status.outputs.service_account_member"
+    },
+    (buf.validate.field).cel = {
+      id: "member.format"
+      message: "a literal member must be <type>:<value> (serviceAccount:, user:, group:, domain:, principal://, principalSet://) or allUsers / allAuthenticatedUsers, and never a deleted: principal"
+      expression: "!has(this.value) || (this.value.matches('^(.+:.+|allUsers|allAuthenticatedUsers)$') && !this.value.startsWith('deleted:'))"
+    }
+  ];
+}

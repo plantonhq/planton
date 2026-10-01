@@ -30,19 +30,31 @@ spec:
           - storage.buckets.getIamPolicy
           - storage.buckets.setIamPolicy
         provenance: derived
-        notes: Required only when iam_members declares grants (the 02-static-website preset's allUsers objectViewer) -- google_storage_bucket_iam_member reads and rewrites the bucket policy.
+        condition:
+          spec_field_set: iam_members
+        notes: Covers google_storage_bucket_iam_member, which reads and rewrites the bucket policy for each iam_members grant (the 02-static-website preset's allUsers objectViewer).
       - purpose: ManageFolders
         permissions:
           - storage.folders.create
           - storage.folders.get
           - storage.folders.delete
+        provenance: derived
+        condition:
+          spec_field_set: folders
+        notes: Covers google_storage_folder, one per folders entry -- hierarchical-namespace buckets manage folders as their own resources.
+      - purpose: ManageManagedFolders
+        permissions:
           - storage.managedFolders.create
           - storage.managedFolders.get
           - storage.managedFolders.delete
         provenance: derived
-        notes: Required only when folders or managed_folders are declared (hierarchical-namespace buckets) -- google_storage_folder and google_storage_managed_folder manage them as their own resources.
+        condition:
+          spec_field_set: managed_folders
+        notes: Covers google_storage_managed_folder, one per managed_folders entry, managed as its own resource.
       - purpose: PublishNotificationsPrerequisite
         permissions:
           - pubsub.topics.getIamPolicy
         provenance: derived
+        condition:
+          spec_field_set: notifications
         notes: Notifications (the 04-event-driven-pipeline preset) publish from the project's Cloud Storage service agent, which must hold pubsub.topics.publish on the target topic -- a grant made on the topic (a separate component), not by this module; the provider only verifies the topic. Listed for visibility, not held by this module's apply.

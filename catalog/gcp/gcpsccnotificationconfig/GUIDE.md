@@ -6,7 +6,7 @@ The judgment this guide protects: a notification config that cannot publish fail
 
 1. **Activation.** Security Command Center must be active on the scope: the organization, or the project on its own (Standard tier is free at project level when the organization has not activated it).
 2. **The topic.** Folder and organization configs require one; Google lets a project config omit it, which records the config but sends nothing.
-3. **The publisher.** The config's `service_account` output is the identity Security Command Center publishes as. Grant it `roles/pubsub.publisher` on the topic. Creating the config does not check this, and without it every notification is dropped.
+3. **The publisher.** The config's `service_account` output is the identity Security Command Center publishes as. Grant it `roles/pubsub.publisher` on the topic with a `GcpPubSubTopicIamMember` on the topic (role `roles/pubsub.publisher`, `member` referencing the config's `status.outputs.service_account_member`). Creating the config does not check this, and without it every notification is dropped.
 
 ## Writing the filter
 

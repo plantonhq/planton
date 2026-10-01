@@ -227,6 +227,8 @@ Fields on other kinds that can point at this resource:
 | GcpBinaryAuthorizationPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerCert | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerDnsAuthorization | `spec.projectId` | `status.outputs.project_id` |
+| GcpCertManagerIssuanceConfig | `spec.projectId` | `status.outputs.project_id` |
+| GcpCertManagerTrustConfig | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertificateMap | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudArmorPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudBuildConnection | `spec.projectId` | `status.outputs.project_id` |
@@ -283,6 +285,7 @@ Fields on other kinds that can point at this resource:
 | GcpFirewallRule | `spec.projectId` | `status.outputs.project_id` |
 | GcpGcsBucket | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpGkeCluster | `spec.fleetProject` | `status.outputs.project_id` |
 | GcpGkeFleet | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeNodePool | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeWorkloadIdentityBinding | `spec.projectId` | `status.outputs.project_id` |

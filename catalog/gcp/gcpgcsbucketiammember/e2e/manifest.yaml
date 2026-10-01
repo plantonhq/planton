@@ -1,0 +1,27 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucketIamMember
+metadata:
+  name: my-sample-bucket-grant
+spec:
+  # The bucket whose IAM policy receives this grant, by name (not a gs://
+  # URL). Reference a GcpGcsBucket -- its `bucket_id` output is exactly
+  # this value.
+  bucket:
+    value: acme-audit-archive
+
+  # The role to grant on the bucket: write-only, what a sink's writer
+  # identity needs.
+  role:
+    value: roles/storage.objectCreator
+
+  # The identity receiving the grant, in GCP IAM member format -- here a
+  # project's Cloud Logging writer identity. Reference a GcpLoggingSink's
+  # `writer_identity` output to follow the sink's own identity.
+  member:
+    value: serviceAccount:service-123456789@gcp-sa-logging.iam.gserviceaccount.com
+
+  # Optional IAM Condition (requires uniform bucket-level access)
+  # condition:
+  #   title: logs-prefix-only
+  #   expression: resource.name.startsWith("projects/_/buckets/acme-audit-archive/objects/logs/")
+  #   description: The writer may create objects only under logs/

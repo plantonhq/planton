@@ -44,20 +44,32 @@ func isMachineryArg(path string) bool {
 }
 
 // iamResourceRe classifies the provider's per-resource IAM triplets
-// (*_iam_member / *_iam_binding / *_iam_policy). The catalog's standing
-// design covers this class with additive iam_members fields on the owning
-// kinds (authoritative binding/policy forms are deliberately not modeled),
-// so the class is dispositioned by pattern, never by 300+ ledger entries.
-var iamResourceRe = regexp.MustCompile(`_iam_(member|binding|policy)$`)
+// (*_iam_member / *_iam_binding / *_iam_policy) and captures the resource
+// they grant on. The catalog grants additively (a kind's iam_members field,
+// or a standalone grant kind) and deliberately never models the
+// authoritative binding/policy forms, so the class is dispositioned by
+// pattern, never by 300+ ledger entries: a triplet is covered only when the
+// census shows some module consuming one of its siblings, and is reported
+// as not offered per resource otherwise.
+var iamResourceRe = regexp.MustCompile(`^(.+)_iam_(member|binding|policy)$`)
+
+// iamTripletSuffixes are the three forms of one resource's IAM surface.
+var iamTripletSuffixes = []string{"_iam_member", "_iam_binding", "_iam_policy"}
 
 // Disposition names for the breadth accounting. Every GA resource carries
 // exactly one.
 const (
 	// DispositionModeled: consumed by at least one kind's Terraform module.
 	DispositionModeled = "modeled"
-	// DispositionIamCovered: an *_iam_* triplet resource, covered by the
-	// owning kind's additive iam_members field.
+	// DispositionIamCovered: an *_iam_* triplet resource whose sibling form
+	// a module consumes -- the catalog grants on that resource additively,
+	// and this form (binding or policy) is the authoritative variant
+	// deliberately not modeled.
 	DispositionIamCovered = "iam-covered"
+	// DispositionIamUncovered: an *_iam_* triplet resource no module
+	// consumes in any form -- no kind grants on that resource per resource
+	// yet, so access goes through IAM at a broader scope.
+	DispositionIamUncovered = "iam-uncovered"
 	// DispositionExcludedDeprecated: deprecated surface, excluded from
 	// parity (schema-flagged automatically; doc-level deprecations enter
 	// via the ledger).
@@ -77,8 +89,9 @@ const (
 	DispositionDeferred = "deferred"
 )
 
-// ledgerDispositions are the judgments the ledger may record. The other two
-// classes (modeled, iam-covered) are computed, never hand-written.
+// ledgerDispositions are the judgments the ledger may record. The other
+// classes (modeled, iam-covered, iam-uncovered) are computed, never
+// hand-written.
 var ledgerDispositions = map[string]bool{
 	DispositionComposed:           true,
 	DispositionModelPlanned:       true,
@@ -424,11 +437,22 @@ func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCe
 					"stale ledger entry: the resource is consumed by a module (modeled) -- remove it from the ledger"})
 			}
 		case iamResourceRe.MatchString(name):
-			d.Disposition = DispositionIamCovered
-			d.Detail = "per-resource IAM triplet, covered by the owning kind's additive iam_members field"
+			base := iamResourceRe.FindStringSubmatch(name)[1]
+			var granting []string
+			for _, suffix := range iamTripletSuffixes {
+				granting = append(granting, consumedBy[base+suffix]...)
+			}
+			if len(granting) > 0 {
+				sort.Strings(granting)
+				d.Disposition = DispositionIamCovered
+				d.Detail = "authoritative form of the additive grant " + strings.Join(granting, ", ") + " makes on " + base + "; deliberately not modeled"
+			} else {
+				d.Disposition = DispositionIamUncovered
+				d.Detail = "no kind grants on " + base + " per resource yet; grant at a broader scope"
+			}
 			if inLedger {
 				acc.Findings = append(acc.Findings, Finding{"resource:" + name,
-					"stale ledger entry: the IAM triplet is covered by the computed iam-covered class -- remove it from the ledger"})
+					"stale ledger entry: IAM triplets are classified by the computed iam-covered and iam-uncovered classes -- remove it from the ledger"})
 			}
 		case ga.Resources[name].Deprecated:
 			d.Disposition = DispositionExcludedDeprecated

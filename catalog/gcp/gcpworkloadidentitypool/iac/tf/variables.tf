@@ -58,11 +58,13 @@ variable "spec" {
     # identities in this pool — the certificate half of a TRUST_DOMAIN pool.
     # Leave unset for token-exchange federation (FEDERATION_ONLY pools).
     inline_certificate_issuance_config = optional(object({
-      # Maps a cloud region to the Certificate Authority Service CA pool (full
-      # resource path projects/<project>/locations/<location>/caPools/<pool>)
-      # that issues certificates for workloads in that region. The region in the
-      # key must match the CA pool's own region. Exactly one of ca_pools or
+      # Maps a cloud region to the Certificate Authority Service CA pool that
+      # issues certificates for workloads in that region. Each value is a
+      # GcpPrivateCaPool reference (its full name) or a literal
+      # projects/<project>/locations/<location>/caPools/<pool>. The region in
+      # the key must match the CA pool's own region. Exactly one of ca_pools or
       # use_default_shared_ca supplies the signing authority.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       ca_pools = optional(map(string), {})
 
       # Key algorithm for the generated certificate key pairs. Defaults

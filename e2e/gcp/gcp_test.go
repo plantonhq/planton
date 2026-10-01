@@ -632,6 +632,24 @@ func TestGcpKmsKeyIamMember_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpkmskeyiammember", "terraform")
 }
 
+// --- GCP Pub/Sub Topic IAM Member (composed topic-scoped grant: deploys the topic → logging sink / service account prerequisite chain) ---
+
+func TestGcpPubSubTopicIamMember_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcppubsubtopiciammember", "pulumi")
+}
+func TestGcpPubSubTopicIamMember_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcppubsubtopiciammember", "terraform")
+}
+
+// --- GCP GCS Bucket IAM Member (composed bucket-scoped grant: deploys the bucket → logging sink prerequisite chain) ---
+
+func TestGcpGcsBucketIamMember_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgcsbucketiammember", "pulumi")
+}
+func TestGcpGcsBucketIamMember_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpgcsbucketiammember", "terraform")
+}
+
 // GcpCloudTasksQueue scenarios: minimal + http-target-oidc (SA chain).
 func TestGcpCloudTasksQueue_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpcloudtasksqueue", "pulumi")
@@ -773,6 +791,24 @@ func TestGcpCertManagerDnsAuthorization_Pulumi(t *testing.T) {
 }
 func TestGcpCertManagerDnsAuthorization_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpcertmanagerdnsauthorization", "terraform")
+}
+
+// --- GCP Certificate Manager Trust Config (leaf: self-signed test root as trust anchor plus one allowlisted certificate) ---
+
+func TestGcpCertManagerTrustConfig_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcertmanagertrustconfig", "pulumi")
+}
+func TestGcpCertManagerTrustConfig_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcertmanagertrustconfig", "terraform")
+}
+
+// --- GCP Certificate Manager Issuance Config (composed: deploys the DevOps CA pool → self-signed root authority prerequisite chain) ---
+
+func TestGcpCertManagerIssuanceConfig_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcertmanagerissuanceconfig", "pulumi")
+}
+func TestGcpCertManagerIssuanceConfig_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcertmanagerissuanceconfig", "terraform")
 }
 
 // GcpCertManagerCert scenario: managed cert composed from zone→auth→record→cert.

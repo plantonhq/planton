@@ -26,7 +26,8 @@ spec:
   zone: us-east1-b
   machineType: e2-micro
   bootDisk:
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
     sizeGb: 10
     type: pd-balanced
   networkInterfaces:

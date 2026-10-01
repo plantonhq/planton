@@ -1,7 +1,7 @@
 # Secret values the environment carries (env[].secret_value) are kept in
 # Secret Manager, one secret per variable, so the revision references a
 # secret the service owns and never holds the value. The naming, placement,
-# and grant rules match the Pulumi module's shared cloudrunenv helper:
+# and grant rules match the Pulumi module's shared envsecrets helper:
 #   - id "run_<region>_<service>_<container>_<variable>" ('.' becomes '-',
 #     an unnamed container is "c<index>");
 #   - replicated only where the service serves (every multi-region region,

@@ -26,9 +26,27 @@ spec:
           - identitytoolkit.tenants.delete
         provenance: derived
         notes: Covers google_identity_platform_tenant -- create (GCP generates the tenant ID), read/refresh and import (get, with list for discovery), in-place updates (display name, sign-up switches, disable_auth, client permissions), and destroy when deletion_policy allows it (PREVENT and ABANDON are client-side stances that never call delete). All five names verified against Google's published Identity Toolkit IAM reference (https://cloud.google.com/iam/docs/roles-permissions/identitytoolkit, read 2026-08-22), which also shows they are contained in roles/identityplatform.admin -- the role both READMEs recommend ("the deploying identity needs roles/identityplatform.admin or broader").
-      - purpose: ManageTenantIdpConfigs
+      - purpose: ManageTenantDefaultSupportedIdpConfigs
         permissions:
           - firebaseauth.configs.update
           - firebaseauth.configs.get
         provenance: derived
-        notes: Required only when default_supported_idps, oauth_idp_configs, or inbound_saml_configs compose tenant-scoped IdP config resources. Google authorizes tenant-parented IdP-config CRUD as firebaseauth.configs.update on the tenant parent, the same class as the project level -- verified on the tenant-scoped create method reference (https://cloud.google.com/identity-platform/docs/reference/rest/v2/projects.tenants.defaultSupportedIdpConfigs/create, read 2026-08-22) -- with firebaseauth.configs.get for the reads the provider issues on refresh and import. The OAuth client IDs and secrets these configs carry come from each provider's own developer console -- no GCP permission obtains them.
+        condition:
+          spec_field_set: default_supported_idps
+        notes: Covers the tenant-scoped IdP config resources default_supported_idps composes. Google authorizes tenant-parented IdP-config CRUD as firebaseauth.configs.update on the tenant parent, the same class as the project level -- verified on the tenant-scoped create method reference (https://cloud.google.com/identity-platform/docs/reference/rest/v2/projects.tenants.defaultSupportedIdpConfigs/create, read 2026-08-22) -- with firebaseauth.configs.get for the reads the provider issues on refresh and import. The OAuth client IDs and secrets these configs carry come from each provider's own developer console -- no GCP permission obtains them.
+      - purpose: ManageTenantOauthIdpConfigs
+        permissions:
+          - firebaseauth.configs.update
+          - firebaseauth.configs.get
+        provenance: derived
+        condition:
+          spec_field_set: oauth_idp_configs
+        notes: Covers the tenant-scoped IdP config resources oauth_idp_configs composes. Google authorizes tenant-parented IdP-config CRUD as firebaseauth.configs.update on the tenant parent, the same class as the project level -- verified on the tenant-scoped create method reference (https://cloud.google.com/identity-platform/docs/reference/rest/v2/projects.tenants.defaultSupportedIdpConfigs/create, read 2026-08-22) -- with firebaseauth.configs.get for the reads the provider issues on refresh and import. The OAuth client IDs and secrets these configs carry come from each provider's own developer console -- no GCP permission obtains them.
+      - purpose: ManageTenantInboundSamlConfigs
+        permissions:
+          - firebaseauth.configs.update
+          - firebaseauth.configs.get
+        provenance: derived
+        condition:
+          spec_field_set: inbound_saml_configs
+        notes: Covers the tenant-scoped IdP config resources inbound_saml_configs composes. Google authorizes tenant-parented IdP-config CRUD as firebaseauth.configs.update on the tenant parent, the same class as the project level -- verified on the tenant-scoped create method reference (https://cloud.google.com/identity-platform/docs/reference/rest/v2/projects.tenants.defaultSupportedIdpConfigs/create, read 2026-08-22) -- with firebaseauth.configs.get for the reads the provider issues on refresh and import. The OAuth client IDs and secrets these configs carry come from each provider's own developer console -- no GCP permission obtains them.

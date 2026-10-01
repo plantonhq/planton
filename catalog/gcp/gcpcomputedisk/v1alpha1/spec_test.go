@@ -61,7 +61,7 @@ var _ = Describe("GcpComputeDiskSpec validations", func() {
 		It("accepts a sourced disk without size_gb", func() {
 			spec := makeValidSpec()
 			spec.SizeGb = 0
-			spec.Image = "debian-cloud/debian-12"
+			spec.Image = strVal("debian-cloud/debian-12")
 			Expect(protovalidate.Validate(spec)).To(BeNil())
 		})
 	})
@@ -103,8 +103,22 @@ var _ = Describe("GcpComputeDiskSpec validations", func() {
 	Context("source arms (CEL at-most-one)", func() {
 		It("accepts image alone", func() {
 			spec := makeValidSpec()
-			spec.Image = "debian-cloud/debian-12"
+			spec.Image = strVal("debian-cloud/debian-12")
 			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("accepts a GcpComputeImage reference as the image (satisfies the size rule)", func() {
+			spec := makeValidSpec()
+			spec.SizeGb = 0
+			spec.Image = refVal("web-base", "status.outputs.self_link")
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects an image reference together with source_disk", func() {
+			spec := makeValidSpec()
+			spec.Image = refVal("web-base", "status.outputs.self_link")
+			spec.SourceDisk = refVal("golden-disk", "status.outputs.self_link")
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 
 		It("accepts source_snapshot alone", func() {
@@ -121,7 +135,7 @@ var _ = Describe("GcpComputeDiskSpec validations", func() {
 
 		It("rejects image together with snapshot", func() {
 			spec := makeValidSpec()
-			spec.Image = "debian-cloud/debian-12"
+			spec.Image = strVal("debian-cloud/debian-12")
 			spec.SourceSnapshot = "snap"
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
@@ -149,7 +163,7 @@ var _ = Describe("GcpComputeDiskSpec validations", func() {
 
 		It("rejects image together with source_instant_snapshot", func() {
 			spec := makeValidSpec()
-			spec.Image = "debian-cloud/debian-12"
+			spec.Image = strVal("debian-cloud/debian-12")
 			spec.SourceInstantSnapshot = "fast-restore-point"
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
@@ -210,7 +224,7 @@ var _ = Describe("GcpComputeDiskSpec validations", func() {
 		It("accepts source_image_encryption together with image", func() {
 			spec := makeValidSpec()
 			spec.SizeGb = 0
-			spec.Image = "projects/p/global/images/encrypted-golden"
+			spec.Image = strVal("projects/p/global/images/encrypted-golden")
 			spec.SourceImageEncryption = &GcpComputeDiskSourceEncryption{
 				KmsKey: refVal("image-key", "status.outputs.key_id"),
 			}
@@ -236,7 +250,7 @@ var _ = Describe("GcpComputeDiskSpec validations", func() {
 		It("rejects a source encryption block without its kms_key", func() {
 			spec := makeValidSpec()
 			spec.SizeGb = 0
-			spec.Image = "projects/p/global/images/encrypted-golden"
+			spec.Image = strVal("projects/p/global/images/encrypted-golden")
 			spec.SourceImageEncryption = &GcpComputeDiskSourceEncryption{}
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})

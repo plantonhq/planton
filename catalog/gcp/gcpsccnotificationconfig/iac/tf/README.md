@@ -15,7 +15,7 @@ This directory contains the Terraform implementation for a Security Command Cent
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Scope selection (`is_project` / `is_folder` / `is_org`), the bare folder ID, the `global` location default, the topic |
 | `main.tf` | `data.google_client_config` (empty scope only), `google_project_service` (project configs), the three scope resources with `count` |
-| `outputs.tf` | `name`, `service_account` |
+| `outputs.tf` | `name`, `service_account`, `service_account_member` (`serviceAccount:` + the email, composed identically to the Pulumi module) |
 
 ## Send Posture
 

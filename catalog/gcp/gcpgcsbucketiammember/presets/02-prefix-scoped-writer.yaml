@@ -1,0 +1,23 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucketIamMember
+metadata:
+  name: my-prefix-writer
+spec:
+  bucket:
+    valueFrom:
+      kind: GcpGcsBucket
+      name: <bucket-resource-name>
+      fieldPath: status.outputs.bucket_id
+  role:
+    value: roles/storage.objectCreator
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: <service-account-resource-name>
+      fieldPath: status.outputs.member
+  condition:
+    title: writes-under-prefix-only
+    # Requires uniform bucket-level access on the bucket. The bucket's
+    # cloud name and the prefix appear literally in the expression.
+    expression: resource.name.startsWith("projects/_/buckets/<bucket-name>/objects/<object-prefix>/")
+    description: The uploader may create objects only under its own prefix

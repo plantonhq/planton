@@ -419,10 +419,29 @@ message GcpGkeClusterSpec {
   // some networking agents/service meshes on Autopilot).
   bool allow_net_admin = 55;
 
-  // Registers the cluster with a fleet in the given project (the hub for
-  // multi-cluster features: multi-cluster ingress/services, config
-  // management, team scopes).
-  string fleet_project = 56;
+  // Registers the cluster with the fleet of the given project (the hub
+  // for multi-cluster features: multi-cluster ingress/services, config
+  // management, team scopes) -- the fleet host project's ID. Point it at
+  // the GcpGkeFleet that declares the fleet (its project_id, the default):
+  // the reference orders the registration after the fleet exists, and a
+  // fleet declared after a cluster registers collides with the one the
+  // registration created. Point it at a GcpProject (its project_id) only
+  // when no GcpGkeFleet is declared and the registration may create the
+  // project's fleet itself. A literal project ID also works. The fleet
+  // project may differ from the cluster's own project.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef fleet_project = 56 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpGkeFleet
+      field_path: "status.outputs.project_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpProject
+      field_path: "status.outputs.project_id"
+    },
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // Fleet membership type. LIGHTWEIGHT registers a lightweight membership
   // (reduced fleet feature surface, no Connect agent). Empty uses the
@@ -748,18 +767,59 @@ message GcpGkeClusterRegistryHostEndpoint {
 // GcpGkeClusterUserManagedKeys points the control plane at
 // customer-managed CAs and KMS keys.
 message GcpGkeClusterUserManagedKeys {
-  // CA Service CaPool issuing the cluster CA
-  // ("projects/{p}/locations/{l}/caPools/{pool}").
-  string cluster_ca = 1;
+  // CA Service pool issuing the cluster CA -- a GcpPrivateCaPool
+  // reference (its full name) or a literal
+  // projects/{project}/locations/{location}/caPools/{pool}. Each of the
+  // four CA fields accepts the same forms.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_ca = 1 [
+    (buf.validate.field).cel = {
+      id: "cluster_ca_format"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+      message: "a literal cluster_ca must be projects/{project}/locations/{location}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
-  // CA Service CaPool for the etcd API CA.
-  string etcd_api_ca = 2;
+  // CA Service pool for the etcd API CA: a GcpPrivateCaPool reference or
+  // the pool's full name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef etcd_api_ca = 2 [
+    (buf.validate.field).cel = {
+      id: "etcd_api_ca_format"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+      message: "a literal etcd_api_ca must be projects/{project}/locations/{location}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
-  // CA Service CaPool for the etcd peer CA.
-  string etcd_peer_ca = 3;
+  // CA Service pool for the etcd peer CA: a GcpPrivateCaPool reference or
+  // the pool's full name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef etcd_peer_ca = 3 [
+    (buf.validate.field).cel = {
+      id: "etcd_peer_ca_format"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+      message: "a literal etcd_peer_ca must be projects/{project}/locations/{location}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
-  // CA Service CaPool for the aggregation layer CA.
-  string aggregation_ca = 4;
+  // CA Service pool for the aggregation layer CA: a GcpPrivateCaPool
+  // reference or the pool's full name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef aggregation_ca = 4 [
+    (buf.validate.field).cel = {
+      id: "aggregation_ca_format"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+      message: "a literal aggregation_ca must be projects/{project}/locations/{location}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
   // KMS key encrypting the control-plane disks
   // ("projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}"). Accepts a

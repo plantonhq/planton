@@ -1,7 +1,7 @@
 # Secret values the environment carries (env[].secret_value) are kept in
 # Secret Manager, one secret per variable, so the revision template references
 # a secret the worker pool owns and never holds the value. The naming,
-# placement, and grant rules match the Pulumi module's shared cloudrunenv
+# placement, and grant rules match the Pulumi module's shared envsecrets
 # helper:
 #   - id "runpool_<region>_<pool>_<container>_<variable>" ('.' becomes '-',
 #     an unnamed container is "c<index>");

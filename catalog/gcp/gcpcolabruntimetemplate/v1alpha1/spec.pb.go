@@ -508,8 +508,14 @@ type GcpColabRuntimeTemplateEnvVar struct {
 	// The variable name -- a valid C identifier.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The value. $(VAR_NAME) expands a previously defined variable; $$(...)
-	// escapes the expansion. Do not put secrets here -- the value is stored
-	// in the template in plain text.
+	// escapes the expansion. Stored in the template in plain text, where
+	// anyone who can view the template or a runtime made from it reads it:
+	// never a secret. The template cannot hold one safely: a runtime runs
+	// as whoever creates it (end-user credentials by default), so no grant
+	// made with the template could open a stored secret to its runtimes.
+	// Notebook code reads credentials at run time instead -- from Secret
+	// Manager with the runtime user's own access, or from Colab's own
+	// secrets panel.
 	Value         string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

@@ -18,4 +18,13 @@ message GcpComputeImageStackOutputs {
 
   // The image's size in GB.
   int32 disk_size_gb = 4;
+
+  // The image's resource ID: projects/{project}/global/images/{name} --
+  // the relative form, without self_link's
+  // https://www.googleapis.com/compute/v1/ prefix. Consume self_link where
+  // a field takes an image URL (a disk's image, an instance's boot disk,
+  // a managed instance group's source_image, another image's
+  // source_image); consume image_id where Google documents the relative
+  // form only, such as a GKE node pool's secondary boot disk image.
+  string image_id = 5;
 }

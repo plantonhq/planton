@@ -622,9 +622,12 @@ type GcpSecretManagerSecretInitialVersion struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The secret payload (at most 64KiB). A secret value: the platform
 	// stores it as a managed-secret reference and resolves it just-in-time
-	// at deploy — it never sits in plaintext in the control plane. In
-	// charts, wire it via valueFrom from a producing resource's sensitive
-	// output (e.g. a generated credential) instead of a literal.
+	// at deploy — it never sits in plaintext in the control plane. A
+	// literal or a reference to ANY kind's output (no default kind, since a
+	// secret can hold anything): in charts, wire it via valueFrom from a
+	// producing resource's sensitive output instead of a literal -- e.g. a
+	// GcpApiKey's status.outputs.key_string or a GcpIamOauthClient's
+	// status.outputs.client_secret.
 	// Immutable: changing the payload creates a NEW version through GCP
 	// tooling or rotation — this field only seeds version 1.
 	Data *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`

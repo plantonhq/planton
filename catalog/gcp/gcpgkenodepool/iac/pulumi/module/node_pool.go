@@ -536,7 +536,7 @@ func buildNodeConfig(nodeConfig *gcpgkenodepoolv1alpha1.GcpGkeNodePoolNodeConfig
 		disks := container.NodePoolNodeConfigSecondaryBootDiskArray{}
 		for _, disk := range nodeConfig.SecondaryBootDisks {
 			diskArgs := &container.NodePoolNodeConfigSecondaryBootDiskArgs{
-				DiskImage: pulumi.String(disk.DiskImage),
+				DiskImage: pulumi.String(disk.DiskImage.GetValue()),
 			}
 			if disk.Mode != "" {
 				diskArgs.Mode = pulumi.StringPtr(disk.Mode)

@@ -19,7 +19,7 @@ import (
 // immutable; the peer's BGP policy changes in place. The external gateway,
 // when present, is created first and every tunnel depends on it through
 // its self link.
-func tunnels(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, createdExternalGateway *compute.ExternalVpnGateway) error {
+func tunnels(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, keys *connectionKeys, createdExternalGateway *compute.ExternalVpnGateway) error {
 	spec := locals.GcpHaVpnConnection.Spec
 
 	tunnelSelfLinks := pulumi.StringArray{}
@@ -28,7 +28,7 @@ func tunnels(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, cre
 	peerNames := pulumi.StringArray{}
 
 	for index, tunnel := range spec.Tunnels {
-		createdTunnel, err := vpnTunnel(ctx, locals, gcpProvider, tunnel, createdExternalGateway)
+		createdTunnel, err := vpnTunnel(ctx, locals, gcpProvider, keys, tunnel, createdExternalGateway)
 		if err != nil {
 			return errors.Wrapf(err, "failed to create tunnel %s", tunnel.Name)
 		}
@@ -38,7 +38,7 @@ func tunnels(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, cre
 			return errors.Wrapf(err, "failed to create router interface for tunnel %s", tunnel.Name)
 		}
 
-		createdPeer, err := routerPeer(ctx, locals, gcpProvider, index, tunnel, createdInterface)
+		createdPeer, err := routerPeer(ctx, locals, gcpProvider, keys, index, tunnel, createdInterface)
 		if err != nil {
 			return errors.Wrapf(err, "failed to create bgp peer for tunnel %s", tunnel.Name)
 		}
@@ -66,7 +66,7 @@ func tunnels(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, cre
 // spec is the single source of truth); traffic selectors are
 // Optional+Computed and sent only when set; the cipher suite only when
 // declared.
-func vpnTunnel(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider,
+func vpnTunnel(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, keys *connectionKeys,
 	tunnel *gcphavpnconnectionv1alpha1.GcpHaVpnConnectionTunnel,
 	createdExternalGateway *compute.ExternalVpnGateway) (*compute.VPNTunnel, error) {
 	spec := locals.GcpHaVpnConnection.Spec
@@ -77,8 +77,9 @@ func vpnTunnel(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider,
 		VpnGateway:          pulumi.String(locals.Gateway),
 		VpnGatewayInterface: pulumi.IntPtr(int(tunnel.VpnGatewayInterface)),
 		Router:              pulumi.String(locals.Router),
-		// ToSecret marks it encrypted in Pulumi state.
-		SharedSecret: pulumi.ToSecret(pulumi.String(tunnel.SharedSecret)).(pulumi.StringOutput),
+		// The tunnel's own key, else the connection's (declared or
+		// minted); secret either way, so encrypted in Pulumi state.
+		SharedSecret: keys.tunnelSharedSecret(tunnel),
 		IkeVersion:   pulumi.IntPtr(ikeVersion(tunnel.IkeVersion)),
 		Labels:       pulumi.ToStringMap(locals.mergeLabels(tunnel.Labels)),
 	}
@@ -156,7 +157,7 @@ func routerInterface(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provi
 // real priority and Google keeps assigning the addresses it owns; the
 // per-session advertisement overrides ride the same CUSTOM-mode rules as
 // the router's.
-func routerPeer(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, index int,
+func routerPeer(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, keys *connectionKeys, index int,
 	tunnel *gcphavpnconnectionv1alpha1.GcpHaVpnConnectionTunnel,
 	createdInterface *compute.RouterInterface) (*compute.RouterPeer, error) {
 	spec := locals.GcpHaVpnConnection.Spec
@@ -239,12 +240,15 @@ func routerPeer(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, 
 	}
 	// The MD5 key rides the peer: the provider inserts it into the router's
 	// key table under this name and attaches it to the session (Google
-	// requires each key to be used by exactly one session).
+	// requires each key-table entry to be used by exactly one session; the
+	// material may repeat, which is how the connection-level key serves
+	// many). MD5 is on exactly for the sessions that declare the block.
 	if session.Md5AuthenticationKey != nil {
 		args.Md5AuthenticationKey = &compute.RouterPeerMd5AuthenticationKeyArgs{
 			Name: pulumi.String(locals.Md5KeyNames[index]),
-			// ToSecret marks it encrypted in Pulumi state.
-			Key: pulumi.ToSecret(pulumi.String(session.Md5AuthenticationKey.Key)).(pulumi.StringOutput),
+			// The session's own key, else the connection's (declared or
+			// minted); secret either way, so encrypted in Pulumi state.
+			Key: keys.sessionMd5Key(session.Md5AuthenticationKey),
 		}
 	}
 	if len(session.ImportPolicies) > 0 {

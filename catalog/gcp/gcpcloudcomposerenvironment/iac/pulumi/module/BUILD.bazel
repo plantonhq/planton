@@ -1,9 +1,10 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
     srcs = [
         "composer_environment.go",
+        "env_secrets.go",
         "locals.go",
         "main.go",
         "outputs.go",
@@ -13,6 +14,7 @@ go_library(
     deps = [
         "//catalog/gcp",
         "//catalog/gcp/gcpcloudcomposerenvironment/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
         "//shared/cloudresourcekind",
@@ -20,6 +22,18 @@ go_library(
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/composer",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["env_secrets_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/gcp/gcpcloudcomposerenvironment/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets",
+        "//shared/foreignkey/v1:foreignkey",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )

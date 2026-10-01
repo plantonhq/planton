@@ -1,0 +1,18 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerIssuanceConfig
+metadata:
+  name: internal-tls-issuance
+spec:
+  projectId:
+    value: my-gcp-project
+  description: Internal service certificates from the private pool
+  # Empty location means global, which serves global certificates.
+  # location: us-central1
+  caPool:
+    value: projects/my-gcp-project/locations/us-central1/caPools/internal-pool
+  keyAlgorithm: ECDSA_P256
+  lifetime: 2592000s
+  rotationWindowPercentage: 66
+  labels:
+    team: platform
+  deletionPolicy: PREVENT

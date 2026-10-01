@@ -29,11 +29,19 @@ type GcpSccNotificationConfigStackOutputs struct {
 	// {parent}/locations/{location}/notificationConfigs/{config_id}.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The Security Command Center service account that publishes the
-	// notifications. Grant it roles/pubsub.publisher on the topic, or
-	// notifications are dropped.
+	// notifications, as a bare email. It needs roles/pubsub.publisher on the
+	// topic, or notifications are silently dropped; grant it through a
+	// GcpPubSubTopicIamMember whose member references service_account_member
+	// (this email in IAM member form).
 	ServiceAccount string `protobuf:"bytes,2,opt,name=service_account,json=serviceAccount,proto3" json:"service_account,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The publisher in IAM member form, "serviceAccount:" + service_account
+	// -- the exact value an IAM member field takes. Reference it from a
+	// GcpPubSubTopicIamMember's member, with role roles/pubsub.publisher on
+	// the config's topic, so notifications are published rather than
+	// dropped.
+	ServiceAccountMember string `protobuf:"bytes,3,opt,name=service_account_member,json=serviceAccountMember,proto3" json:"service_account_member,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *GcpSccNotificationConfigStackOutputs) Reset() {
@@ -80,14 +88,22 @@ func (x *GcpSccNotificationConfigStackOutputs) GetServiceAccount() string {
 	return ""
 }
 
+func (x *GcpSccNotificationConfigStackOutputs) GetServiceAccountMember() string {
+	if x != nil {
+		return x.ServiceAccountMember
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpsccnotificationconfig/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpsccnotificationconfig.v1alpha1\"c\n" +
+	";catalog/gcp/gcpsccnotificationconfig/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpsccnotificationconfig.v1alpha1\"\x99\x01\n" +
 	"$GcpSccNotificationConfigStackOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12'\n" +
-	"\x0fservice_account\x18\x02 \x01(\tR\x0eserviceAccountB\x9b\x03\n" +
+	"\x0fservice_account\x18\x02 \x01(\tR\x0eserviceAccount\x124\n" +
+	"\x16service_account_member\x18\x03 \x01(\tR\x14serviceAccountMemberB\x9b\x03\n" +
 	"5com.dev.planton.gcp.gcpsccnotificationconfig.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpsccnotificationconfig/v1alpha1;gcpsccnotificationconfigv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpsccnotificationconfig.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpsccnotificationconfig\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpsccnotificationconfig\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpsccnotificationconfig::V1alpha1b\x06proto3"
 
 var (

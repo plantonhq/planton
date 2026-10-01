@@ -698,7 +698,9 @@ type GcpVertexAiAgentEngineEnvVar struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Variable name.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Literal value. Never a credential -- use secret_env for those.
+	// Literal value, written into the agent where anyone who can view it
+	// reads it. Fine for configuration; never a credential -- a credential
+	// goes in deployment_spec.secret_env.
 	Value         string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -807,13 +809,28 @@ func (x *GcpVertexAiAgentEngineSecretRef) GetVersion() string {
 }
 
 // GcpVertexAiAgentEngineSecretEnvVar is one environment variable filled
-// from Secret Manager at instance start.
+// from Secret Manager at instance start: from a secret you already own
+// (secret_ref), or from a secret value this component stores for you
+// (value). Exactly one.
+//
+// Example (YAML):
+//
+//	secretEnv:
+//	  - name: OPENAI_API_KEY
+//	    value: $secret/openai-api-key
+//	  - name: DB_PASSWORD
+//	    secretRef:
+//	      secret: {value: db-password}
+//	      version: "3"
 type GcpVertexAiAgentEngineSecretEnvVar struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Variable name.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The secret version the value comes from.
-	SecretRef     *GcpVertexAiAgentEngineSecretRef `protobuf:"bytes,2,opt,name=secret_ref,json=secretRef,proto3" json:"secret_ref,omitempty"`
+	// Types that are valid to be assigned to Source:
+	//
+	//	*GcpVertexAiAgentEngineSecretEnvVar_SecretRef
+	//	*GcpVertexAiAgentEngineSecretEnvVar_Value
+	Source        isGcpVertexAiAgentEngineSecretEnvVar_Source `protobuf_oneof:"source"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -855,12 +872,63 @@ func (x *GcpVertexAiAgentEngineSecretEnvVar) GetName() string {
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineSecretEnvVar) GetSecretRef() *GcpVertexAiAgentEngineSecretRef {
+func (x *GcpVertexAiAgentEngineSecretEnvVar) GetSource() isGcpVertexAiAgentEngineSecretEnvVar_Source {
 	if x != nil {
-		return x.SecretRef
+		return x.Source
 	}
 	return nil
 }
+
+func (x *GcpVertexAiAgentEngineSecretEnvVar) GetSecretRef() *GcpVertexAiAgentEngineSecretRef {
+	if x != nil {
+		if x, ok := x.Source.(*GcpVertexAiAgentEngineSecretEnvVar_SecretRef); ok {
+			return x.SecretRef
+		}
+	}
+	return nil
+}
+
+func (x *GcpVertexAiAgentEngineSecretEnvVar) GetValue() string {
+	if x != nil {
+		if x, ok := x.Source.(*GcpVertexAiAgentEngineSecretEnvVar_Value); ok {
+			return x.Value
+		}
+	}
+	return ""
+}
+
+type isGcpVertexAiAgentEngineSecretEnvVar_Source interface {
+	isGcpVertexAiAgentEngineSecretEnvVar_Source()
+}
+
+type GcpVertexAiAgentEngineSecretEnvVar_SecretRef struct {
+	// A Secret Manager secret version you already own. The agent's
+	// identity needs roles/secretmanager.secretAccessor on the secret.
+	SecretRef *GcpVertexAiAgentEngineSecretRef `protobuf:"bytes,2,opt,name=secret_ref,json=secretRef,proto3,oneof"`
+}
+
+type GcpVertexAiAgentEngineSecretEnvVar_Value struct {
+	// A secret value this component keeps in Secret Manager for you: on
+	// Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
+	// without the platform, the literal. The component creates one secret
+	// for this variable, replicated only in the agent's location, stores
+	// the value as a version, grants the agent's identity (spec.service_account,
+	// or the project's Vertex AI Reasoning Engine service agent
+	// service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+	// when unset) secretAccessor on that secret alone, and points the
+	// variable at that exact version -- the agent carries a reference,
+	// never the value. A changed value adds a version and redeploys the
+	// agent, so rotation is a deploy; destroying the agent removes the
+	// secret. The secret's id is
+	// agentengine_<location>_<metadata.name>_<variable> ('.' in the name
+	// becomes '-'). Not available with identity_type AGENT_IDENTITY (see
+	// the rule on GcpVertexAiAgentEngineSpecConfig).
+	Value string `protobuf:"bytes,3,opt,name=value,proto3,oneof"`
+}
+
+func (*GcpVertexAiAgentEngineSecretEnvVar_SecretRef) isGcpVertexAiAgentEngineSecretEnvVar_Source() {}
+
+func (*GcpVertexAiAgentEngineSecretEnvVar_Value) isGcpVertexAiAgentEngineSecretEnvVar_Source() {}
 
 // GcpVertexAiAgentEngineDnsPeeringConfig lets the agent resolve a private
 // DNS zone of another project over the PSC interface.
@@ -1099,9 +1167,14 @@ func (x *GcpVertexAiAgentEngineAgentGatewayConfig) GetAgentToAnywhereConfig() *G
 // private networking, and the gateway.
 type GcpVertexAiAgentEngineDeploymentSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Literal environment variables.
+	// Literal environment variables, written into the agent where anyone who
+	// can view it reads them. Configuration only -- a credential goes in
+	// secret_env, as a value this component stores in Secret Manager or a
+	// secret you already own.
 	Env []*GcpVertexAiAgentEngineEnvVar `protobuf:"bytes,1,rep,name=env,proto3" json:"env,omitempty"`
-	// Environment variables filled from Secret Manager.
+	// Environment variables filled from Secret Manager at instance start:
+	// each from a secret you own (secret_ref) or from a value this
+	// component stores for you (value).
 	SecretEnv []*GcpVertexAiAgentEngineSecretEnvVar `protobuf:"bytes,2,rep,name=secret_env,json=secretEnv,proto3" json:"secret_env,omitempty"`
 	// Instances kept running at all times (0-10; Google's default 1). Zero
 	// scales the agent to nothing between requests at the cost of cold
@@ -3327,11 +3400,13 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05value\"\x98\x02\n" +
 	"\x1fGcpVertexAiAgentEngineSecretRef\x12\xda\x01\n" +
 	"\x06secret\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x8d\x01\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dbSecret Manager secret NAME/identifier only -- the secret material itself never appears in the spec\x88\xd4a\xce\x18\x92\xd4a\x18status.outputs.secret_idR\x06secret\x12\x18\n" +
-	"\aversion\x18\x02 \x01(\tR\aversion\"\xd7\x01\n" +
+	"\aversion\x18\x02 \x01(\tR\aversion\"\x87\x02\n" +
 	"\"GcpVertexAiAgentEngineSecretEnvVar\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12w\n" +
+	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12q\n" +
 	"\n" +
-	"secret_ref\x18\x02 \x01(\v2P.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretRefB\x06\xbaH\x03\xc8\x01\x01R\tsecretRef\"\xf3\x02\n" +
+	"secret_ref\x18\x02 \x01(\v2P.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretRefH\x00R\tsecretRef\x12#\n" +
+	"\x05value\x18\x03 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01H\x00R\x05valueB\x0f\n" +
+	"\x06source\x12\x05\xbaH\x02\b\x01\"\xf3\x02\n" +
 	"&GcpVertexAiAgentEngineDnsPeeringConfig\x123\n" +
 	"\x06domain\x18\x01 \x01(\tB\x1b\xbaH\x18\xc8\x01\x01r\x132\x11^([a-z0-9-]+\\.)+$R\x06domain\x12\x87\x01\n" +
 	"\x0etarget_project\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_id\x98\xd4a\x01R\rtargetProject\x12\x89\x01\n" +
@@ -3344,10 +3419,11 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\fagentGateway\"\xc6\x02\n" +
 	"(GcpVertexAiAgentEngineAgentGatewayConfig\x12\x89\x01\n" +
 	"\x16client_to_agent_config\x18\x01 \x01(\v2T.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTargetR\x13clientToAgentConfig\x12\x8d\x01\n" +
-	"\x18agent_to_anywhere_config\x18\x02 \x01(\v2T.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTargetR\x15agentToAnywhereConfig\"\xa6\n" +
+	"\x18agent_to_anywhere_config\x18\x02 \x01(\v2T.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTargetR\x15agentToAnywhereConfig\"\xb6\n" +
 	"\n" +
-	"$GcpVertexAiAgentEngineDeploymentSpec\x12_\n" +
-	"\x03env\x18\x01 \x03(\v2M.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineEnvVarR\x03env\x12r\n" +
+	"$GcpVertexAiAgentEngineDeploymentSpec\x12o\n" +
+	"\x03env\x18\x01 \x03(\v2M.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineEnvVarB\x0eҦ\x1d\n" +
+	"secret_envR\x03env\x12r\n" +
 	"\n" +
 	"secret_env\x18\x02 \x03(\v2S.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSecretEnvVarR\tsecretEnv\x123\n" +
 	"\rmin_instances\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\n" +
@@ -3365,7 +3441,7 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"$deployment_spec.resource_limits_keys\x124resource_limits accepts only the keys cpu and memory\x1a3this.resource_limits.all(k, k in ['cpu', 'memory'])B\x10\n" +
 	"\x0e_min_instancesB\x10\n" +
 	"\x0e_max_instancesB\x18\n" +
-	"\x16_container_concurrency\"\xf6\t\n" +
+	"\x16_container_concurrency\"\x85\x0e\n" +
 	" GcpVertexAiAgentEngineSpecConfig\x12'\n" +
 	"\x0fagent_framework\x18\x01 \x01(\tR\x0eagentFramework\x12#\n" +
 	"\rclass_methods\x18\x02 \x01(\tR\fclassMethods\x12N\n" +
@@ -3376,9 +3452,10 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\fpackage_spec\x18\a \x01(\v2R.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePackageSpecR\vpackageSpec\x12o\n" +
 	"\n" +
 	"build_spec\x18\b \x01(\v2P.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpecR\tbuildSpec\x12~\n" +
-	"\x0fdeployment_spec\x18\t \x01(\v2U.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpecR\x0edeploymentSpec:\xd1\x02\xbaH\xcd\x02\x1a\x8e\x01\n" +
+	"\x0fdeployment_spec\x18\t \x01(\v2U.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpecR\x0edeploymentSpec:\xe0\x06\xbaH\xdc\x06\x1a\x8e\x01\n" +
 	"\x19spec.container_xor_source\x126container_spec and source_code_spec cannot both be set\x1a9!(has(this.container_spec) && has(this.source_code_spec))\x1a\xb9\x01\n" +
-	"+spec.agent_identity_forbids_service_account\x12Dservice_account must not be set when identity_type is AGENT_IDENTITY\x1aDthis.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)\"\x9f\x04\n" +
+	"+spec.agent_identity_forbids_service_account\x12Dservice_account must not be set when identity_type is AGENT_IDENTITY\x1aDthis.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)\x1a\x8c\x04\n" +
+	"0spec.agent_identity_forbids_stored_secret_values\x12\xd4\x02secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account\x1a\x80\x01this.identity_type != 'AGENT_IDENTITY' || !has(this.deployment_spec) || !this.deployment_spec.secret_env.exists(e, has(e.value))\"\x9f\x04\n" +
 	"$GcpVertexAiAgentEngineGenerationRule\x12-\n" +
 	"\vevent_count\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\n" +
 	"eventCount\x88\x01\x01\x12E\n" +
@@ -3670,6 +3747,10 @@ func file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{
+		(*GcpVertexAiAgentEngineSecretEnvVar_SecretRef)(nil),
+		(*GcpVertexAiAgentEngineSecretEnvVar_Value)(nil),
+	}
 	file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_msgTypes[18].OneofWrappers = []any{}
 	file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{}
 	file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_msgTypes[45].OneofWrappers = []any{}

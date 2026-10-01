@@ -155,8 +155,11 @@ The fully qualified domain name this record set applies to.
 Must end with a trailing dot (e.g. "www.example.com.").
 A leading "*." creates a wildcard record; leading underscores support
 service labels such as "_dmarc" and "_acme-challenge".
-Can be a literal FQDN or a reference — compose validation records from
-GcpCertManagerDnsAuthorization's dns_record_name output.
+A literal FQDN or a reference to ANY kind's output (no default kind,
+since the name can come from anywhere) -- e.g. a
+GcpCertManagerDnsAuthorization's status.outputs.dns_record_name for
+its _acme-challenge validation record. A referenced record is created
+after the resource it reads.
 
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
@@ -174,9 +177,14 @@ Static values (RRDATA) for the record set — the meaning depends on type:
        and single values longer than 255 characters (DKIM keys) must be
        split with "" between chunks.
 Multiple values answer as a round-robin set. Mutually exclusive with
-routing_policy. Each entry can be a literal or a reference — compose
-validation targets from GcpCertManagerDnsAuthorization's
-dns_record_data output.
+routing_policy. Each entry is a literal or a reference to ANY kind's
+output, so a record can publish a value that only exists once that
+resource does: a reserved address (a GcpGlobalAddress's or a
+GcpAddress's status.outputs.address), one of a zone's name servers for
+a subdomain delegation (a GcpDnsZone's status.outputs.nameservers.0,
+.1, ...), or a validation target (a GcpCertManagerDnsAuthorization's
+status.outputs.dns_record_data). A referenced record is created after
+the resource it reads.
 
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
@@ -228,8 +236,9 @@ explicit 0 is expressible while the field itself stays required.
 Static values (RRDATA) answered for this entry.
 If the zone has DNSSEC enabled, an entry may set only one of values or
 health_checked_targets; otherwise both may be combined.
-Each entry can be a literal or a reference to another resource's
-output, as the record's own values can.
+Each entry is a literal or a reference to ANY kind's output, as the
+record's own values are -- e.g. a GcpGlobalAddress's
+status.outputs.address for the backend this weight steers to.
 
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
@@ -347,8 +356,9 @@ The Google Cloud location name this entry serves (e.g. "us-east1",
 `[]string | valueFrom`
 
 Static values (RRDATA) answered for this location.
-Each entry can be a literal or a reference to another resource's
-output, as the record's own values can.
+Each entry is a literal or a reference to ANY kind's output, as the
+record's own values are -- e.g. a regional GcpAddress's
+status.outputs.address for the location's frontend.
 
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
@@ -576,8 +586,9 @@ The Google Cloud location name this entry serves (e.g. "us-east1",
 `[]string | valueFrom`
 
 Static values (RRDATA) answered for this location.
-Each entry can be a literal or a reference to another resource's
-output, as the record's own values can.
+Each entry is a literal or a reference to ANY kind's output, as the
+record's own values are -- e.g. a regional GcpAddress's
+status.outputs.address for the location's frontend.
 
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

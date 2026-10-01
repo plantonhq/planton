@@ -11,6 +11,7 @@ enablement) and one `gcp.vertex.AiReasoningEngine`.
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `agent_engine` |
 | `module/locals.go` | The display name defaulted from `metadata.name`; the `planton-ai_*` attribution labels |
 | `module/agent_engine.go` | Enables the API; maps the top level, the agent `spec` (source, container, package, build, deployment); exports the outputs |
+| `module/env_secrets.go` | Stores each `secret_env` entry that carries a `value` in its own Secret Manager secret and grants the runtime identity access |
 | `module/memory_bank.go` | Maps `context_spec.memory_bank_config`: generation, lookup, TTLs, structured schemas, per-scope customization with worked examples in Gemini's `Content.Part` shape |
 | `module/outputs.go` | Output key constants (`name`, `reasoning_engine_id`, `location`, `create_time`, `update_time`) |
 
@@ -24,6 +25,7 @@ enablement) and one `gcp.vertex.AiReasoningEngine`.
 - **Memory-bank example parts** -- every payload but `audio_transcription` (an SDK gap held out on both engines).
 - **`name`** -- the resource id (the full path); `reasoning_engine_id` the provider's numeric `name`.
 - **`DeletionPolicy`** -- sent only when set.
+- **`SecretEnvs`** -- a `secret_ref` entry passes through; a `value` entry gets its own secret (user-managed replication in `location`), a pinned version, and a `secretmanager.secretAccessor` grant on that secret alone to `service_account`, or to the project's Reasoning Engine service agent when it is empty. The engine references the stored version and depends on the grant.
 
 ## Usage
 

@@ -39,4 +39,6 @@ spec:
           - compute.interconnectAttachments.get
           - compute.interconnectAttachments.use
         provenance: derived
-        notes: "Only when spec.vpn_interfaces pins the gateway to Cloud Interconnect VLAN attachments (HA VPN over Interconnect): Google validates and binds the attachments at gateway create."
+        condition:
+          spec_field_set: vpn_interfaces.interconnect_attachment
+        notes: "HA VPN over Interconnect: Google validates and binds the Cloud Interconnect VLAN attachments vpn_interfaces pins the gateway to at gateway create."

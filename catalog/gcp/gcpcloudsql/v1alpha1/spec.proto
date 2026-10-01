@@ -594,13 +594,13 @@ message GcpCloudSqlNetwork {
   option (buf.validate.message).cel = {
     id: "customer_cas_requires_pool"
     message: "server_ca_pool is required when server_ca_mode is CUSTOMER_MANAGED_CAS_CA"
-    expression: "this.server_ca_mode != 'CUSTOMER_MANAGED_CAS_CA' || this.server_ca_pool != ''"
+    expression: "this.server_ca_mode != 'CUSTOMER_MANAGED_CAS_CA' || has(this.server_ca_pool)"
   };
 
   option (buf.validate.message).cel = {
     id: "pool_requires_customer_cas"
     message: "server_ca_pool applies only when server_ca_mode is CUSTOMER_MANAGED_CAS_CA"
-    expression: "this.server_ca_pool == '' || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'"
+    expression: "!has(this.server_ca_pool) || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'"
   };
 
   option (buf.validate.message).cel = {
@@ -668,9 +668,21 @@ message GcpCloudSqlNetwork {
     expression: "this == '' || this in ['GOOGLE_MANAGED_INTERNAL_CA', 'GOOGLE_MANAGED_CAS_CA', 'CUSTOMER_MANAGED_CAS_CA']"
   }];
 
-  // The CA Service CA pool (full resource path) that signs the server
-  // certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-  string server_ca_pool = 8;
+  // The CA Service CA pool that signs the server certificate when
+  // server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a GcpPrivateCaPool
+  // reference (its full name) or a literal
+  // projects/{project}/locations/{region}/caPools/{pool}. The pool must be
+  // in the instance's region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef server_ca_pool = 8 [
+    (buf.validate.field).cel = {
+      id: "server_ca_pool_format"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+      message: "a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
   // Additional DNS names embedded in the server certificate (customer-
   // managed CA only) — lets clients validate the cert against your own

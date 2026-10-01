@@ -59,10 +59,14 @@ variable "spec" {
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       dns_authorizations = optional(list(string), [])
 
-      # Private-PKI issuance: the CertificateIssuanceConfig resource name
-      # (projects/*/locations/*/certificateIssuanceConfigs/*) that signs
-      # certificates from your own CA instead of a public one.
-      # Mutually exclusive with dns_authorizations.
+      # Private-PKI issuance: the certificate issuance config that has your own
+      # Certificate Authority Service pool sign this certificate instead of a
+      # public CA, by full name
+      # (projects/{project}/locations/{location}/certificateIssuanceConfigs/{name}).
+      # Reference a GcpCertManagerIssuanceConfig -- its `issuance_config_id`
+      # output is exactly this value, and the reference orders the certificate
+      # after the config. Mutually exclusive with dns_authorizations. Immutable.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       issuance_config = optional(string, "")
     }))
 

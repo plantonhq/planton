@@ -7,7 +7,8 @@ spec:
   machineType: e2-medium
   bootDisk:
     # Image family: resolves to the newest Debian 12 image at create time.
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
     type: pd-balanced
   networkInterfaces:
     # The default auto-mode VPC with an ephemeral external IP — the

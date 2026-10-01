@@ -121,13 +121,16 @@ variable "spec" {
       # pairs interfaces itself). Sent only when set. Immutable.
       peer_external_gateway_interface = optional(number)
 
-      # The IKE pre-shared key both ends authenticate with. Sensitive: never
-      # logged or exported; in Terraform state only its hash is kept. No
-      # content rule, because sensitive fields hold a managed-secret reference
-      # on consuming platforms and a content-shape rule would reject every
-      # reference. Google accepts 1-63 printable characters. Immutable: a
-      # rotation recreates the tunnel.
-      shared_secret = string
+      # This tunnel's own IKE pre-shared key -- a per-tunnel override for a
+      # device configured with a different key on each tunnel. Leave empty to
+      # use the connection's shared_secret, or the key the modules generate
+      # when that is empty too. Google accepts 1-63 printable characters.
+      # Sensitive: never logged or exported; in Terraform state only its hash
+      # is kept. No content rule, because sensitive fields hold a
+      # managed-secret reference on consuming platforms and a content-shape
+      # rule would reject every reference. Immutable: a rotation recreates the
+      # tunnel.
+      shared_secret = optional(string, "")
 
       # IKE protocol version: 1 or 2. 2 when empty (Google's default and the
       # only version that supports IPv6, BFD-friendly rekeying, and modern
@@ -319,20 +322,27 @@ variable "spec" {
           multiplier = optional(number, 0)
         }))
 
-        # MD5 authentication of the BGP session. Leave unset for an
-        # unauthenticated session (the tunnel's IPsec already protects the
-        # control traffic; MD5 defends against a misconfigured peer, not an
-        # attacker).
+        # MD5 authentication of the BGP session. Declare the block (an empty
+        # block is enough) to enable MD5; the key is the block's own key, else
+        # the connection's md5_authentication_key, else the one the modules
+        # generate. Leave unset for an unauthenticated session (the tunnel's
+        # IPsec already protects the control traffic; MD5 defends against a
+        # misconfigured peer, not an attacker). Both ends of a session must
+        # agree: MD5 on one side only keeps the session down.
         md5_authentication_key = optional(object({
-          # Name of the key. RFC 1035, 1-63 characters. Defaults to the tunnel's
-          # name with a `-md5` suffix when empty.
+          # Name of the key-table entry. RFC 1035, 1-63 characters; unique on the
+          # router. Defaults to the tunnel's name with a `-md5` suffix when empty.
           name = optional(string, "")
 
-          # The key material -- the same string configured on the peer router.
-          # Sensitive: never logged or exported. No content rule, because sensitive
-          # fields hold a managed-secret reference on consuming platforms and a
-          # content-shape rule would reject every reference.
-          key = string
+          # This session's own key material, the same string configured on the
+          # peer router's matching session -- a per-session override. Leave empty
+          # to use the connection's md5_authentication_key, or the key the modules
+          # generate when that is empty too. Google accepts up to 80 printable
+          # ASCII characters. Sensitive: never logged or exported. No content
+          # rule, because sensitive fields hold a managed-secret reference on
+          # consuming platforms and a content-shape rule would reject every
+          # reference.
+          key = optional(string, "")
         }))
 
         # Names of route policies (ROUTE_POLICY_TYPE_IMPORT) on the router,
@@ -352,6 +362,45 @@ variable "spec" {
       # create-time on this resource).
       description = optional(string, "")
     }))
+
+    # The IKE pre-shared key every tunnel uses unless it declares its own
+    # tunnels[].shared_secret. Leave it empty and the modules GENERATE one
+    # key (32 letters and digits) for every tunnel that declares none, and
+    # report it in the shared_secret output; a declared key is used as given
+    # and never echoed back. One key for all tunnels is Google's own shape
+    # for HA VPN.
+    #
+    # In a Google-to-Google pair EXACTLY ONE side generates: deploy that
+    # side first with this field empty, and point the other side's field at
+    # its output (a GcpHaVpnConnection reference to
+    # status.outputs.shared_secret). If both sides leave it empty, each
+    # generates its own key and the tunnels never come up. For an external
+    # peer, read the generated key from the shared_secret output and
+    # configure the device with it, or declare the device's key here.
+    #
+    # Google accepts 1-63 printable characters. Immutable: a change
+    # recreates every tunnel that uses it.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+    shared_secret = optional(string, "")
+
+    # The BGP MD5 key every session that declares a
+    # bgp_session.md5_authentication_key block uses unless the block carries
+    # its own key. Setting this alone enables nothing: MD5 is on exactly for
+    # the sessions that declare the block. Leave it empty and the modules
+    # GENERATE one key (24 letters and digits -- short enough for devices
+    # that cap BGP passwords at 25 characters) for every such session
+    # without its own key, and report it in the md5_authentication_key
+    # output; a declared key is used as given and never echoed back.
+    #
+    # The Google-to-Google rule is the same as shared_secret's: exactly one
+    # side generates and the other points this field at its output
+    # (status.outputs.md5_authentication_key); both sides empty means two
+    # different keys and sessions that never establish.
+    #
+    # Google accepts up to 80 printable ASCII characters. Mutable: a change
+    # re-keys every session that uses it.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+    md5_authentication_key = optional(string, "")
 
     # Resource Manager tags bound to every tunnel (and the external gateway,
     # when created) for org-policy and IAM conditions. Keys `tagKeys/{id}`,

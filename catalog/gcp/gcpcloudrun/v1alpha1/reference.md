@@ -291,7 +291,7 @@ spec:
 | `spec.buildConfig.baseImage` | `string` |  |  |  |
 | `spec.buildConfig.enableAutomaticUpdates` | `bool` |  |  |  |
 | `spec.buildConfig.environmentVariables` | `map<string, string>` |  |  |  |
-| `spec.buildConfig.workerPool` | `string` |  |  |  |
+| `spec.buildConfig.workerPool` | `string \| valueFrom` |  |  | GcpCloudBuildWorkerPool (`status.outputs.name`) |
 | `spec.buildConfig.serviceAccount` | `string` |  |  |  |
 | `spec.iapEnabled` | `bool` |  |  |  |
 | `spec.defaultUriDisabled` | `bool` |  |  |  |
@@ -1638,11 +1638,18 @@ to the running service — runtime env lives on the containers).
 
 ### spec.buildConfig.workerPool
 
-`string`
+`string | valueFrom`
 
-Cloud Build Custom Worker Pool to run the build in, as
-"projects/{project}/locations/{region}/workerPools/{workerPool}".
-For builds that must run inside a private network perimeter.
+The Cloud Build private worker pool the build runs in, as
+projects/{project}/locations/{location}/workerPools/{pool}: a
+GcpCloudBuildWorkerPool reference (its name output), or the literal
+name. Use one when the build must reach a private network (a private
+package index, an internal artifact store). Empty runs the build on
+Google's default pool.
+
+- references: GcpCloudBuildWorkerPool (`status.outputs.name`)
+- rule: worker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpCloudBuildWorkerPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.buildConfig.serviceAccount
 
@@ -1859,6 +1866,7 @@ Fields that can point at another resource's outputs:
 | `spec.vpcAccess.connector` | GcpServerlessVpcConnector | `status.outputs.self_link` |
 | `spec.vpcAccess.networkInterfaces[].network` | GcpVpcNetwork | `status.outputs.network_name` |
 | `spec.vpcAccess.networkInterfaces[].subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_name` |
+| `spec.buildConfig.workerPool` | GcpCloudBuildWorkerPool | `status.outputs.name` |
 
 ## Referenced By
 

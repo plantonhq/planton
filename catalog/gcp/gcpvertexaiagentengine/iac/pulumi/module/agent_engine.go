@@ -3,6 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	gcpvertexaiagentenginev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiagentengine/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/vertex"
@@ -39,6 +40,16 @@ func agentEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 		return errors.Wrap(err, "failed to enable aiplatform.googleapis.com api")
 	}
 
+	// Secret values the deployment carries are stored in Secret Manager
+	// before the agent exists, and the agent reads them by reference. The
+	// agent is created after the grants: its first instance reads every
+	// secret_env entry during the create, so a create that races its grant
+	// fails.
+	storedSecrets, err := envsecrets.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to store the environment's secret values")
+	}
+
 	args := &vertex.AiReasoningEngineArgs{
 		DisplayName: pulumi.String(locals.DisplayName),
 		Region:      pulumi.String(spec.Location),
@@ -59,7 +70,7 @@ func agentEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 		}
 	}
 	if spec.Spec != nil {
-		args.Spec = buildSpec(spec.Spec)
+		args.Spec = buildSpec(spec.Spec, storedSecrets.Refs)
 	}
 	if spec.ContextSpec != nil && spec.ContextSpec.MemoryBankConfig != nil {
 		args.ContextSpec = &vertex.AiReasoningEngineContextSpecArgs{
@@ -77,7 +88,7 @@ func agentEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 	createdEngine, err := vertex.NewAiReasoningEngine(ctx,
 		locals.GcpVertexAiAgentEngine.Metadata.Name, args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdAiplatformApi}))
+		pulumi.DependsOn(append([]pulumi.Resource{createdAiplatformApi}, storedSecrets.Grants...)))
 	if err != nil {
 		return errors.Wrap(err, "failed to create agent engine")
 	}
@@ -95,7 +106,10 @@ func agentEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 // buildSpec maps the agent's code source, identity, and deployment shape.
 // build_spec.service_account is not mapped: the pinned SDK lacks it, and
 // an argument one engine cannot send is never a one-engine field.
-func buildSpec(s *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpecConfig) *vertex.AiReasoningEngineSpecArgs {
+func buildSpec(
+	s *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpecConfig,
+	secretRefs map[envsecrets.Key]envsecrets.Ref,
+) *vertex.AiReasoningEngineSpecArgs {
 	args := &vertex.AiReasoningEngineSpecArgs{}
 	if s.AgentFramework != "" {
 		args.AgentFramework = pulumi.String(s.AgentFramework)
@@ -143,7 +157,7 @@ func buildSpec(s *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpecConfi
 		}
 	}
 	if d := s.DeploymentSpec; d != nil {
-		args.DeploymentSpec = buildDeploymentSpec(d)
+		args.DeploymentSpec = buildDeploymentSpec(d, secretRefs)
 	}
 	return args
 }
@@ -204,7 +218,13 @@ func buildSourceCodeSpec(src *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEng
 	return args
 }
 
-func buildDeploymentSpec(d *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineDeploymentSpec) *vertex.AiReasoningEngineSpecDeploymentSpecArgs {
+// buildDeploymentSpec maps the running agent's shape. A secret_env entry is
+// a secret the author owns or a value this module stored (one of the two);
+// a stored value reads the exact version the module created.
+func buildDeploymentSpec(
+	d *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineDeploymentSpec,
+	secretRefs map[envsecrets.Key]envsecrets.Ref,
+) *vertex.AiReasoningEngineSpecDeploymentSpecArgs {
 	args := &vertex.AiReasoningEngineSpecDeploymentSpecArgs{}
 	if len(d.Env) > 0 {
 		envs := vertex.AiReasoningEngineSpecDeploymentSpecEnvArray{}
@@ -219,11 +239,20 @@ func buildDeploymentSpec(d *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngin
 	if len(d.SecretEnv) > 0 {
 		secrets := vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvArray{}
 		for _, s := range d.SecretEnv {
-			ref := &vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvSecretRefArgs{
-				Secret: pulumi.String(s.SecretRef.Secret.GetValue()),
-			}
-			if s.SecretRef.Version != "" {
-				ref.Version = pulumi.String(s.SecretRef.Version)
+			var ref *vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvSecretRefArgs
+			if stored, ok := secretRefs[envsecrets.Key{Name: s.Name}]; ok {
+				ref = &vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvSecretRefArgs{
+					Secret:  stored.Secret,
+					Version: stored.Version,
+				}
+			} else {
+				owned := s.GetSecretRef()
+				ref = &vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvSecretRefArgs{
+					Secret: pulumi.String(owned.GetSecret().GetValue()),
+				}
+				if owned.GetVersion() != "" {
+					ref.Version = pulumi.String(owned.GetVersion())
+				}
 			}
 			secrets = append(secrets, &vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvArgs{
 				Name:      pulumi.String(s.Name),

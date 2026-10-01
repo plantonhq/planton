@@ -31,10 +31,7 @@ independent lifecycle.
 
 The default compute service account is broad by default; give each
 production function its own `serviceAccountEmail` holding exactly what
-the code touches. Secrets ride Secret Manager references
-(`secretEnvironmentVariables` / `secretVolumes`) — the runtime SA needs
-`secretmanager.secretAccessor` per secret, and the material never
-enters the spec or state.
+the code touches. Secrets go in `secretEnvironmentVariables` or `secretVolumes`, never in `environmentVariables`. A `secretEnvironmentVariables` entry either names a secret you already manage or carries a `value`. For a `value`, the module creates one Secret Manager secret per variable, stores the value as a pinned version, and grants the runtime identity `secretmanager.secretAccessor` on that secret alone. The function never sees the value as plain text configuration. For a named secret, granting access is yours.
 
 ## Cold starts are a spend decision
 

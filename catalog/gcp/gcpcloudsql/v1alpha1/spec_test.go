@@ -390,9 +390,34 @@ var _ = ginkgo.Describe("GcpCloudSqlSpec", func() {
 			r := minimalPostgres()
 			r.Spec.Network = &GcpCloudSqlNetwork{
 				Ipv4Enabled:  true,
-				ServerCaPool: "projects/p/locations/l/caPools/pool",
+				ServerCaPool: litRef("projects/p/locations/l/caPools/pool"),
 			}
 			expectInvalid(r, "server_ca_pool applies only")
+		})
+
+		ginkgo.It("accepts a GcpPrivateCaPool reference or a full pool name with CUSTOMER_MANAGED_CAS_CA", func() {
+			for _, pool := range []*foreignkeyv1.StringValueOrRef{
+				litRef("projects/p/locations/us-central1/caPools/sql-ca"),
+				fromRef("GcpPrivateCaPool", "sql-ca", "status.outputs.name"),
+			} {
+				r := minimalPostgres()
+				r.Spec.Network = &GcpCloudSqlNetwork{
+					Ipv4Enabled:  true,
+					ServerCaMode: "CUSTOMER_MANAGED_CAS_CA",
+					ServerCaPool: pool,
+				}
+				expectValid(r)
+			}
+		})
+
+		ginkgo.It("rejects a malformed literal server_ca_pool", func() {
+			r := minimalPostgres()
+			r.Spec.Network = &GcpCloudSqlNetwork{
+				Ipv4Enabled:  true,
+				ServerCaMode: "CUSTOMER_MANAGED_CAS_CA",
+				ServerCaPool: litRef("sql-ca"),
+			}
+			expectInvalid(r, "a literal server_ca_pool must be")
 		})
 
 		ginkgo.It("rejects PSC settings when psc is disabled", func() {

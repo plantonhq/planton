@@ -73,6 +73,41 @@ resources:
       destroying one function never disables an API project-wide); not
       spec surface.
 
+  # One secret per service_config.secret_environment_variables[].value: the module creates it, stores the value as a
+  # version, and grants the runtime identity read access to that secret
+  # alone. Only the value itself is spec surface.
+  google_secret_manager_secret:
+    internal: >-
+      created by the module per service_config.secret_environment_variables[].value -- its id
+      (function, region, function name, key), user-managed replication in the function's
+      region, and attribution labels are all derived from the function,
+      never authored.
+  google_secret_manager_secret_iam_member:
+    internal: >-
+      the roles/secretmanager.secretAccessor grant on each stored secret
+      for the function's runtime identity (service_config.service_account_email, else the project's Compute Engine default) -- derived,
+      never authored.
+  google_secret_manager_secret_version:
+    specRoot: spec.service_config.secret_environment_variables
+    mappings:
+      - spec: spec.service_config.secret_environment_variables.value
+        arg: secret_data
+    exclusions:
+      - arg: secret
+        reason: the module's own secret for this variable (derived), never authored
+      - arg: project
+        reason: follows the function's project through the secret it belongs to
+      - arg: enabled
+        reason: a stored value is always the enabled version the variable is pinned to
+      - arg: is_secret_data_base64
+        reason: the stored value is the variable's text as resolved, never base64-encoded
+      - arg: secret_data_wo
+        reason: write-only arm of secret_data; the module pins the variable to the stored version, which needs the version resource's own lifecycle
+      - arg: secret_data_wo_version
+        reason: companion of the unused write-only arm (see secret_data_wo)
+      - arg: deletion_policy
+        reason: a replaced or removed version is deleted (the provider default) -- the copy is derived, and a disabled or abandoned version would outlive the value's source
+
 specExclusions:
   - field: spec.trigger.trigger_type
     reason: >-

@@ -34,7 +34,9 @@ spec:
           - compute.regionUrlMaps.delete
           - compute.regionOperations.get
         provenance: derived
-        notes: Covers google_compute_region_url_map (created when spec.region is set). Regional maps authorize against their own compute.regionUrlMaps family and return region operations the provider polls; the referenced regional backend services authorize with compute.regionBackendServices.use.
+        condition:
+          spec_field_set: region
+        notes: Covers google_compute_region_url_map, built instead of the global map when region is set. Regional maps authorize against their own compute.regionUrlMaps family and return region operations the provider polls; the referenced regional backend services authorize with compute.regionBackendServices.use.
       - purpose: UseReferencedBackends
         permissions:
           - compute.backendServices.use

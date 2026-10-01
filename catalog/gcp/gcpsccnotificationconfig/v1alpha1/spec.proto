@@ -18,9 +18,11 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // Two things must be true before findings arrive:
 //   - Security Command Center is activated on the scope (Standard is free;
 //     a project can be activated on its own when the organization is not).
-//   - The service_account output can publish to the topic
-//     (roles/pubsub.publisher on it). Creating the config does not check
-//     this; without the grant, notifications are silently dropped.
+//   - The config's publisher can publish to the topic: a
+//     GcpPubSubTopicIamMember on the topic, role roles/pubsub.publisher,
+//     member referencing this config's service_account_member output.
+//     Creating the config does not check this; without the grant,
+//     notifications are silently dropped.
 message GcpSccNotificationConfigSpec {
   option (buf.validate.message).cel = {
     id: "pubsub_topic_required_off_project_scope"
@@ -48,7 +50,9 @@ message GcpSccNotificationConfigSpec {
   // The topic findings are published to: a literal
   // projects/{project}/topics/{topic} or a GcpPubSubTopic reference.
   // Required on folder and organization configs; Google lets a project
-  // config omit it.
+  // config omit it. Grant the config's publisher on it with a
+  // GcpPubSubTopicIamMember (role roles/pubsub.publisher, member
+  // referencing the service_account_member output).
   dev.planton.shared.foreignkey.v1.StringValueOrRef pubsub_topic = 4 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id",

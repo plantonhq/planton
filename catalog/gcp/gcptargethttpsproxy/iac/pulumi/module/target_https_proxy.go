@@ -92,8 +92,8 @@ func globalTargetHttpsProxy(ctx *pulumi.Context, locals *Locals, opts []pulumi.R
 	if spec.SslPolicy.GetValue() != "" {
 		args.SslPolicy = pulumi.String(spec.SslPolicy.GetValue())
 	}
-	if spec.ServerTlsPolicy.GetValue() != "" {
-		args.ServerTlsPolicy = pulumi.String(spec.ServerTlsPolicy.GetValue())
+	if spec.ServerTlsPolicy != "" {
+		args.ServerTlsPolicy = pulumi.String(spec.ServerTlsPolicy)
 	}
 	// The middleware default (NONE) matches GCP's own default, so an unset
 	// value can simply be omitted — the API computes NONE either way.
@@ -164,8 +164,8 @@ func regionalTargetHttpsProxy(ctx *pulumi.Context, locals *Locals, opts []pulumi
 	if spec.SslPolicy.GetValue() != "" {
 		args.SslPolicy = pulumi.String(spec.SslPolicy.GetValue())
 	}
-	if spec.ServerTlsPolicy.GetValue() != "" {
-		args.ServerTlsPolicy = pulumi.String(spec.ServerTlsPolicy.GetValue())
+	if spec.ServerTlsPolicy != "" {
+		args.ServerTlsPolicy = pulumi.String(spec.ServerTlsPolicy)
 	}
 	// Immutable on the regional resource (mutable on the global one).
 	if spec.HttpKeepAliveTimeoutSec != 0 {

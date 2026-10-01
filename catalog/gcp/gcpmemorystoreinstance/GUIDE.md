@@ -43,6 +43,8 @@ trusts a CA unique to this instance; `GOOGLE_MANAGED_SHARED_CA` lets a
 fleet trust one CA; `CUSTOMER_MANAGED_CAS_CA` + `serverCaPool` puts the
 chain under your Certificate Authority Service pool — the regulated-
 environment answer, and the pool must live in the instance's region.
+Point `serverCaPool` at a `GcpPrivateCaPool` with `valueFrom` (its
+`status.outputs.name`) or write the pool's full name as `{value: ...}`.
 
 ## ACLs are a shared policy, not per-instance rules
 

@@ -28,4 +28,12 @@ locals {
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 
   pubsub_topic = var.spec.pubsub_topic != "" ? var.spec.pubsub_topic : null
+
+  # The publisher of whichever config was created (exactly one is), for the
+  # service_account and service_account_member outputs.
+  service_account = one(concat(
+    google_scc_v2_project_notification_config.this[*].service_account,
+    google_scc_v2_folder_notification_config.this[*].service_account,
+    google_scc_v2_organization_notification_config.this[*].service_account,
+  ))
 }

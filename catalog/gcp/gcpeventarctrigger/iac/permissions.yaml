@@ -33,15 +33,21 @@ spec:
           - eventarc.channels.update
           - eventarc.channels.delete
         provenance: derived
-        notes: Covers google_eventarc_channel, created only when partner_channel arms a SaaS-partner event source -- the channel is created alongside the trigger and wired to it.
+        condition:
+          spec_field_set: partner_channel
+        notes: Covers google_eventarc_channel, created when partner_channel arms a SaaS-partner event source -- the channel is created alongside the trigger and wired to it.
       - purpose: ManageGoogleChannelConfig
         permissions:
           - eventarc.googleChannelConfigs.get
           - eventarc.googleChannelConfigs.update
         provenance: derived
-        notes: Covers google_eventarc_google_channel_config, managed only when google_channel_crypto_key is set. The googleChannelConfig is a per-project-per-location SINGLETON that always exists in GCP -- consistently, Google publishes ONLY get and update for the family (no create or delete exist in the inventory), and the provider's "delete" of the resource is a state-only no-op.
+        condition:
+          spec_field_set: google_channel_crypto_key
+        notes: Covers google_eventarc_google_channel_config, managed when google_channel_crypto_key is set. The googleChannelConfig is a per-project-per-location SINGLETON that always exists in GCP -- consistently, Google publishes ONLY get and update for the family (no create or delete exist in the inventory), and the provider's "delete" of the resource is a state-only no-op.
       - purpose: ActAsTriggerServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
-        notes: Required when service_account names the trigger's identity (both presets do, and audit-log triggers and workflow destinations cannot omit it) -- Google's Eventarc API reference states the iam.serviceAccounts.actAs permission must be granted on the service account to allow a principal to attach it to a trigger.
+        condition:
+          spec_field_set: service_account
+        notes: Both presets name the trigger's identity in service_account, and audit-log triggers and workflow destinations cannot omit it -- Google's Eventarc API reference states the iam.serviceAccounts.actAs permission must be granted on the service account to allow a principal to attach it to a trigger.

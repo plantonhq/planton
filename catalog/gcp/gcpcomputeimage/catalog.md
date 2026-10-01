@@ -50,7 +50,7 @@ This captures the configured build disk as the newest image in the `web-base` fa
 
 ### InfraChart
 
-Reference a disk's `status.outputs.self_link` from `sourceDisk`; consumers boot from this image's `status.outputs.self_link` or its family path.
+Reference a disk's `status.outputs.self_link` from `sourceDisk`; consumers boot from this image's `status.outputs.self_link` or its family path; a GKE node pool's secondary boot disk reads `status.outputs.image_id`.
 
 ## Key Configuration
 
@@ -84,6 +84,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `family` | The image's family | Booting the newest build |
 | `name` | The image's name | Tooling |
 | `disk_size_gb` | The image's size | Sizing boot disks |
+| `image_id` | `projects/{project}/global/images/{name}` | A GKE node pool's secondary boot disk image |
 
 ## Common Patterns
 

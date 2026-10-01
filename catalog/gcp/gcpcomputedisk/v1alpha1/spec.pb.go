@@ -71,9 +71,13 @@ type GcpComputeDiskSpec struct {
 	// place; shrinking is impossible.
 	SizeGb int32 `protobuf:"varint,6,opt,name=size_gb,json=sizeGb,proto3" json:"size_gb,omitempty"`
 	// Source image to initialize the disk from — makes the disk bootable.
-	// Accepts an image family ("debian-cloud/debian-12") or a specific
-	// image self link. Create-time only.
-	Image string `protobuf:"bytes,7,opt,name=image,proto3" json:"image,omitempty"`
+	// A GcpComputeImage reference (its self_link, pinning that exact build)
+	// or a literal Google accepts: a public image family short form
+	// ("debian-cloud/debian-12"), a family path
+	// ("projects/{project}/global/images/family/{family}", which follows
+	// the family's newest image), or a specific image's path or self link.
+	// Create-time only.
+	Image *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=image,proto3" json:"image,omitempty"`
 	// Source snapshot to restore the disk from (name or self link).
 	// Create-time only.
 	SourceSnapshot string `protobuf:"bytes,8,opt,name=source_snapshot,json=sourceSnapshot,proto3" json:"source_snapshot,omitempty"`
@@ -253,11 +257,11 @@ func (x *GcpComputeDiskSpec) GetSizeGb() int32 {
 	return 0
 }
 
-func (x *GcpComputeDiskSpec) GetImage() string {
+func (x *GcpComputeDiskSpec) GetImage() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Image
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpComputeDiskSpec) GetSourceSnapshot() string {
@@ -486,7 +490,7 @@ var File_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpcomputedisk/v1alpha1/spec.proto\x12'dev.planton.gcp.gcpcomputedisk.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa9\"\n" +
+	".catalog/gcp/gcpcomputedisk/v1alpha1/spec.proto\x12'dev.planton.gcp.gcpcomputedisk.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xae$\n" +
 	"\x12GcpComputeDiskSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xf8\x01\n" +
@@ -495,8 +499,8 @@ const file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04zone\x18\x03 \x01(\tB%\xbaH\"\xc8\x01\x01r\x1d2\x1b^[a-z]+-[a-z]+[0-9]+-[a-z]$R\x04zone\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x12\n" +
 	"\x04type\x18\x05 \x01(\tR\x04type\x12'\n" +
-	"\asize_gb\x18\x06 \x01(\x05B\x0e\xbaH\v\xd8\x01\x01\x1a\x06\x18\x80\x80\x04(\x01R\x06sizeGb\x12\x14\n" +
-	"\x05image\x18\a \x01(\tR\x05image\x12'\n" +
+	"\asize_gb\x18\x06 \x01(\x05B\x0e\xbaH\v\xd8\x01\x01\x1a\x06\x18\x80\x80\x04(\x01R\x06sizeGb\x12k\n" +
+	"\x05image\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xac\x19\x92\xd4a\x18status.outputs.self_linkR\x05image\x12'\n" +
 	"\x0fsource_snapshot\x18\b \x01(\tR\x0esourceSnapshot\x12v\n" +
 	"\vsource_disk\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xba\x18\x92\xd4a\x18status.outputs.self_linkR\n" +
 	"sourceDisk\x12\xa8\x01\n" +
@@ -531,10 +535,10 @@ const file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x87\v\xbaH\x83\v\x1a\xc3\x03\n" +
-	"\x17disk_at_most_one_source\x12\x99\x01at most one disk source may be set: image, source_snapshot, source_instant_snapshot, source_storage_object, or source_disk — omit all for an empty disk\x1a\x8b\x02(this.image != '' ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + (this.source_instant_snapshot != '' ? 1 : 0) + (this.source_storage_object != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) <= 1\x1a\xd2\x02\n" +
-	"\x18empty_disk_requires_size\x12Gan empty disk (no image, snapshot, or source disk) must declare size_gb\x1a\xec\x01this.image != '' || this.source_snapshot != '' || this.source_instant_snapshot != '' || this.source_storage_object != '' || (has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) || this.size_gb > 0\x1a\x94\x01\n" +
-	"\x1fimage_encryption_requires_image\x129source_image_encryption is only valid together with image\x1a6!has(this.source_image_encryption) || this.image != ''\x1a\xb4\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xb5\f\xbaH\xb1\f\x1a\xfd\x03\n" +
+	"\x17disk_at_most_one_source\x12\x99\x01at most one disk source may be set: image, source_snapshot, source_instant_snapshot, source_storage_object, or source_disk — omit all for an empty disk\x1a\xc5\x02((has(this.image) && (has(this.image.value) || has(this.image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + (this.source_instant_snapshot != '' ? 1 : 0) + (this.source_storage_object != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) <= 1\x1a\x8c\x03\n" +
+	"\x18empty_disk_requires_size\x12Gan empty disk (no image, snapshot, or source disk) must declare size_gb\x1a\xa6\x02(has(this.image) && (has(this.image.value) || has(this.image.value_from))) || this.source_snapshot != '' || this.source_instant_snapshot != '' || this.source_storage_object != '' || (has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) || this.size_gb > 0\x1a\xce\x01\n" +
+	"\x1fimage_encryption_requires_image\x129source_image_encryption is only valid together with image\x1ap!has(this.source_image_encryption) || (has(this.image) && (has(this.image.value) || has(this.image.value_from)))\x1a\xb4\x01\n" +
 	"%snapshot_encryption_requires_snapshot\x12Fsource_snapshot_encryption is only valid together with source_snapshot\x1aC!has(this.source_snapshot_encryption) || this.source_snapshot != ''\x1a\x97\x02\n" +
 	"%confidential_compute_requires_kms_key\x12wconfidential-compute disks require customer-managed encryption — set kms_key when enable_confidential_compute is true\x1au!this.enable_confidential_compute || (has(this.kms_key) && (has(this.kms_key.value) || has(this.kms_key.value_from)))B\x13\n" +
 	"\x11_provisioned_iopsB\x19\n" +
@@ -566,20 +570,21 @@ var file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_goTypes = []any{
 	(*v1.StringValueOrRef)(nil),            // 4: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_depIdxs = []int32{
-	4, // 0: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 1: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.source_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 2: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2, // 3: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.labels:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.LabelsEntry
-	3, // 4: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.ResourceManagerTagsEntry
-	1, // 5: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSourceEncryption
-	1, // 6: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSourceEncryption
-	4, // 7: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.async_primary_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 8: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSourceEncryption.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	4,  // 0: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 1: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.image:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 2: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.source_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 3: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 4: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.labels:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.LabelsEntry
+	3,  // 5: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.ResourceManagerTagsEntry
+	1,  // 6: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSourceEncryption
+	1,  // 7: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSourceEncryption
+	4,  // 8: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.async_primary_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 9: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSourceEncryption.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_init() }

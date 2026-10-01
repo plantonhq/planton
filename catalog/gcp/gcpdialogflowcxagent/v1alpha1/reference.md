@@ -155,14 +155,14 @@ spec:
 | `spec.webhooks[].genericWebService.requestHeaders` | `map<string, string>` |  |  |  |
 | `spec.webhooks[].genericWebService.secretVersionsForRequestHeaders` | `[]GcpDialogflowCxAgentSecretHeader` |  |  |  |
 | `spec.webhooks[].genericWebService.secretVersionsForRequestHeaders[].key` | `string` | yes |  |  |
-| `spec.webhooks[].genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `string` |  |  |  |
-| `spec.webhooks[].genericWebService.secretVersionForUsernamePassword` | `string` |  |  |  |
+| `spec.webhooks[].genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `string \| valueFrom` | yes |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
+| `spec.webhooks[].genericWebService.secretVersionForUsernamePassword` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.webhooks[].genericWebService.oauthConfig` | `GcpDialogflowCxAgentOauthConfig` |  |  |  |
 | `spec.webhooks[].genericWebService.oauthConfig.clientId` | `string` | yes |  |  |
 | `spec.webhooks[].genericWebService.oauthConfig.tokenEndpoint` | `string` | yes |  |  |
 | `spec.webhooks[].genericWebService.oauthConfig.clientSecret` | `string` (sensitive) |  |  |  |
 | `spec.webhooks[].genericWebService.oauthConfig.scopes` | `[]string` |  |  |  |
-| `spec.webhooks[].genericWebService.oauthConfig.secretVersionForClientSecret` | `string` |  |  |  |
+| `spec.webhooks[].genericWebService.oauthConfig.secretVersionForClientSecret` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.webhooks[].genericWebService.serviceAgentAuth` | `string` |  |  |  |
 | `spec.webhooks[].genericWebService.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 | `spec.webhooks[].genericWebService.allowedCaCerts` | `[]string` |  |  |  |
@@ -177,14 +177,14 @@ spec:
 | `spec.webhooks[].serviceDirectory.genericWebService.requestHeaders` | `map<string, string>` |  |  |  |
 | `spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders` | `[]GcpDialogflowCxAgentSecretHeader` |  |  |  |
 | `spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders[].key` | `string` | yes |  |  |
-| `spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `string` |  |  |  |
-| `spec.webhooks[].serviceDirectory.genericWebService.secretVersionForUsernamePassword` | `string` |  |  |  |
+| `spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `string \| valueFrom` | yes |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
+| `spec.webhooks[].serviceDirectory.genericWebService.secretVersionForUsernamePassword` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig` | `GcpDialogflowCxAgentOauthConfig` |  |  |  |
 | `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.clientId` | `string` | yes |  |  |
 | `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.tokenEndpoint` | `string` | yes |  |  |
 | `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.clientSecret` | `string` (sensitive) |  |  |  |
 | `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.scopes` | `[]string` |  |  |  |
-| `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.secretVersionForClientSecret` | `string` |  |  |  |
+| `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.secretVersionForClientSecret` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.webhooks[].serviceDirectory.genericWebService.serviceAgentAuth` | `string` |  |  |  |
 | `spec.webhooks[].serviceDirectory.genericWebService.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 | `spec.webhooks[].serviceDirectory.genericWebService.allowedCaCerts` | `[]string` |  |  |  |
@@ -198,17 +198,17 @@ spec:
 | `spec.tools[].openApiSpec.authentication.apiKeyConfig.keyName` | `string` | yes |  |  |
 | `spec.tools[].openApiSpec.authentication.apiKeyConfig.requestLocation` | `string` | yes |  |  |
 | `spec.tools[].openApiSpec.authentication.apiKeyConfig.apiKey` | `string` (sensitive) |  |  |  |
-| `spec.tools[].openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `string` |  |  |  |
+| `spec.tools[].openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.tools[].openApiSpec.authentication.bearerTokenConfig` | `GcpDialogflowCxAgentToolBearerTokenConfig` |  |  |  |
 | `spec.tools[].openApiSpec.authentication.bearerTokenConfig.token` | `string` (sensitive) |  |  |  |
-| `spec.tools[].openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `string` |  |  |  |
+| `spec.tools[].openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.tools[].openApiSpec.authentication.oauthConfig` | `GcpDialogflowCxAgentToolOauthConfig` |  |  |  |
 | `spec.tools[].openApiSpec.authentication.oauthConfig.clientId` | `string` | yes |  |  |
 | `spec.tools[].openApiSpec.authentication.oauthConfig.oauthGrantType` | `string` | yes |  |  |
 | `spec.tools[].openApiSpec.authentication.oauthConfig.tokenEndpoint` | `string` | yes |  |  |
 | `spec.tools[].openApiSpec.authentication.oauthConfig.clientSecret` | `string` (sensitive) |  |  |  |
 | `spec.tools[].openApiSpec.authentication.oauthConfig.scopes` | `[]string` |  |  |  |
-| `spec.tools[].openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `string` |  |  |  |
+| `spec.tools[].openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.tools[].openApiSpec.authentication.serviceAgentAuthConfig` | `GcpDialogflowCxAgentToolServiceAgentAuthConfig` |  |  |  |
 | `spec.tools[].openApiSpec.authentication.serviceAgentAuthConfig.serviceAgentAuth` | `string` |  |  |  |
 | `spec.tools[].openApiSpec.serviceDirectoryConfig` | `GcpDialogflowCxAgentToolServiceDirectoryConfig` |  |  |  |
@@ -237,17 +237,17 @@ spec:
 | `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.keyName` | `string` | yes |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.requestLocation` | `string` | yes |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.apiKey` | `string` (sensitive) |  |  |  |
-| `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `string` |  |  |  |
+| `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig` | `GcpDialogflowCxAgentToolBearerTokenConfig` |  |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.token` | `string` (sensitive) |  |  |  |
-| `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `string` |  |  |  |
+| `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig` | `GcpDialogflowCxAgentToolOauthConfig` |  |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.clientId` | `string` | yes |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.oauthGrantType` | `string` | yes |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.tokenEndpoint` | `string` | yes |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.clientSecret` | `string` (sensitive) |  |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.scopes` | `[]string` |  |  |  |
-| `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `string` |  |  |  |
+| `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `string \| valueFrom` |  |  | GcpSecretManagerSecret (`status.outputs.latest_version_name`) |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.serviceAgentAuthConfig` | `GcpDialogflowCxAgentToolServiceAgentAuthConfig` |  |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.authentication.serviceAgentAuthConfig.serviceAgentAuth` | `string` |  |  |  |
 | `spec.tools[].versions[].tool.openApiSpec.serviceDirectoryConfig` | `GcpDialogflowCxAgentToolServiceDirectoryConfig` |  |  |  |
@@ -761,21 +761,33 @@ The header name, e.g. "X-Api-Key".
 
 ### spec.webhooks[].genericWebService.secretVersionsForRequestHeaders[].secretVersion
 
-`string`
+`string | valueFrom` · required
 
-The Secret Manager secret version holding the header value:
+The Secret Manager secret VERSION holding the header value -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
 projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret).
 
-- rule: {"string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.webhooks[].genericWebService.secretVersionForUsernamePassword
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding "username:password" for HTTP
-Basic authentication: projects/{project}/secrets/{secret}/versions/{version}.
+The Secret Manager secret VERSION holding "username:password" for HTTP
+Basic authentication -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret).
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_username_password must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.webhooks[].genericWebService.oauthConfig
 
@@ -816,13 +828,18 @@ The OAuth scopes to request.
 
 ### spec.webhooks[].genericWebService.oauthConfig.secretVersionForClientSecret
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the client secret:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
+The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over
 client_secret.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.webhooks[].genericWebService.serviceAgentAuth
 
@@ -946,21 +963,33 @@ The header name, e.g. "X-Api-Key".
 
 ### spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders[].secretVersion
 
-`string`
+`string | valueFrom` · required
 
-The Secret Manager secret version holding the header value:
+The Secret Manager secret VERSION holding the header value -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
 projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret).
 
-- rule: {"string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.webhooks[].serviceDirectory.genericWebService.secretVersionForUsernamePassword
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding "username:password" for HTTP
-Basic authentication: projects/{project}/secrets/{secret}/versions/{version}.
+The Secret Manager secret VERSION holding "username:password" for HTTP
+Basic authentication -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret).
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_username_password must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.webhooks[].serviceDirectory.genericWebService.oauthConfig
 
@@ -1001,13 +1030,18 @@ The OAuth scopes to request.
 
 ### spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.secretVersionForClientSecret
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the client secret:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
+The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over
 client_secret.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.webhooks[].serviceDirectory.genericWebService.serviceAgentAuth
 
@@ -1122,13 +1156,17 @@ prefer that. Google never returns it.
 
 ### spec.tools[].openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the key:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
-api_key.
+The Secret Manager secret VERSION holding the key -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over api_key.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_api_key must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.tools[].openApiSpec.authentication.bearerTokenConfig
 
@@ -1146,13 +1184,17 @@ secret_version_for_token is set. Google never returns it.
 
 ### spec.tools[].openApiSpec.authentication.bearerTokenConfig.secretVersionForToken
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the token:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
-token.
+The Secret Manager secret VERSION holding the token -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over token.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_token must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.tools[].openApiSpec.authentication.oauthConfig
 
@@ -1199,13 +1241,18 @@ The OAuth scopes to request.
 
 ### spec.tools[].openApiSpec.authentication.oauthConfig.secretVersionForClientSecret
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the client secret:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
+The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over
 client_secret.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.tools[].openApiSpec.authentication.serviceAgentAuthConfig
 
@@ -1419,13 +1466,17 @@ prefer that. Google never returns it.
 
 ### spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the key:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
-api_key.
+The Secret Manager secret VERSION holding the key -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over api_key.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_api_key must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig
 
@@ -1443,13 +1494,17 @@ secret_version_for_token is set. Google never returns it.
 
 ### spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.secretVersionForToken
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the token:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
-token.
+The Secret Manager secret VERSION holding the token -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over token.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_token must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig
 
@@ -1496,13 +1551,18 @@ The OAuth scopes to request.
 
 ### spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.secretVersionForClientSecret
 
-`string`
+`string | valueFrom`
 
-The Secret Manager secret version holding the client secret:
-projects/{project}/secrets/{secret}/versions/{version}. Wins over
+The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+when the secret declares an initial version) or a literal
+projects/{project}/secrets/{secret}/versions/{version}.
+The Dialogflow service agent reads it
+(roles/secretmanager.secretAccessor on the secret). Wins over
 client_secret.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"}}
+- references: GcpSecretManagerSecret (`status.outputs.latest_version_name`)
+- rule: secret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.latest_version_name}} -- a bare string does not parse
 
 ### spec.tools[].versions[].tool.openApiSpec.authentication.serviceAgentAuthConfig
 
@@ -1916,9 +1976,21 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.securitySettings` | GcpDialogflowCxSecuritySettings | `status.outputs.name` |
 | `spec.genAppBuilderSettings.engine` | GcpVertexAiSearchEngine | `status.outputs.name` |
+| `spec.webhooks[].genericWebService.secretVersionsForRequestHeaders[].secretVersion` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.webhooks[].genericWebService.secretVersionForUsernamePassword` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.webhooks[].genericWebService.oauthConfig.secretVersionForClientSecret` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
 | `spec.webhooks[].genericWebService.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
+| `spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders[].secretVersion` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.webhooks[].serviceDirectory.genericWebService.secretVersionForUsernamePassword` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.secretVersionForClientSecret` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
 | `spec.webhooks[].serviceDirectory.genericWebService.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
+| `spec.tools[].openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.tools[].openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.tools[].openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
 | `spec.tools[].dataStoreSpec.dataStoreConnections[].dataStore` | GcpVertexAiSearchDataStore | `status.outputs.name` |
+| `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
+| `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | GcpSecretManagerSecret | `status.outputs.latest_version_name` |
 | `spec.tools[].versions[].tool.dataStoreSpec.dataStoreConnections[].dataStore` | GcpVertexAiSearchDataStore | `status.outputs.name` |
 
 ## Referenced By

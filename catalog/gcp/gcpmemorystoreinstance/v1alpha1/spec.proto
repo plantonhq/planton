@@ -541,10 +541,20 @@ message GcpMemorystoreInstanceSpec {
   }];
 
   // The Certificate Authority Service CA pool that signs the server
-  // certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-  // Format: projects/{project}/locations/{region}/caPools/{caPoolId}.
-  // Immutable after creation.
-  string server_ca_pool = 24;
+  // certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a
+  // GcpPrivateCaPool reference (its full name) or a literal
+  // projects/{project}/locations/{region}/caPools/{caPoolId}. Immutable
+  // after creation.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef server_ca_pool = 24 [
+    (buf.validate.field).cel = {
+      id: "server_ca_pool_format"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+      message: "a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
   // Self-service maintenance version. Setting this to a newer available
   // version triggers the maintenance update on your schedule instead of
@@ -596,7 +606,7 @@ message GcpMemorystoreInstanceSpec {
   // configuration mistake.
   option (buf.validate.message).cel = {
     id: "server_ca_pool_requires_customer_managed_cas"
-    expression: "this.server_ca_pool == '' || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'"
+    expression: "!has(this.server_ca_pool) || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'"
     message: "server_ca_pool requires server_ca_mode CUSTOMER_MANAGED_CAS_CA"
   };
 }

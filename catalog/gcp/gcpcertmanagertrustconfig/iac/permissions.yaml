@@ -1,0 +1,28 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcertmanagertrustconfig
+spec:
+  gcp:
+    groups:
+      - purpose: EnableCertificateManagerApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service (Pulumi projects.Service) enabling certificatemanager.googleapis.com on the target project -- the provider lists the project's enabled services before enabling one and reads the service back on refresh. disable_on_destroy is false in both modules, so the disable permission is never needed.
+      - purpose: ManageTrustConfig
+        permissions:
+          - certificatemanager.trustconfigs.create
+          - certificatemanager.trustconfigs.get
+          - certificatemanager.trustconfigs.update
+          - certificatemanager.trustconfigs.delete
+          - certificatemanager.operations.get
+        provenance: derived
+        notes: Covers google_certificate_manager_trust_config (Pulumi certificatemanager.TrustConfig) -- create, read/refresh, in-place PATCH updates (description, labels, trust stores, allowlisted certificates -- rotating a CA is an update, never a replacement), and destroy. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. The modules make no other API calls; the certificates arrive in the spec, so no CA or secret is read.

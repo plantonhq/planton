@@ -101,6 +101,7 @@ These are the most important decisions when configuring a Certificate Manager ce
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpCertManagerDnsAuthorization** | `managed.dnsAuthorizations[]` | `status.outputs.authorization_id` |
+| **GcpCertManagerIssuanceConfig** | `managed.issuanceConfig` | `status.outputs.issuance_config_id` |
 
 ### What This Component Provides
 
@@ -128,6 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cert Manager DNS Authorization**](/cloud-catalog/gcp-cert-manager-dns-authorization) -- proves domain control before issuance; required for wildcards
+- [**GCP Cert Manager DNS Authorization**](/cloud-catalog/gcp-cert-manager-dns-authorization) -- proves domain control before issuance; required for public wildcards
+- [**GCP Cert Manager Issuance Config**](/cloud-catalog/gcp-cert-manager-issuance-config) -- has your private CA pool issue and renew the certificate; its `issuance_config_id` output feeds `managed.issuanceConfig`
 - [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) -- serves each authorization's validation CNAME in the zone
 - [**GCP DNS Zone**](/cloud-catalog/gcp-dns-zone) -- the zone those records live in

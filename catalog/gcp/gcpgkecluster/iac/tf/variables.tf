@@ -814,9 +814,17 @@ variable "spec" {
     # some networking agents/service meshes on Autopilot).
     allow_net_admin = optional(bool, false)
 
-    # Registers the cluster with a fleet in the given project (the hub for
-    # multi-cluster features: multi-cluster ingress/services, config
-    # management, team scopes).
+    # Registers the cluster with the fleet of the given project (the hub
+    # for multi-cluster features: multi-cluster ingress/services, config
+    # management, team scopes) -- the fleet host project's ID. Point it at
+    # the GcpGkeFleet that declares the fleet (its project_id, the default):
+    # the reference orders the registration after the fleet exists, and a
+    # fleet declared after a cluster registers collides with the one the
+    # registration created. Point it at a GcpProject (its project_id) only
+    # when no GcpGkeFleet is declared and the registration may create the
+    # project's fleet itself. A literal project ID also works. The fleet
+    # project may differ from the cluster's own project.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     fleet_project = optional(string, "")
 
     # Fleet membership type. LIGHTWEIGHT registers a lightweight membership
@@ -1017,17 +1025,26 @@ variable "spec" {
     # disk encryption and ServiceAccount JWT signing. For regulated
     # environments that must own the entire trust chain. Immutable.
     user_managed_keys = optional(object({
-      # CA Service CaPool issuing the cluster CA
-      # ("projects/{p}/locations/{l}/caPools/{pool}").
+      # CA Service pool issuing the cluster CA -- a GcpPrivateCaPool
+      # reference (its full name) or a literal
+      # projects/{project}/locations/{location}/caPools/{pool}. Each of the
+      # four CA fields accepts the same forms.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       cluster_ca = optional(string, "")
 
-      # CA Service CaPool for the etcd API CA.
+      # CA Service pool for the etcd API CA: a GcpPrivateCaPool reference or
+      # the pool's full name.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       etcd_api_ca = optional(string, "")
 
-      # CA Service CaPool for the etcd peer CA.
+      # CA Service pool for the etcd peer CA: a GcpPrivateCaPool reference or
+      # the pool's full name.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       etcd_peer_ca = optional(string, "")
 
-      # CA Service CaPool for the aggregation layer CA.
+      # CA Service pool for the aggregation layer CA: a GcpPrivateCaPool
+      # reference or the pool's full name.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       aggregation_ca = optional(string, "")
 
       # KMS key encrypting the control-plane disks

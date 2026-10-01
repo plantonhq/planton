@@ -488,8 +488,14 @@ variable "spec" {
       # Secondary boot disks that preload container images or data onto every
       # node — cold-start acceleration for very large images. Immutable.
       secondary_boot_disks = optional(list(object({
-        # Disk image to create the secondary boot disk from (a prepared image
-        # containing the container images/data to preload).
+        # Disk image to create the secondary boot disk from: a prepared image
+        # containing the container images or data to preload (the output of
+        # Google's gke-disk-image-builder, or any image built for the purpose).
+        # A GcpComputeImage reference (its image_id,
+        # projects/{project}/global/images/{name}) or a literal in a form Google
+        # documents: global/images/{name} (an image in the pool's project) or
+        # projects/{project}/global/images/{name}. Required. Immutable.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         disk_image = string
 
         # CONTAINER_IMAGE_CACHE serves preloaded container images to the

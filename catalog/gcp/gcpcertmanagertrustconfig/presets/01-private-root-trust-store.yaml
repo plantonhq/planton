@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerTrustConfig
+metadata:
+  name: my-client-ca-trust
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Root and issuing CAs that sign our client certificates
+  trustStores:
+    - trustAnchors:
+        # The root CA every client chain builds up to. Public material --
+        # never a private key.
+        - |
+          -----BEGIN CERTIFICATE-----
+          <root-ca-pem-body>
+          -----END CERTIFICATE-----
+      intermediateCas:
+        # The issuing CA, for clients that send only their leaf certificate.
+        - |
+          -----BEGIN CERTIFICATE-----
+          <intermediate-ca-pem-body>
+          -----END CERTIFICATE-----
+  # A trust config serving live mTLS traffic should not disappear in a cleanup.
+  deletionPolicy: PREVENT

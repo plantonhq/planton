@@ -199,6 +199,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpGkeCluster | `spec.fleetProject` | `status.outputs.project_id` |
 | GcpGkeFleetFeature | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeFleetFeature | `spec.clusterupgrade.upstreamFleets` | `status.outputs.project_id` |
 | GcpGkeFleetMembership | `spec.projectId` | `status.outputs.project_id` |

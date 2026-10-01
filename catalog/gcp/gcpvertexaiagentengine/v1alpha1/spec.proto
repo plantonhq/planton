@@ -236,7 +236,9 @@ message GcpVertexAiAgentEngineEnvVar {
     (buf.validate.field).string.pattern = "^[A-Za-z_][A-Za-z0-9_.-]*$"
   ];
 
-  // Literal value. Never a credential -- use secret_env for those.
+  // Literal value, written into the agent where anyone who can view it
+  // reads it. Fine for configuration; never a credential -- a credential
+  // goes in deployment_spec.secret_env.
   string value = 2 [(buf.validate.field).required = true];
 }
 
@@ -258,7 +260,18 @@ message GcpVertexAiAgentEngineSecretRef {
 }
 
 // GcpVertexAiAgentEngineSecretEnvVar is one environment variable filled
-// from Secret Manager at instance start.
+// from Secret Manager at instance start: from a secret you already own
+// (secret_ref), or from a secret value this component stores for you
+// (value). Exactly one.
+//
+// Example (YAML):
+//   secretEnv:
+//     - name: OPENAI_API_KEY
+//       value: $secret/openai-api-key
+//     - name: DB_PASSWORD
+//       secretRef:
+//         secret: {value: db-password}
+//         version: "3"
 message GcpVertexAiAgentEngineSecretEnvVar {
   // Variable name.
   string name = 1 [
@@ -266,8 +279,33 @@ message GcpVertexAiAgentEngineSecretEnvVar {
     (buf.validate.field).string.pattern = "^[A-Za-z_][A-Za-z0-9_.-]*$"
   ];
 
-  // The secret version the value comes from.
-  GcpVertexAiAgentEngineSecretRef secret_ref = 2 [(buf.validate.field).required = true];
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    // A Secret Manager secret version you already own. The agent's
+    // identity needs roles/secretmanager.secretAccessor on the secret.
+    GcpVertexAiAgentEngineSecretRef secret_ref = 2;
+
+    // A secret value this component keeps in Secret Manager for you: on
+    // Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
+    // without the platform, the literal. The component creates one secret
+    // for this variable, replicated only in the agent's location, stores
+    // the value as a version, grants the agent's identity (spec.service_account,
+    // or the project's Vertex AI Reasoning Engine service agent
+    // service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+    // when unset) secretAccessor on that secret alone, and points the
+    // variable at that exact version -- the agent carries a reference,
+    // never the value. A changed value adds a version and redeploys the
+    // agent, so rotation is a deploy; destroying the agent removes the
+    // secret. The secret's id is
+    // agentengine_<location>_<metadata.name>_<variable> ('.' in the name
+    // becomes '-'). Not available with identity_type AGENT_IDENTITY (see
+    // the rule on GcpVertexAiAgentEngineSpecConfig).
+    string value = 3 [
+      (buf.validate.field).string.min_len = 1,
+      (dev.planton.shared.options.sensitive) = true
+    ];
+  }
 }
 
 // GcpVertexAiAgentEngineDnsPeeringConfig lets the agent resolve a private
@@ -352,10 +390,15 @@ message GcpVertexAiAgentEngineDeploymentSpec {
     expression: "this.resource_limits.all(k, k in ['cpu', 'memory'])"
   };
 
-  // Literal environment variables.
-  repeated GcpVertexAiAgentEngineEnvVar env = 1;
+  // Literal environment variables, written into the agent where anyone who
+  // can view it reads them. Configuration only -- a credential goes in
+  // secret_env, as a value this component stores in Secret Manager or a
+  // secret you already own.
+  repeated GcpVertexAiAgentEngineEnvVar env = 1 [(dev.planton.shared.options.secret_home) = "secret_env"];
 
-  // Environment variables filled from Secret Manager.
+  // Environment variables filled from Secret Manager at instance start:
+  // each from a secret you own (secret_ref) or from a value this
+  // component stores for you (value).
   repeated GcpVertexAiAgentEngineSecretEnvVar secret_env = 2;
 
   // Instances kept running at all times (0-10; Google's default 1). Zero
@@ -403,6 +446,16 @@ message GcpVertexAiAgentEngineSpecConfig {
     id: "spec.agent_identity_forbids_service_account"
     message: "service_account must not be set when identity_type is AGENT_IDENTITY"
     expression: "this.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)"
+  };
+  // An Agent Identity is minted for the agent when Google creates it, and
+  // the agent starts its first instance -- reading every secret_env entry
+  // -- inside that same create. A secret this component stores can only
+  // be granted to an identity that already exists, so under
+  // AGENT_IDENTITY the grant could never precede the read.
+  option (buf.validate.message).cel = {
+    id: "spec.agent_identity_forbids_stored_secret_values"
+    message: "secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account"
+    expression: "this.identity_type != 'AGENT_IDENTITY' || !has(this.deployment_spec) || !this.deployment_spec.secret_env.exists(e, has(e.value))"
   };
 
   // The open-source framework the agent is built with (e.g. "google-adk",

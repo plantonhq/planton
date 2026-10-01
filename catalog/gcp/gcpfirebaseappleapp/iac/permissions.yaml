@@ -25,13 +25,25 @@ spec:
           - serviceusage.services.list
         provenance: derived
         notes: Required only when app_check composes at least one resource. Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
-      - purpose: ManageAppCheckAttestation
+      - purpose: ManageAppAttestConfig
         permissions:
           - firebaseappcheck.appAttestConfig.get
           - firebaseappcheck.appAttestConfig.update
+        provenance: derived
+        notes: Required only when app_check composes an App Attest configuration (app_check.app_attest declared and not disabled with enabled false). google_firebase_app_check_app_attest_config / firebase.AppCheckAppAttestConfig is a per-app singleton -- the provider's create and update are both a PATCH (Google authorizes as appAttestConfig.update), get covers refresh, and its destroy calls no API (the configuration is never deleted on Google's side). roles/firebaseappcheck.admin contains both.
+      - purpose: ManageDeviceCheckConfig
+        permissions:
           - firebaseappcheck.deviceCheckConfig.get
           - firebaseappcheck.deviceCheckConfig.update
+        provenance: derived
+        condition:
+          spec_field_set: app_check.device_check
+        notes: google_firebase_app_check_device_check_config / firebase.AppCheckDeviceCheckConfig is a per-app singleton -- the provider's create and update are both a PATCH (Google authorizes as deviceCheckConfig.update), get covers refresh, and its destroy calls no API (the configuration is never deleted on Google's side). roles/firebaseappcheck.admin contains both.
+      - purpose: ManageAppCheckDebugTokens
+        permissions:
           - firebaseappcheck.debugTokens.get
           - firebaseappcheck.debugTokens.update
         provenance: derived
-        notes: Required only when app_check composes an attestation configuration or debug tokens. google_firebase_app_check_app_attest_config / firebase.AppCheckAppAttestConfig and google_firebase_app_check_device_check_config / firebase.AppCheckDeviceCheckConfig are per-app singletons -- the provider's create and update are both a PATCH (Google authorizes as appAttestConfig.update / deviceCheckConfig.update), get covers refresh, and their destroy calls no API (the configurations are never deleted on Google's side). google_firebase_app_check_debug_token / firebase.AppCheckDebugToken has real create, patch, and delete methods, but IAM's inventory carries only debugTokens.get and debugTokens.update for the class -- Google authorizes creating and deleting a token as an UPDATE of the app's token set, so those two cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains all six.
+        condition:
+          spec_field_set: app_check.debug_tokens
+        notes: google_firebase_app_check_debug_token / firebase.AppCheckDebugToken, one per app_check.debug_tokens entry, has real create, patch, and delete methods, but IAM's inventory carries only debugTokens.get and debugTokens.update for the class -- Google authorizes creating and deleting a token as an UPDATE of the app's token set, so those two cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains both.

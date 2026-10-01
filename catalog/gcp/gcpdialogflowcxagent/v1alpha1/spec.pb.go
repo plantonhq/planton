@@ -630,10 +630,13 @@ type GcpDialogflowCxAgentOauthConfig struct {
 	ClientSecret string `protobuf:"bytes,3,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
 	// The OAuth scopes to request.
 	Scopes []string `protobuf:"bytes,4,rep,name=scopes,proto3" json:"scopes,omitempty"`
-	// The Secret Manager secret version holding the client secret:
-	// projects/{project}/secrets/{secret}/versions/{version}. Wins over
+	// The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+	// when the secret declares an initial version) or a literal
+	// projects/{project}/secrets/{secret}/versions/{version}.
+	// The Dialogflow service agent reads it
+	// (roles/secretmanager.secretAccessor on the secret). Wins over
 	// client_secret.
-	SecretVersionForClientSecret string `protobuf:"bytes,5,opt,name=secret_version_for_client_secret,json=secretVersionForClientSecret,proto3" json:"secret_version_for_client_secret,omitempty"`
+	SecretVersionForClientSecret *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=secret_version_for_client_secret,json=secretVersionForClientSecret,proto3" json:"secret_version_for_client_secret,omitempty"`
 	unknownFields                protoimpl.UnknownFields
 	sizeCache                    protoimpl.SizeCache
 }
@@ -696,11 +699,11 @@ func (x *GcpDialogflowCxAgentOauthConfig) GetScopes() []string {
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentOauthConfig) GetSecretVersionForClientSecret() string {
+func (x *GcpDialogflowCxAgentOauthConfig) GetSecretVersionForClientSecret() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecretVersionForClientSecret
 	}
-	return ""
+	return nil
 }
 
 // GcpDialogflowCxAgentSecretHeader is one request header whose value lives
@@ -709,9 +712,12 @@ type GcpDialogflowCxAgentSecretHeader struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The header name, e.g. "X-Api-Key".
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	// The Secret Manager secret version holding the header value:
+	// The Secret Manager secret VERSION holding the header value -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+	// when the secret declares an initial version) or a literal
 	// projects/{project}/secrets/{secret}/versions/{version}.
-	SecretVersion string `protobuf:"bytes,2,opt,name=secret_version,json=secretVersion,proto3" json:"secret_version,omitempty"`
+	// The Dialogflow service agent reads it
+	// (roles/secretmanager.secretAccessor on the secret).
+	SecretVersion *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=secret_version,json=secretVersion,proto3" json:"secret_version,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -753,11 +759,11 @@ func (x *GcpDialogflowCxAgentSecretHeader) GetKey() string {
 	return ""
 }
 
-func (x *GcpDialogflowCxAgentSecretHeader) GetSecretVersion() string {
+func (x *GcpDialogflowCxAgentSecretHeader) GetSecretVersion() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecretVersion
 	}
-	return ""
+	return nil
 }
 
 // GcpDialogflowCxAgentGenericWebService is an HTTPS endpoint a webhook
@@ -793,9 +799,13 @@ type GcpDialogflowCxAgentGenericWebService struct {
 	// Request headers whose values live in Secret Manager. A header named
 	// here and in request_headers takes this value.
 	SecretVersionsForRequestHeaders []*GcpDialogflowCxAgentSecretHeader `protobuf:"bytes,7,rep,name=secret_versions_for_request_headers,json=secretVersionsForRequestHeaders,proto3" json:"secret_versions_for_request_headers,omitempty"`
-	// The Secret Manager secret version holding "username:password" for HTTP
-	// Basic authentication: projects/{project}/secrets/{secret}/versions/{version}.
-	SecretVersionForUsernamePassword string `protobuf:"bytes,8,opt,name=secret_version_for_username_password,json=secretVersionForUsernamePassword,proto3" json:"secret_version_for_username_password,omitempty"`
+	// The Secret Manager secret VERSION holding "username:password" for HTTP
+	// Basic authentication -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+	// when the secret declares an initial version) or a literal
+	// projects/{project}/secrets/{secret}/versions/{version}.
+	// The Dialogflow service agent reads it
+	// (roles/secretmanager.secretAccessor on the secret).
+	SecretVersionForUsernamePassword *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=secret_version_for_username_password,json=secretVersionForUsernamePassword,proto3" json:"secret_version_for_username_password,omitempty"`
 	// Authenticate with the OAuth client-credentials flow.
 	OauthConfig *GcpDialogflowCxAgentOauthConfig `protobuf:"bytes,9,opt,name=oauth_config,json=oauthConfig,proto3" json:"oauth_config,omitempty"`
 	// Have the Dialogflow service agent mint a token for the Authorization
@@ -899,11 +909,11 @@ func (x *GcpDialogflowCxAgentGenericWebService) GetSecretVersionsForRequestHeade
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentGenericWebService) GetSecretVersionForUsernamePassword() string {
+func (x *GcpDialogflowCxAgentGenericWebService) GetSecretVersionForUsernamePassword() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecretVersionForUsernamePassword
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpDialogflowCxAgentGenericWebService) GetOauthConfig() *GcpDialogflowCxAgentOauthConfig {
@@ -1094,10 +1104,12 @@ type GcpDialogflowCxAgentToolApiKeyConfig struct {
 	// The key itself. Ignored when secret_version_for_api_key is set --
 	// prefer that. Google never returns it.
 	ApiKey string `protobuf:"bytes,3,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
-	// The Secret Manager secret version holding the key:
-	// projects/{project}/secrets/{secret}/versions/{version}. Wins over
-	// api_key.
-	SecretVersionForApiKey string `protobuf:"bytes,4,opt,name=secret_version_for_api_key,json=secretVersionForApiKey,proto3" json:"secret_version_for_api_key,omitempty"`
+	// The Secret Manager secret VERSION holding the key -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+	// when the secret declares an initial version) or a literal
+	// projects/{project}/secrets/{secret}/versions/{version}.
+	// The Dialogflow service agent reads it
+	// (roles/secretmanager.secretAccessor on the secret). Wins over api_key.
+	SecretVersionForApiKey *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=secret_version_for_api_key,json=secretVersionForApiKey,proto3" json:"secret_version_for_api_key,omitempty"`
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
@@ -1153,11 +1165,11 @@ func (x *GcpDialogflowCxAgentToolApiKeyConfig) GetApiKey() string {
 	return ""
 }
 
-func (x *GcpDialogflowCxAgentToolApiKeyConfig) GetSecretVersionForApiKey() string {
+func (x *GcpDialogflowCxAgentToolApiKeyConfig) GetSecretVersionForApiKey() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecretVersionForApiKey
 	}
-	return ""
+	return nil
 }
 
 // GcpDialogflowCxAgentToolBearerTokenConfig sends "Authorization: Bearer
@@ -1168,10 +1180,12 @@ type GcpDialogflowCxAgentToolBearerTokenConfig struct {
 	// $session.params.user-token passes it per conversation. Ignored when
 	// secret_version_for_token is set. Google never returns it.
 	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	// The Secret Manager secret version holding the token:
-	// projects/{project}/secrets/{secret}/versions/{version}. Wins over
-	// token.
-	SecretVersionForToken string `protobuf:"bytes,2,opt,name=secret_version_for_token,json=secretVersionForToken,proto3" json:"secret_version_for_token,omitempty"`
+	// The Secret Manager secret VERSION holding the token -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+	// when the secret declares an initial version) or a literal
+	// projects/{project}/secrets/{secret}/versions/{version}.
+	// The Dialogflow service agent reads it
+	// (roles/secretmanager.secretAccessor on the secret). Wins over token.
+	SecretVersionForToken *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=secret_version_for_token,json=secretVersionForToken,proto3" json:"secret_version_for_token,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -1213,11 +1227,11 @@ func (x *GcpDialogflowCxAgentToolBearerTokenConfig) GetToken() string {
 	return ""
 }
 
-func (x *GcpDialogflowCxAgentToolBearerTokenConfig) GetSecretVersionForToken() string {
+func (x *GcpDialogflowCxAgentToolBearerTokenConfig) GetSecretVersionForToken() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecretVersionForToken
 	}
-	return ""
+	return nil
 }
 
 // GcpDialogflowCxAgentToolOauthConfig authenticates a tool call with OAuth.
@@ -1234,10 +1248,13 @@ type GcpDialogflowCxAgentToolOauthConfig struct {
 	ClientSecret string `protobuf:"bytes,4,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
 	// The OAuth scopes to request.
 	Scopes []string `protobuf:"bytes,5,rep,name=scopes,proto3" json:"scopes,omitempty"`
-	// The Secret Manager secret version holding the client secret:
-	// projects/{project}/secrets/{secret}/versions/{version}. Wins over
+	// The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+	// when the secret declares an initial version) or a literal
+	// projects/{project}/secrets/{secret}/versions/{version}.
+	// The Dialogflow service agent reads it
+	// (roles/secretmanager.secretAccessor on the secret). Wins over
 	// client_secret.
-	SecretVersionForClientSecret string `protobuf:"bytes,6,opt,name=secret_version_for_client_secret,json=secretVersionForClientSecret,proto3" json:"secret_version_for_client_secret,omitempty"`
+	SecretVersionForClientSecret *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=secret_version_for_client_secret,json=secretVersionForClientSecret,proto3" json:"secret_version_for_client_secret,omitempty"`
 	unknownFields                protoimpl.UnknownFields
 	sizeCache                    protoimpl.SizeCache
 }
@@ -1307,11 +1324,11 @@ func (x *GcpDialogflowCxAgentToolOauthConfig) GetScopes() []string {
 	return nil
 }
 
-func (x *GcpDialogflowCxAgentToolOauthConfig) GetSecretVersionForClientSecret() string {
+func (x *GcpDialogflowCxAgentToolOauthConfig) GetSecretVersionForClientSecret() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SecretVersionForClientSecret
 	}
-	return ""
+	return nil
 }
 
 // GcpDialogflowCxAgentToolServiceAgentAuthConfig has the Dialogflow service
@@ -3168,16 +3185,18 @@ const file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_spec_proto_rawDesc = "" +
 	"\bbranches\x18\x04 \x03(\tR\bbranches\x12'\n" +
 	"\faccess_token\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\vaccessToken\"\xa8\x01\n" +
 	"*GcpDialogflowCxAgentGitIntegrationSettings\x12z\n" +
-	"\x0fgithub_settings\x18\x01 \x01(\v2Q.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGithubSettingsR\x0egithubSettings\"\x9e\x03\n" +
+	"\x0fgithub_settings\x18\x01 \x01(\v2Q.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGithubSettingsR\x0egithubSettings\"\xca\x05\n" +
 	"\x1fGcpDialogflowCxAgentOauthConfig\x12$\n" +
 	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x12.\n" +
 	"\x0etoken_endpoint\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\rtokenEndpoint\x12)\n" +
 	"\rclient_secret\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12\x16\n" +
-	"\x06scopes\x18\x04 \x03(\tR\x06scopes\x12\xe1\x01\n" +
-	" secret_version_for_client_secret\x18\x05 \x01(\tB\x98\x01\xbaH4\xd8\x01\x01r/2-^projects/[^/]+/secrets/[^/]+/versions/[^/]+$\xaa\xa6\x1d]Secret Manager secret version NAME only -- the client secret itself never appears in the specR\x1csecretVersionForClientSecret\"\x9a\x01\n" +
+	"\x06scopes\x18\x04 \x03(\tR\x06scopes\x12\x8d\x04\n" +
+	" secret_version_for_client_secret\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x90\x03\xbaH\xfe\x01\xba\x01\xfa\x01\n" +
+	"'secret_version_for_client_secret.format\x12vsecret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}\x1aW!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')\xaa\xa6\x1d_Secret Manager secret VERSION name only -- the secret material itself never appears in the spec\x88\xd4a\xce\x18\x92\xd4a\"status.outputs.latest_version_nameR\x1csecretVersionForClientSecret\"\xa8\x03\n" +
 	" GcpDialogflowCxAgentSecretHeader\x12\x19\n" +
-	"\x03key\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03key\x12[\n" +
-	"\x0esecret_version\x18\x02 \x01(\tB4\xbaH1r/2-^projects/[^/]+/secrets/[^/]+/versions/[^/]+$R\rsecretVersion\"\xbc\v\n" +
+	"\x03key\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03key\x12\xe8\x02\n" +
+	"\x0esecret_version\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x8c\x02\xbaH\xdd\x01\xba\x01\xd6\x01\n" +
+	"\x15secret_version.format\x12dsecret_version must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}\x1aW!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')\xc8\x01\x01\x88\xd4a\xce\x18\x92\xd4a\"status.outputs.latest_version_nameR\rsecretVersion\"\xef\r\n" +
 	"%GcpDialogflowCxAgentGenericWebService\x12$\n" +
 	"\x03uri\x18\x01 \x01(\tB\x12\xbaH\x0fr\r2\v^https://.+R\x03uri\x12?\n" +
 	"\fwebhook_type\x18\x02 \x01(\tB\x1c\xbaH\x19\xd8\x01\x01r\x14R\bSTANDARDR\bFLEXIBLER\vwebhookType\x12W\n" +
@@ -3186,8 +3205,9 @@ const file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_spec_proto_rawDesc = "" +
 	"\frequest_body\x18\x04 \x01(\tR\vrequestBody\x12\x97\x01\n" +
 	"\x11parameter_mapping\x18\x05 \x03(\v2j.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.ParameterMappingEntryR\x10parameterMapping\x12\x91\x01\n" +
 	"\x0frequest_headers\x18\x06 \x03(\v2h.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.RequestHeadersEntryR\x0erequestHeaders\x12\x9d\x01\n" +
-	"#secret_versions_for_request_headers\x18\a \x03(\v2O.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSecretHeaderR\x1fsecretVersionsForRequestHeaders\x12\xea\x01\n" +
-	"$secret_version_for_username_password\x18\b \x01(\tB\x99\x01\xbaH4\xd8\x01\x01r/2-^projects/[^/]+/secrets/[^/]+/versions/[^/]+$\xaa\xa6\x1d^Secret Manager secret version NAME only -- the credentials themselves never appear in the specR secretVersionForUsernamePassword\x12q\n" +
+	"#secret_versions_for_request_headers\x18\a \x03(\v2O.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSecretHeaderR\x1fsecretVersionsForRequestHeaders\x12\x9d\x04\n" +
+	"$secret_version_for_username_password\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x98\x03\xbaH\x86\x02\xba\x01\x82\x02\n" +
+	"+secret_version_for_username_password.format\x12zsecret_version_for_username_password must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}\x1aW!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')\xaa\xa6\x1d_Secret Manager secret VERSION name only -- the secret material itself never appears in the spec\x88\xd4a\xce\x18\x92\xd4a\"status.outputs.latest_version_nameR secretVersionForUsernamePassword\x12q\n" +
 	"\foauth_config\x18\t \x01(\v2N.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentOauthConfigR\voauthConfig\x12T\n" +
 	"\x12service_agent_auth\x18\n" +
 	" \x01(\tB&\xbaH#\xd8\x01\x01r\x1eR\x04NONER\bID_TOKENR\fACCESS_TOKENR\x10serviceAgentAuth\x12z\n" +
@@ -3208,22 +3228,25 @@ const file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_spec_proto_rawDesc = "" +
 	"\atimeout\x18\x03 \x01(\tR\atimeout\x12\x84\x01\n" +
 	"\x13generic_web_service\x18\x04 \x01(\v2T.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebServiceR\x11genericWebService\x12\x80\x01\n" +
 	"\x11service_directory\x18\x05 \x01(\v2S.dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentServiceDirectoryR\x10serviceDirectory:\xa9\x01\xbaH\xa5\x01\x1a\xa2\x01\n" +
-	"\x1cwebhook.exactly_one_endpoint\x12Da webhook is exactly one of generic_web_service or service_directory\x1a<has(this.generic_web_service) != has(this.service_directory)\"\xef\x02\n" +
+	"\x1cwebhook.exactly_one_endpoint\x12Da webhook is exactly one of generic_web_service or service_directory\x1a<has(this.generic_web_service) != has(this.service_directory)\"\x95\x05\n" +
 	"$GcpDialogflowCxAgentToolApiKeyConfig\x12\"\n" +
 	"\bkey_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\akeyName\x122\n" +
 	"\x10request_location\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0frequestLocation\x12\x1d\n" +
-	"\aapi_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x06apiKey\x12\xcf\x01\n" +
-	"\x1asecret_version_for_api_key\x18\x04 \x01(\tB\x92\x01\xbaH4\xd8\x01\x01r/2-^projects/[^/]+/secrets/[^/]+/versions/[^/]+$\xaa\xa6\x1dWSecret Manager secret version NAME only -- the API key itself never appears in the specR\x16secretVersionForApiKey\"\x9b\x02\n" +
+	"\aapi_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x06apiKey\x12\xf5\x03\n" +
+	"\x1asecret_version_for_api_key\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x84\x03\xbaH\xf2\x01\xba\x01\xee\x01\n" +
+	"!secret_version_for_api_key.format\x12psecret_version_for_api_key must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}\x1aW!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')\xaa\xa6\x1d_Secret Manager secret VERSION name only -- the secret material itself never appears in the spec\x88\xd4a\xce\x18\x92\xd4a\"status.outputs.latest_version_nameR\x16secretVersionForApiKey\"\xb8\x04\n" +
 	")GcpDialogflowCxAgentToolBearerTokenConfig\x12\x1a\n" +
-	"\x05token\x18\x01 \x01(\tB\x04\xa0\xa6\x1d\x01R\x05token\x12\xd1\x01\n" +
-	"\x18secret_version_for_token\x18\x02 \x01(\tB\x97\x01\xbaH4\xd8\x01\x01r/2-^projects/[^/]+/secrets/[^/]+/versions/[^/]+$\xaa\xa6\x1d\\Secret Manager secret version NAME only -- the bearer token itself never appears in the specR\x15secretVersionForToken\"\xd5\x03\n" +
+	"\x05token\x18\x01 \x01(\tB\x04\xa0\xa6\x1d\x01R\x05token\x12\xee\x03\n" +
+	"\x18secret_version_for_token\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x80\x03\xbaH\xee\x01\xba\x01\xea\x01\n" +
+	"\x1fsecret_version_for_token.format\x12nsecret_version_for_token must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}\x1aW!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')\xaa\xa6\x1d_Secret Manager secret VERSION name only -- the secret material itself never appears in the spec\x88\xd4a\xce\x18\x92\xd4a\"status.outputs.latest_version_nameR\x15secretVersionForToken\"\x81\x06\n" +
 	"#GcpDialogflowCxAgentToolOauthConfig\x12$\n" +
 	"\tclient_id\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bclientId\x121\n" +
 	"\x10oauth_grant_type\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0eoauthGrantType\x12.\n" +
 	"\x0etoken_endpoint\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\rtokenEndpoint\x12)\n" +
 	"\rclient_secret\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12\x16\n" +
-	"\x06scopes\x18\x05 \x03(\tR\x06scopes\x12\xe1\x01\n" +
-	" secret_version_for_client_secret\x18\x06 \x01(\tB\x98\x01\xbaH4\xd8\x01\x01r/2-^projects/[^/]+/secrets/[^/]+/versions/[^/]+$\xaa\xa6\x1d]Secret Manager secret version NAME only -- the client secret itself never appears in the specR\x1csecretVersionForClientSecret\"^\n" +
+	"\x06scopes\x18\x05 \x03(\tR\x06scopes\x12\x8d\x04\n" +
+	" secret_version_for_client_secret\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x90\x03\xbaH\xfe\x01\xba\x01\xfa\x01\n" +
+	"'secret_version_for_client_secret.format\x12vsecret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}\x1aW!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')\xaa\xa6\x1d_Secret Manager secret VERSION name only -- the secret material itself never appears in the spec\x88\xd4a\xce\x18\x92\xd4a\"status.outputs.latest_version_nameR\x1csecretVersionForClientSecret\"^\n" +
 	".GcpDialogflowCxAgentToolServiceAgentAuthConfig\x12,\n" +
 	"\x12service_agent_auth\x18\x01 \x01(\tR\x10serviceAgentAuth\"\xa2\a\n" +
 	"&GcpDialogflowCxAgentToolAuthentication\x12y\n" +
@@ -3432,55 +3455,61 @@ var file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_spec_proto_depIdxs = []int32{
 	3,  // 4: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentAdvancedSettings.speech_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpeechSettings
 	43, // 5: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenAppBuilderSettings.engine:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	7,  // 6: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGitIntegrationSettings.github_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGithubSettings
-	41, // 7: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.parameter_mapping:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.ParameterMappingEntry
-	42, // 8: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.request_headers:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.RequestHeadersEntry
-	10, // 9: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.secret_versions_for_request_headers:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSecretHeader
-	9,  // 10: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.oauth_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentOauthConfig
-	43, // 11: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	11, // 12: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentServiceDirectory.generic_web_service:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService
-	11, // 13: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentWebhook.generic_web_service:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService
-	12, // 14: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentWebhook.service_directory:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentServiceDirectory
-	14, // 15: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.api_key_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolApiKeyConfig
-	15, // 16: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.bearer_token_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolBearerTokenConfig
-	16, // 17: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.oauth_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOauthConfig
-	17, // 18: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.service_agent_auth_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolServiceAgentAuthConfig
-	20, // 19: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolTlsConfig.ca_certs:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolCaCert
-	18, // 20: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec.authentication:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication
-	19, // 21: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec.service_directory_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolServiceDirectoryConfig
-	21, // 22: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec.tls_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolTlsConfig
-	43, // 23: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreConnection.data_store:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	23, // 24: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpec.data_store_connections:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreConnection
-	22, // 25: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot.open_api_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec
-	24, // 26: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot.data_store_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpec
-	25, // 27: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot.function_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolFunctionSpec
-	26, // 28: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolVersion.tool:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot
-	22, // 29: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.open_api_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec
-	24, // 30: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.data_store_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpec
-	25, // 31: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.function_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolFunctionSpec
-	27, // 32: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.versions:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolVersion
-	30, // 33: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentEnvironment.version_configs:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentEnvironmentVersionConfig
-	32, // 34: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentFallbackSettings.prompt_templates:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentPromptTemplate
-	34, // 35: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSafetySettings.banned_phrases:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentBannedPhrase
-	33, // 36: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.fallback_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentFallbackSettings
-	35, // 37: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.generative_safety_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSafetySettings
-	36, // 38: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.knowledge_connector_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentKnowledgeConnectorSettings
-	37, // 39: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.llm_model_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentLlmModelSettings
-	43, // 40: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	43, // 41: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.security_settings:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4,  // 42: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.advanced_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentAdvancedSettings
-	5,  // 43: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.client_certificate_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentClientCertificateSettings
-	6,  // 44: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.gen_app_builder_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenAppBuilderSettings
-	8,  // 45: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.git_integration_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGitIntegrationSettings
-	13, // 46: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.webhooks:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentWebhook
-	28, // 47: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.tools:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool
-	29, // 48: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.versions:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentVersion
-	31, // 49: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.environments:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentEnvironment
-	38, // 50: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.generative_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings
-	51, // [51:51] is the sub-list for method output_type
-	51, // [51:51] is the sub-list for method input_type
-	51, // [51:51] is the sub-list for extension type_name
-	51, // [51:51] is the sub-list for extension extendee
-	0,  // [0:51] is the sub-list for field type_name
+	43, // 7: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentOauthConfig.secret_version_for_client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 8: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSecretHeader.secret_version:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	41, // 9: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.parameter_mapping:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.ParameterMappingEntry
+	42, // 10: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.request_headers:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.RequestHeadersEntry
+	10, // 11: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.secret_versions_for_request_headers:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSecretHeader
+	43, // 12: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.secret_version_for_username_password:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 13: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.oauth_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentOauthConfig
+	43, // 14: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 15: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentServiceDirectory.generic_web_service:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService
+	11, // 16: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentWebhook.generic_web_service:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenericWebService
+	12, // 17: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentWebhook.service_directory:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentServiceDirectory
+	43, // 18: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolApiKeyConfig.secret_version_for_api_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 19: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolBearerTokenConfig.secret_version_for_token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 20: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOauthConfig.secret_version_for_client_secret:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 21: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.api_key_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolApiKeyConfig
+	15, // 22: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.bearer_token_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolBearerTokenConfig
+	16, // 23: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.oauth_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOauthConfig
+	17, // 24: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication.service_agent_auth_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolServiceAgentAuthConfig
+	20, // 25: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolTlsConfig.ca_certs:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolCaCert
+	18, // 26: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec.authentication:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolAuthentication
+	19, // 27: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec.service_directory_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolServiceDirectoryConfig
+	21, // 28: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec.tls_config:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolTlsConfig
+	43, // 29: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreConnection.data_store:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 30: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpec.data_store_connections:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreConnection
+	22, // 31: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot.open_api_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec
+	24, // 32: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot.data_store_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpec
+	25, // 33: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot.function_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolFunctionSpec
+	26, // 34: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolVersion.tool:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolSnapshot
+	22, // 35: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.open_api_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolOpenApiSpec
+	24, // 36: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.data_store_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolDataStoreSpec
+	25, // 37: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.function_spec:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolFunctionSpec
+	27, // 38: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool.versions:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentToolVersion
+	30, // 39: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentEnvironment.version_configs:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentEnvironmentVersionConfig
+	32, // 40: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentFallbackSettings.prompt_templates:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentPromptTemplate
+	34, // 41: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSafetySettings.banned_phrases:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentBannedPhrase
+	33, // 42: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.fallback_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentFallbackSettings
+	35, // 43: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.generative_safety_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSafetySettings
+	36, // 44: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.knowledge_connector_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentKnowledgeConnectorSettings
+	37, // 45: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings.llm_model_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentLlmModelSettings
+	43, // 46: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // 47: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.security_settings:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 48: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.advanced_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentAdvancedSettings
+	5,  // 49: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.client_certificate_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentClientCertificateSettings
+	6,  // 50: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.gen_app_builder_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenAppBuilderSettings
+	8,  // 51: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.git_integration_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGitIntegrationSettings
+	13, // 52: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.webhooks:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentWebhook
+	28, // 53: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.tools:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentTool
+	29, // 54: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.versions:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentVersion
+	31, // 55: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.environments:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentEnvironment
+	38, // 56: dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.generative_settings:type_name -> dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentGenerativeSettings
+	57, // [57:57] is the sub-list for method output_type
+	57, // [57:57] is the sub-list for method input_type
+	57, // [57:57] is the sub-list for extension type_name
+	57, // [57:57] is the sub-list for extension extendee
+	0,  // [0:57] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpdialogflowcxagent_v1alpha1_spec_proto_init() }

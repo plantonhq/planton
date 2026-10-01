@@ -146,6 +146,8 @@ groups, and firewall targeting downstream.
 ## Pairs well with
 
 - `GcpComputeDisk` — durable boot and data volumes that outlive the VM.
+- `GcpComputeImage` — a golden boot image (`bootDisk.image`, its
+  `self_link`) when the VM must boot one exact build.
 - `GcpAddress` — stable internal/external IPs across VM replacement.
 - `GcpVpcNetwork` / `GcpSubnetwork` — the network fabric.
 - `GcpServiceAccount` — the least-privilege runtime identity.

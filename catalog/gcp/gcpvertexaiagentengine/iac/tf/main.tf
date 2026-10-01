@@ -139,13 +139,24 @@ resource "google_vertex_ai_reasoning_engine" "this" {
             }
           }
 
+          # A secret the author owns or a value secrets.tf stored (one of
+          # the two); a stored value reads the exact version secrets.tf
+          # created.
           dynamic "secret_env" {
             for_each = deployment_spec.value.secret_env
             content {
               name = secret_env.value.name
               secret_ref {
-                secret  = secret_env.value.secret_ref.secret
-                version = secret_env.value.secret_ref.version != "" ? secret_env.value.secret_ref.version : null
+                secret = (
+                  contains(keys(local.env_secrets), secret_env.value.name)
+                  ? google_secret_manager_secret.env[secret_env.value.name].secret_id
+                  : secret_env.value.secret_ref.secret
+                )
+                version = (
+                  contains(keys(local.env_secrets), secret_env.value.name)
+                  ? google_secret_manager_secret_version.env[secret_env.value.name].version
+                  : (secret_env.value.secret_ref.version != "" ? secret_env.value.secret_ref.version : null)
+                )
               }
             }
           }
@@ -392,5 +403,7 @@ resource "google_vertex_ai_reasoning_engine" "this" {
     }
   }
 
-  depends_on = [google_project_service.aiplatform_api]
+  # The agent's first instance reads every secret_env entry during the
+  # create, so a create that races its grant fails.
+  depends_on = [google_project_service.aiplatform_api, google_secret_manager_secret_iam_member.env]
 }

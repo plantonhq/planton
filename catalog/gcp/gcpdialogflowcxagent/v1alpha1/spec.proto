@@ -187,13 +187,21 @@ message GcpDialogflowCxAgentOauthConfig {
   // The OAuth scopes to request.
   repeated string scopes = 4;
 
-  // The Secret Manager secret version holding the client secret:
-  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
+  // The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal
+  // projects/{project}/secrets/{secret}/versions/{version}.
+  // The Dialogflow service agent reads it
+  // (roles/secretmanager.secretAccessor on the secret). Wins over
   // client_secret.
-  string secret_version_for_client_secret = 5 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
-    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the client secret itself never appears in the spec"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_version_for_client_secret = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret VERSION name only -- the secret material itself never appears in the spec",
+    (buf.validate.field).cel = {
+      id: "secret_version_for_client_secret.format"
+      message: "secret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
   ];
 }
 
@@ -203,9 +211,21 @@ message GcpDialogflowCxAgentSecretHeader {
   // The header name, e.g. "X-Api-Key".
   string key = 1 [(buf.validate.field).string.min_len = 1];
 
-  // The Secret Manager secret version holding the header value:
+  // The Secret Manager secret VERSION holding the header value -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal
   // projects/{project}/secrets/{secret}/versions/{version}.
-  string secret_version = 2 [(buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"];
+  // The Dialogflow service agent reads it
+  // (roles/secretmanager.secretAccessor on the secret).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_version = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (buf.validate.field).cel = {
+      id: "secret_version.format"
+      message: "secret_version must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
+  ];
 }
 
 // GcpDialogflowCxAgentGenericWebService is an HTTPS endpoint a webhook
@@ -266,12 +286,21 @@ message GcpDialogflowCxAgentGenericWebService {
   // here and in request_headers takes this value.
   repeated GcpDialogflowCxAgentSecretHeader secret_versions_for_request_headers = 7;
 
-  // The Secret Manager secret version holding "username:password" for HTTP
-  // Basic authentication: projects/{project}/secrets/{secret}/versions/{version}.
-  string secret_version_for_username_password = 8 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
-    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the credentials themselves never appear in the spec"
+  // The Secret Manager secret VERSION holding "username:password" for HTTP
+  // Basic authentication -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal
+  // projects/{project}/secrets/{secret}/versions/{version}.
+  // The Dialogflow service agent reads it
+  // (roles/secretmanager.secretAccessor on the secret).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_version_for_username_password = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret VERSION name only -- the secret material itself never appears in the spec",
+    (buf.validate.field).cel = {
+      id: "secret_version_for_username_password.format"
+      message: "secret_version_for_username_password must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
   ];
 
   // Authenticate with the OAuth client-credentials flow.
@@ -371,13 +400,20 @@ message GcpDialogflowCxAgentToolApiKeyConfig {
   // prefer that. Google never returns it.
   string api_key = 3 [(dev.planton.shared.options.sensitive) = true];
 
-  // The Secret Manager secret version holding the key:
-  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
-  // api_key.
-  string secret_version_for_api_key = 4 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
-    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the API key itself never appears in the spec"
+  // The Secret Manager secret VERSION holding the key -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal
+  // projects/{project}/secrets/{secret}/versions/{version}.
+  // The Dialogflow service agent reads it
+  // (roles/secretmanager.secretAccessor on the secret). Wins over api_key.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_version_for_api_key = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret VERSION name only -- the secret material itself never appears in the spec",
+    (buf.validate.field).cel = {
+      id: "secret_version_for_api_key.format"
+      message: "secret_version_for_api_key must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
   ];
 }
 
@@ -389,13 +425,20 @@ message GcpDialogflowCxAgentToolBearerTokenConfig {
   // secret_version_for_token is set. Google never returns it.
   string token = 1 [(dev.planton.shared.options.sensitive) = true];
 
-  // The Secret Manager secret version holding the token:
-  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
-  // token.
-  string secret_version_for_token = 2 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
-    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the bearer token itself never appears in the spec"
+  // The Secret Manager secret VERSION holding the token -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal
+  // projects/{project}/secrets/{secret}/versions/{version}.
+  // The Dialogflow service agent reads it
+  // (roles/secretmanager.secretAccessor on the secret). Wins over token.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_version_for_token = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret VERSION name only -- the secret material itself never appears in the spec",
+    (buf.validate.field).cel = {
+      id: "secret_version_for_token.format"
+      message: "secret_version_for_token must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
   ];
 }
 
@@ -417,13 +460,21 @@ message GcpDialogflowCxAgentToolOauthConfig {
   // The OAuth scopes to request.
   repeated string scopes = 5;
 
-  // The Secret Manager secret version holding the client secret:
-  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
+  // The Secret Manager secret VERSION holding the client secret -- a GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal
+  // projects/{project}/secrets/{secret}/versions/{version}.
+  // The Dialogflow service agent reads it
+  // (roles/secretmanager.secretAccessor on the secret). Wins over
   // client_secret.
-  string secret_version_for_client_secret = 6 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
-    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the client secret itself never appears in the spec"
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_version_for_client_secret = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret VERSION name only -- the secret material itself never appears in the spec",
+    (buf.validate.field).cel = {
+      id: "secret_version_for_client_secret.format"
+      message: "secret_version_for_client_secret must be a secret version name: projects/{project}/secrets/{secret}/versions/{version}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+    }
   ];
 }
 

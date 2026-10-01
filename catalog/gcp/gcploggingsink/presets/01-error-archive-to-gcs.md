@@ -14,8 +14,11 @@ project lands as hourly JSON batches in a Cloud Storage bucket.
 ## The deploy's second half
 
 Grant the sink's `writer_identity` output
-`roles/storage.objectCreator` on the bucket — through the bucket's
-`iamMembers` in the same chart. Without the grant the sink reports
+`roles/storage.objectCreator` on the bucket — through a
+`GcpGcsBucketIamMember` in the same chart whose `member` references the
+sink's `status.outputs.writer_identity` (never the bucket's own
+`iamMembers`: that would make the bucket depend on the sink that depends
+on it). Without the grant the sink reports
 success and exports NOTHING.
 
 ## Adjust before deploying

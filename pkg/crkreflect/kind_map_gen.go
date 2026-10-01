@@ -537,6 +537,8 @@ import (
 	gcpcertificatemapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertificatemap/v1alpha1"
 	gcpcertmanagercertv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagercert/v1alpha1"
 	gcpcertmanagerdnsauthorizationv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1"
+	gcpcertmanagerissuanceconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1"
+	gcpcertmanagertrustconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagertrustconfig/v1alpha1"
 	gcpcloudarmorpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/v1alpha1"
 	gcpcloudbuildconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildconnection/v1alpha1"
 	gcpcloudbuildrepositoryv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildrepository/v1alpha1"
@@ -590,6 +592,7 @@ import (
 	gcpfirewallrulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirewallrule/v1alpha1"
 	gcpfolderv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfolder/v1alpha1"
 	gcpgcsbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucket/v1alpha1"
+	gcpgcsbucketiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucketiammember/v1alpha1"
 	gcpgkeclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkecluster/v1alpha1"
 	gcpgkefleetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleet/v1alpha1"
 	gcpgkefleetfeaturev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetfeature/v1alpha1"
@@ -645,6 +648,7 @@ import (
 	gcppubsubschemav1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubschema/v1alpha1"
 	gcppubsubsubscriptionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubsubscription/v1alpha1"
 	gcppubsubtopicv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubtopic/v1alpha1"
+	gcppubsubtopiciammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubtopiciammember/v1alpha1"
 	gcpredisclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcprediscluster/v1alpha1"
 	gcpredisclusterendpointsetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpredisclusterendpointset/v1alpha1"
 	gcpredisinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpredisinstance/v1alpha1"
@@ -1400,6 +1404,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationPolicy:           &gcpbinaryauthorizationpolicyv1alpha1.GcpBinaryAuthorizationPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerCert:                     &gcpcertmanagercertv1alpha1.GcpCertManagerCert{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerDnsAuthorization:         &gcpcertmanagerdnsauthorizationv1alpha1.GcpCertManagerDnsAuthorization{},
+	cloudresourcekind.CloudResourceKind_GcpCertManagerIssuanceConfig:           &gcpcertmanagerissuanceconfigv1alpha1.GcpCertManagerIssuanceConfig{},
+	cloudresourcekind.CloudResourceKind_GcpCertManagerTrustConfig:              &gcpcertmanagertrustconfigv1alpha1.GcpCertManagerTrustConfig{},
 	cloudresourcekind.CloudResourceKind_GcpCertificateMap:                      &gcpcertificatemapv1alpha1.GcpCertificateMap{},
 	cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy:                    &gcpcloudarmorpolicyv1alpha1.GcpCloudArmorPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpCloudBuildConnection:                &gcpcloudbuildconnectionv1alpha1.GcpCloudBuildConnection{},
@@ -1454,6 +1460,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpFirewallRule:                        &gcpfirewallrulev1alpha1.GcpFirewallRule{},
 	cloudresourcekind.CloudResourceKind_GcpFolder:                              &gcpfolderv1alpha1.GcpFolder{},
 	cloudresourcekind.CloudResourceKind_GcpGcsBucket:                           &gcpgcsbucketv1alpha1.GcpGcsBucket{},
+	cloudresourcekind.CloudResourceKind_GcpGcsBucketIamMember:                  &gcpgcsbucketiammemberv1alpha1.GcpGcsBucketIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpGkeCluster:                          &gcpgkeclusterv1alpha1.GcpGkeCluster{},
 	cloudresourcekind.CloudResourceKind_GcpGkeFleet:                            &gcpgkefleetv1alpha1.GcpGkeFleet{},
 	cloudresourcekind.CloudResourceKind_GcpGkeFleetFeature:                     &gcpgkefleetfeaturev1alpha1.GcpGkeFleetFeature{},
@@ -1509,6 +1516,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpPubSubSchema:                        &gcppubsubschemav1alpha1.GcpPubSubSchema{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubSubscription:                  &gcppubsubsubscriptionv1alpha1.GcpPubSubSubscription{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubTopic:                         &gcppubsubtopicv1alpha1.GcpPubSubTopic{},
+	cloudresourcekind.CloudResourceKind_GcpPubSubTopicIamMember:                &gcppubsubtopiciammemberv1alpha1.GcpPubSubTopicIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpRedisCluster:                        &gcpredisclusterv1alpha1.GcpRedisCluster{},
 	cloudresourcekind.CloudResourceKind_GcpRedisClusterEndpointSet:             &gcpredisclusterendpointsetv1alpha1.GcpRedisClusterEndpointSet{},
 	cloudresourcekind.CloudResourceKind_GcpRedisInstance:                       &gcpredisinstancev1alpha1.GcpRedisInstance{},

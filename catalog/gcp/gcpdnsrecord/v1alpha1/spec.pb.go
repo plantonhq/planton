@@ -55,8 +55,11 @@ type GcpDnsRecordSpec struct {
 	// Must end with a trailing dot (e.g. "www.example.com.").
 	// A leading "*." creates a wildcard record; leading underscores support
 	// service labels such as "_dmarc" and "_acme-challenge".
-	// Can be a literal FQDN or a reference — compose validation records from
-	// GcpCertManagerDnsAuthorization's dns_record_name output.
+	// A literal FQDN or a reference to ANY kind's output (no default kind,
+	// since the name can come from anywhere) -- e.g. a
+	// GcpCertManagerDnsAuthorization's status.outputs.dns_record_name for
+	// its _acme-challenge validation record. A referenced record is created
+	// after the resource it reads.
 	Name *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	// Static values (RRDATA) for the record set — the meaning depends on type:
 	//
@@ -69,9 +72,14 @@ type GcpDnsRecordSpec struct {
 	//	     split with "" between chunks.
 	//
 	// Multiple values answer as a round-robin set. Mutually exclusive with
-	// routing_policy. Each entry can be a literal or a reference — compose
-	// validation targets from GcpCertManagerDnsAuthorization's
-	// dns_record_data output.
+	// routing_policy. Each entry is a literal or a reference to ANY kind's
+	// output, so a record can publish a value that only exists once that
+	// resource does: a reserved address (a GcpGlobalAddress's or a
+	// GcpAddress's status.outputs.address), one of a zone's name servers for
+	// a subdomain delegation (a GcpDnsZone's status.outputs.nameservers.0,
+	// .1, ...), or a validation target (a GcpCertManagerDnsAuthorization's
+	// status.outputs.dns_record_data). A referenced record is created after
+	// the resource it reads.
 	Values []*v1.StringValueOrRef `protobuf:"bytes,5,rep,name=values,proto3" json:"values,omitempty"`
 	// Time to live in seconds — how long resolvers cache this record.
 	// Common values: 60 (fast failover), 300 (default), 3600, 86400; NS
@@ -285,8 +293,9 @@ type GcpDnsRecordWrrPolicyItem struct {
 	// Static values (RRDATA) answered for this entry.
 	// If the zone has DNSSEC enabled, an entry may set only one of values or
 	// health_checked_targets; otherwise both may be combined.
-	// Each entry can be a literal or a reference to another resource's
-	// output, as the record's own values can.
+	// Each entry is a literal or a reference to ANY kind's output, as the
+	// record's own values are -- e.g. a GcpGlobalAddress's
+	// status.outputs.address for the backend this weight steers to.
 	Values []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
 	// Load-balancer targets health-checked for this entry (A/AAAA records
 	// only). Unhealthy targets are withdrawn from answers automatically.
@@ -353,8 +362,9 @@ type GcpDnsRecordGeoPolicyItem struct {
 	// "europe-west3"). Queries are routed to the entry nearest the caller.
 	Location string `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
 	// Static values (RRDATA) answered for this location.
-	// Each entry can be a literal or a reference to another resource's
-	// output, as the record's own values can.
+	// Each entry is a literal or a reference to ANY kind's output, as the
+	// record's own values are -- e.g. a regional GcpAddress's
+	// status.outputs.address for the location's frontend.
 	Values []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
 	// Load-balancer targets health-checked for this location (A/AAAA records
 	// only). Unhealthy targets are withdrawn from answers automatically.

@@ -29,4 +29,6 @@ spec:
         permissions:
           - bigquery.tables.delete
         provenance: derived
-        notes: Required only when delete_contents_on_destroy is true -- deleting a non-empty dataset also deletes every table in it, which BigQuery authorizes per table. With the default false, destroy refuses on a non-empty dataset and this permission is never exercised. Verified against Google's BigQuery access-control reference live; the committed inventory snapshot carries the bigquery service prefix and lists this permission.
+        condition:
+          spec_field_set: delete_contents_on_destroy
+        notes: Deleting a non-empty dataset also deletes every table in it, which BigQuery authorizes per table. With the default false, destroy refuses on a non-empty dataset and this permission is never exercised. Verified against Google's BigQuery access-control reference live; the committed inventory snapshot carries the bigquery service prefix and lists this permission.

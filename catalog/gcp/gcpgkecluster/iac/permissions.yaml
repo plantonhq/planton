@@ -30,4 +30,6 @@ spec:
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
+        condition:
+          spec_field_set: cluster_autoscaling.auto_provisioning_defaults.service_account
         notes: Required only when cluster_autoscaling.auto_provisioning_defaults.service_account selects a custom node service account -- GKE demands actAs on that account before it will provision nodes running as it. Not needed when node identity is left to the provider default.

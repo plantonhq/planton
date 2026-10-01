@@ -847,11 +847,10 @@ variable "spec" {
 
       # Attach the cluster to a persistent Dataproc Metastore service.
       metastore_config = optional(object({
-        # Resource name of an existing Dataproc Metastore service.
-        # Format: projects/{project}/locations/{location}/services/{service}
-        # Accepts a literal resource name today; references attach when a
-        # metastore-service kind lands in the catalog.
-        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+        # Full resource name of an existing Dataproc Metastore service:
+        # projects/{project}/locations/{location}/services/{service}. The
+        # service is made outside the catalog (no catalog kind produces it), so
+        # write its full name. Required.
         dataproc_metastore_service = string
       }))
 
@@ -1062,11 +1061,10 @@ variable "spec" {
       auxiliary_services_config = optional(object({
         # Persistent Hive metastore for the virtual cluster's jobs.
         metastore_config = optional(object({
-          # Resource name of an existing Dataproc Metastore service.
-          # Format: projects/{project}/locations/{location}/services/{service}
-          # Accepts a literal resource name today; references attach when a
-          # metastore-service kind lands in the catalog.
-          # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+          # Full resource name of an existing Dataproc Metastore service:
+          # projects/{project}/locations/{location}/services/{service}. The
+          # service is made outside the catalog (no catalog kind produces it), so
+          # write its full name. Required.
           dataproc_metastore_service = string
         }))
 

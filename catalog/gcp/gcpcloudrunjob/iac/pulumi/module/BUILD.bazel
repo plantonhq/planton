@@ -14,7 +14,7 @@ go_library(
     deps = [
         "//catalog/gcp",
         "//catalog/gcp/gcpcloudrunjob/v1alpha1",
-        "//pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
         "//shared/cloudresourcekind",
@@ -32,7 +32,7 @@ go_test(
     embed = [":module"],
     deps = [
         "//catalog/gcp/gcpcloudrunjob/v1alpha1",
-        "//pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/cloudrunv2",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],

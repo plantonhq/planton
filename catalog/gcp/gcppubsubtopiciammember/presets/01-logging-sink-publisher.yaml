@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopicIamMember
+metadata:
+  name: my-sink-publisher
+spec:
+  topic:
+    # Reference the destination GcpPubSubTopic; its `topic_id` output is the
+    # full projects/.../topics/... name this field expects.
+    valueFrom:
+      kind: GcpPubSubTopic
+      name: <topic-resource-name>
+      fieldPath: status.outputs.topic_id
+  role:
+    value: roles/pubsub.publisher
+  member:
+    # The sink's writer identity, already in serviceAccount:<email> form.
+    # The reference follows the identity if the sink is ever recreated.
+    valueFrom:
+      kind: GcpLoggingSink
+      name: <logging-sink-resource-name>
+      fieldPath: status.outputs.writer_identity

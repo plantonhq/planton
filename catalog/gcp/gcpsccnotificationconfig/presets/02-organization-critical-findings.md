@@ -13,7 +13,7 @@ Send every active critical finding in the organization to the security operation
 
 - An organization notification config streaming active critical findings, with destroy blocked
 
-Grant the config's `service_account` output `roles/pubsub.publisher` on the topic.
+Grant the config's publisher `roles/pubsub.publisher` on the topic with a `GcpPubSubTopicIamMember` whose `member` references the config's `status.outputs.service_account_member`.
 
 ## Customize
 

@@ -312,6 +312,13 @@ variable "spec" {
     # Public access: grant roles/storage.objectViewer to "allUsers" (also
     # requires public_access_prevention to be "inherited" and the org policy
     # to allow it).
+    #
+    # A grantee that depends on this bucket -- a GcpLoggingSink exporting
+    # into it, whose writer identity needs roles/storage.objectCreator here --
+    # cannot be referenced from this list without a dependency cycle (the
+    # sink already references the bucket). Grant it with a standalone
+    # GcpGcsBucketIamMember, which depends on both. Never declare the same
+    # (role, member) pair in both places: removing either removes the grant.
     iam_members = optional(list(object({
       # The role to grant, e.g. "roles/storage.objectViewer",
       # "roles/storage.objectAdmin", "roles/storage.admin", or a custom

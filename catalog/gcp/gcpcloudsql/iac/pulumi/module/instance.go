@@ -563,8 +563,8 @@ func buildIpConfiguration(network *gcpcloudsqlv1alpha1.GcpCloudSqlNetwork) *sql.
 	if network.ServerCaMode != "" {
 		ipArgs.ServerCaMode = pulumi.StringPtr(network.ServerCaMode)
 	}
-	if network.ServerCaPool != "" {
-		ipArgs.ServerCaPool = pulumi.StringPtr(network.ServerCaPool)
+	if network.ServerCaPool.GetValue() != "" {
+		ipArgs.ServerCaPool = pulumi.StringPtr(network.ServerCaPool.GetValue())
 	}
 	// Automatic server certificate rotation (CAS CA modes only; spec CEL
 	// gates the pairing).

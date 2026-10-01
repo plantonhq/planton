@@ -9,7 +9,9 @@ spec:
   # copy is e2e/fixtures/agent-source/), the shape Google's own provider
   # test deploys; the memory-bank scenario adds a Memory Bank on the
   # project's Gemini and embedding models, a secret env var from the
-  # prerequisite secret, and the prerequisite service account as identity.
+  # prerequisite secret, a stored-value secret env var the module keeps in
+  # its own Secret Manager secret (granted to the identity before the
+  # engine is created), and the prerequisite service account as identity.
   # Offline bar
   # met: both modules build and validate, offline plans for the reference
   # manifest and both scenarios are clean on the pinned provider, and the

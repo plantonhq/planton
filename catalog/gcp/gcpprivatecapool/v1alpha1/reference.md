@@ -705,10 +705,18 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpCertManagerIssuanceConfig | `spec.caPool` | `status.outputs.name` |
+| GcpCloudSql | `spec.network.serverCaPool` | `status.outputs.name` |
+| GcpGkeCluster | `spec.userManagedKeys.clusterCa` | `status.outputs.name` |
+| GcpGkeCluster | `spec.userManagedKeys.etcdApiCa` | `status.outputs.name` |
+| GcpGkeCluster | `spec.userManagedKeys.etcdPeerCa` | `status.outputs.name` |
+| GcpGkeCluster | `spec.userManagedKeys.aggregationCa` | `status.outputs.name` |
 | GcpManagedKafkaCluster | `spec.tlsConfig.caPools` | `status.outputs.name` |
+| GcpMemorystoreInstance | `spec.serverCaPool` | `status.outputs.name` |
 | GcpPrivateCaCertificate | `spec.pool` | `status.outputs.name` |
 | GcpPrivateCaCertificateAuthority | `spec.pool` | `status.outputs.name` |
 | GcpRedisCluster | `spec.serverCaPool` | `status.outputs.name` |
+| GcpWorkloadIdentityPool | `spec.inlineCertificateIssuanceConfig.caPools` | `status.outputs.name` |
 
 ## See Also
 

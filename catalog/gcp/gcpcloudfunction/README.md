@@ -78,9 +78,9 @@ planton apply -f function.yaml
 |-------|------|-------------|
 | `source.storageSource` | block | `bucket` (can reference GcpGcsBucket), `object`, optional `generation` pin. |
 | `source.repoSource` | block | Cloud Source Repositories: `repoName` + exactly one of `branchName`/`tagName`/`commitSha` (CSR is deprecated for new customers — prefer GCS). |
-| `buildEnvironmentVariables` | `map` | Build-time only (buildpack knobs). |
+| `buildEnvironmentVariables` | `map` | Build-time only (buildpack knobs). Plain text; there is no secret path for build variables. |
 | `serviceAccount` | `StringValueOrRef` | Build identity — FULLY-QUALIFIED SA resource name. Can reference GcpServiceAccount. |
-| `workerPool` | `string` | Cloud Build custom worker pool for private-perimeter builds. |
+| `workerPool` | `StringValueOrRef` | Cloud Build private worker pool for private-perimeter builds (`projects/<p>/locations/<r>/workerPools/<name>`). Can reference GcpCloudBuildWorkerPool. |
 | `dockerRepository` | `StringValueOrRef` | User-managed Artifact Registry repo for the built image (fully-qualified path). Required for CMEK. |
 | `updatePolicy` | enum | `AUTOMATIC` (default: continuous runtime security updates) or `ON_DEPLOY` (pin until next deploy). |
 
@@ -94,7 +94,7 @@ planton apply -f function.yaml
 | `timeoutSeconds` | `int` | 60 | Up to 3600 for HTTP; events cap at 540. |
 | `maxInstanceRequestConcurrency` | `int` | 1 | Requests per instance (1–1000). |
 | `environmentVariables` | `map` | — | Plain-text configuration. |
-| `secretEnvironmentVariables` | `list` | — | Secret Manager references (`key`/`secret`/`version`/`projectId`) — material never enters the spec. |
+| `secretEnvironmentVariables` | `list` | — | Each entry is either a reference to an existing secret (`key`/`secret`/`version`/`projectId`) or a `value` the module stores in its own Secret Manager secret. Either way the function reads it natively at start. |
 | `secretVolumes` | `list` | — | Secret versions projected as files under `mountPath`. |
 | `vpcConnector` | `StringValueOrRef` | — | Serverless VPC Access connector for private egress. Can reference GcpServerlessVpcConnector. |
 | `vpcConnectorEgressSettings` | enum | `PRIVATE_RANGES_ONLY` | Or `ALL_TRAFFIC` (static egress IPs via Cloud NAT). |

@@ -29,4 +29,13 @@ spec:
         permissions:
           - bigquery.tables.getData
         provenance: derived
-        notes: Required only when the spec sets the view or materialized_view arm -- BigQuery validates the defining query at creation, and per Google's create-views documentation the creator "must also have permissions to query any tables that are referenced by the view's SQL query" (bigquery.tables.getData on each referenced table). Native and external tables never exercise this. Verified against Google's BigQuery documentation live; the committed inventory snapshot carries the bigquery service prefix and lists this permission.
+        condition:
+          spec_field_set: view
+        notes: BigQuery validates the defining query of the logical view at creation, and per Google's create-views documentation the creator "must also have permissions to query any tables that are referenced by the view's SQL query" (bigquery.tables.getData on each referenced table). Verified against Google's BigQuery documentation live; the committed inventory snapshot carries the bigquery service prefix and lists this permission.
+      - purpose: ReadMaterializedViewReferencedTables
+        permissions:
+          - bigquery.tables.getData
+        provenance: derived
+        condition:
+          spec_field_set: materialized_view
+        notes: BigQuery validates the defining query of the materialized view at creation, and per Google's create-views documentation the creator "must also have permissions to query any tables that are referenced by the view's SQL query" (bigquery.tables.getData on each referenced table). Verified against Google's BigQuery documentation live; the committed inventory snapshot carries the bigquery service prefix and lists this permission.

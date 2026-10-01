@@ -1,0 +1,30 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcppubsubtopiciammember
+spec:
+  # Awaiting the live proof lane. Two scenarios grant on a consumer-scoped
+  # topic fixture in the harness project. sink-publisher proves the
+  # cycle-free composition this kind exists for: the topic, then a project
+  # sink exporting to it (a filter matching no real log, so nothing is
+  # published), then roles/pubsub.publisher to the sink's writer_identity
+  # by reference. The sink's registry prerequisite (a bucket, with its
+  # service account) and the topic's (a schema) install from their
+  # published profiles. service-account-subscriber grants
+  # roles/pubsub.subscriber to a service-account fixture by its member
+  # output. Control-plane only and free; seconds per phase. Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest, both scenarios, and the presets are clean on the pinned
+  # provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) each grant appears in the topic's IAM policy, read at
+  # version 3, with the exact (role, member) pair, and re-plans clean on
+  # both engines (the provider parses the project from the topic's full
+  # name, so the computed project must not diff); (2) the writer identity
+  # Google mints for a project sink is accepted as a grantee the moment the
+  # sink exists; (3) destroy removes the grant before its fixtures and the
+  # verifier no longer finds the pair. Pub/Sub does not accept conditional
+  # role bindings, so the kind has no condition field.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

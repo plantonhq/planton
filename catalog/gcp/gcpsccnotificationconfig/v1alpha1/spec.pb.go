@@ -36,9 +36,11 @@ const (
 // Two things must be true before findings arrive:
 //   - Security Command Center is activated on the scope (Standard is free;
 //     a project can be activated on its own when the organization is not).
-//   - The service_account output can publish to the topic
-//     (roles/pubsub.publisher on it). Creating the config does not check
-//     this; without the grant, notifications are silently dropped.
+//   - The config's publisher can publish to the topic: a
+//     GcpPubSubTopicIamMember on the topic, role roles/pubsub.publisher,
+//     member referencing this config's service_account_member output.
+//     Creating the config does not check this; without the grant,
+//     notifications are silently dropped.
 type GcpSccNotificationConfigSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whose findings are streamed. Omit for the provider's default project.
@@ -51,7 +53,9 @@ type GcpSccNotificationConfigSpec struct {
 	// The topic findings are published to: a literal
 	// projects/{project}/topics/{topic} or a GcpPubSubTopic reference.
 	// Required on folder and organization configs; Google lets a project
-	// config omit it.
+	// config omit it. Grant the config's publisher on it with a
+	// GcpPubSubTopicIamMember (role roles/pubsub.publisher, member
+	// referencing the service_account_member output).
 	PubsubTopic *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=pubsub_topic,json=pubsubTopic,proto3" json:"pubsub_topic,omitempty"`
 	// Which finding create and update events are streamed (Google's
 	// streaming_config.filter). Restrictions of the form

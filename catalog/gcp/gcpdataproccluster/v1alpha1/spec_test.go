@@ -473,11 +473,19 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should reject a metastore_config without a service name", func() {
+		msg := minimal()
+		msg.Spec.ClusterConfig = &GcpDataprocClusterConfig{
+			MetastoreConfig: &GcpDataprocClusterMetastoreConfig{},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
 	ginkgo.It("should accept spec with metastore_config", func() {
 		msg := minimal()
 		msg.Spec.ClusterConfig = &GcpDataprocClusterConfig{
 			MetastoreConfig: &GcpDataprocClusterMetastoreConfig{
-				DataprocMetastoreService: svr("projects/my-project/locations/us-central1/services/shared-hive-metastore"),
+				DataprocMetastoreService: "projects/my-project/locations/us-central1/services/shared-hive-metastore",
 			},
 		}
 		err := validator.Validate(msg)
@@ -613,7 +621,7 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 				IdleDeleteTtl: "1800s",
 			},
 			MetastoreConfig: &GcpDataprocClusterMetastoreConfig{
-				DataprocMetastoreService: svr("projects/my-project/locations/us-central1/services/shared-hive-metastore"),
+				DataprocMetastoreService: "projects/my-project/locations/us-central1/services/shared-hive-metastore",
 			},
 			DataprocMetricConfig: &GcpDataprocClusterMetricConfig{
 				Metrics: []*GcpDataprocClusterMetric{
@@ -665,7 +673,7 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 		}
 		arm.AuxiliaryServicesConfig = &GcpDataprocClusterAuxiliaryServicesConfig{
 			MetastoreConfig: &GcpDataprocClusterMetastoreConfig{
-				DataprocMetastoreService: svr("projects/my-gcp-project/locations/us-central1/services/shared-hive-metastore"),
+				DataprocMetastoreService: "projects/my-gcp-project/locations/us-central1/services/shared-hive-metastore",
 			},
 			SparkHistoryServerConfig: &GcpDataprocClusterSparkHistoryServerConfig{
 				DataprocCluster: svr("projects/my-gcp-project/regions/us-central1/clusters/history-server"),

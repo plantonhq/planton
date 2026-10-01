@@ -924,11 +924,43 @@ var _ = ginkgo.Describe("GcpGkeClusterSpec Custom Validation Tests", func() {
 		ginkgo.It("accepts user-managed keys with KMS references", func() {
 			spec := minimalSpec()
 			spec.UserManagedKeys = &GcpGkeClusterUserManagedKeys{
-				ClusterCa:                     "projects/p/locations/l/caPools/pool",
+				ClusterCa:                     literal("projects/p/locations/l/caPools/pool"),
 				ControlPlaneDiskEncryptionKey: ref("my-kms-key"),
 				ServiceAccountSigningKeys:     []string{"projects/p/locations/l/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1"},
 			}
 			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts GcpPrivateCaPool references for every user-managed CA", func() {
+			spec := minimalSpec()
+			spec.UserManagedKeys = &GcpGkeClusterUserManagedKeys{
+				ClusterCa:     ref("cluster-ca"),
+				EtcdApiCa:     ref("etcd-api-ca"),
+				EtcdPeerCa:    ref("etcd-peer-ca"),
+				AggregationCa: literal("projects/p/locations/us-central1/caPools/aggregation-ca"),
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a malformed literal user-managed CA pool", func() {
+			for _, keys := range []*GcpGkeClusterUserManagedKeys{
+				{ClusterCa: literal("cluster-ca")},
+				{EtcdApiCa: literal("projects/p/caPools/etcd-api-ca")},
+				{EtcdPeerCa: literal("projects/p/locations/l/keyRings/r")},
+				{AggregationCa: literal("caPools/aggregation-ca")},
+			} {
+				spec := minimalSpec()
+				spec.UserManagedKeys = keys
+				gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+			}
+		})
+
+		ginkgo.It("accepts fleet_project as a literal or a fleet reference", func() {
+			for _, fleet := range []*foreignkeyv1.StringValueOrRef{literal("fleet-host-project"), ref("platform-fleet")} {
+				spec := minimalSpec()
+				spec.FleetProject = fleet
+				gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+			}
 		})
 
 		ginkgo.It("rejects an additional IP range without a subnetwork", func() {

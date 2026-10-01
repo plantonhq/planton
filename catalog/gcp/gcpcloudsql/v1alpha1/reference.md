@@ -114,7 +114,7 @@ spec:
 | `spec.network.enablePrivatePathForGoogleCloudServices` | `bool` |  |  |  |
 | `spec.network.sslMode` | `string` |  |  |  |
 | `spec.network.serverCaMode` | `string` |  |  |  |
-| `spec.network.serverCaPool` | `string` |  |  |  |
+| `spec.network.serverCaPool` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.network.customSubjectAlternativeNames` | `[]string` |  |  |  |
 | `spec.network.psc` | `GcpCloudSqlPscConfig` |  |  |  |
 | `spec.network.psc.enabled` | `bool` |  |  |  |
@@ -531,10 +531,17 @@ Immutable after creation.
 
 ### spec.network.serverCaPool
 
-`string`
+`string | valueFrom`
 
-The CA Service CA pool (full resource path) that signs the server
-certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
+The CA Service CA pool that signs the server certificate when
+server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a GcpPrivateCaPool
+reference (its full name) or a literal
+projects/{project}/locations/{region}/caPools/{pool}. The pool must be
+in the instance's region.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.network.customSubjectAlternativeNames
 
@@ -1672,6 +1679,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.network.privateNetwork` | GcpVpcNetwork | `status.outputs.network_id` |
+| `spec.network.serverCaPool` | GcpPrivateCaPool | `status.outputs.name` |
 | `spec.encryptionKeyName` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.encryptionKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.masterInstanceName` | GcpCloudSql | `status.outputs.instance_name` |

@@ -21,9 +21,11 @@ team routes what matters and leaves the rest in the console.
 Two things must be true before findings arrive:
   - Security Command Center is activated on the scope (Standard is free;
     a project can be activated on its own when the organization is not).
-  - The service_account output can publish to the topic
-    (roles/pubsub.publisher on it). Creating the config does not check
-    this; without the grant, notifications are silently dropped.
+  - The config's publisher can publish to the topic: a
+    GcpPubSubTopicIamMember on the topic, role roles/pubsub.publisher,
+    member referencing this config's service_account_member output.
+    Creating the config does not check this; without the grant,
+    notifications are silently dropped.
 
 ## Example
 
@@ -120,7 +122,9 @@ What the config is for, up to 1024 characters.
 The topic findings are published to: a literal
 projects/{project}/topics/{topic} or a GcpPubSubTopic reference.
 Required on folder and organization configs; Google lets a project
-config omit it.
+config omit it. Grant the config's publisher on it with a
+GcpPubSubTopicIamMember (role roles/pubsub.publisher, member
+referencing the service_account_member output).
 
 - references: GcpPubSubTopic (`status.outputs.topic_id`)
 - rule: pubsub_topic must be projects/{project}/topics/{topic}
@@ -171,7 +175,8 @@ Reference an output from another manifest as `valueFrom: {kind: GcpSccNotificati
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.name` | `string` | Full resource name: {parent}/locations/{location}/notificationConfigs/{config_id}. |
-| `status.outputs.service_account` | `string` | The Security Command Center service account that publishes the notifications. Grant it roles/pubsub.publisher on the topic, or notifications are dropped. |
+| `status.outputs.service_account` | `string` | The Security Command Center service account that publishes the notifications, as a bare email. It needs roles/pubsub.publisher on the topic, or notifications are silently dropped; grant it through a GcpPubSubTopicIamMember whose member references service_account_member (this email in IAM member form). |
+| `status.outputs.service_account_member` | `string` | The publisher in IAM member form, "serviceAccount:" + service_account -- the exact value an IAM member field takes. Reference it from a GcpPubSubTopicIamMember's member, with role roles/pubsub.publisher on the config's topic, so notifications are published rather than dropped. |
 
 ## References
 
@@ -182,6 +187,14 @@ Fields that can point at another resource's outputs:
 | `spec.scope.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.scope.folderId` | GcpFolder | `status.outputs.folder_id` |
 | `spec.pubsubTopic` | GcpPubSubTopic | `status.outputs.topic_id` |
+
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpPubSubTopicIamMember | `spec.member` | `status.outputs.service_account_member` |
 
 ## See Also
 

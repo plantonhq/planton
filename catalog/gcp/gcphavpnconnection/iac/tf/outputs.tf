@@ -36,3 +36,20 @@ output "router_name" {
   description = "The Cloud Router the sessions run on"
   value       = local.router
 }
+
+# The minted keys, reported ONLY when the module generated them (a declared
+# key is never echoed back). Each reads the random_password leaf directly
+# (never a conditional over the whole resource) so the output carries only
+# the leaf's own sensitivity. The other side of a Google-to-Google pair
+# references these; an operator reads them to configure an external device.
+output "shared_secret" {
+  description = "The IKE pre-shared key the module generated -- set only when spec.shared_secret was empty and at least one tunnel declared no key of its own; a declared key is never echoed back"
+  value       = local.generate_shared_secret ? random_password.shared_secret[0].result : null
+  sensitive   = true
+}
+
+output "md5_authentication_key" {
+  description = "The BGP MD5 key the module generated -- set only when spec.md5_authentication_key was empty and at least one MD5 session declared no key of its own; a declared key is never echoed back"
+  value       = local.generate_md5_authentication_key ? random_password.md5_authentication_key[0].result : null
+  sensitive   = true
+}

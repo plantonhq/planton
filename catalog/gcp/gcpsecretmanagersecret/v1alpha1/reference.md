@@ -408,9 +408,12 @@ manifest yields a READABLE secret. Omit to create the container only
 
 The secret payload (at most 64KiB). A secret value: the platform
 stores it as a managed-secret reference and resolves it just-in-time
-at deploy — it never sits in plaintext in the control plane. In
-charts, wire it via valueFrom from a producing resource's sensitive
-output (e.g. a generated credential) instead of a literal.
+at deploy — it never sits in plaintext in the control plane. A
+literal or a reference to ANY kind's output (no default kind, since a
+secret can hold anything): in charts, wire it via valueFrom from a
+producing resource's sensitive output instead of a literal -- e.g. a
+GcpApiKey's status.outputs.key_string or a GcpIamOauthClient's
+status.outputs.client_secret.
 Immutable: changing the payload creates a NEW version through GCP
 tooling or rotation — this field only seeds version 1.
 
@@ -601,6 +604,18 @@ Fields on other kinds that can point at this resource:
 | GcpDatastreamConnectionProfile | `spec.sqlServerProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
 | GcpDatastreamConnectionProfile | `spec.mongodbProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
 | GcpDatastreamConnectionProfile | `spec.mongodbProfile.sslConfig.secretManagerStoredClientKey` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].genericWebService.secretVersionForUsernamePassword` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].genericWebService.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].serviceDirectory.genericWebService.secretVersionForUsernamePassword` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
 | GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
 
 ## See Also

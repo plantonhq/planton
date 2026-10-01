@@ -55,8 +55,7 @@ func notificationConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 		if err != nil {
 			return errors.Wrap(err, "failed to create folder notification config")
 		}
-		ctx.Export(OpName, created.Name)
-		ctx.Export(OpServiceAccount, created.ServiceAccount)
+		exportOutputs(ctx, created.Name, created.ServiceAccount)
 	case scope.GetOrganizationId() != "":
 		created, err := securitycenter.NewV2OrganizationNotificationConfig(ctx, target.Metadata.Name, &securitycenter.V2OrganizationNotificationConfigArgs{
 			Organization:    pulumi.String(scope.GetOrganizationId()),
@@ -70,8 +69,7 @@ func notificationConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 		if err != nil {
 			return errors.Wrap(err, "failed to create organization notification config")
 		}
-		ctx.Export(OpName, created.Name)
-		ctx.Export(OpServiceAccount, created.ServiceAccount)
+		exportOutputs(ctx, created.Name, created.ServiceAccount)
 	default:
 		project, api, err := projectWithApi(ctx, scope, gcpProvider)
 		if err != nil {
@@ -89,8 +87,7 @@ func notificationConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pr
 		if err != nil {
 			return errors.Wrap(err, "failed to create project notification config")
 		}
-		ctx.Export(OpName, created.Name)
-		ctx.Export(OpServiceAccount, created.ServiceAccount)
+		exportOutputs(ctx, created.Name, created.ServiceAccount)
 	}
 	return nil
 }

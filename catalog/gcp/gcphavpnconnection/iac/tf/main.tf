@@ -1,3 +1,52 @@
+# The keys the connection mints when it declares none (locals.tf has the
+# predicates): one IKE pre-shared key for every tunnel without its own, one
+# BGP MD5 key for every MD5 session without its own. Letters and digits only
+# -- symbols are the one class a device's configuration syntax can need
+# quoted. 32 characters for the pre-shared key (Google accepts up to 63); 24
+# for the MD5 key (Google accepts up to 80, and some devices cap a BGP
+# password at 25). Singletons, so no tunnel reorder ever swaps keys. Reported
+# in the shared_secret / md5_authentication_key outputs, the generating
+# side's half of a Google-to-Google pair. Twin: the Pulumi module's
+# random.RandomPassword resources with the same arguments.
+#
+# The generation-shape arguments are ignored after creation so an IMPORTED
+# key never silently regenerates (which would recreate every tunnel that
+# uses it): rotation stays an explicit act, never plan fallout. Twin: the
+# Pulumi module's IgnoreChanges on the same argument set.
+resource "random_password" "shared_secret" {
+  count = local.generate_shared_secret ? 1 : 0
+
+  length      = 32
+  special     = false
+  min_upper   = 2
+  min_lower   = 2
+  min_numeric = 2
+
+  lifecycle {
+    ignore_changes = [
+      length, special, upper, lower, numeric,
+      min_lower, min_numeric, min_special, min_upper, override_special,
+    ]
+  }
+}
+
+resource "random_password" "md5_authentication_key" {
+  count = local.generate_md5_authentication_key ? 1 : 0
+
+  length      = 24
+  special     = false
+  min_upper   = 2
+  min_lower   = 2
+  min_numeric = 2
+
+  lifecycle {
+    ignore_changes = [
+      length, special, upper, lower, numeric,
+      min_lower, min_numeric, min_special, min_upper, override_special,
+    ]
+  }
+}
+
 # The external VPN gateway resource that holds the peer device's public
 # addresses -- created only when the peer is an external device. For a
 # Google-to-Google connection the tunnels reference the other side's HA VPN
@@ -124,7 +173,8 @@ resource "google_compute_router_interface" "this" {
 # per-session advertisement overrides ride the same CUSTOM-mode rules as the
 # router's. The MD5 key rides the peer: the provider inserts it into the
 # router's key table under its name and attaches it to the session (Google
-# requires each key to be used by exactly one session).
+# requires each key-table entry to be used by exactly one session; the
+# material may repeat, which is how the connection-level key serves many).
 resource "google_compute_router_peer" "this" {
   for_each = local.tunnels
 
@@ -179,7 +229,7 @@ resource "google_compute_router_peer" "this" {
     for_each = each.value.bgp_session.md5_authentication_key != null ? [each.value.bgp_session.md5_authentication_key] : []
     content {
       name = each.value.md5_key_name
-      key  = md5_authentication_key.value.key
+      key  = each.value.md5_key
     }
   }
 

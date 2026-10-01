@@ -22,7 +22,7 @@ Security Command Center must be activated on the scope -- the organization, or t
 
 ### Optional Dependencies
 
-- **`GcpPubSubTopic`** -- the destination topic (`pubsubTopic`). Grant the `service_account` output `roles/pubsub.publisher` on it, or notifications are dropped.
+- **`GcpPubSubTopic`** -- the destination topic (`pubsubTopic`). Grant the config's publisher with a `GcpPubSubTopicIamMember` on the topic (role `roles/pubsub.publisher`, `member` referencing the config's `status.outputs.service_account_member`), or notifications are dropped.
 - **`GcpProject`** / **`GcpFolder`** -- the scope, by reference.
 
 ## Deploy
@@ -75,7 +75,8 @@ planton apply -f scc-notification-config.yaml
 | Output | Type | Description |
 |--------|------|-------------|
 | `name` | `string` | `{parent}/locations/{location}/notificationConfigs/{configId}` |
-| `service_account` | `string` | The publisher Security Command Center uses -- grant it `roles/pubsub.publisher` on the topic |
+| `service_account` | `string` | The publisher Security Command Center uses, as a bare email |
+| `service_account_member` | `string` | The publisher in IAM member form (`serviceAccount:{email}`) -- the `member` a `GcpPubSubTopicIamMember` grants `roles/pubsub.publisher` on the topic |
 
 ## Deployment Methods
 
@@ -89,7 +90,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Grant the publisher.** Creating the config does not check that `service_account` can publish; without `roles/pubsub.publisher` on the topic, notifications are silently dropped.
+- **Grant the publisher.** Creating the config does not check that `service_account` can publish; without `roles/pubsub.publisher` on the topic, notifications are silently dropped. Grant it with a `GcpPubSubTopicIamMember` on the topic (role `roles/pubsub.publisher`, `member` referencing the config's `status.outputs.service_account_member`).
 - **Activation first.** Security Command Center must be active on the scope.
 - **The filter decides the noise.** An empty filter streams every finding; narrow it to the states and severities your responders act on.
 

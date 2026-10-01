@@ -326,7 +326,8 @@ var dispositionOrder = []struct {
 	detailHeader string
 }{
 	{DispositionModeled, "Modeled", "consumed by a kind's Terraform module today", "Consuming kinds"},
-	{DispositionIamCovered, "IAM-covered", "per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields", "Detail"},
+	{DispositionIamCovered, "IAM-covered", "authoritative per-resource IAM forms (binding, policy) of a resource a kind already grants on additively; deliberately not modeled", "Detail"},
+	{DispositionIamUncovered, "IAM not offered per resource", "per-resource IAM triplets for resources no kind grants on yet; access goes through a grant at a broader scope (the project or account)", "Detail"},
 	{DispositionComposed, "Composed", "capability covered through an existing kind's surface rather than a kind of its own", "Recorded reason"},
 	{DispositionModelPlanned, "Planned", "judged to be covered by a planned kind or planned composition, not built yet", "Recorded reason"},
 	{DispositionDeferred, "Deferred", "deliberately not offered, each with the recorded reason", "Recorded reason"},

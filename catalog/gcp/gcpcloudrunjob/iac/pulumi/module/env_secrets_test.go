@@ -11,7 +11,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 
 	gcpcloudrunjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunjob/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 )
 
 func TestASecretValueBecomesASecretManagerReference_neverAPlainValue(t *testing.T) {
@@ -30,7 +30,7 @@ func TestASecretValueBecomesASecretManagerReference_neverAPlainValue(t *testing.
 	if len(variables) != 1 || variables[0].Name != "DB_PASSWORD" || variables[0].ContainerIndex != 0 {
 		t.Fatalf("exactly the secret_value entry is stored; got %+v", variables)
 	}
-	refs := map[cloudrunenv.Key]cloudrunenv.Ref{
+	refs := map[envsecrets.Key]envsecrets.Ref{
 		{ContainerIndex: 0, Name: "DB_PASSWORD"}: {
 			Secret:  pulumi.String("job-task-db-password").ToStringOutput(),
 			Version: pulumi.String("1").ToStringOutput(),
@@ -50,5 +50,21 @@ func TestASecretValueBecomesASecretManagerReference_neverAPlainValue(t *testing.
 	literal := envs[1].(*cloudrunv2.JobTemplateTemplateContainerEnvArgs)
 	if literal.Value != pulumi.String("prod") || literal.ValueSource != nil {
 		t.Errorf("a literal stays a literal; got value %v, source %v", literal.Value, literal.ValueSource)
+	}
+}
+
+// The placement the module builds names its secrets and the API resource exactly as existing job
+// stacks hold them; a changed byte would replace every stored secret.
+func TestThePlacementNamesSecretsAsExistingStacksHoldThem(t *testing.T) {
+	tmpl := &gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate{
+		Containers: []*gcpcloudrunjobv1alpha1.GcpCloudRunJobContainer{{Env: []*gcpcloudrunjobv1alpha1.GcpCloudRunJobEnvVar{{Name: "TOKEN", SecretValue: "x"}}}},
+	}
+	spec := &gcpcloudrunjobv1alpha1.GcpCloudRunJobSpec{Region: "europe-west1", Template: tmpl}
+	placement := secretPlacement(&Locals{GcpCloudRunJob: &gcpcloudrunjobv1alpha1.GcpCloudRunJob{Spec: spec}, JobName: "nightly-etl"})
+	if got := envsecrets.SecretID(placement, secretVariables(tmpl)[0]); got != "runjob_europe-west1_nightly-etl_c0_TOKEN" {
+		t.Errorf("secret id = %q", got)
+	}
+	if got := envsecrets.APIResourceName(placement); got != "runjob-secretmanager.googleapis.com" {
+		t.Errorf("API resource name = %q", got)
 	}
 }

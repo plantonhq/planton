@@ -879,7 +879,7 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 
 	if cfg.MetastoreConfig != nil {
 		clusterConfig.MetastoreConfig = &dataproc.ClusterClusterConfigMetastoreConfigArgs{
-			DataprocMetastoreService: pulumi.String(cfg.MetastoreConfig.DataprocMetastoreService.GetValue()),
+			DataprocMetastoreService: pulumi.String(cfg.MetastoreConfig.DataprocMetastoreService),
 		}
 	}
 
@@ -1062,7 +1062,7 @@ func buildVirtualClusterConfig(vcc *gcpdataprocclusterv1alpha1.GcpDataprocCluste
 
 		if vcc.AuxiliaryServicesConfig.MetastoreConfig != nil {
 			auxArgs.MetastoreConfig = &dataproc.ClusterVirtualClusterConfigAuxiliaryServicesConfigMetastoreConfigArgs{
-				DataprocMetastoreService: pulumi.StringPtr(vcc.AuxiliaryServicesConfig.MetastoreConfig.DataprocMetastoreService.GetValue()),
+				DataprocMetastoreService: pulumi.StringPtr(vcc.AuxiliaryServicesConfig.MetastoreConfig.DataprocMetastoreService),
 			}
 		}
 

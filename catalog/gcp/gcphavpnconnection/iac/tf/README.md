@@ -4,7 +4,7 @@ This Terraform module connects one HA VPN gateway to one peer with one to four I
 
 ## Overview
 
-The external gateway is count-gated on `spec.peer.external_gateway`; the three per-tunnel resources are `for_each` over the tunnels keyed by name, so adding or removing a tunnel in the middle of the list never renumbers (and so recreates) its neighbours. The gateway trio (`gateway`, `router`, `region`) arrives as resolved references to the `GcpHaVpnGateway`. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
+The external gateway is count-gated on `spec.peer.external_gateway`; the three per-tunnel resources are `for_each` over the tunnels keyed by name, so adding or removing a tunnel in the middle of the list never renumbers (and so recreates) its neighbours. The gateway trio (`gateway`, `router`, `region`) arrives as resolved references to the `GcpHaVpnGateway`. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line — plus `hashicorp/random`, which mints the keys the spec leaves empty.
 
 ## Usage with Planton CLI
 
@@ -33,7 +33,7 @@ terraform apply -var-file=terraform.tfvars.json
 | `metadata` | Resource metadata (name, labels, etc.) | — |
 | `spec` | GcpHaVpnConnection spec | — |
 
-The `spec` object includes: `project_id`, `gateway`, `router`, `region` (all three referencing the `GcpHaVpnGateway`), `peer` (exactly one of `external_gateway { name, redundancy_type, interfaces[], description, labels }` or `gcp_gateway`), `tunnels[]` (`name`, `vpn_gateway_interface`, `peer_external_gateway_interface`, `shared_secret`, `ike_version`, `local_traffic_selector`, `remote_traffic_selector`, `cipher_suite`, `labels`, `description`, `bgp_session { name, interface_ip_range, ip_version, peer_asn, peer_ip_address, advertised_route_priority, advertise_mode, advertised_groups, advertised_ip_ranges, enable, enable_ipv4, enable_ipv6, the four nexthop addresses, custom_learned_ip_ranges, custom_learned_route_priority, bfd, md5_authentication_key, import_policies, export_policies }`), `resource_manager_tags`, and `deletion_policy`.
+The `spec` object includes: `project_id`, `shared_secret`, `md5_authentication_key`, `gateway`, `router`, `region` (all three referencing the `GcpHaVpnGateway`), `peer` (exactly one of `external_gateway { name, redundancy_type, interfaces[], description, labels }` or `gcp_gateway`), `tunnels[]` (`name`, `vpn_gateway_interface`, `peer_external_gateway_interface`, `shared_secret`, `ike_version`, `local_traffic_selector`, `remote_traffic_selector`, `cipher_suite`, `labels`, `description`, `bgp_session { name, interface_ip_range, ip_version, peer_asn, peer_ip_address, advertised_route_priority, advertise_mode, advertised_groups, advertised_ip_ranges, enable, enable_ipv4, enable_ipv6, the four nexthop addresses, custom_learned_ip_ranges, custom_learned_route_priority, bfd, md5_authentication_key, import_policies, export_policies }`), `resource_manager_tags`, and `deletion_policy`.
 
 `variables.tf` is generated from the proto contract (`planton tofu generate-variables GcpHaVpnConnection`) and formatted with `tofu fmt`; regenerate it when the spec changes rather than editing by hand.
 
@@ -48,13 +48,18 @@ The `spec` object includes: `project_id`, `gateway`, `router`, `region` (all thr
 | `external_gateway_self_link` | The external VPN gateway's self link (empty for a Google peer) |
 | `gateway_self_link` | The HA VPN gateway the tunnels leave from |
 | `router_name` | The Cloud Router the sessions run on |
+| `shared_secret` | The generated IKE pre-shared key (sensitive; null unless generated) |
+| `md5_authentication_key` | The generated BGP MD5 key (sensitive; null unless generated) |
 
 ## Resources Created
 
+- `random_password.shared_secret` (count-gated: `spec.shared_secret` empty and at least one tunnel without its own key) — 32 letters and digits, `ignore_changes` on every generation-shape argument
+- `random_password.md5_authentication_key` (count-gated: `spec.md5_authentication_key` empty and at least one MD5 session without its own key) — 24 letters and digits, same `ignore_changes`
+
 - `google_compute_external_vpn_gateway` (count-gated on an external peer) — the device's interfaces, exactly one address each; labels merged (platform wins)
-- `google_compute_vpn_tunnel` (`for_each` tunnel) — `shared_secret` (sensitive), `ike_version` always sent (2 when unset), exactly one of `peer_external_gateway` / `peer_gcp_gateway`, traffic selectors and cipher suite only when set
+- `google_compute_vpn_tunnel` (`for_each` tunnel) — `shared_secret` (the tunnel's own, else the connection's, else the generated key), `ike_version` always sent (2 when unset), exactly one of `peer_external_gateway` / `peer_gcp_gateway`, traffic selectors and cipher suite only when set
 - `google_compute_router_interface` (`for_each` tunnel) — named from `bgp_session.name` or the tunnel's name; `ip_range` / `ip_version` only when set
-- `google_compute_router_peer` (`for_each` tunnel) — `enable` always sent (true when unset), optional numerics and addresses only when set, BFD and the MD5 key (sensitive; name defaults to `<tunnel>-md5`) when declared
+- `google_compute_router_peer` (`for_each` tunnel) — `enable` always sent (true when unset), optional numerics and addresses only when set, BFD, and MD5 when the session declares the block (key: the session's own, else the connection's, else the generated one; key-table name defaults to `<tunnel>-md5`)
 
 `deletion_policy` is fanned to every resource when set.
 
@@ -62,5 +67,6 @@ The `spec` object includes: `project_id`, `gateway`, `router`, `region` (all thr
 
 - **Every tunnel field except labels is immutable.** Rotate a pre-shared key by adding a tunnel with the new key and removing the old one.
 - **Two tunnels, one per gateway interface, to two peer addresses is the 99.99% shape.**
-- **The MD5 key rides the peer**: the provider inserts it into the router's key table and Google requires each key to be used by exactly one session.
+- **The MD5 key rides the peer**: the provider inserts it into the router's key table; Google requires each key-table entry to be used by exactly one session, so each session gets its own entry while the material may repeat.
+- **In a Google-to-Google pair exactly one side generates the keys**; the other references its `shared_secret` / `md5_authentication_key` outputs.
 - **Tunnels bill per hour from creation**, whether or not the peer is up.

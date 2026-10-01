@@ -1,0 +1,72 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpgcsbucketiammember
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The grant stores no customer data -- it is one (role, member) entry in the bucket's IAM policy, control-plane metadata Google holds on its own encrypted infrastructure. Object encryption belongs to the GcpGcsBucket resource.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists here to key; a bucket's default customer-managed key is configured on the GcpGcsBucket, and the grant has no KMS surface.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: A policy entry terminates no connections -- it is consulted inside IAM's authorization checks, never on a wire the operator configures. Clients reach Cloud Storage over Google's TLS endpoints regardless of this grant.
+    - control_id: no-public-access
+      status: configurable
+      field_path: member
+      evidence:
+        type: spec_validation
+        reference: The member-format rule (member.format) deliberately admits allUsers and allAuthenticatedUsers alongside the identity-scoped formats, so public exposure is always an explicit, reviewable value in the manifest -- never a default or a side effect. A bucket with public access prevention enforced refuses such a grant at deploy.
+      notes: "member is the public-exposure lever for the bucket: allUsers or allAuthenticatedUsers paired with a read role publishes every object the role covers to the internet. Public objects belong behind a deliberate website or CDN design on the bucket itself; on a sink's archive bucket there is no legitimate public grant -- treat any such value as a finding."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network path exists to restrict -- IAM authorization on the bucket is identity-based, not source-based. Network-level control of who can reach Cloud Storage is VPC Service Controls territory, configured outside this resource.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The grant receives no inbound traffic; there is no request path for a WAF to front.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: This component IS role-based access control on the bucket -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against storage.buckets.getIamPolicy and storage.buckets.setIamPolicy on the target bucket; no unauthenticated management path exists.
+      notes: Bucket-scoped grants are the least-privilege shape for a sink's writer -- IAM also flows down onto the bucket from its project, so a project-level objectCreator grant would let the writer fill every bucket. The condition field narrows a grant further (an object-name prefix, an expiry) on buckets with uniform bucket-level access.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through a grant -- it consumes identities as grantees and issues no credentials. The canonical grantee is a sink's Google-minted writer identity, itself platform-issued; the principal:// formats let federated keyless workloads receive access the same way.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The grant carries no authentication path to disable; object ACLs are the bucket's own posture (uniform bucket-level access on GcpGcsBucket turns them off).
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every create and destroy is a SetIamPolicy call on the bucket, landing in Cloud Audit Logs (Admin Activity) unconditionally -- Google's Cloud Audit Logs overview states Admin Activity logs are always written and cannot be configured, excluded, or disabled.
+      notes: Admin Activity records changes TO the bucket's policy (with the etag output usable for correlation); logging of the member's object reads and writes is Cloud Storage's Data Access audit configuration, disabled by default and enabled on the bucket's project.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: A single policy entry emits no metrics and has no export knob; Cloud Storage publishes its metrics on bucket dimensions, which belong to the bucket resource.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The grant is declarative configuration fully re-creatable from source control; there is no data to back up or restore.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The bucket's IAM policy is control-plane metadata Google replicates as part of the platform; no failure-domain choice exists on the resource.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: "Neither GCP nor this spec offers a deletion-protection flag for an IAM grant -- every field is immutable and destroy subtracts exactly this (role, member[, condition]) pair. The blast radius is quiet: revoking a sink writer's objectCreator grant deletes no object, but Cloud Logging stops writing batches and the gap is permanent. Plan removals with the sink, not separately."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface here to patch; IAM's evaluation engine and Cloud Storage's control plane are Google's own infrastructure, patched as part of the platform.

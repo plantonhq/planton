@@ -3106,10 +3106,13 @@ type GcpCloudRunBuildConfig struct {
 	// Build-time environment variables visible to the build process (NOT
 	// to the running service — runtime env lives on the containers).
 	EnvironmentVariables map[string]string `protobuf:"bytes,6,rep,name=environment_variables,json=environmentVariables,proto3" json:"environment_variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Cloud Build Custom Worker Pool to run the build in, as
-	// "projects/{project}/locations/{region}/workerPools/{workerPool}".
-	// For builds that must run inside a private network perimeter.
-	WorkerPool string `protobuf:"bytes,7,opt,name=worker_pool,json=workerPool,proto3" json:"worker_pool,omitempty"`
+	// The Cloud Build private worker pool the build runs in, as
+	// projects/{project}/locations/{location}/workerPools/{pool}: a
+	// GcpCloudBuildWorkerPool reference (its name output), or the literal
+	// name. Use one when the build must reach a private network (a private
+	// package index, an internal artifact store). Empty runs the build on
+	// Google's default pool.
+	WorkerPool *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=worker_pool,json=workerPool,proto3" json:"worker_pool,omitempty"`
 	// Service account the BUILD runs as, in the full resource form
 	// "projects/{projectId}/serviceAccounts/{email}" (note: not a bare
 	// email — this is the build-time identity, distinct from the runtime
@@ -3191,11 +3194,11 @@ func (x *GcpCloudRunBuildConfig) GetEnvironmentVariables() map[string]string {
 	return nil
 }
 
-func (x *GcpCloudRunBuildConfig) GetWorkerPool() string {
+func (x *GcpCloudRunBuildConfig) GetWorkerPool() *v1.StringValueOrRef {
 	if x != nil {
 		return x.WorkerPool
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpCloudRunBuildConfig) GetServiceAccount() string {
@@ -3534,7 +3537,7 @@ const file_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto_rawDesc = "" +
 	"useDefault\x12\x1e\n" +
 	"\x06policy\x18\x02 \x01(\tB\x06\xbaH\x03\xd8\x01\x01R\x06policy\x129\n" +
 	"\x18breakglass_justification\x18\x03 \x01(\tR\x17breakglassJustification:\xac\x01\xbaH\xa8\x01\x1a\xa5\x01\n" +
-	"'binary_authorization.default_xor_policy\x12Puse the project default policy (use_default) or name a specific policy, not both\x1a(!(this.use_default && this.policy != '')\"\x81\x04\n" +
+	"'binary_authorization.default_xor_policy\x12Puse the project default policy (use_default) or name a specific policy, not both\x1a(!(this.use_default && this.policy != '')\"\xb8\x06\n" +
 	"\x16GcpCloudRunBuildConfig\x12'\n" +
 	"\x0fsource_location\x18\x01 \x01(\tR\x0esourceLocation\x12'\n" +
 	"\x0ffunction_target\x18\x02 \x01(\tR\x0efunctionTarget\x12\x1b\n" +
@@ -3542,8 +3545,9 @@ const file_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"base_image\x18\x04 \x01(\tR\tbaseImage\x128\n" +
 	"\x18enable_automatic_updates\x18\x05 \x01(\bR\x16enableAutomaticUpdates\x12\x8b\x01\n" +
-	"\x15environment_variables\x18\x06 \x03(\v2V.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunBuildConfig.EnvironmentVariablesEntryR\x14environmentVariables\x12\x1f\n" +
-	"\vworker_pool\x18\a \x01(\tR\n" +
+	"\x15environment_variables\x18\x06 \x03(\v2V.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunBuildConfig.EnvironmentVariablesEntryR\x14environmentVariables\x12\xd5\x02\n" +
+	"\vworker_pool\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xff\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
+	"\x12worker_pool.format\x12gworker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}\x1a\\!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$')\x88\xd4a\xbc\x19\x92\xd4a\x13status.outputs.nameR\n" +
 	"workerPool\x12'\n" +
 	"\x0fservice_account\x18\b \x01(\tR\x0eserviceAccount\x1aG\n" +
 	"\x19EnvironmentVariablesEntry\x12\x10\n" +
@@ -3673,11 +3677,12 @@ var file_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto_depIdxs = []int32{
 	41, // 49: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	41, // 50: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	40, // 51: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunBuildConfig.environment_variables:type_name -> dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunBuildConfig.EnvironmentVariablesEntry
-	52, // [52:52] is the sub-list for method output_type
-	52, // [52:52] is the sub-list for method input_type
-	52, // [52:52] is the sub-list for extension type_name
-	52, // [52:52] is the sub-list for extension extendee
-	0,  // [0:52] is the sub-list for field type_name
+	41, // 52: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunBuildConfig.worker_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	53, // [53:53] is the sub-list for method output_type
+	53, // [53:53] is the sub-list for method input_type
+	53, // [53:53] is the sub-list for extension type_name
+	53, // [53:53] is the sub-list for extension extendee
+	0,  // [0:53] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto_init() }

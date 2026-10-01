@@ -109,7 +109,12 @@ variable "spec" {
 
       # Environment variables available at build time (e.g. buildpack knobs
       # like GOOGLE_ENTRYPOINT). Not injected into the runtime — use
-      # service_config.environment_variables for that.
+      # service_config.environment_variables for that. Values are stored in
+      # plain text on the function and must never be secrets: Google's build
+      # API has no Secret Manager path for build-time variables. A build that
+      # needs a private package index reaches it through the build service
+      # account's own access (an Artifact Registry repository it can read) or
+      # a private worker pool (worker_pool), never a token here.
       build_environment_variables = optional(map(string), {})
 
       # Service account Cloud Build runs the build as — the identity that
@@ -120,9 +125,13 @@ variable "spec" {
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       service_account = optional(string, "")
 
-      # Cloud Build Custom Worker Pool that builds the function — for builds
-      # that must run inside a private network perimeter. Format:
-      # projects/{project}/locations/{region}/workerPools/{name}.
+      # The Cloud Build private worker pool the build runs in, as
+      # projects/{project}/locations/{location}/workerPools/{pool}: a
+      # GcpCloudBuildWorkerPool reference (its name output), or the literal
+      # name. Use one when the build must reach a private network (a private
+      # package index, an internal artifact store). Empty runs the build on
+      # Google's default pool.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       worker_pool = optional(string, "")
 
       # User-managed Artifact Registry repository the built container is
@@ -174,28 +183,49 @@ variable "spec" {
       max_instance_request_concurrency = optional(number, 0)
 
       # Environment variables injected into the runtime as plain-text
-      # KEY=VALUE pairs. Configuration only — never place credentials here;
-      # use secret_environment_variables so material stays in Secret Manager.
+      # KEY=VALUE pairs, written into the function where anyone who can view
+      # it reads them. Configuration only — a credential goes in
+      # secret_environment_variables, as a value this component stores in
+      # Secret Manager or a secret you already own.
       environment_variables = optional(map(string), {})
 
-      # Secret Manager references injected as environment variables. The
-      # material never appears in the spec — each entry names a secret and
-      # version resolved at instance start. The runtime service account needs
-      # roles/secretmanager.secretAccessor on each secret.
+      # Environment variables whose value comes from Secret Manager, resolved
+      # at instance start. Each entry either names a secret you already own
+      # (secret, version, project_id) or carries a value this component
+      # stores for you (value). The function holds only the reference, never
+      # the material. A secret you own needs roles/secretmanager.secretAccessor
+      # granted to the runtime service account; a stored value gets that grant
+      # from the component.
       secret_environment_variables = optional(list(object({
         # Environment variable name, e.g. "DATABASE_PASSWORD".
         key = string
 
-        # The secret: a short name for a secret in the function's project
-        # ("my-secret"). Cross-project secrets set project_id.
-        secret = string
+        # A Secret Manager secret you already own: its short name in the
+        # function's project ("my-secret"). Cross-project secrets set
+        # project_id. The runtime service account needs
+        # roles/secretmanager.secretAccessor on it.
+        secret = optional(string, "")
 
-        # Secret version to resolve: a version number or "latest" — the common
-        # choice, at the cost of new instances silently picking up rotations.
+        # Version of the secret you own to resolve: a version number or
+        # "latest" — the common choice, at the cost of new instances silently
+        # picking up rotations. Only with secret.
         version = optional(string, "")
 
-        # Project the secret lives in, when it is not the function's project.
+        # Project the secret you own lives in, when it is not the function's
+        # project. Only with secret.
         project_id = optional(string, "")
+
+        # A secret value this component keeps in Secret Manager for you. It
+        # creates one secret for this variable, replicated only in the
+        # function's region, stores the value as a version, grants the
+        # function's runtime identity (service_account_email, or the project's
+        # Compute Engine default service account when unset) secretAccessor on
+        # that secret alone, and points the variable at that exact version —
+        # the function carries a reference, never the value. A changed value
+        # adds a version and redeploys the function, so rotation is a deploy;
+        # destroying the function removes the secret. The secret's id is
+        # function_<region>_<function name>_<key>.
+        value = optional(string, "")
       })), [])
 
       # Secret Manager secret versions projected as files under a mount path

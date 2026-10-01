@@ -2872,9 +2872,14 @@ func (x *GcpGkeNodePoolReservationAffinity) GetValues() []string {
 // GcpGkeNodePoolSecondaryBootDisk preloads data onto nodes at boot.
 type GcpGkeNodePoolSecondaryBootDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Disk image to create the secondary boot disk from (a prepared image
-	// containing the container images/data to preload).
-	DiskImage string `protobuf:"bytes,1,opt,name=disk_image,json=diskImage,proto3" json:"disk_image,omitempty"`
+	// Disk image to create the secondary boot disk from: a prepared image
+	// containing the container images or data to preload (the output of
+	// Google's gke-disk-image-builder, or any image built for the purpose).
+	// A GcpComputeImage reference (its image_id,
+	// projects/{project}/global/images/{name}) or a literal in a form Google
+	// documents: global/images/{name} (an image in the pool's project) or
+	// projects/{project}/global/images/{name}. Required. Immutable.
+	DiskImage *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=disk_image,json=diskImage,proto3" json:"disk_image,omitempty"`
 	// CONTAINER_IMAGE_CACHE serves preloaded container images to the
 	// container runtime. Empty attaches the disk without special handling.
 	Mode          string `protobuf:"bytes,2,opt,name=mode,proto3" json:"mode,omitempty"`
@@ -2912,11 +2917,11 @@ func (*GcpGkeNodePoolSecondaryBootDisk) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkenodepool_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
-func (x *GcpGkeNodePoolSecondaryBootDisk) GetDiskImage() string {
+func (x *GcpGkeNodePoolSecondaryBootDisk) GetDiskImage() *v1.StringValueOrRef {
 	if x != nil {
 		return x.DiskImage
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpGkeNodePoolSecondaryBootDisk) GetMode() string {
@@ -4433,10 +4438,10 @@ const file_catalog_gcp_gcpgkenodepool_v1alpha1_spec_proto_rawDesc = "" +
 	"\x18consume_reservation_type\x18\x01 \x01(\tBZ\xbaHW\xc8\x01\x01rRR\x0eNO_RESERVATIONR\x0fANY_RESERVATIONR\x14SPECIFIC_RESERVATIONR\x19ANY_RESERVATION_THEN_FAILR\x16consumeReservationType\x12\x10\n" +
 	"\x03key\x18\x02 \x01(\tR\x03key\x12\x16\n" +
 	"\x06values\x18\x03 \x03(\tR\x06values:\xfc\x01\xbaH\xf8\x01\x1a\xf5\x01\n" +
-	"\x1cspecific_requires_key_values\x12nSPECIFIC_RESERVATION requires key \"compute.googleapis.com/reservation-name\" and the reservation name in values\x1aethis.consume_reservation_type != 'SPECIFIC_RESERVATION' || (this.key != '' && this.values.size() > 0)\"\xdc\x01\n" +
-	"\x1fGcpGkeNodePoolSecondaryBootDisk\x12%\n" +
+	"\x1cspecific_requires_key_values\x12nSPECIFIC_RESERVATION requires key \"compute.googleapis.com/reservation-name\" and the reservation name in values\x1aethis.consume_reservation_type != 'SPECIFIC_RESERVATION' || (this.key != '' && this.values.size() > 0)\"\xb0\x02\n" +
+	"\x1fGcpGkeNodePoolSecondaryBootDisk\x12y\n" +
 	"\n" +
-	"disk_image\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tdiskImage\x12\x91\x01\n" +
+	"disk_image\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xac\x19\x92\xd4a\x17status.outputs.image_idR\tdiskImage\x12\x91\x01\n" +
 	"\x04mode\x18\x02 \x01(\tB}\xbaHz\xba\x01w\n" +
 	"\x19secondary_disk_mode_valid\x12+mode must be empty or CONTAINER_IMAGE_CACHE\x1a-this == '' || this == 'CONTAINER_IMAGE_CACHE'R\x04mode\"\xb8\x18\n" +
 	"\x1bGcpGkeNodePoolKubeletConfig\x12\xab\x01\n" +
@@ -4696,25 +4701,26 @@ var file_catalog_gcp_gcpgkenodepool_v1alpha1_spec_proto_depIdxs = []int32{
 	21, // 43: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolRegistryHost.hosts:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolRegistryHostEndpoint
 	49, // 44: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolRegistryHostEndpoint.headers:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolRegistryHostEndpoint.HeadersEntry
 	24, // 45: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolGuestAccelerator.gpu_sharing_config:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolGpuSharingConfig
-	32, // 46: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.eviction_soft:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolEvictionSignals
-	33, // 47: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.eviction_soft_grace_period:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolEvictionGracePeriods
-	34, // 48: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.eviction_minimum_reclaim:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolEvictionMinimumReclaim
-	35, // 49: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.crash_loop_back_off:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolCrashLoopBackOff
-	36, // 50: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.memory_manager:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolMemoryManager
-	37, // 51: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.topology_manager:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolTopologyManager
-	50, // 52: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.sysctls:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.SysctlsEntry
-	44, // 53: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.hugepages_config:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolHugepagesConfig
-	40, // 54: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.swap_config:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig
-	39, // 55: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.custom_node_init:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolCustomNodeInit
-	41, // 56: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.boot_disk_profile:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapSizing
-	42, // 57: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.dedicated_local_ssd_profile:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapDedicatedSsd
-	41, // 58: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.ephemeral_local_ssd_profile:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapSizing
-	43, // 59: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.encryption_config:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapEncryption
-	60, // [60:60] is the sub-list for method output_type
-	60, // [60:60] is the sub-list for method input_type
-	60, // [60:60] is the sub-list for extension type_name
-	60, // [60:60] is the sub-list for extension extendee
-	0,  // [0:60] is the sub-list for field type_name
+	51, // 46: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSecondaryBootDisk.disk_image:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 47: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.eviction_soft:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolEvictionSignals
+	33, // 48: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.eviction_soft_grace_period:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolEvictionGracePeriods
+	34, // 49: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.eviction_minimum_reclaim:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolEvictionMinimumReclaim
+	35, // 50: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.crash_loop_back_off:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolCrashLoopBackOff
+	36, // 51: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.memory_manager:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolMemoryManager
+	37, // 52: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolKubeletConfig.topology_manager:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolTopologyManager
+	50, // 53: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.sysctls:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.SysctlsEntry
+	44, // 54: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.hugepages_config:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolHugepagesConfig
+	40, // 55: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.swap_config:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig
+	39, // 56: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolLinuxNodeConfig.custom_node_init:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolCustomNodeInit
+	41, // 57: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.boot_disk_profile:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapSizing
+	42, // 58: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.dedicated_local_ssd_profile:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapDedicatedSsd
+	41, // 59: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.ephemeral_local_ssd_profile:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapSizing
+	43, // 60: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapConfig.encryption_config:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSwapEncryption
+	61, // [61:61] is the sub-list for method output_type
+	61, // [61:61] is the sub-list for method input_type
+	61, // [61:61] is the sub-list for extension type_name
+	61, // [61:61] is the sub-list for extension extendee
+	0,  // [0:61] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpgkenodepool_v1alpha1_spec_proto_init() }

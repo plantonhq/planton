@@ -29,11 +29,12 @@ how far that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 182 |
-| Distinct provider resources consumed | 304 |
-| Spec fields authored across all kinds | 6365 |
-| Module pins on `google` | `~> 8.3` × 182 |
+| Kinds in the catalog | 186 |
+| Distinct provider resources consumed | 308 |
+| Spec fields authored across all kinds | 6399 |
+| Module pins on `google` | `~> 8.3` × 186 |
 | Module pins on `google-beta` | `~> 8.3` × 6 |
+| Module pins on `random` | `~> 3.6` × 1 |
 
 The GA provider is the parity baseline. Capability that exists only in a
 secondary channel (for Google, the `google-beta` provider) enters per kind
@@ -78,7 +79,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind runs on.
 
-**182 of 182 kinds are at total accounting; 83 proven live.**
+**186 of 186 kinds are at total accounting; 80 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -103,16 +104,18 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpBinaryAuthorizationPolicy | 12 | 10 | 2 | 0 | 0 | ✅ | — |
 | GcpCertManagerCert | 14 | 10 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCertManagerDnsAuthorization | 8 | 6 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCertManagerIssuanceConfig | 10 | 7 | 3 | 0 | 0 | ✅ | — |
+| GcpCertManagerTrustConfig | 9 | 4 | 5 | 0 | 0 | ✅ | — |
 | GcpCertificateMap | 14 | 4 | 9 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudArmorPolicy | 120 | 26 | 93 | 1 | 0 | ✅ | — |
 | GcpCloudBuildConnection | 32 | 30 | 2 | 0 | 0 | ✅ | — |
 | GcpCloudBuildRepository | 7 | 4 | 3 | 0 | 0 | ✅ | — |
 | GcpCloudBuildTrigger | 131 | 110 | 18 | 3 | 0 | ✅ | — |
 | GcpCloudBuildWorkerPool | 14 | 12 | 2 | 0 | 0 | ✅ | — |
-| GcpCloudComposerEnvironment | 81 | 3 | 66 | 12 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudComposerEnvironment | 89 | 3 | 67 | 19 | 0 | ✅ | — |
 | GcpCloudComposerUserWorkloadsConfigMap | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudComposerUserWorkloadsSecret | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudFunction | 65 | 43 | 15 | 7 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudFunction | 73 | 43 | 16 | 14 | 0 | ✅ | — |
 | GcpCloudIdentityGroup | 15 | 6 | 8 | 1 | 0 | ✅ | — |
 | GcpCloudRun | 147 | 27 | 102 | 18 | 0 | ✅ | — |
 | GcpCloudRunDomainMapping | 10 | 1 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -157,6 +160,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpFirewallRule | 20 | 13 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFolder | 5 | 4 | 1 | 0 | 0 | ✅ | — |
 | GcpGcsBucket | 78 | 39 | 31 | 8 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGcsBucketIamMember | 6 | 6 | 0 | 0 | 0 | ✅ | — |
 | GcpGkeCluster | 538 | 63 | 147 | 328 | 0 | ✅ | — |
 | GcpGkeFleet | 10 | 5 | 2 | 3 | 0 | ✅ | — |
 | GcpGkeFleetFeature | 126 | 91 | 24 | 11 | 0 | ✅ | — |
@@ -166,7 +170,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalForwardingRule | 51 | 43 | 8 | 0 | 0 | ✅ | — |
-| GcpHaVpnConnection | 84 | 46 | 23 | 15 | 0 | ✅ | — |
+| GcpHaVpnConnection | 84 | 44 | 25 | 15 | 0 | ✅ | — |
 | GcpHaVpnGateway | 30 | 11 | 16 | 3 | 0 | ✅ | — |
 | GcpHealthCheck | 100 | 14 | 86 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpHierarchicalFirewallPolicy | 37 | 29 | 6 | 2 | 0 | ✅ | — |
@@ -212,6 +216,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpPubSubSchema | 5 | 3 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPubSubSubscription | 44 | 41 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPubSubTopic | 44 | 41 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpPubSubTopicIamMember | 7 | 3 | 0 | 4 | 0 | ✅ | — |
 | GcpRedisCluster | 36 | 29 | 4 | 3 | 0 | ✅ | — |
 | GcpRedisClusterEndpointSet | 10 | 2 | 8 | 0 | 0 | ✅ | — |
 | GcpRedisInstance | 32 | 24 | 6 | 2 | 0 | ✅ | ✅ pulumi, terraform |
@@ -243,7 +248,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpTpuVm | 31 | 27 | 4 | 0 | 0 | ✅ | — |
 | GcpUrlMap | 554 | 124 | 430 | 0 | 0 | ✅ | — |
 | GcpVectorSearchCollection | 30 | 18 | 12 | 0 | 0 | ✅ | — |
-| GcpVertexAiAgentEngine | 96 | 87 | 3 | 6 | 0 | ✅ | — |
+| GcpVertexAiAgentEngine | 104 | 87 | 4 | 13 | 0 | ✅ | — |
 | GcpVertexAiDataset | 7 | 4 | 3 | 0 | 0 | ✅ | — |
 | GcpVertexAiDeployedIndex | 16 | 12 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiEndpoint | 19 | 8 | 9 | 2 | 0 | ✅ | ✅ pulumi, terraform |
@@ -261,7 +266,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpVertexAiTensorboard | 25 | 11 | 12 | 2 | 0 | ✅ | — |
 | GcpVpcNetwork | 17 | 10 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVpcPeering | 17 | 14 | 2 | 1 | 0 | ✅ | — |
-| GcpWorkflow | 15 | 10 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpWorkflow | 23 | 10 | 5 | 8 | 0 | ✅ | — |
 | GcpWorkloadIdentityPool | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPoolProvider | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 
@@ -271,10 +276,11 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 297 | consumed by a kind's Terraform module today |
-| IAM-covered | 415 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
+| Modeled | 300 | consumed by a kind's Terraform module today |
+| IAM-covered | 24 | authoritative per-resource IAM forms (binding, policy) of a resource a kind already grants on additively; deliberately not modeled |
+| IAM not offered per resource | 390 | per-resource IAM triplets for resources no kind grants on yet; access goes through a grant at a broader scope (the project or account) |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 2 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 0 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 576 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 68 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
@@ -284,7 +290,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (297)
+### Modeled (300)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -308,9 +314,11 @@ rather than trusted.
 | `google_binary_authorization_attestor` | consumed by GcpBinaryAuthorizationAttestor |
 | `google_binary_authorization_policy` | consumed by GcpBinaryAuthorizationPolicy |
 | `google_certificate_manager_certificate` | consumed by GcpCertManagerCert |
+| `google_certificate_manager_certificate_issuance_config` | consumed by GcpCertManagerIssuanceConfig |
 | `google_certificate_manager_certificate_map` | consumed by GcpCertificateMap |
 | `google_certificate_manager_certificate_map_entry` | consumed by GcpCertificateMap |
 | `google_certificate_manager_dns_authorization` | consumed by GcpCertManagerDnsAuthorization |
+| `google_certificate_manager_trust_config` | consumed by GcpCertManagerTrustConfig |
 | `google_cloud_identity_group` | consumed by GcpCloudIdentityGroup |
 | `google_cloud_identity_group_membership` | consumed by GcpCloudIdentityGroup |
 | `google_cloud_run_domain_mapping` | consumed by GcpCloudRunDomainMapping |
@@ -523,10 +531,11 @@ rather than trusted.
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryCapacityCommitment, GcpBigQueryConnection, GcpBigQueryDataset, GcpBigQueryReservation, GcpBigQueryReservationGroup, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpBinaryAuthorizationAttestor, GcpBinaryAuthorizationPolicy, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudBuildConnection, GcpCloudBuildTrigger, GcpCloudBuildWorkerPool, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpColabRuntime, GcpColabRuntimeTemplate, GcpColabSchedule, GcpComputeDisk, GcpComputeImage, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDatastreamConnectionProfile, GcpDatastreamPrivateConnection, GcpDeliveryPipeline, GcpDeployCustomTargetType, GcpDeployPolicy, GcpDeployTarget, GcpDialogflowCxAgent, GcpDialogflowCxSecuritySettings, GcpDnsRecord, GcpDnsZone, GcpDocumentAiProcessor, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeFleet, GcpGkeFleetFeature, GcpGkeFleetMembership, GcpGkeFleetScope, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsAutokeyConfig, GcpKmsKey, GcpKmsKeyHandle, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedKafkaCluster, GcpManagedKafkaConnectCluster, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpModelArmorFloorSetting, GcpModelArmorTemplate, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpPrivateCaCertificateTemplate, GcpPrivateCaPool, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSccBigQueryExport, GcpSccMuteConfig, GcpSccNotificationConfig, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpTpuQueuedResource, GcpTpuVm, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryCapacityCommitment, GcpBigQueryConnection, GcpBigQueryDataset, GcpBigQueryReservation, GcpBigQueryReservationGroup, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpBinaryAuthorizationAttestor, GcpBinaryAuthorizationPolicy, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertManagerIssuanceConfig, GcpCertManagerTrustConfig, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudBuildConnection, GcpCloudBuildTrigger, GcpCloudBuildWorkerPool, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpColabRuntime, GcpColabRuntimeTemplate, GcpColabSchedule, GcpComputeDisk, GcpComputeImage, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDatastreamConnectionProfile, GcpDatastreamPrivateConnection, GcpDeliveryPipeline, GcpDeployCustomTargetType, GcpDeployPolicy, GcpDeployTarget, GcpDialogflowCxAgent, GcpDialogflowCxSecuritySettings, GcpDnsRecord, GcpDnsZone, GcpDocumentAiProcessor, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeFleet, GcpGkeFleetFeature, GcpGkeFleetMembership, GcpGkeFleetScope, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsAutokeyConfig, GcpKmsKey, GcpKmsKeyHandle, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedKafkaCluster, GcpManagedKafkaConnectCluster, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpModelArmorFloorSetting, GcpModelArmorTemplate, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpPrivateCaCertificateTemplate, GcpPrivateCaPool, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSccBigQueryExport, GcpSccMuteConfig, GcpSccNotificationConfig, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpTpuQueuedResource, GcpTpuVm, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
+| `google_pubsub_topic_iam_member` | consumed by GcpPubSubTopicIamMember |
 | `google_redis_cluster` | consumed by GcpRedisCluster |
 | `google_redis_cluster_user_created_connections` | consumed by GcpRedisClusterEndpointSet |
 | `google_redis_instance` | consumed by GcpRedisInstance |
@@ -542,9 +551,9 @@ rather than trusted.
 | `google_secret_manager_regional_secret` | consumed by GcpSecretManagerSecret |
 | `google_secret_manager_regional_secret_iam_member` | consumed by GcpSecretManagerSecret |
 | `google_secret_manager_regional_secret_version` | consumed by GcpSecretManagerSecret |
-| `google_secret_manager_secret` | consumed by GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret |
-| `google_secret_manager_secret_iam_member` | consumed by GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret |
-| `google_secret_manager_secret_version` | consumed by GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret |
+| `google_secret_manager_secret` | consumed by GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret, GcpVertexAiAgentEngine, GcpWorkflow |
+| `google_secret_manager_secret_iam_member` | consumed by GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret, GcpVertexAiAgentEngine, GcpWorkflow |
+| `google_secret_manager_secret_version` | consumed by GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret, GcpVertexAiAgentEngine, GcpWorkflow |
 | `google_service_account` | consumed by GcpPlantonRunner, GcpServiceAccount |
 | `google_service_account_iam_member` | consumed by GcpGkeWorkloadIdentityBinding, GcpServiceAccountIamMember |
 | `google_service_account_key` | consumed by GcpServiceAccount |
@@ -556,7 +565,7 @@ rather than trusted.
 | `google_sql_database_instance` | consumed by GcpCloudSql |
 | `google_sql_user` | consumed by GcpCloudSqlUser |
 | `google_storage_bucket` | consumed by GcpGcsBucket |
-| `google_storage_bucket_iam_member` | consumed by GcpGcsBucket |
+| `google_storage_bucket_iam_member` | consumed by GcpGcsBucket, GcpGcsBucketIamMember |
 | `google_storage_folder` | consumed by GcpGcsBucket |
 | `google_storage_managed_folder` | consumed by GcpGcsBucket |
 | `google_storage_notification` | consumed by GcpGcsBucket |
@@ -586,425 +595,429 @@ rather than trusted.
 | `google_workbench_instance` | consumed by GcpVertexAiNotebook |
 | `google_workflows_workflow` | consumed by GcpWorkflow |
 
-### IAM-covered (415)
+### IAM-covered (24)
 
 | Resource | Detail |
 |---|---|
-| `google_access_context_manager_access_policy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_access_context_manager_access_policy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_access_context_manager_access_policy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_apigee_environment_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_apigee_environment_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_apigee_environment_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_artifact_registry_repository_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_artifact_registry_repository_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_beyondcorp_security_gateway_application_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_beyondcorp_security_gateway_application_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_beyondcorp_security_gateway_application_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_beyondcorp_security_gateway_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_beyondcorp_security_gateway_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_beyondcorp_security_gateway_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_catalog_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_catalog_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_catalog_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_database_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_database_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_database_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_table_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_table_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_hive_table_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_catalog_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_catalog_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_catalog_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_namespace_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_namespace_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_namespace_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_table_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_table_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_biglake_iceberg_table_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_analytics_hub_data_exchange_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_analytics_hub_data_exchange_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_analytics_hub_data_exchange_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_analytics_hub_listing_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_analytics_hub_listing_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_analytics_hub_listing_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_connection_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_connection_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_connection_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_datapolicy_data_policy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_datapolicy_data_policy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_datapolicy_data_policy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_datapolicyv2_data_policy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_datapolicyv2_data_policy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_datapolicyv2_data_policy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_dataset_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_dataset_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_dataset_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_routine_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_routine_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_routine_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_table_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_table_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigquery_table_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigtable_instance_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigtable_instance_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigtable_instance_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigtable_table_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigtable_table_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_bigtable_table_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_billing_account_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_billing_account_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_billing_account_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_binary_authorization_attestor_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_binary_authorization_attestor_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_binary_authorization_attestor_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_job_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_job_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_job_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_worker_pool_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_worker_pool_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_run_v2_worker_pool_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_tasks_queue_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_tasks_queue_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloud_tasks_queue_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudbuildv2_connection_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudbuildv2_connection_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudbuildv2_connection_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_custom_target_type_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_custom_target_type_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_custom_target_type_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_delivery_pipeline_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_delivery_pipeline_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_delivery_pipeline_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_target_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_target_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_clouddeploy_target_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudfunctions2_function_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudfunctions2_function_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudfunctions2_function_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudfunctions_function_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudfunctions_function_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_cloudfunctions_function_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_colab_runtime_template_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_colab_runtime_template_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_colab_runtime_template_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_disk_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_disk_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_disk_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_firewall_policy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_firewall_policy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_firewall_policy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_image_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_image_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_image_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instance_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instance_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instance_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instance_template_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instance_template_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instance_template_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instant_snapshot_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instant_snapshot_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_instant_snapshot_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_network_firewall_policy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_network_firewall_policy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_network_firewall_policy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_disk_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_disk_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_disk_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_instant_snapshot_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_instant_snapshot_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_instant_snapshot_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_network_firewall_policy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_network_firewall_policy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_region_network_firewall_policy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_snapshot_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_snapshot_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_snapshot_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_storage_pool_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_storage_pool_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_storage_pool_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_subnetwork_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_subnetwork_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_compute_subnetwork_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_container_analysis_note_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_container_analysis_note_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_entry_group_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_entry_group_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_entry_group_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_policy_tag_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_policy_tag_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_policy_tag_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_tag_template_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_tag_template_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_tag_template_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_taxonomy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_taxonomy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_catalog_taxonomy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_fusion_instance_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_fusion_instance_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_data_fusion_instance_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataform_repository_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataform_repository_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataform_repository_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_aspect_type_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_aspect_type_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_aspect_type_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_asset_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_asset_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_asset_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_data_product_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_data_product_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_data_product_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_datascan_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_datascan_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_datascan_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_entry_group_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_entry_group_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_entry_group_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_entry_type_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_entry_type_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_entry_type_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_glossary_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_glossary_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_glossary_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_lake_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_lake_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_lake_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_task_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_task_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_task_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_zone_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_zone_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataplex_zone_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_autoscaling_policy_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_autoscaling_policy_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_autoscaling_policy_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_cluster_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_cluster_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_cluster_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_job_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_job_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_job_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_database_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_database_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_database_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_federation_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_federation_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_federation_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_table_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_table_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dataproc_metastore_table_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_discovery_engine_search_engine_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_discovery_engine_search_engine_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_discovery_engine_search_engine_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dns_managed_zone_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dns_managed_zone_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_dns_managed_zone_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_endpoints_service_consumers_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_endpoints_service_consumers_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_endpoints_service_consumers_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_endpoints_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_endpoints_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_endpoints_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_eventarc_pipeline_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_eventarc_pipeline_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_eventarc_pipeline_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_folder_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_folder_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_folder_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gemini_repository_group_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gemini_repository_group_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gemini_repository_group_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_backup_backup_plan_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_backup_backup_plan_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_backup_backup_plan_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_backup_restore_plan_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_backup_restore_plan_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_backup_restore_plan_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_feature_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_feature_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_feature_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_membership_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_membership_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_membership_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_scope_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_scope_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_gke_hub_scope_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_consent_store_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_consent_store_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_consent_store_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_dataset_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_dataset_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_dataset_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_dicom_store_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_dicom_store_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_dicom_store_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_fhir_store_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_fhir_store_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_fhir_store_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_hl7_v2_store_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_hl7_v2_store_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_healthcare_hl7_v2_store_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iam_workforce_pool_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iam_workforce_pool_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iam_workforce_pool_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iam_workload_identity_pool_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iam_workload_identity_pool_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iam_workload_identity_pool_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_agent_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_agent_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_agent_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_endpoint_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_endpoint_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_endpoint_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_mcp_server_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_mcp_server_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_agent_registry_mcp_server_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_app_engine_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_app_engine_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_app_engine_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_app_engine_version_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_app_engine_version_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_app_engine_version_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_location_web_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_location_web_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_location_web_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_dest_group_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_dest_group_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_dest_group_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_instance_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_instance_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_tunnel_instance_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_backend_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_backend_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_backend_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_cloud_run_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_cloud_run_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_cloud_run_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_forwarding_rule_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_forwarding_rule_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_forwarding_rule_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_region_backend_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_region_backend_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_region_backend_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_region_forwarding_rule_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_region_forwarding_rule_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_region_forwarding_rule_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_type_app_engine_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_type_app_engine_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_type_app_engine_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_type_compute_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_type_compute_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_iap_web_type_compute_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_crypto_key_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_crypto_key_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_ekm_connection_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_ekm_connection_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_ekm_connection_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_key_ring_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_key_ring_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_kms_key_ring_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_logging_log_view_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_logging_log_view_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_logging_log_view_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_network_connectivity_hub_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_network_connectivity_hub_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_network_connectivity_hub_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_network_security_address_group_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_network_security_address_group_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_network_security_address_group_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_organization_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_organization_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_privateca_ca_pool_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_privateca_ca_pool_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_privateca_ca_pool_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_privateca_certificate_template_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_privateca_certificate_template_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_privateca_certificate_template_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_project_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_project_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_schema_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_schema_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_schema_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_subscription_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_subscription_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_subscription_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_topic_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_topic_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_pubsub_topic_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_scc_source_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_scc_source_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_scc_source_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_scc_v2_organization_source_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_scc_v2_organization_source_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_scc_v2_organization_source_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secret_manager_regional_secret_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secret_manager_regional_secret_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secret_manager_secret_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secret_manager_secret_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secure_source_manager_instance_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secure_source_manager_instance_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secure_source_manager_instance_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secure_source_manager_repository_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secure_source_manager_repository_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_secure_source_manager_repository_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_account_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_account_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_directory_namespace_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_directory_namespace_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_directory_namespace_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_directory_service_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_directory_service_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_service_directory_service_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_sourcerepo_repository_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_sourcerepo_repository_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_sourcerepo_repository_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_spanner_database_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_spanner_database_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_spanner_database_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_spanner_instance_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_spanner_instance_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_spanner_instance_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_storage_bucket_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_storage_bucket_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_storage_managed_folder_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_storage_managed_folder_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_storage_managed_folder_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_tags_tag_key_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_tags_tag_key_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_tags_tag_key_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_tags_tag_value_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_tags_tag_value_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_tags_tag_value_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_vertex_ai_reasoning_engine_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_vertex_ai_reasoning_engine_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_vertex_ai_reasoning_engine_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workbench_instance_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workbench_instance_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workbench_instance_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workstations_workstation_config_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workstations_workstation_config_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workstations_workstation_config_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workstations_workstation_iam_binding` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workstations_workstation_iam_member` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
-| `google_workstations_workstation_iam_policy` | per-resource IAM triplet, covered by the owning kind's additive iam_members field |
+| `google_artifact_registry_repository_iam_binding` | authoritative form of the additive grant GcpArtifactRegistryRepo makes on google_artifact_registry_repository; deliberately not modeled |
+| `google_artifact_registry_repository_iam_policy` | authoritative form of the additive grant GcpArtifactRegistryRepo makes on google_artifact_registry_repository; deliberately not modeled |
+| `google_cloud_run_service_iam_binding` | authoritative form of the additive grant GcpCloudFunction makes on google_cloud_run_service; deliberately not modeled |
+| `google_cloud_run_service_iam_policy` | authoritative form of the additive grant GcpCloudFunction makes on google_cloud_run_service; deliberately not modeled |
+| `google_cloud_run_v2_service_iam_binding` | authoritative form of the additive grant GcpCloudRun makes on google_cloud_run_v2_service; deliberately not modeled |
+| `google_cloud_run_v2_service_iam_policy` | authoritative form of the additive grant GcpCloudRun makes on google_cloud_run_v2_service; deliberately not modeled |
+| `google_container_analysis_note_iam_binding` | authoritative form of the additive grant GcpBinaryAuthorizationAttestor makes on google_container_analysis_note; deliberately not modeled |
+| `google_container_analysis_note_iam_policy` | authoritative form of the additive grant GcpBinaryAuthorizationAttestor makes on google_container_analysis_note; deliberately not modeled |
+| `google_kms_crypto_key_iam_binding` | authoritative form of the additive grant GcpKmsKeyIamMember makes on google_kms_crypto_key; deliberately not modeled |
+| `google_kms_crypto_key_iam_policy` | authoritative form of the additive grant GcpKmsKeyIamMember makes on google_kms_crypto_key; deliberately not modeled |
+| `google_organization_iam_binding` | authoritative form of the additive grant GcpServiceAccount makes on google_organization; deliberately not modeled |
+| `google_organization_iam_policy` | authoritative form of the additive grant GcpServiceAccount makes on google_organization; deliberately not modeled |
+| `google_project_iam_binding` | authoritative form of the additive grant GcpProjectIamMember, GcpServiceAccount makes on google_project; deliberately not modeled |
+| `google_project_iam_policy` | authoritative form of the additive grant GcpProjectIamMember, GcpServiceAccount makes on google_project; deliberately not modeled |
+| `google_pubsub_topic_iam_binding` | authoritative form of the additive grant GcpPubSubTopicIamMember makes on google_pubsub_topic; deliberately not modeled |
+| `google_pubsub_topic_iam_policy` | authoritative form of the additive grant GcpPubSubTopicIamMember makes on google_pubsub_topic; deliberately not modeled |
+| `google_secret_manager_regional_secret_iam_binding` | authoritative form of the additive grant GcpSecretManagerSecret makes on google_secret_manager_regional_secret; deliberately not modeled |
+| `google_secret_manager_regional_secret_iam_policy` | authoritative form of the additive grant GcpSecretManagerSecret makes on google_secret_manager_regional_secret; deliberately not modeled |
+| `google_secret_manager_secret_iam_binding` | authoritative form of the additive grant GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret, GcpVertexAiAgentEngine, GcpWorkflow makes on google_secret_manager_secret; deliberately not modeled |
+| `google_secret_manager_secret_iam_policy` | authoritative form of the additive grant GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret, GcpVertexAiAgentEngine, GcpWorkflow makes on google_secret_manager_secret; deliberately not modeled |
+| `google_service_account_iam_binding` | authoritative form of the additive grant GcpGkeWorkloadIdentityBinding, GcpServiceAccountIamMember makes on google_service_account; deliberately not modeled |
+| `google_service_account_iam_policy` | authoritative form of the additive grant GcpGkeWorkloadIdentityBinding, GcpServiceAccountIamMember makes on google_service_account; deliberately not modeled |
+| `google_storage_bucket_iam_binding` | authoritative form of the additive grant GcpGcsBucket, GcpGcsBucketIamMember makes on google_storage_bucket; deliberately not modeled |
+| `google_storage_bucket_iam_policy` | authoritative form of the additive grant GcpGcsBucket, GcpGcsBucketIamMember makes on google_storage_bucket; deliberately not modeled |
+
+### IAM not offered per resource (390)
+
+| Resource | Detail |
+|---|---|
+| `google_access_context_manager_access_policy_iam_binding` | no kind grants on google_access_context_manager_access_policy per resource yet; grant at a broader scope |
+| `google_access_context_manager_access_policy_iam_member` | no kind grants on google_access_context_manager_access_policy per resource yet; grant at a broader scope |
+| `google_access_context_manager_access_policy_iam_policy` | no kind grants on google_access_context_manager_access_policy per resource yet; grant at a broader scope |
+| `google_apigee_environment_iam_binding` | no kind grants on google_apigee_environment per resource yet; grant at a broader scope |
+| `google_apigee_environment_iam_member` | no kind grants on google_apigee_environment per resource yet; grant at a broader scope |
+| `google_apigee_environment_iam_policy` | no kind grants on google_apigee_environment per resource yet; grant at a broader scope |
+| `google_beyondcorp_security_gateway_application_iam_binding` | no kind grants on google_beyondcorp_security_gateway_application per resource yet; grant at a broader scope |
+| `google_beyondcorp_security_gateway_application_iam_member` | no kind grants on google_beyondcorp_security_gateway_application per resource yet; grant at a broader scope |
+| `google_beyondcorp_security_gateway_application_iam_policy` | no kind grants on google_beyondcorp_security_gateway_application per resource yet; grant at a broader scope |
+| `google_beyondcorp_security_gateway_iam_binding` | no kind grants on google_beyondcorp_security_gateway per resource yet; grant at a broader scope |
+| `google_beyondcorp_security_gateway_iam_member` | no kind grants on google_beyondcorp_security_gateway per resource yet; grant at a broader scope |
+| `google_beyondcorp_security_gateway_iam_policy` | no kind grants on google_beyondcorp_security_gateway per resource yet; grant at a broader scope |
+| `google_biglake_hive_catalog_iam_binding` | no kind grants on google_biglake_hive_catalog per resource yet; grant at a broader scope |
+| `google_biglake_hive_catalog_iam_member` | no kind grants on google_biglake_hive_catalog per resource yet; grant at a broader scope |
+| `google_biglake_hive_catalog_iam_policy` | no kind grants on google_biglake_hive_catalog per resource yet; grant at a broader scope |
+| `google_biglake_hive_database_iam_binding` | no kind grants on google_biglake_hive_database per resource yet; grant at a broader scope |
+| `google_biglake_hive_database_iam_member` | no kind grants on google_biglake_hive_database per resource yet; grant at a broader scope |
+| `google_biglake_hive_database_iam_policy` | no kind grants on google_biglake_hive_database per resource yet; grant at a broader scope |
+| `google_biglake_hive_table_iam_binding` | no kind grants on google_biglake_hive_table per resource yet; grant at a broader scope |
+| `google_biglake_hive_table_iam_member` | no kind grants on google_biglake_hive_table per resource yet; grant at a broader scope |
+| `google_biglake_hive_table_iam_policy` | no kind grants on google_biglake_hive_table per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_catalog_iam_binding` | no kind grants on google_biglake_iceberg_catalog per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_catalog_iam_member` | no kind grants on google_biglake_iceberg_catalog per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_catalog_iam_policy` | no kind grants on google_biglake_iceberg_catalog per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_namespace_iam_binding` | no kind grants on google_biglake_iceberg_namespace per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_namespace_iam_member` | no kind grants on google_biglake_iceberg_namespace per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_namespace_iam_policy` | no kind grants on google_biglake_iceberg_namespace per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_table_iam_binding` | no kind grants on google_biglake_iceberg_table per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_table_iam_member` | no kind grants on google_biglake_iceberg_table per resource yet; grant at a broader scope |
+| `google_biglake_iceberg_table_iam_policy` | no kind grants on google_biglake_iceberg_table per resource yet; grant at a broader scope |
+| `google_bigquery_analytics_hub_data_exchange_iam_binding` | no kind grants on google_bigquery_analytics_hub_data_exchange per resource yet; grant at a broader scope |
+| `google_bigquery_analytics_hub_data_exchange_iam_member` | no kind grants on google_bigquery_analytics_hub_data_exchange per resource yet; grant at a broader scope |
+| `google_bigquery_analytics_hub_data_exchange_iam_policy` | no kind grants on google_bigquery_analytics_hub_data_exchange per resource yet; grant at a broader scope |
+| `google_bigquery_analytics_hub_listing_iam_binding` | no kind grants on google_bigquery_analytics_hub_listing per resource yet; grant at a broader scope |
+| `google_bigquery_analytics_hub_listing_iam_member` | no kind grants on google_bigquery_analytics_hub_listing per resource yet; grant at a broader scope |
+| `google_bigquery_analytics_hub_listing_iam_policy` | no kind grants on google_bigquery_analytics_hub_listing per resource yet; grant at a broader scope |
+| `google_bigquery_connection_iam_binding` | no kind grants on google_bigquery_connection per resource yet; grant at a broader scope |
+| `google_bigquery_connection_iam_member` | no kind grants on google_bigquery_connection per resource yet; grant at a broader scope |
+| `google_bigquery_connection_iam_policy` | no kind grants on google_bigquery_connection per resource yet; grant at a broader scope |
+| `google_bigquery_datapolicy_data_policy_iam_binding` | no kind grants on google_bigquery_datapolicy_data_policy per resource yet; grant at a broader scope |
+| `google_bigquery_datapolicy_data_policy_iam_member` | no kind grants on google_bigquery_datapolicy_data_policy per resource yet; grant at a broader scope |
+| `google_bigquery_datapolicy_data_policy_iam_policy` | no kind grants on google_bigquery_datapolicy_data_policy per resource yet; grant at a broader scope |
+| `google_bigquery_datapolicyv2_data_policy_iam_binding` | no kind grants on google_bigquery_datapolicyv2_data_policy per resource yet; grant at a broader scope |
+| `google_bigquery_datapolicyv2_data_policy_iam_member` | no kind grants on google_bigquery_datapolicyv2_data_policy per resource yet; grant at a broader scope |
+| `google_bigquery_datapolicyv2_data_policy_iam_policy` | no kind grants on google_bigquery_datapolicyv2_data_policy per resource yet; grant at a broader scope |
+| `google_bigquery_dataset_iam_binding` | no kind grants on google_bigquery_dataset per resource yet; grant at a broader scope |
+| `google_bigquery_dataset_iam_member` | no kind grants on google_bigquery_dataset per resource yet; grant at a broader scope |
+| `google_bigquery_dataset_iam_policy` | no kind grants on google_bigquery_dataset per resource yet; grant at a broader scope |
+| `google_bigquery_routine_iam_binding` | no kind grants on google_bigquery_routine per resource yet; grant at a broader scope |
+| `google_bigquery_routine_iam_member` | no kind grants on google_bigquery_routine per resource yet; grant at a broader scope |
+| `google_bigquery_routine_iam_policy` | no kind grants on google_bigquery_routine per resource yet; grant at a broader scope |
+| `google_bigquery_table_iam_binding` | no kind grants on google_bigquery_table per resource yet; grant at a broader scope |
+| `google_bigquery_table_iam_member` | no kind grants on google_bigquery_table per resource yet; grant at a broader scope |
+| `google_bigquery_table_iam_policy` | no kind grants on google_bigquery_table per resource yet; grant at a broader scope |
+| `google_bigtable_instance_iam_binding` | no kind grants on google_bigtable_instance per resource yet; grant at a broader scope |
+| `google_bigtable_instance_iam_member` | no kind grants on google_bigtable_instance per resource yet; grant at a broader scope |
+| `google_bigtable_instance_iam_policy` | no kind grants on google_bigtable_instance per resource yet; grant at a broader scope |
+| `google_bigtable_table_iam_binding` | no kind grants on google_bigtable_table per resource yet; grant at a broader scope |
+| `google_bigtable_table_iam_member` | no kind grants on google_bigtable_table per resource yet; grant at a broader scope |
+| `google_bigtable_table_iam_policy` | no kind grants on google_bigtable_table per resource yet; grant at a broader scope |
+| `google_billing_account_iam_binding` | no kind grants on google_billing_account per resource yet; grant at a broader scope |
+| `google_billing_account_iam_member` | no kind grants on google_billing_account per resource yet; grant at a broader scope |
+| `google_billing_account_iam_policy` | no kind grants on google_billing_account per resource yet; grant at a broader scope |
+| `google_binary_authorization_attestor_iam_binding` | no kind grants on google_binary_authorization_attestor per resource yet; grant at a broader scope |
+| `google_binary_authorization_attestor_iam_member` | no kind grants on google_binary_authorization_attestor per resource yet; grant at a broader scope |
+| `google_binary_authorization_attestor_iam_policy` | no kind grants on google_binary_authorization_attestor per resource yet; grant at a broader scope |
+| `google_cloud_run_v2_job_iam_binding` | no kind grants on google_cloud_run_v2_job per resource yet; grant at a broader scope |
+| `google_cloud_run_v2_job_iam_member` | no kind grants on google_cloud_run_v2_job per resource yet; grant at a broader scope |
+| `google_cloud_run_v2_job_iam_policy` | no kind grants on google_cloud_run_v2_job per resource yet; grant at a broader scope |
+| `google_cloud_run_v2_worker_pool_iam_binding` | no kind grants on google_cloud_run_v2_worker_pool per resource yet; grant at a broader scope |
+| `google_cloud_run_v2_worker_pool_iam_member` | no kind grants on google_cloud_run_v2_worker_pool per resource yet; grant at a broader scope |
+| `google_cloud_run_v2_worker_pool_iam_policy` | no kind grants on google_cloud_run_v2_worker_pool per resource yet; grant at a broader scope |
+| `google_cloud_tasks_queue_iam_binding` | no kind grants on google_cloud_tasks_queue per resource yet; grant at a broader scope |
+| `google_cloud_tasks_queue_iam_member` | no kind grants on google_cloud_tasks_queue per resource yet; grant at a broader scope |
+| `google_cloud_tasks_queue_iam_policy` | no kind grants on google_cloud_tasks_queue per resource yet; grant at a broader scope |
+| `google_cloudbuildv2_connection_iam_binding` | no kind grants on google_cloudbuildv2_connection per resource yet; grant at a broader scope |
+| `google_cloudbuildv2_connection_iam_member` | no kind grants on google_cloudbuildv2_connection per resource yet; grant at a broader scope |
+| `google_cloudbuildv2_connection_iam_policy` | no kind grants on google_cloudbuildv2_connection per resource yet; grant at a broader scope |
+| `google_clouddeploy_custom_target_type_iam_binding` | no kind grants on google_clouddeploy_custom_target_type per resource yet; grant at a broader scope |
+| `google_clouddeploy_custom_target_type_iam_member` | no kind grants on google_clouddeploy_custom_target_type per resource yet; grant at a broader scope |
+| `google_clouddeploy_custom_target_type_iam_policy` | no kind grants on google_clouddeploy_custom_target_type per resource yet; grant at a broader scope |
+| `google_clouddeploy_delivery_pipeline_iam_binding` | no kind grants on google_clouddeploy_delivery_pipeline per resource yet; grant at a broader scope |
+| `google_clouddeploy_delivery_pipeline_iam_member` | no kind grants on google_clouddeploy_delivery_pipeline per resource yet; grant at a broader scope |
+| `google_clouddeploy_delivery_pipeline_iam_policy` | no kind grants on google_clouddeploy_delivery_pipeline per resource yet; grant at a broader scope |
+| `google_clouddeploy_target_iam_binding` | no kind grants on google_clouddeploy_target per resource yet; grant at a broader scope |
+| `google_clouddeploy_target_iam_member` | no kind grants on google_clouddeploy_target per resource yet; grant at a broader scope |
+| `google_clouddeploy_target_iam_policy` | no kind grants on google_clouddeploy_target per resource yet; grant at a broader scope |
+| `google_cloudfunctions2_function_iam_binding` | no kind grants on google_cloudfunctions2_function per resource yet; grant at a broader scope |
+| `google_cloudfunctions2_function_iam_member` | no kind grants on google_cloudfunctions2_function per resource yet; grant at a broader scope |
+| `google_cloudfunctions2_function_iam_policy` | no kind grants on google_cloudfunctions2_function per resource yet; grant at a broader scope |
+| `google_cloudfunctions_function_iam_binding` | no kind grants on google_cloudfunctions_function per resource yet; grant at a broader scope |
+| `google_cloudfunctions_function_iam_member` | no kind grants on google_cloudfunctions_function per resource yet; grant at a broader scope |
+| `google_cloudfunctions_function_iam_policy` | no kind grants on google_cloudfunctions_function per resource yet; grant at a broader scope |
+| `google_colab_runtime_template_iam_binding` | no kind grants on google_colab_runtime_template per resource yet; grant at a broader scope |
+| `google_colab_runtime_template_iam_member` | no kind grants on google_colab_runtime_template per resource yet; grant at a broader scope |
+| `google_colab_runtime_template_iam_policy` | no kind grants on google_colab_runtime_template per resource yet; grant at a broader scope |
+| `google_compute_disk_iam_binding` | no kind grants on google_compute_disk per resource yet; grant at a broader scope |
+| `google_compute_disk_iam_member` | no kind grants on google_compute_disk per resource yet; grant at a broader scope |
+| `google_compute_disk_iam_policy` | no kind grants on google_compute_disk per resource yet; grant at a broader scope |
+| `google_compute_firewall_policy_iam_binding` | no kind grants on google_compute_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_firewall_policy_iam_member` | no kind grants on google_compute_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_firewall_policy_iam_policy` | no kind grants on google_compute_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_image_iam_binding` | no kind grants on google_compute_image per resource yet; grant at a broader scope |
+| `google_compute_image_iam_member` | no kind grants on google_compute_image per resource yet; grant at a broader scope |
+| `google_compute_image_iam_policy` | no kind grants on google_compute_image per resource yet; grant at a broader scope |
+| `google_compute_instance_iam_binding` | no kind grants on google_compute_instance per resource yet; grant at a broader scope |
+| `google_compute_instance_iam_member` | no kind grants on google_compute_instance per resource yet; grant at a broader scope |
+| `google_compute_instance_iam_policy` | no kind grants on google_compute_instance per resource yet; grant at a broader scope |
+| `google_compute_instance_template_iam_binding` | no kind grants on google_compute_instance_template per resource yet; grant at a broader scope |
+| `google_compute_instance_template_iam_member` | no kind grants on google_compute_instance_template per resource yet; grant at a broader scope |
+| `google_compute_instance_template_iam_policy` | no kind grants on google_compute_instance_template per resource yet; grant at a broader scope |
+| `google_compute_instant_snapshot_iam_binding` | no kind grants on google_compute_instant_snapshot per resource yet; grant at a broader scope |
+| `google_compute_instant_snapshot_iam_member` | no kind grants on google_compute_instant_snapshot per resource yet; grant at a broader scope |
+| `google_compute_instant_snapshot_iam_policy` | no kind grants on google_compute_instant_snapshot per resource yet; grant at a broader scope |
+| `google_compute_network_firewall_policy_iam_binding` | no kind grants on google_compute_network_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_network_firewall_policy_iam_member` | no kind grants on google_compute_network_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_network_firewall_policy_iam_policy` | no kind grants on google_compute_network_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_region_disk_iam_binding` | no kind grants on google_compute_region_disk per resource yet; grant at a broader scope |
+| `google_compute_region_disk_iam_member` | no kind grants on google_compute_region_disk per resource yet; grant at a broader scope |
+| `google_compute_region_disk_iam_policy` | no kind grants on google_compute_region_disk per resource yet; grant at a broader scope |
+| `google_compute_region_instant_snapshot_iam_binding` | no kind grants on google_compute_region_instant_snapshot per resource yet; grant at a broader scope |
+| `google_compute_region_instant_snapshot_iam_member` | no kind grants on google_compute_region_instant_snapshot per resource yet; grant at a broader scope |
+| `google_compute_region_instant_snapshot_iam_policy` | no kind grants on google_compute_region_instant_snapshot per resource yet; grant at a broader scope |
+| `google_compute_region_network_firewall_policy_iam_binding` | no kind grants on google_compute_region_network_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_region_network_firewall_policy_iam_member` | no kind grants on google_compute_region_network_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_region_network_firewall_policy_iam_policy` | no kind grants on google_compute_region_network_firewall_policy per resource yet; grant at a broader scope |
+| `google_compute_snapshot_iam_binding` | no kind grants on google_compute_snapshot per resource yet; grant at a broader scope |
+| `google_compute_snapshot_iam_member` | no kind grants on google_compute_snapshot per resource yet; grant at a broader scope |
+| `google_compute_snapshot_iam_policy` | no kind grants on google_compute_snapshot per resource yet; grant at a broader scope |
+| `google_compute_storage_pool_iam_binding` | no kind grants on google_compute_storage_pool per resource yet; grant at a broader scope |
+| `google_compute_storage_pool_iam_member` | no kind grants on google_compute_storage_pool per resource yet; grant at a broader scope |
+| `google_compute_storage_pool_iam_policy` | no kind grants on google_compute_storage_pool per resource yet; grant at a broader scope |
+| `google_compute_subnetwork_iam_binding` | no kind grants on google_compute_subnetwork per resource yet; grant at a broader scope |
+| `google_compute_subnetwork_iam_member` | no kind grants on google_compute_subnetwork per resource yet; grant at a broader scope |
+| `google_compute_subnetwork_iam_policy` | no kind grants on google_compute_subnetwork per resource yet; grant at a broader scope |
+| `google_data_catalog_entry_group_iam_binding` | no kind grants on google_data_catalog_entry_group per resource yet; grant at a broader scope |
+| `google_data_catalog_entry_group_iam_member` | no kind grants on google_data_catalog_entry_group per resource yet; grant at a broader scope |
+| `google_data_catalog_entry_group_iam_policy` | no kind grants on google_data_catalog_entry_group per resource yet; grant at a broader scope |
+| `google_data_catalog_policy_tag_iam_binding` | no kind grants on google_data_catalog_policy_tag per resource yet; grant at a broader scope |
+| `google_data_catalog_policy_tag_iam_member` | no kind grants on google_data_catalog_policy_tag per resource yet; grant at a broader scope |
+| `google_data_catalog_policy_tag_iam_policy` | no kind grants on google_data_catalog_policy_tag per resource yet; grant at a broader scope |
+| `google_data_catalog_tag_template_iam_binding` | no kind grants on google_data_catalog_tag_template per resource yet; grant at a broader scope |
+| `google_data_catalog_tag_template_iam_member` | no kind grants on google_data_catalog_tag_template per resource yet; grant at a broader scope |
+| `google_data_catalog_tag_template_iam_policy` | no kind grants on google_data_catalog_tag_template per resource yet; grant at a broader scope |
+| `google_data_catalog_taxonomy_iam_binding` | no kind grants on google_data_catalog_taxonomy per resource yet; grant at a broader scope |
+| `google_data_catalog_taxonomy_iam_member` | no kind grants on google_data_catalog_taxonomy per resource yet; grant at a broader scope |
+| `google_data_catalog_taxonomy_iam_policy` | no kind grants on google_data_catalog_taxonomy per resource yet; grant at a broader scope |
+| `google_data_fusion_instance_iam_binding` | no kind grants on google_data_fusion_instance per resource yet; grant at a broader scope |
+| `google_data_fusion_instance_iam_member` | no kind grants on google_data_fusion_instance per resource yet; grant at a broader scope |
+| `google_data_fusion_instance_iam_policy` | no kind grants on google_data_fusion_instance per resource yet; grant at a broader scope |
+| `google_dataform_repository_iam_binding` | no kind grants on google_dataform_repository per resource yet; grant at a broader scope |
+| `google_dataform_repository_iam_member` | no kind grants on google_dataform_repository per resource yet; grant at a broader scope |
+| `google_dataform_repository_iam_policy` | no kind grants on google_dataform_repository per resource yet; grant at a broader scope |
+| `google_dataplex_aspect_type_iam_binding` | no kind grants on google_dataplex_aspect_type per resource yet; grant at a broader scope |
+| `google_dataplex_aspect_type_iam_member` | no kind grants on google_dataplex_aspect_type per resource yet; grant at a broader scope |
+| `google_dataplex_aspect_type_iam_policy` | no kind grants on google_dataplex_aspect_type per resource yet; grant at a broader scope |
+| `google_dataplex_asset_iam_binding` | no kind grants on google_dataplex_asset per resource yet; grant at a broader scope |
+| `google_dataplex_asset_iam_member` | no kind grants on google_dataplex_asset per resource yet; grant at a broader scope |
+| `google_dataplex_asset_iam_policy` | no kind grants on google_dataplex_asset per resource yet; grant at a broader scope |
+| `google_dataplex_data_product_iam_binding` | no kind grants on google_dataplex_data_product per resource yet; grant at a broader scope |
+| `google_dataplex_data_product_iam_member` | no kind grants on google_dataplex_data_product per resource yet; grant at a broader scope |
+| `google_dataplex_data_product_iam_policy` | no kind grants on google_dataplex_data_product per resource yet; grant at a broader scope |
+| `google_dataplex_datascan_iam_binding` | no kind grants on google_dataplex_datascan per resource yet; grant at a broader scope |
+| `google_dataplex_datascan_iam_member` | no kind grants on google_dataplex_datascan per resource yet; grant at a broader scope |
+| `google_dataplex_datascan_iam_policy` | no kind grants on google_dataplex_datascan per resource yet; grant at a broader scope |
+| `google_dataplex_entry_group_iam_binding` | no kind grants on google_dataplex_entry_group per resource yet; grant at a broader scope |
+| `google_dataplex_entry_group_iam_member` | no kind grants on google_dataplex_entry_group per resource yet; grant at a broader scope |
+| `google_dataplex_entry_group_iam_policy` | no kind grants on google_dataplex_entry_group per resource yet; grant at a broader scope |
+| `google_dataplex_entry_type_iam_binding` | no kind grants on google_dataplex_entry_type per resource yet; grant at a broader scope |
+| `google_dataplex_entry_type_iam_member` | no kind grants on google_dataplex_entry_type per resource yet; grant at a broader scope |
+| `google_dataplex_entry_type_iam_policy` | no kind grants on google_dataplex_entry_type per resource yet; grant at a broader scope |
+| `google_dataplex_glossary_iam_binding` | no kind grants on google_dataplex_glossary per resource yet; grant at a broader scope |
+| `google_dataplex_glossary_iam_member` | no kind grants on google_dataplex_glossary per resource yet; grant at a broader scope |
+| `google_dataplex_glossary_iam_policy` | no kind grants on google_dataplex_glossary per resource yet; grant at a broader scope |
+| `google_dataplex_lake_iam_binding` | no kind grants on google_dataplex_lake per resource yet; grant at a broader scope |
+| `google_dataplex_lake_iam_member` | no kind grants on google_dataplex_lake per resource yet; grant at a broader scope |
+| `google_dataplex_lake_iam_policy` | no kind grants on google_dataplex_lake per resource yet; grant at a broader scope |
+| `google_dataplex_task_iam_binding` | no kind grants on google_dataplex_task per resource yet; grant at a broader scope |
+| `google_dataplex_task_iam_member` | no kind grants on google_dataplex_task per resource yet; grant at a broader scope |
+| `google_dataplex_task_iam_policy` | no kind grants on google_dataplex_task per resource yet; grant at a broader scope |
+| `google_dataplex_zone_iam_binding` | no kind grants on google_dataplex_zone per resource yet; grant at a broader scope |
+| `google_dataplex_zone_iam_member` | no kind grants on google_dataplex_zone per resource yet; grant at a broader scope |
+| `google_dataplex_zone_iam_policy` | no kind grants on google_dataplex_zone per resource yet; grant at a broader scope |
+| `google_dataproc_autoscaling_policy_iam_binding` | no kind grants on google_dataproc_autoscaling_policy per resource yet; grant at a broader scope |
+| `google_dataproc_autoscaling_policy_iam_member` | no kind grants on google_dataproc_autoscaling_policy per resource yet; grant at a broader scope |
+| `google_dataproc_autoscaling_policy_iam_policy` | no kind grants on google_dataproc_autoscaling_policy per resource yet; grant at a broader scope |
+| `google_dataproc_cluster_iam_binding` | no kind grants on google_dataproc_cluster per resource yet; grant at a broader scope |
+| `google_dataproc_cluster_iam_member` | no kind grants on google_dataproc_cluster per resource yet; grant at a broader scope |
+| `google_dataproc_cluster_iam_policy` | no kind grants on google_dataproc_cluster per resource yet; grant at a broader scope |
+| `google_dataproc_job_iam_binding` | no kind grants on google_dataproc_job per resource yet; grant at a broader scope |
+| `google_dataproc_job_iam_member` | no kind grants on google_dataproc_job per resource yet; grant at a broader scope |
+| `google_dataproc_job_iam_policy` | no kind grants on google_dataproc_job per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_database_iam_binding` | no kind grants on google_dataproc_metastore_database per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_database_iam_member` | no kind grants on google_dataproc_metastore_database per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_database_iam_policy` | no kind grants on google_dataproc_metastore_database per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_federation_iam_binding` | no kind grants on google_dataproc_metastore_federation per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_federation_iam_member` | no kind grants on google_dataproc_metastore_federation per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_federation_iam_policy` | no kind grants on google_dataproc_metastore_federation per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_service_iam_binding` | no kind grants on google_dataproc_metastore_service per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_service_iam_member` | no kind grants on google_dataproc_metastore_service per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_service_iam_policy` | no kind grants on google_dataproc_metastore_service per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_table_iam_binding` | no kind grants on google_dataproc_metastore_table per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_table_iam_member` | no kind grants on google_dataproc_metastore_table per resource yet; grant at a broader scope |
+| `google_dataproc_metastore_table_iam_policy` | no kind grants on google_dataproc_metastore_table per resource yet; grant at a broader scope |
+| `google_discovery_engine_search_engine_iam_binding` | no kind grants on google_discovery_engine_search_engine per resource yet; grant at a broader scope |
+| `google_discovery_engine_search_engine_iam_member` | no kind grants on google_discovery_engine_search_engine per resource yet; grant at a broader scope |
+| `google_discovery_engine_search_engine_iam_policy` | no kind grants on google_discovery_engine_search_engine per resource yet; grant at a broader scope |
+| `google_dns_managed_zone_iam_binding` | no kind grants on google_dns_managed_zone per resource yet; grant at a broader scope |
+| `google_dns_managed_zone_iam_member` | no kind grants on google_dns_managed_zone per resource yet; grant at a broader scope |
+| `google_dns_managed_zone_iam_policy` | no kind grants on google_dns_managed_zone per resource yet; grant at a broader scope |
+| `google_endpoints_service_consumers_iam_binding` | no kind grants on google_endpoints_service_consumers per resource yet; grant at a broader scope |
+| `google_endpoints_service_consumers_iam_member` | no kind grants on google_endpoints_service_consumers per resource yet; grant at a broader scope |
+| `google_endpoints_service_consumers_iam_policy` | no kind grants on google_endpoints_service_consumers per resource yet; grant at a broader scope |
+| `google_endpoints_service_iam_binding` | no kind grants on google_endpoints_service per resource yet; grant at a broader scope |
+| `google_endpoints_service_iam_member` | no kind grants on google_endpoints_service per resource yet; grant at a broader scope |
+| `google_endpoints_service_iam_policy` | no kind grants on google_endpoints_service per resource yet; grant at a broader scope |
+| `google_eventarc_pipeline_iam_binding` | no kind grants on google_eventarc_pipeline per resource yet; grant at a broader scope |
+| `google_eventarc_pipeline_iam_member` | no kind grants on google_eventarc_pipeline per resource yet; grant at a broader scope |
+| `google_eventarc_pipeline_iam_policy` | no kind grants on google_eventarc_pipeline per resource yet; grant at a broader scope |
+| `google_folder_iam_binding` | no kind grants on google_folder per resource yet; grant at a broader scope |
+| `google_folder_iam_member` | no kind grants on google_folder per resource yet; grant at a broader scope |
+| `google_folder_iam_policy` | no kind grants on google_folder per resource yet; grant at a broader scope |
+| `google_gemini_repository_group_iam_binding` | no kind grants on google_gemini_repository_group per resource yet; grant at a broader scope |
+| `google_gemini_repository_group_iam_member` | no kind grants on google_gemini_repository_group per resource yet; grant at a broader scope |
+| `google_gemini_repository_group_iam_policy` | no kind grants on google_gemini_repository_group per resource yet; grant at a broader scope |
+| `google_gke_backup_backup_plan_iam_binding` | no kind grants on google_gke_backup_backup_plan per resource yet; grant at a broader scope |
+| `google_gke_backup_backup_plan_iam_member` | no kind grants on google_gke_backup_backup_plan per resource yet; grant at a broader scope |
+| `google_gke_backup_backup_plan_iam_policy` | no kind grants on google_gke_backup_backup_plan per resource yet; grant at a broader scope |
+| `google_gke_backup_restore_plan_iam_binding` | no kind grants on google_gke_backup_restore_plan per resource yet; grant at a broader scope |
+| `google_gke_backup_restore_plan_iam_member` | no kind grants on google_gke_backup_restore_plan per resource yet; grant at a broader scope |
+| `google_gke_backup_restore_plan_iam_policy` | no kind grants on google_gke_backup_restore_plan per resource yet; grant at a broader scope |
+| `google_gke_hub_feature_iam_binding` | no kind grants on google_gke_hub_feature per resource yet; grant at a broader scope |
+| `google_gke_hub_feature_iam_member` | no kind grants on google_gke_hub_feature per resource yet; grant at a broader scope |
+| `google_gke_hub_feature_iam_policy` | no kind grants on google_gke_hub_feature per resource yet; grant at a broader scope |
+| `google_gke_hub_membership_iam_binding` | no kind grants on google_gke_hub_membership per resource yet; grant at a broader scope |
+| `google_gke_hub_membership_iam_member` | no kind grants on google_gke_hub_membership per resource yet; grant at a broader scope |
+| `google_gke_hub_membership_iam_policy` | no kind grants on google_gke_hub_membership per resource yet; grant at a broader scope |
+| `google_gke_hub_scope_iam_binding` | no kind grants on google_gke_hub_scope per resource yet; grant at a broader scope |
+| `google_gke_hub_scope_iam_member` | no kind grants on google_gke_hub_scope per resource yet; grant at a broader scope |
+| `google_gke_hub_scope_iam_policy` | no kind grants on google_gke_hub_scope per resource yet; grant at a broader scope |
+| `google_healthcare_consent_store_iam_binding` | no kind grants on google_healthcare_consent_store per resource yet; grant at a broader scope |
+| `google_healthcare_consent_store_iam_member` | no kind grants on google_healthcare_consent_store per resource yet; grant at a broader scope |
+| `google_healthcare_consent_store_iam_policy` | no kind grants on google_healthcare_consent_store per resource yet; grant at a broader scope |
+| `google_healthcare_dataset_iam_binding` | no kind grants on google_healthcare_dataset per resource yet; grant at a broader scope |
+| `google_healthcare_dataset_iam_member` | no kind grants on google_healthcare_dataset per resource yet; grant at a broader scope |
+| `google_healthcare_dataset_iam_policy` | no kind grants on google_healthcare_dataset per resource yet; grant at a broader scope |
+| `google_healthcare_dicom_store_iam_binding` | no kind grants on google_healthcare_dicom_store per resource yet; grant at a broader scope |
+| `google_healthcare_dicom_store_iam_member` | no kind grants on google_healthcare_dicom_store per resource yet; grant at a broader scope |
+| `google_healthcare_dicom_store_iam_policy` | no kind grants on google_healthcare_dicom_store per resource yet; grant at a broader scope |
+| `google_healthcare_fhir_store_iam_binding` | no kind grants on google_healthcare_fhir_store per resource yet; grant at a broader scope |
+| `google_healthcare_fhir_store_iam_member` | no kind grants on google_healthcare_fhir_store per resource yet; grant at a broader scope |
+| `google_healthcare_fhir_store_iam_policy` | no kind grants on google_healthcare_fhir_store per resource yet; grant at a broader scope |
+| `google_healthcare_hl7_v2_store_iam_binding` | no kind grants on google_healthcare_hl7_v2_store per resource yet; grant at a broader scope |
+| `google_healthcare_hl7_v2_store_iam_member` | no kind grants on google_healthcare_hl7_v2_store per resource yet; grant at a broader scope |
+| `google_healthcare_hl7_v2_store_iam_policy` | no kind grants on google_healthcare_hl7_v2_store per resource yet; grant at a broader scope |
+| `google_iam_workforce_pool_iam_binding` | no kind grants on google_iam_workforce_pool per resource yet; grant at a broader scope |
+| `google_iam_workforce_pool_iam_member` | no kind grants on google_iam_workforce_pool per resource yet; grant at a broader scope |
+| `google_iam_workforce_pool_iam_policy` | no kind grants on google_iam_workforce_pool per resource yet; grant at a broader scope |
+| `google_iam_workload_identity_pool_iam_binding` | no kind grants on google_iam_workload_identity_pool per resource yet; grant at a broader scope |
+| `google_iam_workload_identity_pool_iam_member` | no kind grants on google_iam_workload_identity_pool per resource yet; grant at a broader scope |
+| `google_iam_workload_identity_pool_iam_policy` | no kind grants on google_iam_workload_identity_pool per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_agent_iam_binding` | no kind grants on google_iap_agent_registry_agent per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_agent_iam_member` | no kind grants on google_iap_agent_registry_agent per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_agent_iam_policy` | no kind grants on google_iap_agent_registry_agent per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_endpoint_iam_binding` | no kind grants on google_iap_agent_registry_endpoint per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_endpoint_iam_member` | no kind grants on google_iap_agent_registry_endpoint per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_endpoint_iam_policy` | no kind grants on google_iap_agent_registry_endpoint per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_iam_binding` | no kind grants on google_iap_agent_registry per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_iam_member` | no kind grants on google_iap_agent_registry per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_iam_policy` | no kind grants on google_iap_agent_registry per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_mcp_server_iam_binding` | no kind grants on google_iap_agent_registry_mcp_server per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_mcp_server_iam_member` | no kind grants on google_iap_agent_registry_mcp_server per resource yet; grant at a broader scope |
+| `google_iap_agent_registry_mcp_server_iam_policy` | no kind grants on google_iap_agent_registry_mcp_server per resource yet; grant at a broader scope |
+| `google_iap_app_engine_service_iam_binding` | no kind grants on google_iap_app_engine_service per resource yet; grant at a broader scope |
+| `google_iap_app_engine_service_iam_member` | no kind grants on google_iap_app_engine_service per resource yet; grant at a broader scope |
+| `google_iap_app_engine_service_iam_policy` | no kind grants on google_iap_app_engine_service per resource yet; grant at a broader scope |
+| `google_iap_app_engine_version_iam_binding` | no kind grants on google_iap_app_engine_version per resource yet; grant at a broader scope |
+| `google_iap_app_engine_version_iam_member` | no kind grants on google_iap_app_engine_version per resource yet; grant at a broader scope |
+| `google_iap_app_engine_version_iam_policy` | no kind grants on google_iap_app_engine_version per resource yet; grant at a broader scope |
+| `google_iap_location_web_iam_binding` | no kind grants on google_iap_location_web per resource yet; grant at a broader scope |
+| `google_iap_location_web_iam_member` | no kind grants on google_iap_location_web per resource yet; grant at a broader scope |
+| `google_iap_location_web_iam_policy` | no kind grants on google_iap_location_web per resource yet; grant at a broader scope |
+| `google_iap_tunnel_dest_group_iam_binding` | no kind grants on google_iap_tunnel_dest_group per resource yet; grant at a broader scope |
+| `google_iap_tunnel_dest_group_iam_member` | no kind grants on google_iap_tunnel_dest_group per resource yet; grant at a broader scope |
+| `google_iap_tunnel_dest_group_iam_policy` | no kind grants on google_iap_tunnel_dest_group per resource yet; grant at a broader scope |
+| `google_iap_tunnel_iam_binding` | no kind grants on google_iap_tunnel per resource yet; grant at a broader scope |
+| `google_iap_tunnel_iam_member` | no kind grants on google_iap_tunnel per resource yet; grant at a broader scope |
+| `google_iap_tunnel_iam_policy` | no kind grants on google_iap_tunnel per resource yet; grant at a broader scope |
+| `google_iap_tunnel_instance_iam_binding` | no kind grants on google_iap_tunnel_instance per resource yet; grant at a broader scope |
+| `google_iap_tunnel_instance_iam_member` | no kind grants on google_iap_tunnel_instance per resource yet; grant at a broader scope |
+| `google_iap_tunnel_instance_iam_policy` | no kind grants on google_iap_tunnel_instance per resource yet; grant at a broader scope |
+| `google_iap_web_backend_service_iam_binding` | no kind grants on google_iap_web_backend_service per resource yet; grant at a broader scope |
+| `google_iap_web_backend_service_iam_member` | no kind grants on google_iap_web_backend_service per resource yet; grant at a broader scope |
+| `google_iap_web_backend_service_iam_policy` | no kind grants on google_iap_web_backend_service per resource yet; grant at a broader scope |
+| `google_iap_web_cloud_run_service_iam_binding` | no kind grants on google_iap_web_cloud_run_service per resource yet; grant at a broader scope |
+| `google_iap_web_cloud_run_service_iam_member` | no kind grants on google_iap_web_cloud_run_service per resource yet; grant at a broader scope |
+| `google_iap_web_cloud_run_service_iam_policy` | no kind grants on google_iap_web_cloud_run_service per resource yet; grant at a broader scope |
+| `google_iap_web_forwarding_rule_service_iam_binding` | no kind grants on google_iap_web_forwarding_rule_service per resource yet; grant at a broader scope |
+| `google_iap_web_forwarding_rule_service_iam_member` | no kind grants on google_iap_web_forwarding_rule_service per resource yet; grant at a broader scope |
+| `google_iap_web_forwarding_rule_service_iam_policy` | no kind grants on google_iap_web_forwarding_rule_service per resource yet; grant at a broader scope |
+| `google_iap_web_iam_binding` | no kind grants on google_iap_web per resource yet; grant at a broader scope |
+| `google_iap_web_iam_member` | no kind grants on google_iap_web per resource yet; grant at a broader scope |
+| `google_iap_web_iam_policy` | no kind grants on google_iap_web per resource yet; grant at a broader scope |
+| `google_iap_web_region_backend_service_iam_binding` | no kind grants on google_iap_web_region_backend_service per resource yet; grant at a broader scope |
+| `google_iap_web_region_backend_service_iam_member` | no kind grants on google_iap_web_region_backend_service per resource yet; grant at a broader scope |
+| `google_iap_web_region_backend_service_iam_policy` | no kind grants on google_iap_web_region_backend_service per resource yet; grant at a broader scope |
+| `google_iap_web_region_forwarding_rule_service_iam_binding` | no kind grants on google_iap_web_region_forwarding_rule_service per resource yet; grant at a broader scope |
+| `google_iap_web_region_forwarding_rule_service_iam_member` | no kind grants on google_iap_web_region_forwarding_rule_service per resource yet; grant at a broader scope |
+| `google_iap_web_region_forwarding_rule_service_iam_policy` | no kind grants on google_iap_web_region_forwarding_rule_service per resource yet; grant at a broader scope |
+| `google_iap_web_type_app_engine_iam_binding` | no kind grants on google_iap_web_type_app_engine per resource yet; grant at a broader scope |
+| `google_iap_web_type_app_engine_iam_member` | no kind grants on google_iap_web_type_app_engine per resource yet; grant at a broader scope |
+| `google_iap_web_type_app_engine_iam_policy` | no kind grants on google_iap_web_type_app_engine per resource yet; grant at a broader scope |
+| `google_iap_web_type_compute_iam_binding` | no kind grants on google_iap_web_type_compute per resource yet; grant at a broader scope |
+| `google_iap_web_type_compute_iam_member` | no kind grants on google_iap_web_type_compute per resource yet; grant at a broader scope |
+| `google_iap_web_type_compute_iam_policy` | no kind grants on google_iap_web_type_compute per resource yet; grant at a broader scope |
+| `google_kms_ekm_connection_iam_binding` | no kind grants on google_kms_ekm_connection per resource yet; grant at a broader scope |
+| `google_kms_ekm_connection_iam_member` | no kind grants on google_kms_ekm_connection per resource yet; grant at a broader scope |
+| `google_kms_ekm_connection_iam_policy` | no kind grants on google_kms_ekm_connection per resource yet; grant at a broader scope |
+| `google_kms_key_ring_iam_binding` | no kind grants on google_kms_key_ring per resource yet; grant at a broader scope |
+| `google_kms_key_ring_iam_member` | no kind grants on google_kms_key_ring per resource yet; grant at a broader scope |
+| `google_kms_key_ring_iam_policy` | no kind grants on google_kms_key_ring per resource yet; grant at a broader scope |
+| `google_logging_log_view_iam_binding` | no kind grants on google_logging_log_view per resource yet; grant at a broader scope |
+| `google_logging_log_view_iam_member` | no kind grants on google_logging_log_view per resource yet; grant at a broader scope |
+| `google_logging_log_view_iam_policy` | no kind grants on google_logging_log_view per resource yet; grant at a broader scope |
+| `google_network_connectivity_hub_iam_binding` | no kind grants on google_network_connectivity_hub per resource yet; grant at a broader scope |
+| `google_network_connectivity_hub_iam_member` | no kind grants on google_network_connectivity_hub per resource yet; grant at a broader scope |
+| `google_network_connectivity_hub_iam_policy` | no kind grants on google_network_connectivity_hub per resource yet; grant at a broader scope |
+| `google_network_security_address_group_iam_binding` | no kind grants on google_network_security_address_group per resource yet; grant at a broader scope |
+| `google_network_security_address_group_iam_member` | no kind grants on google_network_security_address_group per resource yet; grant at a broader scope |
+| `google_network_security_address_group_iam_policy` | no kind grants on google_network_security_address_group per resource yet; grant at a broader scope |
+| `google_privateca_ca_pool_iam_binding` | no kind grants on google_privateca_ca_pool per resource yet; grant at a broader scope |
+| `google_privateca_ca_pool_iam_member` | no kind grants on google_privateca_ca_pool per resource yet; grant at a broader scope |
+| `google_privateca_ca_pool_iam_policy` | no kind grants on google_privateca_ca_pool per resource yet; grant at a broader scope |
+| `google_privateca_certificate_template_iam_binding` | no kind grants on google_privateca_certificate_template per resource yet; grant at a broader scope |
+| `google_privateca_certificate_template_iam_member` | no kind grants on google_privateca_certificate_template per resource yet; grant at a broader scope |
+| `google_privateca_certificate_template_iam_policy` | no kind grants on google_privateca_certificate_template per resource yet; grant at a broader scope |
+| `google_pubsub_schema_iam_binding` | no kind grants on google_pubsub_schema per resource yet; grant at a broader scope |
+| `google_pubsub_schema_iam_member` | no kind grants on google_pubsub_schema per resource yet; grant at a broader scope |
+| `google_pubsub_schema_iam_policy` | no kind grants on google_pubsub_schema per resource yet; grant at a broader scope |
+| `google_pubsub_subscription_iam_binding` | no kind grants on google_pubsub_subscription per resource yet; grant at a broader scope |
+| `google_pubsub_subscription_iam_member` | no kind grants on google_pubsub_subscription per resource yet; grant at a broader scope |
+| `google_pubsub_subscription_iam_policy` | no kind grants on google_pubsub_subscription per resource yet; grant at a broader scope |
+| `google_scc_source_iam_binding` | no kind grants on google_scc_source per resource yet; grant at a broader scope |
+| `google_scc_source_iam_member` | no kind grants on google_scc_source per resource yet; grant at a broader scope |
+| `google_scc_source_iam_policy` | no kind grants on google_scc_source per resource yet; grant at a broader scope |
+| `google_scc_v2_organization_source_iam_binding` | no kind grants on google_scc_v2_organization_source per resource yet; grant at a broader scope |
+| `google_scc_v2_organization_source_iam_member` | no kind grants on google_scc_v2_organization_source per resource yet; grant at a broader scope |
+| `google_scc_v2_organization_source_iam_policy` | no kind grants on google_scc_v2_organization_source per resource yet; grant at a broader scope |
+| `google_secure_source_manager_instance_iam_binding` | no kind grants on google_secure_source_manager_instance per resource yet; grant at a broader scope |
+| `google_secure_source_manager_instance_iam_member` | no kind grants on google_secure_source_manager_instance per resource yet; grant at a broader scope |
+| `google_secure_source_manager_instance_iam_policy` | no kind grants on google_secure_source_manager_instance per resource yet; grant at a broader scope |
+| `google_secure_source_manager_repository_iam_binding` | no kind grants on google_secure_source_manager_repository per resource yet; grant at a broader scope |
+| `google_secure_source_manager_repository_iam_member` | no kind grants on google_secure_source_manager_repository per resource yet; grant at a broader scope |
+| `google_secure_source_manager_repository_iam_policy` | no kind grants on google_secure_source_manager_repository per resource yet; grant at a broader scope |
+| `google_service_directory_namespace_iam_binding` | no kind grants on google_service_directory_namespace per resource yet; grant at a broader scope |
+| `google_service_directory_namespace_iam_member` | no kind grants on google_service_directory_namespace per resource yet; grant at a broader scope |
+| `google_service_directory_namespace_iam_policy` | no kind grants on google_service_directory_namespace per resource yet; grant at a broader scope |
+| `google_service_directory_service_iam_binding` | no kind grants on google_service_directory_service per resource yet; grant at a broader scope |
+| `google_service_directory_service_iam_member` | no kind grants on google_service_directory_service per resource yet; grant at a broader scope |
+| `google_service_directory_service_iam_policy` | no kind grants on google_service_directory_service per resource yet; grant at a broader scope |
+| `google_sourcerepo_repository_iam_binding` | no kind grants on google_sourcerepo_repository per resource yet; grant at a broader scope |
+| `google_sourcerepo_repository_iam_member` | no kind grants on google_sourcerepo_repository per resource yet; grant at a broader scope |
+| `google_sourcerepo_repository_iam_policy` | no kind grants on google_sourcerepo_repository per resource yet; grant at a broader scope |
+| `google_spanner_database_iam_binding` | no kind grants on google_spanner_database per resource yet; grant at a broader scope |
+| `google_spanner_database_iam_member` | no kind grants on google_spanner_database per resource yet; grant at a broader scope |
+| `google_spanner_database_iam_policy` | no kind grants on google_spanner_database per resource yet; grant at a broader scope |
+| `google_spanner_instance_iam_binding` | no kind grants on google_spanner_instance per resource yet; grant at a broader scope |
+| `google_spanner_instance_iam_member` | no kind grants on google_spanner_instance per resource yet; grant at a broader scope |
+| `google_spanner_instance_iam_policy` | no kind grants on google_spanner_instance per resource yet; grant at a broader scope |
+| `google_storage_managed_folder_iam_binding` | no kind grants on google_storage_managed_folder per resource yet; grant at a broader scope |
+| `google_storage_managed_folder_iam_member` | no kind grants on google_storage_managed_folder per resource yet; grant at a broader scope |
+| `google_storage_managed_folder_iam_policy` | no kind grants on google_storage_managed_folder per resource yet; grant at a broader scope |
+| `google_tags_tag_key_iam_binding` | no kind grants on google_tags_tag_key per resource yet; grant at a broader scope |
+| `google_tags_tag_key_iam_member` | no kind grants on google_tags_tag_key per resource yet; grant at a broader scope |
+| `google_tags_tag_key_iam_policy` | no kind grants on google_tags_tag_key per resource yet; grant at a broader scope |
+| `google_tags_tag_value_iam_binding` | no kind grants on google_tags_tag_value per resource yet; grant at a broader scope |
+| `google_tags_tag_value_iam_member` | no kind grants on google_tags_tag_value per resource yet; grant at a broader scope |
+| `google_tags_tag_value_iam_policy` | no kind grants on google_tags_tag_value per resource yet; grant at a broader scope |
+| `google_vertex_ai_reasoning_engine_iam_binding` | no kind grants on google_vertex_ai_reasoning_engine per resource yet; grant at a broader scope |
+| `google_vertex_ai_reasoning_engine_iam_member` | no kind grants on google_vertex_ai_reasoning_engine per resource yet; grant at a broader scope |
+| `google_vertex_ai_reasoning_engine_iam_policy` | no kind grants on google_vertex_ai_reasoning_engine per resource yet; grant at a broader scope |
+| `google_workbench_instance_iam_binding` | no kind grants on google_workbench_instance per resource yet; grant at a broader scope |
+| `google_workbench_instance_iam_member` | no kind grants on google_workbench_instance per resource yet; grant at a broader scope |
+| `google_workbench_instance_iam_policy` | no kind grants on google_workbench_instance per resource yet; grant at a broader scope |
+| `google_workstations_workstation_config_iam_binding` | no kind grants on google_workstations_workstation_config per resource yet; grant at a broader scope |
+| `google_workstations_workstation_config_iam_member` | no kind grants on google_workstations_workstation_config per resource yet; grant at a broader scope |
+| `google_workstations_workstation_config_iam_policy` | no kind grants on google_workstations_workstation_config per resource yet; grant at a broader scope |
+| `google_workstations_workstation_iam_binding` | no kind grants on google_workstations_workstation per resource yet; grant at a broader scope |
+| `google_workstations_workstation_iam_member` | no kind grants on google_workstations_workstation per resource yet; grant at a broader scope |
+| `google_workstations_workstation_iam_policy` | no kind grants on google_workstations_workstation per resource yet; grant at a broader scope |
 
 ### Composed (6)
 
@@ -1016,13 +1029,6 @@ rather than trusted.
 | `google_logging_organization_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
-
-### Planned (2)
-
-| Resource | Recorded reason |
-|---|---|
-| `google_certificate_manager_certificate_issuance_config` | planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration) |
-| `google_certificate_manager_trust_config` | planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration) |
 
 ### Deferred (576)
 

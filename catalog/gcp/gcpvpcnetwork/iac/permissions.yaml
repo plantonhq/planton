@@ -31,4 +31,6 @@ spec:
           - compute.routes.list
           - compute.routes.delete
         provenance: derived
-        notes: Required only when delete_default_routes_on_create is true -- the provider lists the new network's routes and deletes the auto-created default route after creation. Not needed otherwise.
+        condition:
+          spec_field_set: delete_default_routes_on_create
+        notes: The provider lists the new network's routes and deletes the auto-created default route after creation.

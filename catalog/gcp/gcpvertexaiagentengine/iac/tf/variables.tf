@@ -177,22 +177,30 @@ variable "spec" {
 
       # Instances, resources, environment, secrets, networking, gateway.
       deployment_spec = optional(object({
-        # Literal environment variables.
+        # Literal environment variables, written into the agent where anyone who
+        # can view it reads them. Configuration only -- a credential goes in
+        # secret_env, as a value this component stores in Secret Manager or a
+        # secret you already own.
         env = optional(list(object({
           # Variable name.
           name = string
 
-          # Literal value. Never a credential -- use secret_env for those.
+          # Literal value, written into the agent where anyone who can view it
+          # reads it. Fine for configuration; never a credential -- a credential
+          # goes in deployment_spec.secret_env.
           value = string
         })), [])
 
-        # Environment variables filled from Secret Manager.
+        # Environment variables filled from Secret Manager at instance start:
+        # each from a secret you own (secret_ref) or from a value this
+        # component stores for you (value).
         secret_env = optional(list(object({
           # Variable name.
           name = string
 
-          # The secret version the value comes from.
-          secret_ref = object({
+          # A Secret Manager secret version you already own. The agent's
+          # identity needs roles/secretmanager.secretAccessor on the secret.
+          secret_ref = optional(object({
             # The secret, by name in the agent's project: a GcpSecretManagerSecret
             # reference (resolving to its secret_id output) or a literal short name.
             # The agent's identity needs roles/secretmanager.secretAccessor on it.
@@ -202,7 +210,24 @@ variable "spec" {
             # The version to resolve: a version number or "latest" (Google's
             # default when empty).
             version = optional(string, "")
-          })
+          }))
+
+          # A secret value this component keeps in Secret Manager for you: on
+          # Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
+          # without the platform, the literal. The component creates one secret
+          # for this variable, replicated only in the agent's location, stores
+          # the value as a version, grants the agent's identity (spec.service_account,
+          # or the project's Vertex AI Reasoning Engine service agent
+          # service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+          # when unset) secretAccessor on that secret alone, and points the
+          # variable at that exact version -- the agent carries a reference,
+          # never the value. A changed value adds a version and redeploys the
+          # agent, so rotation is a deploy; destroying the agent removes the
+          # secret. The secret's id is
+          # agentengine_<location>_<metadata.name>_<variable> ('.' in the name
+          # becomes '-'). Not available with identity_type AGENT_IDENTITY (see
+          # the rule on GcpVertexAiAgentEngineSpecConfig).
+          value = optional(string)
         })), [])
 
         # Instances kept running at all times (0-10; Google's default 1). Zero

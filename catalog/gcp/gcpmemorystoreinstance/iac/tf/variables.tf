@@ -264,9 +264,11 @@ variable "spec" {
     server_ca_mode = optional(string, "")
 
     # The Certificate Authority Service CA pool that signs the server
-    # certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-    # Format: projects/{project}/locations/{region}/caPools/{caPoolId}.
-    # Immutable after creation.
+    # certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a
+    # GcpPrivateCaPool reference (its full name) or a literal
+    # projects/{project}/locations/{region}/caPools/{caPoolId}. Immutable
+    # after creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     server_ca_pool = optional(string, "")
 
     # Self-service maintenance version. Setting this to a newer available

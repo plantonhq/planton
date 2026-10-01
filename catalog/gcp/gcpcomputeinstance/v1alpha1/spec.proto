@@ -322,12 +322,12 @@ message GcpComputeInstanceWorkloadIdentityConfig {
 message GcpComputeInstanceBootDisk {
   option (buf.validate.message).cel = {
     id: "boot_disk_exactly_one_source"
-    expression: "(this.image != '' ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) == 1"
+    expression: "((has(this.image) && (has(this.image.value) || has(this.image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) == 1"
     message: "exactly one boot source is required: image (fresh install), source_snapshot (restore), or source_disk (pre-created bootable disk)"
   };
   option (buf.validate.message).cel = {
     id: "source_image_encryption_requires_image"
-    expression: "!has(this.source_image_encryption) || this.image != ''"
+    expression: "!has(this.source_image_encryption) || (has(this.image) && (has(this.image.value) || has(this.image.value_from)))"
     message: "source_image_encryption is only valid together with image"
   };
   option (buf.validate.message).cel = {
@@ -341,11 +341,17 @@ message GcpComputeInstanceBootDisk {
     message: "replica_zones requires a source_snapshot boot source — GCP cannot create a regional boot disk from an image (API 400: \"Creating a regional disk from a source image is not supported yet\"), and a pre-created source_disk already carries its own zones"
   };
 
-  // Source image for a fresh boot disk. Accepts an image family
-  // ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64") or
-  // a specific image self link. Families resolve to the newest image at
+  // Source image for a fresh boot disk: a GcpComputeImage reference (its
+  // self_link, pinning that exact build) or a literal Google accepts -- an
+  // image family short form ("debian-cloud/debian-12",
+  // "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a family path
+  // ("projects/{project}/global/images/family/{family}"), or a specific
+  // image's path or self link. Families resolve to the newest image at
   // create time. Create-time only.
-  string image = 1;
+  dev.planton.shared.foreignkey.v1.StringValueOrRef image = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeImage,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
 
   // Source snapshot to restore the boot disk from (name or self link).
   // Create-time only.

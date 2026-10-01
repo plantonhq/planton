@@ -56,3 +56,37 @@ resources:
       API enablement plumbing -- the module enables the owning API so a
       fresh project works on the first deploy; not a knob of the kind.
 
+  # One secret per spec.deployment_spec.secret_env[].value: the module creates it, stores the value as a
+  # version, and grants the runtime identity read access to that secret
+  # alone. Only the value itself is spec surface.
+  google_secret_manager_secret:
+    internal: >-
+      created by the module per spec.deployment_spec.secret_env[].value -- its id
+      (agentengine, location, metadata.name, variable), user-managed replication in the agent's
+      region, and attribution labels are all derived from the agent,
+      never authored.
+  google_secret_manager_secret_iam_member:
+    internal: >-
+      the roles/secretmanager.secretAccessor grant on each stored secret
+      for the agent's runtime identity (spec.service_account, else the project's Reasoning Engine service agent) -- derived,
+      never authored.
+  google_secret_manager_secret_version:
+    specRoot: spec.spec.deployment_spec.secret_env
+    mappings:
+      - spec: spec.spec.deployment_spec.secret_env.value
+        arg: secret_data
+    exclusions:
+      - arg: secret
+        reason: the module's own secret for this variable (derived), never authored
+      - arg: project
+        reason: follows the agent's project through the secret it belongs to
+      - arg: enabled
+        reason: a stored value is always the enabled version the variable is pinned to
+      - arg: is_secret_data_base64
+        reason: the stored value is the variable's text as resolved, never base64-encoded
+      - arg: secret_data_wo
+        reason: write-only arm of secret_data; the module pins the variable to the stored version, which needs the version resource's own lifecycle
+      - arg: secret_data_wo_version
+        reason: companion of the unused write-only arm (see secret_data_wo)
+      - arg: deletion_policy
+        reason: a replaced or removed version is deleted (the provider default) -- the copy is derived, and a disabled or abandoned version would outlive the value's source

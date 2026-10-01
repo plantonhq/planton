@@ -7,4 +7,5 @@ const (
 	OpSelfLink   = "self_link"
 	OpFamily     = "family"
 	OpDiskSizeGb = "disk_size_gb"
+	OpImageId    = "image_id"
 )

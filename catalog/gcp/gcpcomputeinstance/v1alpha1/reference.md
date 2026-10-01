@@ -47,7 +47,8 @@ spec:
   zone: us-central1-a
   machineType: e2-micro
   bootDisk:
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
     sizeGb: 10
     type: pd-balanced
     # When declaring guest OS features, list the image's COMPLETE
@@ -96,7 +97,7 @@ spec:
 | `spec.description` | `string` |  |  |  |
 | `spec.hostname` | `string` |  |  |  |
 | `spec.bootDisk` | `GcpComputeInstanceBootDisk` | yes |  |  |
-| `spec.bootDisk.image` | `string` |  |  |  |
+| `spec.bootDisk.image` | `string \| valueFrom` |  |  | GcpComputeImage (`status.outputs.self_link`) |
 | `spec.bootDisk.sourceSnapshot` | `string` |  |  |  |
 | `spec.bootDisk.sourceDisk` | `string \| valueFrom` |  |  | GcpComputeDisk (`status.outputs.self_link`) |
 | `spec.bootDisk.sizeGb` | `int32` |  |  |  |
@@ -299,12 +300,18 @@ Boot disk configuration — the disk the OS boots from.
 
 ### spec.bootDisk.image
 
-`string`
+`string | valueFrom`
 
-Source image for a fresh boot disk. Accepts an image family
-("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64") or
-a specific image self link. Families resolve to the newest image at
+Source image for a fresh boot disk: a GcpComputeImage reference (its
+self_link, pinning that exact build) or a literal Google accepts -- an
+image family short form ("debian-cloud/debian-12",
+"ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a family path
+("projects/{project}/global/images/family/{family}"), or a specific
+image's path or self link. Families resolve to the newest image at
 create time. Create-time only.
+
+- references: GcpComputeImage (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeImage, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.bootDisk.sourceSnapshot
 
@@ -1518,6 +1525,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.bootDisk.image` | GcpComputeImage | `status.outputs.self_link` |
 | `spec.bootDisk.sourceDisk` | GcpComputeDisk | `status.outputs.self_link` |
 | `spec.bootDisk.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.bootDisk.sourceImageEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |

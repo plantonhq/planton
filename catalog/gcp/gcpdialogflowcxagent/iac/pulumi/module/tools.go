@@ -91,13 +91,13 @@ func setToolSpecification(args *diagflow.CxToolArgs, definition toolDefinition) 
 					KeyName:                pulumi.String(apiKey.KeyName),
 					RequestLocation:        pulumi.String(apiKey.RequestLocation),
 					ApiKey:                 optionalSecret(apiKey.ApiKey),
-					SecretVersionForApiKey: optionalString(apiKey.SecretVersionForApiKey),
+					SecretVersionForApiKey: optionalString(apiKey.SecretVersionForApiKey.GetValue()),
 				}
 			}
 			if bearer := auth.BearerTokenConfig; bearer != nil {
 				authArgs.BearerTokenConfig = &diagflow.CxToolOpenApiSpecAuthenticationBearerTokenConfigArgs{
 					Token:                 optionalSecret(bearer.Token),
-					SecretVersionForToken: optionalString(bearer.SecretVersionForToken),
+					SecretVersionForToken: optionalString(bearer.SecretVersionForToken.GetValue()),
 				}
 			}
 			if oauth := auth.OauthConfig; oauth != nil {
@@ -107,7 +107,7 @@ func setToolSpecification(args *diagflow.CxToolArgs, definition toolDefinition) 
 					TokenEndpoint:                pulumi.String(oauth.TokenEndpoint),
 					ClientSecret:                 optionalSecret(oauth.ClientSecret),
 					Scopes:                       optionalStringArray(oauth.Scopes),
-					SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret),
+					SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret.GetValue()),
 				}
 			}
 			if serviceAgent := auth.ServiceAgentAuthConfig; serviceAgent != nil {
@@ -171,13 +171,13 @@ func setToolVersionSpecification(args *diagflow.CxToolVersionToolArgs, definitio
 					KeyName:                pulumi.String(apiKey.KeyName),
 					RequestLocation:        pulumi.String(apiKey.RequestLocation),
 					ApiKey:                 optionalSecret(apiKey.ApiKey),
-					SecretVersionForApiKey: optionalString(apiKey.SecretVersionForApiKey),
+					SecretVersionForApiKey: optionalString(apiKey.SecretVersionForApiKey.GetValue()),
 				}
 			}
 			if bearer := auth.BearerTokenConfig; bearer != nil {
 				authArgs.BearerTokenConfig = &diagflow.CxToolVersionToolOpenApiSpecAuthenticationBearerTokenConfigArgs{
 					Token:                 optionalSecret(bearer.Token),
-					SecretVersionForToken: optionalString(bearer.SecretVersionForToken),
+					SecretVersionForToken: optionalString(bearer.SecretVersionForToken.GetValue()),
 				}
 			}
 			if oauth := auth.OauthConfig; oauth != nil {
@@ -187,7 +187,7 @@ func setToolVersionSpecification(args *diagflow.CxToolVersionToolArgs, definitio
 					TokenEndpoint:                pulumi.String(oauth.TokenEndpoint),
 					ClientSecret:                 optionalSecret(oauth.ClientSecret),
 					Scopes:                       optionalStringArray(oauth.Scopes),
-					SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret),
+					SecretVersionForClientSecret: optionalString(oauth.SecretVersionForClientSecret.GetValue()),
 				}
 			}
 			if serviceAgent := auth.ServiceAgentAuthConfig; serviceAgent != nil {

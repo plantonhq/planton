@@ -30,6 +30,8 @@ spec:
         permissions:
           - dataproc.autoscalingPolicies.use
         provenance: derived
+        condition:
+          spec_field_set: cluster_config.autoscaling_policy_uri
         notes: Required only when cluster_config.autoscaling_policy_uri attaches a policy (the 03-cost-optimized-batch preset does) -- the Dataproc API authorizes policy attachment as use on the referenced policy, a permission distinct from managing the policy itself.
       - purpose: ActAsClusterServiceAccount
         permissions:

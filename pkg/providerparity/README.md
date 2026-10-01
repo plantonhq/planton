@@ -175,10 +175,14 @@ can never be an invisible leak. Findings ride the shared baseline under the
 **Breadth (per GA resource).** Every GA resource carries exactly one
 disposition (secondary-channel resources are outside breadth: their record
 is the admission list, and a channel resource no kind admits is simply not
-offered). Two classes are computed — `modeled` (the module census proves
-consumption) and `iam-covered` (the `*_iam_member/binding/policy` pattern,
-covered by the owning kinds' additive `iam_members` fields) — plus
-schema-flagged deprecations. The rest is recorded judgment in the
+offered). Three classes are computed — `modeled` (the module census proves
+consumption), `iam-covered` (an `*_iam_member/binding/policy` triplet one of
+whose forms a module consumes: the catalog grants on that resource
+additively, through a kind's `iam_members` field or a standalone grant kind,
+and the authoritative binding and policy forms are deliberately not
+modeled), and `iam-uncovered` (a triplet no module consumes in any form: no
+kind grants on that resource per resource yet) — plus schema-flagged
+deprecations. The rest is recorded judgment in the
 dispositions ledger (`dispositions/<schema>.yaml`): `composed`,
 `model-planned`, `deferred`, and doc-level `excluded-deprecated`, reason
 mandatory. Computed classes always win: a ledger entry shadowed by one

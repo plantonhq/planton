@@ -11,7 +11,8 @@ spec:
     machineType: e2-medium
     disks:
       - boot: true
-        sourceImage: debian-cloud/debian-12
+        sourceImage:
+          value: debian-cloud/debian-12
       # The data disk every instance gets; the stateful rule below
       # preserves each instance's copy across recreation.
       - deviceName: data

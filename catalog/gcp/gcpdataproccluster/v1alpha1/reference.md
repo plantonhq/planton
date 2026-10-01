@@ -314,7 +314,7 @@ spec:
 | `spec.clusterConfig.lifecycleConfig.idleStopTtl` | `string` |  |  |  |
 | `spec.clusterConfig.lifecycleConfig.autoStopTime` | `string` |  |  |  |
 | `spec.clusterConfig.metastoreConfig` | `GcpDataprocClusterMetastoreConfig` |  |  |  |
-| `spec.clusterConfig.metastoreConfig.dataprocMetastoreService` | `string \| valueFrom` | yes |  |  |
+| `spec.clusterConfig.metastoreConfig.dataprocMetastoreService` | `string` | yes |  |  |
 | `spec.clusterConfig.dataprocMetricConfig` | `GcpDataprocClusterMetricConfig` |  |  |  |
 | `spec.clusterConfig.dataprocMetricConfig.metrics` | `[]GcpDataprocClusterMetric` | yes |  |  |
 | `spec.clusterConfig.dataprocMetricConfig.metrics[].metricSource` | `string` | yes |  |  |
@@ -367,7 +367,7 @@ spec:
 | `spec.virtualClusterConfig.kubernetesClusterConfig.kubernetesSoftwareConfig.properties` | `map<string, string>` |  |  |  |
 | `spec.virtualClusterConfig.auxiliaryServicesConfig` | `GcpDataprocClusterAuxiliaryServicesConfig` |  |  |  |
 | `spec.virtualClusterConfig.auxiliaryServicesConfig.metastoreConfig` | `GcpDataprocClusterMetastoreConfig` |  |  |  |
-| `spec.virtualClusterConfig.auxiliaryServicesConfig.metastoreConfig.dataprocMetastoreService` | `string \| valueFrom` | yes |  |  |
+| `spec.virtualClusterConfig.auxiliaryServicesConfig.metastoreConfig.dataprocMetastoreService` | `string` | yes |  |  |
 | `spec.virtualClusterConfig.auxiliaryServicesConfig.sparkHistoryServerConfig` | `GcpDataprocClusterSparkHistoryServerConfig` |  |  |  |
 | `spec.virtualClusterConfig.auxiliaryServicesConfig.sparkHistoryServerConfig.dataprocCluster` | `string \| valueFrom` |  |  | GcpDataprocCluster (`status.outputs.cluster_id`) |
 | `spec.gracefulDecommissionTimeout` | `string` |  |  |  |
@@ -1945,15 +1945,14 @@ Attach the cluster to a persistent Dataproc Metastore service.
 
 ### spec.clusterConfig.metastoreConfig.dataprocMetastoreService
 
-`string | valueFrom` · required
+`string` · required
 
-Resource name of an existing Dataproc Metastore service.
-Format: projects/{project}/locations/{location}/services/{service}
-Accepts a literal resource name today; references attach when a
-metastore-service kind lands in the catalog.
+Full resource name of an existing Dataproc Metastore service:
+projects/{project}/locations/{location}/services/{service}. The
+service is made outside the catalog (no catalog kind produces it), so
+write its full name. Required.
 
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.clusterConfig.dataprocMetricConfig
 
@@ -2390,15 +2389,14 @@ Persistent Hive metastore for the virtual cluster's jobs.
 
 ### spec.virtualClusterConfig.auxiliaryServicesConfig.metastoreConfig.dataprocMetastoreService
 
-`string | valueFrom` · required
+`string` · required
 
-Resource name of an existing Dataproc Metastore service.
-Format: projects/{project}/locations/{location}/services/{service}
-Accepts a literal resource name today; references attach when a
-metastore-service kind lands in the catalog.
+Full resource name of an existing Dataproc Metastore service:
+projects/{project}/locations/{location}/services/{service}. The
+service is made outside the catalog (no catalog kind produces it), so
+write its full name. Required.
 
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.virtualClusterConfig.auxiliaryServicesConfig.sparkHistoryServerConfig
 

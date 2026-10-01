@@ -1,0 +1,32 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "envsecrets",
+    srcs = [
+        "naming.go",
+        "secrets.go",
+    ],
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/organizations",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/secretmanager",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "envsecrets_test",
+    srcs = [
+        "naming_test.go",
+        "secrets_test.go",
+    ],
+    embed = [":envsecrets"],
+    deps = [
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_sdk_v3//go/common/resource",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

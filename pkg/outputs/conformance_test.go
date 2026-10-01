@@ -3805,10 +3805,13 @@ func TestStackOutputsConformance(t *testing.T) {
 				"external_gateway_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/global/externalVpnGateways/hq",
 				"gateway_self_link":          "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnGateways/hub-vpn",
 				"router_name":                "hub-vpn",
+				"shared_secret":              "Q7mK2pX9rL4tV8wB3yH6zJ1nC5dF0gS2",
+				"md5_authentication_key":     "Xk9mQ2pL7nR4tV8wB3yH6zJ1",
 			},
 			mustPopulate: []string{
 				"tunnel_self_links", "tunnel_names", "router_interface_names", "bgp_peer_names",
 				"external_gateway_self_link", "gateway_self_link", "router_name",
+				"shared_secret", "md5_authentication_key",
 			},
 		},
 		{
@@ -4519,10 +4522,11 @@ func TestStackOutputsConformance(t *testing.T) {
 			name: "GcpSccNotificationConfig",
 			kind: cloudresourcekind.CloudResourceKind_GcpSccNotificationConfig,
 			rawOutputs: map[string]interface{}{
-				"name":            "projects/sec/locations/global/notificationConfigs/high-findings",
-				"service_account": "service-project-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
+				"name":                   "projects/sec/locations/global/notificationConfigs/high-findings",
+				"service_account":        "service-project-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
+				"service_account_member": "serviceAccount:service-project-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
 			},
-			mustPopulate: []string{"name", "service_account"},
+			mustPopulate: []string{"name", "service_account", "service_account_member"},
 		},
 		{
 			// GcpSccMuteConfig: the rule's name.
@@ -4621,8 +4625,9 @@ func TestStackOutputsConformance(t *testing.T) {
 				"self_link":    "https://www.googleapis.com/compute/v1/projects/images-prod/global/images/web-base-20261001",
 				"family":       "web-base",
 				"disk_size_gb": 20,
+				"image_id":     "projects/images-prod/global/images/web-base-20261001",
 			},
-			mustPopulate: []string{"name", "self_link", "family", "disk_size_gb"},
+			mustPopulate: []string{"name", "self_link", "family", "disk_size_gb", "image_id"},
 		},
 		{
 			// GcpCloudBuildWorkerPool: the pool name triggers and Cloud
@@ -4721,6 +4726,56 @@ func TestStackOutputsConformance(t *testing.T) {
 				"uid":                   "c3d4e5f6-a7b8-4c9d-8e0f-2a3b4c5d6e7f",
 			},
 			mustPopulate: []string{"name", "custom_target_type_id", "uid"},
+		},
+		{
+			// GcpPubSubTopicIamMember: the resolved grant (the topic's full
+			// name, role, member) and the policy etag.
+			name: "GcpPubSubTopicIamMember",
+			kind: cloudresourcekind.CloudResourceKind_GcpPubSubTopicIamMember,
+			rawOutputs: map[string]interface{}{
+				"topic":  "projects/acme-logging/topics/audit-logs",
+				"role":   "roles/pubsub.publisher",
+				"member": "serviceAccount:service-123456789@gcp-sa-logging.iam.gserviceaccount.com",
+				"etag":   "BwYn2FQlJeM=",
+			},
+			mustPopulate: []string{"topic", "role", "member", "etag"},
+		},
+		{
+			// GcpGcsBucketIamMember: the resolved grant (the bucket name,
+			// role, member) and the policy etag.
+			name: "GcpGcsBucketIamMember",
+			kind: cloudresourcekind.CloudResourceKind_GcpGcsBucketIamMember,
+			rawOutputs: map[string]interface{}{
+				"bucket": "acme-audit-logs",
+				"role":   "roles/storage.objectCreator",
+				"member": "serviceAccount:service-123456789@gcp-sa-logging.iam.gserviceaccount.com",
+				"etag":   "CAE=",
+			},
+			mustPopulate: []string{"bucket", "role", "member", "etag"},
+		},
+		{
+			// GcpCertManagerTrustConfig: the full name TLS policies take, the
+			// bare name, and the location.
+			name: "GcpCertManagerTrustConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerTrustConfig,
+			rawOutputs: map[string]interface{}{
+				"trust_config_id":   "projects/acme-edge/locations/global/trustConfigs/partner-mtls",
+				"trust_config_name": "partner-mtls",
+				"location":          "global",
+			},
+			mustPopulate: []string{"trust_config_id", "trust_config_name", "location"},
+		},
+		{
+			// GcpCertManagerIssuanceConfig: the full name a certificate's
+			// managed.issuance_config takes, the bare name, and the location.
+			name: "GcpCertManagerIssuanceConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerIssuanceConfig,
+			rawOutputs: map[string]interface{}{
+				"issuance_config_id":   "projects/acme-edge/locations/global/certificateIssuanceConfigs/internal-tls",
+				"issuance_config_name": "internal-tls",
+				"location":             "global",
+			},
+			mustPopulate: []string{"issuance_config_id", "issuance_config_name", "location"},
 		},
 		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric

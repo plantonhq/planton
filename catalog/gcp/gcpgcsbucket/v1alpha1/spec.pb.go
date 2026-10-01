@@ -189,6 +189,13 @@ type GcpGcsBucketSpec struct {
 	// Public access: grant roles/storage.objectViewer to "allUsers" (also
 	// requires public_access_prevention to be "inherited" and the org policy
 	// to allow it).
+	//
+	// A grantee that depends on this bucket -- a GcpLoggingSink exporting
+	// into it, whose writer identity needs roles/storage.objectCreator here --
+	// cannot be referenced from this list without a dependency cycle (the
+	// sink already references the bucket). Grant it with a standalone
+	// GcpGcsBucketIamMember, which depends on both. Never declare the same
+	// (role, member) pair in both places: removing either removes the grant.
 	IamMembers []*GcpGcsBucketIamMember `protobuf:"bytes,24,rep,name=iam_members,json=iamMembers,proto3" json:"iam_members,omitempty"`
 	// Network-layer IP filtering: restrict which public CIDR ranges and
 	// which VPC networks may reach the bucket at all, before IAM is even

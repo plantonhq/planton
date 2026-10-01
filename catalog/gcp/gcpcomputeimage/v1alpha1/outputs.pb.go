@@ -34,7 +34,15 @@ type GcpComputeImageStackOutputs struct {
 	// "projects/{project}/global/images/family/{family}".
 	Family string `protobuf:"bytes,3,opt,name=family,proto3" json:"family,omitempty"`
 	// The image's size in GB.
-	DiskSizeGb    int32 `protobuf:"varint,4,opt,name=disk_size_gb,json=diskSizeGb,proto3" json:"disk_size_gb,omitempty"`
+	DiskSizeGb int32 `protobuf:"varint,4,opt,name=disk_size_gb,json=diskSizeGb,proto3" json:"disk_size_gb,omitempty"`
+	// The image's resource ID: projects/{project}/global/images/{name} --
+	// the relative form, without self_link's
+	// https://www.googleapis.com/compute/v1/ prefix. Consume self_link where
+	// a field takes an image URL (a disk's image, an instance's boot disk,
+	// a managed instance group's source_image, another image's
+	// source_image); consume image_id where Google documents the relative
+	// form only, such as a GKE node pool's secondary boot disk image.
+	ImageId       string `protobuf:"bytes,5,opt,name=image_id,json=imageId,proto3" json:"image_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -97,17 +105,25 @@ func (x *GcpComputeImageStackOutputs) GetDiskSizeGb() int32 {
 	return 0
 }
 
+func (x *GcpComputeImageStackOutputs) GetImageId() string {
+	if x != nil {
+		return x.ImageId
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpcomputeimage/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\"\x88\x01\n" +
+	"2catalog/gcp/gcpcomputeimage/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\"\xa3\x01\n" +
 	"\x1bGcpComputeImageStackOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12\x16\n" +
 	"\x06family\x18\x03 \x01(\tR\x06family\x12 \n" +
 	"\fdisk_size_gb\x18\x04 \x01(\x05R\n" +
-	"diskSizeGbB\xdc\x02\n" +
+	"diskSizeGb\x12\x19\n" +
+	"\bimage_id\x18\x05 \x01(\tR\aimageIdB\xdc\x02\n" +
 	",com.dev.planton.gcp.gcpcomputeimage.v1alpha1B\fOutputsProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcpcomputeimage/v1alpha1;gcpcomputeimagev1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcpcomputeimage.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcpcomputeimage\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcpcomputeimage\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcpcomputeimage::V1alpha1b\x06proto3"
 
 var (

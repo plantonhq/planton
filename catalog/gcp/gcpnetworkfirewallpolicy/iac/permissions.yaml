@@ -36,9 +36,13 @@ spec:
           - compute.networks.setFirewallPolicy
           - compute.networks.get
         provenance: derived
-        notes: "Covers the _association resources on both families (Pulumi compute.NetworkFirewallPolicyAssociation / RegionNetworkFirewallPolicyAssociation): the addAssociation and removeAssociation calls authorize as firewallPolicies.use or regionFirewallPolicies.use on the policy (listed above) plus setFirewallPolicy on the attached network -- GCP defines no addAssociation or removeAssociation permission -- (Google checks it on the attachment target), and networks.get to resolve the network. roles/compute.securityAdmin and roles/compute.networkAdmin both contain them."
+        condition:
+          spec_field_set: associations
+        notes: "Covers the _association resources on both families (Pulumi compute.NetworkFirewallPolicyAssociation / RegionNetworkFirewallPolicyAssociation), one per associations entry: the addAssociation and removeAssociation calls authorize as firewallPolicies.use or regionFirewallPolicies.use on the policy (listed above) plus setFirewallPolicy on the attached network -- GCP defines no addAssociation or removeAssociation permission -- (Google checks it on the attachment target), and networks.get to resolve the network. roles/compute.securityAdmin and roles/compute.networkAdmin both contain them."
       - purpose: ReadReferencedForwardingRules
         permissions:
           - compute.forwardingRules.get
         provenance: derived
-        notes: "Only when a regional rule sets target_type INTERNAL_MANAGED_LB: Google validates each forwarding rule named in target_forwarding_rules at rule create. Secure tags (tag values) and service accounts are passed by name and validated by the API without a read permission on this identity."
+        condition:
+          spec_field_set: rules.target_forwarding_rules
+        notes: "A regional rule with target_type INTERNAL_MANAGED_LB names forwarding rules in target_forwarding_rules, and Google validates each one at rule create. Secure tags (tag values) and service accounts are passed by name and validated by the API without a read permission on this identity."

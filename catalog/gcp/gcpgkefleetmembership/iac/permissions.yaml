@@ -30,4 +30,6 @@ spec:
         permissions:
           - container.clusters.get
         provenance: derived
-        notes: Registering a GKE cluster reads the cluster the resource link names; needed only when gke_cluster is set, on the cluster's project.
+        condition:
+          spec_field_set: gke_cluster
+        notes: Registering a GKE cluster reads the cluster the resource link names, on the cluster's project.

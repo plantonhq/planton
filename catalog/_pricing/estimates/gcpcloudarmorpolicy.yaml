@@ -95,3 +95,57 @@ spec:
       exclusions:
         - request inspections -- every request the policy evaluates bills per million (globally scoped rate) and follows traffic no manifest can know
       notes: Priced at Cloud Armor Standard, the tier every project without a Cloud Armor Enterprise enrollment bills. Enterprise enrollment -- a project-level subscription invisible to this manifest -- zeroes the policy, rule, and request meters and bills a subscription plus per-GiB data processing instead.
+    - preset: 04-regional-waf-for-regional-load-balancer
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      line_items:
+        - service_name: Networking
+          sku_meter: security policy months
+          pricing_unit: policy-months
+          pricing_quantity: "1"
+          quantity_basis: one security policy, billed the flat Cloud Armor Standard monthly policy fee from creation, attached or not
+          list_unit_price: "5"
+          price_source: https://cloudbilling.googleapis.com/v1/services/E505-1604-58F8/skus
+          retrieved_on: "2026-08-16"
+          list_cost: "5.0000"
+        - service_name: Networking
+          sku_meter: security policy rule months
+          pricing_unit: rule-months
+          pricing_quantity: "5"
+          quantity_basis: one flat Cloud Armor Standard monthly rule fee per authored rule, including the mandatory priority-2147483647 default rule the API requires a non-empty set to carry
+          list_unit_price: "1"
+          price_source: https://cloudbilling.googleapis.com/v1/services/E505-1604-58F8/skus
+          retrieved_on: "2026-08-16"
+          list_cost: "5.0000"
+      total_list_cost: "10.0000"
+      exclusions:
+        - request inspections -- every request the policy evaluates bills per million (globally scoped rate) and follows traffic no manifest can know
+      notes: Priced at Cloud Armor Standard, the tier every project without a Cloud Armor Enterprise enrollment bills. Enterprise enrollment -- a project-level subscription invisible to this manifest -- zeroes the policy, rule, and request meters and bills a subscription plus per-GiB data processing instead.
+    - preset: 05-network-ddos-protection-for-passthrough-load-balancer
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      line_items:
+        - service_name: Networking
+          sku_meter: security policy months
+          pricing_unit: policy-months
+          pricing_quantity: "1"
+          quantity_basis: one security policy, billed the flat Cloud Armor Standard monthly policy fee from creation, attached or not
+          list_unit_price: "5"
+          price_source: https://cloudbilling.googleapis.com/v1/services/E505-1604-58F8/skus
+          retrieved_on: "2026-08-16"
+          list_cost: "5.0000"
+        - service_name: Networking
+          sku_meter: security policy rule months
+          pricing_unit: rule-months
+          pricing_quantity: "3"
+          quantity_basis: one flat Cloud Armor Standard monthly rule fee per authored rule, including the mandatory priority-2147483647 default rule the API requires a non-empty set to carry
+          list_unit_price: "1"
+          price_source: https://cloudbilling.googleapis.com/v1/services/E505-1604-58F8/skus
+          retrieved_on: "2026-08-16"
+          list_cost: "3.0000"
+      total_list_cost: "8.0000"
+      exclusions:
+        - request inspections -- every request the policy evaluates bills per million (globally scoped rate) and follows traffic no manifest can know
+      notes: Priced at Cloud Armor Standard, the tier every project without a Cloud Armor Enterprise enrollment bills. Enterprise enrollment -- a project-level subscription invisible to this manifest -- zeroes the policy, rule, and request meters and bills a subscription plus per-GiB data processing instead.

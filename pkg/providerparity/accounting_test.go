@@ -81,8 +81,11 @@ func accountingFixture() (spec []KindCensus, modules []ModuleCensus, schemas map
 			"google_plain": {
 				Attributes: map[string]*Attribute{"name": {Required: true}},
 			},
-			"google_widget_iam_policy": { // unconsumed iam triplet: pattern class
+			"google_widget_iam_policy": { // authoritative sibling of a consumed member: covered
 				Attributes: map[string]*Attribute{"policy_data": {Required: true}},
+			},
+			"google_lonely_iam_member": { // no form consumed: not offered per resource
+				Attributes: map[string]*Attribute{"member": {Required: true}},
 			},
 			"google_dead_thing": { // schema-flagged deprecation class
 				Deprecated: true,
@@ -231,6 +234,7 @@ func TestBuildAccounting_Hermetic(t *testing.T) {
 		"google_project_service":   DispositionModeled,
 		"google_plain":             DispositionModeled,
 		"google_widget_iam_policy": DispositionIamCovered,
+		"google_lonely_iam_member": DispositionIamUncovered,
 		"google_dead_thing":        DispositionExcludedDeprecated,
 		"google_composed_thing":    DispositionComposed,
 		"google_orphan_thing":      "",
@@ -239,6 +243,12 @@ func TestBuildAccounting_Hermetic(t *testing.T) {
 		if got := byResource[res].Disposition; got != want {
 			t.Errorf("disposition[%s] = %q, want %q", res, got, want)
 		}
+	}
+	if got := byResource["google_widget_iam_policy"].Detail; !strings.Contains(got, "TestWidget") || !strings.Contains(got, "google_widget") {
+		t.Errorf("iam-covered detail = %q, want it to name the granting kind and resource", got)
+	}
+	if got := byResource["google_lonely_iam_member"].Detail; !strings.Contains(got, "google_lonely") {
+		t.Errorf("iam-uncovered detail = %q, want it to name the resource", got)
 	}
 	if byResource["google_widget"].Detail != "consumed by TestWidget" {
 		t.Errorf("modeled detail = %q", byResource["google_widget"].Detail)
@@ -458,7 +468,7 @@ func TestBuildAccounting_LedgerShadowsComputedClasses(t *testing.T) {
 	}
 
 	wantStale := map[string]string{
-		"resource:google_widget_iam_policy": "iam-covered",
+		"resource:google_widget_iam_policy": "iam-uncovered",
 		"resource:google_dead_thing":        "doc-level deprecations",
 	}
 	for key, fragment := range wantStale {

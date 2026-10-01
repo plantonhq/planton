@@ -18,20 +18,54 @@ spec:
           - firebase.clients.delete
         provenance: derived
         notes: Covers google_firebase_web_app (Terraform, beta provider) / firebase.WebApp (Pulumi) and the google_firebase_web_app_config / firebase.GetWebAppConfig lookup. IAM's inventory files every Firebase app registration -- Android, iOS, web -- under the firebase.clients class -- projects.webApps.create authorizes as clients.create, get and getConfig as clients.get, patch as clients.update, and :remove (deletion_policy DELETE, immediate) as clients.delete. ABANDON and PREVENT call no delete API. roles/firebase.admin (or roles/firebase.developAdmin) contains all four.
-      - purpose: EnableAppCheckApi
+      - purpose: EnableAppCheckApiForRecaptchaV3
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
           - serviceusage.services.list
         provenance: derived
-        notes: Required only when app_check composes at least one resource. Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
-      - purpose: ManageAppCheckAttestation
+        condition:
+          spec_field_set: app_check.recaptcha_v3
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
+      - purpose: EnableAppCheckApiForRecaptchaEnterprise
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        condition:
+          spec_field_set: app_check.recaptcha_enterprise
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
+      - purpose: EnableAppCheckApiForDebugTokens
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        condition:
+          spec_field_set: app_check.debug_tokens
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com, which the modules enable whenever the spec composes any App Check resource. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
+      - purpose: ManageRecaptchaV3Config
         permissions:
           - firebaseappcheck.recaptchaV3Config.get
           - firebaseappcheck.recaptchaV3Config.update
+        provenance: derived
+        condition:
+          spec_field_set: app_check.recaptcha_v3
+        notes: google_firebase_app_check_recaptcha_v3_config / firebase.AppCheckRecaptchaV3Config is a per-app singleton -- the provider's create and update are both a PATCH (Google authorizes as recaptchaV3Config.update), get covers refresh, and its destroy calls no API (the configuration is never deleted on Google's side). roles/firebaseappcheck.admin contains both.
+      - purpose: ManageRecaptchaEnterpriseConfig
+        permissions:
           - firebaseappcheck.recaptchaEnterpriseConfig.get
           - firebaseappcheck.recaptchaEnterpriseConfig.update
+        provenance: derived
+        condition:
+          spec_field_set: app_check.recaptcha_enterprise
+        notes: google_firebase_app_check_recaptcha_enterprise_config / firebase.AppCheckRecaptchaEnterpriseConfig is a per-app singleton -- the provider's create and update are both a PATCH (Google authorizes as recaptchaEnterpriseConfig.update), get covers refresh, and its destroy calls no API (the configuration is never deleted on Google's side). roles/firebaseappcheck.admin contains both.
+      - purpose: ManageAppCheckDebugTokens
+        permissions:
           - firebaseappcheck.debugTokens.get
           - firebaseappcheck.debugTokens.update
         provenance: derived
-        notes: Required only when app_check composes an attestation configuration or debug tokens. google_firebase_app_check_recaptcha_v3_config / firebase.AppCheckRecaptchaV3Config and google_firebase_app_check_recaptcha_enterprise_config / firebase.AppCheckRecaptchaEnterpriseConfig are per-app singletons -- the provider's create and update are both a PATCH (Google authorizes as recaptchaV3Config.update / recaptchaEnterpriseConfig.update), get covers refresh, and their destroy calls no API (the configurations are never deleted on Google's side). google_firebase_app_check_debug_token / firebase.AppCheckDebugToken has real create, patch, and delete methods, but IAM's inventory carries only debugTokens.get and debugTokens.update for the class -- Google authorizes creating and deleting a token as an UPDATE of the app's token set, so those two cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains all six.
+        condition:
+          spec_field_set: app_check.debug_tokens
+        notes: google_firebase_app_check_debug_token / firebase.AppCheckDebugToken, one per app_check.debug_tokens entry, has real create, patch, and delete methods, but IAM's inventory carries only debugTokens.get and debugTokens.update for the class -- Google authorizes creating and deleting a token as an UPDATE of the app's token set, so those two cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains both.

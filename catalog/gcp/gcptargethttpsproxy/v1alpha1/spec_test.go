@@ -88,7 +88,7 @@ var _ = ginkgo.Describe("GcpTargetHttpsProxySpec", func() {
 	ginkgo.It("should accept a Traffic Director proxy with server_tls_policy and no certificates", func() {
 		target := minimal()
 		target.Spec.SslCertificates = nil
-		target.Spec.ServerTlsPolicy = literalRef("projects/p/locations/global/serverTlsPolicies/mtls-policy")
+		target.Spec.ServerTlsPolicy = "projects/p/locations/global/serverTlsPolicies/mtls-policy"
 		target.Spec.ProxyBind = true
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
@@ -253,7 +253,7 @@ var _ = ginkgo.Describe("GcpTargetHttpsProxySpec", func() {
 			literalRef("projects/p/locations/us-central1/certificates/web"),
 		}
 		target.Spec.SslPolicy = literalRef("https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/sslPolicies/modern")
-		target.Spec.ServerTlsPolicy = literalRef("projects/p/locations/us-central1/serverTlsPolicies/mtls")
+		target.Spec.ServerTlsPolicy = "projects/p/locations/us-central1/serverTlsPolicies/mtls"
 		target.Spec.HttpKeepAliveTimeoutSec = 610
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})

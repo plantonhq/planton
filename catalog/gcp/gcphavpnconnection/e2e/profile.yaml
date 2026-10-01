@@ -11,7 +11,10 @@ spec:
   # connection under test hub -> spoke, and a reverse fixture spoke -> hub.
   # Live facts the proof lane confirms: (1) both tunnels reach ESTABLISHED and
   # both BGP sessions reach Established on the hub router (the verifier polls
-  # the router status API by the bgp_peer_names outputs); (2) the four
+  # the router status API by the bgp_peer_names outputs) -- which also proves
+  # the key handoff: the reverse fixture deploys first with no key and
+  # generates one, and the connection under test reads it from that
+  # fixture's sensitive shared_secret output; (2) the four
   # index-aligned list outputs are populated on both engines; (3) the
   # Optional+Computed session fields (ip_address, peer_ip_address, enable_ipv4,
   # the next hops) RE-PLAN CLEAN under the apply-idempotency gate when unset;

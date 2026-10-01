@@ -1,7 +1,7 @@
 # Secret values the environment carries (env[].secret_value) are kept in
 # Secret Manager, one secret per variable, so the task template references a
 # secret the job owns and never holds the value. The naming, placement, and
-# grant rules match the Pulumi module's shared cloudrunenv helper:
+# grant rules match the Pulumi module's shared envsecrets helper:
 #   - id "runjob_<region>_<job>_<container>_<variable>" ('.' becomes '-',
 #     an unnamed container is "c<index>");
 #   - replicated only in the job's region;

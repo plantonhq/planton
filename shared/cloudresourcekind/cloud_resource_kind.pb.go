@@ -1842,9 +1842,15 @@ const (
 	CloudResourceKind_GcpCloudTasksQueue             CloudResourceKind = 3062
 	CloudResourceKind_GcpCloudSchedulerJob           CloudResourceKind = 3063
 	CloudResourceKind_GcpPubSubSchema                CloudResourceKind = 3064
-	CloudResourceKind_GcpVertexAiNotebook            CloudResourceKind = 3070
-	CloudResourceKind_GcpVertexAiEndpoint            CloudResourceKind = 3071
-	CloudResourceKind_GcpVertexAiIndex               CloudResourceKind = 3072
+	// One additive grant on a topic. Its own kind, not a field on the topic,
+	// because the identities that most need it (a logging sink's writer, a
+	// Security Command Center export's publisher) belong to resources that
+	// name the topic themselves; a grant on the topic that referenced them
+	// back would be a dependency cycle.
+	CloudResourceKind_GcpPubSubTopicIamMember CloudResourceKind = 3065
+	CloudResourceKind_GcpVertexAiNotebook     CloudResourceKind = 3070
+	CloudResourceKind_GcpVertexAiEndpoint     CloudResourceKind = 3071
+	CloudResourceKind_GcpVertexAiIndex        CloudResourceKind = 3072
 	// Vector Search IndexEndpoint — distinct from the online-prediction
 	// GcpVertexAiEndpoint (671); different GCP resources, different kinds.
 	CloudResourceKind_GcpVertexAiIndexEndpoint               CloudResourceKind = 3073
@@ -1861,6 +1867,10 @@ const (
 	CloudResourceKind_GcpWorkloadIdentityPool         CloudResourceKind = 3101
 	CloudResourceKind_GcpWorkloadIdentityPoolProvider CloudResourceKind = 3102
 	CloudResourceKind_GcpServiceAccountIamMember      CloudResourceKind = 3103
+	// One additive grant on a bucket, for a grantee that depends on the
+	// bucket itself (a logging sink writing into it): the bucket's own
+	// iam_members cannot reference such an identity without a cycle.
+	CloudResourceKind_GcpGcsBucketIamMember CloudResourceKind = 3104
 	// 3110–3119: networking/load-balancer family (overflow block; the 3023–3029
 	// LB sub-band is fully allocated)
 	CloudResourceKind_GcpGlobalForwardingRule        CloudResourceKind = 3110
@@ -1874,6 +1884,13 @@ const (
 	// hostnames to EXISTING certificates — the canonical map references a
 	// certificate fixture's resource name.
 	CloudResourceKind_GcpCertificateMap CloudResourceKind = 3117
+	// The CA certificates a load balancer validates client certificates
+	// against (mutual TLS). Its own kind: TLS policies reference it, never a
+	// certificate.
+	CloudResourceKind_GcpCertManagerTrustConfig CloudResourceKind = 3118
+	// How Google-managed certificates are issued from a private CA pool. Its
+	// own kind: many certificates share one config by name.
+	CloudResourceKind_GcpCertManagerIssuanceConfig CloudResourceKind = 3119
 	// 3120–3129: GCP serverless overflow
 	CloudResourceKind_GcpCloudRunJob            CloudResourceKind = 3120
 	CloudResourceKind_GcpServerlessVpcConnector CloudResourceKind = 3121
@@ -3252,6 +3269,7 @@ var (
 		3062:  "GcpCloudTasksQueue",
 		3063:  "GcpCloudSchedulerJob",
 		3064:  "GcpPubSubSchema",
+		3065:  "GcpPubSubTopicIamMember",
 		3070:  "GcpVertexAiNotebook",
 		3071:  "GcpVertexAiEndpoint",
 		3072:  "GcpVertexAiIndex",
@@ -3267,6 +3285,7 @@ var (
 		3101:  "GcpWorkloadIdentityPool",
 		3102:  "GcpWorkloadIdentityPoolProvider",
 		3103:  "GcpServiceAccountIamMember",
+		3104:  "GcpGcsBucketIamMember",
 		3110:  "GcpGlobalForwardingRule",
 		3111:  "GcpSslPolicy",
 		3112:  "GcpSslCertificate",
@@ -3275,6 +3294,8 @@ var (
 		3115:  "GcpServiceConnectionPolicy",
 		3116:  "GcpCertManagerDnsAuthorization",
 		3117:  "GcpCertificateMap",
+		3118:  "GcpCertManagerTrustConfig",
+		3119:  "GcpCertManagerIssuanceConfig",
 		3120:  "GcpCloudRunJob",
 		3121:  "GcpServerlessVpcConnector",
 		3122:  "GcpCloudRunWorkerPool",
@@ -4086,6 +4107,7 @@ var (
 		"GcpCloudTasksQueue":                             3062,
 		"GcpCloudSchedulerJob":                           3063,
 		"GcpPubSubSchema":                                3064,
+		"GcpPubSubTopicIamMember":                        3065,
 		"GcpVertexAiNotebook":                            3070,
 		"GcpVertexAiEndpoint":                            3071,
 		"GcpVertexAiIndex":                               3072,
@@ -4101,6 +4123,7 @@ var (
 		"GcpWorkloadIdentityPool":                        3101,
 		"GcpWorkloadIdentityPoolProvider":                3102,
 		"GcpServiceAccountIamMember":                     3103,
+		"GcpGcsBucketIamMember":                          3104,
 		"GcpGlobalForwardingRule":                        3110,
 		"GcpSslPolicy":                                   3111,
 		"GcpSslCertificate":                              3112,
@@ -4109,6 +4132,8 @@ var (
 		"GcpServiceConnectionPolicy":                     3115,
 		"GcpCertManagerDnsAuthorization":                 3116,
 		"GcpCertificateMap":                              3117,
+		"GcpCertManagerTrustConfig":                      3118,
+		"GcpCertManagerIssuanceConfig":                   3119,
 		"GcpCloudRunJob":                                 3120,
 		"GcpServerlessVpcConnector":                      3121,
 		"GcpCloudRunWorkerPool":                          3122,
@@ -4914,7 +4939,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xb5\x8f\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xac\x91\x03\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5417,7 +5442,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x15GcpPubSubSubscription\x10\xf5\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcppss:\x02\xf4\x17P\xb1\x02\x127\n" +
 	"\x12GcpCloudTasksQueue\x10\xf6\x17\x1a\x1e\xa2\xf7\x04\x1a\b\x12\x12\bv1alpha1\"\x05gcptq:\x02\xc6\x17P\xb7\x02\x12<\n" +
 	"\x14GcpCloudSchedulerJob\x10\xf7\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpcsj:\x04\xf4\x17\xc6\x17P\xb7\x02\x122\n" +
-	"\x0fGcpPubSubSchema\x10\xf8\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcppschP\xb1\x02\x12=\n" +
+	"\x0fGcpPubSubSchema\x10\xf8\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcppschP\xb1\x02\x12;\n" +
+	"\x17GcpPubSubTopicIamMember\x10\xf9\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcppstimP\xb1\x02\x12=\n" +
 	"\x13GcpVertexAiNotebook\x10\xfe\x17\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\x06gcpvnb:\x06\xc2\x17\xc3\x17\xc6\x17P\xb2\x02\x125\n" +
 	"\x13GcpVertexAiEndpoint\x10\xff\x17\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvepP\xb2\x02\x124\n" +
 	"\x10GcpVertexAiIndex\x10\x80\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpvaidxP\xb2\x02\x12>\n" +
@@ -5432,7 +5458,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x14GcpFilestoreInstance\x10\x9c\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpnfs:\x02\xc2\x17P\xae\x02\x12;\n" +
 	"\x17GcpWorkloadIdentityPool\x10\x9d\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpwip0\x01P\xb4\x02\x12F\n" +
 	"\x1fGcpWorkloadIdentityPoolProvider\x10\x9e\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpwipp:\x02\x9d\x18P\xb4\x02\x12A\n" +
-	"\x1aGcpServiceAccountIamMember\x10\x9f\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsaim:\x02\xc6\x17P\xb4\x02\x12?\n" +
+	"\x1aGcpServiceAccountIamMember\x10\x9f\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsaim:\x02\xc6\x17P\xb4\x02\x129\n" +
+	"\x15GcpGcsBucketIamMember\x10\xa0\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpgcsimP\xae\x02\x12?\n" +
 	"\x17GcpGlobalForwardingRule\x10\xa6\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpgfr:\x04\xb9\x17\xcd\x17P\xb0\x02\x12/\n" +
 	"\fGcpSslPolicy\x10\xa7\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsslpP\xb0\x02\x124\n" +
 	"\x11GcpSslCertificate\x10\xa8\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsslcP\xb0\x02\x12F\n" +
@@ -5441,7 +5468,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"GcpAddress\x10\xaa\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpaddr:\x04\xc2\x17\xc3\x17P\xb0\x02\x12B\n" +
 	"\x1aGcpServiceConnectionPolicy\x10\xab\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpscp:\x04\xc2\x17\xc3\x17P\xb0\x02\x12A\n" +
 	"\x1eGcpCertManagerDnsAuthorization\x10\xac\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcmdaP\xb3\x02\x128\n" +
-	"\x11GcpCertificateMap\x10\xad\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpcmap:\x02\xc8\x17P\xb3\x02\x121\n" +
+	"\x11GcpCertificateMap\x10\xad\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpcmap:\x02\xc8\x17P\xb3\x02\x12<\n" +
+	"\x19GcpCertManagerTrustConfig\x10\xae\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcmtcP\xb3\x02\x12?\n" +
+	"\x1cGcpCertManagerIssuanceConfig\x10\xaf\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcmicP\xb3\x02\x121\n" +
 	"\x0eGcpCloudRunJob\x10\xb0\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunjP\xb8\x02\x12B\n" +
 	"\x19GcpServerlessVpcConnector\x10\xb1\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpvpcc:\x04\xc2\x17\xc3\x17P\xb8\x02\x12?\n" +
 	"\x15GcpCloudRunWorkerPool\x10\xb2\x18\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\bgcprunwp:\x04\xc2\x17\xc3\x17P\xb8\x02\x121\n" +

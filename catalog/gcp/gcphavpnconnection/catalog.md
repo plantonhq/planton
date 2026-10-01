@@ -10,6 +10,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **VPN tunnels** -- one `compute_vpn_tunnel` per `tunnels[]` entry, from a gateway interface to a peer interface
 - **Router interfaces** -- one `compute_router_interface` per tunnel: the Google end of the session's link-local /30
 - **BGP peers** -- one `compute_router_peer` per tunnel, with route advertisement, BFD, and MD5 authentication when declared
+- **Generated keys** -- when the spec declares none, one IKE pre-shared key for every tunnel and one BGP MD5 key for every MD5 session, reported as sensitive outputs
 
 ## Before You Deploy
 
@@ -20,9 +21,9 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### GCP HA VPN Gateway and the peer
 
 - **The gateway must exist** -- declare it with `GcpHaVpnGateway` and reference its `gateway_self_link`, `router_name`, and `region` outputs (the registry installs one as this kind's prerequisite in E2E).
-- **For an on-premises or other-cloud peer**, have the device's public addresses (one, two, or four), its BGP ASN, and a pre-shared key per tunnel; the device is configured toward the gateway's two `interface_*_ip_address` outputs with the gateway's `router_asn` as its neighbor.
-- **For a Google Cloud peer**, the other VPC declares its own `GcpHaVpnGateway` and a `GcpHaVpnConnection` pointing back at this side's gateway with the same pre-shared keys.
-- **Pre-shared keys are sensitive.** Wire them from a secrets manager (`${secrets-group.<name>.<key>}`) rather than writing them into the manifest.
+- **For an on-premises or other-cloud peer**, have the device's public addresses (one, two, or four) and its BGP ASN; the device is configured toward the gateway's two `interface_*_ip_address` outputs with the gateway's `router_asn` as its neighbor. The pre-shared key is the device's (declared in `sharedSecret`) or the one the module generates (read from the `shared_secret` output).
+- **For a Google Cloud peer**, the other VPC declares its own `GcpHaVpnGateway` and a `GcpHaVpnConnection` pointing back at this side's gateway. Exactly one of the two connections generates the keys; the other references its `shared_secret` output from `sharedSecret`. If both leave the keys empty, each generates its own and the tunnels never come up.
+- **Declared keys are sensitive.** Wire them from a secrets manager (`${secrets-group.<name>.<key>}`) rather than writing them into the manifest.
 
 ## Deploy
 
@@ -60,17 +61,17 @@ spec:
     - name: hq-tunnel-0
       vpnGatewayInterface: 0
       peerExternalGatewayInterface: 0
-      sharedSecret: ${secrets-group.hq-vpn.psk-0}
       bgpSession:
         interfaceIpRange: 169.254.10.1/30
         peerAsn: 65001
     - name: hq-tunnel-1
       vpnGatewayInterface: 1
       peerExternalGatewayInterface: 1
-      sharedSecret: ${secrets-group.hq-vpn.psk-1}
       bgpSession:
         interfaceIpRange: 169.254.11.1/30
         peerAsn: 65001
+  sharedSecret:
+    value: ${secrets-group.hq-vpn.psk}
 ```
 
 ```shell
@@ -106,9 +107,14 @@ spec:
         kind: GcpHaVpnGateway
         name: spoke-vpn
         fieldPath: status.outputs.gateway_self_link
+  sharedSecret:
+    valueFrom:
+      kind: GcpHaVpnConnection
+      name: spoke-to-hub
+      fieldPath: status.outputs.shared_secret
 ```
 
-For a Google-to-Google VPN, the spoke declares the mirror connection pointing at `hub-vpn`. The InfraPipeline deploys both gateways, then both connections; Google pairs the interfaces itself.
+For a Google-to-Google VPN, the spoke declares the mirror connection `spoke-to-hub` pointing at `hub-vpn` with no keys, so it generates them; the hub side references its `shared_secret` output. The InfraPipeline deploys both gateways, then the spoke connection, then the hub connection; Google pairs the interfaces itself.
 
 ## Key Configuration
 
@@ -116,7 +122,9 @@ These are the most important decisions when configuring a connection. Explore th
 
 **Peer** -- an external device (its addresses and redundancy type, which fixes how many tunnels the HA shape needs) or another Google Cloud gateway. Exactly one.
 
-**Tunnels** -- one to four. Each leaves from a gateway interface (0 or 1) and, for an external peer, lands on one of the device's interfaces. Every field except labels is immutable: a new pre-shared key, cipher set, or interface pairing recreates the tunnel, so rotate a key by adding a tunnel and removing the old one.
+**Tunnels** -- one to four. Each leaves from a gateway interface (0 or 1) and, for an external peer, lands on one of the device's interfaces. Every field except labels is immutable: a new pre-shared key, cipher set, or interface pairing recreates the tunnel, so rotate a key by adding a tunnel with its own key and removing the old one.
+
+**Keys** -- `sharedSecret` and `md5AuthenticationKey` are never required. Each tunnel (MD5 session) uses its own key, else the connection-level one, else one key the module generates and reports as a sensitive output. Declare the device's key, reference the peer connection's generated one, or leave both empty and read the generated key from the output. A declared key is never echoed back.
 
 **BGP session** -- each tunnel's `interfaceIpRange` is a link-local /30 (`169.254.x.y/30`), unique on the router; Google takes the address as its end and the peer takes the other. `peerAsn` is the device's ASN. Set different `advertisedRoutePriority` values on the tunnels to make the peer prefer one (active/passive) instead of splitting traffic (the default).
 
@@ -135,6 +143,8 @@ These are the most important decisions when configuring a connection. Explore th
 | **GcpHaVpnGateway** | `region` | `status.outputs.region` |
 | **GcpHaVpnGateway** | `peer.gcpGateway` | `status.outputs.gateway_self_link` (the OTHER side's gateway) |
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
+| **GcpHaVpnConnection** | `sharedSecret` | `status.outputs.shared_secret` (the OTHER side's generated key) |
+| **GcpHaVpnConnection** | `md5AuthenticationKey` | `status.outputs.md5_authentication_key` (the OTHER side's generated key) |
 
 ### What This Component Provides
 
@@ -149,6 +159,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `external_gateway_self_link` | The external VPN gateway (empty for a Google peer) | Tooling |
 | `gateway_self_link` | The gateway the tunnels leave from | Tooling |
 | `router_name` | The router the sessions run on | Tooling |
+| `shared_secret` | The generated pre-shared key (sensitive; set only when generated) | The peer `GcpHaVpnConnection`'s `sharedSecret`; an external device's configuration |
+| `md5_authentication_key` | The generated BGP MD5 key (sensitive; set only when generated) | The peer `GcpHaVpnConnection`'s `md5AuthenticationKey`; an external device's configuration |
 
 ## Common Patterns
 
@@ -158,7 +170,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Four tunnels to on-premises** -- `FOUR_IPS_REDUNDANCY`, two tunnels per gateway interface. Start from the **Four Tunnel To Onprem** preset.
 
-**Google to Google** -- two VPCs, each with a gateway and a connection pointing at the other. Start from the **Gcp To Gcp** preset.
+**Google to Google** -- two VPCs, each with a gateway and a connection pointing at the other; one connection generates the keys and the other references them. Start from the **Gcp To Gcp** preset.
 
 ## Works With
 

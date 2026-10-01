@@ -853,11 +853,14 @@ type GcpComputeMigTemplateDisk struct {
 	// Whether this is the boot disk — the disk the VMs boot from.
 	// Exactly one disk in the template must set this.
 	Boot bool `protobuf:"varint,1,opt,name=boot,proto3" json:"boot,omitempty"`
-	// Source image for a fresh disk on each VM. Accepts an image family
-	// ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64")
-	// or a specific image self link. Families resolve to the newest image
-	// at template creation.
-	SourceImage string `protobuf:"bytes,2,opt,name=source_image,json=sourceImage,proto3" json:"source_image,omitempty"`
+	// Source image for a fresh disk on each VM: a GcpComputeImage reference
+	// (its self_link, pinning that exact build fleet-wide) or a literal
+	// Google accepts -- an image family short form
+	// ("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a
+	// family path ("projects/{project}/global/images/family/{family}"), or a
+	// specific image's path or self link. Families resolve to the newest
+	// image at template creation.
+	SourceImage *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=source_image,json=sourceImage,proto3" json:"source_image,omitempty"`
 	// Source snapshot each VM's disk is restored from (name or self
 	// link).
 	SourceSnapshot string `protobuf:"bytes,3,opt,name=source_snapshot,json=sourceSnapshot,proto3" json:"source_snapshot,omitempty"`
@@ -975,11 +978,11 @@ func (x *GcpComputeMigTemplateDisk) GetBoot() bool {
 	return false
 }
 
-func (x *GcpComputeMigTemplateDisk) GetSourceImage() string {
+func (x *GcpComputeMigTemplateDisk) GetSourceImage() *v1.StringValueOrRef {
 	if x != nil {
 		return x.SourceImage
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpComputeMigTemplateDisk) GetSourceSnapshot() string {
@@ -4113,10 +4116,10 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1etemplate_exactly_one_boot_disk\x12Jexactly one disk must have boot set to true — the disk the VMs boot from\x1a(this.disks.filter(d, d.boot).size() == 1\"\x9a\x01\n" +
 	"#GcpComputeMigWorkloadIdentityConfig\x121\n" +
 	"\bidentity\x18\x01 \x01(\tB\x15\xbaH\x12\xc8\x01\x01r\r\x10\x01:\tspiffe://R\bidentity\x12@\n" +
-	"\x1cidentity_certificate_enabled\x18\x02 \x01(\bR\x1aidentityCertificateEnabled\"\x9a\x18\n" +
+	"\x1cidentity_certificate_enabled\x18\x02 \x01(\bR\x1aidentityCertificateEnabled\"\xca\x1a\n" +
 	"\x19GcpComputeMigTemplateDisk\x12\x12\n" +
-	"\x04boot\x18\x01 \x01(\bR\x04boot\x12!\n" +
-	"\fsource_image\x18\x02 \x01(\tR\vsourceImage\x12'\n" +
+	"\x04boot\x18\x01 \x01(\bR\x04boot\x12x\n" +
+	"\fsource_image\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xac\x19\x92\xd4a\x18status.outputs.self_linkR\vsourceImage\x12'\n" +
 	"\x0fsource_snapshot\x18\x03 \x01(\tR\x0esourceSnapshot\x12m\n" +
 	"\x06source\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xba\x18\x92\xd4a\x18status.outputs.self_linkR\x06source\x12'\n" +
 	"\asize_gb\x18\x05 \x01(\x05B\x0e\xbaH\v\xd8\x01\x01\x1a\x06\x18\x80\x80\x04(\x01R\x06sizeGb\x12\x1b\n" +
@@ -4151,10 +4154,10 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x97\b\xbaH\x93\b\x1a\xe5\x02\n" +
-	"\x17disk_at_most_one_source\x12\x9f\x01a disk takes at most one source: source_image (fresh install), source_snapshot (restore), or source (attach an existing disk); leave all unset for a blank disk\x1a\xa7\x01(this.source_image != '' ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source) && (has(this.source.value) || has(this.source.value_from))) ? 1 : 0) <= 1\x1a\xbe\x02\n" +
-	".boot_disk_requires_image_or_snapshot_or_source\x12uthe boot disk needs an OS to boot from — set source_image (e.g. debian-cloud/debian-12), source_snapshot, or source\x1a\x94\x01!this.boot || this.source_image != '' || this.source_snapshot != '' || (has(this.source) && (has(this.source.value) || has(this.source.value_from)))\x1a\xa9\x01\n" +
-	"&source_image_encryption_requires_image\x12@source_image_encryption is only valid together with source_image\x1a=!has(this.source_image_encryption) || this.source_image != ''\x1a\xbb\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xf0\t\xbaH\xec\t\x1a\xad\x03\n" +
+	"\x17disk_at_most_one_source\x12\x9f\x01a disk takes at most one source: source_image (fresh install), source_snapshot (restore), or source (attach an existing disk); leave all unset for a blank disk\x1a\xef\x01((has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + ((has(this.source) && (has(this.source.value) || has(this.source.value_from))) ? 1 : 0) <= 1\x1a\x86\x03\n" +
+	".boot_disk_requires_image_or_snapshot_or_source\x12uthe boot disk needs an OS to boot from — set source_image (e.g. debian-cloud/debian-12), source_snapshot, or source\x1a\xdc\x01!this.boot || (has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from))) || this.source_snapshot != '' || (has(this.source) && (has(this.source.value) || has(this.source.value_from)))\x1a\xf2\x01\n" +
+	"&source_image_encryption_requires_image\x12@source_image_encryption is only valid together with source_image\x1a\x85\x01!has(this.source_image_encryption) || (has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from)))\x1a\xbb\x01\n" +
 	",source_snapshot_encryption_requires_snapshot\x12Fsource_snapshot_encryption is only valid together with source_snapshot\x1aC!has(this.source_snapshot_encryption) || this.source_snapshot != ''B\x0e\n" +
 	"\f_auto_deleteB\x13\n" +
 	"\x11_provisioned_iopsB\x19\n" +
@@ -4544,40 +4547,41 @@ var file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_depIdxs = []int32{
 	40, // 27: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.LabelsEntry
 	41, // 28: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.ResourceManagerTagsEntry
 	2,  // 29: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.workload_identity_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigWorkloadIdentityConfig
-	47, // 30: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	42, // 31: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.DiskLabelsEntry
-	43, // 32: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.ResourceManagerTagsEntry
-	4,  // 33: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
-	4,  // 34: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
-	4,  // 35: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
-	47, // 36: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 37: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 38: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	6,  // 39: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAccessConfig
-	7,  // 40: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigIpv6AccessConfig
-	8,  // 41: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAliasIpRange
-	47, // 42: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	11, // 43: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNodeAffinity
-	17, // 44: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpecificReservation
-	47, // 45: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing.health_check:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	44, // 46: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.LabelsEntry
-	45, // 47: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.MetadataEntry
-	29, // 48: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy.instance_selections:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceSelection
-	31, // 49: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.metrics:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscalerMetric
-	32, // 50: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.scale_in_control:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScaleInControl
-	33, // 51: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.schedules:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScalingSchedule
-	35, // 52: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig.preserved_state:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState
-	46, // 53: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.MetadataEntry
-	36, // 54: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk
-	37, // 55: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.external_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
-	37, // 56: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.internal_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
-	47, // 57: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	47, // 58: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp.address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	59, // [59:59] is the sub-list for method output_type
-	59, // [59:59] is the sub-list for method input_type
-	59, // [59:59] is the sub-list for extension type_name
-	59, // [59:59] is the sub-list for extension extendee
-	0,  // [0:59] is the sub-list for field type_name
+	47, // 30: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_image:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 31: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	42, // 32: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.DiskLabelsEntry
+	43, // 33: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.ResourceManagerTagsEntry
+	4,  // 34: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
+	4,  // 35: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
+	4,  // 36: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
+	47, // 37: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 38: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 39: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6,  // 40: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAccessConfig
+	7,  // 41: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigIpv6AccessConfig
+	8,  // 42: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAliasIpRange
+	47, // 43: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 44: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNodeAffinity
+	17, // 45: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpecificReservation
+	47, // 46: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing.health_check:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 47: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.LabelsEntry
+	45, // 48: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.MetadataEntry
+	29, // 49: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy.instance_selections:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceSelection
+	31, // 50: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.metrics:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscalerMetric
+	32, // 51: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.scale_in_control:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScaleInControl
+	33, // 52: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.schedules:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScalingSchedule
+	35, // 53: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig.preserved_state:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState
+	46, // 54: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.MetadataEntry
+	36, // 55: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk
+	37, // 56: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.external_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
+	37, // 57: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.internal_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
+	47, // 58: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 59: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp.address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	60, // [60:60] is the sub-list for method output_type
+	60, // [60:60] is the sub-list for method input_type
+	60, // [60:60] is the sub-list for extension type_name
+	60, // [60:60] is the sub-list for extension extendee
+	0,  // [0:60] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_init() }

@@ -48,7 +48,7 @@ This streams every active high-severity finding in the project to the topic. A S
 
 ### InfraChart
 
-Reference a `GcpPubSubTopic` from `pubsubTopic` and grant the config's `status.outputs.service_account` publish rights on the topic; reference a `GcpFolder` from `scope.folderId` to cover a folder.
+Reference a `GcpPubSubTopic` from `pubsubTopic` and grant the config's publisher with a `GcpPubSubTopicIamMember` on the topic (role `roles/pubsub.publisher`, `member` referencing the config's `status.outputs.service_account_member`); reference a `GcpFolder` from `scope.folderId` to cover a folder.
 
 ## Key Configuration
 
@@ -76,7 +76,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
-| `service_account` | The publisher Security Command Center uses | The topic's publisher grant |
+| `service_account` | The publisher Security Command Center uses, as a bare email | Audits |
+| `service_account_member` | The publisher in IAM member form (`serviceAccount:{email}`) | The `member` of the topic's `GcpPubSubTopicIamMember` grant |
 | `name` | The config's resource name | Audits |
 
 ## Common Patterns

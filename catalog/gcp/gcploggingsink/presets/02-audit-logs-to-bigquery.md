@@ -15,7 +15,11 @@ method, and resource.
 ## The deploy's second half
 
 Grant the sink's `writer_identity` output `roles/bigquery.dataEditor`
-on the dataset — through the dataset's `iamMembers` in the same chart.
+on the dataset. The dataset's access list is authoritative on
+`GcpBigQueryDataset.access`, and a reference there would make the dataset
+depend on the sink that depends on it, so grant it outside the catalog or
+add a literal `access` entry (`iamMember` set to the identity) once the
+sink has minted it.
 
 ## Adjust before deploying
 

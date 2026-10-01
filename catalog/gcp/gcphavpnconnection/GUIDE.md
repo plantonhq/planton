@@ -2,8 +2,8 @@
 
 The judgment this guide protects: a connection is one site's worth of
 tunnels and BGP sessions on a gateway that outlives it. Declare one per
-site, build it for failover from the first day, and never rotate a key
-in place.
+site, build it for failover from the first day, let exactly one side
+of a pair own the keys, and never rotate a key in place.
 
 ## One connection per peer
 
@@ -36,26 +36,39 @@ different /30, and it must not overlap the router's `identifierRange`.
 Pick a scheme (`169.254.{site}.{tunnel*4+1}/30`) and keep it in the
 chart; the device is configured with the mirror addresses.
 
+## Keys are generated, or declared once
+
+Leave `sharedSecret` empty and the module generates one pre-shared key
+for every tunnel and reports it in the sensitive `shared_secret` output;
+an external device is configured from there. A key the device already
+holds goes in the connection-level `sharedSecret` (from a secrets
+manager, `${secrets-group.<name>.<key>}`), and a tunnel declares its own
+`sharedSecret` only when the device uses a different key per tunnel.
+`md5AuthenticationKey` follows the same rule for the MD5 sessions. A
+declared key is never echoed back in an output.
+
 ## Keys rotate by add-then-remove
 
 The pre-shared key is immutable, like nearly everything on a tunnel: a
 new key recreates the tunnel and drops its traffic for the duration.
-Rotate by adding a third tunnel with the new key, waiting for its BGP
-session to establish, then removing the old one -- the other tunnel
-carries traffic throughout. The same motion applies to a cipher change
-or an interface re-pairing. Wire keys from a secrets manager
-(`${secrets-group.<name>.<key>}`); they are `sensitive` and never appear
-in outputs or logs.
+Rotate by adding a third tunnel with the new key as its own
+`sharedSecret`, waiting for its BGP session to establish, then removing
+the old one -- the other tunnel carries traffic throughout. The same
+motion applies to a cipher change or an interface re-pairing.
 
 ## Google to Google
 
 Two VPCs connect over HA VPN by each declaring a gateway and a
 connection with `peer.gcpGateway` pointing at the other's gateway.
 Google pairs interfaces itself (interface 0 to interface 0), so the
-tunnels leave `peerExternalGatewayInterface` empty; the same pre-shared
-key is declared on both sides for each tunnel pair; each side's
-`peerAsn` is the other side's router ASN. Neither side needs the other
-to exist first, which is why the gateway is its own block.
+tunnels leave `peerExternalGatewayInterface` empty; each side's
+`peerAsn` is the other side's router ASN. Exactly ONE side generates the
+keys: it declares none and deploys first, and the other side points its
+`sharedSecret` (and `md5AuthenticationKey`) at that connection's
+`shared_secret` (and `md5_authentication_key`) output. If both sides
+leave the keys empty, each generates its own and the tunnels never come
+up. The gateways need no such order, which is why the gateway is its
+own block.
 
 ## Advertisement, priority, and policies
 
@@ -73,8 +86,12 @@ objects created outside this block and named here.
 multiplier 5) detects a dead tunnel in about five seconds instead of
 sixty; the device must support BFD. `md5AuthenticationKey` guards the
 BGP session against a misconfigured peer (IPsec already guards it
-against an attacker); each session declares its own key because Google
-requires a key to be used by exactly one peer.
+against an attacker). Declaring the block on a session turns MD5 on for
+that session; the key comes from the block, else the connection's
+`md5AuthenticationKey`, else the generated one. Google requires each
+key-table entry to be used by exactly one peer, so every MD5 session
+gets its own named entry, but the material may repeat. Both ends must
+agree: MD5 on one side only keeps the session down.
 
 ## What it costs
 

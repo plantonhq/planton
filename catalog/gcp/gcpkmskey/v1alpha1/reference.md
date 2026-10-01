@@ -65,7 +65,7 @@ spec:
 | `spec.versionTemplate.protectionLevel` | `string` |  |  |  |
 | `spec.skipInitialVersionCreation` | `bool` |  |  |  |
 | `spec.importOnly` | `bool` |  |  |  |
-| `spec.cryptoKeyBackend` | `string \| valueFrom` |  |  |  |
+| `spec.cryptoKeyBackend` | `string` |  |  |  |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
 
@@ -226,16 +226,14 @@ violate the import-only guarantee.
 
 ### spec.cryptoKeyBackend
 
-`string | valueFrom`
+`string`
 
 The EKM connection through which an external key manager backs this
 key's versions. Applies only when version_template.protection_level is
-EXTERNAL_VPC (enforced pre-deploy). Accepts the fully qualified
-connection path
+EXTERNAL_VPC (enforced pre-deploy). The EKM connection is made outside
+the catalog (no catalog kind produces it), so write its full name:
   projects/{project}/locations/{location}/ekmConnections/{name}
 Immutable after creation.
-
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.labels
 

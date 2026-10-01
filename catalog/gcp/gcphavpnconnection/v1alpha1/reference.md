@@ -25,6 +25,13 @@ and one BGP peer per tunnel on the gateway's router, and -- when the
 peer is an external device -- the external VPN gateway resource that
 holds its addresses. Nothing here has a life apart from the connection.
 
+Keys: the IKE pre-shared key and the BGP MD5 key are never required.
+Each tunnel (session) uses its own key, else the connection-level
+shared_secret (md5_authentication_key), else one key the modules
+generate and report as a sensitive output. Between two Google Cloud
+gateways exactly one side generates and the other references its
+outputs.
+
 Cost: Google bills each tunnel per hour while it exists (a two-tunnel
 connection is two tunnel-hours per hour) plus the traffic that leaves
 Google through the tunnels at internet egress rates. Tunnels bill from
@@ -79,23 +86,30 @@ spec:
         name: planton-oss-e2e-gcpvpncn-spoke-gw
         fieldPath: status.outputs.gateway_self_link
 
-  # Two tunnels, one per gateway interface -- the 99.99% shape. The secrets
-  # are fixture literals (the peer is our own fixture); a real manifest wires
-  # them from a secrets manager. Tunnel names are project+region-scoped with
-  # no soft-delete reservation.
+  # Two tunnels, one per gateway interface -- the 99.99% shape. Neither
+  # declares a key, so both use the connection's. Tunnel names are
+  # project+region-scoped with no soft-delete reservation.
   tunnels:
     - name: planton-oss-e2e-gcpvpncn-h2s-0
       vpnGatewayInterface: 0
-      sharedSecret: planton-e2e-psk-0-not-a-real-secret
       bgpSession:
         interfaceIpRange: 169.254.100.1/30
         peerAsn: 64515
     - name: planton-oss-e2e-gcpvpncn-h2s-1
       vpnGatewayInterface: 1
-      sharedSecret: planton-e2e-psk-1-not-a-real-secret
       bgpSession:
         interfaceIpRange: 169.254.101.1/30
         peerAsn: 64515
+
+  # The pre-shared key: the reverse fixture deploys first with no key and
+  # generates one; this side, deployed after it, reads it from that
+  # connection's output. Exactly one side of a Google-to-Google pair
+  # generates -- two generating sides would hold two different keys.
+  sharedSecret:
+    valueFrom:
+      kind: GcpHaVpnConnection
+      name: planton-oss-e2e-gcpvpncn-spoke-to-hub
+      fieldPath: status.outputs.shared_secret
 
   # DELETE (default), PREVENT, ABANDON -- fanned to every resource.
   deletionPolicy: DELETE
@@ -124,7 +138,7 @@ spec:
 | `spec.tunnels[].name` | `string` | yes |  |  |
 | `spec.tunnels[].vpnGatewayInterface` | `int32` |  |  |  |
 | `spec.tunnels[].peerExternalGatewayInterface` | `int32` |  |  |  |
-| `spec.tunnels[].sharedSecret` | `string` (sensitive) | yes |  |  |
+| `spec.tunnels[].sharedSecret` | `string` (sensitive) |  |  |  |
 | `spec.tunnels[].ikeVersion` | `int32` |  | `2` |  |
 | `spec.tunnels[].localTrafficSelector` | `[]string` |  |  |  |
 | `spec.tunnels[].remoteTrafficSelector` | `[]string` |  |  |  |
@@ -168,10 +182,12 @@ spec:
 | `spec.tunnels[].bgpSession.bfd.multiplier` | `int32` |  |  |  |
 | `spec.tunnels[].bgpSession.md5AuthenticationKey` | `GcpHaVpnConnectionBgpMd5AuthenticationKey` |  |  |  |
 | `spec.tunnels[].bgpSession.md5AuthenticationKey.name` | `string` |  |  |  |
-| `spec.tunnels[].bgpSession.md5AuthenticationKey.key` | `string` (sensitive) | yes |  |  |
+| `spec.tunnels[].bgpSession.md5AuthenticationKey.key` | `string` (sensitive) |  |  |  |
 | `spec.tunnels[].bgpSession.importPolicies` | `[]string` |  |  |  |
 | `spec.tunnels[].bgpSession.exportPolicies` | `[]string` |  |  |  |
 | `spec.tunnels[].description` | `string` |  |  |  |
+| `spec.sharedSecret` | `string \| valueFrom` (sensitive) |  |  | GcpHaVpnConnection (`status.outputs.shared_secret`) |
+| `spec.md5AuthenticationKey` | `string \| valueFrom` (sensitive) |  |  | GcpHaVpnConnection (`status.outputs.md5_authentication_key`) |
 | `spec.resourceManagerTags` | `map<string, string>` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
 
@@ -385,16 +401,17 @@ pairs interfaces itself). Sent only when set. Immutable.
 
 ### spec.tunnels[].sharedSecret
 
-`string` · required · sensitive
+`string` · sensitive
 
-The IKE pre-shared key both ends authenticate with. Sensitive: never
-logged or exported; in Terraform state only its hash is kept. No
-content rule, because sensitive fields hold a managed-secret reference
-on consuming platforms and a content-shape rule would reject every
-reference. Google accepts 1-63 printable characters. Immutable: a
-rotation recreates the tunnel.
-
-- rule: {"string":{"minLen":"1"}}
+This tunnel's own IKE pre-shared key -- a per-tunnel override for a
+device configured with a different key on each tunnel. Leave empty to
+use the connection's shared_secret, or the key the modules generate
+when that is empty too. Google accepts 1-63 printable characters.
+Sensitive: never logged or exported; in Terraform state only its hash
+is kept. No content rule, because sensitive fields hold a
+managed-secret reference on consuming platforms and a content-shape
+rule would reject every reference. Immutable: a rotation recreates the
+tunnel.
 
 ### spec.tunnels[].ikeVersion
 
@@ -767,30 +784,35 @@ negotiated interval times this multiplier.
 
 `GcpHaVpnConnectionBgpMd5AuthenticationKey`
 
-MD5 authentication of the BGP session. Leave unset for an
-unauthenticated session (the tunnel's IPsec already protects the
-control traffic; MD5 defends against a misconfigured peer, not an
-attacker).
+MD5 authentication of the BGP session. Declare the block (an empty
+block is enough) to enable MD5; the key is the block's own key, else
+the connection's md5_authentication_key, else the one the modules
+generate. Leave unset for an unauthenticated session (the tunnel's
+IPsec already protects the control traffic; MD5 defends against a
+misconfigured peer, not an attacker). Both ends of a session must
+agree: MD5 on one side only keeps the session down.
 
 ### spec.tunnels[].bgpSession.md5AuthenticationKey.name
 
 `string`
 
-Name of the key. RFC 1035, 1-63 characters. Defaults to the tunnel's
-name with a `-md5` suffix when empty.
+Name of the key-table entry. RFC 1035, 1-63 characters; unique on the
+router. Defaults to the tunnel's name with a `-md5` suffix when empty.
 
 - rule: md5 key name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen
 
 ### spec.tunnels[].bgpSession.md5AuthenticationKey.key
 
-`string` · required · sensitive
+`string` · sensitive
 
-The key material -- the same string configured on the peer router.
-Sensitive: never logged or exported. No content rule, because sensitive
-fields hold a managed-secret reference on consuming platforms and a
-content-shape rule would reject every reference.
-
-- rule: {"string":{"minLen":"1"}}
+This session's own key material, the same string configured on the
+peer router's matching session -- a per-session override. Leave empty
+to use the connection's md5_authentication_key, or the key the modules
+generate when that is empty too. Google accepts up to 80 printable
+ASCII characters. Sensitive: never logged or exported. No content
+rule, because sensitive fields hold a managed-secret reference on
+consuming platforms and a content-shape rule would reject every
+reference.
 
 ### spec.tunnels[].bgpSession.importPolicies
 
@@ -816,6 +838,55 @@ import_policies. Mutable.
 
 Human-readable description of the tunnel. Immutable (Google keeps it
 create-time on this resource).
+
+### spec.sharedSecret
+
+`string | valueFrom` · sensitive
+
+The IKE pre-shared key every tunnel uses unless it declares its own
+tunnels[].shared_secret. Leave it empty and the modules GENERATE one
+key (32 letters and digits) for every tunnel that declares none, and
+report it in the shared_secret output; a declared key is used as given
+and never echoed back. One key for all tunnels is Google's own shape
+for HA VPN.
+
+In a Google-to-Google pair EXACTLY ONE side generates: deploy that
+side first with this field empty, and point the other side's field at
+its output (a GcpHaVpnConnection reference to
+status.outputs.shared_secret). If both sides leave it empty, each
+generates its own key and the tunnels never come up. For an external
+peer, read the generated key from the shared_secret output and
+configure the device with it, or declare the device's key here.
+
+Google accepts 1-63 printable characters. Immutable: a change
+recreates every tunnel that uses it.
+
+- references: GcpHaVpnConnection (`status.outputs.shared_secret`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpHaVpnConnection, name: <that resource's name>, fieldPath: status.outputs.shared_secret}} -- a bare string does not parse
+
+### spec.md5AuthenticationKey
+
+`string | valueFrom` · sensitive
+
+The BGP MD5 key every session that declares a
+bgp_session.md5_authentication_key block uses unless the block carries
+its own key. Setting this alone enables nothing: MD5 is on exactly for
+the sessions that declare the block. Leave it empty and the modules
+GENERATE one key (24 letters and digits -- short enough for devices
+that cap BGP passwords at 25 characters) for every such session
+without its own key, and report it in the md5_authentication_key
+output; a declared key is used as given and never echoed back.
+
+The Google-to-Google rule is the same as shared_secret's: exactly one
+side generates and the other points this field at its output
+(status.outputs.md5_authentication_key); both sides empty means two
+different keys and sessions that never establish.
+
+Google accepts up to 80 printable ASCII characters. Mutable: a change
+re-keys every session that uses it.
+
+- references: GcpHaVpnConnection (`status.outputs.md5_authentication_key`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpHaVpnConnection, name: <that resource's name>, fieldPath: status.outputs.md5_authentication_key}} -- a bare string does not parse
 
 ### spec.resourceManagerTags
 
@@ -848,7 +919,7 @@ BGP peers, and external gateway in GCP:
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: GcpHaVpnConnection, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: GcpHaVpnConnection, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -859,6 +930,8 @@ Reference an output from another manifest as `valueFrom: {kind: GcpHaVpnConnecti
 | `status.outputs.external_gateway_self_link` | `string` | The external VPN gateway's self link, when the peer is an external device; empty for a Google-to-Google connection. |
 | `status.outputs.gateway_self_link` | `string` | The gateway the tunnels leave from, as a self link (the resolved reference). |
 | `status.outputs.router_name` | `string` | The Cloud Router the sessions run on, by name (the resolved reference). |
+| `status.outputs.shared_secret` | `string` (sensitive) | The IKE pre-shared key the modules generated, set ONLY when spec.shared_secret was left empty and at least one tunnel declares no key of its own; every such tunnel uses it. A declared key is never echoed back. The other side reads it from here: the peer GcpHaVpnConnection's spec.shared_secret references this output, or an operator configures an external device with it. |
+| `status.outputs.md5_authentication_key` | `string` (sensitive) | The BGP MD5 key the modules generated, set ONLY when spec.md5_authentication_key was left empty and at least one session declares an md5_authentication_key block without its own key; every such session uses it. A declared key is never echoed back. The peer GcpHaVpnConnection's spec.md5_authentication_key references this output, or an operator configures an external device with it. |
 
 ## References
 
@@ -871,6 +944,17 @@ Fields that can point at another resource's outputs:
 | `spec.router` | GcpHaVpnGateway | `status.outputs.router_name` |
 | `spec.region` | GcpHaVpnGateway | `status.outputs.region` |
 | `spec.peer.gcpGateway` | GcpHaVpnGateway | `status.outputs.gateway_self_link` |
+| `spec.sharedSecret` | GcpHaVpnConnection | `status.outputs.shared_secret` |
+| `spec.md5AuthenticationKey` | GcpHaVpnConnection | `status.outputs.md5_authentication_key` |
+
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpHaVpnConnection | `spec.sharedSecret` | `status.outputs.shared_secret` |
+| GcpHaVpnConnection | `spec.md5AuthenticationKey` | `status.outputs.md5_authentication_key` |
 
 ## See Also
 

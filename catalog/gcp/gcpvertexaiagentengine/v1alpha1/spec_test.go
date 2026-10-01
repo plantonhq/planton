@@ -95,8 +95,11 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 			},
 			BuildSpec: &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("projects/ai-project/locations/us-central1/workerPools/private")},
 			DeploymentSpec: &GcpVertexAiAgentEngineDeploymentSpec{
-				Env:                  []*GcpVertexAiAgentEngineEnvVar{{Name: "LOG_LEVEL", Value: "info"}},
-				SecretEnv:            []*GcpVertexAiAgentEngineSecretEnvVar{{Name: "OPENAI_KEY", SecretRef: &GcpVertexAiAgentEngineSecretRef{Secret: nameRef("openai-key"), Version: "latest"}}},
+				Env: []*GcpVertexAiAgentEngineEnvVar{{Name: "LOG_LEVEL", Value: "info"}},
+				SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{
+					{Name: "OPENAI_KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_SecretRef{SecretRef: &GcpVertexAiAgentEngineSecretRef{Secret: nameRef("openai-key"), Version: "latest"}}},
+					{Name: "STRIPE_KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_Value{Value: "sk_test_stored"}},
+				},
 				MinInstances:         proto.Int32(1),
 				MaxInstances:         proto.Int32(20),
 				ContainerConcurrency: proto.Int32(9),
@@ -262,7 +265,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 	ginkgo.It("should require a secret on every secret env var and a dot-terminated DNS domain", func() {
 		msg := minimal()
 		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{
-			SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{{Name: "KEY", SecretRef: &GcpVertexAiAgentEngineSecretRef{}}},
+			SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{{Name: "KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_SecretRef{SecretRef: &GcpVertexAiAgentEngineSecretRef{}}}},
 		}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{
@@ -271,6 +274,43 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 			}}},
 		}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should take each secret env var from exactly one of a secret you own or a stored value", func() {
+		withSecretEnv := func(entry *GcpVertexAiAgentEngineSecretEnvVar) *GcpVertexAiAgentEngine {
+			msg := minimal()
+			msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{entry}}
+			return msg
+		}
+		gomega.Expect(validator.Validate(withSecretEnv(&GcpVertexAiAgentEngineSecretEnvVar{
+			Name: "OPENAI_KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_Value{Value: "sk-stored"},
+		}))).To(gomega.Succeed())
+		gomega.Expect(validator.Validate(withSecretEnv(&GcpVertexAiAgentEngineSecretEnvVar{
+			Name: "OPENAI_KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_SecretRef{SecretRef: &GcpVertexAiAgentEngineSecretRef{Secret: litRef("openai-key")}},
+		}))).To(gomega.Succeed())
+		ginkgo.By("neither arm")
+		gomega.Expect(validator.Validate(withSecretEnv(&GcpVertexAiAgentEngineSecretEnvVar{Name: "OPENAI_KEY"}))).ToNot(gomega.Succeed())
+		ginkgo.By("an empty stored value")
+		gomega.Expect(validator.Validate(withSecretEnv(&GcpVertexAiAgentEngineSecretEnvVar{
+			Name: "OPENAI_KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_Value{},
+		}))).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should refuse stored secret values under AGENT_IDENTITY, whose identity exists only after create", func() {
+		msg := minimal()
+		msg.Spec.Spec.IdentityType = "AGENT_IDENTITY"
+		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{
+			{Name: "DB_PASSWORD", Source: &GcpVertexAiAgentEngineSecretEnvVar_SecretRef{SecretRef: &GcpVertexAiAgentEngineSecretRef{Secret: litRef("db-password")}}},
+		}}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg.Spec.Spec.DeploymentSpec.SecretEnv = append(msg.Spec.Spec.DeploymentSpec.SecretEnv, &GcpVertexAiAgentEngineSecretEnvVar{
+			Name: "OPENAI_KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_Value{Value: "sk-stored"},
+		})
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("cannot carry a value when identity_type is AGENT_IDENTITY"))
+		msg.Spec.Spec.IdentityType = "SERVICE_ACCOUNT"
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should require exactly one payload per conversation part", func() {

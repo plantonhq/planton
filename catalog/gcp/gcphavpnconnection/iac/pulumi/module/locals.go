@@ -45,6 +45,15 @@ type Locals struct {
 	// Empty when the session has no MD5 key.
 	Md5KeyNames []string
 
+	// GenerateSharedSecret is true exactly when the module mints the
+	// pre-shared key: spec.shared_secret is empty and at least one tunnel
+	// declares no key of its own. GenerateMd5AuthenticationKey is the same
+	// for the MD5 key over the sessions that declare an
+	// md5_authentication_key block. The Terraform twin computes the same
+	// predicates in locals.tf.
+	GenerateSharedSecret         bool
+	GenerateMd5AuthenticationKey bool
+
 	// PlatformLabels is the attribution label set merged into every
 	// labeled companion (tunnels, external gateway) after the user's own
 	// labels -- identical merge order to the Terraform module.
@@ -86,6 +95,21 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcphavpnconnectionv1alpha1.
 			}
 		}
 		locals.Md5KeyNames = append(locals.Md5KeyNames, md5KeyName)
+
+		if tunnel.SharedSecret == "" {
+			locals.GenerateSharedSecret = true
+		}
+		if key := tunnel.BgpSession.GetMd5AuthenticationKey(); key != nil && key.Key == "" {
+			locals.GenerateMd5AuthenticationKey = true
+		}
+	}
+	// A declared connection-level key serves every tunnel (session) without
+	// its own, so nothing is minted.
+	if spec.SharedSecret.GetValue() != "" {
+		locals.GenerateSharedSecret = false
+	}
+	if spec.Md5AuthenticationKey.GetValue() != "" {
+		locals.GenerateMd5AuthenticationKey = false
 	}
 
 	locals.PlatformLabels = map[string]string{

@@ -822,9 +822,12 @@ type GcpCloudSqlNetwork struct {
 	// CUSTOMER_MANAGED_CAS_CA (your own CA pool — set server_ca_pool).
 	// Immutable after creation.
 	ServerCaMode string `protobuf:"bytes,7,opt,name=server_ca_mode,json=serverCaMode,proto3" json:"server_ca_mode,omitempty"`
-	// The CA Service CA pool (full resource path) that signs the server
-	// certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-	ServerCaPool string `protobuf:"bytes,8,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
+	// The CA Service CA pool that signs the server certificate when
+	// server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a GcpPrivateCaPool
+	// reference (its full name) or a literal
+	// projects/{project}/locations/{region}/caPools/{pool}. The pool must be
+	// in the instance's region.
+	ServerCaPool *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
 	// Additional DNS names embedded in the server certificate (customer-
 	// managed CA only) — lets clients validate the cert against your own
 	// hostnames instead of the instance IP.
@@ -922,11 +925,11 @@ func (x *GcpCloudSqlNetwork) GetServerCaMode() string {
 	return ""
 }
 
-func (x *GcpCloudSqlNetwork) GetServerCaPool() string {
+func (x *GcpCloudSqlNetwork) GetServerCaPool() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ServerCaPool
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpCloudSqlNetwork) GetCustomSubjectAlternativeNames() []string {
@@ -2722,7 +2725,7 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\f_auto_resizeB\x14\n" +
 	"\x12_auto_resize_limitB\x13\n" +
 	"\x11_provisioned_iopsB\x19\n" +
-	"\x17_provisioned_throughput\"\xa8\x1b\n" +
+	"\x17_provisioned_throughput\"\xcf\x1d\n" +
 	"\x12GcpCloudSqlNetwork\x12\x83\x01\n" +
 	"\x0fprivate_network\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\x0eprivateNetwork\x12!\n" +
 	"\fipv4_enabled\x18\x02 \x01(\bR\vipv4Enabled\x12s\n" +
@@ -2732,19 +2735,20 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\bssl_mode\x18\x06 \x01(\tB\xfd\x01\xbaH\xf9\x01\xba\x01\xf5\x01\n" +
 	"\x0essl_mode_valid\x12ossl_mode must be empty, ALLOW_UNENCRYPTED_AND_ENCRYPTED, ENCRYPTED_ONLY, or TRUSTED_CLIENT_CERTIFICATE_REQUIRED\x1arthis == '' || this in ['ALLOW_UNENCRYPTED_AND_ENCRYPTED', 'ENCRYPTED_ONLY', 'TRUSTED_CLIENT_CERTIFICATE_REQUIRED']R\asslMode\x12\x9c\x02\n" +
 	"\x0eserver_ca_mode\x18\a \x01(\tB\xf5\x01\xbaH\xf1\x01\xba\x01\xed\x01\n" +
-	"\x14server_ca_mode_valid\x12kserver_ca_mode must be empty, GOOGLE_MANAGED_INTERNAL_CA, GOOGLE_MANAGED_CAS_CA, or CUSTOMER_MANAGED_CAS_CA\x1ahthis == '' || this in ['GOOGLE_MANAGED_INTERNAL_CA', 'GOOGLE_MANAGED_CAS_CA', 'CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12$\n" +
-	"\x0eserver_ca_pool\x18\b \x01(\tR\fserverCaPool\x12Z\n" +
+	"\x14server_ca_mode_valid\x12kserver_ca_mode must be empty, GOOGLE_MANAGED_INTERNAL_CA, GOOGLE_MANAGED_CAS_CA, or CUSTOMER_MANAGED_CAS_CA\x1ahthis == '' || this in ['GOOGLE_MANAGED_INTERNAL_CA', 'GOOGLE_MANAGED_CAS_CA', 'CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12\xcb\x02\n" +
+	"\x0eserver_ca_pool\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf0\x01\xbaH\xcc\x01\xba\x01\xc8\x01\n" +
+	"\x15server_ca_pool_format\x12Ua literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\fserverCaPool\x12Z\n" +
 	" custom_subject_alternative_names\x18\t \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x1dcustomSubjectAlternativeNames\x12L\n" +
 	"\x03psc\x18\n" +
 	" \x01(\v2:.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfigR\x03psc\x12\xb7\x02\n" +
 	" server_certificate_rotation_mode\x18\v \x01(\tB\xed\x01\xbaH\xe9\x01\xba\x01\xe5\x01\n" +
-	"\x18cert_rotation_mode_valid\x12oserver_certificate_rotation_mode must be empty, NO_AUTOMATIC_ROTATION, or AUTOMATIC_ROTATION_DURING_MAINTENANCE\x1aXthis == '' || this in ['NO_AUTOMATIC_ROTATION', 'AUTOMATIC_ROTATION_DURING_MAINTENANCE']R\x1dserverCertificateRotationMode:\xa0\x0f\xbaH\x9c\x0f\x1a\x9d\x02\n" +
+	"\x18cert_rotation_mode_valid\x12oserver_certificate_rotation_mode must be empty, NO_AUTOMATIC_ROTATION, or AUTOMATIC_ROTATION_DURING_MAINTENANCE\x1aXthis == '' || this in ['NO_AUTOMATIC_ROTATION', 'AUTOMATIC_ROTATION_DURING_MAINTENANCE']R\x1dserverCertificateRotationMode:\x9f\x0f\xbaH\x9b\x0f\x1a\x9d\x02\n" +
 	"\x15connectivity_required\x12]at least one connectivity path must be enabled: ipv4_enabled, private_network, or psc.enabled\x1a\xa4\x01this.ipv4_enabled || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from))) || (has(this.psc) && this.psc.enabled)\x1a\xa5\x01\n" +
 	" authorized_networks_require_ipv4\x12Gauthorized_networks apply to the public IP — set ipv4_enabled to true\x1a8size(this.authorized_networks) == 0 || this.ipv4_enabled\x1a\xf8\x01\n" +
 	"(allocated_range_requires_private_network\x12@allocated_ip_range applies to private IP — set private_network\x1a\x89\x01this.allocated_ip_range == '' || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from)))\x1a\xa6\x02\n" +
-	"%private_path_requires_private_network\x12[enable_private_path_for_google_cloud_services applies to private IP — set private_network\x1a\x9f\x01!this.enable_private_path_for_google_cloud_services || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from)))\x1a\xb6\x01\n" +
-	"\x1acustomer_cas_requires_pool\x12Iserver_ca_pool is required when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aMthis.server_ca_mode != 'CUSTOMER_MANAGED_CAS_CA' || this.server_ca_pool != ''\x1a\xb7\x01\n" +
-	"\x1apool_requires_customer_cas\x12Jserver_ca_pool applies only when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aMthis.server_ca_pool == '' || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'\x1a\xe4\x01\n" +
+	"%private_path_requires_private_network\x12[enable_private_path_for_google_cloud_services applies to private IP — set private_network\x1a\x9f\x01!this.enable_private_path_for_google_cloud_services || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from)))\x1a\xb5\x01\n" +
+	"\x1acustomer_cas_requires_pool\x12Iserver_ca_pool is required when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aLthis.server_ca_mode != 'CUSTOMER_MANAGED_CAS_CA' || has(this.server_ca_pool)\x1a\xb7\x01\n" +
+	"\x1apool_requires_customer_cas\x12Jserver_ca_pool applies only when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aM!has(this.server_ca_pool) || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'\x1a\xe4\x01\n" +
 	" custom_sans_require_customer_cas\x12Zcustom_subject_alternative_names apply only when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1adsize(this.custom_subject_alternative_names) == 0 || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'\x1a\xd3\x02\n" +
 	"\x1dcert_rotation_requires_cas_ca\x12\x8f\x01server_certificate_rotation_mode AUTOMATIC_ROTATION_DURING_MAINTENANCE requires server_ca_mode GOOGLE_MANAGED_CAS_CA or CUSTOMER_MANAGED_CAS_CA\x1a\x9f\x01this.server_certificate_rotation_mode != 'AUTOMATIC_ROTATION_DURING_MAINTENANCE' || this.server_ca_mode in ['GOOGLE_MANAGED_CAS_CA', 'CUSTOMER_MANAGED_CAS_CA']\"\xa5\x01\n" +
 	"\x1cGcpCloudSqlAuthorizedNetwork\x12H\n" +
@@ -2980,15 +2984,16 @@ var file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_depIdxs = []int32{
 	16, // 21: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlSpec.entra_id:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlEntraIdConfig
 	25, // 22: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.private_network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	3,  // 23: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.authorized_networks:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlAuthorizedNetwork
-	4,  // 24: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.psc:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig
-	5,  // 25: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig.auto_connections:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscAutoConnection
-	24, // 26: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.flags:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.FlagsEntry
-	19, // 27: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolAutoScale.target_metrics:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolTargetMetric
-	28, // [28:28] is the sub-list for method output_type
-	28, // [28:28] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	25, // 24: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.server_ca_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 25: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.psc:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig
+	5,  // 26: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig.auto_connections:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscAutoConnection
+	24, // 27: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.flags:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.FlagsEntry
+	19, // 28: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolAutoScale.target_metrics:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolTargetMetric
+	29, // [29:29] is the sub-list for method output_type
+	29, // [29:29] is the sub-list for method input_type
+	29, // [29:29] is the sub-list for extension type_name
+	29, // [29:29] is the sub-list for extension extendee
+	0,  // [0:29] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_init() }
