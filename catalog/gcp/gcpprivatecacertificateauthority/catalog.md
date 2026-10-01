@@ -89,7 +89,7 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpPrivateCaPool** | `pool` | `status.outputs.name` |
 | **GcpPrivateCaCertificateAuthority** | `subordinateConfig.certificateAuthority` | `status.outputs.name` |
-| **GcpKmsKey** | `keySpec.cloudKmsKeyVersion` | `status.outputs.primary_version_name` |
+| **GcpKmsKey** | `keySpec.cloudKmsKeyVersion` | `status.outputs.initial_version_name` |
 | **GcpGcsBucket** | `gcsBucket` | `status.outputs.bucket_name` |
 
 ### What This Component Provides

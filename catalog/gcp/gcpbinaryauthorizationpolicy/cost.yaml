@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpbinaryauthorizationpolicy
+spec:
+  billing_model: free
+  free_tier: "Binary Authorization's pricing page states no charge for policies evaluated on GKE (read 2026-10-01): the policy and its admission checks bill nothing."
+  notes: "The audit log entries a dry-run or enforced denial writes are Cloud Audit Logs entries, retained free in the default bucket. Signing keys and attestations bill on their own services (Cloud KMS operations, Artifact Analysis), outside this block."

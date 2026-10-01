@@ -1,0 +1,4 @@
+name: gcpsccmuteconfig-pulumi-project
+runtime:
+  name: go
+description: Planton GcpSccMuteConfig Pulumi module

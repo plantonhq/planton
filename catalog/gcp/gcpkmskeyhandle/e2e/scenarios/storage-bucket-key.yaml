@@ -1,0 +1,24 @@
+# GcpKmsKeyHandle scenario: a key for a Cloud Storage bucket in
+# us-central1, over the registry prerequisite's same-project Autokey
+# configuration on the harness project. Google keeps handles and keys, so
+# the handle ID carries the run id and the verifier asserts the handle
+# still reads after destroy. The key is one HSM key version per run (cents
+# prorated, within Autokey's free allowance).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyHandle
+metadata:
+  name: planton-oss-e2e-gcpkmsh-bucket
+  id: planton-oss-e2e-gcpkmsh-bucket
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpkmskeyhandle
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  resourceTypeSelector: storage.googleapis.com/Bucket
+  keyHandleName: e2e-gcpkmsh-${E2E_RUN_ID}

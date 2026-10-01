@@ -108,14 +108,14 @@ spec:
 | `spec.replication` | `GcpSecretManagerSecretReplication` |  |  |  |
 | `spec.replication.auto` | `GcpSecretManagerSecretReplicationAuto` |  |  |  |
 | `spec.replication.auto.customerManagedEncryption` | `GcpSecretManagerSecretCmek` |  |  |  |
-| `spec.replication.auto.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.replication.auto.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.replication.userManaged` | `GcpSecretManagerSecretReplicationUserManaged` |  |  |  |
 | `spec.replication.userManaged.replicas` | `[]GcpSecretManagerSecretReplica` | yes |  |  |
 | `spec.replication.userManaged.replicas[].location` | `string` | yes |  |  |
 | `spec.replication.userManaged.replicas[].customerManagedEncryption` | `GcpSecretManagerSecretCmek` |  |  |  |
-| `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.customerManagedEncryption` | `GcpSecretManagerSecretCmek` |  |  |  |
-| `spec.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.annotations` | `map<string, string>` |  |  |  |
 | `spec.tags` | `map<string, string>` |  |  |  |
@@ -214,7 +214,7 @@ Full KMS crypto key resource path
 (projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}) — a literal or
 a reference to a GcpKmsKey resource.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
@@ -258,7 +258,7 @@ Full KMS crypto key resource path
 (projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}) — a literal or
 a reference to a GcpKmsKey resource.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
@@ -279,7 +279,7 @@ Full KMS crypto key resource path
 (projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}) — a literal or
 a reference to a GcpKmsKey resource.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
@@ -567,8 +567,11 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.replication.auto.customerManagedEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.replication.auto.customerManagedEncryption.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.customerManagedEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.customerManagedEncryption.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.topics` | GcpPubSubTopic | `status.outputs.topic_id` |
 | `spec.iamMembers[].member` | GcpServiceAccount | `status.outputs.member` |
 

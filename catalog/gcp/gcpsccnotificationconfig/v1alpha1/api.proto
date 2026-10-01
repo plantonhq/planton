@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccnotificationconfig.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpsccnotificationconfig/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpsccnotificationconfig/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-scc-notification-config
+message GcpSccNotificationConfig {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpSccNotificationConfig'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpSccNotificationConfigSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpSccNotificationConfigStatus status = 5;
+}
+
+//gcp-scc-notification-config status
+message GcpSccNotificationConfigStatus {
+  //stack-outputs
+  GcpSccNotificationConfigStackOutputs outputs = 1;
+}

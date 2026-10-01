@@ -934,7 +934,7 @@ const file_catalog_gcp_gcpbigquerydataset_v1alpha1_spec_proto_rawDesc = "" +
 	"parameters\x1a=\n" +
 	"\x0fParametersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x99\x11\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xd7\x11\n" +
 	"\x16GcpBigQueryDatasetSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -955,8 +955,8 @@ const file_catalog_gcp_gcpbigquerydataset_v1alpha1_spec_proto_rawDesc = "" +
 	"\x11default_collation\x18\f \x01(\tR\x10defaultCollation\x12\xbb\x01\n" +
 	"\x15storage_billing_model\x18\r \x01(\tB\x86\x01\xbaH\x82\x01\xba\x01\x7f\n" +
 	"\x1bvalid_storage_billing_model\x121storage_billing_model must be LOGICAL or PHYSICAL\x1a-this == '' || this in ['LOGICAL', 'PHYSICAL']R\x13storageBillingModel\x12;\n" +
-	"\x1adelete_contents_on_destroy\x18\x0e \x01(\bR\x17deleteContentsOnDestroy\x12t\n" +
-	"\fkms_key_name\x18\x0f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	"\x1adelete_contents_on_destroy\x18\x0e \x01(\bR\x17deleteContentsOnDestroy\x12\xb1\x01\n" +
+	"\fkms_key_name\x18\x0f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12b\n" +
 	"\x06access\x18\x10 \x03(\v2J.dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetAccessEntryR\x06access\x12\x95\x01\n" +
 	"\x1aexternal_dataset_reference\x18\x11 \x01(\v2W.dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetExternalDatasetReferenceR\x18externalDatasetReference\x12\x8f\x01\n" +

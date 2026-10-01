@@ -1,0 +1,30 @@
+# An extra GcpKmsKey instance for the gcpbaatt KMS scenario: an
+# ASYMMETRIC_SIGN EC P-256 software key in the run's ring, whose first
+# version the attestor verifies. Destroy schedules the version for
+# destruction (keys themselves are undeletable).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKey
+metadata:
+  name: planton-oss-e2e-gcpbaatt-signing-key
+  id: planton-oss-e2e-gcpbaatt-signing-key
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpkmskey
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  keyRingId:
+    valueFrom:
+      kind: GcpKmsKeyRing
+      name: planton-oss-e2e-gcpbaatt-ring
+      fieldPath: status.outputs.key_ring_id
+  keyName: e2e-gcpbaatt-signer-${E2E_RUN_ID}
+  purpose: ASYMMETRIC_SIGN
+  versionTemplate:
+    algorithm: EC_SIGN_P256_SHA256
+    protectionLevel: SOFTWARE
+  deletionPolicy: DELETE

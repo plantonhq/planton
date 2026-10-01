@@ -139,7 +139,7 @@ spec:
 | `spec.config.x509Config.nameConstraints.excludedUris` | `[]string` |  |  |  |
 | `spec.keySpec` | `GcpPrivateCaCertificateAuthorityKeySpec` | yes |  |  |
 | `spec.keySpec.algorithm` | `string` |  |  |  |
-| `spec.keySpec.cloudKmsKeyVersion` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.primary_version_name`) |
+| `spec.keySpec.cloudKmsKeyVersion` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.initial_version_name`) |
 | `spec.lifetime` | `string` |  |  |  |
 | `spec.subordinateConfig` | `GcpPrivateCaCertificateAuthoritySubordinateConfig` |  |  |  |
 | `spec.subordinateConfig.certificateAuthority` | `string \| valueFrom` |  |  | GcpPrivateCaCertificateAuthority (`status.outputs.name`) |
@@ -640,13 +640,14 @@ A Google-managed Cloud HSM key of this algorithm:
 `string | valueFrom`
 
 A Cloud KMS key version you own, with an asymmetric-sign purpose -- a
-GcpKmsKey reference (its primary version) or a literal
+GcpKmsKey reference (the version created with the key; asymmetric keys
+have no primary version) or a literal
 projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*.
 CA Service's service agent needs signerVerifier and viewer on the key.
 Enterprise pools only (Google's tier rule).
 
-- references: GcpKmsKey (`status.outputs.primary_version_name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.primary_version_name}} -- a bare string does not parse
+- references: GcpKmsKey (`status.outputs.initial_version_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.initial_version_name}} -- a bare string does not parse
 
 ### spec.lifetime
 
@@ -807,7 +808,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.pool` | GcpPrivateCaPool | `status.outputs.name` |
-| `spec.keySpec.cloudKmsKeyVersion` | GcpKmsKey | `status.outputs.primary_version_name` |
+| `spec.keySpec.cloudKmsKeyVersion` | GcpKmsKey | `status.outputs.initial_version_name` |
 | `spec.subordinateConfig.certificateAuthority` | GcpPrivateCaCertificateAuthority | `status.outputs.name` |
 | `spec.gcsBucket` | GcpGcsBucket | `status.outputs.bucket_name` |
 

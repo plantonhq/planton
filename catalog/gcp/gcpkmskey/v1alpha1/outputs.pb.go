@@ -43,9 +43,18 @@ type GcpKmsKeyStackOutputs struct {
 	// Lifecycle state of the primary CryptoKeyVersion (e.g. "ENABLED").
 	// Same population rules as primary_version_name — the quick health probe
 	// that a CMEK key is actually able to encrypt.
-	PrimaryState  string `protobuf:"bytes,4,opt,name=primary_state,json=primaryState,proto3" json:"primary_state,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	PrimaryState string `protobuf:"bytes,4,opt,name=primary_state,json=primaryState,proto3" json:"primary_state,omitempty"`
+	// Fully qualified resource name of the version Google creates with the
+	// key (version 1), for every purpose — the version an asymmetric-sign
+	// key's consumers name (a CA Service authority's signing key, a Binary
+	// Authorization attestor's public key), since such keys have no primary.
+	// Format: projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}/cryptoKeyVersions/1
+	// Empty for keys created with skip_initial_version_creation (and so for
+	// import_only keys). Later versions are added by rotation or by hand and
+	// are named explicitly by their consumers.
+	InitialVersionName string `protobuf:"bytes,5,opt,name=initial_version_name,json=initialVersionName,proto3" json:"initial_version_name,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *GcpKmsKeyStackOutputs) Reset() {
@@ -106,16 +115,24 @@ func (x *GcpKmsKeyStackOutputs) GetPrimaryState() string {
 	return ""
 }
 
+func (x *GcpKmsKeyStackOutputs) GetInitialVersionName() string {
+	if x != nil {
+		return x.InitialVersionName
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpkmskey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpkmskey.v1alpha1\"\xa0\x01\n" +
+	",catalog/gcp/gcpkmskey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpkmskey.v1alpha1\"\xd2\x01\n" +
 	"\x15GcpKmsKeyStackOutputs\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x19\n" +
 	"\bkey_name\x18\x02 \x01(\tR\akeyName\x120\n" +
 	"\x14primary_version_name\x18\x03 \x01(\tR\x12primaryVersionName\x12#\n" +
-	"\rprimary_state\x18\x04 \x01(\tR\fprimaryStateB\xb2\x02\n" +
+	"\rprimary_state\x18\x04 \x01(\tR\fprimaryState\x120\n" +
+	"\x14initial_version_name\x18\x05 \x01(\tR\x12initialVersionNameB\xb2\x02\n" +
 	"&com.dev.planton.gcp.gcpkmskey.v1alpha1B\fOutputsProtoP\x01ZMgithub.com/plantonhq/planton/catalog/gcp/gcpkmskey/v1alpha1;gcpkmskeyv1alpha1\xa2\x02\x04DPGG\xaa\x02\"Dev.Planton.Gcp.Gcpkmskey.V1alpha1\xca\x02\"Dev\\Planton\\Gcp\\Gcpkmskey\\V1alpha1\xe2\x02.Dev\\Planton\\Gcp\\Gcpkmskey\\V1alpha1\\GPBMetadata\xea\x02&Dev::Planton::Gcp::Gcpkmskey::V1alpha1b\x06proto3"
 
 var (

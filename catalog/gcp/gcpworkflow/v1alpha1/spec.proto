@@ -78,7 +78,15 @@ message GcpWorkflowSpec {
   // encryption.
   dev.planton.shared.foreignkey.v1.StringValueOrRef crypto_key = 8 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 
   // How much call detail execution history records:

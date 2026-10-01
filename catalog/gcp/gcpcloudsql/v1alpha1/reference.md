@@ -182,7 +182,7 @@ spec:
 | `spec.connectorEnforcement` | `string` |  |  |  |
 | `spec.enableGoogleMlIntegration` | `bool` |  |  |  |
 | `spec.enableDataplexIntegration` | `bool` |  |  |  |
-| `spec.encryptionKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.encryptionKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.deletionProtection` | `bool` |  |  |  |
 | `spec.deletionProtectionEnabled` | `bool` |  |  |  |
 | `spec.retainBackupsOnDelete` | `bool` |  |  |  |
@@ -1087,7 +1087,7 @@ Accepts a full crypto key path
 to a GcpKmsKey resource. The key MUST be in the same region as the
 instance. Immutable: CMEK cannot be added or changed after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.deletionProtection
@@ -1673,6 +1673,7 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.network.privateNetwork` | GcpVpcNetwork | `status.outputs.network_id` |
 | `spec.encryptionKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.encryptionKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.masterInstanceName` | GcpCloudSql | `status.outputs.instance_name` |
 
 ## Referenced By

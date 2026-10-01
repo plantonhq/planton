@@ -913,9 +913,9 @@ const file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_spec_proto_rawDesc = "" +
 	"\breplicas\x18\x01 \x03(\v2N.dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretReplicaB\b\xbaH\x05\x92\x01\x02\b\x01R\breplicas\"\xd1\x01\n" +
 	"\x1dGcpSecretManagerSecretReplica\x12\"\n" +
 	"\blocation\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\blocation\x12\x8b\x01\n" +
-	"\x1bcustomer_managed_encryption\x18\x02 \x01(\v2K.dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretCmekR\x19customerManagedEncryption\"\x8f\x01\n" +
-	"\x1aGcpSecretManagerSecretCmek\x12q\n" +
-	"\akms_key\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\"\x8d\x04\n" +
+	"\x1bcustomer_managed_encryption\x18\x02 \x01(\v2K.dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretCmekR\x19customerManagedEncryption\"\xcd\x01\n" +
+	"\x1aGcpSecretManagerSecretCmek\x12\xae\x01\n" +
+	"\akms_key\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBa\xbaH\x03\xc8\x01\x01\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x06kmsKey\"\x8d\x04\n" +
 	"\x1eGcpSecretManagerSecretRotation\x12\xe0\x01\n" +
 	"\x0frotation_period\x18\x01 \x01(\tB\xb6\x01\xbaH\xb2\x01\xba\x01\xae\x01\n" +
 	"\x15valid_rotation_period\x12Erotation_period must be a seconds duration of at least 3600s (1 hour)\x1aNthis == '' || this.matches('^(3[6-9][0-9]{2}|[4-9][0-9]{3}|[1-9][0-9]{4,})s$')R\x0erotationPeriod\x12\x87\x02\n" +

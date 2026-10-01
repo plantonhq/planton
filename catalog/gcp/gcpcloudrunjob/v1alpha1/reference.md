@@ -182,7 +182,7 @@ spec:
 | `spec.template.volumes[].nfs.readOnly` | `bool` |  |  |  |
 | `spec.template.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 | `spec.template.executionEnvironment` | `enum` |  | `EXECUTION_ENVIRONMENT_GEN2` |  |
-| `spec.template.encryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.template.encryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.template.timeoutSeconds` | `int32` |  |  |  |
 | `spec.template.maxRetries` | `int32` |  |  |  |
 | `spec.template.vpcAccess` | `GcpCloudRunJobVpcAccess` |  |  |  |
@@ -792,7 +792,7 @@ Customer-managed encryption key (CMEK) encrypting deployed container
 images. Accepts a full crypto key ID or a reference to a GcpKmsKey
 resource. The key must be in the same region as the job.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.template.timeoutSeconds
@@ -1061,6 +1061,7 @@ Fields that can point at another resource's outputs:
 | `spec.template.volumes[].gcs.bucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.template.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.template.encryptionKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.template.encryptionKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.template.vpcAccess.connector` | GcpServerlessVpcConnector | `status.outputs.self_link` |
 | `spec.template.vpcAccess.networkInterfaces[].network` | GcpVpcNetwork | `status.outputs.network_name` |
 | `spec.template.vpcAccess.networkInterfaces[].subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_name` |

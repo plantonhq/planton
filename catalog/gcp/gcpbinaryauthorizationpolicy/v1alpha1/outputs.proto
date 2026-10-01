@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1;
+
+// GcpBinaryAuthorizationPolicyStackOutputs carries the policy's identity.
+message GcpBinaryAuthorizationPolicyStackOutputs {
+  // The policy's resource name: projects/{project}/policy.
+  string name = 1;
+
+  // The project the policy governs.
+  string project_id = 2;
+}

@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccMuteConfig
+metadata:
+  name: dev-folder-low-severity
+spec:
+  scope:
+    folderId:
+      value: "456789012345"
+  muteConfigId: dev-low-severity
+  description: Low-severity findings in development projects are triaged quarterly, not live
+  filter: severity = "LOW"
+  type: DYNAMIC

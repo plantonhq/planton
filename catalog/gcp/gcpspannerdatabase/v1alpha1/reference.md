@@ -72,7 +72,7 @@ spec:
 | `spec.ddl` | `[]string` |  |  |  |
 | `spec.enableDropProtection` | `bool` |  |  |  |
 | `spec.encryptionConfig` | `GcpSpannerDatabaseEncryptionConfig` |  |  |  |
-| `spec.encryptionConfig.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.encryptionConfig.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.encryptionConfig.kmsKeyNames` | `[]string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
 | `spec.defaultTimeZone` | `string` |  |  |  |
 | `spec.deletionProtection` | `bool` |  | `true` |  |
@@ -179,7 +179,7 @@ for multi-region instances.
 Fully qualified name of the KMS key for single-region CMEK.
 Format: projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.encryptionConfig.kmsKeyNames
@@ -248,6 +248,7 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.instance` | GcpSpannerInstance | `status.outputs.instance_name` |
 | `spec.encryptionConfig.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.encryptionConfig.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.encryptionConfig.kmsKeyNames` | GcpKmsKey | `status.outputs.key_id` |
 
 ## Referenced By

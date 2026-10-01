@@ -2604,7 +2604,7 @@ var File_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcpcloudsql/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd4M\n" +
+	"+catalog/gcp/gcpcloudsql/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x91N\n" +
 	"\x0fGcpCloudSqlSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12M\n" +
@@ -2643,8 +2643,8 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15connector_enforcement\x18\x1a \x01(\tB\x99\x01\xbaH\x95\x01\xba\x01\x91\x01\n" +
 	"\x1bconnector_enforcement_valid\x12>connector_enforcement must be empty, NOT_REQUIRED, or REQUIRED\x1a2this == '' || this in ['NOT_REQUIRED', 'REQUIRED']R\x14connectorEnforcement\x12?\n" +
 	"\x1cenable_google_ml_integration\x18\x1b \x01(\bR\x19enableGoogleMlIntegration\x12>\n" +
-	"\x1benable_dataplex_integration\x18\x1c \x01(\bR\x19enableDataplexIntegration\x12\x82\x01\n" +
-	"\x13encryption_key_name\x18\x1d \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x11encryptionKeyName\x12/\n" +
+	"\x1benable_dataplex_integration\x18\x1c \x01(\bR\x19enableDataplexIntegration\x12\xbf\x01\n" +
+	"\x13encryption_key_name\x18\x1d \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x11encryptionKeyName\x12/\n" +
 	"\x13deletion_protection\x18\x1e \x01(\bR\x12deletionProtection\x12>\n" +
 	"\x1bdeletion_protection_enabled\x18\x1f \x01(\bR\x19deletionProtectionEnabled\x127\n" +
 	"\x18retain_backups_on_delete\x18  \x01(\bR\x15retainBackupsOnDelete\x12\x8f\x01\n" +

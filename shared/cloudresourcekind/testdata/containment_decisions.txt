@@ -402,6 +402,8 @@ contained dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableSpec.project
 contained dev.planton.gcp.gcpbigtableinstance.v1alpha1.GcpBigtableInstanceSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbigtabletable.v1alpha1.GcpBigtableTableSpec.instance -> GcpBigtableInstance
 contained dev.planton.gcp.gcpbigtabletable.v1alpha1.GcpBigtableTableSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1.GcpBinaryAuthorizationAttestorSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationSpec.project_id -> GcpProject
@@ -500,7 +502,10 @@ contained dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent.proje
 contained dev.planton.gcp.gcpiamoauthclient.v1alpha1.GcpIamOauthClientSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpidentityplatformtenant.v1alpha1.GcpIdentityPlatformTenantSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1.GcpKmsAutokeyConfigScope.folder_id -> GcpFolder
+contained dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1.GcpKmsAutokeyConfigScope.project_id -> GcpProject
 contained dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.key_ring_id -> GcpKmsKeyRing
+contained dev.planton.gcp.gcpkmskeyhandle.v1alpha1.GcpKmsKeyHandleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcplogbucket.v1alpha1.GcpLogBucketScope.project_id -> GcpProject
 contained dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkScope.project_id -> GcpProject
@@ -556,6 +561,12 @@ contained dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatSpec.nat64_subnetwor
 contained dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatSpec.vpc_self_link -> GcpVpcNetwork
 contained dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatSubnetwork.subnetwork -> GcpSubnetwork
+contained dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportScope.folder_id -> GcpFolder
+contained dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportScope.project_id -> GcpProject
+contained dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigScope.folder_id -> GcpFolder
+contained dev.planton.gcp.gcpsccmuteconfig.v1alpha1.GcpSccMuteConfigScope.project_id -> GcpProject
+contained dev.planton.gcp.gcpsccnotificationconfig.v1alpha1.GcpSccNotificationConfigScope.folder_id -> GcpFolder
+contained dev.planton.gcp.gcpsccnotificationconfig.v1alpha1.GcpSccNotificationConfigScope.project_id -> GcpProject
 contained dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpserverlessvpcconnector.v1alpha1.GcpServerlessVpcConnectorSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpserverlessvpcconnector.v1alpha1.GcpServerlessVpcConnectorSpec.project_id -> GcpProject
@@ -954,6 +965,7 @@ exempt    dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSpec.location ->
 exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyAttachmentTarget.folder_id -> GcpFolder
 exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyRule.target_resources -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyRuleMatch.src_networks -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1.GcpKmsAutokeyConfigSpec.key_project -> GcpProject
 exempt    dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.bigquery_dataset -> GcpBigQueryDataset
 exempt    dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterTlsConfig.ca_pools -> GcpPrivateCaPool
 exempt    dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterSpec.kafka_cluster -> GcpManagedKafkaCluster
@@ -972,6 +984,7 @@ exempt    dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEnd
 exempt    dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceSpec.authorized_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatRuleAction.source_nat_active_ranges -> GcpSubnetwork
 exempt    dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatRuleAction.source_nat_drain_ranges -> GcpSubnetwork
+exempt    dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportSpec.dataset -> GcpBigQueryDataset
 exempt    dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1.GcpServiceConnectionPolicyPscConfig.subnetworks -> GcpSubnetwork
 exempt    dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig.target_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDnsPeeringConfig.target_project -> GcpProject

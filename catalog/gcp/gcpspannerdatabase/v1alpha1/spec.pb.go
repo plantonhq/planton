@@ -310,9 +310,9 @@ var File_catalog_gcp_gcpspannerdatabase_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpspannerdatabase_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpspannerdatabase/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpspannerdatabase.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc5\x03\n" +
-	"\"GcpSpannerDatabaseEncryptionConfig\x12t\n" +
-	"\fkms_key_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	"2catalog/gcp/gcpspannerdatabase/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpspannerdatabase.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x83\x04\n" +
+	"\"GcpSpannerDatabaseEncryptionConfig\x12\xb1\x01\n" +
+	"\fkms_key_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12v\n" +
 	"\rkms_key_names\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\vkmsKeyNames:\xb0\x01\xbaH\xac\x01\x1a\xa9\x01\n" +
 	" encryption_exactly_one_key_shape\x12Jset exactly one of kms_key_name (regional) or kms_key_names (multi-region)\x1a9has(this.kms_key_name) != (this.kms_key_names.size() > 0)\"\xec\b\n" +

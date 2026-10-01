@@ -1254,7 +1254,7 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04uris\x18\x01 \x03(\tBr\xbaHo\x92\x01l\b\x01\"h\xba\x01e\n" +
 	"\x0egcs_uri_format\x129each URI must be a Cloud Storage path starting with gs://\x1a\x18this.startsWith('gs://')R\x04uris\"K\n" +
 	")GcpMemorystoreInstanceManagedBackupSource\x12\x1e\n" +
-	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\xde\"\n" +
+	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\x9c#\n" +
 	"\x1aGcpMemorystoreInstanceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12Q\n" +
@@ -1275,8 +1275,8 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12authorization_mode\x18\v \x01(\tB\x93\x01\xbaH\x8f\x01\xba\x01\x8b\x01\n" +
 	"\x1eauthorization_mode_valid_value\x124authorization_mode must be AUTH_DISABLED or IAM_AUTH\x1a3this == '' || this in ['AUTH_DISABLED', 'IAM_AUTH']R\x11authorizationMode\x12\x8c\x02\n" +
 	"\x17transit_encryption_mode\x18\f \x01(\tB\xd3\x01\xbaH\xcf\x01\xba\x01\xcb\x01\n" +
-	"#transit_encryption_mode_valid_value\x12Ttransit_encryption_mode must be TRANSIT_ENCRYPTION_DISABLED or SERVER_AUTHENTICATION\x1aNthis == '' || this in ['TRANSIT_ENCRYPTION_DISABLED', 'SERVER_AUTHENTICATION']R\x15transitEncryptionMode\x12k\n" +
-	"\akms_key\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\x12\x87\x01\n" +
+	"#transit_encryption_mode_valid_value\x12Ttransit_encryption_mode must be TRANSIT_ENCRYPTION_DISABLED or SERVER_AUTHENTICATION\x1aNthis == '' || this in ['TRANSIT_ENCRYPTION_DISABLED', 'SERVER_AUTHENTICATION']R\x15transitEncryptionMode\x12\xa8\x01\n" +
+	"\akms_key\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x06kmsKey\x12\x87\x01\n" +
 	"\x12persistence_config\x18\x0e \x01(\v2X.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstancePersistenceConfigR\x11persistenceConfig\x12\x97\x01\n" +
 	"\x18zone_distribution_config\x18\x0f \x01(\v2].dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceZoneDistributionConfigR\x16zoneDistributionConfig\x12\x87\x01\n" +
 	"\x12maintenance_policy\x18\x10 \x01(\v2X.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceMaintenancePolicyR\x11maintenancePolicy\x12\x94\x01\n" +

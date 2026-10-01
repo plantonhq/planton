@@ -86,7 +86,7 @@ spec:
 | `spec.defaultCollation` | `string` |  |  |  |
 | `spec.storageBillingModel` | `string` |  |  |  |
 | `spec.deleteContentsOnDestroy` | `bool` |  |  |  |
-| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.access` | `[]GcpBigQueryDatasetAccessEntry` |  |  |  |
 | `spec.access[].role` | `string` |  |  |  |
 | `spec.access[].userByEmail` | `string` |  |  |  |
@@ -261,7 +261,7 @@ on the key before the first table is written. Format:
 projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
 If not set, tables use Google-managed encryption.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.access
@@ -548,6 +548,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 
 ## Referenced By
 
@@ -559,6 +560,7 @@ Fields on other kinds that can point at this resource:
 | GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.singleTargetDataset.datasetId` | `status.outputs.self_link` |
 | GcpGkeCluster | `spec.resourceUsageExport.bigqueryDatasetId` | `status.outputs.dataset_id` |
 | GcpLoggingSink | `spec.destination.bigqueryDataset` | `status.outputs.self_link` |
+| GcpSccBigQueryExport | `spec.dataset` | `status.outputs.self_link` |
 
 ## See Also
 

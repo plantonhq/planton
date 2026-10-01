@@ -1,0 +1,22 @@
+# Consumer-scoped GcpKmsKeyRing install profile for the gcpbaatt KMS
+# scenario: key rings cannot be deleted, so the ring name carries the run
+# id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyRing
+metadata:
+  name: planton-oss-e2e-gcpbaatt-ring
+  id: planton-oss-e2e-gcpbaatt-ring
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpkmskeyring
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  keyRingName: e2e-gcpbaatt-${E2E_RUN_ID}
+  location: global

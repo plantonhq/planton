@@ -1829,7 +1829,7 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
 - `GcpOrgPolicy`
 - `GcpTagKey`
 - `GcpTagValue`
@@ -1837,6 +1837,7 @@ Allowed values (use exactly as shown):
 - `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
 - `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
 - `GcpSharedVpcServiceProject`
@@ -1880,6 +1881,12 @@ Allowed values (use exactly as shown):
 - `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
 - `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
@@ -2806,7 +2813,7 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
 - `GcpOrgPolicy`
 - `GcpTagKey`
 - `GcpTagValue`
@@ -2814,6 +2821,7 @@ Allowed values (use exactly as shown):
 - `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
 - `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
 - `GcpSharedVpcServiceProject`
@@ -2857,6 +2865,12 @@ Allowed values (use exactly as shown):
 - `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
 - `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
@@ -4984,7 +4998,7 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
 - `GcpOrgPolicy`
 - `GcpTagKey`
 - `GcpTagValue`
@@ -4992,6 +5006,7 @@ Allowed values (use exactly as shown):
 - `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
 - `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
 - `GcpSharedVpcServiceProject`
@@ -5035,6 +5050,12 @@ Allowed values (use exactly as shown):
 - `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
 - `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
@@ -5961,7 +5982,7 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
 - `GcpOrgPolicy`
 - `GcpTagKey`
 - `GcpTagValue`
@@ -5969,6 +5990,7 @@ Allowed values (use exactly as shown):
 - `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
 - `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
 - `GcpSharedVpcServiceProject`
@@ -6012,6 +6034,12 @@ Allowed values (use exactly as shown):
 - `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
 - `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
@@ -8253,7 +8281,7 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
 - `GcpOrgPolicy`
 - `GcpTagKey`
 - `GcpTagValue`
@@ -8261,6 +8289,7 @@ Allowed values (use exactly as shown):
 - `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
 - `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
 - `GcpSharedVpcServiceProject`
@@ -8304,6 +8333,12 @@ Allowed values (use exactly as shown):
 - `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
 - `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
@@ -9230,7 +9265,7 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
 - `GcpOrgPolicy`
 - `GcpTagKey`
 - `GcpTagValue`
@@ -9238,6 +9273,7 @@ Allowed values (use exactly as shown):
 - `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
 - `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
 - `GcpSharedVpcServiceProject`
@@ -9281,6 +9317,12 @@ Allowed values (use exactly as shown):
 - `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
 - `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.

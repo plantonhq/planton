@@ -111,7 +111,7 @@ spec:
 | `spec.pscAutoConnections[].projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.authorizationMode` | `string` |  |  |  |
 | `spec.transitEncryptionMode` | `string` |  |  |  |
-| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.persistenceConfig` | `GcpMemorystoreInstancePersistenceConfig` |  |  |  |
 | `spec.persistenceConfig.mode` | `string` | yes |  |  |
 | `spec.persistenceConfig.rdbConfig` | `GcpMemorystoreInstanceRdbConfig` |  |  |  |
@@ -318,7 +318,7 @@ Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{k
 If not specified, data is encrypted with Google-managed keys.
 Immutable after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.persistenceConfig
@@ -679,6 +679,7 @@ Fields that can point at another resource's outputs:
 | `spec.pscAutoConnections[].network` | GcpVpcNetwork | `status.outputs.network_id` |
 | `spec.pscAutoConnections[].projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.crossInstanceReplicationConfig.primaryInstance.instance` | GcpMemorystoreInstance | `status.outputs.name` |
 | `spec.crossInstanceReplicationConfig.secondaryInstances[].instance` | GcpMemorystoreInstance | `status.outputs.name` |
 

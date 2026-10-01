@@ -96,7 +96,7 @@ spec:
 | `spec.retentionPolicy.isLocked` | `bool` |  |  |  |
 | `spec.softDeletePolicy` | `GcpGcsBucketSoftDeletePolicy` |  |  |  |
 | `spec.softDeletePolicy.retentionDurationSeconds` | `int64` |  |  |  |
-| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.requesterPays` | `bool` |  |  |  |
 | `spec.defaultEventBasedHold` | `bool` |  |  |  |
 | `spec.enableObjectRetention` | `bool` |  |  |  |
@@ -493,7 +493,7 @@ Google-managed encryption is used. Accepts the fully qualified crypto
 key path or a reference to a GcpKmsKey resource. Mutable in place
 (existing objects keep the key they were written with).
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.requesterPays
@@ -1045,6 +1045,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.logging.logBucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.iamMembers[].member` | GcpServiceAccount | `status.outputs.member` |
 | `spec.ipFilter.vpcNetworkSources[].network` | GcpVpcNetwork | `status.outputs.network_id` |

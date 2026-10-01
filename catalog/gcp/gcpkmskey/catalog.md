@@ -107,6 +107,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `key_name` | Short name of the key | Display, logging, human-readable references |
 | `primary_version_name` | The current primary CryptoKeyVersion | Populated only for symmetric encryption keys; empty for asymmetric/MAC/import-only keys |
 | `primary_state` | Lifecycle state of the primary version (e.g. `ENABLED`) | Health checks on the encryption path; same population rules as the version name |
+| `initial_version_name` | The version created with the key (`.../cryptoKeyVersions/1`) | Asymmetric-sign consumers: `GcpPrivateCaCertificateAuthority.keySpec.cloudKmsKeyVersion`, `GcpBinaryAuthorizationAttestor` PKIX keys; empty with `skip_initial_version_creation` |
 
 ## Common Patterns
 

@@ -144,5 +144,17 @@ func kmsKey(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 		return *primaries[0].State
 	}).(pulumi.StringOutput))
 
+	// Version 1 is the one Google creates with the key, whatever its
+	// purpose; asymmetric-sign keys have no primary, so this is the version
+	// their consumers name. Empty when no initial version was created --
+	// identical to the Terraform output.
+	if spec.SkipInitialVersionCreation {
+		ctx.Export(OpInitialVersionName, pulumi.String(""))
+	} else {
+		ctx.Export(OpInitialVersionName, createdKey.ID().ApplyT(func(id pulumi.ID) string {
+			return string(id) + "/cryptoKeyVersions/1"
+		}).(pulumi.StringOutput))
+	}
+
 	return nil
 }

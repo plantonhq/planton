@@ -254,7 +254,7 @@ spec:
 | `spec.timeoutSeconds` | `int32` |  |  |  |
 | `spec.executionEnvironment` | `enum` |  | `EXECUTION_ENVIRONMENT_GEN2` |  |
 | `spec.sessionAffinity` | `bool` |  |  |  |
-| `spec.encryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.encryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.revision` | `string` |  |  |  |
 | `spec.vpcAccess` | `GcpCloudRunVpcAccess` |  |  |  |
 | `spec.vpcAccess.connector` | `string \| valueFrom` |  |  | GcpServerlessVpcConnector (`status.outputs.self_link`) |
@@ -1285,7 +1285,7 @@ container images. Accepts a full crypto key ID
 GcpKmsKey resource. The key must be in the same region as the service,
 and the Cloud Run service agent needs encrypter/decrypter on it.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.revision
@@ -1855,6 +1855,7 @@ Fields that can point at another resource's outputs:
 | `spec.volumes[].gcs.bucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.encryptionKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.encryptionKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.vpcAccess.connector` | GcpServerlessVpcConnector | `status.outputs.self_link` |
 | `spec.vpcAccess.networkInterfaces[].network` | GcpVpcNetwork | `status.outputs.network_name` |
 | `spec.vpcAccess.networkInterfaces[].subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_name` |

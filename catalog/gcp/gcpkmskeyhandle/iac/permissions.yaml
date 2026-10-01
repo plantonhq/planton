@@ -1,0 +1,26 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpkmskeyhandle
+spec:
+  gcp:
+    groups:
+      - purpose: EnableCloudKmsApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling cloudkms.googleapis.com on the handle's project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageKeyHandle
+        permissions:
+          - cloudkms.keyHandles.create
+          - cloudkms.keyHandles.get
+          - cloudkms.operations.get
+        provenance: derived
+        notes: Covers google_kms_key_handle (Pulumi kms.KeyHandle) -- create is a long-running operation the provider polls, read on every refresh; delete makes no API call (Google keeps handles). Held on the project (roles/cloudkms.autokeyUser). The provider-default project lookup reads provider configuration only and needs no permission.

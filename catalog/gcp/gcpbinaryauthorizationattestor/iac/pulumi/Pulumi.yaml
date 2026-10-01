@@ -1,0 +1,4 @@
+name: gcpbinaryauthorizationattestor-pulumi-project
+runtime:
+  name: go
+description: Planton GcpBinaryAuthorizationAttestor Pulumi module

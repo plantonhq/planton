@@ -1,0 +1,79 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpbinaryauthorizationpolicy
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The policy is control-plane metadata Google holds on its own encrypted infrastructure; it stores no customer data.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The policy terminates no connections; GKE's admission checks and management calls ride Google's TLS-only endpoints.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The policy has no address of its own; it is read and changed only through the Binary Authorization API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The policy serves no traffic; it is a supply-chain control on what workloads may run.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Changing the policy needs binaryauthorization.policy.update on the project (roles/binaryauthorization.policyEditor); naming an attestor needs read access to it.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The policy authenticates nothing; it governs which images workloads run from.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every policy change is an Admin Activity audit log entry, and every denial (enforced or dry run) is logged by GKE's admission check.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: default_admission_rule.enforcement_mode
+      evidence:
+        type: spec_default
+        reference: DRYRUN_AUDIT_LOG_ONLY turns a rule into a monitoring control -- would-be denials are logged and nothing is blocked; ENFORCED_BLOCK_AND_AUDIT_LOG logs and blocks.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A policy is declarative; the manifest is its recovery path.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Binary Authorization is a global Google-managed service evaluated at every GKE cluster's admission; there is no placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE, which writes Google's default policy back -- allow every image; PREVENT makes destroy fail; ABANDON leaves this policy in force.
+      notes: Destroying a production policy silently opens the project to any image. PREVENT is the guard every enforced policy should carry.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Binary Authorization is fully Google-operated.

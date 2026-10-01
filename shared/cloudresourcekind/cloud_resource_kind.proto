@@ -5446,7 +5446,7 @@ enum CloudResourceKind {
   }];
 
   // 3170–3179: GCP organization & governance (folders, org policies, tags,
-  // budgets, identity groups, API keys)
+  // budgets, identity groups, API keys, KMS Autokey)
   // GcpFolder is a container: the hierarchy node projects, sub-folders,
   // policies, and tag bindings are placed inside.
   GcpFolder = 3170 [(kind_meta) = {
@@ -5507,6 +5507,15 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "gcpakey"
     service_group: gcp_identity_access
+  }];
+  // Cloud KMS Autokey switched on for a folder or a project: where the
+  // customer-managed keys GcpKmsKeyHandle requests are created. A security
+  // control, so it groups with the KMS kinds rather than the hierarchy.
+  GcpKmsAutokeyConfig = 3178 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpakcfg"
+    service_group: gcp_security
   }];
   // A custom constraint is a DEFINITION the organization owns; the
   // GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
@@ -5921,6 +5930,56 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "gcppca"
     container_kind: true
+    service_group: gcp_security
+  }];
+  // An Autokey key handle: asks Autokey for a customer-managed key for one
+  // resource type in one project and location; the resource it protects
+  // names the key the handle returns.
+  GcpKmsKeyHandle = 3231 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkmsh"
+    prerequisites: [GcpKmsAutokeyConfig]
+    service_group: gcp_security
+  }];
+  // Security Command Center streaming notifications to Pub/Sub at a
+  // project, folder, or organization.
+  GcpSccNotificationConfig = 3232 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsccn"
+    service_group: gcp_security
+  }];
+  // A Security Command Center mute rule at a project, folder, or
+  // organization.
+  GcpSccMuteConfig = 3233 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsccm"
+    service_group: gcp_security
+  }];
+  // A continuous Security Command Center findings export to a BigQuery
+  // dataset at a project, folder, or organization.
+  GcpSccBigQueryExport = 3234 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsccx"
+    service_group: gcp_security
+  }];
+  // A project's Binary Authorization policy: which container images GKE
+  // admits, per cluster. A project singleton.
+  GcpBinaryAuthorizationPolicy = 3235 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbapol"
+    service_group: gcp_security
+  }];
+  // A Binary Authorization attestor with its Artifact Analysis note: the
+  // public keys that verify image attestations a policy requires.
+  GcpBinaryAuthorizationAttestor = 3236 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbaatt"
     service_group: gcp_security
   }];
   // A certificate authority in a CA pool: a self-signed root, or a

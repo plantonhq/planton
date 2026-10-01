@@ -60,7 +60,7 @@ spec:
 | `spec.image` | `string` |  |  |  |
 | `spec.sourceSnapshot` | `string` |  |  |  |
 | `spec.sourceDisk` | `string \| valueFrom` |  |  | GcpComputeDisk (`status.outputs.self_link`) |
-| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.provisionedIops` | `int64` |  |  |  |
 | `spec.provisionedThroughput` | `int64` |  |  |  |
 | `spec.accessMode` | `string` |  |  |  |
@@ -181,7 +181,7 @@ must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key.
 When omitted, Google-managed encryption is used. Immutable after
 creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.provisionedIops
@@ -435,6 +435,7 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.sourceDisk` | GcpComputeDisk | `status.outputs.self_link` |
 | `spec.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.sourceImageEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.sourceSnapshotEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.asyncPrimaryDisk` | GcpComputeDisk | `status.outputs.self_link` |

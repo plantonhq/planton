@@ -532,6 +532,8 @@ import (
 	gcpbigtableinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtableinstance/v1alpha1"
 	gcpbigtabletablev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtabletable/v1alpha1"
 	gcpbillingbudgetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbillingbudget/v1alpha1"
+	gcpbinaryauthorizationattestorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbinaryauthorizationattestor/v1alpha1"
+	gcpbinaryauthorizationpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1"
 	gcpcertificatemapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertificatemap/v1alpha1"
 	gcpcertmanagercertv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagercert/v1alpha1"
 	gcpcertmanagerdnsauthorizationv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1"
@@ -593,7 +595,9 @@ import (
 	gcpiamoauthclientv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamoauthclient/v1alpha1"
 	gcpidentityplatformconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpidentityplatformconfig/v1alpha1"
 	gcpidentityplatformtenantv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpidentityplatformtenant/v1alpha1"
+	gcpkmsautokeyconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmsautokeyconfig/v1alpha1"
 	gcpkmskeyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskey/v1alpha1"
+	gcpkmskeyhandlev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskeyhandle/v1alpha1"
 	gcpkmskeyiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskeyiammember/v1alpha1"
 	gcpkmskeyringv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskeyring/v1alpha1"
 	gcplogbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcplogbucket/v1alpha1"
@@ -633,6 +637,9 @@ import (
 	gcpredisinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpredisinstance/v1alpha1"
 	gcpregionnetworkendpointgroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpregionnetworkendpointgroup/v1alpha1"
 	gcprouternatv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcprouternat/v1alpha1"
+	gcpsccbigqueryexportv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsccbigqueryexport/v1alpha1"
+	gcpsccmuteconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsccmuteconfig/v1alpha1"
+	gcpsccnotificationconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsccnotificationconfig/v1alpha1"
 	gcpsecretmanagersecretv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsecretmanagersecret/v1alpha1"
 	gcpserverlessvpcconnectorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserverlessvpcconnector/v1alpha1"
 	gcpserviceaccountv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserviceaccount/v1alpha1"
@@ -1376,6 +1383,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpBigtableInstance:                    &gcpbigtableinstancev1alpha1.GcpBigtableInstance{},
 	cloudresourcekind.CloudResourceKind_GcpBigtableTable:                       &gcpbigtabletablev1alpha1.GcpBigtableTable{},
 	cloudresourcekind.CloudResourceKind_GcpBillingBudget:                       &gcpbillingbudgetv1alpha1.GcpBillingBudget{},
+	cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationAttestor:         &gcpbinaryauthorizationattestorv1alpha1.GcpBinaryAuthorizationAttestor{},
+	cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationPolicy:           &gcpbinaryauthorizationpolicyv1alpha1.GcpBinaryAuthorizationPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerCert:                     &gcpcertmanagercertv1alpha1.GcpCertManagerCert{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerDnsAuthorization:         &gcpcertmanagerdnsauthorizationv1alpha1.GcpCertManagerDnsAuthorization{},
 	cloudresourcekind.CloudResourceKind_GcpCertificateMap:                      &gcpcertificatemapv1alpha1.GcpCertificateMap{},
@@ -1437,7 +1446,9 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpIamOauthClient:                      &gcpiamoauthclientv1alpha1.GcpIamOauthClient{},
 	cloudresourcekind.CloudResourceKind_GcpIdentityPlatformConfig:              &gcpidentityplatformconfigv1alpha1.GcpIdentityPlatformConfig{},
 	cloudresourcekind.CloudResourceKind_GcpIdentityPlatformTenant:              &gcpidentityplatformtenantv1alpha1.GcpIdentityPlatformTenant{},
+	cloudresourcekind.CloudResourceKind_GcpKmsAutokeyConfig:                    &gcpkmsautokeyconfigv1alpha1.GcpKmsAutokeyConfig{},
 	cloudresourcekind.CloudResourceKind_GcpKmsKey:                              &gcpkmskeyv1alpha1.GcpKmsKey{},
+	cloudresourcekind.CloudResourceKind_GcpKmsKeyHandle:                        &gcpkmskeyhandlev1alpha1.GcpKmsKeyHandle{},
 	cloudresourcekind.CloudResourceKind_GcpKmsKeyIamMember:                     &gcpkmskeyiammemberv1alpha1.GcpKmsKeyIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpKmsKeyRing:                          &gcpkmskeyringv1alpha1.GcpKmsKeyRing{},
 	cloudresourcekind.CloudResourceKind_GcpLogBucket:                           &gcplogbucketv1alpha1.GcpLogBucket{},
@@ -1477,6 +1488,9 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpRedisInstance:                       &gcpredisinstancev1alpha1.GcpRedisInstance{},
 	cloudresourcekind.CloudResourceKind_GcpRegionNetworkEndpointGroup:          &gcpregionnetworkendpointgroupv1alpha1.GcpRegionNetworkEndpointGroup{},
 	cloudresourcekind.CloudResourceKind_GcpRouterNat:                           &gcprouternatv1alpha1.GcpRouterNat{},
+	cloudresourcekind.CloudResourceKind_GcpSccBigQueryExport:                   &gcpsccbigqueryexportv1alpha1.GcpSccBigQueryExport{},
+	cloudresourcekind.CloudResourceKind_GcpSccMuteConfig:                       &gcpsccmuteconfigv1alpha1.GcpSccMuteConfig{},
+	cloudresourcekind.CloudResourceKind_GcpSccNotificationConfig:               &gcpsccnotificationconfigv1alpha1.GcpSccNotificationConfig{},
 	cloudresourcekind.CloudResourceKind_GcpSecretManagerSecret:                 &gcpsecretmanagersecretv1alpha1.GcpSecretManagerSecret{},
 	cloudresourcekind.CloudResourceKind_GcpServerlessVpcConnector:              &gcpserverlessvpcconnectorv1alpha1.GcpServerlessVpcConnector{},
 	cloudresourcekind.CloudResourceKind_GcpServiceAccount:                      &gcpserviceaccountv1alpha1.GcpServiceAccount{},

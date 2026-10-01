@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccnotificationconfig.v1alpha1;
+
+// GcpSccNotificationConfigStackOutputs carries the config's identity and
+// the publisher it needs on its topic.
+message GcpSccNotificationConfigStackOutputs {
+  // Full resource name:
+  // {parent}/locations/{location}/notificationConfigs/{config_id}.
+  string name = 1;
+
+  // The Security Command Center service account that publishes the
+  // notifications. Grant it roles/pubsub.publisher on the topic, or
+  // notifications are dropped.
+  string service_account = 2;
+}

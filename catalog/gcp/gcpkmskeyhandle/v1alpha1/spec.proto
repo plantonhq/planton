@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpkmskeyhandle.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpKmsKeyHandleSpec requests a customer-managed encryption key from Cloud
+// KMS Autokey (`google_kms_key_handle`) for one resource type in one
+// project and location.
+//
+// The handle is how a team gets CMEK without designing keys: Autokey (on
+// for the project or its folder, see GcpKmsAutokeyConfig) creates or reuses
+// an HSM key in the "autokey" key ring, grants the resource type's service
+// agent encrypt and decrypt on it, and returns its name in the kms_key
+// output. The resource it protects -- a GcpGcsBucket, GcpComputeDisk,
+// GcpBigQueryDataset, GcpPubSubTopic, GcpCloudSql, and the other kinds
+// Autokey serves -- then references that output wherever it accepts a
+// GcpKmsKey.
+//
+// Every field is immutable. Destroy only forgets the handle: Google keeps
+// it (and the key keeps protecting its resources and billing as an HSM key
+// until a KMS administrator destroys it), so a recreated handle needs a
+// new key_handle_name.
+message GcpKmsKeyHandleSpec {
+  // The project of the resource the key will protect (where the handle
+  // lives): a literal project ID or a GcpProject reference. Empty means the
+  // provider's default project. Autokey must be on for this project or a
+  // folder above it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The location of the resource the key will protect, e.g. "us-central1",
+  // "europe-west4", or a multi-region such as "us". A CMEK key must sit in
+  // the same location as its resource, so this must equal the resource's
+  // location, and Autokey needs Cloud HSM there.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "location.format"
+      message: "location must be a region, a multi-region, or global"
+      expression: "this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')"
+    }
+  ];
+
+  // The resource type the key is for, as Google names it:
+  //   "storage.googleapis.com/Bucket", "compute.googleapis.com/Disk",
+  //   "bigquery.googleapis.com/Dataset", "pubsub.googleapis.com/Topic",
+  //   "sqladmin.googleapis.com/Instance", "secretmanager.googleapis.com/Secret",
+  //   "artifactregistry.googleapis.com/Repository", "run.googleapis.com/Service",
+  //   "spanner.googleapis.com/Database", "redis.googleapis.com/Instance", ...
+  // Google's Autokey page lists every compatible type and the key
+  // granularity (one key per resource, or per location for some types).
+  string resource_type_selector = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "resource_type_selector.format"
+      message: "resource_type_selector must be service.googleapis.com/Type, e.g. storage.googleapis.com/Bucket"
+      expression: "this.matches('^[a-z0-9]+([.-][a-z0-9]+)*\\\\.googleapis\\\\.com/[A-Z][A-Za-z]+$')"
+    }
+  ];
+
+  // The handle's ID, unique per project and location. Defaults to
+  // metadata.name. A destroyed handle keeps its ID in Google, so a
+  // recreated handle needs a new one.
+  string key_handle_name = 4;
+}

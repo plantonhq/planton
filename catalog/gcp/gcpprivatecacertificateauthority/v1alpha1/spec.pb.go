@@ -1025,7 +1025,8 @@ type GcpPrivateCaCertificateAuthorityKeySpec struct {
 	//	RSA_PSS_2048_SHA256, RSA_PSS_3072_SHA256, RSA_PSS_4096_SHA256
 	Algorithm string `protobuf:"bytes,1,opt,name=algorithm,proto3" json:"algorithm,omitempty"`
 	// A Cloud KMS key version you own, with an asymmetric-sign purpose -- a
-	// GcpKmsKey reference (its primary version) or a literal
+	// GcpKmsKey reference (the version created with the key; asymmetric keys
+	// have no primary version) or a literal
 	// projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*.
 	// CA Service's service agent needs signerVerifier and viewer on the key.
 	// Enterprise pools only (Google's tier rule).
@@ -1531,7 +1532,7 @@ const file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_spec_proto_rawD
 	"'GcpPrivateCaCertificateAuthorityKeySpec\x12\xe5\x02\n" +
 	"\talgorithm\x18\x01 \x01(\tB\xc6\x02\xbaH\xc2\x02\xba\x01\xbe\x02\n" +
 	"\x0falgorithm_valid\x12^algorithm must be one of the RSA_PSS_*, RSA_PKCS1_*, or EC_P256_SHA256 / EC_P384_SHA384 values\x1a\xca\x01this == '' || this in ['RSA_PSS_2048_SHA256', 'RSA_PSS_3072_SHA256', 'RSA_PSS_4096_SHA256', 'RSA_PKCS1_2048_SHA256', 'RSA_PKCS1_3072_SHA256', 'RSA_PKCS1_4096_SHA256', 'EC_P256_SHA256', 'EC_P384_SHA384']R\talgorithm\x12\x93\x01\n" +
-	"\x15cloud_kms_key_version\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\x93\x18\x92\xd4a#status.outputs.primary_version_nameR\x12cloudKmsKeyVersion:\x97\x01\xbaH\x93\x01\x1a\x90\x01\n" +
+	"\x15cloud_kms_key_version\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\x93\x18\x92\xd4a#status.outputs.initial_version_nameR\x12cloudKmsKeyVersion:\x97\x01\xbaH\x93\x01\x1a\x90\x01\n" +
 	"\x14key_spec.exactly_one\x12=key_spec is exactly one of algorithm or cloud_kms_key_version\x1a9(this.algorithm != '') != has(this.cloud_kms_key_version)\"\xa5\x03\n" +
 	"1GcpPrivateCaCertificateAuthoritySubordinateConfig\x12\x85\x01\n" +
 	"\x15certificate_authority\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\x88\xd4a\xa5\x19\x92\xd4a\x13status.outputs.nameR\x14certificateAuthority\x12(\n" +

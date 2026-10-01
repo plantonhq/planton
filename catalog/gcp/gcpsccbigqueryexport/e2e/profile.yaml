@@ -1,0 +1,21 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpsccbigqueryexport
+spec:
+  # Awaiting the live proof lane. Needs Security Command Center activated
+  # on one project (owner-arranged, PLANTON_E2E_GCP_SCC_PROJECT_ID). The
+  # scenario proves the project arm against a dataset fixture; folder and
+  # organization arms are proven offline (the organization arm's composed
+  # name included). Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest, the scenario, and throwaway
+  # folder and organization arms are clean on the pinned provider, and the
+  # accounting is total. Live facts the proof lane confirms: (1) the export
+  # reads back with the dataset and the principal output; (2) the re-plan
+  # is clean on both engines (the dataset self link trimmed); (3) destroy
+  # deletes it (404), and the dataset fixture's teardown survives Google's
+  # brief "still in use" window -- watch for it.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

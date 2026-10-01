@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1;
+
+import "catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-binary-authorization-policy stack-input
+message GcpBinaryAuthorizationPolicyStackInput {
+  //target cloud-resource
+  GcpBinaryAuthorizationPolicy target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

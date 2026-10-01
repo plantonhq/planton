@@ -50,6 +50,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 | `key_name` | The short name of the key |
 | `primary_version_name` | Current primary version resource name (ENCRYPT_DECRYPT keys; empty otherwise) |
 | `primary_state` | Lifecycle state of the primary version |
+| `initial_version_name` | The version created with the key (`.../cryptoKeyVersions/1`), for every purpose -- what asymmetric-sign consumers name; empty with `skip_initial_version_creation` |
 
 ## Required Permissions
 

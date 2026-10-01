@@ -2102,15 +2102,15 @@ const file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1dexecution_token.start_xor_run\x12jstart_execution_token and run_execution_token conflict — a deploy triggers at most one kind of execution\x1aE!(this.start_execution_token != '' && this.run_execution_token != '')B\r\n" +
 	"\v_task_countB\x0e\n" +
 	"\f_parallelismB\x16\n" +
-	"\x14_deletion_protection\"\x95\b\n" +
+	"\x14_deletion_protection\"\xd3\b\n" +
 	"\x16GcpCloudRunJobTemplate\x12j\n" +
 	"\n" +
 	"containers\x18\x01 \x03(\v2@.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainerB\b\xbaH\x05\x92\x01\x02\b\x01R\n" +
 	"containers\x12W\n" +
 	"\avolumes\x18\x02 \x03(\v2=.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeR\avolumes\x12z\n" +
 	"\x0fservice_account\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x0eserviceAccount\x12\xa0\x01\n" +
-	"\x15execution_environment\x18\x04 \x01(\x0e2K.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobExecutionEnvironmentB\x1e\x92\xa6\x1d\x1aEXECUTION_ENVIRONMENT_GEN2R\x14executionEnvironment\x12\xbd\x01\n" +
-	"\x0eencryption_key\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBb\xaa\xa6\x1d@KMS crypto key resource ID/reference only — never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\rencryptionKey\x129\n" +
+	"\x15execution_environment\x18\x04 \x01(\x0e2K.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobExecutionEnvironmentB\x1e\x92\xa6\x1d\x1aEXECUTION_ENVIRONMENT_GEN2R\x14executionEnvironment\x12\xfb\x01\n" +
+	"\x0eencryption_key\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x9f\x01\xaa\xa6\x1d@KMS crypto key resource ID/reference only — never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\rencryptionKey\x129\n" +
 	"\x0ftimeout_seconds\x18\x06 \x01(\x05B\v\xbaH\b\x1a\x06\x18\x80\xa3\x05(\x01H\x00R\x0etimeoutSeconds\x88\x01\x01\x12-\n" +
 	"\vmax_retries\x18\a \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x01R\n" +
 	"maxRetries\x88\x01\x01\x12_\n" +

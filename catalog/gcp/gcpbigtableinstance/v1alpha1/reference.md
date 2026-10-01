@@ -90,7 +90,7 @@ spec:
 | `spec.clusters[].zone` | `string` | yes |  |  |
 | `spec.clusters[].numNodes` | `int32` |  |  |  |
 | `spec.clusters[].storageType` | `string` |  | `SSD` |  |
-| `spec.clusters[].kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.clusters[].kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.clusters[].nodeScalingFactor` | `string` |  |  |  |
 | `spec.clusters[].autoscalingConfig` | `GcpBigtableInstanceClusterAutoscalingConfig` |  |  |  |
 | `spec.clusters[].autoscalingConfig.minNodes` | `int32` | yes |  |  |
@@ -220,7 +220,7 @@ The key region must match the cluster zone's region. All clusters
 within an instance should use the same CMEK key.
 Immutable after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.clusters[].nodeScalingFactor
@@ -351,6 +351,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.clusters[].kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.clusters[].kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 
 ## Referenced By
 

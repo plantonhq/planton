@@ -70,7 +70,7 @@ spec:
 | `spec.tier` | `string` | yes |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.protocol` | `string` |  |  |  |
-| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.deletionProtectionEnabled` | `bool` |  |  |  |
 | `spec.deletionProtectionReason` | `string` |  |  |  |
 | `spec.fileShare` | `GcpFilestoreInstanceFileShare` | yes |  |  |
@@ -188,7 +188,7 @@ Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{k
 If not specified, data is encrypted with Google-managed keys.
 Immutable after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.deletionProtectionEnabled
@@ -577,6 +577,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.fileShare.nfsExportOptions[].network` | GcpVpcNetwork | `status.outputs.network_name` |
 | `spec.networkConfig.network` | GcpVpcNetwork | `status.outputs.network_name` |
 | `spec.networkConfig.pscEndpointProject` | GcpProject | `status.outputs.project_id` |

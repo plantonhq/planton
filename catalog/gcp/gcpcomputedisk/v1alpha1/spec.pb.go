@@ -486,7 +486,7 @@ var File_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpcomputedisk/v1alpha1/spec.proto\x12'dev.planton.gcp.gcpcomputedisk.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xeb!\n" +
+	".catalog/gcp/gcpcomputedisk/v1alpha1/spec.proto\x12'dev.planton.gcp.gcpcomputedisk.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa9\"\n" +
 	"\x12GcpComputeDiskSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xf8\x01\n" +
@@ -499,9 +499,9 @@ const file_catalog_gcp_gcpcomputedisk_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05image\x18\a \x01(\tR\x05image\x12'\n" +
 	"\x0fsource_snapshot\x18\b \x01(\tR\x0esourceSnapshot\x12v\n" +
 	"\vsource_disk\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xba\x18\x92\xd4a\x18status.outputs.self_linkR\n" +
-	"sourceDisk\x12k\n" +
+	"sourceDisk\x12\xa8\x01\n" +
 	"\akms_key\x18\n" +
-	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\x127\n" +
+	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x06kmsKey\x127\n" +
 	"\x10provisioned_iops\x18\v \x01(\x03B\a\xbaH\x04\"\x02 \x00H\x00R\x0fprovisionedIops\x88\x01\x01\x12C\n" +
 	"\x16provisioned_throughput\x18\f \x01(\x03B\a\xbaH\x04\"\x02 \x00H\x01R\x15provisionedThroughput\x88\x01\x01\x12\xda\x01\n" +
 	"\vaccess_mode\x18\r \x01(\tB\xb8\x01\xbaH\xb4\x01\xba\x01\xb0\x01\n" +

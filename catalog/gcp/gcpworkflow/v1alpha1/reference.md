@@ -62,7 +62,7 @@ spec:
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.sourceContents` | `string` | yes |  |  |
 | `spec.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
-| `spec.cryptoKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.cryptoKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.callLogLevel` | `string` |  |  |  |
 | `spec.executionHistoryLevel` | `string` |  |  |  |
 | `spec.userEnvVars` | `map<string, string>` |  |  |  |
@@ -158,7 +158,7 @@ service agent roles/cloudkms.cryptoKeyEncrypterDecrypter on the key
 BEFORE deploying, or the deploy fails. Omit for Google-managed
 encryption.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.callLogLevel
@@ -259,6 +259,7 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.cryptoKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.cryptoKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 
 ## Referenced By
 

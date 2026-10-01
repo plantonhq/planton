@@ -27,4 +27,14 @@ message GcpKmsKeyStackOutputs {
   // Same population rules as primary_version_name — the quick health probe
   // that a CMEK key is actually able to encrypt.
   string primary_state = 4;
+
+  // Fully qualified resource name of the version Google creates with the
+  // key (version 1), for every purpose — the version an asymmetric-sign
+  // key's consumers name (a CA Service authority's signing key, a Binary
+  // Authorization attestor's public key), since such keys have no primary.
+  // Format: projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}/cryptoKeyVersions/1
+  // Empty for keys created with skip_initial_version_creation (and so for
+  // import_only keys). Later versions are added by rotation or by hand and
+  // are named explicitly by their consumers.
+  string initial_version_name = 5;
 }

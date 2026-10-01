@@ -3257,7 +3257,7 @@ var File_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcpcloudrun/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudrun.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbc&\n" +
+	"+catalog/gcp/gcpcloudrun/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudrun.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfa&\n" +
 	"\x0fGcpCloudRunSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12@\n" +
@@ -3278,8 +3278,8 @@ const file_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0ftimeout_seconds\x18\f \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\x90\x1c(\x01H\x01R\x0etimeoutSeconds\x88\x01\x01\x12\x9a\x01\n" +
 	"\x15execution_environment\x18\r \x01(\x0e2E.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunExecutionEnvironmentB\x1e\x92\xa6\x1d\x1aEXECUTION_ENVIRONMENT_GEN2R\x14executionEnvironment\x12)\n" +
-	"\x10session_affinity\x18\x0e \x01(\bR\x0fsessionAffinity\x12\xbd\x01\n" +
-	"\x0eencryption_key\x18\x0f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBb\xaa\xa6\x1d@KMS crypto key resource ID/reference only — never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\rencryptionKey\x12D\n" +
+	"\x10session_affinity\x18\x0e \x01(\bR\x0fsessionAffinity\x12\xfb\x01\n" +
+	"\x0eencryption_key\x18\x0f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x9f\x01\xaa\xa6\x1d@KMS crypto key resource ID/reference only — never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\rencryptionKey\x12D\n" +
 	"\brevision\x18\x10 \x01(\tB(\xbaH%\xd8\x01\x01r \x18?2\x1c^[a-z]([-a-z0-9]*[a-z0-9])?$R\brevision\x12Y\n" +
 	"\n" +
 	"vpc_access\x18\x11 \x01(\v2:.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunVpcAccessR\tvpcAccess\x12b\n" +

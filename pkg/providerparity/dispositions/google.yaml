@@ -383,12 +383,6 @@ resources:
   - resource: google_billing_subaccount
     disposition: deferred
     reason: "billing subaccounts serve resellers; deferred"
-  - resource: google_binary_authorization_attestor
-    disposition: model-planned
-    reason: "planned GcpBinaryAuthorizationAttestor kind (Binary Authorization attestors)"
-  - resource: google_binary_authorization_policy
-    disposition: model-planned
-    reason: "planned GcpBinaryAuthorizationPolicy kind (Binary Authorization policy)"
   - resource: google_blockchain_node_engine_blockchain_nodes
     disposition: excluded-deprecated
     reason: "Blockchain Node Engine is sunset by Google"
@@ -800,12 +794,9 @@ resources:
   - resource: google_contact_center_insights_view
     disposition: deferred
     reason: "Contact Center AI Insights is a specialty; deferred"
-  - resource: google_container_analysis_note
-    disposition: deferred
-    reason: "judged to fold into a Binary Authorization attestor kind when admitted (attestation notes and occurrences); deferred"
   - resource: google_container_analysis_occurrence
     disposition: deferred
-    reason: "judged to fold into a Binary Authorization attestor kind when admitted (attestation notes and occurrences); deferred"
+    reason: "an occurrence (a Binary Authorization attestation among them) is data a build or scanning pipeline writes per image digest against a note GcpBinaryAuthorizationAttestor owns; data-plane, not infrastructure"
   - resource: google_container_attached_cluster
     disposition: deferred
     reason: "attached and multi-cloud GKE clusters (AWS/Azure) are a specialty; deferred"
@@ -1316,24 +1307,15 @@ resources:
   - resource: google_integrations_client
     disposition: deferred
     reason: "Application Integration is a niche; deferred"
-  - resource: google_kms_autokey_config
-    disposition: model-planned
-    reason: "planned GcpKmsAutokeyConfig kind (KMS Autokey configuration)"
   - resource: google_kms_crypto_key_version
     disposition: deferred
     reason: "judged to fold into the existing GcpKmsKey kind's spec (key versions); the composition is not built"
   - resource: google_kms_ekm_connection
     disposition: deferred
     reason: "external key manager connections are a specialty; deferred"
-  - resource: google_kms_key_handle
-    disposition: model-planned
-    reason: "planned GcpKmsKeyHandle kind (KMS Autokey key handles)"
   - resource: google_kms_key_ring_import_job
     disposition: deferred
     reason: "judged to fold into the existing GcpKmsKeyRing kind's spec (import jobs); the composition is not built"
-  - resource: google_kms_project_autokey_config
-    disposition: deferred
-    reason: "KMS Autokey judged as a GcpKmsAutokey kind (autokey config and key handles composed); deferred pending demand"
   - resource: google_kms_secret_ciphertext
     disposition: deferred
     reason: "secret ciphertext is an imperative encrypt operation, a poor declarative fit"
@@ -1829,36 +1811,9 @@ resources:
   - resource: google_scc_source
     disposition: excluded-deprecated
     reason: "Security Command Center v1 API surface, superseded by the SCC v2 and SCC Management APIs (equivalents exist for every resource)"
-  - resource: google_scc_v2_folder_mute_config
-    disposition: model-planned
-    reason: "planned GcpSccMuteConfig kind (Security Command Center mute configs at project, folder, or organization scope)"
-  - resource: google_scc_v2_folder_notification_config
-    disposition: model-planned
-    reason: "planned GcpSccNotificationConfig kind (Security Command Center notification configs at project, folder, or organization scope)"
-  - resource: google_scc_v2_folder_scc_big_query_export
-    disposition: model-planned
-    reason: "planned GcpSccBigQueryExport kind (Security Command Center BigQuery exports at project, folder, or organization scope)"
-  - resource: google_scc_v2_organization_mute_config
-    disposition: model-planned
-    reason: "planned GcpSccMuteConfig kind (Security Command Center mute configs at project, folder, or organization scope)"
-  - resource: google_scc_v2_organization_notification_config
-    disposition: model-planned
-    reason: "planned GcpSccNotificationConfig kind (Security Command Center notification configs at project, folder, or organization scope)"
-  - resource: google_scc_v2_organization_scc_big_query_export
-    disposition: model-planned
-    reason: "planned GcpSccBigQueryExport kind (Security Command Center BigQuery exports at project, folder, or organization scope)"
   - resource: google_scc_v2_organization_source
     disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_project_mute_config
-    disposition: model-planned
-    reason: "planned GcpSccMuteConfig kind (Security Command Center mute configs at project, folder, or organization scope)"
-  - resource: google_scc_v2_project_notification_config
-    disposition: model-planned
-    reason: "planned GcpSccNotificationConfig kind (Security Command Center notification configs at project, folder, or organization scope)"
-  - resource: google_scc_v2_project_scc_big_query_export
-    disposition: model-planned
-    reason: "planned GcpSccBigQueryExport kind (Security Command Center BigQuery exports at project, folder, or organization scope)"
+    reason: "a custom Security Command Center findings source a third-party integration writes findings into; a candidate kind of its own, unrelated to the notification, mute, and export kinds; deferred pending demand"
   - resource: google_secure_source_manager_branch_rule
     disposition: deferred
     reason: "Secure Source Manager is a niche; deferred"

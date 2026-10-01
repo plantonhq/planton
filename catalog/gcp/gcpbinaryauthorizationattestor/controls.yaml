@@ -1,0 +1,79 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpbinaryauthorizationattestor
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Binary Authorization and Artifact Analysis store the attestor, its note, and the attestations encrypted at rest with Google-managed keys.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: The attestor holds public keys and metadata only; the private signing key is the customer's, best held in Cloud KMS (pkix_public_key.kms_key_version) where it never leaves the key service.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The attestor terminates no connections; admission checks and management calls ride Google's TLS-only endpoints.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The attestor and its note have no address of their own; they are read only through the Binary Authorization and Artifact Analysis APIs under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The attestor serves no traffic; it is a supply-chain trust anchor.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Changing the attestor needs binaryauthorization.attestors.* (roles/binaryauthorization.attestorsAdmin); writing attestations needs occurrence-create on the note; the attestor reads them through its own service account with only notes.occurrences.viewer, which the module grants on a note it creates.
+    - control_id: workload-identity
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The attestor reads attestations as its own Google-managed service account (delegation_service_account_email); no key or credential is handed out.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Attestor and note changes are Admin Activity audit log entries, and each admission decision that consulted the attestor is logged by GKE.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The attestor emits nothing itself; the policy's dry-run and enforcement logs report its effect.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The attestor and note are declarative; the manifest is their recovery path. Attestations are re-creatable by re-signing.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Binary Authorization and Artifact Analysis are global Google-managed services; there is no placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE (the attestor and a created note are deleted, and policies requiring the attestor stop admitting images only it signed); PREVENT makes destroy fail; ABANDON leaves both in Google.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Binary Authorization and Artifact Analysis are fully Google-operated.

@@ -68,6 +68,7 @@ Cross-field rules enforced before deploy: rotation only on ENCRYPT_DECRYPT keys;
 | `key_name` | The short name of the key |
 | `primary_version_name` | Resource name of the current primary version (ENCRYPT_DECRYPT keys; empty otherwise) |
 | `primary_state` | Lifecycle state of the primary version (e.g. `ENABLED`) — the quick health probe that the key can encrypt |
+| `initial_version_name` | Resource name of the version created with the key (version 1), for every purpose — the version an asymmetric-sign key's consumers (a CA Service authority, a Binary Authorization attestor) name; empty with `skip_initial_version_creation` |
 
 ## Important Notes
 

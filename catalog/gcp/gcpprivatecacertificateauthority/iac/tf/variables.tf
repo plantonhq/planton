@@ -252,7 +252,8 @@ variable "spec" {
       algorithm = optional(string, "")
 
       # A Cloud KMS key version you own, with an asymmetric-sign purpose -- a
-      # GcpKmsKey reference (its primary version) or a literal
+      # GcpKmsKey reference (the version created with the key; asymmetric keys
+      # have no primary version) or a literal
       # projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*.
       # CA Service's service agent needs signerVerifier and viewer on the key.
       # Enterprise pools only (Google's tier rule).

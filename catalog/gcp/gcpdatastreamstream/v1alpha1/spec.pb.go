@@ -4167,7 +4167,7 @@ const file_catalog_gcp_gcpdatastreamstream_v1alpha1_spec_proto_rawDesc = "" +
 	"\x18source_object_identifier\x18\x01 \x01(\v2W.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamSourceObjectIdentifierR\x16sourceObjectIdentifier\"\xa8\x02\n" +
 	"\x1aGcpDatastreamStreamRuleSet\x12z\n" +
 	"\robject_filter\x18\x01 \x01(\v2M.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamObjectFilterB\x06\xbaH\x03\xc8\x01\x01R\fobjectFilter\x12\x8d\x01\n" +
-	"\x13customization_rules\x18\x02 \x03(\v2R.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamCustomizationRuleB\b\xbaH\x05\x92\x01\x02\b\x01R\x12customizationRules\"\xfc\f\n" +
+	"\x13customization_rules\x18\x02 \x03(\v2R.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamCustomizationRuleB\b\xbaH\x05\x92\x01\x02\b\x01R\x12customizationRules\"\xba\r\n" +
 	"\x17GcpDatastreamStreamSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -4180,8 +4180,8 @@ const file_catalog_gcp_gcpdatastreamstream_v1alpha1_spec_proto_rawDesc = "" +
 	"\fbackfill_all\x18\b \x01(\v2L.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamBackfillAllR\vbackfillAll\x12#\n" +
 	"\rbackfill_none\x18\t \x01(\bR\fbackfillNone\x12e\n" +
 	"\trule_sets\x18\n" +
-	" \x03(\v2H.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamRuleSetR\bruleSets\x12\xdc\x01\n" +
-	"\x1fcustomer_managed_encryption_key\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBa\xaa\xa6\x1d?KMS crypto key resource ID/reference only -- never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x1ccustomerManagedEncryptionKey\x12K\n" +
+	" \x03(\v2H.dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamRuleSetR\bruleSets\x12\x9a\x02\n" +
+	"\x1fcustomer_managed_encryption_key\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x9e\x01\xaa\xa6\x1d?KMS crypto key resource ID/reference only -- never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x1ccustomerManagedEncryptionKey\x12K\n" +
 	"\rdesired_state\x18\f \x01(\tB&\xbaH#\xd8\x01\x01r\x1eR\vNOT_STARTEDR\aRUNNINGR\x06PAUSEDR\fdesiredState\x12:\n" +
 	"\x19create_without_validation\x18\r \x01(\bR\x17createWithoutValidation\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x0e \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +

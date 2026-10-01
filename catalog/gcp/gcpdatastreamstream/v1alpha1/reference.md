@@ -348,7 +348,7 @@ spec:
 | `spec.ruleSets[].customizationRules[].bigqueryPartitioning.requirePartitionFilter` | `bool` |  |  |  |
 | `spec.ruleSets[].customizationRules[].bigqueryClustering` | `GcpDatastreamStreamBigqueryClustering` |  |  |  |
 | `spec.ruleSets[].customizationRules[].bigqueryClustering.columns` | `[]string` | yes |  |  |
-| `spec.customerManagedEncryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.customerManagedEncryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.desiredState` | `string` |  |  |  |
 | `spec.createWithoutValidation` | `bool` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
@@ -2328,7 +2328,7 @@ A Cloud KMS key encrypting the data Datastream holds in flight (CMEK)
 Datastream's service agent needs cryptoKeyEncrypterDecrypter on it.
 Empty uses a Google-managed key. Immutable.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.desiredState
@@ -2392,6 +2392,7 @@ Fields that can point at another resource's outputs:
 | `spec.destinationConfig.bigqueryDestinationConfig.blmtConfig.bucket` | GcpGcsBucket | `status.outputs.bucket_name` |
 | `spec.destinationConfig.bigqueryDestinationConfig.blmtConfig.connectionName` | GcpBigQueryConnection | `status.outputs.name` |
 | `spec.customerManagedEncryptionKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.customerManagedEncryptionKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 
 ## See Also
 

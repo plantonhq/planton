@@ -169,7 +169,7 @@ spec:
 | `spec.workloadsConfig.dagProcessor.count` | `int32` |  |  |  |
 | `spec.environmentSize` | `string` |  |  |  |
 | `spec.resilienceMode` | `string` |  |  |  |
-| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.maintenanceWindow` | `GcpCloudComposerMaintenanceWindow` |  |  |  |
 | `spec.maintenanceWindow.startTime` | `string` | yes |  |  |
 | `spec.maintenanceWindow.endTime` | `string` | yes |  |  |
@@ -648,7 +648,7 @@ Customer-managed encryption key for the Composer environment.
 All Composer-managed resources (GKE nodes, Cloud SQL, Cloud Storage) are
 encrypted with this key. Immutable after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.maintenanceWindow
@@ -894,6 +894,7 @@ Fields that can point at another resource's outputs:
 | `spec.nodeConfig.subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_self_link` |
 | `spec.nodeConfig.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.storageBucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 
 ## Referenced By

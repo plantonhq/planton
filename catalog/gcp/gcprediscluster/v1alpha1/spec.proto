@@ -451,7 +451,15 @@ message GcpRedisClusterSpec {
   // Google-managed keys encrypt the data.
   dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key = 13 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 
   // Whether and how data survives a restart. Unset means in-memory only.

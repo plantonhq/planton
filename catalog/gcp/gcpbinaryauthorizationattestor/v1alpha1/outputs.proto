@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1;
+
+// GcpBinaryAuthorizationAttestorStackOutputs carries the attestor's
+// identity, its note, and the identity it reads attestations with.
+message GcpBinaryAuthorizationAttestorStackOutputs {
+  // Full resource name: projects/{project}/attestors/{attestor_name}. The
+  // form a GcpBinaryAuthorizationPolicy rule's require_attestations_by
+  // takes.
+  string attestor_id = 1;
+
+  // The attestor's ID in its project.
+  string attestor_name = 2;
+
+  // The note attestations are stored under: projects/{project}/notes/{note}.
+  // Signing pipelines create their attestation occurrences against it.
+  string note_reference = 3;
+
+  // The service account the attestor reads attestations with. It needs
+  // roles/containeranalysis.notes.occurrences.viewer on the note (granted
+  // by the module for a note it creates).
+  string delegation_service_account_email = 4;
+}

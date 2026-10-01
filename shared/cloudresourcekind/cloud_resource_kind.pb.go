@@ -1931,7 +1931,7 @@ const (
 	CloudResourceKind_GcpEventarcMessageBus CloudResourceKind = 3163
 	CloudResourceKind_GcpPlantonRunner      CloudResourceKind = 3164
 	// 3170–3179: GCP organization & governance (folders, org policies, tags,
-	// budgets, identity groups, API keys)
+	// budgets, identity groups, API keys, KMS Autokey)
 	// GcpFolder is a container: the hierarchy node projects, sub-folders,
 	// policies, and tag bindings are placed inside.
 	CloudResourceKind_GcpFolder     CloudResourceKind = 3170
@@ -1950,6 +1950,10 @@ const (
 	// pools in the identity service group.
 	CloudResourceKind_GcpCloudIdentityGroup CloudResourceKind = 3176
 	CloudResourceKind_GcpApiKey             CloudResourceKind = 3177
+	// Cloud KMS Autokey switched on for a folder or a project: where the
+	// customer-managed keys GcpKmsKeyHandle requests are created. A security
+	// control, so it groups with the KMS kinds rather than the hierarchy.
+	CloudResourceKind_GcpKmsAutokeyConfig CloudResourceKind = 3178
 	// A custom constraint is a DEFINITION the organization owns; the
 	// GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
 	// bindings reference a custom role.
@@ -2127,6 +2131,25 @@ const (
 	// A Certificate Authority Service CA pool: the trust anchor and issuance
 	// policy its certificate authorities and certificates live inside.
 	CloudResourceKind_GcpPrivateCaPool CloudResourceKind = 3230
+	// An Autokey key handle: asks Autokey for a customer-managed key for one
+	// resource type in one project and location; the resource it protects
+	// names the key the handle returns.
+	CloudResourceKind_GcpKmsKeyHandle CloudResourceKind = 3231
+	// Security Command Center streaming notifications to Pub/Sub at a
+	// project, folder, or organization.
+	CloudResourceKind_GcpSccNotificationConfig CloudResourceKind = 3232
+	// A Security Command Center mute rule at a project, folder, or
+	// organization.
+	CloudResourceKind_GcpSccMuteConfig CloudResourceKind = 3233
+	// A continuous Security Command Center findings export to a BigQuery
+	// dataset at a project, folder, or organization.
+	CloudResourceKind_GcpSccBigQueryExport CloudResourceKind = 3234
+	// A project's Binary Authorization policy: which container images GKE
+	// admits, per cluster. A project singleton.
+	CloudResourceKind_GcpBinaryAuthorizationPolicy CloudResourceKind = 3235
+	// A Binary Authorization attestor with its Artifact Analysis note: the
+	// public keys that verify image attestations a policy requires.
+	CloudResourceKind_GcpBinaryAuthorizationAttestor CloudResourceKind = 3236
 	// A certificate authority in a CA pool: a self-signed root, or a
 	// subordinate signed by another authority or an outside CA. Its own kind
 	// because a pool rotates through several and a subordinate references
@@ -3238,6 +3261,7 @@ var (
 		3175:  "GcpBillingBudget",
 		3176:  "GcpCloudIdentityGroup",
 		3177:  "GcpApiKey",
+		3178:  "GcpKmsAutokeyConfig",
 		3179:  "GcpOrgPolicyCustomConstraint",
 		3180:  "GcpSharedVpcHost",
 		3181:  "GcpSharedVpcServiceProject",
@@ -3281,6 +3305,12 @@ var (
 		3221:  "GcpTpuQueuedResource",
 		3222:  "GcpDialogflowCxSecuritySettings",
 		3230:  "GcpPrivateCaPool",
+		3231:  "GcpKmsKeyHandle",
+		3232:  "GcpSccNotificationConfig",
+		3233:  "GcpSccMuteConfig",
+		3234:  "GcpSccBigQueryExport",
+		3235:  "GcpBinaryAuthorizationPolicy",
+		3236:  "GcpBinaryAuthorizationAttestor",
 		3237:  "GcpPrivateCaCertificateAuthority",
 		3238:  "GcpPrivateCaCertificateTemplate",
 		3239:  "GcpPrivateCaCertificate",
@@ -4052,6 +4082,7 @@ var (
 		"GcpBillingBudget":                               3175,
 		"GcpCloudIdentityGroup":                          3176,
 		"GcpApiKey":                                      3177,
+		"GcpKmsAutokeyConfig":                            3178,
 		"GcpOrgPolicyCustomConstraint":                   3179,
 		"GcpSharedVpcHost":                               3180,
 		"GcpSharedVpcServiceProject":                     3181,
@@ -4095,6 +4126,12 @@ var (
 		"GcpTpuQueuedResource":                           3221,
 		"GcpDialogflowCxSecuritySettings":                3222,
 		"GcpPrivateCaPool":                               3230,
+		"GcpKmsKeyHandle":                                3231,
+		"GcpSccNotificationConfig":                       3232,
+		"GcpSccMuteConfig":                               3233,
+		"GcpSccBigQueryExport":                           3234,
+		"GcpBinaryAuthorizationPolicy":                   3235,
+		"GcpBinaryAuthorizationAttestor":                 3236,
 		"GcpPrivateCaCertificateAuthority":               3237,
 		"GcpPrivateCaCertificateTemplate":                3238,
 		"GcpPrivateCaCertificate":                        3239,
@@ -4806,7 +4843,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xa3\x86\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*ŉ\x03\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5364,7 +5401,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\rGcpTagBinding\x10\xe6\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagb:\x02\xe5\x18P\xba\x02\x123\n" +
 	"\x10GcpBillingBudget\x10\xe7\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbdgtP\xba\x02\x129\n" +
 	"\x15GcpCloudIdentityGroup\x10\xe8\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcigrpP\xb4\x02\x12,\n" +
-	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x12>\n" +
+	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x127\n" +
+	"\x13GcpKmsAutokeyConfig\x10\xea\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpakcfgP\xb3\x02\x12>\n" +
 	"\x1cGcpOrgPolicyCustomConstraint\x10\xeb\x18\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpoccP\xba\x02\x123\n" +
 	"\x10GcpSharedVpcHost\x10\xec\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsvphP\xb0\x02\x12A\n" +
 	"\x1aGcpSharedVpcServiceProject\x10\xed\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsvps:\x02\xec\x18P\xb0\x02\x124\n" +
@@ -5407,7 +5445,13 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x19GcpModelArmorFloorSetting\x10\x94\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpmafsP\xb2\x02\x127\n" +
 	"\x14GcpTpuQueuedResource\x10\x95\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptpuqP\xb2\x02\x12C\n" +
 	"\x1fGcpDialogflowCxSecuritySettings\x10\x96\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdfcxsP\xb2\x02\x124\n" +
-	"\x10GcpPrivateCaPool\x10\x9e\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcppca0\x01P\xb3\x02\x12G\n" +
+	"\x10GcpPrivateCaPool\x10\x9e\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcppca0\x01P\xb3\x02\x126\n" +
+	"\x0fGcpKmsKeyHandle\x10\x9f\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkmsh:\x02\xea\x18P\xb3\x02\x12;\n" +
+	"\x18GcpSccNotificationConfig\x10\xa0\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsccnP\xb3\x02\x123\n" +
+	"\x10GcpSccMuteConfig\x10\xa1\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsccmP\xb3\x02\x127\n" +
+	"\x14GcpSccBigQueryExport\x10\xa2\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsccxP\xb3\x02\x12@\n" +
+	"\x1cGcpBinaryAuthorizationPolicy\x10\xa3\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpbapolP\xb3\x02\x12B\n" +
+	"\x1eGcpBinaryAuthorizationAttestor\x10\xa4\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpbaattP\xb3\x02\x12G\n" +
 	" GcpPrivateCaCertificateAuthority\x10\xa5\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppcaa:\x02\x9e\x19P\xb3\x02\x12B\n" +
 	"\x1fGcpPrivateCaCertificateTemplate\x10\xa6\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcppcatP\xb3\x02\x12>\n" +
 	"\x17GcpPrivateCaCertificate\x10\xa7\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppcac:\x02\xa5\x19P\xb3\x02\x128\n" +

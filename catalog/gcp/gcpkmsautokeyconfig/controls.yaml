@@ -1,0 +1,79 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpkmsautokeyconfig
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The configuration is control-plane metadata (a scope's key-placement choice) Google holds on its own encrypted infrastructure; it stores no customer data.
+    - control_id: enc-at-rest-cmk
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The configuration exists to deliver customer-managed keys -- every key a GcpKmsKeyHandle requests under it is a Cloud HSM key the customer owns and audits.
+      notes: Autokey is itself the CMEK control for the resources in its scope; this block is how a scope adopts it.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The configuration terminates no connections; management calls ride Google's TLS-only Cloud KMS endpoint like every GCP API.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: An Autokey configuration has no address of its own; it is read and changed only through the Cloud KMS API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The configuration serves no traffic.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Changing the configuration needs cloudkms.autokeyConfigs.update at the folder or project (roles/cloudkms.autokeyAdmin); requesting keys under it needs only the key-handle permission, so developers never hold key-administration rights.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The configuration authenticates nothing; Autokey acts through Google's Cloud KMS service agent.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every configuration change, and every key Autokey creates and grant it makes, is a Cloud KMS admin write recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The configuration emits no metrics of its own; the keys it produces appear in the Cloud KMS key inventory and its dashboards.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A configuration is declarative; the manifest is its recovery path.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Autokey configurations are global Google-managed settings; there is no placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE (destroy clears the configuration and Autokey stops issuing keys for the scope; existing keys stay); PREVENT makes destroy fail; ABANDON retires the block and leaves Autokey on.
+      notes: Turning Autokey off silently forces every later resource in the scope back to Google-managed keys or hand-designed ones; PREVENT is the guard for the configurations a landing zone depends on.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud KMS Autokey is fully Google-operated.

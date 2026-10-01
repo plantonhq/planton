@@ -1,0 +1,21 @@
+# An extra GcpPubSubTopic instance for the gcpsccn scenario: the topic the
+# notification config streams to, in the harness project.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopic
+metadata:
+  name: planton-oss-e2e-gcpsccn-topic
+  id: planton-oss-e2e-gcpsccn-topic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcppubsubtopic
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  topicName: e2e-gcpsccn-${E2E_RUN_ID}
+  deletionPolicy: DELETE

@@ -162,7 +162,15 @@ message GcpGcsBucketSpec {
   // (existing objects keep the key they were written with).
   dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 13 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 
   // Requester pays: the caller's project (not the bucket owner) is billed

@@ -1841,7 +1841,7 @@ var File_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto protoreflect.FileDescripto
 
 const file_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpgcsbucket/v1alpha1/spec.proto\x12%dev.planton.gcp.gcpgcsbucket.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xe9\x1e\n" +
+	",catalog/gcp/gcpgcsbucket/v1alpha1/spec.proto\x12%dev.planton.gcp.gcpgcsbucket.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa7\x1f\n" +
 	"\x10GcpGcsBucketSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12P\n" +
@@ -1858,8 +1858,8 @@ const file_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0flifecycle_rules\x18\n" +
 	" \x03(\v2@.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketLifecycleRuleB\b\xbaH\x05\x92\x01\x02\x10dR\x0elifecycleRules\x12m\n" +
 	"\x10retention_policy\x18\v \x01(\v2B.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketRetentionPolicyR\x0fretentionPolicy\x12q\n" +
-	"\x12soft_delete_policy\x18\f \x01(\v2C.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketSoftDeletePolicyR\x10softDeletePolicy\x12t\n" +
-	"\fkms_key_name\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	"\x12soft_delete_policy\x18\f \x01(\v2C.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketSoftDeletePolicyR\x10softDeletePolicy\x12\xb1\x01\n" +
+	"\fkms_key_name\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12%\n" +
 	"\x0erequester_pays\x18\x0e \x01(\bR\rrequesterPays\x127\n" +
 	"\x18default_event_based_hold\x18\x0f \x01(\bR\x15defaultEventBasedHold\x126\n" +

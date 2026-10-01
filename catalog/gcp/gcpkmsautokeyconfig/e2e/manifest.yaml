@@ -1,0 +1,11 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsAutokeyConfig
+metadata:
+  name: workloads-folder-autokey
+spec:
+  scope:
+    folderId:
+      value: "123456789012"
+  keyProjectResolutionMode: DEDICATED_KEY_PROJECT
+  keyProject:
+    value: security-keys

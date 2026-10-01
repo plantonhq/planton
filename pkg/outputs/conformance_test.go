@@ -3144,8 +3144,9 @@ func TestStackOutputsConformance(t *testing.T) {
 				"key_name":             "cmek-data-key",
 				"primary_version_name": "projects/prod-project/locations/us-central1/keyRings/prod-encryption/cryptoKeys/cmek-data-key/cryptoKeyVersions/1",
 				"primary_state":        "ENABLED",
+				"initial_version_name": "projects/prod-project/locations/us-central1/keyRings/prod-encryption/cryptoKeys/cmek-data-key/cryptoKeyVersions/1",
 			},
-			mustPopulate: []string{"key_id", "key_name", "primary_version_name", "primary_state"},
+			mustPopulate: []string{"key_id", "key_name", "primary_version_name", "primary_state", "initial_version_name"},
 		},
 		{
 			// GcpServerlessVpcConnector: the short connector name, the fully
@@ -4487,6 +4488,82 @@ func TestStackOutputsConformance(t *testing.T) {
 				"issuer_certificate_authority": "projects/p/locations/us-central1/caPools/internal-tls/certificateAuthorities/root-ca",
 			},
 			mustPopulate: []string{"name", "certificate_id", "pem_certificate", "pem_certificate_chain", "issuer_certificate_authority"},
+		},
+		{
+			// GcpKmsAutokeyConfig: the configuration's name and the scope it
+			// governs.
+			name: "GcpKmsAutokeyConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpKmsAutokeyConfig,
+			rawOutputs: map[string]interface{}{
+				"name":   "folders/123456789012/autokeyConfig",
+				"parent": "folders/123456789012",
+			},
+			mustPopulate: []string{"name", "parent"},
+		},
+		{
+			// GcpKmsKeyHandle: the handle and the key Autokey assigned (what
+			// the protected resource references).
+			name: "GcpKmsKeyHandle",
+			kind: cloudresourcekind.CloudResourceKind_GcpKmsKeyHandle,
+			rawOutputs: map[string]interface{}{
+				"name":    "projects/orders-prod/locations/us-central1/keyHandles/orders-bucket-key",
+				"kms_key": "projects/orders-prod/locations/us-central1/keyRings/autokey/cryptoKeys/123-storage-bucket-0a1b2c",
+			},
+			mustPopulate: []string{"name", "kms_key"},
+		},
+		{
+			// GcpSccNotificationConfig: the config and the publisher it
+			// needs on its topic.
+			name: "GcpSccNotificationConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpSccNotificationConfig,
+			rawOutputs: map[string]interface{}{
+				"name":            "projects/sec/locations/global/notificationConfigs/high-findings",
+				"service_account": "service-project-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
+			},
+			mustPopulate: []string{"name", "service_account"},
+		},
+		{
+			// GcpSccMuteConfig: the rule's name.
+			name: "GcpSccMuteConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpSccMuteConfig,
+			rawOutputs: map[string]interface{}{
+				"name": "folders/456/locations/global/muteConfigs/sandbox-public-buckets",
+			},
+			mustPopulate: []string{"name"},
+		},
+		{
+			// GcpSccBigQueryExport: the export and the writer it needs on
+			// its dataset.
+			name: "GcpSccBigQueryExport",
+			kind: cloudresourcekind.CloudResourceKind_GcpSccBigQueryExport,
+			rawOutputs: map[string]interface{}{
+				"name":      "organizations/123/locations/global/bigQueryExports/findings-history",
+				"principal": "service-org-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
+			},
+			mustPopulate: []string{"name", "principal"},
+		},
+		{
+			// GcpBinaryAuthorizationPolicy: the policy's name and project.
+			name: "GcpBinaryAuthorizationPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationPolicy,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/prod/policy",
+				"project_id": "prod",
+			},
+			mustPopulate: []string{"name", "project_id"},
+		},
+		{
+			// GcpBinaryAuthorizationAttestor: the full name (what policies
+			// require), the id, the note, and the reading identity.
+			name: "GcpBinaryAuthorizationAttestor",
+			kind: cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationAttestor,
+			rawOutputs: map[string]interface{}{
+				"attestor_id":                      "projects/sec/attestors/built-by-ci",
+				"attestor_name":                    "built-by-ci",
+				"note_reference":                   "projects/sec/notes/built-by-ci-note",
+				"delegation_service_account_email": "service-123@gcp-sa-binaryauthorization.iam.gserviceaccount.com",
+			},
+			mustPopulate: []string{"attestor_id", "attestor_name", "note_reference", "delegation_service_account_email"},
 		},
 		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric

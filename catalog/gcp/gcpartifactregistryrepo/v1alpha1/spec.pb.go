@@ -1331,7 +1331,7 @@ var File_catalog_gcp_gcpartifactregistryrepo_v1alpha1_spec_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpartifactregistryrepo/v1alpha1/spec.proto\x120dev.planton.gcp.gcpartifactregistryrepo.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x86\x18\n" +
+	"7catalog/gcp/gcpartifactregistryrepo/v1alpha1/spec.proto\x120dev.planton.gcp.gcpartifactregistryrepo.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc4\x18\n" +
 	"\x1bGcpArtifactRegistryRepoSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xf8\x01\n" +
@@ -1343,8 +1343,8 @@ const file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_spec_proto_rawDesc = "" 
 	"\n" +
 	"valid_mode\x12Omode must be one of: STANDARD_REPOSITORY, REMOTE_REPOSITORY, VIRTUAL_REPOSITORY\x1aXthis == '' || this in ['STANDARD_REPOSITORY', 'REMOTE_REPOSITORY', 'VIRTUAL_REPOSITORY']R\x04mode\x12 \n" +
 	"\vdescription\x18\x06 \x01(\tR\vdescription\x12q\n" +
-	"\x06labels\x18\a \x03(\v2Y.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpec.LabelsEntryR\x06labels\x12t\n" +
-	"\fkms_key_name\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	"\x06labels\x18\a \x03(\v2Y.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpec.LabelsEntryR\x06labels\x12\xb1\x01\n" +
+	"\fkms_key_name\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12z\n" +
 	"\rdocker_config\x18\t \x01(\v2U.dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoDockerConfigR\fdockerConfig\x12w\n" +
 	"\fmaven_config\x18\n" +

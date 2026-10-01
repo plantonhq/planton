@@ -263,7 +263,7 @@ var File_catalog_gcp_gcpworkflow_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcpworkflow/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpworkflow.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x96\x10\n" +
+	"+catalog/gcp/gcpworkflow/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpworkflow.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd4\x10\n" +
 	"\x0fGcpWorkflowSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x16\n" +
@@ -272,9 +272,9 @@ const file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDesc = "" +
 	"\vdescription\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\vdescription\x12Y\n" +
 	"\x06labels\x18\x05 \x03(\v2A.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.LabelsEntryR\x06labels\x125\n" +
 	"\x0fsource_contents\x18\x06 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04(\x80\x80\bR\x0esourceContents\x12z\n" +
-	"\x0fservice_account\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x0eserviceAccount\x12q\n" +
+	"\x0fservice_account\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x0eserviceAccount\x12\xae\x01\n" +
 	"\n" +
-	"crypto_key\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\tcryptoKey\x12\x90\x02\n" +
+	"crypto_key\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\tcryptoKey\x12\x90\x02\n" +
 	"\x0ecall_log_level\x18\t \x01(\tB\xe9\x01\xbaH\xe5\x01\xba\x01\xe1\x01\n" +
 	"\x14valid_call_log_level\x12ccall_log_level must be one of: CALL_LOG_LEVEL_UNSPECIFIED, LOG_ALL_CALLS, LOG_ERRORS_ONLY, LOG_NONE\x1adthis == '' || this in ['CALL_LOG_LEVEL_UNSPECIFIED', 'LOG_ALL_CALLS', 'LOG_ERRORS_ONLY', 'LOG_NONE']R\fcallLogLevel\x12\xdb\x02\n" +
 	"\x17execution_history_level\x18\n" +

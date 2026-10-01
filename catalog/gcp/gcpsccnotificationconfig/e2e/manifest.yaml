@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccNotificationConfig
+metadata:
+  name: high-findings
+spec:
+  scope:
+    projectId:
+      value: my-gcp-project
+  configId: high-findings
+  pubsubTopic:
+    value: projects/my-gcp-project/topics/scc-findings
+  filter: state = "ACTIVE" AND severity = "HIGH"

@@ -1,0 +1,33 @@
+# GcpSccNotificationConfig scenario: a project notification config on the
+# project where Security Command Center is activated (owner-arranged:
+# PLANTON_E2E_GCP_SCC_PROJECT_ID; Standard is free at project level),
+# streaming to a topic fixture in the harness project. The filter matches a
+# category no detector emits, so nothing is published. Configs are free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccNotificationConfig
+metadata:
+  name: planton-oss-e2e-gcpsccn-project
+  id: planton-oss-e2e-gcpsccn-project
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsccnotificationconfig
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SCC_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpsccnotificationconfig/e2e/prerequisites/topic.yaml"
+  tags:
+    - planton-e2e
+spec:
+  scope:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_SCC_PROJECT_ID}
+  configId: e2e-gcpsccn-${E2E_RUN_ID}
+  description: Planton E2E notification config
+  pubsubTopic:
+    valueFrom:
+      kind: GcpPubSubTopic
+      name: planton-oss-e2e-gcpsccn-topic
+      fieldPath: status.outputs.topic_id
+  filter: category = "PLANTON_E2E_NO_SUCH_CATEGORY"

@@ -3294,7 +3294,7 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"%auxiliary_node_group_role_valid_value\x12\x18each role must be DRIVER\x1a\x12this in ['DRIVER']R\x05roles\x12\x83\x01\n" +
 	"\x11node_group_config\x18\x02 \x01(\v2W.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfigR\x0fnodeGroupConfig\x12\x9c\x01\n" +
 	"\rnode_group_id\x18\x03 \x01(\tBx\xbaHu\xba\x01r\n" +
-	"\x14node_group_id_length\x12%node_group_id must be 3-33 characters\x1a3this == '' || (size(this) >= 3 && size(this) <= 33)R\vnodeGroupId\"\x93\x14\n" +
+	"\x14node_group_id_length\x12%node_group_id must be 3-33 characters\x1a3this == '' || (size(this) >= 3 && size(this) <= 33)R\vnodeGroupId\"\xd0\x14\n" +
 	"\x18GcpDataprocClusterConfig\x12|\n" +
 	"\x0estaging_bucket\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbe\x17\x92\xd4a\x18status.outputs.bucket_idR\rstagingBucket\x12v\n" +
 	"\vtemp_bucket\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbe\x17\x92\xd4a\x18status.outputs.bucket_idR\n" +
@@ -3309,8 +3309,8 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fsoftware_config\x18\b \x01(\v2M.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfigR\x0esoftwareConfig\x12\x80\x01\n" +
 	"\x16initialization_actions\x18\t \x03(\v2I.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInitActionR\x15initializationActions\x12\x86\x01\n" +
 	"\x16autoscaling_policy_uri\x18\n" +
-	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\x88\xd4a\xec\x17\x92\xd4a\x13status.outputs.nameR\x14autoscalingPolicyUri\x12\x89\x01\n" +
-	"\x17encryption_kms_key_name\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x14encryptionKmsKeyName\x12v\n" +
+	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\x88\xd4a\xec\x17\x92\xd4a\x13status.outputs.nameR\x14autoscalingPolicyUri\x12\xc6\x01\n" +
+	"\x17encryption_kms_key_name\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x14encryptionKmsKeyName\x12v\n" +
 	"\x0fsecurity_config\x18\f \x01(\v2M.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfigR\x0esecurityConfig\x12v\n" +
 	"\x0fendpoint_config\x18\r \x01(\v2M.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterEndpointConfigR\x0eendpointConfig\x12y\n" +
 	"\x10lifecycle_config\x18\x0e \x01(\v2N.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterLifecycleConfigR\x0flifecycleConfig\x12y\n" +

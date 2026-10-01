@@ -286,7 +286,7 @@ spec:
 | `spec.clusterConfig.initializationActions[].script` | `string` | yes |  |  |
 | `spec.clusterConfig.initializationActions[].timeoutSec` | `int32` |  |  |  |
 | `spec.clusterConfig.autoscalingPolicyUri` | `string \| valueFrom` |  |  | GcpDataprocAutoscalingPolicy (`status.outputs.name`) |
-| `spec.clusterConfig.encryptionKmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.clusterConfig.encryptionKmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.clusterConfig.securityConfig` | `GcpDataprocClusterSecurityConfig` |  |  |  |
 | `spec.clusterConfig.securityConfig.kerberosConfig` | `GcpDataprocClusterKerberosConfig` |  |  |  |
 | `spec.clusterConfig.securityConfig.kerberosConfig.enableKerberos` | `bool` |  |  |  |
@@ -1740,7 +1740,7 @@ Cloud KMS key for encrypting persistent disks attached to cluster
 nodes (CMEK). Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}
 If not specified, disks are encrypted with Google-managed keys.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.clusterConfig.securityConfig
@@ -2478,6 +2478,7 @@ Fields that can point at another resource's outputs:
 | `spec.clusterConfig.gceConfig.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.clusterConfig.autoscalingPolicyUri` | GcpDataprocAutoscalingPolicy | `status.outputs.name` |
 | `spec.clusterConfig.encryptionKmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.clusterConfig.encryptionKmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.clusterConfig.securityConfig.kerberosConfig.kmsKeyUri` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.virtualClusterConfig.stagingBucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.virtualClusterConfig.kubernetesClusterConfig.kubernetesNamespace` | KubernetesNamespace | `spec.name` |

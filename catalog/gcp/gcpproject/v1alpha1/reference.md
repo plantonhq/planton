@@ -223,6 +223,8 @@ Fields on other kinds that can point at this resource:
 | GcpBigtableInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableTable | `spec.projectId` | `status.outputs.project_id` |
 | GcpBillingBudget | `spec.budgetFilter.projects` | `status.outputs.project_number` |
+| GcpBinaryAuthorizationAttestor | `spec.projectId` | `status.outputs.project_id` |
+| GcpBinaryAuthorizationPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerCert | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerDnsAuthorization | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertificateMap | `spec.projectId` | `status.outputs.project_id` |
@@ -285,6 +287,9 @@ Fields on other kinds that can point at this resource:
 | GcpIamOauthClient | `spec.projectId` | `status.outputs.project_id` |
 | GcpIdentityPlatformConfig | `spec.projectId` | `status.outputs.project_id` |
 | GcpIdentityPlatformTenant | `spec.projectId` | `status.outputs.project_id` |
+| GcpKmsAutokeyConfig | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpKmsAutokeyConfig | `spec.keyProject` | `status.outputs.project_id` |
+| GcpKmsKeyHandle | `spec.projectId` | `status.outputs.project_id` |
 | GcpKmsKeyRing | `spec.projectId` | `status.outputs.project_id` |
 | GcpLogBucket | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpLogMetric | `spec.projectId` | `status.outputs.project_id` |
@@ -325,6 +330,9 @@ Fields on other kinds that can point at this resource:
 | GcpRedisInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpRegionNetworkEndpointGroup | `spec.projectId` | `status.outputs.project_id` |
 | GcpRouterNat | `spec.projectId` | `status.outputs.project_id` |
+| GcpSccBigQueryExport | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpSccMuteConfig | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpSccNotificationConfig | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpSecretManagerSecret | `spec.projectId` | `status.outputs.project_id` |
 | GcpServerlessVpcConnector | `spec.projectId` | `status.outputs.project_id` |
 | GcpServiceAccount | `spec.projectId` | `status.outputs.project_id` |

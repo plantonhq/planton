@@ -1571,7 +1571,7 @@ var File_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto protoreflec
 
 const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpcloudcomposerenvironment/v1alpha1/spec.proto\x124dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x87\x14\n" +
+	";catalog/gcp/gcpcloudcomposerenvironment/v1alpha1/spec.proto\x124dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc5\x14\n" +
 	"\x1fGcpCloudComposerEnvironmentSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x127\n" +
@@ -1583,9 +1583,9 @@ const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc =
 	"\x1aprivate_environment_config\x18\x06 \x01(\v2^.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerPrivateEnvironmentConfigR\x18privateEnvironmentConfig\x12\x80\x01\n" +
 	"\x10workloads_config\x18\a \x01(\v2U.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfigR\x0fworkloadsConfig\x12\x99\x01\n" +
 	"\x10environment_size\x18\b \x01(\tBn\xbaHkriR\x00R\x16ENVIRONMENT_SIZE_SMALLR\x17ENVIRONMENT_SIZE_MEDIUMR\x16ENVIRONMENT_SIZE_LARGER\x1cENVIRONMENT_SIZE_EXTRA_LARGER\x0fenvironmentSize\x12V\n" +
-	"\x0fresilience_mode\x18\t \x01(\tB-\xbaH*r(R\x00R\x13STANDARD_RESILIENCER\x0fHIGH_RESILIENCER\x0eresilienceMode\x12t\n" +
+	"\x0fresilience_mode\x18\t \x01(\tB-\xbaH*r(R\x00R\x13STANDARD_RESILIENCER\x0fHIGH_RESILIENCER\x0eresilienceMode\x12\xb1\x01\n" +
 	"\fkms_key_name\x18\n" +
-	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12\x86\x01\n" +
 	"\x12maintenance_window\x18\v \x01(\v2W.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerMaintenanceWindowR\x11maintenanceWindow\x12}\n" +
 	"\x0frecovery_config\x18\f \x01(\v2T.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerRecoveryConfigR\x0erecoveryConfig\x12\xa6\x01\n" +

@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpKmsAutokeyConfigSpec switches Cloud KMS Autokey on for a folder or a
+// single project (`google_kms_autokey_config` / `google_kms_project_autokey_config`).
+//
+// With Autokey on, a team that creates a bucket, disk, dataset, topic, or
+// another compatible resource asks for a customer-managed key through a
+// GcpKmsKeyHandle instead of designing key rings and grants itself: Autokey
+// creates the key ring (named "autokey"), an HSM key (AES-256, rotated
+// yearly) for that resource type and location, and grants the resource's
+// service agent encrypt and decrypt on it.
+//
+// Two storage models (Google's terms):
+//   - Same-project storage (key_project_resolution_mode RESOURCE_PROJECT):
+//     keys live in the project of the resource they protect. Works on a
+//     folder or a project. The Cloud KMS API must be on in each project;
+//     the module enables it on a project-scoped config's project. Google
+//     creates the KMS service agent when it is first needed.
+//   - Dedicated-project storage (DEDICATED_KEY_PROJECT, folders only): keys
+//     for every project in the folder live in one key project, the
+//     separation-of-duties model. One-time setup outside this block: create
+//     the key project's Cloud KMS service agent and grant it
+//     roles/cloudkms.admin on the key project (see the GUIDE).
+//
+// Google keeps exactly one Autokey configuration per folder and per
+// project, and a project's configuration overrides its folder's. Applying
+// this block takes over whatever configuration the scope already had.
+// Destroying it (deletion_policy DELETE, the default) clears the
+// configuration, which turns Autokey off for the scope; keys Autokey
+// already created stay and keep protecting their resources.
+message GcpKmsAutokeyConfigSpec {
+  option (buf.validate.message).cel = {
+    id: "key_project_needs_folder_scope"
+    message: "key_project is set only on a folder-scoped configuration (a project configuration keeps keys in the project itself)"
+    expression: "!(has(this.key_project) && (this.key_project.value != '' || has(this.key_project.value_from))) || (has(this.scope) && has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "dedicated_mode_needs_folder_scope"
+    message: "DEDICATED_KEY_PROJECT is available on a folder-scoped configuration only"
+    expression: "this.key_project_resolution_mode != 'DEDICATED_KEY_PROJECT' || (has(this.scope) && has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "dedicated_mode_needs_key_project"
+    message: "DEDICATED_KEY_PROJECT needs a key_project to hold the keys"
+    expression: "this.key_project_resolution_mode != 'DEDICATED_KEY_PROJECT' || (has(this.key_project) && (this.key_project.value != '' || has(this.key_project.value_from)))"
+  };
+
+  // The folder or project Autokey is configured on. Omit for the
+  // provider's default project.
+  GcpKmsAutokeyConfigScope scope = 1;
+
+  // How Autokey picks the project a new key is created in:
+  //   "RESOURCE_PROJECT"      -- same-project storage: the key lives beside
+  //                              the resource it protects
+  //   "DEDICATED_KEY_PROJECT" -- dedicated-project storage: every key for
+  //                              the folder lives in key_project (folder
+  //                              configurations only)
+  //   "DISABLED"              -- Autokey is off for the scope, overriding a
+  //                              parent folder that has it on
+  // Empty sends nothing; on a folder with key_project set Google then
+  // treats the folder as dedicated-project storage.
+  string key_project_resolution_mode = 2 [(buf.validate.field).cel = {
+    id: "key_project_resolution_mode.valid"
+    message: "key_project_resolution_mode must be RESOURCE_PROJECT, DEDICATED_KEY_PROJECT, or DISABLED"
+    expression: "this == '' || this in ['RESOURCE_PROJECT', 'DEDICATED_KEY_PROJECT', 'DISABLED']"
+  }];
+
+  // The dedicated key project for a folder configuration: a literal
+  // project ID or a GcpProject reference. The module sends Google's
+  // projects/{id} form and enables the Cloud KMS API there. Its Cloud KMS
+  // service agent needs roles/cloudkms.admin on it before the first key
+  // handle is requested.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef key_project = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id",
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
+
+  // What destroying this block does:
+  //   "" / "DELETE" -- clears the configuration: Autokey is off for the
+  //                    scope (existing keys stay)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the block leaves management and the configuration
+  //                    stays in force
+  string deletion_policy = 4 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// GcpKmsAutokeyConfigScope names the folder or project Autokey is
+// configured on. At most one arm; both empty means the provider's default
+// project. A folder arm creates google_kms_autokey_config, a project arm
+// google_kms_project_autokey_config.
+message GcpKmsAutokeyConfigScope {
+  option (buf.validate.message).cel = {
+    id: "at_most_one_scope"
+    message: "set at most one of project_id or folder_id (empty means the provider's default project)"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from))].filter(x, x).size() <= 1"
+  };
+
+  // Project configuration: a literal project ID or a GcpProject
+  // reference. Overrides any folder configuration above the project.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Folder configuration: the folder's numeric ID -- a literal or a
+  // GcpFolder reference. Every project beneath it inherits the
+  // configuration unless the project sets its own.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+}

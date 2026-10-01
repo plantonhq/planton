@@ -285,7 +285,15 @@ message GcpRedisInstanceSpec {
   // Immutable after creation.
   dev.planton.shared.foreignkey.v1.StringValueOrRef customer_managed_key = 22 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 
   // User-defined labels to organize and track the instance, for cost

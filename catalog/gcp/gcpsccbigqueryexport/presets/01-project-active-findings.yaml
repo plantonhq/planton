@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccBigQueryExport
+metadata:
+  name: project-findings-history
+spec:
+  scope:
+    projectId:
+      value: my-gcp-project
+  bigQueryExportId: findings-history
+  description: Active, unmuted findings for the project's dashboard
+  dataset:
+    value: projects/my-gcp-project/datasets/scc_findings
+  filter: state = "ACTIVE" AND NOT mute = "MUTED"

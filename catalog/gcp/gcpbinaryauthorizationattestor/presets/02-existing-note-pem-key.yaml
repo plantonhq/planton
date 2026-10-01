@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationAttestor
+metadata:
+  name: qa-approved
+spec:
+  description: Images QA approved for release
+  attestationAuthorityNote:
+    noteReference: projects/security-notes/notes/qa-approved
+    publicKeys:
+      - comment: QA signing key (ECDSA P-256)
+        pkixPublicKey:
+          publicKeyPem: |
+            -----BEGIN PUBLIC KEY-----
+            MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEexamplekeyreplaceWithYourOwnPublicKeyMaterial
+            -----END PUBLIC KEY-----
+          signatureAlgorithm: ECDSA_P256_SHA256

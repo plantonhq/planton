@@ -113,7 +113,7 @@ spec:
 | `spec.transitEncryptionMode` | `string` |  |  |  |
 | `spec.serverCaMode` | `string` |  |  |  |
 | `spec.serverCaPool` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
-| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.persistenceConfig` | `GcpRedisClusterPersistenceConfig` |  |  |  |
 | `spec.persistenceConfig.mode` | `string` |  |  |  |
 | `spec.persistenceConfig.rdbConfig` | `GcpRedisClusterRdbConfig` |  |  |  |
@@ -322,7 +322,7 @@ GcpKmsKey reference. The key must be in the cluster's region and the
 Memorystore service agent needs encrypter/decrypter on it. If unset,
 Google-managed keys encrypt the data.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.persistenceConfig
@@ -654,6 +654,7 @@ Fields that can point at another resource's outputs:
 | `spec.pscConfigs[].network` | GcpVpcNetwork | `status.outputs.network_id` |
 | `spec.serverCaPool` | GcpPrivateCaPool | `status.outputs.name` |
 | `spec.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.crossClusterReplicationConfig.primaryCluster.cluster` | GcpRedisCluster | `status.outputs.name` |
 | `spec.crossClusterReplicationConfig.secondaryClusters[].cluster` | GcpRedisCluster | `status.outputs.name` |
 

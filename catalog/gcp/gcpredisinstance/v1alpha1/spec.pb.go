@@ -557,7 +557,7 @@ const file_catalog_gcp_gcpredisinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x17rdb_snapshot_start_time\x18\x03 \x01(\tB\xe1\x01\xbaH\xdd\x01\xba\x01\xd9\x01\n" +
 	"\x1frdb_snapshot_start_time_rfc3339\x12Rrdb_snapshot_start_time must be an RFC3339 UTC timestamp like 2014-10-02T15:01:23Z\x1abthis == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]+)?Z$')R\x14rdbSnapshotStartTime:\xef\x02\xbaH\xeb\x02\x1a\xab\x01\n" +
 	"%rdb_snapshot_period_requires_rdb_mode\x12<rdb_snapshot_period is required when persistence_mode is RDB\x1aDthis.persistence_mode != 'RDB' || size(this.rdb_snapshot_period) > 0\x1a\xba\x01\n" +
-	")rdb_snapshot_start_time_requires_rdb_mode\x12Grdb_snapshot_start_time is only meaningful when persistence_mode is RDB\x1aDthis.rdb_snapshot_start_time == '' || this.persistence_mode == 'RDB'\"\xe0\x1a\n" +
+	")rdb_snapshot_start_time_requires_rdb_mode\x12Grdb_snapshot_start_time is only meaningful when persistence_mode is RDB\x1aDthis.rdb_snapshot_start_time == '' || this.persistence_mode == 'RDB'\"\x9d\x1b\n" +
 	"\x14GcpRedisInstanceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12Q\n" +
@@ -586,8 +586,8 @@ const file_catalog_gcp_gcpredisinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12read_replicas_mode\x18\x13 \x01(\tB\xbf\x01\xbaH\xbb\x01\xba\x01\xb7\x01\n" +
 	"\x1eread_replicas_mode_valid_value\x12Jread_replicas_mode must be READ_REPLICAS_DISABLED or READ_REPLICAS_ENABLED\x1aIthis == '' || this in ['READ_REPLICAS_DISABLED', 'READ_REPLICAS_ENABLED']R\x10readReplicasMode\x12#\n" +
 	"\rreplica_count\x18\x14 \x01(\x05R\freplicaCount\x12{\n" +
-	"\x12persistence_config\x18\x15 \x01(\v2L.dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstancePersistenceConfigR\x11persistenceConfig\x12\x84\x01\n" +
-	"\x14customer_managed_key\x18\x16 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x12customerManagedKey\x12c\n" +
+	"\x12persistence_config\x18\x15 \x01(\v2L.dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstancePersistenceConfigR\x11persistenceConfig\x12\xc1\x01\n" +
+	"\x14customer_managed_key\x18\x16 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x12customerManagedKey\x12c\n" +
 	"\x06labels\x18\x17 \x03(\v2K.dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceSpec.LabelsEntryR\x06labels\x12>\n" +
 	"\x13deletion_protection\x18\x18 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x12deletionProtection\x88\x01\x01\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x19 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +

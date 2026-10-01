@@ -1,0 +1,42 @@
+# GcpBinaryAuthorizationPolicy scenario: the policy of the second test
+# project (owner-arranged: PLANTON_E2E_GCP_SECOND_PROJECT_ID), never the
+# harness project, so neither a rule nor the destroy-time reset can touch
+# other GKE lanes. The default rule allows everything; one dry-run cluster
+# rule for a cluster that does not exist requires the attestor fixture
+# (harness project) across projects. Destroy writes Google's default
+# policy back, which the verifier asserts. Policies are free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationPolicy
+metadata:
+  name: planton-oss-e2e-gcpbapol-second
+  id: planton-oss-e2e-gcpbapol-second
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbinaryauthorizationpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpbinaryauthorizationpolicy/e2e/prerequisites/attestor.yaml"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  description: Planton E2E policy
+  globalPolicyEvaluationMode: ENABLE
+  admissionWhitelistPatterns:
+    - us-docker.pkg.dev/planton-e2e/none/*
+  defaultAdmissionRule:
+    evaluationMode: ALWAYS_ALLOW
+    enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+  clusterAdmissionRules:
+    - cluster: us-central1.planton-e2e-none
+      evaluationMode: REQUIRE_ATTESTATION
+      enforcementMode: DRYRUN_AUDIT_LOG_ONLY
+      requireAttestationsBy:
+        - valueFrom:
+            kind: GcpBinaryAuthorizationAttestor
+            name: planton-oss-e2e-gcpbapol-attestor
+            fieldPath: status.outputs.attestor_id

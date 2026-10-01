@@ -25,5 +25,5 @@ spec:
       valueFrom:
         kind: GcpKmsKey
         name: root-ca-signing
-        fieldPath: status.outputs.primary_version_name
+        fieldPath: status.outputs.initial_version_name
   lifetime: 630720000s

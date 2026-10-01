@@ -1473,14 +1473,14 @@ const file_catalog_gcp_gcppubsubtopic_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0ejavascript_udf\x18\x01 \x01(\v2T.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicMessageTransformJavascriptUdfR\rjavascriptUdf\x12\x1a\n" +
 	"\bdisabled\x18\x02 \x01(\bR\bdisabled\x12u\n" +
 	"\fai_inference\x18\x03 \x01(\v2R.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicMessageTransformAiInferenceR\vaiInference:\xb1\x01\xbaH\xad\x01\x1a\xaa\x01\n" +
-	"\x15exactly_one_transform\x12Eeach transform step is exactly one of: javascript_udf or ai_inference\x1aJ(has(this.javascript_udf) ? 1 : 0) + (has(this.ai_inference) ? 1 : 0) == 1\"\xd1\f\n" +
+	"\x15exactly_one_transform\x12Eeach transform step is exactly one of: javascript_udf or ai_inference\x1aJ(has(this.javascript_udf) ? 1 : 0) + (has(this.ai_inference) ? 1 : 0) == 1\"\x8f\r\n" +
 	"\x12GcpPubSubTopicSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xdc\x01\n" +
 	"\n" +
 	"topic_name\x18\x02 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\x8a\x01\n" +
-	"\x18topic_name_goog_reserved\x12Ttopic names beginning with 'goog' are reserved by Google — choose a different name\x1a\x18!this.startsWith('goog')\xc8\x01\x01r%\x10\x03\x18\xff\x012\x1e^[a-zA-Z][a-zA-Z0-9\\-_\\.~+%]*$R\ttopicName\x12t\n" +
-	"\fkms_key_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	"\x18topic_name_goog_reserved\x12Ttopic names beginning with 'goog' are reserved by Google — choose a different name\x1a\x18!this.startsWith('goog')\xc8\x01\x01r%\x10\x03\x18\xff\x012\x1e^[a-zA-Z][a-zA-Z0-9\\-_\\.~+%]*$R\ttopicName\x12\xb1\x01\n" +
+	"\fkms_key_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12<\n" +
 	"\x1amessage_retention_duration\x18\x04 \x01(\tR\x18messageRetentionDuration\x12\x81\x01\n" +
 	"\x16message_storage_policy\x18\x05 \x01(\v2K.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicMessageStoragePolicyR\x14messageStoragePolicy\x12n\n" +

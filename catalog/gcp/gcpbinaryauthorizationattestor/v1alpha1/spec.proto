@@ -1,0 +1,205 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpBinaryAuthorizationAttestorSpec is a Binary Authorization attestor
+// (`google_binary_authorization_attestor`) with the Artifact Analysis note
+// its attestations are stored under (`google_container_analysis_note`).
+//
+// An attestor is a trusted signer: a build or QA pipeline signs an image
+// digest with a private key and records the signature (an attestation) as
+// an occurrence of the attestor's note; at deploy time a
+// GcpBinaryAuthorizationPolicy rule that requires the attestor admits the
+// image only if one of the attestor's public keys verifies such a
+// signature. The signatures themselves are written by the pipelines, not by
+// this block.
+//
+// The note: set note to have this block create the attestor's own note in
+// its project (Google's recommended shape -- one note per attestor), or
+// attestation_authority_note.note_reference to use a note that already
+// exists. Exactly one. For a created note the module also grants the
+// attestor's service account (delegation_service_account_email)
+// roles/containeranalysis.notes.occurrences.viewer on it, which Google
+// requires before the attestor can read attestations. For a referenced
+// note, grant it yourself.
+//
+// A policy in another project needs roles/binaryauthorization.attestorsVerifier
+// on the attestor for that project's Binary Authorization service agent.
+message GcpBinaryAuthorizationAttestorSpec {
+  option (buf.validate.message).cel = {
+    id: "note_xor_note_reference"
+    message: "set exactly one of note (create the attestor's note) or attestation_authority_note.note_reference (use an existing note)"
+    expression: "has(this.note) != (has(this.attestation_authority_note) && this.attestation_authority_note.note_reference != '')"
+  };
+
+  // The project the attestor (and a created note) lives in: a literal
+  // project ID or a GcpProject reference. Empty means the provider's
+  // default project. The module enables binaryauthorization.googleapis.com
+  // and containeranalysis.googleapis.com there.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The attestor's ID, unique in its project, e.g. "built-by-ci" or
+  // "qa-approved". Defaults to metadata.name. Immutable: a new ID replaces
+  // the attestor, and policies naming the old one must be re-applied.
+  string attestor_name = 2;
+
+  // What the attestor vouches for; shown when choosing attestors.
+  string description = 3;
+
+  // The note to create for this attestor. Mutually exclusive with
+  // attestation_authority_note.note_reference.
+  GcpBinaryAuthorizationAttestorNote note = 4;
+
+  // The attestor's note reference and public keys.
+  GcpBinaryAuthorizationAttestorAuthorityNote attestation_authority_note = 5;
+
+  // What destroying this block does, for the attestor and a created note:
+  //   "" / "DELETE" -- both are deleted; policies naming the attestor stop
+  //                    admitting images that only it signed
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- both leave management and stay in Google
+  string deletion_policy = 6 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// GcpBinaryAuthorizationAttestorNote is the ATTESTATION_AUTHORITY note the
+// module creates in the attestor's project.
+message GcpBinaryAuthorizationAttestorNote {
+  // The note's ID in the project. Defaults to "{attestor_name}-note".
+  // Immutable.
+  string note_name = 1;
+
+  // The signer's name as people read it, e.g. "Production build pipeline"
+  // (Google's attestation_authority.hint). Required.
+  string human_readable_name = 2 [(buf.validate.field).required = true];
+
+  // A one-sentence description of the note.
+  string short_description = 3;
+
+  // A longer description: what signing by this attestor means.
+  string long_description = 4;
+
+  // When the note expires, as an RFC 3339 timestamp, e.g.
+  // "2027-01-01T00:00:00Z". Empty: never.
+  string expiration_time = 5;
+
+  // Other notes this one relates to: projects/{project}/notes/{note}.
+  repeated string related_note_names = 6 [(buf.validate.field).repeated.unique = true];
+
+  // Links to more information, e.g. the signing pipeline's runbook.
+  repeated GcpBinaryAuthorizationAttestorNoteRelatedUrl related_url = 7;
+}
+
+// GcpBinaryAuthorizationAttestorNoteRelatedUrl is one link on the note.
+message GcpBinaryAuthorizationAttestorNoteRelatedUrl {
+  // The URL. Required.
+  string url = 1 [(buf.validate.field).required = true];
+
+  // The link's label.
+  string label = 2;
+}
+
+// GcpBinaryAuthorizationAttestorAuthorityNote names the note and the keys
+// that verify attestations.
+message GcpBinaryAuthorizationAttestorAuthorityNote {
+  // An existing ATTESTATION_AUTHORITY note: projects/{project}/notes/{note},
+  // or a bare note ID in the attestor's project. Leave empty when note
+  // creates one. Immutable: a new reference replaces the attestor.
+  string note_reference = 1;
+
+  // The public keys that verify attestations; one verifying key is enough.
+  // Rotate by adding the new key, re-signing, then removing the old one.
+  // Empty: the attestor never verifies anything, so every rule requiring
+  // it denies.
+  repeated GcpBinaryAuthorizationAttestorPublicKey public_keys = 2;
+}
+
+// GcpBinaryAuthorizationAttestorPublicKey is one verifying key: exactly one
+// of a PGP key or a PKIX key.
+message GcpBinaryAuthorizationAttestorPublicKey {
+  option (buf.validate.message).cel = {
+    id: "pgp_xor_pkix"
+    message: "set exactly one of ascii_armored_pgp_public_key or pkix_public_key"
+    expression: "(this.ascii_armored_pgp_public_key != '') != has(this.pkix_public_key)"
+  };
+  option (buf.validate.message).cel = {
+    id: "pgp_key_without_id"
+    message: "leave id empty for a PGP key: Google computes it from the key's fingerprint"
+    expression: "this.ascii_armored_pgp_public_key == '' || this.id == ''"
+  };
+
+  // The key's ID, which every signature must name exactly. For a PKIX key
+  // it must be an RFC 3986 URI; empty takes Google's default (a digest of
+  // the key), or for a Cloud KMS key the module sets
+  // //cloudkms.googleapis.com/v1/{key version}, the ID gcloud and Google's
+  // signing tools use. Leave empty for a PGP key.
+  string id = 1;
+
+  // A note about the key, e.g. who holds the private half.
+  string comment = 2;
+
+  // An ASCII-armored PGP public key, the whole output of
+  // `gpg --export --armor signer@example.com`.
+  string ascii_armored_pgp_public_key = 3;
+
+  // A PKIX public key: a PEM, or a Cloud KMS signing key version.
+  GcpBinaryAuthorizationAttestorPkixPublicKey pkix_public_key = 4;
+}
+
+// GcpBinaryAuthorizationAttestorPkixPublicKey is a PKIX public key, given
+// as a PEM with its algorithm or read from a Cloud KMS key version.
+// Exactly one.
+message GcpBinaryAuthorizationAttestorPkixPublicKey {
+  option (buf.validate.message).cel = {
+    id: "pem_xor_kms_key_version"
+    message: "set exactly one of public_key_pem or kms_key_version"
+    expression: "(this.public_key_pem != '') != (has(this.kms_key_version) && (this.kms_key_version.value != '' || has(this.kms_key_version.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "signature_algorithm_with_pem"
+    message: "signature_algorithm is required with public_key_pem and comes from the key version with kms_key_version"
+    expression: "(this.public_key_pem != '') == (this.signature_algorithm != '')"
+  };
+
+  // A PEM-encoded public key (RFC 7468 SubjectPublicKeyInfo), for a key
+  // pair held outside Cloud KMS.
+  string public_key_pem = 1;
+
+  // The algorithm signatures use with public_key_pem; it must match the
+  // key. Google's names: EC_SIGN_P256_SHA256, EC_SIGN_P384_SHA384,
+  // EC_SIGN_P521_SHA512 (the ECDSA_* names are the same algorithms),
+  // RSA_SIGN_PKCS1_{2048,3072,4096}_SHA256, RSA_SIGN_PKCS1_4096_SHA512,
+  // RSA_SIGN_PSS_{2048,3072,4096}_SHA256, RSA_SIGN_PSS_4096_SHA512 (and
+  // their RSA_PSS_* aliases), and the post-quantum ML_DSA_65.
+  string signature_algorithm = 2 [(buf.validate.field).cel = {
+    id: "signature_algorithm.valid"
+    message: "signature_algorithm must be one of Google's Binary Authorization signature algorithms"
+    expression: "this == '' || this in ['ECDSA_P256_SHA256', 'EC_SIGN_P256_SHA256', 'ECDSA_P384_SHA384', 'EC_SIGN_P384_SHA384', 'ECDSA_P521_SHA512', 'EC_SIGN_P521_SHA512', 'RSA_PSS_2048_SHA256', 'RSA_SIGN_PSS_2048_SHA256', 'RSA_PSS_3072_SHA256', 'RSA_SIGN_PSS_3072_SHA256', 'RSA_PSS_4096_SHA256', 'RSA_SIGN_PSS_4096_SHA256', 'RSA_PSS_4096_SHA512', 'RSA_SIGN_PSS_4096_SHA512', 'RSA_SIGN_PKCS1_2048_SHA256', 'RSA_SIGN_PKCS1_3072_SHA256', 'RSA_SIGN_PKCS1_4096_SHA256', 'RSA_SIGN_PKCS1_4096_SHA512', 'ML_DSA_65']"
+  }];
+
+  // A Cloud KMS asymmetric-sign key version whose public key verifies the
+  // signatures: a GcpKmsKey reference (the version Google creates with the
+  // key) or a literal
+  // projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*.
+  // Both modules read the version's public key and algorithm from Cloud
+  // KMS, so the pipeline signs with the private half that never leaves
+  // KMS. The key's purpose must be ASYMMETRIC_SIGN.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_version = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.initial_version_name",
+    (buf.validate.field).cel = {
+      id: "kms_key_version.format"
+      message: "kms_key_version must be projects/*/locations/*/keyRings/*/cryptoKeys/*/cryptoKeyVersions/*"
+      expression: "!has(this.value) || this.value == '' || this.value.matches('^projects/[^/]+/locations/[^/]+/keyRings/[^/]+/cryptoKeys/[^/]+/cryptoKeyVersions/[0-9]+$')"
+    }
+  ];
+}

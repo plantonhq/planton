@@ -1,0 +1,28 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpkmskeyhandle
+spec:
+  billing_model: hybrid
+  baseline_charges:
+    - service_name: Cloud Key Management Service (KMS)
+      sku_meter: active HSM key version months
+      pricing_unit: version-months
+      description: The handle itself is free; the key Autokey creates for it is a Cloud HSM key, and each of its active versions bills a prorated monthly HSM version fee from the moment it exists (Cloud KMS pricing page, read 2026-10-01). Autokey keys rotate yearly, adding a version each year until old ones are destroyed.
+  cost_drivers:
+    - field_path: resource_type_selector
+      sku_meter: active HSM key version months
+      pricing_unit: version-months
+      impact: The service decides the key's granularity -- one key per resource for most types (each handle may add a key), one key per location within a project for Cloud Run, Secret Manager, and some Dataproc types (handles share it).
+    - field_path: location
+      sku_meter: HSM cryptographic operations
+      pricing_unit: operations
+      impact: Every encrypt and decrypt the protected resource makes bills as an HSM cryptographic operation in this location, following the resource's traffic.
+  free_tier: Google gives keys created through Autokey a monthly free allowance of active key versions and cryptographic operations per billing account (Cloud KMS pricing page, read 2026-10-01).
+  estimate_exclusions:
+    - cryptographic operation volume -- follows the protected resource's reads and writes, not any spec field
+    - whether a key is shared -- per-location granularity reuses one key across handles
+  notes: "Destroying the handle stops nothing: Google keeps the handle and the key, which keeps billing until a KMS administrator destroys its versions."

@@ -282,6 +282,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpKmsKey, name:
 | `status.outputs.key_name` | `string` | The short name of the key (the last segment of key_id). Useful for display, logging, and consumers that take the bare key name alongside a separately supplied project and location. |
 | `status.outputs.primary_version_name` | `string` | Fully qualified resource name of the key's current primary CryptoKeyVersion — the version GCP uses to encrypt new data. Format: projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}/cryptoKeyVersions/{n} Populated by GCP only for ENCRYPT_DECRYPT keys; empty for asymmetric, raw, and MAC keys (which have no primary-version concept) and for keys created with skip_initial_version_creation. |
 | `status.outputs.primary_state` | `string` | Lifecycle state of the primary CryptoKeyVersion (e.g. "ENABLED"). Same population rules as primary_version_name — the quick health probe that a CMEK key is actually able to encrypt. |
+| `status.outputs.initial_version_name` | `string` | Fully qualified resource name of the version Google creates with the key (version 1), for every purpose — the version an asymmetric-sign key's consumers name (a CA Service authority's signing key, a Binary Authorization attestor's public key), since such keys have no primary. Format: projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}/cryptoKeyVersions/1 Empty for keys created with skip_initial_version_creation (and so for import_only keys). Later versions are added by rotation or by hand and are named explicitly by their consumers. |
 
 ## References
 
@@ -305,6 +306,7 @@ Fields on other kinds that can point at this resource:
 | GcpBigQueryDataset | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigQueryTable | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigtableInstance | `spec.clusters[].kmsKeyName` | `status.outputs.key_id` |
+| GcpBinaryAuthorizationAttestor | `spec.attestationAuthorityNote.publicKeys[].pkixPublicKey.kmsKeyVersion` | `status.outputs.initial_version_name` |
 | GcpCloudComposerEnvironment | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudFunction | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudRun | `spec.encryptionKey` | `status.outputs.key_id` |
@@ -348,7 +350,7 @@ Fields on other kinds that can point at this resource:
 | GcpLogBucket | `spec.scopeSettings.kmsKey` | `status.outputs.key_id` |
 | GcpManagedKafkaCluster | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpMemorystoreInstance | `spec.kmsKey` | `status.outputs.key_id` |
-| GcpPrivateCaCertificateAuthority | `spec.keySpec.cloudKmsKeyVersion` | `status.outputs.primary_version_name` |
+| GcpPrivateCaCertificateAuthority | `spec.keySpec.cloudKmsKeyVersion` | `status.outputs.initial_version_name` |
 | GcpPrivateCaPool | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpPubSubTopic | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpRedisCluster | `spec.kmsKey` | `status.outputs.key_id` |

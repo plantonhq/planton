@@ -826,7 +826,15 @@ message GcpDataprocClusterConfig {
   // If not specified, disks are encrypted with Google-managed keys.
   dev.planton.shared.foreignkey.v1.StringValueOrRef encryption_kms_key_name = 11 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 
   // In-cluster authentication hardening: Kerberos or personal-cluster

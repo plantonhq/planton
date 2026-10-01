@@ -1,0 +1,34 @@
+# GcpBinaryAuthorizationAttestor scenario: an attestor verifying a Cloud
+# KMS signing key -- the key ring (consumer-scoped install profile) and an
+# ASYMMETRIC_SIGN key fixture -- through GcpKmsKey's initial_version_name.
+# Both modules read the version's public key and algorithm from Cloud KMS.
+# One software key version per run (cents prorated).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationAttestor
+metadata:
+  name: planton-oss-e2e-gcpbaatt-kms
+  id: planton-oss-e2e-gcpbaatt-kms
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbinaryauthorizationattestor
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpbinaryauthorizationattestor/e2e/prerequisites/signing-key.yaml"
+  tags:
+    - planton-e2e
+spec:
+  attestorName: e2e-gcpbaatt-kms-${E2E_RUN_ID}
+  description: Planton E2E Cloud KMS attestor
+  note:
+    humanReadableName: Planton E2E KMS signer
+  attestationAuthorityNote:
+    publicKeys:
+      - comment: Planton E2E Cloud KMS key
+        pkixPublicKey:
+          kmsKeyVersion:
+            valueFrom:
+              kind: GcpKmsKey
+              name: planton-oss-e2e-gcpbaatt-signing-key
+              fieldPath: status.outputs.initial_version_name

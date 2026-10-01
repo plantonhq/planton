@@ -1714,3 +1714,59 @@ func TestGcpPrivateCaCertificate_Pulumi(t *testing.T) {
 func TestGcpPrivateCaCertificate_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpprivatecacertificate", "terraform")
 }
+
+func TestGcpKmsAutokeyConfig_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpkmsautokeyconfig", "pulumi")
+}
+
+func TestGcpKmsAutokeyConfig_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpkmsautokeyconfig", "terraform")
+}
+
+func TestGcpKmsKeyHandle_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpkmskeyhandle", "pulumi")
+}
+
+func TestGcpKmsKeyHandle_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpkmskeyhandle", "terraform")
+}
+
+func TestGcpSccNotificationConfig_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsccnotificationconfig", "pulumi")
+}
+
+func TestGcpSccNotificationConfig_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsccnotificationconfig", "terraform")
+}
+
+func TestGcpSccMuteConfig_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsccmuteconfig", "pulumi")
+}
+
+func TestGcpSccMuteConfig_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsccmuteconfig", "terraform")
+}
+
+func TestGcpSccBigQueryExport_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsccbigqueryexport", "pulumi")
+}
+
+func TestGcpSccBigQueryExport_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsccbigqueryexport", "terraform")
+}
+
+func TestGcpBinaryAuthorizationPolicy_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbinaryauthorizationpolicy", "pulumi")
+}
+
+func TestGcpBinaryAuthorizationPolicy_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbinaryauthorizationpolicy", "terraform")
+}
+
+func TestGcpBinaryAuthorizationAttestor_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbinaryauthorizationattestor", "pulumi")
+}
+
+func TestGcpBinaryAuthorizationAttestor_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbinaryauthorizationattestor", "terraform")
+}
