@@ -338,6 +338,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpGkeFleetFeature | `spec.workloadidentity.scopeTenancyPool` | `status.outputs.name` |
 | GcpWorkloadIdentityPoolProvider | `spec.workloadIdentityPoolId` | `status.outputs.workload_identity_pool_id` |
 
 ## See Also

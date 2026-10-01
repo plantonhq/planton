@@ -22,7 +22,10 @@ spec:
   # safe upgrades, and the checkpointing and node-readiness addons; the
   # earlier live proof predates them. The next proof confirms the new window
   # form round-trips (the provider normalizes durations, so the re-plan must
-  # be clean) while the upgrade and addon levers stay offline-proven.
+  # be clean) while the upgrade and addon levers stay offline-proven. It
+  # also gained the fleet_membership output (empty without fleet_project);
+  # the GcpGkeFleetScope bind-fleet-registered-cluster scenario proves it
+  # end to end.
   status: pending_proof
   validated_provisioners: []
   timeout_minutes: 180

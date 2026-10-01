@@ -593,9 +593,6 @@ resources:
   - resource: google_compute_https_health_check
     disposition: excluded-deprecated
     reason: "legacy HTTP/HTTPS health checks, superseded by google_compute_health_check (modeled by GcpHealthCheck)"
-  - resource: google_compute_image
-    disposition: model-planned
-    reason: "planned GcpComputeImage kind (Compute Engine images)"
   - resource: google_compute_instance_from_template
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeInstance kind's spec (attached disks, from-template creation, and instance settings); the composition is not built"
@@ -1172,33 +1169,9 @@ resources:
   - resource: google_gke_backup_restore_plan
     disposition: deferred
     reason: "Backup for GKE judged as backup-plan and restore-plan kinds (channels composed); deferred pending demand"
-  - resource: google_gke_hub_feature
-    disposition: model-planned
-    reason: "planned GcpGkeFleetFeature kind (GKE fleet features)"
-  - resource: google_gke_hub_feature_membership
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_fleet
-    disposition: model-planned
-    reason: "planned GcpGkeFleet kind (GKE fleets)"
-  - resource: google_gke_hub_membership
-    disposition: model-planned
-    reason: "planned GcpGkeFleetMembership kind (GKE fleet memberships)"
-  - resource: google_gke_hub_membership_binding
-    disposition: model-planned
-    reason: "planned composition into the planned GcpGkeFleetMembership kind (scope bindings)"
-  - resource: google_gke_hub_namespace
-    disposition: model-planned
-    reason: "planned composition into the planned GcpGkeFleetScope kind (fleet namespaces)"
   - resource: google_gke_hub_rollout_sequence
     disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_scope
-    disposition: model-planned
-    reason: "planned GcpGkeFleetScope kind (GKE fleet scopes)"
-  - resource: google_gke_hub_scope_rbac_role_binding
-    disposition: model-planned
-    reason: "planned composition into the planned GcpGkeFleetScope kind (RBAC role bindings)"
+    reason: "candidate kind -- an upgrade order across several fleet host projects; its minimum-version fields force-upgrade every matching cluster after create (the provider waits on the sequence, then calls upgrade with force), so it is its own kind with dedicated-fleet proofs when demand appears; GcpGkeFleetFeature's clusterupgrade block covers upgrade sequencing behind an upstream fleet today"
   - resource: google_gkeonprem_bare_metal_admin_cluster
     disposition: deferred
     reason: "GKE on-prem (bare metal and VMware) clusters are a niche class; deferred"

@@ -32,6 +32,7 @@ go_library(
         "@org_golang_google_api//eventarc/v1:eventarc",
         "@org_golang_google_api//firebase/v1beta1",
         "@org_golang_google_api//firestore/v1:firestore",
+        "@org_golang_google_api//gkehub/v1:gkehub",
         "@org_golang_google_api//iam/v1:iam",
         "@org_golang_google_api//iam/v2:iam",
         "@org_golang_google_api//identitytoolkit/v2:identitytoolkit",

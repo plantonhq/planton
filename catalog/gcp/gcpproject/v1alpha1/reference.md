@@ -247,6 +247,7 @@ Fields on other kinds that can point at this resource:
 | GcpColabSchedule | `spec.projectId` | `status.outputs.project_id` |
 | GcpColabSchedule | `spec.pipelineJob.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
 | GcpComputeDisk | `spec.projectId` | `status.outputs.project_id` |
+| GcpComputeImage | `spec.projectId` | `status.outputs.project_id` |
 | GcpComputeInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpComputeMig | `spec.projectId` | `status.outputs.project_id` |
 | GcpDataprocAutoscalingPolicy | `spec.projectId` | `status.outputs.project_id` |
@@ -275,6 +276,7 @@ Fields on other kinds that can point at this resource:
 | GcpFirewallRule | `spec.projectId` | `status.outputs.project_id` |
 | GcpGcsBucket | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpGkeFleet | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeNodePool | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeWorkloadIdentityBinding | `spec.projectId` | `status.outputs.project_id` |
 | GcpGlobalAddress | `spec.projectId` | `status.outputs.project_id` |

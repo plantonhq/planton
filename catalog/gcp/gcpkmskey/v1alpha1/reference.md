@@ -319,6 +319,10 @@ Fields on other kinds that can point at this resource:
 | GcpComputeDisk | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.sourceDiskEncryption.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpComputeInstance | `spec.bootDisk.kmsKey` | `status.outputs.key_id` |
 | GcpComputeInstance | `spec.bootDisk.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpComputeInstance | `spec.bootDisk.sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |

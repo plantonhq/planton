@@ -1802,6 +1802,11 @@ Allowed values (use exactly as shown):
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -2786,6 +2791,11 @@ Allowed values (use exactly as shown):
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -4966,6 +4976,11 @@ Allowed values (use exactly as shown):
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -5950,6 +5965,11 @@ Allowed values (use exactly as shown):
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -8249,6 +8269,11 @@ Allowed values (use exactly as shown):
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -9233,6 +9258,11 @@ Allowed values (use exactly as shown):
 - `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
 - `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
 - `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`

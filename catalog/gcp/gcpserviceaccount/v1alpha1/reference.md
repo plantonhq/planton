@@ -340,6 +340,13 @@ Fields on other kinds that can point at this resource:
 | GcpEventarcTrigger | `spec.serviceAccount` | `status.outputs.email` |
 | GcpGcsBucket | `spec.iamMembers[].member` | `status.outputs.member` |
 | GcpGkeCluster | `spec.clusterAutoscaling.autoProvisioningDefaults.serviceAccount` | `status.outputs.email` |
+| GcpGkeFleetFeature | `spec.fleetDefaultMemberConfig.configmanagement.configSync.git.gcpServiceAccountEmail` | `status.outputs.email` |
+| GcpGkeFleetFeature | `spec.fleetDefaultMemberConfig.configmanagement.configSync.oci.gcpServiceAccountEmail` | `status.outputs.email` |
+| GcpGkeFleetFeature | `spec.fleetDefaultMemberConfig.configmanagement.configSync.metricsGcpServiceAccountEmail` | `status.outputs.email` |
+| GcpGkeFleetFeature | `spec.membershipConfigs[].configmanagement.configSync.git.gcpServiceAccountEmail` | `status.outputs.email` |
+| GcpGkeFleetFeature | `spec.membershipConfigs[].configmanagement.configSync.oci.gcpServiceAccountEmail` | `status.outputs.email` |
+| GcpGkeFleetFeature | `spec.membershipConfigs[].configmanagement.configSync.metricsGcpServiceAccountEmail` | `status.outputs.email` |
+| GcpGkeFleetScope | `spec.rbacRoleBindings[].user` | `status.outputs.email` |
 | GcpGkeNodePool | `spec.nodeConfig.serviceAccount` | `status.outputs.email` |
 | GcpGkeWorkloadIdentityBinding | `spec.serviceAccountEmail` | `status.outputs.email` |
 | GcpHierarchicalFirewallPolicy | `spec.rules[].targetServiceAccounts` | `status.outputs.email` |

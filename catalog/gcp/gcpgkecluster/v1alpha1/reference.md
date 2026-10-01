@@ -2531,6 +2531,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpGkeCluster, n
 | `status.outputs.location` | `string` | The cluster's location (region for regional clusters, zone for zonal), exactly as provided in the spec. |
 | `status.outputs.self_link` | `string` | Server-defined URL of the cluster resource. |
 | `status.outputs.master_version` | `string` | The Kubernetes version currently running on the control plane. |
+| `status.outputs.fleet_membership` | `string` | Full name of the fleet membership Google created when the cluster joined a fleet through fleet_project: projects/{fleet_project}/locations/{location}/memberships/{id}. A team scope binds the cluster by referencing it (GcpGkeFleetScope.membership_bindings), and per-cluster fleet feature settings target it (GcpGkeFleetFeature.membership_configs). Empty when the cluster joins no fleet. |
 
 ## References
 
@@ -2562,6 +2563,10 @@ Fields on other kinds that can point at this resource:
 | GcpDataprocCluster | `spec.virtualClusterConfig.kubernetesClusterConfig.gkeClusterConfig.gkeClusterTarget` | `status.outputs.cluster_id` |
 | GcpDnsZone | `spec.privateVisibilityConfig.gkeClusters[].gkeClusterName` | `status.outputs.cluster_id` |
 | GcpEventarcTrigger | `spec.destination.gke.cluster` | `status.outputs.name` |
+| GcpGkeFleetFeature | `spec.multiclusteringress.configMembership` | `status.outputs.fleet_membership` |
+| GcpGkeFleetFeature | `spec.membershipConfigs[].membership` | `status.outputs.fleet_membership` |
+| GcpGkeFleetMembership | `spec.gkeCluster` | `status.outputs.cluster_id` |
+| GcpGkeFleetScope | `spec.membershipBindings[].membership` | `status.outputs.fleet_membership` |
 | GcpGkeNodePool | `spec.clusterName` | `status.outputs.name` |
 | GcpGkeNodePool | `spec.location` | `status.outputs.location` |
 | KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.ip_allocation.cluster_ipv4_cidr_block` |

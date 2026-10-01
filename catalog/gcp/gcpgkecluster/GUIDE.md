@@ -91,6 +91,18 @@ surgery, not an operating mode. A cluster deletion takes every workload,
 PV, and LoadBalancer with it; keep both guards on for anything real, and
 turn them off in the same change that means it.
 
+## Fleets and team scopes
+
+`fleetProject` registers the cluster with that project's fleet as part of
+creating it: Google creates the membership, and the cluster exports its
+full name as `fleet_membership`. To give the cluster to a team, reference
+that output from the team's `GcpGkeFleetScope.membershipBindings`; to
+override a fleet feature's default for this cluster, reference it from
+`GcpGkeFleetFeature.membershipConfigs`. Declare the `GcpGkeFleet` first --
+a fleet declared after the cluster registers collides with the one the
+registration created -- and never also declare a `GcpGkeFleetMembership`
+for a cluster that sets `fleetProject`: it is already registered.
+
 ## On the diagram
 
 The cluster is the hub of the GKE family: it consumes `GcpVpcNetwork`

@@ -131,6 +131,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRunJob | `spec.template.encryptionKey` | `status.outputs.kms_key` |
 | GcpCloudSql | `spec.encryptionKeyName` | `status.outputs.kms_key` |
 | GcpComputeDisk | `spec.kmsKey` | `status.outputs.kms_key` |
+| GcpComputeImage | `spec.kmsKey` | `status.outputs.kms_key` |
 | GcpDataprocCluster | `spec.clusterConfig.encryptionKmsKeyName` | `status.outputs.kms_key` |
 | GcpDatastreamStream | `spec.customerManagedEncryptionKey` | `status.outputs.kms_key` |
 | GcpFilestoreInstance | `spec.kmsKeyName` | `status.outputs.kms_key` |

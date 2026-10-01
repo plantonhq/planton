@@ -254,6 +254,14 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.memberships[].member` | GcpServiceAccount | `status.outputs.email` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpGkeFleetScope | `spec.rbacRoleBindings[].group` | `status.outputs.group_email` |
+
 ## See Also
 
 - [Overview](../README.md)
