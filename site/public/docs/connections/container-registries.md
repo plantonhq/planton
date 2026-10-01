@@ -53,6 +53,8 @@ Amazon's managed container registry. The natural choice for ECS and EKS deployme
 | Region | The AWS region where the ECR registry is hosted |
 | Credential | An AWS connection you already trust, or an IAM access key pair with ECR push permissions, stored as secrets |
 
+ECR refuses a push to a repository that doesn't exist, and Planton creates none: give each service a repository named by its image repository path, or declare a create-on-push repository creation template (`AwsEcrRegistrySettings`) for a prefix your services share, and ECR creates each one on its first push.
+
 ### Azure Container Registry (ACR)
 
 Microsoft's managed container registry. Pairs with AKS and Azure Container Apps deployments.

@@ -36,7 +36,7 @@ A registry connection signs in one of two ways, and this tutorial covers both. *
 - [ ] For the fastest path: a connection Planton already trusts that reaches your registry -- a GitHub connection made from the `gh` sign-in on your machine (with the `write:packages` scope) for GHCR, or an AWS, GCP, or Azure connection for ECR, Artifact Registry, or ACR
 - [ ] For the stored-keys paths, one of the following:
   - **GCP Artifact Registry**: A GCP project with Artifact Registry enabled and a service account key with Artifact Registry Writer role
-  - **AWS ECR**: An AWS account with an ECR repository and an IAM user with ECR push permissions
+  - **AWS ECR**: An AWS account, the repositories your services push to (or permission to declare a create-on-push template), and an IAM user with ECR push permissions
   - **GitHub Container Registry**: A GitHub account with a personal access token that has `write:packages` scope
 
 ## How Registry Connections Work
@@ -164,9 +164,41 @@ planton apply -f container-registry.yaml
 
 ### Path B: AWS Elastic Container Registry (stored keys)
 
-#### Step 1: Create an IAM User with ECR Permissions
+#### Step 1: Give Every Image a Repository
 
-In your AWS account, create an IAM user with programmatic access and attach a policy that grants ECR permissions:
+ECR refuses a push to a repository that doesn't exist, and Planton creates none. Each service pushes to the repository named by its image repository path, so each one needs a repository before its first build. Pick one of two ways.
+
+**Let ECR create them on first push (recommended when you have many services).** A repository creation template makes ECR create any repository under a prefix the first time an image is pushed to it. Declare it once per region:
+
+```yaml
+apiVersion: aws.planton.dev/v1alpha1
+kind: AwsEcrRegistrySettings
+metadata:
+  name: registry-settings
+spec:
+  region: us-east-1
+  repositoryCreationTemplates:
+    - prefix: my-team
+      appliedFor:
+        - CREATE_ON_PUSH
+      imageTagMutability: MUTABLE
+```
+
+```bash
+planton apply -f registry-settings.yaml
+```
+
+Every service whose image repository path starts with `my-team/` gets its repository on its first build. ECR creates the repository itself, so the pushing identity needs no permission to create repositories.
+
+**Or create each repository yourself**, named exactly as the service's image repository path:
+
+```bash
+aws ecr create-repository --repository-name my-team/checkout --region us-east-1
+```
+
+#### Step 2: Create an IAM User with ECR Permissions
+
+In your AWS account, create an IAM user with programmatic access and attach a policy that grants ECR permissions. `ecr:GetAuthorizationToken` is account-wide by design; the push actions are scoped to the repositories from Step 1:
 
 ```json
 {
@@ -174,8 +206,12 @@ In your AWS account, create an IAM user with programmatic access and attach a po
   "Statement": [
     {
       "Effect": "Allow",
+      "Action": "ecr:GetAuthorizationToken",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
       "Action": [
-        "ecr:GetAuthorizationToken",
         "ecr:BatchGetImage",
         "ecr:GetDownloadUrlForLayer",
         "ecr:BatchCheckLayerAvailability",
@@ -184,7 +220,7 @@ In your AWS account, create an IAM user with programmatic access and attach a po
         "ecr:UploadLayerPart",
         "ecr:CompleteLayerUpload"
       ],
-      "Resource": "*"
+      "Resource": "arn:aws:ecr:us-east-1:123456789012:repository/my-team/*"
     }
   ]
 }
@@ -192,14 +228,14 @@ In your AWS account, create an IAM user with programmatic access and attach a po
 
 Note the **Access Key ID** and **Secret Access Key** from the user creation.
 
-#### Step 2: Store Credentials as Planton Secrets
+#### Step 3: Store Credentials as Planton Secrets
 
 ```bash
 planton secret set ecr-access-key '<access-key-id>'
 planton secret set ecr-secret-key '<secret-access-key>'
 ```
 
-#### Step 3: Create the Container Registry Connection
+#### Step 4: Create the Container Registry Connection
 
 Create a file named `container-registry.yaml`:
 
@@ -229,9 +265,9 @@ Replace the placeholder values:
 - `account_id.value`: Your 12-digit AWS account ID
 - `access_key_id.secret`: The slug of the access key secret
 - `secret_access_key.secret`: The slug of the secret key secret
-- `region.value`: The AWS region where your ECR repository is located
+- `region.value`: The AWS region where your ECR repositories are located
 
-#### Step 4: Apply the Connection
+#### Step 5: Apply the Connection
 
 ```bash
 planton apply -f container-registry.yaml
