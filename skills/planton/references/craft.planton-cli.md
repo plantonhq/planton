@@ -44,7 +44,10 @@ planton connection authorization list     # which connections which envs may use
 planton secret list -o json               # managed secrets ("env" field = scope)
 planton variable list -o json             # managed variables ("env" field = scope)
 planton secret list --env <env> -o json   # what <env> can read: its own + the org's
-planton infra state-backend list -o json  # state backends (get <slug> for one; exit 3 = none)
+planton infra state-backend list -o json  # state backends, with each one's ENCRYPTION (get <slug>
+                                          # for one, its key and phase; exit 3 = none)
+planton infra state-backend rekey <slug>  # change the key (--key-source ...), rotate
+                                          # Planton's passphrase, or resume a change
 planton catalog search --server           # the catalog MINUS what the org's catalog
                                           # policy disables (offline default shows all;
                                           # see catalog-availability.md)

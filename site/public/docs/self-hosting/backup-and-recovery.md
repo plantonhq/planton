@@ -22,7 +22,7 @@ A self-hosted Planton is, at bottom, one PostgreSQL database -- and its bundled 
 
 **Not in it, by design:** the key that opens the vault. The vault's data is encrypted, and what decrypts it is either a key in your cloud or a Secret you own -- never anything in the archive. That is what makes the archive safe to keep anywhere, and it is the one thing you decide when you declare the backup. The section below is that decision.
 
-**Also not in it:** the cache (rebuilt on start), the state files of the infrastructure you deployed (they live in your state backend, not in Planton's database), and running workloads on other clusters (untouched; they reconnect).
+**Also not in it:** the cache (rebuilt on start), the state files of the infrastructure you deployed (they live in your state backend, not in Planton's database), and running workloads on other clusters (untouched; they reconnect). Those state files are encrypted, and the passphrase Planton created to open them is a secret in your organization's secret store -- the bundled vault by default, which this archive carries -- so a restore that brings the vault back also brings back the key to your state. Keep a state backend's storage and the store that holds its key recoverable together: either alone opens nothing.
 
 ## Protect the vault's keys
 

@@ -19,7 +19,7 @@ State backend connections tell Planton where to store these state files. Every n
 
 ## Why State Backend Choice Matters
 
-State files contain sensitive information — resource IDs, connection strings, and sometimes credentials. Where you store them is a security and operational decision:
+State files contain sensitive information — resource IDs, connection strings, and sometimes credentials. Every backend encrypts them under a key it names, Planton's by default or one you hold (see [State Encryption](/docs/connections/state-encryption)); where you store them is still a security and operational decision:
 
 - **Pulumi Cloud or Terraform Cloud** — Managed services that handle storage, encryption, locking, and access control. Lowest setup overhead, but state leaves your infrastructure. (OpenTofu does not have its own managed cloud service; it uses the same self-managed backends as Terraform.)
 - **S3, GCS, or Azure Blob** — You control the storage location, encryption keys, and access policies. State stays in your cloud account. Requires more setup but gives you full control.
@@ -36,7 +36,7 @@ Planton-managed backends are the default for new organizations. When a stack job
 **Limitations:**
 
 - Planton-managed backends are only available when using Planton-hosted runners. If you deploy a runner in your own infrastructure, you need a self-managed backend (S3, GCS, Azure Blob, Cloudflare R2, Terraform Cloud/Enterprise, or Pulumi Cloud) because a runner you operate cannot access Planton-managed storage. For the same reason, Planton refuses to make one of your runners the organization's default runner while any of your state lives in Planton-managed storage.
-- You do not control the storage location or encryption keys. If compliance requirements mandate that state files remain in your cloud account, configure a self-managed backend instead.
+- You do not control the storage location. Your state there is encrypted under a key Planton derives for your organization alone; to hold the key yourself, point the backend at your own KMS or Vault key ([State Encryption](/docs/connections/state-encryption)). If compliance requirements mandate that state files remain in your cloud account, configure a self-managed backend instead.
 
 To switch away from Planton-managed defaults, create a new state backend connection, configure it with your preferred storage, and mark it as the default for your organization. See [Switching from Planton-Managed to Self-Managed](#switching-from-planton-managed-to-self-managed) for details.
 
@@ -146,11 +146,9 @@ Store Pulumi state in an Azure Blob Storage container.
 
 **When to use**: State must stay in your Azure subscription.
 
-### Secrets Passphrase
+### Encryption
 
-For S3, GCS, and Azure Blob backends (the "DIY" backends), Pulumi encrypts sensitive values in state using a passphrase. You provide this passphrase when configuring the backend, and Planton uses it during deployments.
-
-This is not needed for the Pulumi Cloud backend, which handles encryption internally.
+Every Pulumi backend encrypts the secret values in its state, and every Terraform/OpenTofu backend encrypts its whole state file, under the key the backend names: Planton's key by default (a passphrase Planton creates in your organization's secrets, which you never type), a passphrase you hold, or your own AWS KMS, Google Cloud KMS, Azure Key Vault or Vault/OpenBao key. Pulumi Cloud backends use Pulumi Cloud's own keys. You choose the key in the connection wizard's **Key** step and can change it later; [State Encryption](/docs/connections/state-encryption) covers every key source, changing and rotating a key, and the combinations that are not supported.
 
 ---
 
@@ -224,7 +222,8 @@ Authentication supports three modes: a token stored as a Planton secret referenc
 3. **Select the backend type**. Choose **Platform Managed** to use Planton's built-in storage with no further configuration, or select a self-managed option (Pulumi Cloud, S3, GCS, Azure, or Cloudflare R2 for Pulumi; Terraform Cloud, S3, GCS, Azure RM, or Cloudflare R2 for Terraform/OpenTofu).
 4. **Choose the authentication mode** (self-managed backends only). Select **Provide Credentials** to store secrets in Planton, or **Runner Environment** if your runner already has access to the storage provider.
 5. **Provide the backend-specific credentials** if you selected Provide Credentials. This step is skipped when using Runner Environment or Platform Managed.
-6. **Create the connection**.
+6. **Choose the key** that encrypts the backend's state: Planton's key (the default, nothing to configure), a passphrase you hold, or your own cloud or Vault key through one of your connections. Combinations an engine cannot support are not offered.
+7. **Create the connection**.
 
 <!-- SCREENSHOT: State backend connection form
   Page: /orgs/{org}/connections/pulumi-backend/create
@@ -280,6 +279,7 @@ To move a single resource, use `planton tofu state migrate-backend <kind> <name>
 ## Related Documentation
 
 - [Connections Overview](/docs/connections) — Understanding the Connect system
+- [State Encryption](/docs/connections/state-encryption) — The key every backend names, and how to change it
 - [Infrastructure](/docs/infrastructure) — How infrastructure deployments use state backends
 - [Infrastructure: Stack Jobs](/docs/infrastructure/stack-jobs) — The atomic execution units that read and write state
 - [Importing Resources](/docs/infrastructure/importing-resources) — Import operations that write to the state backend
