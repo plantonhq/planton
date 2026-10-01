@@ -1,0 +1,129 @@
+# The second act of every-method: Link turned off. A configuration that names methods the account is
+# not offered still updates in place.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodConfiguration
+metadata:
+  name: e2e-pmc-every-method
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-second-act: every-method.yaml
+    planton.dev/e2e-expect-upgrade: in-place
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  card:
+    preference: "on"
+  applePay:
+    preference: "on"
+  googlePay:
+    preference: "on"
+  link:
+    preference: "off"
+  acssDebit:
+    preference: "off"
+  affirm:
+    preference: "off"
+  afterpayClearpay:
+    preference: "off"
+  alipay:
+    preference: "off"
+  alma:
+    preference: "off"
+  amazonPay:
+    preference: "off"
+  applePayLater:
+    preference: "off"
+  auBecsDebit:
+    preference: "off"
+  bacsDebit:
+    preference: "off"
+  bancontact:
+    preference: "off"
+  billie:
+    preference: "off"
+  bizum:
+    preference: "off"
+  blik:
+    preference: "off"
+  boleto:
+    preference: "off"
+  cartesBancaires:
+    preference: "off"
+  cashapp:
+    preference: "off"
+  crypto:
+    preference: "off"
+  customerBalance:
+    preference: "off"
+  eps:
+    preference: "off"
+  fpx:
+    preference: "off"
+  giropay:
+    preference: "off"
+  grabpay:
+    preference: "off"
+  ideal:
+    preference: "off"
+  jcb:
+    preference: "off"
+  kakaoPay:
+    preference: "off"
+  klarna:
+    preference: "off"
+  konbini:
+    preference: "off"
+  krCard:
+    preference: "off"
+  mbWay:
+    preference: "off"
+  mobilepay:
+    preference: "off"
+  multibanco:
+    preference: "off"
+  naverPay:
+    preference: "off"
+  nzBankAccount:
+    preference: "off"
+  oxxo:
+    preference: "off"
+  payByBank:
+    preference: "off"
+  payco:
+    preference: "off"
+  paynow:
+    preference: "off"
+  paypal:
+    preference: "off"
+  payto:
+    preference: "off"
+  pix:
+    preference: "off"
+  promptpay:
+    preference: "off"
+  revolutPay:
+    preference: "off"
+  samsungPay:
+    preference: "off"
+  satispay:
+    preference: "off"
+  scalapay:
+    preference: "off"
+  sepaDebit:
+    preference: "off"
+  sofort:
+    preference: "off"
+  sunbit:
+    preference: "off"
+  swish:
+    preference: "off"
+  twint:
+    preference: "off"
+  upi:
+    preference: "off"
+  usBankAccount:
+    preference: "off"
+  wechatPay:
+    preference: "off"
+  zip:
+    preference: "off"

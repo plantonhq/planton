@@ -42,6 +42,7 @@ spec:
 - **Destroy deactivates**: Stripe never deletes a configuration, so destroy sets it inactive and Stripe keeps it forever.
 - **A removed method keeps its last preference**: the provider sends only values that are set. Set it to `"none"` to hand it back to Stripe's default.
 - **Capabilities still apply**: a method set on appears only where its capability is active on the account and the payment qualifies.
+- **Naming a method the account is not offered**: creating and changing the configuration both work, and the method is simply not available. Such a configuration can't be adopted by import, though: Stripe returns no preference for that method, and it refuses the first update that names it ("not available to this account").
 - **Runs on OpenTofu only.** Planton refuses any other engine for this kind before anything runs.
 
 ## Outputs
