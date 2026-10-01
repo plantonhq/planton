@@ -32,7 +32,8 @@ schema alone cannot.
 - **`secret_string_wo` (the provider's write-only value variant) is
   deliberately not modeled.** It exists to keep the value out of Terraform
   state; on this platform the value is already a managed-secret reference
-  resolved just-in-time, and the state backend is encrypted. One value arm
+  resolved just-in-time, and Planton encrypts every state file under its
+  backend's key. One value arm
   per encoding keeps the spec honest (recorded in the parity manifest).
 
 ## Operational judgment

@@ -62,7 +62,7 @@ State backends that store the state files for Pulumi, Terraform, and OpenTofu de
 | **Pulumi** | State storage via Pulumi Cloud, S3, GCS, or Azure Blob — used by all Pulumi-based infrastructure deployments |
 | **Terraform** | State storage via S3, GCS, or Azure RM — used by Terraform and OpenTofu-based infrastructure deployments |
 
-For details, see [State Backends](/docs/connections/state-backends).
+Every backend also names the key that encrypts its state -- Planton's key by default, or a passphrase, cloud KMS key or Vault key you hold, which an AWS, Google Cloud, Azure or Vault connection supplies. For details, see [State Backends](/docs/connections/state-backends) and [State Encryption](/docs/connections/state-encryption).
 
 ### Managed Services
 
