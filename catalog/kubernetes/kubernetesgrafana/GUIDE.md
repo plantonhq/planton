@@ -83,6 +83,31 @@ install teaches:
   alone does not stop a table overflowing. `wrapHeaderText` keeps long
   headings readable, and `cellOptions.wrapText` on one column lets a long
   identity (a volume claim) wrap instead of clipping.
+- **Size a table from Grafana's own geometry.** On Grafana 13 a table
+  panel spends about 58 px on its title and padding, 34 px on a
+  one-line header (19 px more per extra line a heading wraps to) and
+  36 px per row, inside grid units of 30 px plus an 8 px gap. Height in
+  units from those numbers fits whole rows, never a half row cut off.
+- **Name each column by its noun and its window.** "Memory Used Now"
+  beside "Memory Peak in Range" reads at once; "Used" beside "Busiest
+  Node" reads as a contradiction (27% and 95% of what?). A count over
+  the picker's range says "in Range".
+- **A forecast needs history, and says so.** `predict_linear` over the
+  range's trend answers "will it run out this week", but a line through
+  a few hours, or one night's spike, projected a week out is noise.
+  Withhold it until the range holds days of samples
+  (`and on(cluster) (count_over_time(x[$__range:1h]) >= 72)`), and
+  answer `-1` otherwise, mapped to words with a value mapping: the cell
+  says why, and the query never comes back empty, which a checker reads
+  as broken.
+- **Byte units rescale per cell.** `bytes` and `gbytes` show 1.18 GiB
+  above 931.70 MiB, so a column cannot be compared down the page. Divide
+  to GiB in the query and use the unit `suffix: GiB`.
+- **Events in a table, not a chart.** Notifications minutes apart,
+  charted per interval, alias to zero or a saw-tooth that is only
+  sampling. A table of totals over `$__range` per channel (sent, and
+  `alertmanager_notifications_failed_total` as failed) answers "did it
+  go out" directly, and lists a silent pager at zero.
 - **Removing a dashboard is a purge.** An infra chart re-install never
   deletes a ConfigMap the chart stopped declaring; purge it by name, or
   the drift comparison above names it as shipped by a chart.

@@ -143,12 +143,17 @@ Ask these before composing, in the person's words, not the chart's:
   and group by `cluster` everywhere (node addresses and pod names repeat
   across clusters, and a join on them alone fails), name clusters by a
   short label, and lead a capacity screen with one row per cluster:
-  reserved, used and the busiest node's worst minute for memory and CPU,
-  the fullest disk, OOM kills.
-- **Count alert notifications with a rate over ten minutes,** never
-  `increase()` over the chart's interval: a heartbeat on a two-minute
-  rhythm reads zero all hour in one-minute windows. Show every channel
-  the estate uses, so a pager that sent nothing reads zero.
+  reserved, used now and the busiest node's peak in the range for
+  memory and CPU, memory used a week ahead at the range's trend, the
+  fullest disk, OOM kills. Name every column by its noun and window.
+  Withhold the forecast until the range holds three days of history,
+  and say so in the cell ("Needs 3 Days"): a line through a few hours
+  projected a week out is noise.
+- **Show alert notifications as a table per channel,** sent and failed
+  totals over the selected range, never a chart of per-interval counts:
+  a heartbeat on a two-minute rhythm aliases to zero or a saw-tooth in
+  short windows. List every channel the estate uses, so a pager that
+  sent nothing reads zero.
 - **Read "how full is the node" from the node exporter,** not the
   containers' working set: the kubelet stops reporting container memory
   first when a node starves. Put it beside what pods reserve, because
