@@ -94,6 +94,14 @@ explicitly asks you to change something:
 3. **Run it, then report what actually happened** — including partial
    failures. Never summarize an error away.
 
+A `planton` command that asks for a yes before it changes something never
+answers for you: run without a terminal, it refuses with exit 1, says nothing
+happened ("Nothing was revoked."), and names the flag that answers ahead of
+time (`--force` or `--yes`) with the full command line. That refusal is not a
+failure to route around. The person's yes from step 2 is what the flag stands
+for, so rerun with it only for the mutation they confirmed, and report the
+refusal as "not done" when you do not.
+
 Prefer the platform-tracked path for anything Planton manages: a resource
 deployed by a chart should change through the chart (edit + redeploy) or
 through `planton` commands — not through raw `aws`/`kubectl` mutations. The
