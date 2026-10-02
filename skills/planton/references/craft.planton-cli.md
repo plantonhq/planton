@@ -188,12 +188,15 @@ planton activity --since 24h -o json            # the organization's feed, newes
 planton activity --env prod --attention -o json # what failed or waits for approval in prod
 planton activity --mine --since 7d -o json      # the person's own changes
 planton activity <Kind> <name> -o json          # one resource's activity
+planton activity --this-session -o json         # everything this agent session changed
+planton activity --agent claude-code --since 7d # what one coding agent changed (or --agent any)
 planton history <Kind> <name>                   # one resource's field-by-field versions
 ```
 
 `activity` is the answer to "what changed", "what broke" and "who touched
-it": one card per change a person, their CI, or the Assistant made, with
-who, what, when, and how its run ended. Platform housekeeping never appears,
+it": one card per change a person, their CI, or the Assistant made, by hand
+or through a coding agent, with who, what, when, and how its run ended.
+Platform housekeeping never appears,
 and every card is trimmed to what the signed-in person may open, so an empty
 page is "nothing you may see in this view", never a refusal. It covers the
 whole organization; `--env` narrows only when passed. Windows (`--since`,
@@ -204,6 +207,15 @@ moment; `--area` takes `infrastructure`, `services_pipelines`,
 read a failed service run's logs or a stack job from there, and a
 configuration change's diff with `history <version-id>`. Lead a summary with
 the `--attention` cards, then the rest by area, naming people and resources.
+
+When you run `planton` from inside a coding agent, every change you make is
+recorded as the person **and** you ("Priya Rao and Claude Code"), with your
+session. Before you report work as done, run `planton activity
+--this-session -o json` and check that what you changed is exactly what you
+meant to change; name anything unexpected. `--session <id>` reads another
+session's changes (each card carries `spec.actor.agent.session_id`), and
+`--agent` takes `claude-code`, `cursor`, `assistant`, `other`, or `any`.
+`--this-session` refuses in a terminal that runs inside no agent session.
 If `planton activity` is an unknown command, the CLI is older than this
 feature: tell the person to update it (`brew upgrade planton`) and stop,
 rather than piecing the answer together from other commands.
