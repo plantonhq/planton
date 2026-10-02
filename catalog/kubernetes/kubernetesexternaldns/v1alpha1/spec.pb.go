@@ -102,6 +102,19 @@ type KubernetesExternalDnsSpec struct {
 	// manage records declaratively via DNSEndpoint objects.
 	Sources []string `protobuf:"bytes,11,rep,name=sources,proto3" json:"sources,omitempty"`
 	// *
+	// When true, the controller also follows Gateway API ListenerSets: a route
+	// attached to a listener that a KubernetesListenerSet adds to a shared
+	// Gateway gets its record, not only a route on the Gateway's own
+	// listeners. Turn it on wherever components bring their own hostname and
+	// certificate as a listener set (a monitoring hub beside a platform on one
+	// Gateway is the common case); the Gateway must also admit listener sets
+	// (`allowed_listeners` on KubernetesGateway). Renders the chart's
+	// `enableGatewayListenerSets`, which adds the `--gateway-listener-sets`
+	// flag and the permission to read ListenerSets. The chart grants that
+	// permission only alongside a Gateway API route source, so at least one
+	// `gateway-*` entry in `sources` is required. Default false.
+	GatewayListenerSets bool `protobuf:"varint,37,opt,name=gateway_listener_sets,json=gatewayListenerSets,proto3" json:"gateway_listener_sets,omitempty"`
+	// *
 	// How aggressively cluster state is pushed to the DNS zone.
 	// "upsert-only" (default): create and update records, never delete —
 	// the safe default for zones shared with records managed elsewhere.
@@ -352,6 +365,13 @@ func (x *KubernetesExternalDnsSpec) GetSources() []string {
 		return x.Sources
 	}
 	return nil
+}
+
+func (x *KubernetesExternalDnsSpec) GetGatewayListenerSets() bool {
+	if x != nil {
+		return x.GatewayListenerSets
+	}
+	return false
 }
 
 func (x *KubernetesExternalDnsSpec) GetPolicy() string {
@@ -1265,7 +1285,7 @@ var File_catalog_kubernetes_kubernetesexternaldns_v1alpha1_spec_proto protorefle
 
 const file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesexternaldns/v1alpha1/spec.proto\x125dev.planton.kubernetes.kubernetesexternaldns.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa2\x1e\n" +
+	"<catalog/kubernetes/kubernetesexternaldns/v1alpha1/spec.proto\x125dev.planton.kubernetes.kubernetesexternaldns.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfc \n" +
 	"\x19KubernetesExternalDnsSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -1283,7 +1303,8 @@ const file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_spec_proto_rawDesc 
 	"\x11workload_identity\x18\n" +
 	" \x01(\v22.dev.planton.kubernetes.KubernetesWorkloadIdentityR\x10workloadIdentity\x12\x8d\x03\n" +
 	"\asources\x18\v \x03(\tB\xf2\x02\xbaH\xee\x02\x92\x01\xea\x02\"\xe7\x02r\xe4\x02R\aserviceR\aingressR\x04nodeR\x03podR\x11gateway-httprouteR\x11gateway-grpcrouteR\x10gateway-tlsrouteR\x10gateway-tcprouteR\x10gateway-udprouteR\ristio-gatewayR\x14istio-virtualserviceR\x11contour-httpproxyR\n" +
-	"gloo-proxyR\x04fakeR\tconnectorR\x03crdR\x05emptyR\x12skipper-routegroupR\x0fopenshift-routeR\x0fambassador-hostR\x0fkong-tcpingressR\x10f5-virtualserverR\x12f5-transportserverR\rtraefik-proxyR\funstructuredR\asources\x12Q\n" +
+	"gloo-proxyR\x04fakeR\tconnectorR\x03crdR\x05emptyR\x12skipper-routegroupR\x0fopenshift-routeR\x0fambassador-hostR\x0fkong-tcpingressR\x10f5-virtualserverR\x12f5-transportserverR\rtraefik-proxyR\funstructuredR\asources\x122\n" +
+	"\x15gateway_listener_sets\x18% \x01(\bR\x13gatewayListenerSets\x12Q\n" +
 	"\x06policy\x18\f \x01(\tB4\xbaH\"r R\vcreate-onlyR\x04syncR\vupsert-only\x8a\xa6\x1d\vupsert-onlyH\x02R\x06policy\x88\x01\x01\x12J\n" +
 	"\bregistry\x18\r \x01(\tB)\xbaH\x1fr\x1dR\x03txtR\x04noopR\bdynamodbR\x06aws-sd\x8a\xa6\x1d\x03txtH\x03R\bregistry\x88\x01\x01\x12 \n" +
 	"\ftxt_owner_id\x18\x0e \x01(\tR\n" +
@@ -1320,10 +1341,11 @@ const file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_spec_proto_rawDesc 
 	"helmValues\x1a?\n" +
 	"\x11NodeSelectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xac\x06\xbaH\xa8\x06\x1a\xc4\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd2\b\xbaH\xce\b\x1a\xc4\x02\n" +
 	"\x1dexternaldns.provider_required\x12\x91\x01Select the DNS provider records are written to — set exactly one of aws_route53, google_cloud_dns, azure_dns, cloudflare, webhook, or in_memory\x1a\x8e\x01has(this.aws_route53) || has(this.google_cloud_dns) || has(this.azure_dns) || has(this.cloudflare) || has(this.webhook) || has(this.in_memory)\x1a\xc6\x01\n" +
 	"!externaldns.txt_prefix_xor_suffix\x12ntxt_prefix and txt_suffix are mutually exclusive — ownership TXT names can be prefixed or suffixed, not both\x1a1!(this.txt_prefix != '' && this.txt_suffix != '')\x1a\x95\x02\n" +
-	"&externaldns.dynamodb_requires_registry\x12ydynamodb_table and dynamodb_region configure the \"dynamodb\" registry — set registry to \"dynamodb\" or clear these fields\x1ap(this.dynamodb_table == '' && this.dynamodb_region == '') || (has(this.registry) && this.registry == 'dynamodb')B\x0e\n" +
+	"&externaldns.dynamodb_requires_registry\x12ydynamodb_table and dynamodb_region configure the \"dynamodb\" registry — set registry to \"dynamodb\" or clear these fields\x1ap(this.dynamodb_table == '' && this.dynamodb_region == '') || (has(this.registry) && this.registry == 'dynamodb')\x1a\xa3\x02\n" +
+	"0externaldns.listener_sets_require_gateway_source\x12\x9d\x01gateway_listener_sets follows routes on listener sets, so it needs a Gateway API route source — add a gateway-* entry (e.g. \"gateway-httproute\") to sources\x1aO!this.gateway_listener_sets || this.sources.exists(s, s.startsWith('gateway-'))B\x0e\n" +
 	"\fdns_providerB\x10\n" +
 	"\x0e_chart_versionB\t\n" +
 	"\a_policyB\v\n" +

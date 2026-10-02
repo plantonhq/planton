@@ -420,10 +420,12 @@ locals {
 
     loki = local.loki_config
 
-    gateway          = length(local.gateway_block) > 0 ? local.gateway_block : null
-    chunksCache      = length(local.chunks_cache) > 0 ? local.chunks_cache : null
-    resultsCache     = length(local.results_cache) > 0 ? local.results_cache : null
-    lokiCanary       = try(var.spec.canary_enabled, null) != null && !var.spec.canary_enabled ? { enabled = false } : null
+    gateway      = length(local.gateway_block) > 0 ? local.gateway_block : null
+    chunksCache  = length(local.chunks_cache) > 0 ? local.chunks_cache : null
+    resultsCache = length(local.results_cache) > 0 ? local.results_cache : null
+    lokiCanary   = try(var.spec.canary_enabled, null) != null && !var.spec.canary_enabled ? { enabled = false } : null
+    # The chart's Helm test reads the canary's metrics and refuses to render without it.
+    test             = try(var.spec.canary_enabled, null) != null && !var.spec.canary_enabled ? { enabled = false } : null
     monitoring       = var.spec.service_monitor_enabled ? { serviceMonitor = { enabled = true } } : null
     global           = local.global_block
     memcached        = local.memcached_block

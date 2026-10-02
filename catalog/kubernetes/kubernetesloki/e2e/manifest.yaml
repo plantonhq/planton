@@ -69,6 +69,7 @@ spec:
     alertmanagerUrl:
       value: http://monitoring-kube-prometheus-alertmanager.observability.svc.cluster.local:9093
   serviceMonitorEnabled: true
+  canaryEnabled: false
   imageRegistry: mirror.example.com
   imagePullSecrets:
     - mirror-pull

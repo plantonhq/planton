@@ -32,7 +32,10 @@ go_library(
 
 go_test(
     name = "module_test",
-    srcs = ["r2_test.go"],
+    srcs = [
+        "canary_test.go",
+        "r2_test.go",
+    ],
     embed = [":module"],
     deps = [
         "//catalog/kubernetes/kubernetesloki/v1alpha1",

@@ -150,6 +150,7 @@ spec:
     fsGroupChangePolicy: OnRootMismatch
     seccompProfile:
       type: RuntimeDefault
+  serviceMonitorEnabled: true
 ```
 
 ## Spec Fields
@@ -231,6 +232,7 @@ spec:
 | `spec.podSecurityContext.seccompProfile` | `WorkloadSeccompProfile` |  |  |  |
 | `spec.podSecurityContext.seccompProfile.type` | `string` | yes |  |  |
 | `spec.podSecurityContext.seccompProfile.localhostProfile` | `string` |  |  |  |
+| `spec.serviceMonitorEnabled` | `bool` |  |  |  |
 
 ## Field Details
 
@@ -855,6 +857,22 @@ file installed on the node, named via localhost_profile).
 
 Path of the profile file relative to the node's seccomp profile root. Required
 when (and only meaningful when) type is "Localhost".
+
+### spec.serviceMonitorEnabled
+
+`bool`
+
+When true, the operator creates a monitor for the collector's own
+metrics, so Prometheus sees what the collector is doing: records
+accepted and sent, sends that failed, and how full its sending queue
+is (the first sign that a backend is refusing or away). A
+ServiceMonitor on the collector's monitoring Service (port 8888) in
+deployment, daemonset and statefulset modes; a PodMonitor in sidecar
+mode. The collector serves these metrics either way; this only tells
+Prometheus to read them. Needs the Prometheus operator's CRDs on the
+cluster when the OTel operator starts: it looks for them once, at
+start, so install the monitoring stack first (KubernetesOtelOperator
+`depends_on` the KubernetesKubePrometheusStack). Default false.
 
 ## Validation Rules
 

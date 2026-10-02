@@ -766,6 +766,12 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			Durability:     strings.Contains(manifestPath, "behavioral-durability") || strings.Contains(manifestPath, "behavioral-r2"),
 			R2:             strings.Contains(manifestPath, "behavioral-r2"),
 		}
+		if canary, ok := spec["canary_enabled"].(bool); ok && !canary {
+			v.CanaryOff = true
+		}
+		if canary, ok := spec["canaryEnabled"].(bool); ok && !canary {
+			v.CanaryOff = true
+		}
 		if tenant := lokiFirstTenantUser(spec); tenant != "" {
 			v.TenantUser = tenant
 			v.TenantPassword = lokiE2eTenantPassword
@@ -1228,9 +1234,15 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 				ComponentName: info.Name,
 			}, nil
 		}
+		spec := manifestSpecMap(manifestPath)
+		listenerSets, _ := spec["gatewayListenerSets"].(bool)
+		if snake, ok := spec["gateway_listener_sets"].(bool); ok {
+			listenerSets = snake
+		}
 		return &ExternalDnsInstallVerifier{
 			Namespace:     info.Namespace,
 			ComponentName: info.Name,
+			ListenerSets:  listenerSets,
 		}, nil
 
 	// External Secrets Operator installation: the three component

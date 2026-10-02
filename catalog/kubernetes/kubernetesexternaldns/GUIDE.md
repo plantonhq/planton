@@ -16,6 +16,19 @@ the shared-cluster chart beside the
 [ingress controller](../kubernetesingressnginx/GUIDE.md) and the
 [certificate chain](../kubernetesclusterissuer/GUIDE.md).
 
+## Routes on listener sets need the listener-set switch
+
+When components bring their own hostname and certificate to a shared
+Gateway as a [KubernetesListenerSet](../kuberneteslistenerset/README.md)
+(a monitoring hub beside a platform on one Gateway is the common case),
+the controller writes their records only with `gateway_listener_sets:
+true`. Without it, a route attached to the listener set reads Accepted and
+no record ever appears: the silent prerequisite again. The switch needs a
+`gateway-*` entry in `sources`, because the chart grants the permission to
+read ListenerSets only alongside a Gateway API route source (the spec
+refuses the switch without one), and the Gateway itself must admit
+listener sets (`allowed_listeners`).
+
 ## One instance per DNS provider, each owning its records
 
 One installation writes to exactly one DNS provider; clusters publishing

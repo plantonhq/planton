@@ -64,6 +64,7 @@ spec:
     - ingress
     - gateway-httproute
     - crd
+  gatewayListenerSets: true
   policy: sync
   registry: txt
   txtOwnerId: hack-cluster
@@ -166,6 +167,7 @@ spec:
 | `spec.workloadIdentity.aks.clientId` | `string \| valueFrom` | yes |  | AzureUserAssignedIdentity (`status.outputs.client_id`) |
 | `spec.workloadIdentity.aks.tenantId` | `string` |  |  |  |
 | `spec.sources` | `[]string` |  |  |  |
+| `spec.gatewayListenerSets` | `bool` |  |  |  |
 | `spec.policy` | `string` |  | `upsert-only` |  |
 | `spec.registry` | `string` |  | `txt` |  |
 | `spec.txtOwnerId` | `string` |  |  |  |
@@ -679,6 +681,22 @@ manage records declaratively via DNSEndpoint objects.
 
 - rule: {"repeated":{"items":{"string":{"in":["service","ingress","node","pod","gateway-httproute","gateway-grpcroute","gateway-tlsroute","gateway-tcproute","gateway-udproute","istio-gateway","istio-virtualservice","contour-httpproxy","gloo-proxy","fake","connector","crd","empty","skipper-routegroup","openshift-route","ambassador-host","kong-tcpingress","f5-virtualserver","f5-transportserver","traefik-proxy","unstructured"]}}}}
 
+### spec.gatewayListenerSets
+
+`bool`
+
+When true, the controller also follows Gateway API ListenerSets: a route
+attached to a listener that a KubernetesListenerSet adds to a shared
+Gateway gets its record, not only a route on the Gateway's own
+listeners. Turn it on wherever components bring their own hostname and
+certificate as a listener set (a monitoring hub beside a platform on one
+Gateway is the common case); the Gateway must also admit listener sets
+(`allowed_listeners` on KubernetesGateway). Renders the chart's
+`enableGatewayListenerSets`, which adds the `--gateway-listener-sets`
+flag and the permission to read ListenerSets. The chart grants that
+permission only alongside a Gateway API route source, so at least one
+`gateway-*` entry in `sources` is required. Default false.
+
 ### spec.policy
 
 `string` · optional (explicit presence)
@@ -986,6 +1004,7 @@ the substitute for them. Do not put secrets here.
 - `externaldns.provider_required`: Select the DNS provider records are written to — set exactly one of aws_route53, google_cloud_dns, azure_dns, cloudflare, webhook, or in_memory
 - `externaldns.txt_prefix_xor_suffix`: txt_prefix and txt_suffix are mutually exclusive — ownership TXT names can be prefixed or suffixed, not both
 - `externaldns.dynamodb_requires_registry`: dynamodb_table and dynamodb_region configure the "dynamodb" registry — set registry to "dynamodb" or clear these fields
+- `externaldns.listener_sets_require_gateway_source`: gateway_listener_sets follows routes on listener sets, so it needs a Gateway API route source — add a gateway-* entry (e.g. "gateway-httproute") to sources
 
 ## Outputs
 

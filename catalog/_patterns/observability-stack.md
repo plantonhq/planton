@@ -366,10 +366,9 @@ reach a person"). Split the work by lifecycle, not by component:
   (`allowed_listeners`) and the hub attaches a `KubernetesListenerSet`
   with its own certificate, one per hostname, so a browser never reuses
   another hostname's connection and meets a 404. external-dns writes a
-  record for a route on a listener set only when its chart value
-  `enableGatewayListenerSets` is on (no typed field yet, so it rides
-  `helm_values`); without it the route reads Accepted and no record
-  appears.
+  record for a route on a listener set only with
+  `gateway_listener_sets: true` (beside a `gateway-*` source); without it
+  the route reads Accepted and no record appears.
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -503,6 +502,15 @@ data, so a broken link never changes what alerts):
   `bearer_token_secret` and by the collector's `env_from_secrets` as an
   `Authorization: Bearer ${env:...}` header. Both name the Secret as a
   plain string, so each needs an explicit `depends_on`.
+- **The hub's Loki is sized for every cluster catching up at once,** not
+  for the steady rate: `limits.ingestion_rate_mb` above the summed
+  catch-up (12 serves a few clusters) and `ingestion_burst_size_mb` above
+  every collector's largest batch (24 against a 4 MiB `max_size`), because
+  Loki refuses a push larger than its burst every time. Each collector
+  batches only from its on-disk queue, capped in bytes, and blocks when
+  that queue is full (the `KubernetesOtelCollector` guide), and each has
+  `service_monitor_enabled`, so the hub sees a sender's queue fill before
+  any line is late.
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -627,6 +635,18 @@ spec:
   of totals over `$__range` per channel, sent and failed, answers "did it
   go out"; filter to the integrations in use so a silent pager shows as
   zero, not as absent.
+- **Name a component by its container across metrics and logs.** The
+  container name (`postgres`, `openfga`, `temporal-history`) is the same
+  in kube-state-metrics, cAdvisor and Loki's `k8s_container_name`, so one
+  mapping joins a component's restarts, out-of-memory kills and error
+  lines in a row; its workloads come from the controllers that survive
+  scaling to zero.
+- **An exporter that labels what it probes keeps its labels.** An
+  outside watcher reports each probed environment in `environment`;
+  scraping it with a static `environment` of its own moves that to
+  `exported_environment`. `honor_labels: true` on that scrape job keeps
+  the probe's environment, and the static label still fills series that
+  carry none.
 - **Roll pods up to the workload that owns them** from
   `kube_pod_owner`: a ReplicaSet's name less its last segment is its
   Deployment, other owners are named as they are, and a pod owned by

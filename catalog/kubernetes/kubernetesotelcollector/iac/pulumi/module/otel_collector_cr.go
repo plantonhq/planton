@@ -220,6 +220,14 @@ func collectorSpecBody(locals *Locals) (map[string]interface{}, error) {
 		body["podSecurityContext"] = psc
 	}
 
+	// The operator then creates the monitor itself (a ServiceMonitor, or a
+	// PodMonitor in sidecar mode); absent, it creates none.
+	if spec.GetServiceMonitorEnabled() {
+		body["observability"] = map[string]interface{}{
+			"metrics": map[string]interface{}{"enableMetrics": true},
+		}
+	}
+
 	return body, nil
 }
 
