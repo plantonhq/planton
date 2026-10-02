@@ -16,5 +16,5 @@ spec:
         permissions:
           - resource: Payment Method Configurations
             access: write
-        provenance: derived
-        notes: The module (iac/tf/main.tf) manages stripe_payment_method_configuration. The provider creates it with POST /v1/payment_method_configurations, reads it with GET /v1/payment_method_configurations/{id}, and updates and deactivates it with POST /v1/payment_method_configurations/{id} -- there is no delete (terraform-provider-stripe internal/provider/resources/resource_stripe_payment_method_configuration.go).
+        provenance: proven
+        notes: The module (iac/tf/main.tf) manages stripe_payment_method_configuration. The provider creates it with POST /v1/payment_method_configurations, reads it with GET /v1/payment_method_configurations/{id}, and updates and deactivates it with POST /v1/payment_method_configurations/{id} -- there is no delete (terraform-provider-stripe internal/provider/resources/resource_stripe_payment_method_configuration.go). Proven 2026-10-02 by a live install in a test-mode sandbox under a restricted key holding exactly this group and the other two billing kinds' groups (Webhook Endpoints write, Customer portal write) and nothing else -- a configuration naming all 58 methods (four on, the rest off) was created, then refreshed and converged on a second install.

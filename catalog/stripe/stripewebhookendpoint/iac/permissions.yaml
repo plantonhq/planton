@@ -16,5 +16,5 @@ spec:
         permissions:
           - resource: Webhook Endpoints
             access: write
-        provenance: derived
-        notes: The module (iac/tf/main.tf) manages stripe_webhook_endpoint. The provider creates it with POST /v1/webhook_endpoints, reads it with GET /v1/webhook_endpoints/{id}, updates it with POST /v1/webhook_endpoints/{id}, and destroys it with DELETE /v1/webhook_endpoints/{id} (terraform-provider-stripe internal/provider/resources/resource_stripe_webhook_endpoint.go); POST and DELETE are Write, which includes the Read the refresh needs.
+        provenance: proven
+        notes: The module (iac/tf/main.tf) manages stripe_webhook_endpoint. The provider creates it with POST /v1/webhook_endpoints, reads it with GET /v1/webhook_endpoints/{id}, updates it with POST /v1/webhook_endpoints/{id}, and destroys it with DELETE /v1/webhook_endpoints/{id} (terraform-provider-stripe internal/provider/resources/resource_stripe_webhook_endpoint.go); POST and DELETE are Write, which includes the Read the refresh needs. Proven 2026-10-02 by a live install in a test-mode sandbox under a restricted key holding exactly this group and the other two billing kinds' groups (Customer portal write, Payment Method Configurations write) and nothing else -- the endpoint was created with its signing secret output, then refreshed and converged on a second install.
