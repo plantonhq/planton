@@ -58,7 +58,18 @@ interchangeable nodes — no per-node identity, and `readPoolAutoScale`
 sizes it for you (while it does, `nodeCount` is the autoscaler's field,
 not yours); cross-region DR is `failoverDrReplicaName` on the primary,
 which names the replica a switchover promotes. Replicas for control,
-pools for elasticity, DR pairing for continuity.
+pools for elasticity, DR pairing for continuity. On a replica,
+`replicationLagMaxSeconds` (300 to 31536000) makes it recreate itself
+once it lags the primary past the threshold for five minutes — the
+self-healing answer to a replica that fell too far behind to catch up.
+Two input-only opt-ins ride major-version work:
+`includeReplicasForMajorVersionUpgrade` upgrades replicas in place with
+the primary when `databaseVersion` moves majors, and
+`switchTransactionLogsToCloudStorageEnabled` moves PITR transaction logs
+off the data disk into Cloud Storage for longer retention. Cloud SQL
+acts on both and stores neither. `enforceNewSqlNetworkArchitecture` is
+the irreversible opt-in older projects need before PSC and outbound
+network attachments; set it once and leave it.
 
 ## Restores are triggers, not state
 

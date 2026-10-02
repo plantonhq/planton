@@ -158,7 +158,7 @@ instances: read-pool availability is DERIVED from node_count (1 node =
 ZONAL, 2+ nodes = REGIONAL spread across zones) and the AlloyDB API
 does not store a sent value — the stored object omits the field, so
 any explicit value produces a perpetual re-plan diff (live-verified
-against a single-node pool at google@7.43.0).
+against a single-node read pool).
 
 - rule: availability_type must be ZONAL, REGIONAL, or AVAILABILITY_TYPE_UNSPECIFIED
 

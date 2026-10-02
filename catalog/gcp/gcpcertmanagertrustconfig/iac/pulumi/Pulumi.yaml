@@ -1,0 +1,4 @@
+name: gcpcertmanagertrustconfig-pulumi-project
+runtime:
+  name: go
+description: Planton GcpCertManagerTrustConfig Pulumi module

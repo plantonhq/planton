@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaidataset
+spec:
+  billing_model: free
+  free_tier: A Vertex AI dataset carries no meter of its own (per cloud.google.com/vertex-ai/pricing, read 2026-09-23) -- registering it, importing items into it, and keeping it cost nothing under Vertex AI.
+  notes: "The spend around a dataset lives elsewhere. The items imported into it stay billed where they are stored -- Cloud Storage objects for image, text, and video data, BigQuery tables for tabular data. AutoML and custom training jobs that read the dataset bill node-hours under the jobs, and data-labeling tasks bill per labeled item under the labeling job. metadata_schema_uri decides which of those training and labeling meters apply."

@@ -1,0 +1,374 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiSearchDataStoreLayoutParsingConfig tunes Google's layout
+// parser, which understands a document's structure (headings, tables,
+// figures, lists) and is the parser to pick for RAG over PDFs and HTML.
+message GcpVertexAiSearchDataStoreLayoutParsingConfig {
+  // Keep the processed (layout-parsed) document available through the
+  // GetProcessedDocument API, so an application can fetch the parsed
+  // structure instead of the raw file.
+  bool enable_get_processed_document = 1;
+
+  // Have an LLM describe each image during parsing and add the description
+  // to the indexed text, so image content becomes searchable.
+  bool enable_image_annotation = 2;
+
+  // Refine the detected PDF layout with an LLM (better reading order and
+  // section boundaries on complex pages, at higher parsing cost).
+  bool enable_llm_layout_parsing = 3;
+
+  // Have an LLM describe each table during parsing and add the description
+  // to the indexed text.
+  bool enable_table_annotation = 4;
+
+  // HTML classes whose elements are dropped from the parsed content (menus,
+  // footers, cookie banners).
+  repeated string exclude_html_classes = 5 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // HTML element names dropped from the parsed content, e.g. "nav",
+  // "footer", "script".
+  repeated string exclude_html_elements = 6 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // HTML element ids dropped from the parsed content.
+  repeated string exclude_html_ids = 7 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // Structured content types the parser must extract from the document.
+  // Google supports "shareholder-structure" today.
+  repeated string structured_content_types = 8 [(buf.validate.field).repeated.items.string.min_len = 1];
+}
+
+// GcpVertexAiSearchDataStoreOcrParsingConfig tunes Google's OCR parser
+// (scanned PDFs; applies to PDFs only).
+message GcpVertexAiSearchDataStoreOcrParsingConfig {
+  // On pages that already carry a text layer, use that native text instead
+  // of the OCR output -- faster and more accurate for mixed documents.
+  bool use_native_text = 1;
+}
+
+// GcpVertexAiSearchDataStoreParsingConfig picks exactly one of Google's
+// three document parsers. Leave every arm unset to let Google choose (the
+// digital parser). Google expresses the digital parser as an EMPTY block
+// beside two configured ones, so this spec carries it as a presence bool.
+message GcpVertexAiSearchDataStoreParsingConfig {
+  option (buf.validate.message).cel = {
+    id: "parsing_config.at_most_one_parser"
+    expression: "(this.digital_parsing ? 1 : 0) + (has(this.layout_parsing_config) ? 1 : 0) + (has(this.ocr_parsing_config) ? 1 : 0) <= 1"
+    message: "a parsing config is at most one of digital_parsing, layout_parsing_config, or ocr_parsing_config"
+  };
+
+  // True picks the digital parser: plain text extraction from digital
+  // (born-electronic) documents, Google's default. It has no settings.
+  bool digital_parsing = 1;
+
+  // The layout parser: structure-aware parsing for headings, tables, and
+  // figures -- the parser to pick for RAG quality.
+  GcpVertexAiSearchDataStoreLayoutParsingConfig layout_parsing_config = 2;
+
+  // The OCR parser for scanned PDFs.
+  GcpVertexAiSearchDataStoreOcrParsingConfig ocr_parsing_config = 3;
+}
+
+// GcpVertexAiSearchDataStoreParsingConfigOverride replaces the default
+// parser for one file type.
+message GcpVertexAiSearchDataStoreParsingConfigOverride {
+  // The file type this override applies to: "pdf" (digital, OCR, or layout
+  // parsing), "html" (digital or layout), "docx", "pptx", "xlsm", "xlsx"
+  // (digital or layout). One override per file type.
+  string file_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "pdf",
+        "html",
+        "docx",
+        "pptx",
+        "xlsm",
+        "xlsx"
+      ]
+    }
+  ];
+
+  // The parser for this file type.
+  GcpVertexAiSearchDataStoreParsingConfig parsing_config = 2 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiSearchDataStoreChunkingConfig turns on chunking: documents
+// are split into passages for retrieval, the mode RAG applications want.
+message GcpVertexAiSearchDataStoreChunkingConfig {
+  // Token limit per chunk, 100-500 (Google defaults to 500). Sent only
+  // when set.
+  optional int32 chunk_size = 1 [(buf.validate.field).int32 = {
+    gte: 100
+    lte: 500
+  }];
+
+  // Prepend the headings above a chunk (section, subsection) to chunks cut
+  // from the middle of a document, so a passage keeps its context.
+  bool include_ancestor_headings = 2;
+}
+
+// GcpVertexAiSearchDataStoreDocumentProcessingConfig is how the store
+// parses and chunks documents. Immutable: a change replaces the store.
+message GcpVertexAiSearchDataStoreDocumentProcessingConfig {
+  // Layout-based chunking. Omit to index whole documents.
+  GcpVertexAiSearchDataStoreChunkingConfig chunking_config = 1;
+
+  // The parser applied to every file type not overridden below. Omit for
+  // Google's default (the digital parser).
+  GcpVertexAiSearchDataStoreParsingConfig default_parsing_config = 2;
+
+  // Per-file-type parser overrides, one per file type.
+  repeated GcpVertexAiSearchDataStoreParsingConfigOverride parsing_config_overrides = 3;
+}
+
+// GcpVertexAiSearchDataStoreAdvancedSiteSearchConfig tunes an advanced
+// site search store (create_advanced_site_search = true).
+message GcpVertexAiSearchDataStoreAdvancedSiteSearchConfig {
+  // Do not index the site when the store is created; indexing starts on
+  // demand (the console's "Recrawl" or the API).
+  bool disable_initial_index = 1;
+
+  // Do not refresh the index automatically; content is recrawled only on
+  // demand.
+  bool disable_automatic_refresh = 2;
+}
+
+// GcpVertexAiSearchDataStoreSchema is the store's one schema
+// (`google_discovery_engine_schema`): the JSON Schema of a structured or
+// unstructured-with-metadata store, deciding which fields are indexable,
+// searchable, retrievable, and used for facets. Fully immutable; a change
+// replaces the schema. Declaring one requires skip_default_schema_creation
+// because Google keeps exactly one schema per store.
+message GcpVertexAiSearchDataStoreSchema {
+  // The schema's id within the store, e.g. "default_schema" or your own.
+  string schema_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9](?:[-a-z0-9_]{0,61}[a-z0-9])?$"
+  ];
+
+  // The schema as a compact JSON string (Google normalizes it): a JSON
+  // Schema object whose properties may carry Vertex AI Search's
+  // keyPropertyMapping, indexable, searchable, retrievable, dynamicFacetable
+  // annotations; "datetime_detection" and "geolocation_detection" at the
+  // top level ask Google to infer those types.
+  string json_schema = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2
+  ];
+}
+
+// GcpVertexAiSearchDataStoreTargetSite is one URL pattern a website store
+// crawls or excludes (`google_discovery_engine_target_site`). Immutable in
+// every field; a change replaces the target site.
+message GcpVertexAiSearchDataStoreTargetSite {
+  // The URI pattern, e.g. "cloud.google.com/docs/*" or "www.example.com".
+  // Without a wildcard and with exact_match false, every page whose address
+  // contains the pattern is included.
+  string provided_uri_pattern = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // INCLUDE (Google's default when empty) crawls pages matching the
+  // pattern; EXCLUDE removes matching pages from an included site.
+  string type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    }
+  ];
+
+  // True matches the pattern exactly (or the one specific page it names);
+  // false (Google's default) matches every page containing the pattern.
+  bool exact_match = 3;
+}
+
+// GcpVertexAiSearchDataStoreSpec defines a Vertex AI Search data store
+// (`google_discovery_engine_data_store`, the Discovery Engine API behind
+// the console's AI Applications / Gemini Enterprise): the corpus a search,
+// chat, or recommendation engine answers from. Folded in because each
+// belongs to exactly one store and shares its life: the store's schema
+// (`google_discovery_engine_schema`), the URL patterns a website store
+// crawls (`google_discovery_engine_target_site`), and the sitemaps advanced
+// site search reads (`google_discovery_engine_sitemap`).
+//
+// Three kinds of store, chosen by content_config: NO_CONTENT holds
+// structured records (JSON documents; the schema says which fields are
+// searchable), CONTENT_REQUIRED holds unstructured documents (PDF, HTML,
+// DOCX with optional metadata), PUBLIC_WEBSITE indexes a public site by
+// URL pattern. Documents themselves are data-plane -- imported through the
+// Discovery Engine API, BigQuery, or Cloud Storage -- and are not part of
+// this block. Engines that search the store reference it by data_store_id
+// (GcpVertexAiSearchEngine).
+//
+// Immutable: data_store_id, location, industry_vertical, content_config,
+// solution_types, acl_enabled, the advanced site search and document
+// processing configs. display_name and kms_key_name update in place.
+message GcpVertexAiSearchDataStoreSpec {
+  option (buf.validate.message).cel = {
+    id: "target_sites.website_only"
+    expression: "size(this.target_sites) == 0 || this.content_config == 'PUBLIC_WEBSITE'"
+    message: "target_sites apply only to a PUBLIC_WEBSITE store"
+  };
+  option (buf.validate.message).cel = {
+    id: "sitemap_uris.advanced_site_search_only"
+    expression: "size(this.sitemap_uris) == 0 || (this.content_config == 'PUBLIC_WEBSITE' && this.create_advanced_site_search)"
+    message: "sitemap_uris apply only to a PUBLIC_WEBSITE store with create_advanced_site_search"
+  };
+  option (buf.validate.message).cel = {
+    id: "schema.requires_skip_default"
+    expression: "!has(this.schema) || this.skip_default_schema_creation"
+    message: "a custom schema requires skip_default_schema_creation, because a store holds exactly one schema"
+  };
+  option (buf.validate.message).cel = {
+    id: "advanced_site_search_config.requires_flag"
+    expression: "!has(this.advanced_site_search_config) || this.create_advanced_site_search"
+    message: "advanced_site_search_config applies only with create_advanced_site_search"
+  };
+
+  // The GCP project the store lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where the store and its engines live: "global", "us", or "eu"
+  // (Discovery Engine multi-regions, not Compute regions). An engine must
+  // be in the same location as its stores. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "global",
+        "us",
+        "eu"
+      ]
+    }
+  ];
+
+  // The store's id -- 1-63 characters, RFC 1034 (lowercase letters, digits,
+  // hyphens; starts with a letter). Defaults to metadata.name. Immutable.
+  string data_store_id = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"
+  ];
+
+  // Human-readable name shown in the console (up to 128 characters).
+  // Defaults to metadata.name. Mutable.
+  string display_name = 4 [(buf.validate.field).string.max_len = 128];
+
+  // The industry the corpus belongs to: GENERIC for most content, MEDIA for
+  // videos/articles/music with media recommendation, HEALTHCARE_FHIR for
+  // FHIR stores. Fixes which engines can use the store. Immutable.
+  string industry_vertical = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "GENERIC",
+        "MEDIA",
+        "HEALTHCARE_FHIR"
+      ]
+    }
+  ];
+
+  // What the store holds: NO_CONTENT for structured records (JSON with a
+  // schema), CONTENT_REQUIRED for unstructured documents (PDF, HTML, DOCX
+  // and their metadata), PUBLIC_WEBSITE for a public website crawled by
+  // URL pattern. Empty lets Google default (NO_CONTENT). Immutable.
+  string content_config = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NO_CONTENT",
+        "CONTENT_REQUIRED",
+        "PUBLIC_WEBSITE"
+      ]
+    }
+  ];
+
+  // The solutions the store enrolls in -- an engine can only use stores
+  // enrolled in its solution: SOLUTION_TYPE_SEARCH, SOLUTION_TYPE_CHAT,
+  // SOLUTION_TYPE_RECOMMENDATION, SOLUTION_TYPE_GENERATIVE_CHAT. Empty lets
+  // Google default (search). Immutable.
+  repeated string solution_types = 7 [(buf.validate.field).repeated.items.string = {
+    in: [
+      "SOLUTION_TYPE_RECOMMENDATION",
+      "SOLUTION_TYPE_SEARCH",
+      "SOLUTION_TYPE_CHAT",
+      "SOLUTION_TYPE_GENERATIVE_CHAT"
+    ]
+  }];
+
+  // True means every document carries access-control information that is
+  // ingested with it and enforced at search time (needs the location's
+  // ACL config / identity provider). Documents in an ACL-enabled store
+  // cannot be read back through GetDocument. Immutable.
+  bool acl_enabled = 8;
+
+  // Create an ADVANCED site search store (PUBLIC_WEBSITE only; ignored
+  // otherwise): domain-verified crawling, sitemaps, and more index quota
+  // versus basic site search over public pages. Input-only; Google does
+  // not read it back. Immutable.
+  bool create_advanced_site_search = 9;
+
+  // Advanced site search behavior; applies only with
+  // create_advanced_site_search. Immutable.
+  GcpVertexAiSearchDataStoreAdvancedSiteSearchConfig advanced_site_search_config = 10;
+
+  // Do not create Google's default schema. Required when declaring a
+  // custom schema below, and only then: a store with no schema accepts no
+  // documents until one exists. Input-only.
+  bool skip_default_schema_creation = 11;
+
+  // The store's schema (with skip_default_schema_creation). Omit to let
+  // Google create the default schema and infer fields from the data.
+  GcpVertexAiSearchDataStoreSchema schema = 12;
+
+  // How documents are parsed and chunked. Omit for Google's default: the
+  // digital parser, whole documents. Immutable.
+  GcpVertexAiSearchDataStoreDocumentProcessingConfig document_processing_config = 13;
+
+  // Customer-managed encryption key protecting the store's data: a
+  // GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
+  // Omit for Google-managed encryption. Updatable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 14 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // The URL patterns a PUBLIC_WEBSITE store crawls (INCLUDE) or leaves out
+  // (EXCLUDE). Basic site search needs no domain verification for public
+  // pages; advanced site search needs the domain verified in Search
+  // Console. Add or remove a pattern by editing the list; any other change
+  // replaces that target site.
+  repeated GcpVertexAiSearchDataStoreTargetSite target_sites = 15;
+
+  // Public sitemap URIs an advanced site search store reads, e.g.
+  // "https://www.example.com/sitemap.xml". Each is one immutable sitemap
+  // resource.
+  repeated string sitemap_uris = 16 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // What happens to the store, its schema, target sites, and sitemaps when
+  // this resource is destroyed:
+  //   "" / "DELETE" -- everything is deleted, documents included
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in GCP
+  // A store an engine still uses cannot be deleted; destroy the engine
+  // first.
+  string deletion_policy = 17 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

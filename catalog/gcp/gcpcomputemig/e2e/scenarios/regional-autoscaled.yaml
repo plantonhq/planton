@@ -27,9 +27,14 @@ spec:
   region: us-east1
   template:
     machineType: e2-micro
+    # Host-error detection tightened to two minutes (the 30-second grid)
+    # on the regional template; proves the dial round-trips.
+    scheduling:
+      hostErrorTimeoutSeconds: 120
     disks:
       - boot: true
-        sourceImage: debian-cloud/debian-12
+        sourceImage:
+          value: debian-cloud/debian-12
     networkInterfaces:
       - network:
           valueFrom:

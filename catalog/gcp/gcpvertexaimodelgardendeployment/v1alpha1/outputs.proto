@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1;
+
+// GcpVertexAiModelGardenDeploymentStackOutputs captures what the one-step
+// Model Garden deployment created: the endpoint the model serves from and
+// the deployed model on it. Output names follow GcpVertexAiEndpoint so a
+// chart reads an endpoint the same way whichever block made it.
+message GcpVertexAiModelGardenDeploymentStackOutputs {
+  // Fully qualified endpoint resource path:
+  // projects/{project}/locations/{location}/endpoints/{endpoint_name}.
+  string endpoint_id = 1;
+
+  // The numeric endpoint ID Vertex AI assigned -- the value prediction
+  // clients and model-deployment tooling pass as the endpoint reference.
+  string endpoint_name = 2;
+
+  // The numeric ID Vertex AI assigned to the model at the time it was
+  // deployed to the endpoint; what an undeploy names.
+  string deployed_model_id = 3;
+
+  // The display name Vertex AI gave the deployed model.
+  string deployed_model_display_name = 4;
+
+  // The location the model is deployed in.
+  string location = 5;
+}

@@ -8,7 +8,15 @@ spec:
   # Cloud SQL database, web server, and DAG bucket behind the resource —
   # creates run 25-45 minutes and destroys ~10-15 minutes, so a batch
   # run for both engines needs >=240m.
+  #
+  # Awaiting re-proof: the small scenario now carries a plain env var and
+  # a secretEnvVariables entry the module stores in its own Secret Manager
+  # secret, handing the environment the version's resource name. Offline
+  # bar met: both modules build and validate, plans are clean, and no
+  # value reaches the environment. Live facts the proof lane confirms:
+  # the environment accepts both variables, re-plans clean, and destroy
+  # removes the secret.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]  # live-proven 2026-08-12: full lifecycle + apply-idempotency on both engines
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 240

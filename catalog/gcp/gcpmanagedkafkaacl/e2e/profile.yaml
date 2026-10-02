@@ -1,0 +1,21 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpmanagedkafkaacl
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness project
+  # with roles/managedkafka.admin: the consumer-scoped chain (VPC, subnet,
+  # cluster) deploys first, then one topic pattern's ACL with ALLOW and DENY
+  # entries. Offline bar met: both modules build and validate, offline plans
+  # for the reference manifest, every scenario, and every fixture are clean
+  # on the pinned provider, and the accounting is total. Live facts the
+  # proof lane confirms: (1) Google accepts principals for service accounts
+  # that do not exist (Kafka principals are free-form); (2) permission_type
+  # and host sent only when set re-plan clean against the provider's ALLOW
+  # and * defaults; (3) resource_type, resource_name, and pattern_type read
+  # back as TOPIC, e2e-orders, and LITERAL; (4) destroy deletes the ACL and
+  # the verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 120

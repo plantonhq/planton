@@ -4,7 +4,7 @@ This Terraform module provisions an IAM deny policy (`google_iam_deny_policy`). 
 
 ## Overview
 
-A deny policy blocks principals from using specific permissions regardless of any role grants they hold — deny always outranks allow, which makes deny policies the guardrail layer (protect break-glass secrets, forbid destructive APIs org-wide). The policy attaches to a project, folder, or organization; the module renders the URL-encoded full resource name GCP's API expects from the spec's typed parent message, so manifests never hand-assemble it. The deploying principal's permissions are listed in [`../permissions.yaml`](../permissions.yaml); they must be granted at the organization level even for project-attached policies. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+A deny policy blocks principals from using specific permissions regardless of any role grants they hold — deny always outranks allow, which makes deny policies the guardrail layer (protect break-glass secrets, forbid destructive APIs org-wide). The policy attaches to a project, folder, or organization; the module renders the URL-encoded full resource name GCP's API expects from the spec's typed parent message, so manifests never hand-assemble it. The deploying principal's permissions are listed in [`../permissions.yaml`](../permissions.yaml); they must be granted at the organization level even for project-attached policies. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

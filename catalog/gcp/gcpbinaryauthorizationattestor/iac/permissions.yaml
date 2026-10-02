@@ -1,0 +1,47 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpbinaryauthorizationattestor
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAttestationApis
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling binaryauthorization.googleapis.com and containeranalysis.googleapis.com on the attestor's project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageAttestor
+        permissions:
+          - binaryauthorization.attestors.create
+          - binaryauthorization.attestors.get
+          - binaryauthorization.attestors.update
+          - binaryauthorization.attestors.delete
+        provenance: derived
+        notes: Covers google_binary_authorization_attestor (Pulumi binaryauthorization.Attestor) -- create, read on every refresh, PUT updates of the description and public keys, delete on destroy. Held on the project (roles/binaryauthorization.attestorsAdmin). The provider-default project lookup reads provider configuration only and needs no permission.
+      - purpose: ManageAttestorNote
+        permissions:
+          - containeranalysis.notes.create
+          - containeranalysis.notes.get
+          - containeranalysis.notes.update
+          - containeranalysis.notes.delete
+          - containeranalysis.notes.getIamPolicy
+          - containeranalysis.notes.setIamPolicy
+        provenance: derived
+        condition:
+          spec_field_set: note
+        notes: Covers google_container_analysis_note and its google_container_analysis_note_iam_member grant (Pulumi containeranalysis.Note / NoteIamMember) -- the note the block creates and the occurrences-viewer grant for the attestor's service account. Held on the project (roles/containeranalysis.notes.editor plus note IAM administration). Not exercised for a referenced note.
+      - purpose: ReadKmsPublicKey
+        permissions:
+          - cloudkms.cryptoKeyVersions.get
+          - cloudkms.cryptoKeyVersions.viewPublicKey
+        provenance: derived
+        condition:
+          spec_field_set: attestation_authority_note.public_keys.pkix_public_key.kms_key_version
+        notes: Covers data.google_kms_crypto_key_version (Pulumi kms.GetKMSCryptoKeyVersion), which reads each named key version and its public key at plan time. Held on the key (roles/cloudkms.publicKeyViewer). Not exercised for PEM or PGP keys.

@@ -1,0 +1,27 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildTrigger
+metadata:
+  name: on-release
+spec:
+  projectId:
+    value: my-gcp-project
+  triggerName: on-release
+  description: Run a build for every message on the releases topic
+  tags:
+    - release
+  serviceAccount:
+    value: projects/my-gcp-project/serviceAccounts/builder@my-gcp-project.iam.gserviceaccount.com
+  pubsubConfig:
+    topic:
+      value: projects/my-gcp-project/topics/releases
+  substitutions:
+    _CHANNEL: stable
+  build:
+    steps:
+      - name: ubuntu
+        args:
+          - echo
+          - releasing to $_CHANNEL
+    timeout: 300s
+    options:
+      logging: CLOUD_LOGGING_ONLY

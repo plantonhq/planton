@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTpuQueuedResource
+metadata:
+  name: train-request
+spec:
+  projectId:
+    value: my-gcp-project
+  zone: us-west4-a
+  nodeSpecs:
+    - nodeId: train-v5e
+      node:
+        runtimeVersion: v2-alpha-tpuv5-lite
+        acceleratorType: v5litepod-8
+        description: Fine-tuning slice
+  deletionPolicy: DELETE

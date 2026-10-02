@@ -1,0 +1,40 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPscServiceAttachment
+metadata:
+  name: orders-db-psc
+spec:
+  projectId:
+    value: my-gcp-project
+  attachmentName: orders-db-psc
+  description: Orders database published to named consumer projects over Private Service Connect
+  region: us-central1
+  # The producer's internal passthrough load balancer (a regional
+  # GcpGlobalForwardingRule with scheme INTERNAL) in the same region.
+  targetService:
+    valueFrom:
+      kind: GcpGlobalForwardingRule
+      name: orders-db-ilb
+      fieldPath: status.outputs.self_link
+  # PSC NAT subnets (purpose PRIVATE_SERVICE_CONNECT) in the producer VPC.
+  natSubnets:
+    - valueFrom:
+        kind: GcpSubnetwork
+        name: orders-psc-nat
+        fieldPath: status.outputs.subnetwork_self_link
+  # Only the listed consumers connect; everyone else stays PENDING.
+  connectionPreference: ACCEPT_MANUAL
+  consumerAcceptLists:
+    - projectId:
+        value: consumer-analytics-prod
+      connectionLimit: 10
+    - projectId:
+        value: consumer-reporting-prod
+      connectionLimit: 4
+  consumerRejectLists:
+    - value: legacy-sandbox
+  # A consumer removed from the accept list is disconnected, not left
+  # connected until it reconnects.
+  reconcileConnections: true
+  enableProxyProtocol: false
+  # A published service other teams depend on: destroy must fail.
+  deletionPolicy: PREVENT

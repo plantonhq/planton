@@ -1,0 +1,81 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpredisclusterendpointset
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The registration stores no customer data -- it is a list of connection identifiers on the cluster; the cluster's own data-at-rest posture lives on GcpRedisCluster.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Traffic from a consumer's PSC endpoint to the cluster's service attachment stays on Google's network and never crosses the public internet; whether Redis traffic is TLS-encrypted is the cluster's transit_encryption_mode, decided on GcpRedisCluster.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every registered connection is a Private Service Connect forwarding rule on an internal address in a consumer VPC; nothing here has or admits a public address.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: endpoints
+      evidence:
+        type: spec_default
+        reference: The endpoints list IS the set of consumer networks that may reach the cluster through user-created connections -- each entry names one VPC's connections, and a network not listed has no registered path in. Google replaces the whole list on every apply, so the manifest is the complete allowlist.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served at an edge; the connections carry private Redis traffic to the cluster.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Registering connections authorizes against redis.clusters.update on the cluster's project, and each forwarding rule was created under compute.forwardingRules.create in its own consumer project, so neither party alone can attach a network to the cluster.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through the registration -- it carries no credentials and calls no APIs; the cluster's authorization_mode governs the data plane.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The cluster update that registers or deregisters connections lands in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Google reports each registered connection's status (ACTIVE or NOT_FOUND) on the cluster, and traffic through the connections appears in the cluster's Cloud Monitoring metrics.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The registration is regional metadata with no zonal component; each connection's forwarding rule is itself a regional object, and the cluster's zone spread is GcpRedisCluster's zone_distribution_config.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE -- the connections are deregistered and every consumer reaching the cluster through them loses its path at once; PREVENT makes destroy fail; ABANDON unmanages the registration while it keeps working.
+      notes: PREVENT is the guard for a cluster other VPCs depend on; removing one endpoint from the list is the surgical alternative to deleting the set.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; Google's SDN implements Private Service Connect.

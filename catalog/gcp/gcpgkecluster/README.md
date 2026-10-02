@@ -28,7 +28,7 @@ Clusters are always VPC-native (alias IP): pods and services draw from secondary
 - **Observability**: per-component logging/monitoring (incl. KCP components), managed Prometheus (+ auto-monitoring scope), Pub/Sub lifecycle notifications, cost allocation, BigQuery usage export
 - **Addons**: HTTP LB, HPA, PD/Filestore/GCS-Fuse/Parallelstore/Lustre CSI drivers, Backup for GKE, NodeLocal DNSCache, Config Connector, Stateful HA, Ray operator (+ logging/monitoring), Cloud Run, pod snapshots, agent sandbox, slice controller, Slurm operator
 - **Node-pool defaults**: creation-time defaults for every pool (image streaming, kubelet read-only port, logging variant, containerd private-registry access)
-- **Fleet registration**: `fleet_project` + membership type for multi-cluster features
+- **Fleet registration**: `fleet_project` (a `GcpGkeFleet` or `GcpProject` reference, or a project ID) + membership type for multi-cluster features; Google creates the membership and the cluster exports its name as `fleet_membership`, which team scopes and per-cluster fleet feature settings reference
 - **Lifecycle & scale**: engine-side `deletion_policy` (DELETE/PREVENT/ABANDON) under `deletion_protection`, alpha clusters and beta API groups for evaluation, and read-side performance switches for very large clusters (`ignore_node_count_changes`, `skip_node_pool_refresh`)
 
 ## Stack Outputs
@@ -43,6 +43,7 @@ Clusters are always VPC-native (alias IP): pods and services draw from secondary
 | `location` | Region (regional) or zone (zonal), exactly as provided in the spec |
 | `self_link` | Server-defined URL of the cluster resource |
 | `master_version` | Kubernetes version currently running on the control plane |
+| `fleet_membership` | Full name of the fleet membership Google created through `fleet_project` (`projects/{fleet_project}/locations/{location}/memberships/{id}`); empty when the cluster joins no fleet |
 
 ## Deliberately not modeled (recorded reasons)
 
@@ -56,7 +57,6 @@ matched, mapped, or excluded with the reason recorded in
 | `networking_mode` (ROUTES), `cluster_ipv4_cidr`, `node_version`, `logging_service` / `monitoring_service`, `enable_tpu` | Legacy surfaces superseded by what the spec models: clusters are always VPC-native, node versions live on the pools, observability uses the component configs, and TPU capacity is provisioned through TPU node pools. |
 | `network_policy.provider` | CALICO is the only legal value — the module wires it with `enable_network_policy`. |
 | `workload_identity_config.workload_pool` | The API fixes the pool name to `PROJECT_ID.svc.id.goog`; the spec holds the on/off decision and the module composes the only possible value. |
-| `maintenance_policy.recurring_maintenance_window`, `rollback_safe_upgrade` + `desired_emulated_version`, the node-readiness addon | GA at the pinned provider but not yet bridged by the pinned Pulumi SDK — modeling them only in Terraform would break cross-engine parity. Re-evaluated at every SDK bump. |
 | `tpu_config`, `pod_security_policy_config`, `cluster_telemetry`, `protect_config` and other beta-only blocks | Exist only in the `google-beta` provider; GA is the parity baseline, and beta surface enters only through the catalog's admission list (`pkg/providerparity/admissions/google-beta.yaml`), which admits resources, not fields -- none of these blocks is admitted for this kind. |
 | `enterprise_config` | Deprecated on the provider at the pinned version. |
 

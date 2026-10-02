@@ -8,21 +8,44 @@ import (
 	"testing"
 
 	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
 )
 
-// migratedKinds is the allowlist of cloud-resource kinds whose committed
-// variables.tf is owned by the generator (ProtoToVariablesTF) and guarded
-// against drift. A kind is added here only after its module has been regenerated
-// and validated (tofu validate against a null-pruned tfvars), so the guard can
-// never be red for an unmigrated module. Remaining providers/kinds are migrated
-// in tracked batches, each appended here.
+// The drift guard enrolls a module in one of two shapes, and a module is
+// enrolled only after it has been regenerated and validated (tofu validate
+// against a null-pruned tfvars, an offline plan against its manifests), so the
+// guard can never be red for a module nobody has migrated:
+//
+//   - migratedProviders: a provider whose EVERY registered kind is
+//     generator-owned. Enrollment is read from the kind registry, so a kind
+//     registered tomorrow is guarded tomorrow -- a forge session that forgets
+//     to generate its variables.tf gets a red test instead of a hand-shaped
+//     file that ships. The only way out is a named entry in generatorGaps.
+//   - migratedKinds: individual kinds of a provider whose catalog is still
+//     part hand-shaped, appended in tracked batches as each batch is
+//     regenerated and validated.
 //
 // Scope note: only providers whose module conventions match the generator (it
 // flattens wrapper types like StringValueOrRef to primitives and emits the
-// canonical metadata block) belong here. AWS modules follow these conventions.
-// Providers that intentionally diverge (e.g. OCI modules expose the wrapper
-// object) are out of scope until their modules are migrated to the generator.
+// canonical metadata block) belong in either list. AWS and GCP modules follow
+// these conventions. Providers that intentionally diverge (e.g. OCI modules
+// expose the wrapper object) are out of scope until their modules are migrated
+// to the generator.
+
+// migratedProviders are the providers whose whole catalog is generator-owned.
+var migratedProviders = []cloudresourcekind.CloudResourceProvider{
+	cloudresourcekind.CloudResourceProvider_gcp,
+}
+
+// generatorGaps names the kinds of a migrated provider whose module the
+// generator cannot yet express, each with the gap it waits on. Such a module
+// stays hand-owned until the generator learns the shape; it is never
+// hand-patched into the generator's output and enrolled. An entry naming a
+// kind outside the migrated providers is a stale entry and fails the guard.
+var generatorGaps = map[string]string{}
+
+// migratedKinds are the individually enrolled kinds.
 var migratedKinds = []string{
 	// aws-ecs-environment chart kinds (the set that surfaced the schema bug).
 	"AwsRoute53Zone",
@@ -199,7 +222,36 @@ var migratedKinds = []string{
 	"AwsS3ObjectSet",
 }
 
-// TestVariablesTFDrift asserts that every migrated module's committed
+// enrolledKinds returns every kind the guard owns: the individually enrolled
+// kinds plus every registered kind of each migrated provider, minus the named
+// generator gaps. It fails the test on a gap entry that names a kind outside
+// the migrated providers, because such an entry no longer excuses anything.
+func enrolledKinds(t *testing.T) []string {
+	t.Helper()
+	migrated := map[cloudresourcekind.CloudResourceProvider]bool{}
+	for _, p := range migratedProviders {
+		migrated[p] = true
+	}
+	for kindName := range generatorGaps {
+		kind := crkreflect.KindFromString(kindName)
+		if !migrated[crkreflect.GetProvider(kind)] {
+			t.Fatalf("generatorGaps names %q, which is not a kind of a migrated provider; remove the stale entry", kindName)
+		}
+	}
+	kinds := append([]string(nil), migratedKinds...)
+	for _, kind := range crkreflect.KindsList() {
+		if !migrated[crkreflect.GetProvider(kind)] {
+			continue
+		}
+		if _, gap := generatorGaps[kind.String()]; gap {
+			continue
+		}
+		kinds = append(kinds, kind.String())
+	}
+	return kinds
+}
+
+// TestVariablesTFDrift asserts that every enrolled module's committed
 // variables.tf is byte-identical to the generator output. This makes the
 // generator the single source of truth: a hand-edit or a legacy schema can never
 // silently ship. Run with PLANTON_REGEN_VARIABLES=1 to (re)write the files from
@@ -208,7 +260,7 @@ func TestVariablesTFDrift(t *testing.T) {
 	root := repoRoot(t)
 	regenerate := os.Getenv("PLANTON_REGEN_VARIABLES") == "1"
 
-	for _, kindName := range migratedKinds {
+	for _, kindName := range enrolledKinds(t) {
 		kindName := kindName
 		t.Run(kindName, func(t *testing.T) {
 			kind := crkreflect.KindFromString(kindName)

@@ -1,0 +1,4 @@
+name: gcpbillingbudget-pulumi-project
+runtime:
+  name: go
+description: Planton GcpBillingBudget Pulumi module

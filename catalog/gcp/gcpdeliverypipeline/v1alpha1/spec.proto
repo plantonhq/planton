@@ -1,0 +1,779 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdeliverypipeline.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDeliveryPipelineSpec declares a Cloud Deploy delivery pipeline
+// (`google_clouddeploy_delivery_pipeline`) together with its automations
+// (`google_clouddeploy_automation`): the ordered list of targets a release
+// is promoted through, how each rollout is carried out, and which
+// promotions, advances, and repairs Cloud Deploy performs on its own.
+//
+// A pipeline is a serial promotion flow: a release is created against the
+// pipeline, rolls out to the first stage's target, and is promoted stage
+// by stage (dev, then staging, then prod). Each stage names a target -- a
+// GcpDeployTarget in this pipeline's project and region, by its bare ID --
+// and optionally a rollout strategy: standard (one deploy, optional
+// verification and pre/post jobs) or canary (progressive percentages on
+// Cloud Run or GKE).
+//
+// Automations are children by path (deliveryPipelines/*/automations/*):
+// nothing else references them and destroying the pipeline removes them,
+// so they live here. Each one runs as a service account you name and acts
+// on the targets its selector picks.
+//
+// Important behavioral notes:
+//
+//   - location and delivery_pipeline_id are create-time decisions;
+//     everything else, including the stages and their strategies, updates
+//     in place.
+//   - Releases and rollouts are created outside this block (gcloud deploy
+//     releases create, Cloud Build, or an automation's promotions). Destroy
+//     deletes the pipeline with force=true, which ALSO deletes every
+//     release, rollout, and automation under it -- the provider always
+//     sends force, there is no option to refuse. Use deletion_policy
+//     PREVENT to guard a pipeline whose release history matters.
+//   - The targets need not exist when the pipeline is created (Google
+//     reports missing ones in the pipeline's condition), but a release
+//     cannot roll out to a stage whose target is missing.
+message GcpDeliveryPipelineSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.unique_automation_ids"
+    expression: "this.automations.map(a, a.automation_id).unique()"
+    message: "automation_id must be unique within the pipeline"
+  };
+
+  // The project the pipeline lives in: a literal project ID or a
+  // GcpProject reference. Empty means the provider's default project. The
+  // stages' targets and the automations live in the same project.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The region the pipeline lives in, e.g. "us-central1". Every stage's
+  // target is looked up in this region. Required. Immutable.
+  string location = 2 [(buf.validate.field).required = true];
+
+  // The pipeline's ID, unique in the project and region: 1-63 lowercase
+  // letters, digits, and hyphens, starting with a letter and not ending
+  // with a hyphen. Defaults to metadata.name. Immutable.
+  string delivery_pipeline_id = 3 [(buf.validate.field).cel = {
+    id: "delivery_pipeline_id.format"
+    message: "delivery_pipeline_id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+  }];
+
+  // A description shown in the console, up to 255 characters.
+  string description = 4 [(buf.validate.field).string.max_len = 255];
+
+  // Labels on the pipeline: lowercase keys and values, at most 64 labels.
+  // The platform attribution labels are added on top and win on key
+  // conflicts. Deploy policies can select pipelines by label.
+  map<string, string> labels = 5;
+
+  // Annotations on the pipeline (Google's AIP-128 key/value metadata that
+  // Cloud Deploy never reads). Only the keys declared here are managed.
+  map<string, string> annotations = 6;
+
+  // Suspend the pipeline: no new releases or rollouts can be created, but
+  // in-progress ones complete. Updates in place.
+  bool suspended = 7;
+
+  // The promotion flow: the ordered stages a release moves through.
+  GcpDeliveryPipelineSerialPipeline serial_pipeline = 8;
+
+  // The pipeline's automations, each keyed by its automation_id. At most
+  // 250 rules in total across a pipeline's automations (Google's limit).
+  repeated GcpDeliveryPipelineAutomation automations = 9;
+
+  // What destroy does, for the pipeline and its automations:
+  //   "" / "DELETE" -- deleted (the pipeline with force=true, taking its
+  //                    releases and rollouts with it)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in Google
+  string deletion_policy = 10 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// A sequential set of stages. The order of stages is the promotion order.
+message GcpDeliveryPipelineSerialPipeline {
+  // The stages, first to last. A release rolls out to the first stage's
+  // target and is promoted to each next one.
+  repeated GcpDeliveryPipelineStage stages = 1;
+}
+
+// One stage: a target and how releases roll out to it.
+message GcpDeliveryPipelineStage {
+  // The target this stage deploys to, by its bare ID ("prod", never
+  // projects/.../targets/prod): a GcpDeployTarget reference (its target_id
+  // output) or a literal ID. Google looks the target up in this pipeline's
+  // project and region, so a referenced target must live there too.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeployTarget,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.target_id",
+    (buf.validate.field).cel = {
+      id: "target_id.bare_id"
+      message: "target_id is the target's bare ID (the last segment of its name), not a full resource name"
+      expression: "!has(this.value) || this.value.matches('^[^/]+$')"
+    }
+  ];
+
+  // Skaffold profiles to render this stage's manifests with, e.g.
+  // ["prod"] to pick the prod overlay of a skaffold.yaml.
+  repeated string profiles = 2;
+
+  // The rollout strategy for this stage. Empty means a standard deploy
+  // without verification.
+  GcpDeliveryPipelineStrategy strategy = 3;
+
+  // Deploy parameters for this stage's target: values substituted into
+  // the rendered manifests wherever they reference a parameter, each set
+  // optionally limited to child targets with matching labels.
+  repeated GcpDeliveryPipelineDeployParameters deploy_parameters = 4;
+}
+
+// Deploy parameters applied to a stage's target.
+message GcpDeliveryPipelineDeployParameters {
+  // The parameters as key/value pairs, e.g. {"replicas": "3"}. Required.
+  map<string, string> values = 1 [(buf.validate.field).map.min_pairs = 1];
+
+  // Apply these values only to targets carrying all of these labels (for a
+  // multi-target, its matching child targets). Empty applies them to every
+  // target of the stage, child targets included.
+  map<string, string> match_target_labels = 2;
+}
+
+// How a rollout to a stage is carried out. Set exactly one of standard or
+// canary: standard deploys the whole release at once; canary rolls it out
+// progressively by percentage (Cloud Run and GKE targets only). Neither
+// means a standard deploy without verification.
+message GcpDeliveryPipelineStrategy {
+  // Deploy the release in one step, optionally verifying it and running
+  // jobs before and after.
+  GcpDeliveryPipelineStandard standard = 1;
+
+  // Deploy the release progressively by percentage.
+  GcpDeliveryPipelineCanary canary = 2;
+}
+
+// The standard strategy: one deploy, with optional jobs around it.
+message GcpDeliveryPipelineStandard {
+  // Run `skaffold verify` (or verify_config's tasks) after the deploy; a
+  // failed verification fails the rollout.
+  bool verify = 1;
+
+  // A job that runs before the deploy.
+  GcpDeliveryPipelineStandardDeployHook predeploy = 2;
+
+  // A job that runs after the deploy.
+  GcpDeliveryPipelineStandardDeployHook postdeploy = 3;
+
+  // Container tasks that run as the verify job, instead of the release's
+  // Skaffold verify configuration.
+  GcpDeliveryPipelineVerifyConfig verify_config = 4;
+
+  // An analysis job that watches the deploy for a while and fails the
+  // rollout when a check fails.
+  GcpDeliveryPipelineAnalysis analysis = 5;
+}
+
+// A predeploy or postdeploy job on the standard strategy: Skaffold custom
+// actions, or container tasks -- not both (Google's rule, stated by the
+// provider).
+message GcpDeliveryPipelineStandardDeployHook {
+  option (buf.validate.message).cel = {
+    id: "deploy_hook.actions_or_tasks"
+    expression: "!(size(this.actions) > 0 && size(this.tasks) > 0)"
+    message: "set at most one of actions or tasks"
+  };
+
+  // Skaffold custom actions (customActions names in skaffold.yaml) to run
+  // in order.
+  repeated string actions = 1;
+
+  // Containers to run in order, in Cloud Deploy's Cloud Build execution
+  // environment.
+  repeated GcpDeliveryPipelineTask tasks = 2;
+}
+
+// The canary strategy: progressive deployment on Cloud Run or GKE.
+message GcpDeliveryPipelineCanary {
+  option (buf.validate.message).cel = {
+    id: "canary.one_deployment"
+    expression: "!(has(this.canary_deployment) && has(this.custom_canary_deployment))"
+    message: "set at most one of canary_deployment or custom_canary_deployment"
+  };
+  option (buf.validate.message).cel = {
+    id: "canary.cloud_run_automatic_traffic_control"
+    expression: "!(has(this.canary_deployment) && has(this.runtime_config) && has(this.runtime_config.cloud_run)) || this.runtime_config.cloud_run.automatic_traffic_control"
+    message: "a canary_deployment on Cloud Run requires runtime_config.cloud_run.automatic_traffic_control to be true"
+  };
+
+  // The same steps for every phase: a list of percentages.
+  GcpDeliveryPipelineCanaryDeployment canary_deployment = 1;
+
+  // Phase-by-phase control: each phase its own percentage, profiles, and
+  // jobs.
+  GcpDeliveryPipelineCustomCanaryDeployment custom_canary_deployment = 2;
+
+  // How Cloud Deploy splits traffic during the canary: Cloud Run revision
+  // traffic, or a Kubernetes Gateway API route or Service. Empty lets
+  // Cloud Deploy pick by the target type (a GKE canary then needs one of
+  // the Kubernetes arms).
+  GcpDeliveryPipelineRuntimeConfig runtime_config = 3;
+}
+
+// A canary with the same configuration for every phase.
+message GcpDeliveryPipelineCanaryDeployment {
+  // The percentages to deploy, in ascending order, e.g. [25, 50] (the
+  // final 100% stable phase is implicit). Each is 0 <= n < 100; with a
+  // Kubernetes Gateway API service mesh, 100 is also allowed. Required.
+  repeated int32 percentages = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.int32 = {
+      gte: 0
+      lte: 100
+    }
+  ];
+
+  // Run verify tests after each percentage deployment.
+  bool verify = 2;
+
+  // A job that runs before the first phase.
+  GcpDeliveryPipelineCanaryDeployHook predeploy = 3;
+
+  // A job that runs after the last phase.
+  GcpDeliveryPipelineCanaryDeployHook postdeploy = 4;
+
+  // Container tasks that run as the verify job.
+  GcpDeliveryPipelineVerifyConfig verify_config = 5;
+
+  // An analysis job for each phase.
+  GcpDeliveryPipelineAnalysis analysis = 6;
+}
+
+// A predeploy or postdeploy job on a canary path: Skaffold custom actions.
+// The pinned 8.3 provider schema declares no tasks argument on the canary
+// paths (only on the standard strategy's), although its internal types
+// carry one, so neither engine can send container tasks here; use actions,
+// or a standard stage, until the provider exposes them.
+message GcpDeliveryPipelineCanaryDeployHook {
+  // Skaffold custom actions (customActions names in skaffold.yaml) to run
+  // in order.
+  repeated string actions = 1;
+}
+
+// A canary configured phase by phase.
+message GcpDeliveryPipelineCustomCanaryDeployment {
+  option (buf.validate.message).cel = {
+    id: "custom_canary_deployment.unique_phase_ids"
+    expression: "this.phase_configs.map(p, p.phase_id).unique()"
+    message: "phase_id must be unique within the canary"
+  };
+
+  // The phases in the order they run. Required.
+  repeated GcpDeliveryPipelinePhaseConfig phase_configs = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// One phase of a custom canary.
+message GcpDeliveryPipelinePhaseConfig {
+  // The rollout phase's ID: lowercase letters, digits, and hyphens,
+  // starting with a letter, not ending with a hyphen, up to 63 characters.
+  // Required.
+  string phase_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "phase_id.format"
+      message: "phase_id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // The percentage this phase deploys, 0-100 (100 is the stable phase).
+  // Always sent.
+  int32 percentage = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+
+  // Skaffold profiles for this phase, in addition to the stage's profiles.
+  repeated string profiles = 3;
+
+  // Run verify tests after this phase's deployment.
+  bool verify = 4;
+
+  // A job that runs before this phase.
+  GcpDeliveryPipelineCanaryDeployHook predeploy = 5;
+
+  // A job that runs after this phase.
+  GcpDeliveryPipelineCanaryDeployHook postdeploy = 6;
+
+  // Container tasks that run as this phase's verify job.
+  GcpDeliveryPipelineVerifyConfig verify_config = 7;
+
+  // An analysis job for this phase.
+  GcpDeliveryPipelineAnalysis analysis = 8;
+}
+
+// How traffic is split during a canary.
+message GcpDeliveryPipelineRuntimeConfig {
+  option (buf.validate.message).cel = {
+    id: "runtime_config.one_runtime"
+    expression: "!(has(this.cloud_run) && has(this.kubernetes))"
+    message: "set at most one of cloud_run or kubernetes"
+  };
+
+  // Cloud Run: Cloud Deploy shifts revision traffic.
+  GcpDeliveryPipelineCloudRunConfig cloud_run = 1;
+
+  // GKE: Cloud Deploy shifts traffic through a Gateway API route or a
+  // Service.
+  GcpDeliveryPipelineKubernetesConfig kubernetes = 2;
+}
+
+// Cloud Run canary traffic.
+message GcpDeliveryPipelineCloudRunConfig {
+  // Let Cloud Deploy rewrite the service's traffic stanza to split traffic
+  // between revisions. Required true for a canary_deployment; optional for
+  // a custom_canary_deployment (where your manifests may split traffic
+  // themselves).
+  bool automatic_traffic_control = 1;
+
+  // Revision tags added to the canary revision while a canary phase runs.
+  repeated string canary_revision_tags = 2;
+
+  // Revision tags added to the prior revision while a canary phase runs.
+  repeated string prior_revision_tags = 3;
+
+  // Revision tags added to the new stable revision when the stable phase
+  // is applied.
+  repeated string stable_revision_tags = 4;
+}
+
+// GKE canary traffic: exactly one way to split it.
+message GcpDeliveryPipelineKubernetesConfig {
+  option (buf.validate.message).cel = {
+    id: "kubernetes.one_networking"
+    expression: "!(has(this.gateway_service_mesh) && has(this.service_networking))"
+    message: "set at most one of gateway_service_mesh or service_networking"
+  };
+
+  // Split traffic with a Gateway API HTTPRoute (service-mesh or Gateway
+  // setups).
+  GcpDeliveryPipelineGatewayServiceMesh gateway_service_mesh = 1;
+
+  // Split traffic by Pod count behind a Kubernetes Service.
+  GcpDeliveryPipelineServiceNetworking service_networking = 2;
+}
+
+// Gateway API traffic splitting. The names are of Kubernetes objects the
+// release's manifests deploy.
+message GcpDeliveryPipelineGatewayServiceMesh {
+  // The HTTPRoute whose weights Cloud Deploy adjusts. Required.
+  string http_route = 1 [(buf.validate.field).required = true];
+
+  // The Service the route sends traffic to. Required.
+  string service = 2 [(buf.validate.field).required = true];
+
+  // The Deployment behind the Service. Required.
+  string deployment = 3 [(buf.validate.field).required = true];
+
+  // How long to wait for route updates to propagate, in seconds format
+  // (e.g. "60s"), at most 3 hours. Empty means no wait.
+  string route_update_wait_time = 4;
+
+  // How long to migrate traffic back from the canary Service to the
+  // original one during the stable phase, "15s" to "3600s". Empty means
+  // no cutback time.
+  string stable_cutback_duration = 5;
+
+  // The Pod label selecting the Deployment's and Service's Pods; it must
+  // already be on both. Empty uses Cloud Deploy's default selection.
+  string pod_selector_label = 6;
+
+  // Deploy the HTTPRoute to additional clusters as well (multi-cluster
+  // service mesh). Empty deploys it to the target cluster only.
+  GcpDeliveryPipelineRouteDestinations route_destinations = 7;
+}
+
+// Additional clusters an HTTPRoute is deployed to.
+message GcpDeliveryPipelineRouteDestinations {
+  // The clusters: associated-entity IDs of the target (its
+  // associated_entities), and "@self" for the target cluster itself.
+  // Required.
+  repeated string destination_ids = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // Also deploy the Service to the destination clusters, so DNS resolves
+  // there.
+  bool propagate_service = 2;
+}
+
+// Service-based traffic splitting by Pod count.
+message GcpDeliveryPipelineServiceNetworking {
+  // The Service whose Pods are split. Required.
+  string service = 1 [(buf.validate.field).required = true];
+
+  // The Deployment behind the Service. Required.
+  string deployment = 2 [(buf.validate.field).required = true];
+
+  // Limit the total Pods used by the canary to the Deployment's current
+  // count instead of adding canary Pods on top.
+  bool disable_pod_overprovisioning = 3;
+
+  // The Pod label selecting the Deployment's Pods; it must already be on
+  // the Deployment. Empty uses Cloud Deploy's default selection.
+  string pod_selector_label = 4;
+}
+
+// Container tasks that make up a verify job.
+message GcpDeliveryPipelineVerifyConfig {
+  // The containers to run in order.
+  repeated GcpDeliveryPipelineTask tasks = 1;
+}
+
+// A task of a job.
+message GcpDeliveryPipelineTask {
+  // A container run in Cloud Deploy's Cloud Build execution environment.
+  GcpDeliveryPipelineContainerTask container = 1;
+}
+
+// A container task. Its exit code decides the task's outcome.
+message GcpDeliveryPipelineContainerTask {
+  // The container image, e.g. "us-docker.pkg.dev/my-project/tools/smoke:1".
+  // Required.
+  string image = 1 [(buf.validate.field).required = true];
+
+  // Overrides the image's entrypoint.
+  repeated string command = 2;
+
+  // Overrides the image's default arguments.
+  repeated string args = 3;
+
+  // Environment variables set in the container. Values are stored on the
+  // pipeline in plain text: never put secrets here.
+  map<string, string> env = 4;
+}
+
+// An analysis job: watches a rollout for a while and fails it when a check
+// fails.
+message GcpDeliveryPipelineAnalysis {
+  // How long the analysis runs, in seconds format (e.g. "600s"). Required.
+  string duration = 1 [(buf.validate.field).required = true];
+
+  // Checks against Cloud Monitoring alert policies.
+  GcpDeliveryPipelineGoogleCloudAnalysis google_cloud = 2;
+
+  // Checks that run your own container.
+  repeated GcpDeliveryPipelineCustomCheck custom_checks = 3;
+}
+
+// Google Cloud checks for an analysis.
+message GcpDeliveryPipelineGoogleCloudAnalysis {
+  // Alert-policy checks: the analysis fails when a listed policy fires.
+  repeated GcpDeliveryPipelineAlertPolicyCheck alert_policy_checks = 1;
+}
+
+// One alert-policy check.
+message GcpDeliveryPipelineAlertPolicyCheck {
+  // The check's ID, unique in the analysis. Required.
+  string id = 1 [(buf.validate.field).required = true];
+
+  // The alert policies to watch, each projects/{project}/alertPolicies/{id}:
+  // GcpMonitoringAlertPolicy references (their policy_name output) or
+  // literals. Required.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef alert_policies = 2 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpMonitoringAlertPolicy,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_name"
+  ];
+
+  // Labels that filter which incidents of those policies count.
+  map<string, string> labels = 3;
+}
+
+// One custom check.
+message GcpDeliveryPipelineCustomCheck {
+  // The check's ID, unique in the analysis. Required.
+  string id = 1 [(buf.validate.field).required = true];
+
+  // How often the check runs, in seconds format (e.g. "60s"). Empty uses
+  // Cloud Deploy's default.
+  string frequency = 2;
+
+  // The container the check runs.
+  GcpDeliveryPipelineTask task = 3;
+}
+
+// One automation: rules Cloud Deploy applies on its own to the targets its
+// selector picks.
+message GcpDeliveryPipelineAutomation {
+  option (buf.validate.message).cel = {
+    id: "automation.unique_rule_ids"
+    expression: "this.rules.map(r, has(r.advance_rollout_rule) ? r.advance_rollout_rule.id : has(r.promote_release_rule) ? r.promote_release_rule.id : has(r.repair_rollout_rule) ? r.repair_rollout_rule.id : has(r.timed_promote_release_rule) ? r.timed_promote_release_rule.id : '').unique()"
+    message: "rule ids must be unique within the automation"
+  };
+
+  // The automation's ID, unique in the pipeline. Required. Immutable.
+  string automation_id = 1 [(buf.validate.field).required = true];
+
+  // A description shown in the console, up to 255 characters.
+  string description = 2 [(buf.validate.field).string.max_len = 255];
+
+  // Labels on the automation (keys and values at most 63 characters). The
+  // platform attribution labels are added on top and win on key conflicts.
+  map<string, string> labels = 3;
+
+  // Annotations on the automation (AIP-128 key/value metadata Cloud Deploy
+  // never reads).
+  map<string, string> annotations = 4;
+
+  // Deactivate the automation; its rules stop firing until resumed.
+  bool suspended = 5;
+
+  // The user-managed service account the automation creates releases and
+  // rollouts as: its email, a GcpServiceAccount reference (its email
+  // output) or a literal. The identity running the deploy needs
+  // iam.serviceAccounts.actAs on it (roles/iam.serviceAccountUser), and
+  // the account itself needs roles/clouddeploy.operator (or narrower
+  // release and rollout permissions) plus actAs on the targets' execution
+  // service accounts. Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 6 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // Which of the pipeline's targets the automation acts on. Required.
+  GcpDeliveryPipelineAutomationSelector selector = 7 [(buf.validate.field).required = true];
+
+  // The automation's rules, at least one. Their order is not their order
+  // of execution.
+  repeated GcpDeliveryPipelineAutomationRule rules = 8 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// The targets an automation applies to.
+message GcpDeliveryPipelineAutomationSelector {
+  // The targets, at least one; a target matches when it matches any entry.
+  repeated GcpDeliveryPipelineAutomationTarget targets = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// One target criterion.
+message GcpDeliveryPipelineAutomationTarget {
+  // A target's bare ID -- a GcpDeployTarget reference (its target_id
+  // output) or a literal -- or "*" for every target in the pipeline's
+  // region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeployTarget,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.target_id",
+    (buf.validate.field).cel = {
+      id: "target.bare_id"
+      message: "id is a target's bare ID or \"*\", not a full resource name"
+      expression: "!has(this.value) || this.value.matches('^[^/]+$')"
+    }
+  ];
+
+  // Match targets carrying these labels. Empty keeps whatever Google
+  // records.
+  map<string, string> labels = 2;
+}
+
+// One automation rule: exactly one kind of rule.
+message GcpDeliveryPipelineAutomationRule {
+  option (buf.validate.message).cel = {
+    id: "rule.exactly_one"
+    expression: "(has(this.advance_rollout_rule) ? 1 : 0) + (has(this.promote_release_rule) ? 1 : 0) + (has(this.repair_rollout_rule) ? 1 : 0) + (has(this.timed_promote_release_rule) ? 1 : 0) == 1"
+    message: "a rule sets exactly one of advance_rollout_rule, promote_release_rule, repair_rollout_rule, or timed_promote_release_rule"
+  };
+
+  // Advance a successful canary rollout to its next phase.
+  GcpDeliveryPipelineAdvanceRolloutRule advance_rollout_rule = 1;
+
+  // Promote a release that succeeded on a selected target to the next
+  // (or a named) stage.
+  GcpDeliveryPipelinePromoteReleaseRule promote_release_rule = 2;
+
+  // Retry or roll back a failed rollout.
+  GcpDeliveryPipelineRepairRolloutRule repair_rollout_rule = 3;
+
+  // Promote on a schedule (e.g. every Monday at 09:00).
+  GcpDeliveryPipelineTimedPromoteReleaseRule timed_promote_release_rule = 4;
+}
+
+// Advances a successful rollout to its next phase.
+message GcpDeliveryPipelineAdvanceRolloutRule {
+  // The rule's ID, unique in the automation: 1-63 lowercase letters,
+  // digits, and hyphens, starting with a letter and not ending with a
+  // hyphen. Required.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "rule_id.format"
+      message: "a rule id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // Advance only from these phase IDs (e.g. "canary-25"). Empty means any
+  // phase.
+  repeated string source_phases = 2;
+
+  // How long to wait after the phase finishes, e.g. "600s". Empty means
+  // no wait.
+  string wait = 3;
+}
+
+// Promotes a release from the selected targets to the next stage.
+message GcpDeliveryPipelinePromoteReleaseRule {
+  // The rule's ID, unique in the automation (same format as every rule
+  // ID). Required.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "rule_id.format"
+      message: "a rule id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // How long the release waits before it is promoted, e.g. "3600s". Empty
+  // means promote at once.
+  string wait = 2;
+
+  // The stage to promote to: a stage target's bare ID (a GcpDeployTarget
+  // reference or a literal), or "@next" for the next stage. Empty means
+  // the next stage.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef destination_target_id = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeployTarget,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.target_id",
+    (buf.validate.field).cel = {
+      id: "destination_target_id.bare_id"
+      message: "destination_target_id is a target's bare ID or \"@next\", not a full resource name"
+      expression: "!has(this.value) || this.value.matches('^[^/]+$')"
+    }
+  ];
+
+  // The phase the promoted rollout starts in. Empty means the first phase.
+  string destination_phase = 4;
+}
+
+// Repairs a failed rollout.
+message GcpDeliveryPipelineRepairRolloutRule {
+  // The rule's ID, unique in the automation (same format as every rule
+  // ID). Required.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "rule_id.format"
+      message: "a rule id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // Repair failed jobs only in these phases. Empty means every phase.
+  repeated string phases = 2;
+
+  // Repair only these jobs (e.g. "deploy", "verify"), in the phases above.
+  // Empty means every job.
+  repeated string jobs = 3;
+
+  // The repair steps, in order: retries, then a rollback. Google requires
+  // at least one.
+  repeated GcpDeliveryPipelineRepairPhase repair_phases = 4 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// One repair step: exactly one of retry or rollback.
+message GcpDeliveryPipelineRepairPhase {
+  option (buf.validate.message).cel = {
+    id: "repair_phase.exactly_one"
+    expression: "has(this.retry) != has(this.rollback)"
+    message: "a repair phase sets exactly one of retry or rollback"
+  };
+
+  // Retry the failed job.
+  GcpDeliveryPipelineRetry retry = 1;
+
+  // Roll the target back to its last successful release. An empty block
+  // ({}) rolls back into the stable phase.
+  GcpDeliveryPipelineRollback rollback = 2;
+}
+
+// Retries a failed job.
+message GcpDeliveryPipelineRetry {
+  // How many retries, "1" to "10" (a string, as the provider takes it).
+  // Required.
+  string attempts = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "attempts.format"
+      message: "attempts must be a whole number such as \"3\""
+      expression: "this.matches('^[0-9]+$')"
+    }
+  ];
+
+  // How long to wait before the first retry, e.g. "60s", at most 14 days.
+  // Empty means no wait.
+  string wait = 2;
+
+  // How the wait grows between retries:
+  //   "" / "BACKOFF_MODE_LINEAR" -- linear (Google's default)
+  //   "BACKOFF_MODE_EXPONENTIAL" -- doubles each time
+  // Ignored when wait is empty.
+  string backoff_mode = 3 [(buf.validate.field).cel = {
+    id: "backoff_mode.valid"
+    expression: "this == '' || this in ['BACKOFF_MODE_UNSPECIFIED', 'BACKOFF_MODE_LINEAR', 'BACKOFF_MODE_EXPONENTIAL']"
+    message: "backoff_mode must be BACKOFF_MODE_UNSPECIFIED, BACKOFF_MODE_LINEAR, or BACKOFF_MODE_EXPONENTIAL"
+  }];
+}
+
+// Rolls a rollout back.
+message GcpDeliveryPipelineRollback {
+  // The phase the rollback rollout starts in. Empty means the stable
+  // phase.
+  string destination_phase = 1;
+
+  // Abort the rollback when a rollout is already pending on the target.
+  bool disable_rollback_if_rollout_pending = 2;
+}
+
+// Promotes on a schedule.
+message GcpDeliveryPipelineTimedPromoteReleaseRule {
+  // The rule's ID, unique in the automation (same format as every rule
+  // ID). Required.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "rule_id.format"
+      message: "a rule id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // When to promote, in crontab format, e.g. "0 9 * * 1" for Mondays at
+  // 09:00. Required.
+  string schedule = 2 [(buf.validate.field).required = true];
+
+  // The schedule's IANA time zone, e.g. "America/New_York". Required.
+  string time_zone = 3 [(buf.validate.field).required = true];
+
+  // The stage to promote to: a stage target's bare ID (a GcpDeployTarget
+  // reference or a literal), or "@next". Empty means the next stage.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef destination_target_id = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDeployTarget,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.target_id",
+    (buf.validate.field).cel = {
+      id: "destination_target_id.bare_id"
+      message: "destination_target_id is a target's bare ID or \"@next\", not a full resource name"
+      expression: "!has(this.value) || this.value.matches('^[^/]+$')"
+    }
+  ];
+
+  // The phase the promoted rollout starts in. Empty means the first phase.
+  string destination_phase = 5;
+}

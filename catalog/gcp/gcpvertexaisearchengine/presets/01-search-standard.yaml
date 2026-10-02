@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: catalog-search
+spec:
+  location: global
+  displayName: Catalog search
+  # Empty engineType means SEARCH; the Standard tier is Google's default.
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: product-catalog
+        fieldPath: status.outputs.data_store_id
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Acme

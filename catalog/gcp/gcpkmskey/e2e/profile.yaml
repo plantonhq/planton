@@ -29,7 +29,13 @@ spec:
   # gate (2/2 lane runs; verify-destroyed asserted every version
   # DESTROYED/DESTROY_SCHEDULED with rotation off — the undeletable-class
   # posture — and the rotation + HSM version-template arm applied clean).
+  #
+  # Re-opened for the initial_version_name output (both engines compose
+  # {key_id}/cryptoKeyVersions/1 unless skip_initial_version_creation):
+  # the proof lane confirms the scenario's outputs carry it and that it
+  # names a version that reads back from Cloud KMS. The resources the
+  # module creates are unchanged.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 30

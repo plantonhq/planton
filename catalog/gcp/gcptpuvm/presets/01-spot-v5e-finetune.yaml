@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTpuVm
+metadata:
+  name: finetune-v5e
+spec:
+  projectId:
+    value: my-gcp-project
+  zone: us-west4-a
+  acceleratorType: v5litepod-8
+  runtimeVersion: v2-alpha-tpuv5-lite
+  description: Spot fine-tuning slice
+  schedulingConfig:
+    spot: true
+  metadata:
+    startup-script: pip install -U "jax[tpu]"
+  labels:
+    team: research

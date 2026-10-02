@@ -1,0 +1,30 @@
+# GcpDeployTarget scenario: the canonical shape -- a Cloud Run target in
+# the harness project with an approval gate, labels, annotations, and a
+# deploy parameter. Free: no release is created.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-run
+  id: planton-oss-e2e-gcpcdtgt-run
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeploytarget
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  targetId: e2e-run-${E2E_RUN_ID}
+  description: Ephemeral Cloud Run target created by the Planton E2E harness; safe to delete
+  requireApproval: true
+  labels:
+    purpose: e2e
+  annotations:
+    owner: planton-e2e
+  deployParameters:
+    min-instances: "0"
+  run:
+    location: projects/${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}/locations/us-central1

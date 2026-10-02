@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildTrigger
+metadata:
+  name: orders-main
+spec:
+  location: us-central1
+  description: Build every push to main
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: orders-builder
+      fieldPath: status.outputs.name
+  repositoryEventConfig:
+    repository:
+      valueFrom:
+        kind: GcpCloudBuildRepository
+        name: orders
+        fieldPath: status.outputs.name
+    push:
+      branch: ^main$
+  ignoredFiles:
+    - "docs/**"
+    - "**/*.md"
+  filename: cloudbuild.yaml

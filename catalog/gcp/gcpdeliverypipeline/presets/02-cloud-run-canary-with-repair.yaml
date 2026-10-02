@@ -1,0 +1,56 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeliveryPipeline
+metadata:
+  name: web-canary
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: Web service with a Cloud Run canary in prod
+  serialPipeline:
+    stages:
+      - targetId:
+          value: staging
+        strategy:
+          standard:
+            verify: true
+      - targetId:
+          value: prod
+        strategy:
+          canary:
+            runtimeConfig:
+              cloudRun:
+                automaticTrafficControl: true
+            canaryDeployment:
+              percentages:
+                - 25
+                - 50
+              verify: true
+  automations:
+    - automationId: prod-canary
+      description: Advance healthy canary phases and roll back failed ones
+      serviceAccount:
+        value: deploy-automation@my-gcp-project.iam.gserviceaccount.com
+      selector:
+        targets:
+          - id:
+              value: prod
+      rules:
+        - advanceRolloutRule:
+            id: advance-canary
+            sourcePhases:
+              - canary-25
+              - canary-50
+            wait: 900s
+        - repairRolloutRule:
+            id: repair-canary
+            jobs:
+              - deploy
+              - verify
+            repairPhases:
+              - retry:
+                  attempts: "2"
+                  wait: 60s
+                  backoffMode: BACKOFF_MODE_EXPONENTIAL
+              - rollback:
+                  disableRollbackIfRolloutPending: true

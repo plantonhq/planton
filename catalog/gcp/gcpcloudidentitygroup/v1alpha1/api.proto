@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudidentitygroup.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpcloudidentitygroup/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpcloudidentitygroup/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-cloud-identity-group
+message GcpCloudIdentityGroup {
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+  string kind = 2 [(buf.validate.field).string.const = 'GcpCloudIdentityGroup'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  GcpCloudIdentityGroupSpec spec = 4 [(buf.validate.field).required = true];
+  GcpCloudIdentityGroupStatus status = 5;
+}
+
+message GcpCloudIdentityGroupStatus {
+  GcpCloudIdentityGroupStackOutputs outputs = 1;
+}

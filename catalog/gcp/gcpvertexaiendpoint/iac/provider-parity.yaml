@@ -40,7 +40,7 @@ resources:
           this flag
       - arg: region
         reason: >-
-          dead schema at v7.43.0 -- the argument is declared (ForceNew)
+          dead schema at the pin -- the argument is declared (ForceNew)
           but never read anywhere in the resource's implementation (no
           expander, no flattener, absent from the identity schema). The
           module still sends it pinned to spec.location because the

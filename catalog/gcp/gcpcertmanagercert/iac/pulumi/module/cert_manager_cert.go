@@ -51,8 +51,8 @@ func certManagerCert(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provi
 			}
 			managedArgs.DnsAuthorizations = authorizations
 		}
-		if spec.Managed.IssuanceConfig != "" {
-			managedArgs.IssuanceConfig = pulumi.StringPtr(spec.Managed.IssuanceConfig)
+		if spec.Managed.IssuanceConfig.GetValue() != "" {
+			managedArgs.IssuanceConfig = pulumi.StringPtr(spec.Managed.IssuanceConfig.GetValue())
 		}
 		args.Managed = managedArgs
 	}

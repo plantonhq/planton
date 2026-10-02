@@ -1,0 +1,23 @@
+# Extra fixture for the from-disk scenario: a small Debian boot disk in
+# the harness project, the classic golden-image source.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeDisk
+metadata:
+  name: planton-oss-e2e-gcpimg-disk
+  id: planton-oss-e2e-gcpimg-disk
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcomputedisk
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  diskName: planton-e2e-gcpimg-disk-${E2E_RUN_ID}
+  zone: us-east1-b
+  type: pd-standard
+  sizeGb: 10
+  image:
+    value: projects/debian-cloud/global/images/family/debian-12

@@ -1,0 +1,38 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorTemplate
+metadata:
+  name: customer-chat-guard
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: LOW_AND_ABOVE
+    raiSettings:
+      raiFilters:
+        - filterType: SEXUALLY_EXPLICIT
+          confidenceLevel: LOW_AND_ABOVE
+        - filterType: HATE_SPEECH
+          confidenceLevel: LOW_AND_ABOVE
+        - filterType: HARASSMENT
+          confidenceLevel: MEDIUM_AND_ABOVE
+        - filterType: DANGEROUS
+          confidenceLevel: MEDIUM_AND_ABOVE
+    sdpSettings:
+      advancedConfig:
+        inspectTemplate: projects/my-gcp-project/locations/us/inspectTemplates/customer-pii
+        deidentifyTemplate: projects/my-gcp-project/locations/us/deidentifyTemplates/redact-pii
+    maliciousUriFilterSettings:
+      filterEnforcement: ENABLED
+  templateMetadata:
+    enforcementType: INSPECT_AND_BLOCK
+    customPromptSafetyErrorMessage: Sorry, I can't help with that request.
+    customLlmResponseSafetyErrorMessage: Sorry, I can't share that answer.
+    logTemplateOperations: true
+    logSanitizeOperations: true
+    enableMultiLanguageDetection: true
+    filterVersionSelector:
+      alias: FILTER_VERSION_ALIAS_STABLE
+  deletionPolicy: PREVENT

@@ -1,0 +1,11 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcHost
+metadata:
+  name: network-host
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpProject
+      name: network-host
+      fieldPath: status.outputs.project_id
+  deletionPolicy: PREVENT

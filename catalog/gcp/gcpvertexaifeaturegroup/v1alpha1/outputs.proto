@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1;
+
+// GcpVertexAiFeatureGroupStackOutputs captures the feature group's identity
+// and the features registered in it.
+message GcpVertexAiFeatureGroupStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/featureGroups/{feature_group_id}.
+  string name = 1;
+
+  // The feature group's id -- what an online store's feature view
+  // references.
+  string feature_group_id = 2;
+
+  // The location the feature group lives in.
+  string location = 3;
+
+  // Full resource names of the registered features, in manifest order.
+  repeated string feature_names = 4;
+}

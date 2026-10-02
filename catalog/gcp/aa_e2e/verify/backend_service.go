@@ -4,11 +4,23 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/googleapi"
 )
 
-// backendServiceVerifier probes a global Compute Engine backend service by
-// name via the compute API, additionally confirming its health-check wiring —
+// getBackendService reads the service from the global or regional API
+// collection by the region output, the same switch the modules make.
+func getBackendService(ctx context.Context, svc *Services, outputs map[string]string) (*compute.BackendService, error) {
+	name := outputs["backend_service_name"]
+	if region := outputs["region"]; region != "" {
+		return svc.Compute.RegionBackendServices.Get(svc.Project, region, name).Context(ctx).Do()
+	}
+	return svc.Compute.BackendServices.Get(svc.Project, name).Context(ctx).Do()
+}
+
+// backendServiceVerifier probes a Compute Engine backend service by name via
+// the compute API -- the global or regional collection, chosen by the region
+// output -- additionally confirming its health-check wiring —
 // the FK-resolved reference to the GcpHealthCheck prerequisite is the point
 // of the composition.
 type backendServiceVerifier struct{}
@@ -17,7 +29,7 @@ func (v *backendServiceVerifier) IDOutputKey() string { return "self_link" }
 
 func (v *backendServiceVerifier) VerifyExists(ctx context.Context, svc *Services, outputs map[string]string) error {
 	name := outputs["backend_service_name"]
-	backendService, err := svc.Compute.BackendServices.Get(svc.Project, name).Context(ctx).Do()
+	backendService, err := getBackendService(ctx, svc, outputs)
 	if err != nil {
 		return errors.Wrapf(err, "backend service %s not found after deploy", name)
 	}
@@ -38,7 +50,7 @@ func (v *backendServiceVerifier) VerifyExists(ctx context.Context, svc *Services
 
 func (v *backendServiceVerifier) VerifyAbsent(ctx context.Context, svc *Services, outputs map[string]string) error {
 	name := outputs["backend_service_name"]
-	_, err := svc.Compute.BackendServices.Get(svc.Project, name).Context(ctx).Do()
+	_, err := getBackendService(ctx, svc, outputs)
 	if err != nil {
 		var apiErr *googleapi.Error
 		if errors.As(err, &apiErr) && apiErr.Code == 404 {

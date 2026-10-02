@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpbigqueryconnection
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/bigquery.connectionAdmin; the module enables
+  # bigqueryconnection.googleapis.com itself: the cloud_resource arm in US
+  # and the spark arm in us-central1, both free. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest,
+  # every scenario, and every fixture are clean on the pinned provider, and
+  # the accounting is total. Live facts the proof lane confirms: (1) the
+  # marker bool emits an empty cloud_resource block Google answers with a
+  # service account, which the verifier matches against the output; (2) the
+  # connection id defaulted from metadata.name (underscores in the
+  # scenarios) is accepted; (3) the arms Google must reach outside the
+  # project -- Cloud SQL, Spanner, AWS, Azure, the Connector framework --
+  # are proven offline; (4) destroy deletes the connection and the verifier
+  # reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

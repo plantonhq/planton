@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptpuqueuedresource.v1alpha1;
+
+// GcpTpuQueuedResourceStackOutputs carries the request's identity.
+message GcpTpuQueuedResourceStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{zone}/queuedResources/{queued_resource_id}.
+  string name = 1;
+
+  // The request's id (the last segment of name).
+  string queued_resource_id = 2;
+
+  // The zone the capacity is requested in.
+  string zone = 3;
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaidataset.v1alpha1;
+
+// GcpVertexAiDatasetStackOutputs captures the identity Google assigned the
+// dataset -- what a training job, pipeline, or labeling task names it by.
+message GcpVertexAiDatasetStackOutputs {
+  // Full resource name:
+  // projects/{project_number}/locations/{location}/datasets/{dataset_id}.
+  string name = 1;
+
+  // The numeric id Google assigned at creation (the last segment of name).
+  string dataset_id = 2;
+
+  // The location the dataset lives in.
+  string location = 3;
+}

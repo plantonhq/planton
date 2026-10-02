@@ -18,8 +18,8 @@
 //
 //	go run ./pkg/providerparity/distiller \
 //	    --out-dir pkg/providerparity/schemas \
-//	    --provider 'google=hashicorp/google@~> 7.43' \
-//	    --provider 'google-beta=hashicorp/google-beta@~> 7.43'
+//	    --provider 'google=hashicorp/google@8.3.0' \
+//	    --provider 'google-beta=hashicorp/google-beta@8.3.0'
 //
 // Bumping a pin is a one-line change to the Makefile invocation followed by a
 // re-run: the artifact for the same provider is replaced, never accumulated,

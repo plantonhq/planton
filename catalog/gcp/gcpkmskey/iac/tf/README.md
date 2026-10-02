@@ -21,7 +21,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 
 ## Module Layout
 
-- `provider.tf` — google provider pin (`~> 7.43`; all fields GA on the released line)
+- `provider.tf` — google provider pin (`~> 8.3`; all fields GA on the released line)
 - `variables.tf` — the converter-contract `metadata`/`spec` variables
 - `locals.tf` — optional-field null-folding + the label merge
 - `main.tf` — API enablement + the crypto key resource
@@ -50,6 +50,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 | `key_name` | The short name of the key |
 | `primary_version_name` | Current primary version resource name (ENCRYPT_DECRYPT keys; empty otherwise) |
 | `primary_state` | Lifecycle state of the primary version |
+| `initial_version_name` | The version created with the key (`.../cryptoKeyVersions/1`), for every purpose -- what asymmetric-sign consumers name; empty with `skip_initial_version_creation` |
 
 ## Required Permissions
 

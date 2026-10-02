@@ -1,0 +1,29 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: watch-next
+spec:
+  location: global
+  engineType: RECOMMENDATION
+  displayName: Watch next
+  # A recommendation engine takes exactly one store, enrolled in
+  # SOLUTION_TYPE_RECOMMENDATION with the MEDIA vertical, and always lives
+  # in default_collection.
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: media-catalog
+        fieldPath: status.outputs.data_store_id
+  industryVertical: MEDIA
+  commonConfig:
+    companyName: Acme Video
+  mediaRecommendationEngineConfig:
+    type: recommended-for-you
+    optimizationObjective: cvr
+    optimizationObjectiveConfig:
+      targetField: watch-percentage
+      targetFieldValueFloat: 0.5
+    trainingState: TRAINING
+    engineFeaturesConfig:
+      recommendedForYouConfig:
+        contextEventType: view-home-page

@@ -16,12 +16,15 @@ proven.
   `issuanceConfig`): simplest — no DNS records to manage — but validates
   only once traffic reaches the load balancer, so it shares the classic
   managed certificate's serving-gap problem and cannot do wildcards.
-- **Issuance config**: your private CA signs instead of a public one.
-  Mutually exclusive with DNS authorizations.
+- **Issuance config** (a `GcpCertManagerIssuanceConfig` reference): your
+  private Certificate Authority Service pool issues and renews the
+  certificate instead of a public CA -- the private-PKI path for internal
+  load balancers, wildcards included. Mutually exclusive with DNS
+  authorizations.
 
 The spec validates the coherence rules before deploy: exactly one of
-managed/self_managed, wildcards require DNS auth, DNS auth XOR issuance
-config.
+managed/self_managed, wildcards require DNS auth or an issuance config,
+DNS auth XOR issuance config.
 
 ## The self-managed arm rotates IN PLACE — use that
 

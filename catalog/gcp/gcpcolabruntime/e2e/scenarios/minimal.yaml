@@ -1,0 +1,33 @@
+# GcpColabRuntime scenario: a runtime assigned to the owner-arranged
+# runtime user from a template fixture referenced by kind, then STOPPED by
+# the client-side desired_state control (the provider stops it right after
+# the assign), so the lane bills minutes of compute and the disk. The
+# runtime id is always sent (the provider never reads it back); it carries
+# the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntime
+metadata:
+  name: planton-oss-e2e-gcpcolr-minimal
+  id: planton-oss-e2e-gcpcolr-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcolabruntime
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabruntime/e2e/prerequisites/gcpcolabruntimetemplate-runtime.yaml"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_COLAB_RUNTIME_USER
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  runtimeId: pln-e2e-colr-${E2E_RUN_ID}
+  runtimeTemplate:
+    valueFrom:
+      kind: GcpColabRuntimeTemplate
+      name: planton-oss-e2e-gcpcolr-template
+      fieldPath: status.outputs.name
+  runtimeUser: ${E2E_ENV:PLANTON_E2E_GCP_COLAB_RUNTIME_USER}
+  desiredState: STOPPED
+  deletionPolicy: DELETE

@@ -5,6 +5,17 @@
 # Only divergences are recorded -- an argument absent from this file must
 # match its spec field by exact name. Every exclusion carries its reason:
 # omission is a decision, never an accident.
+#
+# One kind, two provider resources: GCP models the global and regional
+# forwarding rules as separate API collections sharing the VIP surface; the
+# regional one adds the passthrough and PSC-consumer levers and lacks the
+# Traffic Director and backend-bucket-migration levers. spec.region is the
+# scope selector -- it name-matches the regional resource's own region
+# argument; every argument only one collection carries is walled to that
+# scope by the spec's CEL rules, so each resource sees exactly the fields it
+# has. source_ip_ranges is such a field: the provider documents it as usable
+# only on a regional rule with scheme EXTERNAL, and the spec admits it there
+# alone, so it matches by name on both resources without an exclusion.
 
 resources:
   google_compute_global_forwarding_rule:
@@ -20,14 +31,15 @@ resources:
       # API's plural list shape. Matching resumes name-for-name below.
       - spec: spec.service_directory_registration
         arg: service_directory_registrations
-    exclusions:
-      - arg: source_ip_ranges
-        reason: >-
-          dead lever on this resource -- the provider documents the field
-          as "can only be used with a regional Forwarding Rule whose
-          scheme is EXTERNAL", and this kind manages the GLOBAL rule; the
-          source-filtered variant belongs to a regional forwarding-rule
-          kind
+
+  google_compute_forwarding_rule:
+    mappings:
+      - spec: spec.forwarding_rule_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.service_directory_registration
+        arg: service_directory_registrations
 
   google_project_service:
     internal: >-

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigqueryreservation.v1alpha1;
+
+// GcpBigQueryReservationStackOutputs captures the reservation's identity
+// and its assignments.
+message GcpBigQueryReservationStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/reservations/{reservation_name}.
+  string name = 1;
+
+  // The reservation's name (the last segment of name).
+  string reservation_name = 2;
+
+  // The reservation's location.
+  string location = 3;
+
+  // The assignments' resource names, in the order they are declared.
+  repeated string assignment_names = 4;
+}

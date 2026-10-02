@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaitensorboard.v1alpha1;
+
+// GcpVertexAiTensorboardStackOutputs captures the identity Google assigned
+// the TensorBoard and the names of what was declared in it.
+message GcpVertexAiTensorboardStackOutputs {
+  // Full resource name -- what a training job's `tensorboard` field takes:
+  // projects/{project_number}/locations/{location}/tensorboards/{tensorboard_id}.
+  string name = 1;
+
+  // The numeric id Google assigned at creation (the last segment of name).
+  string tensorboard_id = 2;
+
+  // The location the TensorBoard lives in.
+  string location = 3;
+
+  // The Cloud Storage path prefix (bucket or directory, no trailing slash)
+  // in Google's tenant project where the TensorBoard stores blob data.
+  string blob_storage_path_prefix = 4;
+
+  // Full resource names of the declared experiments, in manifest order.
+  repeated string experiment_names = 5;
+
+  // Full resource names of the declared runs, experiment by experiment in
+  // manifest order.
+  repeated string run_names = 6;
+}

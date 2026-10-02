@@ -1,0 +1,42 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: ilb-us-central1
+spec:
+  region: us-central1
+  description: Regional policy for the internal Application Load Balancer in us-central1
+  rules:
+    - priority: 1000
+      action: allow
+      direction: INGRESS
+      ruleName: allow-office-to-ilb
+      description: Only the office ranges may reach the internal load balancer
+      targetType: INTERNAL_MANAGED_LB
+      targetForwardingRules:
+        - value: projects/acme-net/regions/us-central1/forwardingRules/internal-web
+      match:
+        srcIpRanges: ["10.20.0.0/16", "10.30.0.0/16"]
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["80", "443"]
+    - priority: 2000
+      action: deny
+      direction: INGRESS
+      ruleName: deny-other-to-ilb
+      description: Nothing else reaches the internal load balancer
+      enableLogging: true
+      targetType: INTERNAL_MANAGED_LB
+      targetForwardingRules:
+        - value: projects/acme-net/regions/us-central1/forwardingRules/internal-web
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: all
+  associations:
+    - name: ilb-us-central1-main
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: main
+          fieldPath: status.outputs.network_self_link
+  deletionPolicy: DELETE

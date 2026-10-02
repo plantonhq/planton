@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "locals.go",
+        "main.go",
+        "network_peering.go",
+        "outputs.go",
+        "peering_routes_config.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/gcp/gcpvpcpeering/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/gcp/gcpvpcpeering/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/compute",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

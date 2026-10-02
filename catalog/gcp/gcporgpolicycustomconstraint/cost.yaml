@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcporgpolicycustomconstraint
+spec:
+  billing_model: free
+  free_tier: "A custom constraint is an organization-defined rule stored by the Organization Policy Service; Google's Resource Manager pricing states that all use of the Resource Manager and Organization Policy APIs is free of charge -- no meter counts constraints or their evaluations."
+  notes: "No field of this spec buys anything. A constraint is a definition; it is enforced (still free) by GcpOrgPolicy resources, and its whole purpose is typically to bound spend or risk elsewhere -- forbidding machine families, public IPs, or unencrypted shapes on the services it targets. The resources it governs bill as their own catalog kinds."

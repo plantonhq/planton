@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1;
+
+// GcpVertexAiSearchDataStoreStackOutputs captures what the data store and
+// its folded schema, target sites, and sitemaps resolved to.
+message GcpVertexAiSearchDataStoreStackOutputs {
+  // Full resource name of the store:
+  // projects/{project}/locations/{location}/collections/default_collection/dataStores/{data_store_id}.
+  // Control actions and widget configs on an engine name a store this way.
+  string name = 1;
+
+  // The store's id -- what an engine's data_store_ids lists.
+  string data_store_id = 2;
+
+  // The store's location (global, us, or eu); an engine must match it.
+  string location = 3;
+
+  // The id of the default schema Google created (empty when the default
+  // schema was skipped).
+  string default_schema_id = 4;
+
+  // Full resource name of the declared schema (empty when none was
+  // declared).
+  string schema_name = 5;
+
+  // Full resource names of the target sites declared on a website store,
+  // in manifest order.
+  repeated string target_site_names = 6;
+
+  // Full resource names of the sitemaps declared on an advanced site search
+  // store, in manifest order.
+  repeated string sitemap_names = 7;
+}

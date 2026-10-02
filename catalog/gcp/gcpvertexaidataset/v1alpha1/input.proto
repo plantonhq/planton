@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaidataset.v1alpha1;
+
+import "catalog/gcp/gcpvertexaidataset/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-vertex-ai-dataset stack-input
+message GcpVertexAiDatasetStackInput {
+  //target cloud-resource
+  GcpVertexAiDataset target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

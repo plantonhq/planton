@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpmanagedkafkaconnector
+spec:
+  billing_model: free
+  free_tier: "A connector runs on its Connect cluster's capacity; Google's Managed Service for Apache Kafka pricing (read 2026-09-24) bills the Connect cluster's vCPUs and memory and names no meter per connector."
+  notes: "What a connector moves bills under the systems it reaches -- Pub/Sub messages, BigQuery streaming inserts and storage, Cloud Storage objects -- and as network transfer. The workers bill under GcpManagedKafkaConnectCluster."

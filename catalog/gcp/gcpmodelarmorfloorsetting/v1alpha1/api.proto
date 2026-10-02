@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-model-armor-floor-setting
+message GcpModelArmorFloorSetting {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpModelArmorFloorSetting'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpModelArmorFloorSettingSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpModelArmorFloorSettingStatus status = 5;
+}
+
+//gcp-model-armor-floor-setting status
+message GcpModelArmorFloorSettingStatus {
+  //stack-outputs
+  GcpModelArmorFloorSettingStackOutputs outputs = 1;
+}

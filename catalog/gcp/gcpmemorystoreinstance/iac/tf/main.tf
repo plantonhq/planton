@@ -72,6 +72,11 @@ resource "google_memorystore_instance" "this" {
   # the API rejects it at create and rejects downgrades.
   maintenance_version = local.maintenance_version
 
+  # Shared Valkey ACL policy (users, key patterns, allowed commands)
+  # attached by full resource name. Sent only when set so an instance
+  # without one keeps its built-in default ACL; swapping is in place.
+  acl_policy = local.acl_policy
+
   # Always sent explicitly (spec defaults TRUE) so destroy behavior is
   # identical on both engines: omitting it would let the provider default
   # decide, and a manifest that never mentions deletion protection must

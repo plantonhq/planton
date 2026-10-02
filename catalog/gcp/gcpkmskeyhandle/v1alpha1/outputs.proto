@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpkmskeyhandle.v1alpha1;
+
+// GcpKmsKeyHandleStackOutputs carries the handle and the key Autokey
+// returned for it.
+message GcpKmsKeyHandleStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/keyHandles/{key_handle_name}.
+  string name = 1;
+
+  // The Cloud KMS key Autokey assigned:
+  // projects/{p}/locations/{l}/keyRings/autokey/cryptoKeys/{key}. Reference
+  // it from the protected resource's customer-managed key field.
+  string kms_key = 2;
+}

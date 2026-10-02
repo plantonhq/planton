@@ -1,0 +1,28 @@
+# The Kafka topic the Pub/Sub sink reads, on the chain's Kafka cluster.
+# Declared by path from the scenario, so it deploys with the chain and tears
+# down after the connector.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaTopic
+metadata:
+  name: planton-oss-e2e-gcpkcnr-topic
+  id: planton-oss-e2e-gcpkcnr-topic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkatopic
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  cluster:
+    valueFrom:
+      kind: GcpManagedKafkaCluster
+      name: planton-oss-e2e-gcpkcnr-kafka
+      fieldPath: status.outputs.name
+  topicId: e2e-kcnr-orders-${E2E_RUN_ID}
+  partitionCount: 3
+  replicationFactor: 3
+  deletionPolicy: DELETE

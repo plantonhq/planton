@@ -202,11 +202,14 @@ type GcpCertManagerCertManaged struct {
 	// ID; reference GcpCertManagerDnsAuthorization resources.
 	// Omit (with no issuance_config) for load-balancer authorization.
 	DnsAuthorizations []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=dns_authorizations,json=dnsAuthorizations,proto3" json:"dns_authorizations,omitempty"`
-	// Private-PKI issuance: the CertificateIssuanceConfig resource name
-	// (projects/*/locations/*/certificateIssuanceConfigs/*) that signs
-	// certificates from your own CA instead of a public one.
-	// Mutually exclusive with dns_authorizations.
-	IssuanceConfig string `protobuf:"bytes,3,opt,name=issuance_config,json=issuanceConfig,proto3" json:"issuance_config,omitempty"`
+	// Private-PKI issuance: the certificate issuance config that has your own
+	// Certificate Authority Service pool sign this certificate instead of a
+	// public CA, by full name
+	// (projects/{project}/locations/{location}/certificateIssuanceConfigs/{name}).
+	// Reference a GcpCertManagerIssuanceConfig -- its `issuance_config_id`
+	// output is exactly this value, and the reference orders the certificate
+	// after the config. Mutually exclusive with dns_authorizations. Immutable.
+	IssuanceConfig *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=issuance_config,json=issuanceConfig,proto3" json:"issuance_config,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -255,11 +258,11 @@ func (x *GcpCertManagerCertManaged) GetDnsAuthorizations() []*v1.StringValueOrRe
 	return nil
 }
 
-func (x *GcpCertManagerCertManaged) GetIssuanceConfig() string {
+func (x *GcpCertManagerCertManaged) GetIssuanceConfig() *v1.StringValueOrRef {
 	if x != nil {
 		return x.IssuanceConfig
 	}
-	return ""
+	return nil
 }
 
 // Configuration for a self-managed (uploaded) certificate.
@@ -347,14 +350,15 @@ const file_catalog_gcp_gcpcertmanagercert_v1alpha1_spec_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xc9\x02\xbaH\xc5\x02\x1aw\n" +
 	"\x14spec.exactly_one_arm\x122exactly one of managed or self_managed must be set\x1a+has(this.managed) != has(this.self_managed)\x1a\xc9\x01\n" +
-	"\x1aspec.all_regions_is_global\x12Zscope ALL_REGIONS is only valid for global certificates (leave location empty or 'global')\x1aOthis.scope != 'ALL_REGIONS' || this.location == '' || this.location == 'global'\"\x99\a\n" +
+	"\x1aspec.all_regions_is_global\x12Zscope ALL_REGIONS is only valid for global certificates (leave location empty or 'global')\x1aOthis.scope != 'ALL_REGIONS' || this.location == '' || this.location == 'global'\"\xf4\t\n" +
 	"\x19GcpCertManagerCertManaged\x12\xf5\x01\n" +
 	"\adomains\x18\x01 \x03(\tB\xda\x01\xbaH\xd6\x01\x92\x01\xd2\x01\b\x01\"\xcd\x01\xba\x01\xc9\x01\n" +
 	"\fdomain.valid\x12geach domain must be a bare or wildcard domain name (no trailing dot), e.g. example.com or *.example.com\x1aPthis.matches('^([*][.])?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?[.])+[a-z]{2,}$')R\adomains\x12\x8b\x01\n" +
-	"\x12dns_authorizations\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\xac\x18\x92\xd4a\x1fstatus.outputs.authorization_idR\x11dnsAuthorizations\x12'\n" +
-	"\x0fissuance_config\x18\x03 \x01(\tR\x0eissuanceConfig:\xcc\x03\xbaH\xc8\x03\x1a\xcb\x01\n" +
-	"\x1bmanaged.auth_mode_exclusive\x12idns_authorizations and issuance_config are mutually exclusive (omit both for load-balancer authorization)\x1aAthis.dns_authorizations.size() == 0 || this.issuance_config == ''\x1a\xf7\x01\n" +
-	"\x1fmanaged.wildcards_need_dns_auth\x12cwildcard domains require dns_authorizations (load-balancer authorization cannot validate wildcards)\x1ao!this.domains.exists(d, d.startsWith('*.')) || this.dns_authorizations.size() > 0 || this.issuance_config != ''\"\xa9\x02\n" +
+	"\x12dns_authorizations\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\xac\x18\x92\xd4a\x1fstatus.outputs.authorization_idR\x11dnsAuthorizations\x12\x82\x03\n" +
+	"\x0fissuance_config\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xa4\x02\xbaH\xf6\x01\xba\x01\xf2\x01\n" +
+	"\x16issuance_config.format\x12ka literal issuance_config must be projects/{project}/locations/{location}/certificateIssuanceConfigs/{name}\x1ak!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/certificateIssuanceConfigs/[^/]+$')\x88\xd4a\xaf\x18\x92\xd4a!status.outputs.issuance_config_idR\x0eissuanceConfig:\xcb\x03\xbaH\xc7\x03\x1a\xcb\x01\n" +
+	"\x1bmanaged.auth_mode_exclusive\x12idns_authorizations and issuance_config are mutually exclusive (omit both for load-balancer authorization)\x1aAthis.dns_authorizations.size() == 0 || !has(this.issuance_config)\x1a\xf6\x01\n" +
+	"\x1fmanaged.wildcards_need_dns_auth\x12cwildcard domains require dns_authorizations (load-balancer authorization cannot validate wildcards)\x1an!this.domains.exists(d, d.startsWith('*.')) || this.dns_authorizations.size() > 0 || has(this.issuance_config)\"\xa9\x02\n" +
 	"\x1dGcpCertManagerCertSelfManaged\x12\xd3\x01\n" +
 	"\x0fpem_certificate\x18\x01 \x01(\tB\xa9\x01\xbaH\xa5\x01\xba\x01\x9e\x01\n" +
 	"\x17pem_certificate.framing\x12_pem_certificate must be a PEM CERTIFICATE block (did you swap the certificate and private key?)\x1a\"this.contains('BEGIN CERTIFICATE')\xc8\x01\x01R\x0epemCertificate\x122\n" +
@@ -388,11 +392,12 @@ var file_catalog_gcp_gcpcertmanagercert_v1alpha1_spec_proto_depIdxs = []int32{
 	2, // 2: dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertSpec.self_managed:type_name -> dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertSelfManaged
 	3, // 3: dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertSpec.labels:type_name -> dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertSpec.LabelsEntry
 	4, // 4: dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertManaged.dns_authorizations:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	4, // 5: dev.planton.gcp.gcpcertmanagercert.v1alpha1.GcpCertManagerCertManaged.issuance_config:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcertmanagercert_v1alpha1_spec_proto_init() }

@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpsccmuteconfig
+spec:
+  billing_model: free
+  free_tier: "Mute rules carry no Security Command Center charge (Security Command Center pricing page, read 2026-10-01); the tier the scope is activated on bills separately from this block."
+  notes: "Muting changes no detection and no billing meter -- muted findings are still found and stored. A rule can lower downstream spend indirectly by keeping muted findings out of filtered notification streams and exports."

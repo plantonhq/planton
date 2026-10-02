@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpkmsautokeyconfig
+spec:
+  billing_model: free
+  free_tier: "Google states there is no additional cost to use Cloud KMS Autokey: the configuration itself bills nothing (Cloud KMS pricing page and Autokey overview, read 2026-10-01)."
+  notes: "The keys Autokey creates afterwards bill as Cloud HSM key versions and HSM cryptographic operations under Cloud KMS pricing, attributed to the project that holds them (the resource's project under RESOURCE_PROJECT, the key project under DEDICATED_KEY_PROJECT). Those keys are created by GcpKmsKeyHandle requests and by the services that consume them, not by this configuration, and they keep billing after the configuration is cleared."

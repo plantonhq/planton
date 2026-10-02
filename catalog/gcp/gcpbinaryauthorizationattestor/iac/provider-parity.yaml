@@ -1,0 +1,64 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# One kind, the attestor plus the Artifact Analysis note it owns (created
+# when spec.note is set) and the grant that lets the attestor read the
+# note's attestations.
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_binary_authorization_attestor:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # Defaults to metadata.name.
+      - spec: spec.attestor_name
+        arg: name
+      # The reference is the existing note named here, or the note a
+      # spec.note creates.
+      - spec: spec.attestation_authority_note.note_reference
+        arg: attestation_authority_note.note_reference
+      - spec: spec.note
+        arg: attestation_authority_note.note_reference
+      # The PEM and the algorithm come from the spec, or are read from
+      # Cloud KMS by both modules for a kms_key_version.
+      - spec: spec.attestation_authority_note.public_keys.pkix_public_key.public_key_pem
+        arg: attestation_authority_note.public_keys.pkix_public_key.public_key_pem
+      - spec: spec.attestation_authority_note.public_keys.pkix_public_key.kms_key_version
+        arg: attestation_authority_note.public_keys.pkix_public_key.public_key_pem
+      - spec: spec.attestation_authority_note.public_keys.pkix_public_key.signature_algorithm
+        arg: attestation_authority_note.public_keys.pkix_public_key.signature_algorithm
+      - spec: spec.attestation_authority_note.public_keys.pkix_public_key.kms_key_version
+        arg: attestation_authority_note.public_keys.pkix_public_key.signature_algorithm
+
+  google_container_analysis_note:
+    # Created when spec.note is set.
+    specRoot: spec.note
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # Defaults to {attestor_name}-note.
+      - spec: spec.note.note_name
+        arg: name
+      # Google's one-leaf attestation_authority.hint, lifted.
+      - spec: spec.note.human_readable_name
+        arg: attestation_authority.hint.human_readable_name
+      # The attestor's deletion_policy fans out to the note it owns.
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+
+  google_container_analysis_note_iam_member:
+    internal: >-
+      The grant Google requires for the attestor's own service account to
+      read occurrences of the note this kind created
+      (roles/containeranalysis.notes.occurrences.viewer); fixed arguments,
+      not a knob of the kind.
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

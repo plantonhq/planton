@@ -1,0 +1,17 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcloudidentitygroup
+spec:
+  gcp:
+    groups:
+      - purpose: BillCloudIdentityCallsToQuotaProject
+        permissions:
+          - serviceusage.services.use
+        provenance: derived
+        notes: "The group and its memberships (google_cloud_identity_group and one google_cloud_identity_group_membership per member; Pulumi cloudidentity.Group and cloudidentity.GroupMembership) are authorized OUTSIDE Google Cloud IAM: the Cloud Identity Groups API checks the caller's Google Workspace / Cloud Identity admin role in the customer (Groups Admin, or a custom admin role with the Groups privileges, assigned in the Google Admin console). IAM's testable-permissions inventory defines no cloudidentity.* permission and no predefined IAM role grants group management, so no entry here can stand in for that admin role -- the deploying principal needs it in addition to this manifest. The one IAM permission the API does check is serviceusage.services.use on the quota project the calls are billed to: Google's provider documentation for this resource states that user credentials must set billing_project with user_project_override, and that the account must have serviceusage.services.use on that billing_project (otherwise the API returns 403). A service-account principal bills to its own project, where the Cloud Identity API must be enabled."

@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
 func TestGcpProjectSpec(t *testing.T) {
@@ -42,6 +43,22 @@ var _ = ginkgo.Describe("GcpProjectSpec Validation Tests", func() {
 			input := baseProject()
 			input.Spec.ParentType = GcpProjectParentType_folder
 			input.Spec.ParentId = "987654321"
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept a folder by reference with parent_type omitted or set to folder", func() {
+			input := baseProject()
+			input.Spec.ParentType = GcpProjectParentType_gcp_project_parent_type_unspecified
+			input.Spec.ParentId = ""
+			input.Spec.FolderId = &foreignkeyv1.StringValueOrRef{
+				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Name: "environments"}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+
+			input.Spec.ParentType = GcpProjectParentType_folder
+			input.Spec.FolderId = &foreignkeyv1.StringValueOrRef{
+				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "987654321"},
+			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -128,6 +145,20 @@ var _ = ginkgo.Describe("GcpProjectSpec Validation Tests", func() {
 		ginkgo.It("should reject a non-numeric parent_id", func() {
 			input := baseProject()
 			input.Spec.ParentId = "my-folder"
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("should reject folder_id beside parent_id, or beside parent_type organization", func() {
+			input := baseProject()
+			input.Spec.FolderId = &foreignkeyv1.StringValueOrRef{
+				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "987654321"},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("when folder_id is set it IS the parent"))
+
+			input.Spec.ParentId = ""
+			input.Spec.ParentType = GcpProjectParentType_organization
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 

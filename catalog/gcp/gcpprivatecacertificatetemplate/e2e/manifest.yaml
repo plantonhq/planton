@@ -1,0 +1,35 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateTemplate
+metadata:
+  name: tls-server
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  templateId: tls_server
+  description: Internal TLS server certificates
+  maximumLifetime: 2592000s
+  predefinedValues:
+    caOptions:
+      isCa: false
+    keyUsage:
+      baseKeyUsage:
+        digitalSignature: true
+        keyEncipherment: true
+      extendedKeyUsage:
+        serverAuth: true
+    aiaOcspServers:
+      - http://ocsp.internal.example.com
+  identityConstraints:
+    allowSubjectPassthrough: true
+    allowSubjectAltNamesPassthrough: true
+    celExpression:
+      title: Internal names
+      expression: subject_alt_names.all(san, san.type == DNS && san.value.endsWith(".internal.example.com"))
+  passthroughExtensions:
+    knownExtensions:
+      - BASE_KEY_USAGE
+      - EXTENDED_KEY_USAGE
+  labels:
+    use: tls
+  deletionPolicy: DELETE

@@ -1,0 +1,35 @@
+# GcpVertexAiSearchEngine scenario: a RECOMMENDATION engine over a GENERIC
+# data store enrolled in SOLUTION_TYPE_RECOMMENDATION -- Google's own
+# provider test shape. The recommendation store is an extra-instance
+# fixture declared by path. The engine lives in default_collection (the
+# provider resource has no collection_id) and takes exactly one data
+# store. Creating it is free; a media recommendation engine with training
+# is an offline-only preset arm.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: planton-oss-e2e-gcpvseng-reco
+  id: planton-oss-e2e-gcpvseng-reco
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchengine
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaisearchengine/e2e/prerequisites/gcpvsds-recommendation.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  engineType: RECOMMENDATION
+  engineId: planton-oss-e2e-vseng-reco-${E2E_RUN_ID}
+  displayName: Planton OSS E2E recommendation engine
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Planton
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: planton-oss-e2e-gcpvseng-reco-store
+        fieldPath: status.outputs.data_store_id

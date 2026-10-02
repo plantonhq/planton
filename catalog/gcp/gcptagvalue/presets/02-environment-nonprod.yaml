@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagValue
+metadata:
+  name: environment-nonprod
+spec:
+  tagKey:
+    valueFrom:
+      kind: GcpTagKey
+      name: environment
+      fieldPath: status.outputs.name
+  shortName: nonprod
+  description: Everything below production

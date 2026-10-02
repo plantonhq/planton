@@ -460,15 +460,15 @@ const file_catalog_gcp_gcpbigtableinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"cpu_target\x18\x03 \x01(\x05B\f\xbaH\t\xc8\x01\x01\x1a\x04\x18P(\n" +
 	"R\tcpuTarget\x12%\n" +
 	"\x0estorage_target\x18\x04 \x01(\x05R\rstorageTarget:v\xbaHs\x1aq\n" +
-	"\x17autoscaling_max_gte_min\x124max_nodes must be greater than or equal to min_nodes\x1a this.max_nodes >= this.min_nodes\"\xca\a\n" +
+	"\x17autoscaling_max_gte_min\x124max_nodes must be greater than or equal to min_nodes\x1a this.max_nodes >= this.min_nodes\"\x88\b\n" +
 	"\x1aGcpBigtableInstanceCluster\x12K\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x06\x18\x1e2\x1e^[a-z][a-z0-9-]{4,28}[a-z0-9]$R\tclusterId\x12\x1a\n" +
 	"\x04zone\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04zone\x12\x1b\n" +
 	"\tnum_nodes\x18\x03 \x01(\x05R\bnumNodes\x12\x96\x01\n" +
 	"\fstorage_type\x18\x04 \x01(\tBn\xbaHd\xba\x01a\n" +
-	"\x18storage_type_valid_value\x12\x1fstorage_type must be SSD or HDD\x1a$this == '' || this in ['SSD', 'HDD']\x8a\xa6\x1d\x03SSDH\x00R\vstorageType\x88\x01\x01\x12t\n" +
-	"\fkms_key_name\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	"\x18storage_type_valid_value\x12\x1fstorage_type must be SSD or HDD\x1a$this == '' || this in ['SSD', 'HDD']\x8a\xa6\x1d\x03SSDH\x00R\vstorageType\x88\x01\x01\x12\xb1\x01\n" +
+	"\fkms_key_name\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12\xe8\x01\n" +
 	"\x13node_scaling_factor\x18\x06 \x01(\tB\xb7\x01\xbaH\xb3\x01\xba\x01\xaf\x01\n" +
 	"\x1fnode_scaling_factor_valid_value\x12Fnode_scaling_factor must be NodeScalingFactor1X or NodeScalingFactor2X\x1aDthis == '' || this in ['NodeScalingFactor1X', 'NodeScalingFactor2X']R\x11nodeScalingFactor\x12\x88\x01\n" +

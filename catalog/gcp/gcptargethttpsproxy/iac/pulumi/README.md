@@ -2,9 +2,9 @@
 
 ## Overview
 
-This directory contains the Pulumi implementation for deploying GCP Compute Engine global target HTTPS proxies using Planton's `GcpTargetHttpsProxy` API. The module is written in Go and creates `compute.TargetHttpsProxy`.
+This directory contains the Pulumi implementation for deploying GCP Compute Engine target HTTPS proxies using Planton's `GcpTargetHttpsProxy` API. The module is written in Go and creates exactly one of `compute.TargetHttpsProxy` (global; `spec.region` empty) or `compute.RegionTargetHttpsProxy` (regional; `spec.region` set), the same switch the Terraform module makes with its count guards.
 
-A target HTTPS proxy terminates TLS for a global external Application Load Balancer: it binds a forwarding rule (the VIP) to a URL map (routing) and owns certificates, SSL policy, QUIC negotiation, and TLS 1.3 early data.
+A target HTTPS proxy terminates TLS for an Application Load Balancer: it binds a forwarding rule (the VIP) to a URL map (routing) and owns certificates, SSL policy, QUIC negotiation, and TLS 1.3 early data.
 
 ## Prerequisites
 
@@ -89,10 +89,11 @@ The module consumes `GcpTargetHttpsProxyStackInput`:
 
 | Output Key | Type | Description |
 |------------|------|-------------|
-| `self_link` | string | Self-link URI — the value a global forwarding rule references |
+| `self_link` | string | Self-link URI — the value a forwarding rule references (`regions/{region}` in place of `global` for a regional proxy) |
 | `proxy_name` | string | Name of the proxy in GCP |
 | `proxy_id` | string | Server-assigned numeric ID |
-| `fingerprint` | string | Server-computed fingerprint |
+| `fingerprint` | string | Server-computed fingerprint (empty for a regional proxy) |
+| `region` | string | Region of a regional proxy; empty for global |
 
 ## Behavior Notes
 

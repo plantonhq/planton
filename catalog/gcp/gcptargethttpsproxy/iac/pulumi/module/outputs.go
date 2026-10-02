@@ -7,4 +7,5 @@ const (
 	OpProxyName   = "proxy_name"
 	OpProxyId     = "proxy_id"
 	OpFingerprint = "fingerprint"
+	OpRegion      = "region"
 )

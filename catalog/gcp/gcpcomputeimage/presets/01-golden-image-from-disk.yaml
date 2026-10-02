@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeImage
+metadata:
+  name: web-base-20261001
+spec:
+  family: web-base
+  description: Hardened web base, October 2026 build
+  sourceDisk:
+    valueFrom:
+      kind: GcpComputeDisk
+      name: web-build-disk
+      fieldPath: status.outputs.self_link
+  guestOsFeatures:
+    - UEFI_COMPATIBLE
+    - GVNIC

@@ -35,7 +35,12 @@ type GcpUrlMapStackOutputs struct {
 	MapId string `protobuf:"bytes,3,opt,name=map_id,json=mapId,proto3" json:"map_id,omitempty"`
 	// Server-computed fingerprint of the URL map. Used for optimistic
 	// concurrency control when updating the map outside of IaC.
-	Fingerprint   string `protobuf:"bytes,4,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	Fingerprint string `protobuf:"bytes,4,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	// Region of a regional URL map; empty for a global one. Downstream blocks
+	// read it to confirm scope compatibility (a regional link must point at a
+	// regional target in the same region), and the E2E verifier picks the
+	// regional or global API by it.
+	Region        string `protobuf:"bytes,5,opt,name=region,proto3" json:"region,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -98,17 +103,25 @@ func (x *GcpUrlMapStackOutputs) GetFingerprint() string {
 	return ""
 }
 
+func (x *GcpUrlMapStackOutputs) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpurlmap_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpurlmap_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpurlmap/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\"\x8f\x01\n" +
+	",catalog/gcp/gcpurlmap/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\"\xa7\x01\n" +
 	"\x15GcpUrlMapStackOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12 \n" +
 	"\furl_map_name\x18\x02 \x01(\tR\n" +
 	"urlMapName\x12\x15\n" +
 	"\x06map_id\x18\x03 \x01(\tR\x05mapId\x12 \n" +
-	"\vfingerprint\x18\x04 \x01(\tR\vfingerprintB\xb2\x02\n" +
+	"\vfingerprint\x18\x04 \x01(\tR\vfingerprint\x12\x16\n" +
+	"\x06region\x18\x05 \x01(\tR\x06regionB\xb2\x02\n" +
 	"&com.dev.planton.gcp.gcpurlmap.v1alpha1B\fOutputsProtoP\x01ZMgithub.com/plantonhq/planton/catalog/gcp/gcpurlmap/v1alpha1;gcpurlmapv1alpha1\xa2\x02\x04DPGG\xaa\x02\"Dev.Planton.Gcp.Gcpurlmap.V1alpha1\xca\x02\"Dev\\Planton\\Gcp\\Gcpurlmap\\V1alpha1\xe2\x02.Dev\\Planton\\Gcp\\Gcpurlmap\\V1alpha1\\GPBMetadata\xea\x02&Dev::Planton::Gcp::Gcpurlmap::V1alpha1b\x06proto3"
 
 var (

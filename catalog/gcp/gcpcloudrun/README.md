@@ -50,8 +50,6 @@ Everything the pinned GA provider can configure on `google_cloud_run_v2_service`
 | Excluded Feature | Why |
 |---|---|
 | TCP liveness probes | The provider schema exposes the arm only because the API proto shares one Probe message across probe types; Cloud Run itself rejects TCP liveness probes (liveness supports HTTP and gRPC only). The spec encodes the API truth: the liveness message has no TCP arm. |
-| `tags` (resource-manager tags) | GA at the pin but not yet bridged by the pinned Pulumi SDK; modeling it only in Terraform would break cross-engine parity. Re-evaluate at the next pulumi-gcp bump. |
-| `sandbox_launcher` | Same Pulumi-SDK gap as `tags`; re-evaluate at the next pulumi-gcp bump. |
 | `client` / `client_version` | API-client telemetry strings with no user-facing behavior. |
 | `mesh` (Cloud Service Mesh) | Beta-only; returns when it reaches the GA surface. |
 | Domain mapping (`google_cloud_run_domain_mapping`) | A separate resource with its own lifecycle, deliberately not folded in as a toggle. The production-grade custom-domain path is the composed load-balancer family (serverless NEG → backend service → URL map → HTTPS proxy → forwarding rule) with `GcpDnsRecord`. |

@@ -1,13 +1,13 @@
 # GCP Backend Service
 
-Deploys a global Compute Engine backend service — the hub of GCP's L7 load-balancing family. A backend service owns HOW traffic reaches a set of backends: which instance groups or network endpoint groups receive requests, how they are health-checked, how sessions stick, whether responses cache at Google's edge (Cloud CDN), whether Identity-Aware Proxy gates access, and how requests are logged. URL maps route host/path patterns to backend services; target proxies and forwarding rules sit in front of the URL map.
+Deploys a Compute Engine backend service — the hub of GCP's load-balancing family, global (the default) or regional when `region` is set. A backend service owns HOW traffic reaches a set of backends: which instance groups or network endpoint groups receive requests, how they are health-checked, how sessions stick, whether responses cache at Google's edge (Cloud CDN), whether Identity-Aware Proxy gates access, and how requests are logged. URL maps route host/path patterns to backend services; target proxies and forwarding rules sit in front of the URL map.
 
 ## What Gets Created
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Compute Engine API enablement** (`compute.googleapis.com`) on the target project (never disabled on destroy)
-- **Global Backend Service** -- for the classic external ALB (EXTERNAL), the envoy-based external ALB (EXTERNAL_MANAGED), the cross-region internal ALB (INTERNAL_MANAGED), or Traffic Director (INTERNAL_SELF_MANAGED)
+- **Backend Service** -- global: for the classic external ALB (EXTERNAL), the envoy-based external ALB (EXTERNAL_MANAGED), the cross-region internal ALB (INTERNAL_MANAGED), or Traffic Director (INTERNAL_SELF_MANAGED); regional (when `region` is set): for the regional external ALB (EXTERNAL_MANAGED), the regional internal ALB (INTERNAL_MANAGED), or the internal and external passthrough Network Load Balancers (INTERNAL, EXTERNAL)
 - **Backend attachments** -- each configured group with its balancing mode and capacity dials
 - **Attached policies** -- Cloud CDN caching, Cloud Armor references, IAP, logging, and the scheme's traffic policies
 
@@ -86,6 +86,8 @@ The InfraPipeline resolves the dependency graph — health check and NEG first, 
 
 These are the most important decisions when configuring a backend service. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
+**Scope** -- `region` empty builds the global backend service; a region name builds the regional one, which adds the passthrough Network Load Balancer levers (network, backend failover, connection tracking, HA policy, zonal affinity) and lacks the global edge features. A regional ALB needs a regional health check; a passthrough NLB's forwarding rule names the service directly. Immutable.
+
 **Load balancer family** -- `loadBalancingScheme` (default EXTERNAL) decides which capabilities exist: Cloud CDN is external-only; circuit breakers, consistent hash, and stream limits are Traffic Director-only; outlier detection needs INTERNAL_SELF_MANAGED or EXTERNAL_MANAGED; backend `preference` needs a non-EXTERNAL scheme. A service cannot change families — the EXTERNAL → EXTERNAL_MANAGED canary (`externalManagedMigrationState`) is the only in-place transition. Immutable in practice.
 
 **Backends** -- Each row names a group (a NEG by reference, or an instance-group self-link) with a balancing mode and its capacity targets: RATE requires a rate dial, CONNECTION a connection dial, CUSTOM_METRICS at least one ORCA metric. One service never mixes instance groups with NEGs. The `capacityScaler` is the drain/blue-green lever (0 drains without removing). Mutable — adding, removing, and re-weighing backends is the normal day-2 life.
@@ -118,6 +120,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `backend_service_name` | Name as it exists in GCP | Audit, fleet inventory |
 | `generated_id` | GCP's numeric identifier | API-level integrations |
 | `fingerprint` | The optimistic-locking token | Concurrent-update tooling |
+| `region` | Region of a regional backend service; empty for global | Scope checks on downstream blocks |
 
 ## Common Patterns
 
@@ -128,6 +131,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 **CDN-cached API** -- Edge caching with a tuned cache key for read-heavy APIs. Start from the **CDN-Cached API** preset.
 
 **IAP-protected internal tool** -- Zero-trust access with Google identities in front of an internal app. Start from the **IAP-Protected Internal Tool** preset.
+
+**Internal passthrough NLB backend** -- A regional INTERNAL backend service with a failover pool, connection tracking, and zonal affinity, named directly by a regional forwarding rule. Start from the **Internal Passthrough NLB Backend** preset.
 
 ## Works With
 

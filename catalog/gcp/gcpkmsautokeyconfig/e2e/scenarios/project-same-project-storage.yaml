@@ -1,0 +1,21 @@
+# GcpKmsAutokeyConfig scenario: same-project key storage on the harness
+# project (no scope: the provider's project). Applying takes over the
+# project's configuration; destroy (DELETE) clears it, and the verifier
+# asserts it reads back with no resolution mode. The configuration is free
+# and creates no key on its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsAutokeyConfig
+metadata:
+  name: planton-oss-e2e-gcpakcfg-project
+  id: planton-oss-e2e-gcpakcfg-project
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpkmsautokeyconfig
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  keyProjectResolutionMode: RESOURCE_PROJECT

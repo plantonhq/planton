@@ -103,6 +103,7 @@ spec:
 | `spec.dataDisk.diskType` | `string` |  |  |  |
 | `spec.dataDisk.diskSizeGb` | `int32` |  |  |  |
 | `spec.dataDisk.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.dataDisk.resourcePolicies` | `[]string` |  |  |  |
 | `spec.acceleratorConfig` | `GcpVertexAiNotebookAcceleratorConfig` |  |  |  |
 | `spec.acceleratorConfig.type` | `string` |  |  |  |
 | `spec.acceleratorConfig.coreCount` | `int32` |  |  |  |
@@ -136,6 +137,8 @@ spec:
 | `spec.enableManagedEuc` | `bool` |  |  |  |
 | `spec.enableThirdPartyIdentity` | `bool` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.minCpuPlatform` | `string` |  |  |  |
+| `spec.enableDeletionProtection` | `bool` |  |  |  |
 
 ## Field Details
 
@@ -308,6 +311,21 @@ If not specified, Google-managed encryption (GMEK) is used.
 
 - references: GcpKmsKey (`status.outputs.key_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
+
+### spec.dataDisk.resourcePolicies
+
+`[]string`
+
+Compute Engine resource policies attached to the data disk — most
+usefully a snapshot schedule, so the notebook's working data is
+backed up on a cadence without any agent inside the VM. Each entry is
+a policy's full resource name or self link
+(projects/{project}/regions/{region}/resourcePolicies/{name}); the
+policy must live in the instance's region. Leave empty for no
+attached policies; sent only when set because the API reports the
+attached set itself.
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","repeated":{"unique":true,"items":{"string":{"minLen":"1"}}}}
 
 ### spec.acceleratorConfig
 
@@ -632,6 +650,29 @@ is destroyed:
                running (and billing) in GCP with its disks intact
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+### spec.minCpuPlatform
+
+`string`
+
+Minimum CPU platform for the VM, e.g. "Intel Cascade Lake" or
+"Intel Sapphire Rapids": pins the instance to at least this CPU
+generation so notebook code that relies on newer instruction sets
+(AVX-512, AMX) is never scheduled on older hardware. The platform
+must be offered for the machine type in the instance's zone. Leave
+empty to let Compute Engine choose; sent only when set because the
+API reports the platform it picked.
+
+### spec.enableDeletionProtection
+
+`bool` · optional (explicit presence)
+
+Workbench-side deletion protection: while true, the API refuses to
+delete the instance from any client (console, gcloud, either IaC
+engine) until the flag is lifted — a guard for a workstation whose
+local disks hold work not yet pushed anywhere else. Off unless set;
+pair with deletion_policy PREVENT for an engine-side guard too.
+Sent only when set because the API reports its current value.
 
 ## Validation Rules
 

@@ -1,0 +1,32 @@
+# GcpDatastreamPrivateConnection scenario: Datastream's network peered with
+# the prerequisite VPC through a free /29. The VPC is custom-mode with no
+# subnets, so the range cannot collide. A private connection bills nothing
+# on its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamPrivateConnection
+metadata:
+  name: planton-oss-e2e-gcpdspc-peering
+  id: planton-oss-e2e-gcpdspc-peering
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdatastreamprivateconnection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  privateConnectionId: e2e-gcpdspc-${E2E_RUN_ID}
+  displayName: E2E Datastream peering
+  vpcPeeringConfig:
+    vpc:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: planton-oss-e2e-gcpdspc-vpc
+        fieldPath: status.outputs.network_id
+    subnet: 10.231.0.0/29
+  labels:
+    e2e-arm: vpc-peering
+  deletionPolicy: FORCE

@@ -1,0 +1,41 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpdatastreamstream
+spec:
+  billing_model: usage_based
+  baseline_charges:
+    - service_name: Datastream
+      sku_meter: CDC data processed
+      pricing_unit: GiB
+      description: A running stream bills every GiB of change data it processes, in tiers that get cheaper as monthly volume grows (per cloud.google.com/datastream/pricing, "Pricing details", read 2026-09-24). Events read but not written to the destination are not billed, and eligible AlloyDB and Spanner sources carry a monthly free allowance.
+    - service_name: Datastream
+      sku_meter: backfill data processed
+      pricing_unit: GiB
+      description: The backfill bills every GiB of existing data it copies at a flat rate, after a monthly free allowance (same page). A stream created NOT_STARTED bills nothing.
+  cost_drivers:
+    - field_path: desired_state
+      sku_meter: CDC data processed
+      pricing_unit: GiB
+      impact: Nothing bills until the stream is RUNNING; PAUSED stops processing and billing.
+    - field_path: backfill_all
+      sku_meter: backfill data processed
+      pricing_unit: GiB
+      impact: A full backfill copies every included object once; excluding large tables, or backfill_none, avoids the charge.
+    - field_path: source_config
+      sku_meter: CDC data processed
+      pricing_unit: GiB
+      impact: The include and exclude lists decide which objects' changes are processed; every table left in multiplies the monthly volume.
+    - field_path: destination_config.bigquery_destination_config.data_freshness
+      sku_meter: BigQuery CDC
+      pricing_unit: slot or byte usage
+      impact: Lower freshness makes BigQuery apply changes more often, billed as BigQuery compute rather than Datastream.
+  estimate_exclusions:
+    - BigQuery storage and the compute that applies changes (merge) bill under BigQuery
+    - Cloud Storage storage and operations for file destinations bill under Cloud Storage
+    - data transfer across regions or from other clouds bills as networking
+    - the source database's own load and log retention bill wherever it runs
+  notes: "Change volume, not any spec field, dominates the bill: a busy table with a small row count can cost more than a large quiet one."

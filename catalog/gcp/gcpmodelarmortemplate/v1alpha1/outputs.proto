@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmodelarmortemplate.v1alpha1;
+
+// GcpModelArmorTemplateStackOutputs carries the identity an application or
+// a Vertex AI Search engine names the template by.
+message GcpModelArmorTemplateStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/templates/{template_id} -- what
+  // sanitize calls and GcpVertexAiSearchEngine's model_armor_config take.
+  string name = 1;
+
+  // The template's id (the last segment of name).
+  string template_id = 2;
+
+  // The location the template lives in; the application calls Model
+  // Armor's endpoint for this location.
+  string location = 3;
+}

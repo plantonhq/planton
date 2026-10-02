@@ -1,0 +1,60 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# One kind, two scopes: spec.zone set builds the zonal group and writes its
+# membership through the bulk network_endpoints resource; empty builds the
+# global internet group with one global_network_endpoint per member.
+
+resources:
+  # The ZONAL group.
+  google_compute_network_endpoint_group:
+    mappings:
+      - spec: spec.neg_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+
+  # The zonal membership as one set. Its group link is the composed zonal
+  # group; zone and project are the kind's own, fanned out.
+  google_compute_network_endpoints:
+    specRoot: spec
+    mappings:
+      - spec: spec.zone
+        arg: zone
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.endpoints
+        arg: network_endpoints
+    exclusions:
+      - arg: network_endpoint_group
+        reason: >-
+          composed link -- the module attaches the endpoint set to the zonal
+          group this kind builds, never a caller-supplied one
+
+  # The GLOBAL internet group (spec.zone empty).
+  google_compute_global_network_endpoint_group:
+    mappings:
+      - spec: spec.neg_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+
+  # One global endpoint per member; fqdn / ip_address / port are the
+  # endpoint's own fields.
+  google_compute_global_network_endpoint:
+    specRoot: spec.endpoints
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: global_network_endpoint_group
+        reason: >-
+          composed link -- the module attaches each endpoint to the global
+          group this kind builds, never a caller-supplied one

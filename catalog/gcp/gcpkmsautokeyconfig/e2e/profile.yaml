@@ -1,0 +1,21 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpkmsautokeyconfig
+spec:
+  # Awaiting the live proof lane. The scenario proves the project arm on
+  # the harness project (same-project storage needs only the Cloud KMS API
+  # there; Google creates the service agent itself). The folder arm, with
+  # dedicated-project storage, is proven offline: it needs a folder and a
+  # key project the harness does not hold. Offline bar met: both modules
+  # build and validate, offline plans for the reference manifest (folder),
+  # the scenario, and a throwaway project-literal arm are clean on the
+  # pinned provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) the PATCH takes over the project's configuration and
+  # re-plans clean on both engines; (2) the name output is
+  # projects/{id}/autokeyConfig; (3) destroy under DELETE leaves the
+  # configuration readable with no resolution mode.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

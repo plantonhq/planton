@@ -62,13 +62,14 @@ spec:
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.sourceContents` | `string` | yes |  |  |
 | `spec.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
-| `spec.cryptoKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.cryptoKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.callLogLevel` | `string` |  |  |  |
 | `spec.executionHistoryLevel` | `string` |  |  |  |
-| `spec.userEnvVars` | `map<string, string>` |  |  |  |
+| `spec.userEnvVars` | `map<string, string>` (no secrets: use `secretEnvVars`) |  |  |  |
 | `spec.resourceManagerTags` | `map<string, string>` |  |  |  |
 | `spec.deletionProtection` | `bool` |  | `true` |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.secretEnvVars` | `map<string, string>` (sensitive) |  |  |  |
 
 ## Field Details
 
@@ -158,7 +159,7 @@ service agent roles/cloudkms.cryptoKeyEncrypterDecrypter on the key
 BEFORE deploying, or the deploy fails. Omit for Google-managed
 encryption.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.callLogLevel
@@ -191,17 +192,19 @@ How much step-level detail execution history keeps:
 
 ### spec.userEnvVars
 
-`map<string, string>`
+`map<string, string>` · no secrets
 
 Environment variables visible to the workflow source via sys.get_env().
-At most 20 entries (the API's own cap, enforced here); each value up to
-4KiB. Keys must be non-empty and must NOT start with "GOOGLE" or
-"WORKFLOWS" (reserved prefixes the API rejects — key-shape rules live
-here in the comment because map KEYS are not CEL-addressable). Changing
-env vars deploys a NEW revision.
+Values are written into the workflow revision, where anyone who can
+view the workflow reads them: configuration only, never a credential
+-- a credential goes in secret_env_vars. At most 20 entries across
+user_env_vars and secret_env_vars together (the API's own cap,
+enforced here); each value up to 4KiB. Keys must be non-empty and must
+NOT start with "GOOGLE" or "WORKFLOWS" (reserved prefixes the API
+rejects — key-shape rules live here in the comment because map KEYS
+are not CEL-addressable). Changing env vars deploys a NEW revision.
 
-- rule: user_env_vars accepts at most 20 entries (the API cap)
-
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretEnvVars`, which keeps it in a secret store the workload reads by reference
 ### spec.resourceManagerTags
 
 `map<string, string>`
@@ -239,6 +242,48 @@ Deletion policy — what happens when this resource is destroyed:
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
+### spec.secretEnvVars
+
+`map<string, string>` · sensitive
+
+Secret values the workflow reads at run time, keyed by environment
+variable name. Cloud Workflows has no secret field, so the component
+never puts the value on the workflow: it keeps each one in a Secret
+Manager secret it owns (id workflow_<region>_<workflow name>_<key>,
+replicated only in the workflow's region), grants the workflow's
+runtime identity (service_account, or the project's Compute Engine
+default service account when unset) secretAccessor on that secret
+alone, and sets the variable to the version's resource name,
+projects/<project>/secrets/<id>/versions/<n>. The workflow reads the
+value through the Secret Manager connector, which returns the payload
+base64-encoded:
+
+  - read_token:
+      call: googleapis.secretmanager.v1.projects.secrets.versions.access
+      args:
+        name: ${sys.get_env("API_TOKEN")}
+      result: token_version
+  - decode_token:
+      assign:
+        - api_token: ${text.decode(base64.decode(token_version.payload.data))}
+
+(The accessString helper returns the decoded string, but takes the
+secret's short id, version, and project as separate arguments rather
+than the full name.) A changed value adds a version, which changes the
+variable and deploys a new revision, so rotation is a deploy;
+destroying the workflow removes the secrets.
+The variable itself counts toward the 20-variable cap and carries the
+same key rules as user_env_vars; a key may not appear in both maps,
+region must be set (the secrets replicate there), and a literal
+service_account must name the account by email.
+
+## Validation Rules
+
+- `env_vars_max_20`: user_env_vars and secret_env_vars together accept at most 20 entries (the API cap)
+- `secret_env_vars_disjoint`: a variable is either in user_env_vars or in secret_env_vars, never both
+- `secret_env_vars_need_region`: secret_env_vars needs region: the stored secrets replicate only in the workflow's region
+- `secret_env_vars_need_email_identity`: with secret_env_vars, service_account must name the account by email (or projects/{project}/serviceAccounts/{email}): the secret grant is made to that email
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: GcpWorkflow, name: <resource-name>, fieldPath: status.outputs.<output>}`.
@@ -259,6 +304,7 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.cryptoKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.cryptoKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 
 ## Referenced By
 

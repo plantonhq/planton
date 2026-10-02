@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1;
+
+import "catalog/gcp/gcpcolabruntimetemplate/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-colab-runtime-template stack-input
+message GcpColabRuntimeTemplateStackInput {
+  //target cloud-resource
+  GcpColabRuntimeTemplate target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

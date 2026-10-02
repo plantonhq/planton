@@ -204,8 +204,8 @@ resource "aws_autoscaling_group" "this" {
       dynamic "capacity_reservation_target" {
         for_each = (length(capacity_reservation_specification.value.capacity_reservation_ids) > 0 || length(capacity_reservation_specification.value.capacity_reservation_resource_group_arns) > 0) ? [capacity_reservation_specification.value] : []
         content {
-          capacity_reservation_ids                  = length(capacity_reservation_target.value.capacity_reservation_ids) > 0 ? capacity_reservation_target.value.capacity_reservation_ids : null
-          capacity_reservation_resource_group_arns  = length(capacity_reservation_target.value.capacity_reservation_resource_group_arns) > 0 ? capacity_reservation_target.value.capacity_reservation_resource_group_arns : null
+          capacity_reservation_ids                 = length(capacity_reservation_target.value.capacity_reservation_ids) > 0 ? capacity_reservation_target.value.capacity_reservation_ids : null
+          capacity_reservation_resource_group_arns = length(capacity_reservation_target.value.capacity_reservation_resource_group_arns) > 0 ? capacity_reservation_target.value.capacity_reservation_resource_group_arns : null
         }
       }
     }
@@ -428,9 +428,9 @@ resource "aws_autoscaling_policy" "this" {
           dynamic "metrics" {
             for_each = customized_metric_specification.value.metrics
             content {
-              id          = metrics.value.id
-              expression  = metrics.value.expression != "" ? metrics.value.expression : null
-              label       = metrics.value.label != "" ? metrics.value.label : null
+              id         = metrics.value.id
+              expression = metrics.value.expression != "" ? metrics.value.expression : null
+              label      = metrics.value.label != "" ? metrics.value.label : null
               # return_data defaults to true at AWS; only an explicit value
               # is sent, so intermediate entries carry an explicit false.
               return_data = metrics.value.return_data

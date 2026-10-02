@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccNotificationConfig
+metadata:
+  name: project-high-findings
+spec:
+  scope:
+    projectId:
+      value: my-gcp-project
+  configId: high-findings
+  description: Active high and critical findings to the on-call topic
+  pubsubTopic:
+    value: projects/my-gcp-project/topics/scc-findings
+  filter: state = "ACTIVE" AND (severity = "HIGH" OR severity = "CRITICAL") AND NOT mute = "MUTED"

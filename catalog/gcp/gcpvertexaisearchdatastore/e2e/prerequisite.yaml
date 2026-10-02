@@ -1,0 +1,32 @@
+# GcpVertexAiSearchDataStore install profile used as a prerequisite by
+# composed components (GcpVertexAiSearchEngine, whose registry prerequisite
+# this kind is). The harness deploys this structured search store first,
+# captures its outputs, and resolves the engine's data_store_ids reference
+# (status.outputs.data_store_id) against them. project_id is omitted so the
+# store lands in the harness-exported test project. The store id differs
+# from the smoke scenario's so a prerequisite deploy never collides with a
+# concurrently-running data store scenario; it carries the scenario slug and
+# ${E2E_RUN_ID} because the install profile redeploys per scenario and
+# Google reserves a deleted store's id for a while.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: planton-oss-e2e-gcpvsds-prereq
+  id: planton-oss-e2e-gcpvsds-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchdatastore
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  dataStoreId: pln-e2e-vsds-pre-${E2E_SCENARIO}-${E2E_RUN_ID}
+  displayName: Planton OSS E2E prerequisite data store
+  industryVertical: GENERIC
+  contentConfig: NO_CONTENT
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH

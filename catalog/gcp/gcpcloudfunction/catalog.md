@@ -104,7 +104,7 @@ These are the most important decisions when configuring a Cloud Function. Explor
 
 **Resources and scaling** -- `serviceConfig.availableMemory` is a quantity string (`256M`, `1Gi`); CPU derives from memory unless `availableCpu` sets it explicitly — and concurrency above 1 requires at least 1 CPU. `scaling.minInstanceCount` above 0 eliminates cold starts at idle cost; `maxInstanceCount` is the cost and backpressure ceiling for event storms.
 
-**Secrets** -- `secretEnvironmentVariables` and `secretVolumes` carry Secret Manager NAMES, never material; GCP resolves them at instance start. The runtime service account needs `roles/secretmanager.secretAccessor` on each secret.
+**Secrets** -- `secretEnvironmentVariables` entries either name an existing Secret Manager secret or carry a `value`. A `value` is stored by the module in its own secret, in the function's region, with access granted to the runtime identity on that secret alone; GCP resolves it at instance start. Named secrets and `secretVolumes` need `roles/secretmanager.secretAccessor` granted by you.
 
 **Access control** -- `allowUnauthenticated: true` grants public invocation (deliberate for webhooks); `ingressSettings` restricts network-level reachability (`ALLOW_INTERNAL_ONLY` for event consumers, `ALLOW_INTERNAL_AND_GCLB` when fronting with an external Application Load Balancer). The runtime `serviceAccountEmail` is the identity your code exercises — production functions get a dedicated least-privilege GcpServiceAccount.
 

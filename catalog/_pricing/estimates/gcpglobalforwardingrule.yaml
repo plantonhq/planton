@@ -77,3 +77,35 @@ spec:
         - everything behind the VIP -- target proxies, URL maps, backend services, Cloud Armor policies, Cloud CDN, SSL certificates -- is separate wiring billing on its own components
         - a reserved static address referenced by ip_address bills nothing while attached to this rule; the reservation itself is the GcpGlobalAddress component's concern
       notes: "The forwarding-rule charge is a project-wide band invisible from any single manifest: the first five global rules share one minimum service charge, so a project's first rule pays the full rate shown here, rules two through five add nothing (the classic port-80-redirect-plus-port-443 pair costs no more than one rule), and each rule beyond five bills $0.01/hour instead."
+    - preset: 04-regional-external-alb-vip
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      line_items:
+        - service_name: Networking
+          sku_meter: forwarding rule hours
+          pricing_unit: hours
+          pricing_quantity: "730"
+          quantity_basis: the global forwarding-rule minimum service charge for every hour of the month under the envoy-based EXTERNAL_MANAGED scheme -- the same band as the classic external LB, the full rate a project's first global rule pays
+          list_unit_price: "0.025"
+          price_source: https://cloudbilling.googleapis.com/v1/services/E505-1604-58F8/skus
+          retrieved_on: "2026-08-16"
+          list_cost: "18.2500"
+      total_list_cost: "18.2500"
+      exclusions:
+        - "data processing follows traffic: an external frontend bills inbound and outbound data processing per GiB at the rate of the region where it is processed; a PSC endpoint targeting a published service attachment bills consumer data processing per GiB; the all-apis and vpc-sc Google-APIs bundles carry no data charge at all"
+        - internet data transfer out to clients follows traffic volume and destination
+        - everything behind the VIP -- target proxies, URL maps, backend services, Cloud Armor policies, Cloud CDN, SSL certificates -- is separate wiring billing on its own components
+        - a reserved static address referenced by ip_address bills nothing while attached to this rule; the reservation itself is the GcpGlobalAddress component's concern
+      notes: "The forwarding-rule charge is a project-wide band invisible from any single manifest: the first five global rules share one minimum service charge, so a project's first rule pays the full rate shown here, rules two through five add nothing (the classic port-80-redirect-plus-port-443 pair costs no more than one rule), and each rule beyond five bills $0.01/hour instead."
+    - preset: 05-internal-passthrough-nlb-vip
+      region_assumption: us-central1
+      currency: USD
+      hours_per_month: 730
+      total_list_cost: "0.00"
+      exclusions:
+        - "data processing follows traffic: an external frontend bills inbound and outbound data processing per GiB at the rate of the region where it is processed; a PSC endpoint targeting a published service attachment bills consumer data processing per GiB; the all-apis and vpc-sc Google-APIs bundles carry no data charge at all"
+        - internet data transfer out to clients follows traffic volume and destination
+        - everything behind the VIP -- target proxies, URL maps, backend services, Cloud Armor policies, Cloud CDN, SSL certificates -- is separate wiring billing on its own components
+        - a reserved static address referenced by ip_address bills nothing while attached to this rule; the reservation itself is the GcpGlobalAddress component's concern
+      notes: "The forwarding-rule charge is a project-wide band invisible from any single manifest: the first five global rules share one minimum service charge, so a project's first rule pays the full rate shown here, rules two through five add nothing (the classic port-80-redirect-plus-port-443 pair costs no more than one rule), and each rule beyond five bills $0.01/hour instead."

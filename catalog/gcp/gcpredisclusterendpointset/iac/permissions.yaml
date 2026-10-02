@@ -1,0 +1,19 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpredisclusterendpointset
+spec:
+  gcp:
+    groups:
+      - purpose: ManageClusterConnections
+        permissions:
+          - redis.clusters.get
+          - redis.clusters.update
+          - redis.operations.get
+        provenance: derived
+        notes: "Covers google_redis_cluster_user_created_connections (Pulumi redis.ClusterUserCreatedConnections): the registration is an update of the cluster's clusterEndpoints (create, in-place change, and destroy under deletion_policy DELETE are all cluster updates; ABANDON and PREVENT call no API), read on every refresh, and the long-running operation the provider polls as redis.operations.get. roles/redis.admin contains all three."

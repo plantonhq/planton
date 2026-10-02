@@ -29,4 +29,6 @@ spec:
         permissions:
           - servicenetworking.services.get
         provenance: derived
+        condition:
+          spec_field_set: network.private_network
         notes: Required only when network.private_network attaches the instance to a VPC over private service access -- the provider verifies the service-networking connection exists. Creating that connection itself (the PSA range and peering) is a separate prerequisite resource, not this module.

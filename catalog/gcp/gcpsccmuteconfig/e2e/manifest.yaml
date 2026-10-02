@@ -1,0 +1,11 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccMuteConfig
+metadata:
+  name: sandbox-public-buckets
+spec:
+  scope:
+    projectId:
+      value: my-gcp-project
+  muteConfigId: sandbox-public-buckets
+  filter: category = "PUBLIC_BUCKET_ACL"
+  type: DYNAMIC

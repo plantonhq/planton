@@ -32,15 +32,17 @@ resources:
     exclusions:
       - arg: md5_authentication_keys.name
         reason: >-
-          MD5 authentication keys are consumed only by BGP peers
-          (google_compute_router_peer), a recorded deferred composition in
-          the router family; a key with no peer referencing it is inert,
-          and the surface arrives with the peer kind that needs it
+          the BGP MD5 key table is written by the peer resource, not the
+          router -- google_compute_router_peer.md5_authentication_key
+          inserts its {name, key} into this table and Google requires each
+          key to be used by exactly one peer; a NAT-only router has no BGP
+          peers, and a router that does (GcpHaVpnGateway) receives its keys
+          from the sessions that use them (GcpHaVpnConnection)
       - arg: md5_authentication_keys.key
         reason: >-
-          raw BGP MD5 auth material rides the deferred peer composition
-          (see md5_authentication_keys.name); excluding it also keeps
-          secret material out of a spec that today carries none
+          raw BGP MD5 material rides the peer that uses it (see
+          md5_authentication_keys.name); excluding it also keeps secret
+          material out of a spec that carries none
       - arg: ncc_gateway
         reason: >-
           an NCC-Gateway-spoke router conflicts with network in the

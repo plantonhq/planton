@@ -1,0 +1,23 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservation
+metadata:
+  name: analytics-prod
+spec:
+  projectId:
+    value: bq-admin-project
+  location: US
+  edition: ENTERPRISE
+  slotCapacity: 200
+  autoscaleMaxSlots: 400
+  labels:
+    cost-center: data-platform
+  assignments:
+    - assignee:
+        folderId:
+          value: "123456789012"
+      jobType: QUERY
+    - assignee:
+        projectId:
+          value: etl-project
+      jobType: PIPELINE
+  deletionPolicy: PREVENT

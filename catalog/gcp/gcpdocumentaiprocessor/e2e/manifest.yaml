@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDocumentAiProcessor
+metadata:
+  name: invoice-ocr
+spec:
+  projectId:
+    value: my-gcp-project
+  # Document AI's main locations are the multi-regions us and eu.
+  location: us
+  type: OCR_PROCESSOR
+  displayName: Invoice OCR
+  deletionPolicy: DELETE

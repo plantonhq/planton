@@ -1,0 +1,38 @@
+# GcpManagedKafkaAcl scenario: the grants for one topic pattern -- a
+# producer's WRITE and DESCRIBE, a consumer's READ, and a DENY for everyone
+# else's WRITE -- on the prerequisite cluster. Principals are free-form
+# Kafka strings, so no service account needs to exist; the project token
+# keeps them realistic.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaAcl
+metadata:
+  name: planton-oss-e2e-gcpkacl-topic
+  id: planton-oss-e2e-gcpkacl-topic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkaacl
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  cluster:
+    valueFrom:
+      kind: GcpManagedKafkaCluster
+      name: planton-oss-e2e-gcpkacl-kafka
+      fieldPath: status.outputs.name
+  aclId: topic/e2e-orders
+  aclEntries:
+    - principal: User:e2e-orders-producer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: WRITE
+    - principal: User:e2e-orders-producer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: DESCRIBE
+    - principal: User:e2e-orders-consumer@${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}.iam.gserviceaccount.com
+      operation: READ
+    - principal: User:*
+      operation: WRITE
+      permissionType: DENY
+  deletionPolicy: DELETE

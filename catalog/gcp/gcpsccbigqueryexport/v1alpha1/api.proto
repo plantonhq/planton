@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccbigqueryexport.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpsccbigqueryexport/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpsccbigqueryexport/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-scc-bigquery-export
+message GcpSccBigQueryExport {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpSccBigQueryExport'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpSccBigQueryExportSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpSccBigQueryExportStatus status = 5;
+}
+
+//gcp-scc-bigquery-export status
+message GcpSccBigQueryExportStatus {
+  //stack-outputs
+  GcpSccBigQueryExportStackOutputs outputs = 1;
+}

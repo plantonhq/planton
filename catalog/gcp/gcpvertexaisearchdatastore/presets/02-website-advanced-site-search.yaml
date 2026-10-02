@@ -1,0 +1,25 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: docs-site
+spec:
+  location: global
+  displayName: Documentation site
+  industryVertical: GENERIC
+  contentConfig: PUBLIC_WEBSITE
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH
+    - SOLUTION_TYPE_CHAT
+  # Advanced site search: a verified domain, sitemaps, and a larger index
+  # quota; Enterprise-tier features on the engines over it.
+  createAdvancedSiteSearch: true
+  advancedSiteSearchConfig:
+    disableInitialIndex: false
+    disableAutomaticRefresh: false
+  targetSites:
+    - providedUriPattern: docs.example.com/*
+      type: INCLUDE
+    - providedUriPattern: docs.example.com/archive/*
+      type: EXCLUDE
+  sitemapUris:
+    - https://docs.example.com/sitemap.xml

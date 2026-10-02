@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: disable-serial-port
+spec:
+  scope:
+    projectId:
+      value: my-gcp-project-123
+  constraint: compute.disableSerialPortAccess
+  policy:
+    rules:
+      - enforce: true

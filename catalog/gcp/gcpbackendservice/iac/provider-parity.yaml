@@ -5,6 +5,17 @@
 # Only divergences are recorded -- an argument absent from this file must
 # match its spec field by exact name. Every exclusion carries its reason:
 # omission is a decision, never an accident.
+#
+# One kind, two provider resources: GCP models the global and regional
+# backend services as separate API collections sharing the core surface;
+# the regional one adds the passthrough Network Load Balancer levers
+# (network, backend failover, failover policy, connection tracking, HA
+# policy, zonal affinity) and lacks the global edge features. spec.region is
+# the scope selector -- it name-matches the regional resource's own region
+# argument; every argument only one collection carries is walled to that
+# scope by the spec's CEL rules, so each resource sees exactly the fields it
+# has. The regional IAP block carries no write-only twins, so the regional
+# resource needs no exclusions.
 
 resources:
   google_compute_backend_service:
@@ -29,21 +40,55 @@ resources:
       # uses the catalog-wide resource_manager_tags vocabulary.
       - spec: spec.resource_manager_tags
         arg: params.resource_manager_tags
+      # Logged headers: the provider wraps each name in a one-field block;
+      # the spec holds flat name lists.
+      - spec: spec.log_config.request_headers
+        arg: log_config.request_headers.header_name
+      - spec: spec.log_config.response_headers
+        arg: log_config.response_headers.header_name
     exclusions:
-      - arg: log_config.request_headers.header_name
+      - arg: iap.oauth2_client_id_wo
         reason: >-
-          SDK gap -- pulumi-gcp v9.29.0's BackendServiceLogConfig bridges
-          enable/sample_rate/optional_mode/optional_fields but not the
-          request_headers list, and cross-engine parity forbids modeling a
-          field only one engine can send; re-evaluate at the next
-          pulumi-gcp bump
-      - arg: log_config.response_headers.header_name
+          the write-only variant of the modeled iap.oauth2_client_id --
+          same OAuth client, differing only in Terraform-state hygiene;
+          adopting it would raise this one module's toolchain floor to
+          Terraform/OpenTofu >= 1.11 (write-only arguments), a divergence
+          from the catalog-wide assumption; re-evaluate when the catalog
+          declares a >= 1.11 floor
+      - arg: iap.oauth2_client_id_wo_version
         reason: >-
-          SDK gap -- pulumi-gcp v9.29.0's BackendServiceLogConfig bridges
-          enable/sample_rate/optional_mode/optional_fields but not the
-          response_headers list, and cross-engine parity forbids modeling
-          a field only one engine can send; re-evaluate at the next
-          pulumi-gcp bump
+          the re-send trigger for iap.oauth2_client_id_wo; rides the same
+          judgment and re-evaluate trigger (see iap.oauth2_client_id_wo)
+      - arg: iap.oauth2_client_secret_wo
+        reason: >-
+          the write-only variant of the modeled iap.oauth2_client_secret
+          -- same secret material, differing only in Terraform-state
+          hygiene; adopting it would raise this one module's toolchain
+          floor to Terraform/OpenTofu >= 1.11 (write-only arguments), a
+          divergence from the catalog-wide assumption; re-evaluate when
+          the catalog declares a >= 1.11 floor
+      - arg: iap.oauth2_client_secret_wo_version
+        reason: >-
+          the re-send trigger for iap.oauth2_client_secret_wo; rides the
+          same judgment and re-evaluate trigger (see
+          iap.oauth2_client_secret_wo)
+
+  google_compute_region_backend_service:
+    mappings:
+      - spec: spec.backend_service_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.backends
+        arg: backend
+      - spec: spec.health_check
+        arg: health_checks
+      - spec: spec.resource_manager_tags
+        arg: params.resource_manager_tags
+      - spec: spec.log_config.request_headers
+        arg: log_config.request_headers.header_name
+      - spec: spec.log_config.response_headers
+        arg: log_config.response_headers.header_name
 
   # Signed-URL keys are modeled as a list on the spec and fanned out to one
   # companion resource per key -- the keys have no life apart from the

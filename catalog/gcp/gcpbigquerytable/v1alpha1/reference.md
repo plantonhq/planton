@@ -1164,6 +1164,8 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | GcpBigQueryTable | `spec.tableConstraints.foreignKeys[].referencedTable.tableId` | `status.outputs.table_id` |
 | GcpPubSubSubscription | `spec.bigqueryConfig.table` | `status.outputs.qualified_name` |
+| GcpVertexAiFeatureGroup | `spec.bigQuery.inputUri` | `status.outputs.qualified_name` |
+| GcpVertexAiFeatureOnlineStore | `spec.featureViews[].bigQuerySource.uri` | `status.outputs.qualified_name` |
 
 ## See Also
 

@@ -1,0 +1,56 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcphierarchicalfirewallpolicy
+spec:
+  gcp:
+    groups:
+      - purpose: ManageHierarchicalFirewallPolicy
+        permissions:
+          - compute.firewallPolicies.create
+          - compute.firewallPolicies.get
+          - compute.firewallPolicies.update
+          - compute.firewallPolicies.delete
+          - compute.firewallPolicies.use
+        provenance: derived
+        notes: "Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these."
+      - purpose: AssociateHierarchicalFirewallPolicy
+        permissions:
+          - compute.organizations.setFirewallPolicy
+        provenance: derived
+        condition:
+          spec_field_set: associations
+        notes: "Covers google_compute_firewall_policy_association (Pulumi compute.FirewallPolicyAssociation), one per associations entry: the addAssociation and removeAssociation calls authorize as firewallPolicies.use on the policy (listed above) and setFirewallPolicy on every organization or folder the policy is attached to (Google checks it on the attachment target) -- GCP defines no firewallPolicies.addAssociation or removeAssociation permission. roles/compute.orgFirewallPolicyAdmin on the organization contains them; a folder-scoped grant must cover both the policy's parent and every association target."
+      - purpose: ResolveParentFolder
+        permissions:
+          - resourcemanager.folders.get
+        provenance: derived
+        condition:
+          spec_field_set: parent.folder_id
+        notes: Google validates that the folder parent.folder_id names exists before creating the policy in it.
+      - purpose: ResolveAssociationTargetFolders
+        permissions:
+          - resourcemanager.folders.get
+        provenance: derived
+        condition:
+          spec_field_set: associations.target.folder_id
+        notes: Google validates that each folder an association's target.folder_id names exists before attaching the policy to it.
+      - purpose: ResolveRuleTargetNetworks
+        permissions:
+          - compute.networks.get
+        provenance: derived
+        condition:
+          spec_field_set: rules.target_resources
+        notes: Google resolves each VPC network a rule's target_resources names. Secure tags (tag values) and service accounts are passed by name and validated by the API without a read permission on this identity.
+      - purpose: ResolveRuleSourceNetworks
+        permissions:
+          - compute.networks.get
+        provenance: derived
+        condition:
+          spec_field_set: rules.match.src_networks
+        notes: Google resolves each VPC network a rule's match.src_networks names. Secure tags (tag values) and service accounts are passed by name and validated by the API without a read permission on this identity.

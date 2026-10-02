@@ -1,0 +1,30 @@
+# Consumer-scoped GcpManagedKafkaCluster install profile for the gcpkcnr
+# chain: the smallest cluster Google sells (3 vCPU, 3 GiB) on the chain's
+# subnet. Cluster creation takes up to about 30 minutes.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaCluster
+metadata:
+  name: planton-oss-e2e-gcpkcnr-kafka
+  id: planton-oss-e2e-gcpkcnr-kafka
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkacluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  clusterId: e2e-gcpkcnr-kafka-${E2E_RUN_ID}
+  capacityConfig:
+    vcpuCount: 3
+    memoryBytes: 3221225472
+  networkConfigs:
+    - subnet:
+        valueFrom:
+          kind: GcpSubnetwork
+          name: planton-oss-e2e-gcpkcnr-subnet
+          fieldPath: status.outputs.subnetwork_self_link
+  deletionPolicy: DELETE

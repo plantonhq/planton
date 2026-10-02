@@ -1,0 +1,4 @@
+name: gcpprivatecapool-pulumi-project
+runtime:
+  name: go
+description: Planton GcpPrivateCaPool Pulumi module

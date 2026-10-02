@@ -1,0 +1,25 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: support-chat
+spec:
+  location: global
+  engineType: CHAT
+  displayName: Support chat
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: contracts-rag
+        fieldPath: status.outputs.data_store_id
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Acme
+  # The chat engine answers through a Dialogflow CX agent you manage as its
+  # own block -- its webhooks, tools, versions, and environments declared
+  # there -- instead of one Google creates for the engine.
+  chatEngineConfig:
+    dialogflowAgentToLink:
+      valueFrom:
+        kind: GcpDialogflowCxAgent
+        name: support-agent
+        fieldPath: status.outputs.name

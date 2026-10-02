@@ -34,10 +34,14 @@ spec:
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
-        notes: Required only when push_config.oidc_token names a service account -- the spec contract documents that the caller must hold iam.serviceAccounts.actAs on the token-minting account, the standard guard against privilege escalation through another identity. Grant it on that specific service account, not project-wide. Not needed for pull, unauthenticated push, or export deliveries.
+        condition:
+          spec_field_set: push_config.oidc_token
+        notes: The spec contract documents that the caller must hold iam.serviceAccounts.actAs on the token-minting service account push_config.oidc_token names, the standard guard against privilege escalation through another identity. Grant it on that specific service account, not project-wide.
       - purpose: ApplyResourceManagerTags
         permissions:
           - pubsub.subscriptions.createTagBinding
           - resourcemanager.tagValueBindings.create
         provenance: derived
-        notes: Required only when resource_manager_tags is set -- attaching a tag at create time authorizes on both sides, the binding on the subscription and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). Tags bind at create time only; a tag change replaces the subscription and loses its backlog, re-running these checks. Not needed for untagged subscriptions.
+        condition:
+          spec_field_set: resource_manager_tags
+        notes: Attaching a tag at create time authorizes on both sides, the binding on the subscription and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). Tags bind at create time only; a tag change replaces the subscription and loses its backlog, re-running these checks.

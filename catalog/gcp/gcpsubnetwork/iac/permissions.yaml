@@ -33,4 +33,6 @@ spec:
           - compute.subnetworks.createTagBinding
           - resourcemanager.tagValueBindings.create
         provenance: derived
-        notes: Required only when resource_manager_tags is set -- attaching a tag at create time authorizes on both sides, the binding on the subnetwork and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). The module sends tags only through the create-only params block; tag changes replace the subnetwork, re-running these checks. Not needed for untagged subnets.
+        condition:
+          spec_field_set: resource_manager_tags
+        notes: Attaching a tag at create time authorizes on both sides, the binding on the subnetwork and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). The module sends tags only through the create-only params block; tag changes replace the subnetwork, re-running these checks.

@@ -1,122 +1,210 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Compute Engine backend bucket"
+  description = "GcpBackendBucket specification"
   type = object({
-    # The GCP project that owns the backend bucket. The CLI's tfvars
-    # converter resolves StringValueOrRef fields to their literal string
-    # before the module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # The GCP project that owns the backend bucket (which may differ from the
+    # project owning the GCS bucket — cross-project origins are valid).
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Immutable: changing it destroys and recreates the backend bucket.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Name of the backend bucket in GCP (RFC1035). Empty defaults to
-    # metadata.name (see locals.tf). Immutable (ForceNew).
+    # Name of the backend bucket in GCP. Must be 1-63 characters: lowercase
+    # letters, digits, and hyphens; must start with a letter and end with a
+    # letter or digit. If not specified, defaults to metadata.name.
+    # Immutable: changing it destroys and recreates the backend bucket,
+    # briefly breaking every URL map that references the old self_link.
     backend_bucket_name = optional(string, "")
 
-    # The Cloud Storage bucket serving as the origin (resolved from a
-    # GcpGcsBucket reference or given directly). Mutable — origin swaps are
-    # in-place updates.
+    # The Cloud Storage bucket whose objects are served — the origin.
+    # Reference a GcpGcsBucket resource or provide the bucket name directly.
+    # Mutable: pointing at a different bucket is an in-place update, which
+    # makes origin swaps (e.g. blue/green static releases) cheap.
+    # Objects must be publicly readable (or served via signed URLs/cookies) —
+    # the load balancer does not authenticate to the bucket.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     bucket_name = string
 
-    description = optional(string)
+    # What this backend bucket serves and which URL maps use it — write it for
+    # the operator tracing a route later. Mutable.
+    description = optional(string, "")
 
-    # Cache at Google's edge with Cloud CDN. cdn_policy only takes effect
-    # while this is true.
+    # Cache responses at Google's edge with Cloud CDN. Off by default: without
+    # it every request is proxied to the bucket. Turning it on activates
+    # cdn_policy (or sensible CDN defaults when cdn_policy is omitted).
+    # Cannot be enabled together with load_balancing_scheme INTERNAL_MANAGED —
+    # Cloud CDN only fronts external load balancers. Mutable.
     enable_cdn = optional(bool, false)
 
-    # Cloud CDN caching behavior. TTL fields left at 0 are treated as unset
-    # so the GCP API applies its own defaults (see locals.tf).
+    # How Cloud CDN caches responses from this origin. Only meaningful with
+    # enable_cdn — GCP ignores the policy while CDN is off.
     cdn_policy = optional(object({
-      cache_mode                   = optional(string)
-      client_ttl                   = optional(number)
-      default_ttl                  = optional(number)
-      max_ttl                      = optional(number)
-      negative_caching             = optional(bool)
-      negative_caching_policy      = optional(list(object({ code = number, ttl = optional(number) })), [])
-      serve_while_stale            = optional(number)
-      request_coalescing           = optional(bool)
-      signed_url_cache_max_age_sec = optional(number)
+      # What gets cached. CACHE_ALL_STATIC (the GCP default) caches static
+      # content types and honors origin cache headers for the rest;
+      # USE_ORIGIN_HEADERS caches only what the origin explicitly marks
+      # cacheable (TTL fields must be unset — the origin controls lifetimes);
+      # FORCE_CACHE_ALL caches everything, ignoring origin headers (never
+      # combine with private or per-user content; max_ttl must be unset).
+      cache_mode = optional(string, "")
+
+      # Seconds a response may be cached by browsers and other downstream
+      # caches (sets the max-age clients see; GCP default 3600, max 86400).
+      # Keep it shorter than default_ttl so edge caches revalidate before
+      # clients do.
+      client_ttl = optional(number, 0)
+
+      # Seconds the edge caches a response when the origin sets no caching
+      # headers (GCP default 3600, max 31622400 = 1 year). The workhorse TTL
+      # for CACHE_ALL_STATIC and FORCE_CACHE_ALL.
+      default_ttl = optional(number, 0)
+
+      # Upper bound in seconds on any cache lifetime, capping even origin
+      # headers that ask for longer (GCP default 86400, max 31622400). Not
+      # allowed with USE_ORIGIN_HEADERS or FORCE_CACHE_ALL cache modes.
+      max_ttl = optional(number, 0)
+
+      # Cache error responses (404s, redirects) at the edge so failing paths do
+      # not hammer the origin. Pair with negative_caching_policy to set
+      # per-status TTLs; without it GCP applies default lifetimes.
+      negative_caching = optional(bool, false)
+
+      # Per-status-code TTLs for negative caching. Only effective with
+      # negative_caching enabled. Codes limited by GCP to 300, 301, 308, 404,
+      # 405, 410, 421, 451, and 501.
+      negative_caching_policy = optional(list(object({
+        # The HTTP status code to cache. GCP supports 300, 301, 308, 404, 405,
+        # 410, 421, 451, and 501.
+        code = number
+
+        # Seconds responses with this status are cached at the edge
+        # (0 to 1800 = 30 minutes).
+        ttl = optional(number, 0)
+      })), [])
+
+      # Seconds the edge may keep serving a stale response while it revalidates
+      # with the origin in the background (max 86400; 0 disables). Smooths over
+      # brief origin outages for content that tolerates slight staleness.
+      serve_while_stale = optional(number, 0)
+
+      # Collapse concurrent cache-miss requests for the same object into one
+      # origin fetch. Protects the origin from thundering herds on cache
+      # expiry of popular objects.
+      request_coalescing = optional(bool, false)
+
+      # Seconds a response to a SIGNED request stays fresh in the cache before
+      # revalidation (max 86400). Only meaningful with signed URLs or cookies;
+      # after this window the edge revalidates, though the signature's own
+      # expiry still governs access.
+      signed_url_cache_max_age_sec = optional(number, 0)
+
+      # What forms the cache key beyond the URL host and path. Leave unset to
+      # ignore query strings and headers entirely — the best hit rate for
+      # immutable, fingerprinted assets.
       cache_key_policy = optional(object({
+        # Query parameters included in the cache key (all others are ignored).
+        # Include only parameters that genuinely change the response — e.g. an
+        # image resizer's "w" and "h" — so equivalent requests share a cache
+        # entry.
         query_string_whitelist = optional(list(string), [])
-        include_http_headers   = optional(list(string), [])
+
+        # Request headers whose values join the cache key — for origins that vary
+        # responses by header (e.g. Accept for image format negotiation). Each
+        # distinct value creates a separate cache entry, so keep this list short.
+        include_http_headers = optional(list(string), [])
       }))
-      bypass_cache_on_request_headers = optional(list(object({ header_name = string })), [])
+
+      # Skip the cache entirely for requests carrying any of these headers
+      # (at most 5) — an escape hatch for debugging or per-request freshness
+      # (e.g. a Pragma: no-cache internal tooling header).
+      bypass_cache_on_request_headers = optional(list(object({
+        # The header name to match (case-insensitive); any value triggers the
+        # bypass.
+        header_name = string
+      })), [])
     }))
 
-    # Load-balancer response compression: AUTOMATIC or DISABLED (empty keeps
-    # the GCP default of no compression).
+    # Whether the load balancer compresses responses (gzip/brotli) for clients
+    # that ask for it. AUTOMATIC compresses compressible content types;
+    # DISABLED (the GCP default when unset) never compresses. Compression is
+    # applied by the load balancer, not the bucket — objects stay uncompressed
+    # at the origin. Mutable.
     compression_mode = optional(string, "")
 
-    # Response headers the load balancer adds, "Header-Name: value" form.
+    # Response headers the load balancer adds to every response served from
+    # this backend, in "Header-Name: value" form. Values may use variables
+    # like {cdn_cache_status}. Typical uses: security headers
+    # (Strict-Transport-Security) and cache observability
+    # (X-Cache-Status: {cdn_cache_status}). Mutable.
     custom_response_headers = optional(list(string), [])
 
-    # Self-link of a Cloud Armor EDGE security policy (resolved from a
-    # GcpCloudArmorPolicy reference or given directly).
+    # Cloud Armor EDGE security policy filtering requests before they reach
+    # the cache or the origin (rate limiting and geo/IP blocking at the edge).
+    # Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR_EDGE — standard
+    # backend policies are not valid here. Mutable.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     edge_security_policy = optional(string, "")
 
-    # INTERNAL_MANAGED for cross-region internal ALBs; empty for external
-    # load balancers (the common case). Immutable (ForceNew).
+    # Which load balancer family this backend serves. Leave unset for global
+    # EXTERNAL HTTP(S) load balancers — the overwhelmingly common case for
+    # static content. INTERNAL_MANAGED serves cross-region internal
+    # Application Load Balancers instead, and is incompatible with Cloud CDN.
+    # Immutable: changing it destroys and recreates the backend bucket.
     load_balancing_scheme = optional(string, "")
 
-    # Cloud CDN signed-URL keys (at most 3). Each key_value is secret
-    # material — it never appears in outputs.
+    # Keys for signing Cloud CDN signed URLs and signed cookies — the
+    # mechanism for serving private content from the cache with expiring,
+    # tamper-proof links. GCP allows at most 3 keys per backend bucket so one
+    # can be rotated while another stays live. Each key's material is a
+    # secret; rotate by adding a new key, re-signing URLs, then removing the
+    # old one.
     signed_url_keys = optional(list(object({
-      name      = string
+      # Name of the key, referenced by the key_name parameter of signed URLs.
+      # Must be 1-63 characters: lowercase letters, digits, and hyphens; must
+      # start with a letter and end with a letter or digit. Immutable: renaming
+      # replaces the key, invalidating URLs signed with the old name.
+      name = string
+
+      # The 128-bit signing key, base64url-encoded (RFC 4648 §5) — generate one
+      # with: head -c 16 /dev/urandom | base64 | tr '+/' '-_'. 22 characters of
+      # base64url, with or without the trailing == padding. Anyone holding this
+      # value can mint valid signed URLs, so it is handled as a secret.
+      # Immutable per key name: rotating means adding a new key and removing
+      # the old. The base64url shape is taught here rather than enforced by a
+      # validation rule, because sensitive fields hold a managed-secret
+      # reference on consuming platforms and a content-shape rule would
+      # reject every reference.
       key_value = string
     })), [])
 
-    # Resource Manager tags bound at create time (tagKeys/{id} ->
-    # tagValues/{id}). Immutable.
+    # Resource Manager tags bound to the backend bucket for org-policy and
+    # IAM conditions. Keys in the form "tagKeys/{id}", values
+    # "tagValues/{id}". Create-time only: changing them later replaces the
+    # backend bucket.
     resource_manager_tags = optional(map(string), {})
 
-    # DELETE (default), PREVENT, or ABANDON — one switch governing destroy
-    # for the backend bucket AND its signed-URL keys.
+    # Deletion policy for the backend bucket AND its signed-URL keys — one
+    # switch governs both objects this kind manages:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- both are deleted (GCP refuses to delete the backend
+    #                bucket while a URL map still references it); the GCS
+    #                bucket behind it is untouched — it belongs to its own
+    #                kind
+    #   "PREVENT" -- destroy FAILS; protects a CDN origin that URL maps may
+    #                still route to
+    #   "ABANDON" -- both are removed from management but keep serving in GCP
     deletion_policy = optional(string, "")
   })
-
-  # NOTE: never guard optional strings with coalesce() here — HCL's coalesce
-  # skips empty strings as well as nulls, so coalesce("", "") errors and the
-  # validation fails on a legitimately-empty value.
-  validation {
-    condition     = try(var.spec.backend_bucket_name, "") == "" || can(regex("^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$", var.spec.backend_bucket_name))
-    error_message = "backend_bucket_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens."
-  }
-
-  validation {
-    condition     = length(var.spec.bucket_name) > 0
-    error_message = "bucket_name is required — the GCS bucket whose objects are served."
-  }
-
-  validation {
-    condition     = contains(["", "AUTOMATIC", "DISABLED"], var.spec.compression_mode)
-    error_message = "compression_mode must be AUTOMATIC or DISABLED."
-  }
-
-  validation {
-    condition     = contains(["", "INTERNAL_MANAGED"], var.spec.load_balancing_scheme)
-    error_message = "load_balancing_scheme must be INTERNAL_MANAGED, or left unset for external load balancers."
-  }
-
-  # HCL's || does not short-circuit, so the nullable bool is guarded with
-  # coalesce — Cloud CDN only fronts external load balancers.
-  validation {
-    condition     = !(coalesce(var.spec.enable_cdn, false) && var.spec.load_balancing_scheme == "INTERNAL_MANAGED")
-    error_message = "Cloud CDN cannot be enabled on an INTERNAL_MANAGED backend bucket."
-  }
-
-  validation {
-    condition     = length(var.spec.signed_url_keys) <= 3
-    error_message = "at most 3 signed-URL keys are supported per backend bucket."
-  }
 }

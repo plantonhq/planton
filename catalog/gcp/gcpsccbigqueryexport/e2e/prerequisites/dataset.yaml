@@ -1,0 +1,24 @@
+# An extra GcpBigQueryDataset instance for the gcpsccx scenario: the
+# dataset the export writes to, in the harness project, deleted with its
+# contents on teardown.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryDataset
+metadata:
+  name: planton-oss-e2e-gcpsccx-dataset
+  id: planton-oss-e2e-gcpsccx-dataset
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigquerydataset
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  datasetId: e2e_gcpsccx_${E2E_RUN_ID_UNDERSCORE}
+  location: US
+  deleteContentsOnDestroy: true
+  deletionPolicy: DELETE

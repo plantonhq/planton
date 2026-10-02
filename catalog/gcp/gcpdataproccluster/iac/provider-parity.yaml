@@ -36,6 +36,21 @@ resources:
       # blocks are singular.
       - spec: spec.cluster_config.initialization_actions
         arg: cluster_config.initialization_action
+      # The additional-disk list on each node role and on each flexibility
+      # selection (the spec says what the entries ARE; exact matching
+      # resumes below each subtree).
+      - spec: spec.cluster_config.master_config.disk_config.attached_disks
+        arg: cluster_config.master_config.disk_config.attached_disk_config
+      - spec: spec.cluster_config.worker_config.disk_config.attached_disks
+        arg: cluster_config.worker_config.disk_config.attached_disk_config
+      - spec: spec.cluster_config.secondary_worker_config.disk_config.attached_disks
+        arg: cluster_config.preemptible_worker_config.disk_config.attached_disk_config
+      - spec: spec.cluster_config.master_config.instance_flexibility_policy.instance_selection_list.disk_config.attached_disks
+        arg: cluster_config.master_config.instance_flexibility_policy.instance_selection_list.disk_config.attached_disk_config
+      - spec: spec.cluster_config.worker_config.instance_flexibility_policy.instance_selection_list.disk_config.attached_disks
+        arg: cluster_config.worker_config.instance_flexibility_policy.instance_selection_list.disk_config.attached_disk_config
+      - spec: spec.cluster_config.secondary_worker_config.instance_flexibility_policy.instance_selection_list.disk_config.attached_disks
+        arg: cluster_config.preemptible_worker_config.instance_flexibility_policy.instance_selection_list.disk_config.attached_disk_config
 
       # The spec's properties map feeds the provider's writable surface
       # (its `properties` attribute is the computed resolved set).
@@ -61,36 +76,6 @@ resources:
         arg: virtual_cluster_config.kubernetes_cluster_config.gke_cluster_config.node_pool_target.node_pool_config.config.preemptible
       - spec: spec.virtual_cluster_config.kubernetes_cluster_config.gke_cluster_config.node_pool_target.node_pool_config.spot
         arg: virtual_cluster_config.kubernetes_cluster_config.gke_cluster_config.node_pool_target.node_pool_config.config.spot
-    exclusions:
-      # Not yet bridged by the pinned Pulumi SDK (pulumi-gcp v9.29.0,
-      # google-beta 7.38): modeling these only in Terraform would break
-      # cross-engine parity -- a spec field one engine silently drops.
-      # Re-evaluate at the next SDK bump.
-      - arg: cluster_config.gce_cluster_config.confidential_instance_config.confidential_instance_type
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK
-          (which carries only the deprecated enable_confidential_compute
-          boolean the spec models); modeling it would break cross-engine
-          parity. Re-evaluate at the next pulumi-gcp bump.
-      - arg: cluster_config.master_config.instance_flexibility_policy.instance_selection_list.disk_config
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK (its
-          instance-selection entries carry only machine_types and rank);
-          modeling the per-selection disk shape would break cross-engine
-          parity. Re-evaluate at the next pulumi-gcp bump.
-      - arg: cluster_config.worker_config.instance_flexibility_policy.instance_selection_list.disk_config
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK (its
-          instance-selection entries carry only machine_types and rank);
-          modeling the per-selection disk shape would break cross-engine
-          parity. Re-evaluate at the next pulumi-gcp bump.
-      - arg: cluster_config.preemptible_worker_config.instance_flexibility_policy.instance_selection_list.disk_config
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK (its
-          instance-selection entries carry only machine_types and rank);
-          modeling the per-selection disk shape would break cross-engine
-          parity. Re-evaluate at the next pulumi-gcp bump.
-
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables dataproc.googleapis.com
@@ -98,17 +83,27 @@ resources:
       cluster never disables the API project-wide); not spec surface.
 
 specExclusions:
-  # The provider deprecated enable_confidential_compute in favor of
-  # confidential_instance_type, but the successor is not yet bridged by
-  # the pinned Pulumi SDK -- the spec keeps the boolean (the shape both
-  # engines can express) until the bridge catches up, when the field
-  # redesigns to the type enum.
+  # The provider deprecated the enable_confidential_compute boolean in
+  # favor of confidential_instance_type. The spec carries both: the type
+  # is the current shape (matched by name), and the boolean stays so
+  # manifests authored against it keep working -- both engines send it.
   - field: spec.cluster_config.gce_config.confidential_instance_config.enable_confidential_compute
     reason: >-
       maps to the provider's deprecated enable_confidential_compute
-      argument -- the only confidential-compute shape the pinned Pulumi
-      SDK can express; redesigns to confidential_instance_type at the
-      next pulumi-gcp bump
+      argument, kept for manifests authored before
+      confidential_instance_type existed; the type field is the current
+      shape
+
+  # The shared disk message carries attached_disks, but the provider
+  # defines additional disks on master, worker, and secondary worker
+  # nodes only -- auxiliary (driver) node groups have no such argument.
+  # A site-level CEL rule rejects them there, making the leaves
+  # unreachable by valid manifests.
+  - field: spec.cluster_config.auxiliary_node_groups.node_group_config.disk_config.attached_disks
+    reason: >-
+      provider carries attached disks on the cluster's node roles only;
+      the spec's auxiliary_disk_no_attached_disks CEL rejects them on
+      auxiliary node groups
 
   # The shared flexibility message carries provisioning_model_mix, but the
   # provider defines that argument on secondary workers only -- masters

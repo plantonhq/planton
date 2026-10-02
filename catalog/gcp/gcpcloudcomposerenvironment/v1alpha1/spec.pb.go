@@ -9,6 +9,7 @@ package gcpcloudcomposerenvironmentv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -520,8 +521,16 @@ type GcpCloudComposerSoftwareConfig struct {
 	// Example: {"numpy": ">=1.21", "requests": ""}
 	PypiPackages map[string]string `protobuf:"bytes,3,rep,name=pypi_packages,json=pypiPackages,proto3" json:"pypi_packages,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Additional environment variables available to all Airflow components.
-	// Variable names starting with "AIRFLOW__" are reserved by Airflow and
-	// should not be set here.
+	// Values are written into the environment's configuration, where anyone
+	// who can view the environment reads them: configuration only, never a
+	// credential -- a credential goes in secret_env_variables. Names must
+	// match [a-zA-Z_][a-zA-Z0-9_]*, must not be Airflow configuration
+	// overrides (AIRFLOW__<SECTION>__<KEY>; use airflow_config_overrides),
+	// and must not be one of Composer's reserved names (AIRFLOW_HOME,
+	// C_FORCE_ROOT, CONTAINER_NAME, DAGS_FOLDER, GCP_PROJECT, GCS_BUCKET,
+	// GKE_CLUSTER_NAME, SQL_DATABASE, SQL_INSTANCE, SQL_PASSWORD,
+	// SQL_PROJECT, SQL_REGION, SQL_USER, among others Google lists). Map keys
+	// are not CEL-addressable, so the API enforces these at deploy.
 	EnvVariables map[string]string `protobuf:"bytes,4,rep,name=env_variables,json=envVariables,proto3" json:"env_variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Web server plugins mode for Composer 3 environments.
 	// When DISABLED, custom Airflow UI plugins are not loaded.
@@ -531,8 +540,30 @@ type GcpCloudComposerSoftwareConfig struct {
 	// lineage into Dataplex Data Lineage automatically.
 	// Applies to Composer 2.1.2+.
 	CloudDataLineageIntegration *GcpCloudComposerCloudDataLineageIntegration `protobuf:"bytes,6,opt,name=cloud_data_lineage_integration,json=cloudDataLineageIntegration,proto3" json:"cloud_data_lineage_integration,omitempty"`
-	unknownFields               protoimpl.UnknownFields
-	sizeCache                   protoimpl.SizeCache
+	// Secret values Airflow reads at run time, keyed by environment variable
+	// name. Composer has no secret field for environment variables, so the
+	// component never puts the value on the environment: it keeps each one
+	// in a Secret Manager secret it owns (id
+	// composer_<region>_<environment name>_<key>, replicated only in the
+	// environment's region), grants the environment's node service account
+	// (node_config.service_account, or the project's Compute Engine default
+	// service account when unset) secretAccessor on that secret alone, and
+	// sets the variable to the version's resource name,
+	// projects/<project>/secrets/<id>/versions/<n>. DAG and plugin code reads
+	// the value with the Secret Manager client:
+	//
+	//	from google.cloud import secretmanager
+	//	token = secretmanager.SecretManagerServiceClient().access_secret_version(
+	//	    name=os.environ["API_TOKEN"]).payload.data.decode()
+	//
+	// A changed value adds a version, which changes the variable and runs an
+	// environment update (Composer restarts its Airflow components, which
+	// takes several minutes), so rotation is a deploy; destroying the
+	// environment removes the secrets. The same name rules as env_variables
+	// apply, and a name may not appear in both maps.
+	SecretEnvVariables map[string]string `protobuf:"bytes,7,rep,name=secret_env_variables,json=secretEnvVariables,proto3" json:"secret_env_variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *GcpCloudComposerSoftwareConfig) Reset() {
@@ -603,6 +634,13 @@ func (x *GcpCloudComposerSoftwareConfig) GetWebServerPluginsMode() string {
 func (x *GcpCloudComposerSoftwareConfig) GetCloudDataLineageIntegration() *GcpCloudComposerCloudDataLineageIntegration {
 	if x != nil {
 		return x.CloudDataLineageIntegration
+	}
+	return nil
+}
+
+func (x *GcpCloudComposerSoftwareConfig) GetSecretEnvVariables() map[string]string {
+	if x != nil {
+		return x.SecretEnvVariables
 	}
 	return nil
 }
@@ -1571,7 +1609,7 @@ var File_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto protoreflec
 
 const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpcloudcomposerenvironment/v1alpha1/spec.proto\x124dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x87\x14\n" +
+	";catalog/gcp/gcpcloudcomposerenvironment/v1alpha1/spec.proto\x124dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x86\x18\n" +
 	"\x1fGcpCloudComposerEnvironmentSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x127\n" +
@@ -1583,9 +1621,9 @@ const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc =
 	"\x1aprivate_environment_config\x18\x06 \x01(\v2^.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerPrivateEnvironmentConfigR\x18privateEnvironmentConfig\x12\x80\x01\n" +
 	"\x10workloads_config\x18\a \x01(\v2U.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfigR\x0fworkloadsConfig\x12\x99\x01\n" +
 	"\x10environment_size\x18\b \x01(\tBn\xbaHkriR\x00R\x16ENVIRONMENT_SIZE_SMALLR\x17ENVIRONMENT_SIZE_MEDIUMR\x16ENVIRONMENT_SIZE_LARGER\x1cENVIRONMENT_SIZE_EXTRA_LARGER\x0fenvironmentSize\x12V\n" +
-	"\x0fresilience_mode\x18\t \x01(\tB-\xbaH*r(R\x00R\x13STANDARD_RESILIENCER\x0fHIGH_RESILIENCER\x0eresilienceMode\x12t\n" +
+	"\x0fresilience_mode\x18\t \x01(\tB-\xbaH*r(R\x00R\x13STANDARD_RESILIENCER\x0fHIGH_RESILIENCER\x0eresilienceMode\x12\xb1\x01\n" +
 	"\fkms_key_name\x18\n" +
-	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12\x86\x01\n" +
 	"\x12maintenance_window\x18\v \x01(\v2W.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerMaintenanceWindowR\x11maintenanceWindow\x12}\n" +
 	"\x0frecovery_config\x18\f \x01(\v2T.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerRecoveryConfigR\x0erecoveryConfig\x12\xa6\x01\n" +
@@ -1600,7 +1638,8 @@ const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc =
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xf0\x05\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xbe\x03\xbaH\xba\x03\x1a\xb7\x03\n" +
+	"(secret_env_variables_need_email_identity\x12\xbd\x01with software_config.secret_env_variables, node_config.service_account must name the account by email (or projects/{project}/serviceAccounts/{email}): the secret grant is made to that email\x1a\xca\x01size(this.software_config.secret_env_variables) == 0 || !has(this.node_config.service_account.value) || this.node_config.service_account.value.matches('^(projects/[^/]+/serviceAccounts/)?[^/@]+@[^/]+$')\"\xf0\x05\n" +
 	"\x1aGcpCloudComposerNodeConfig\x12w\n" +
 	"\anetwork\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xc2\x17\x92\xd4a status.outputs.network_self_linkR\anetwork\x12\x80\x01\n" +
 	"\n" +
@@ -1618,14 +1657,15 @@ const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc =
 	"\x1dservices_secondary_range_name\x18\x03 \x01(\tR\x1aservicesSecondaryRangeName\x127\n" +
 	"\x18services_ipv4_cidr_block\x18\x04 \x01(\tR\x15servicesIpv4CidrBlock:\x89\x03\xbaH\x85\x03\x1a\xbd\x01\n" +
 	"\x1bcluster_range_name_xor_cidr\x12Ocluster_secondary_range_name and cluster_ipv4_cidr_block are mutually exclusive\x1aMthis.cluster_secondary_range_name == '' || this.cluster_ipv4_cidr_block == ''\x1a\xc2\x01\n" +
-	"\x1cservices_range_name_xor_cidr\x12Qservices_secondary_range_name and services_ipv4_cidr_block are mutually exclusive\x1aOthis.services_secondary_range_name == '' || this.services_ipv4_cidr_block == ''\"\xd7\a\n" +
+	"\x1cservices_range_name_xor_cidr\x12Qservices_secondary_range_name and services_ipv4_cidr_block are mutually exclusive\x1aOthis.services_secondary_range_name == '' || this.services_ipv4_cidr_block == ''\"\x95\v\n" +
 	"\x1eGcpCloudComposerSoftwareConfig\x12#\n" +
 	"\rimage_version\x18\x01 \x01(\tR\fimageVersion\x12\xaa\x01\n" +
 	"\x18airflow_config_overrides\x18\x02 \x03(\v2p.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.AirflowConfigOverridesEntryR\x16airflowConfigOverrides\x12\x8b\x01\n" +
-	"\rpypi_packages\x18\x03 \x03(\v2f.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.PypiPackagesEntryR\fpypiPackages\x12\x8b\x01\n" +
-	"\renv_variables\x18\x04 \x03(\v2f.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.EnvVariablesEntryR\fenvVariables\x12Q\n" +
+	"\rpypi_packages\x18\x03 \x03(\v2f.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.PypiPackagesEntryR\fpypiPackages\x12\xa5\x01\n" +
+	"\renv_variables\x18\x04 \x03(\v2f.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.EnvVariablesEntryB\x18Ҧ\x1d\x14secret_env_variablesR\fenvVariables\x12Q\n" +
 	"\x17web_server_plugins_mode\x18\x05 \x01(\tB\x1a\xbaH\x17r\x15R\x00R\aENABLEDR\bDISABLEDR\x14webServerPluginsMode\x12\xa6\x01\n" +
-	"\x1ecloud_data_lineage_integration\x18\x06 \x01(\v2a.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerCloudDataLineageIntegrationR\x1bcloudDataLineageIntegration\x1aI\n" +
+	"\x1ecloud_data_lineage_integration\x18\x06 \x01(\v2a.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerCloudDataLineageIntegrationR\x1bcloudDataLineageIntegration\x12\xa4\x01\n" +
+	"\x14secret_env_variables\x18\a \x03(\v2l.dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.SecretEnvVariablesEntryB\x04\xa0\xa6\x1d\x01R\x12secretEnvVariables\x1aI\n" +
 	"\x1bAirflowConfigOverridesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a?\n" +
@@ -1634,7 +1674,11 @@ const file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc =
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a?\n" +
 	"\x11EnvVariablesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"G\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aE\n" +
+	"\x17SecretEnvVariablesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xb3\x01\xbaH\xaf\x01\x1a\xac\x01\n" +
+	"\x1dsecret_env_variables_disjoint\x12La variable is either in env_variables or in secret_env_variables, never both\x1a=!this.secret_env_variables.exists(k, k in this.env_variables)\"G\n" +
 	"+GcpCloudComposerCloudDataLineageIntegration\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\"\x95\x04\n" +
 	"(GcpCloudComposerPrivateEnvironmentConfig\x126\n" +
@@ -1720,7 +1764,7 @@ func file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDescGZI
 	return file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpCloudComposerEnvironmentSpec)(nil),                // 0: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec
 	(*GcpCloudComposerNodeConfig)(nil),                     // 1: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig
@@ -1744,42 +1788,44 @@ var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_goTypes = [
 	nil,                         // 19: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.AirflowConfigOverridesEntry
 	nil,                         // 20: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.PypiPackagesEntry
 	nil,                         // 21: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.EnvVariablesEntry
-	(*v1.StringValueOrRef)(nil), // 22: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	nil,                         // 22: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.SecretEnvVariablesEntry
+	(*v1.StringValueOrRef)(nil), // 23: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_depIdxs = []int32{
-	22, // 0: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 0: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 1: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.node_config:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig
 	3,  // 2: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.software_config:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig
 	5,  // 3: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.private_environment_config:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerPrivateEnvironmentConfig
 	6,  // 4: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.workloads_config:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig
-	22, // 5: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 5: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	11, // 6: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.maintenance_window:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerMaintenanceWindow
 	12, // 7: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.recovery_config:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerRecoveryConfig
 	13, // 8: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.web_server_network_access_control:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWebServerAccessControl
 	15, // 9: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.master_authorized_networks_config:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerMasterAuthorizedNetworksConfig
 	17, // 10: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.data_retention_config:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerDataRetentionConfig
-	22, // 11: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.storage_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 11: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.storage_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	18, // 12: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.labels:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerEnvironmentSpec.LabelsEntry
-	22, // 13: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 14: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 15: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 13: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 14: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 15: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	2,  // 16: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerNodeConfig.ip_allocation_policy:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerIpAllocationPolicy
 	19, // 17: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.airflow_config_overrides:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.AirflowConfigOverridesEntry
 	20, // 18: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.pypi_packages:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.PypiPackagesEntry
 	21, // 19: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.env_variables:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.EnvVariablesEntry
 	4,  // 20: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.cloud_data_lineage_integration:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerCloudDataLineageIntegration
-	7,  // 21: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.scheduler:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadResource
-	8,  // 22: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.web_server:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWebServerResource
-	9,  // 23: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.worker:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkerResource
-	10, // 24: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.triggerer:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerTriggererResource
-	7,  // 25: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.dag_processor:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadResource
-	14, // 26: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWebServerAccessControl.allowed_ip_ranges:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerAllowedIpRange
-	16, // 27: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerMasterAuthorizedNetworksConfig.cidr_blocks:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerCidrBlock
-	28, // [28:28] is the sub-list for method output_type
-	28, // [28:28] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	22, // 21: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.secret_env_variables:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerSoftwareConfig.SecretEnvVariablesEntry
+	7,  // 22: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.scheduler:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadResource
+	8,  // 23: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.web_server:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWebServerResource
+	9,  // 24: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.worker:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkerResource
+	10, // 25: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.triggerer:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerTriggererResource
+	7,  // 26: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadsConfig.dag_processor:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWorkloadResource
+	14, // 27: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerWebServerAccessControl.allowed_ip_ranges:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerAllowedIpRange
+	16, // 28: dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerMasterAuthorizedNetworksConfig.cidr_blocks:type_name -> dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1.GcpCloudComposerCidrBlock
+	29, // [29:29] is the sub-list for method output_type
+	29, // [29:29] is the sub-list for method input_type
+	29, // [29:29] is the sub-list for extension type_name
+	29, // [29:29] is the sub-list for extension extendee
+	0,  // [0:29] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_init() }
@@ -1793,7 +1839,7 @@ func file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpcloudcomposerenvironment_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   22,
+			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

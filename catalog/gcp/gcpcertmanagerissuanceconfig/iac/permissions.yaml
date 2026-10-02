@@ -1,0 +1,28 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcertmanagerissuanceconfig
+spec:
+  gcp:
+    groups:
+      - purpose: EnableCertificateManagerApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service (Pulumi projects.Service) enabling certificatemanager.googleapis.com on the target project -- the provider lists the project's enabled services before enabling one and reads the service back on refresh. disable_on_destroy is false in both modules, so the disable permission is never needed.
+      - purpose: ManageCertificateIssuanceConfig
+        permissions:
+          - certificatemanager.certissuanceconfigs.create
+          - certificatemanager.certissuanceconfigs.get
+          - certificatemanager.certissuanceconfigs.update
+          - certificatemanager.certissuanceconfigs.delete
+          - certificatemanager.operations.get
+        provenance: derived
+        notes: Covers google_certificate_manager_certificate_issuance_config (Pulumi certificatemanager.CertificateIssuanceConfig) -- create, read/refresh, in-place label updates (every other argument forces replacement), and destroy. Certificate Manager mutations return long-running operations the provider polls under certificatemanager.operations.get. The modules call no Certificate Authority Service API; whether Google checks the caller's own access to the named pool at create is for the live capture lane to establish. Issuance from the pool runs as the Certificate Manager service agent (roles/privateca.certificateRequester on the pool, granted outside this component), never as the runner.

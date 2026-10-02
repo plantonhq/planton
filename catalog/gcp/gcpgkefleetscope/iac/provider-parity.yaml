@@ -1,0 +1,61 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_gke_hub_scope:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+  # The namespaces, role bindings, and cluster bindings are folded: they
+  # have no meaning outside their scope and are owned by whoever owns the
+  # team's slice of the fleet.
+  google_gke_hub_namespace:
+    specRoot: spec.namespaces
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      # The namespace's parent scope is the scope it is declared under,
+      # sent by short ID (URL) and full name (body) -- never declared twice.
+      - spec: spec.scope_id
+        arg: scope_id
+    exclusions:
+      - arg: scope
+        reason: wired by the module to the full name of the scope it creates -- a namespace belongs to this scope and no other
+  google_gke_hub_scope_rbac_role_binding:
+    specRoot: spec.rbac_role_bindings
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      - spec: spec.scope_id
+        arg: scope_id
+  google_gke_hub_membership_binding:
+    specRoot: spec.membership_bindings
+    mappings:
+      # A binding lives in the scope's fleet project: Google requires the
+      # membership to be in the same fleet.
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      # The binding's location and membership ID are parsed from the
+      # membership's full name, so they can never disagree with it.
+      - spec: spec.membership_bindings.membership
+        arg: location
+      - spec: spec.membership_bindings.membership
+        arg: membership_id
+    exclusions:
+      - arg: scope
+        reason: wired by the module to the full name of the scope it creates -- a binding binds a cluster to this scope and no other
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

@@ -29,12 +29,22 @@ spec:
           - firebasestorage.defaultBucket.get
           - firebasestorage.defaultBucket.delete
         provenance: derived
-        notes: Required only when default_storage_location is set. Covers google_firebase_storage_default_bucket (Terraform, beta provider) / firebase.StorageDefaultBucket (Pulumi) -- create on first apply (projects.defaultBucket.create on the Firebase Storage API), get on refresh, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). The underlying Cloud Storage bucket is created by the Firebase Storage service on the caller's behalf; the Firebase-side permission class is what the API authorizes.
-      - purpose: ManageAppCheck
+        condition:
+          spec_field_set: default_storage_location
+        notes: Covers google_firebase_storage_default_bucket (Terraform, beta provider) / firebase.StorageDefaultBucket (Pulumi) -- create on first apply (projects.defaultBucket.create on the Firebase Storage API), get on refresh, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). The underlying Cloud Storage bucket is created by the Firebase Storage service on the caller's behalf; the Firebase-side permission class is what the API authorizes.
+      - purpose: ManageAppCheckServiceConfigs
         permissions:
           - firebaseappcheck.services.get
           - firebaseappcheck.services.update
+        provenance: derived
+        condition:
+          spec_field_set: app_check.service_configs
+        notes: google_firebase_app_check_service_config / firebase.AppCheckServiceConfig, one per app_check.service_configs entry, is a per-service singleton -- the provider's create and update are both services.patch (Google authorizes as firebaseappcheck.services.update), and its delete patches enforcement back to OFF, so no delete permission exists for it. roles/firebaseappcheck.admin contains both.
+      - purpose: ManageAppCheckResourcePolicies
+        permissions:
           - firebaseappcheck.resourcePolicies.get
           - firebaseappcheck.resourcePolicies.update
         provenance: derived
-        notes: Required only when app_check composes at least one configuration. google_firebase_app_check_service_config / firebase.AppCheckServiceConfig is a per-service singleton -- the provider's create and update are both services.patch (Google authorizes as firebaseappcheck.services.update), and its delete patches enforcement back to OFF, so no delete permission exists for it. google_firebase_app_check_resource_policy / firebase.AppCheckResourcePolicy has its own create, patch, and delete methods, but IAM's inventory carries only resourcePolicies.get and resourcePolicies.update for the class -- Google authorizes creating and deleting a policy as an UPDATE of the service's policy set, so those two permissions cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains all four.
+        condition:
+          spec_field_set: app_check.resource_policies
+        notes: google_firebase_app_check_resource_policy / firebase.AppCheckResourcePolicy, one per app_check.resource_policies entry, has its own create, patch, and delete methods, but IAM's inventory carries only resourcePolicies.get and resourcePolicies.update for the class -- Google authorizes creating and deleting a policy as an UPDATE of the service's policy set, so those two permissions cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains both.

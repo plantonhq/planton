@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerTrustConfig
+metadata:
+  name: partner-mtls-trust
+spec:
+  projectId:
+    value: my-gcp-project
+  description: CAs that sign partner client certificates
+  # Empty location means global, which serves global load balancers.
+  # location: us-central1
+  trustStores:
+    - trustAnchors:
+        - |
+          -----BEGIN CERTIFICATE-----
+          <partner-root-ca-pem-body>
+          -----END CERTIFICATE-----
+  labels:
+    team: edge
+  deletionPolicy: PREVENT

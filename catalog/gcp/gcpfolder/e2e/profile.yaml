@@ -1,0 +1,21 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpfolder
+spec:
+  # A folder exists only inside a Google Cloud Organization and every arm of
+  # this kind needs roles/resourcemanager.folderAdmin on the organization or
+  # a parent folder -- a grant the shared test project's identity does not
+  # hold (the same class as GcpProject). Offline bar met: both modules build
+  # and validate, offline plans for the reference manifest and both
+  # scenarios are clean on the pinned provider, and the accounting is
+  # total. Live proof waits for the organization-scoped test identity;
+  # validated_provisioners stays empty until the live lanes actually run.
+  # Every E2E manifest sets deletion_protection: false so the harness
+  # destroy succeeds, and display names carry the run id (30-day
+  # reservation).
+  tier: 2
+  status: deferred
+  deferred_reason: folder creation requires organization-level roles/resourcemanager.folderAdmin credentials the E2E test identity does not hold; offline plans only
+  validated_provisioners: []
+  timeout_minutes: 20

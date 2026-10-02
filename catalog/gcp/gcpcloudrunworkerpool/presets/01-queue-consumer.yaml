@@ -1,0 +1,54 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudRunWorkerPool
+metadata:
+  name: orders-worker
+spec:
+  projectId:
+    value: my-gcp-project
+  workerPoolName: orders-worker
+  description: Pulls order events from Pub/Sub and writes them to the orders database
+  region: us-central1
+  containers:
+    - name: worker
+      image: us-docker.pkg.dev/my-gcp-project/apps/orders-worker:1.4.0
+      env:
+        - name: SUBSCRIPTION
+          value: projects/my-gcp-project/subscriptions/orders-events
+        - name: DB_PASSWORD
+          valueFromSecret:
+            secret: orders-db-password
+            version: latest
+      resources:
+        cpu: "1"
+        memory: 512Mi
+      # A worker has no serving port; the probe names the health listener.
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: 8081
+        periodSeconds: 30
+        failureThreshold: 3
+  # A dedicated least-privilege identity, never the Compute default.
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: orders-worker-sa
+      fieldPath: status.outputs.email
+  # Direct VPC egress so the worker reaches Cloud SQL private IP and
+  # Memorystore; public egress keeps Cloud Run's own path.
+  vpcAccess:
+    networkInterfaces:
+      - subnetwork:
+          valueFrom:
+            kind: GcpSubnetwork
+            name: workers-subnet
+            fieldPath: status.outputs.subnetwork_name
+    egress: PRIVATE_RANGES_ONLY
+  # Exactly two instances, around the clock.
+  scaling:
+    scalingMode: MANUAL
+    manualInstanceCount: 2
+  labels:
+    tier: production
+  deletionProtection: true
+  deletionPolicy: PREVENT

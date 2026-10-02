@@ -97,10 +97,13 @@ resource "google_cloudfunctions2_function" "function" {
 
       # GCP defaults concurrency to 1 (every request its own instance);
       # values above 1 require at least 1 CPU.
-      max_instance_request_concurrency = service_config.value.max_instance_request_concurrency
+      # Zero means unset for these counts (the spec fields have no presence):
+      # the API rejects a concurrency of 0 and fills its own default when the
+      # argument is omitted.
+      max_instance_request_concurrency = service_config.value.max_instance_request_concurrency != 0 ? service_config.value.max_instance_request_concurrency : null
 
-      min_instance_count = try(service_config.value.scaling.min_instance_count, null)
-      max_instance_count = try(service_config.value.scaling.max_instance_count, null)
+      min_instance_count = try(service_config.value.scaling.min_instance_count, 0) != 0 ? service_config.value.scaling.min_instance_count : null
+      max_instance_count = try(service_config.value.scaling.max_instance_count, 0) != 0 ? service_config.value.scaling.max_instance_count : null
 
       # Runtime identity: bare service-account email.
       service_account_email = service_config.value.service_account_email != "" ? service_config.value.service_account_email : null
@@ -108,16 +111,30 @@ resource "google_cloudfunctions2_function" "function" {
       environment_variables = length(service_config.value.environment_variables) > 0 ? service_config.value.environment_variables : null
 
       # Secret Manager references resolved at instance start — material
-      # never appears in configuration or state.
+      # never appears in the function's configuration. An entry is a secret
+      # the author owns or a value secrets.tf stored (one of the two); a
+      # stored value reads the exact version secrets.tf created.
       dynamic "secret_environment_variables" {
         for_each = service_config.value.secret_environment_variables
         content {
-          key     = secret_environment_variables.value.key
-          secret  = secret_environment_variables.value.secret
-          version = secret_environment_variables.value.version != "" ? secret_environment_variables.value.version : "latest"
+          key = secret_environment_variables.value.key
+          secret = (
+            contains(keys(local.env_secrets), secret_environment_variables.value.key)
+            ? google_secret_manager_secret.env[secret_environment_variables.value.key].secret_id
+            : secret_environment_variables.value.secret
+          )
+          version = (
+            contains(keys(local.env_secrets), secret_environment_variables.value.key)
+            ? google_secret_manager_secret_version.env[secret_environment_variables.value.key].version
+            : (secret_environment_variables.value.version != "" ? secret_environment_variables.value.version : "latest")
+          )
           # The API requires an explicit project on every entry; default to
           # the function's own (or ambient) project when unset.
-          project_id = secret_environment_variables.value.project_id != "" ? secret_environment_variables.value.project_id : local.effective_secret_project
+          project_id = (
+            contains(keys(local.env_secrets), secret_environment_variables.value.key)
+            ? google_secret_manager_secret.env[secret_environment_variables.value.key].project
+            : (secret_environment_variables.value.project_id != "" ? secret_environment_variables.value.project_id : local.effective_secret_project)
+          )
         }
       }
 
@@ -189,11 +206,13 @@ resource "google_cloudfunctions2_function" "function" {
     }
   }
 
-  depends_on = [google_project_service.apis]
+  # Instances read every referenced secret at start, so a deploy that races
+  # its grant fails.
+  depends_on = [google_project_service.apis, google_secret_manager_secret_iam_member.env]
 }
 
-# Resolves the ambient project for secret references that omit their own —
-# the one case that needs a live lookup (secret entries need an explicit
+# Resolves the ambient project for owned-secret references that omit their
+# own — the one case that needs a live lookup (secret entries need an explicit
 # project id in the API payload). Count-gated so every plan that names its
 # project (or carries no ambient-project secrets) runs credential-free;
 # the Pulumi module gates its client-config lookup identically.

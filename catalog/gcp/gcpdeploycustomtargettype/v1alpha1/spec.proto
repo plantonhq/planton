@@ -1,0 +1,222 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdeploycustomtargettype.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDeployCustomTargetTypeSpec declares a Cloud Deploy custom target type
+// (`google_clouddeploy_custom_target_type`): how Cloud Deploy renders and
+// deploys a release to a system it does not deploy to natively -- a
+// vendor API, an internal platform, Terraform, a non-Kubernetes runtime.
+//
+// Cloud Deploy deploys natively to GKE, Cloud Run, and fleet clusters.
+// For anything else, a custom target type names the container or Skaffold
+// custom action that does the work; each Cloud Deploy target that deploys
+// that way points at the type (custom_target.custom_target_type on a
+// GcpDeployTarget). Many targets share one type, and a type has no link to
+// any pipeline, so it is its own block.
+//
+// The work is defined one of two ways (at most one):
+//
+//   - tasks: a deploy container (and optionally a render container) Cloud
+//     Deploy runs in Cloud Build -- the simple path, no Skaffold
+//     knowledge needed;
+//   - custom_actions: Skaffold custom actions by name, defined in the
+//     release's skaffold.yaml or in remote Skaffold modules this type
+//     includes (from Git, a Cloud Build repository, or Cloud Storage).
+//
+// Important behavioral notes:
+//
+//   - location and custom_target_type_id are create-time decisions;
+//     everything else updates in place and applies to the next rollout.
+//   - The containers run in the execution environment of each target
+//     that uses the type (its service account and worker pool), with
+//     Cloud Deploy's CLOUD_DEPLOY_* environment variables describing the
+//     release, target, and output location.
+//   - Delete the targets that use a type before the type; a chart orders
+//     them by their reference.
+message GcpDeployCustomTargetTypeSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.one_definition"
+    expression: "!(has(this.custom_actions) && has(this.tasks))"
+    message: "set at most one of custom_actions or tasks"
+  };
+
+  // The project the type lives in -- the project of the targets that use
+  // it: a literal project ID or a GcpProject reference. Empty means the
+  // provider's default project. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The region the type lives in, e.g. "us-central1" -- the region of the
+  // targets that use it. Required. Immutable.
+  string location = 2 [(buf.validate.field).required = true];
+
+  // The type's ID, unique in the project and location: 1-63 lowercase
+  // letters, digits, and hyphens, starting with a letter and not ending
+  // with a hyphen. Defaults to metadata.name. Immutable.
+  string custom_target_type_id = 3 [(buf.validate.field).cel = {
+    id: "custom_target_type_id.format"
+    message: "custom_target_type_id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+  }];
+
+  // A description of the type, up to 255 characters.
+  string description = 4 [(buf.validate.field).string.max_len = 255];
+
+  // Labels on the type. The platform attribution labels are added on top
+  // and win on key conflicts.
+  map<string, string> labels = 5;
+
+  // Annotations on the type (user metadata Cloud Deploy never reads).
+  // Only the keys declared here are managed.
+  map<string, string> annotations = 6;
+
+  // Render and deploy through Skaffold custom actions. Mutually exclusive
+  // with tasks.
+  GcpDeployCustomTargetTypeCustomActions custom_actions = 7;
+
+  // Render and deploy through containers Cloud Deploy runs. Mutually
+  // exclusive with custom_actions.
+  GcpDeployCustomTargetTypeTasks tasks = 8;
+
+  // What destroy does:
+  //   "" / "DELETE" -- the type is deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the type leaves management and stays in Google
+  string deletion_policy = 9 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// Render and deploy through Skaffold custom actions.
+message GcpDeployCustomTargetTypeCustomActions {
+  // The name of the Skaffold custom action that deploys, as defined in
+  // the release's skaffold.yaml or an included module. Required.
+  string deploy_action = 1 [(buf.validate.field).required = true];
+
+  // The name of the Skaffold custom action that renders. Empty means
+  // Cloud Deploy renders with `skaffold render`.
+  string render_action = 2;
+
+  // Remote Skaffold modules Cloud Deploy adds to the release's Skaffold
+  // config, so the custom actions can live in a shared repository or
+  // bucket instead of every application's skaffold.yaml.
+  repeated GcpDeployCustomTargetTypeSkaffoldModule include_skaffold_modules = 3;
+}
+
+// One remote Skaffold module source. Exactly one of git,
+// google_cloud_build_repo, or google_cloud_storage.
+message GcpDeployCustomTargetTypeSkaffoldModule {
+  option (buf.validate.message).cel = {
+    id: "skaffold_module.exactly_one_source"
+    expression: "[has(this.git), has(this.google_cloud_build_repo), has(this.google_cloud_storage)].filter(x, x).size() == 1"
+    message: "a Skaffold module names exactly one source: git, google_cloud_build_repo, or google_cloud_storage"
+  };
+
+  // The Skaffold config modules (the `metadata.name` of each config) to
+  // use from the source. Empty uses every config in the file.
+  repeated string configs = 1 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // A Git repository Cloud Deploy clones.
+  GcpDeployCustomTargetTypeGitSource git = 2;
+
+  // A repository linked through a Cloud Build connection.
+  GcpDeployCustomTargetTypeCloudBuildRepoSource google_cloud_build_repo = 3;
+
+  // A Cloud Storage location Cloud Deploy copies.
+  GcpDeployCustomTargetTypeCloudStorageSource google_cloud_storage = 4;
+}
+
+// A Git repository holding Skaffold modules.
+message GcpDeployCustomTargetTypeGitSource {
+  // The repository to clone, e.g. "https://github.com/acme/deploy-actions.git".
+  // Required.
+  string repo = 1 [(buf.validate.field).required = true];
+
+  // The Skaffold file's path from the repository root. Empty means
+  // skaffold.yaml at the root.
+  string path = 2;
+
+  // The branch or tag to clone. Empty means the default branch.
+  string ref = 3;
+}
+
+// A Cloud Build repository holding Skaffold modules.
+message GcpDeployCustomTargetTypeCloudBuildRepoSource {
+  // The repository, by full name
+  // (projects/{p}/locations/{l}/connections/{c}/repositories/{r}): a
+  // GcpCloudBuildRepository reference or the literal name. Required.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef repository = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildRepository,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "google_cloud_build_repo.repository.format"
+      message: "repository must be a full repository name: projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/connections/[^/]+/repositories/[^/]+$')"
+    }
+  ];
+
+  // The Skaffold file's path from the repository root. Empty means
+  // skaffold.yaml at the root.
+  string path = 2;
+
+  // The branch or tag to clone. Empty means the default branch.
+  string ref = 3;
+}
+
+// A Cloud Storage location holding Skaffold modules.
+message GcpDeployCustomTargetTypeCloudStorageSource {
+  // The objects to copy, recursively: "gs://my-bucket/dir/configs/*"
+  // copies everything under dir/configs. Required.
+  string source = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "google_cloud_storage.source.format"
+      message: "source must be a Cloud Storage path starting with gs://"
+      expression: "this.startsWith('gs://')"
+    }
+  ];
+
+  // The Skaffold file's path relative to source. Empty means skaffold.yaml.
+  string path = 2;
+}
+
+// Render and deploy through containers.
+message GcpDeployCustomTargetTypeTasks {
+  // The task that deploys. Required.
+  GcpDeployCustomTargetTypeTask deploy = 1 [(buf.validate.field).required = true];
+
+  // The task that renders. Unset means Cloud Deploy's default rendering.
+  GcpDeployCustomTargetTypeTask render = 2;
+}
+
+// One task. Cloud Deploy defines one kind of task, a container.
+message GcpDeployCustomTargetTypeTask {
+  // The container Cloud Deploy runs in Cloud Build for this task -- set it,
+  // since it is the task's whole definition.
+  GcpDeployCustomTargetTypeContainer container = 1;
+}
+
+// A container Cloud Deploy runs in the target's execution environment.
+message GcpDeployCustomTargetTypeContainer {
+  // The container image, e.g.
+  // "us-docker.pkg.dev/acme/deploy/vendor-deployer:1.4". Required.
+  string image = 1 [(buf.validate.field).required = true];
+
+  // The entrypoint, replacing the image's own.
+  repeated string command = 2;
+
+  // The arguments, replacing the image's default arguments.
+  repeated string args = 3;
+
+  // Environment variables set in the container, alongside the
+  // CLOUD_DEPLOY_* variables Cloud Deploy sets.
+  map<string, string> env = 4;
+}

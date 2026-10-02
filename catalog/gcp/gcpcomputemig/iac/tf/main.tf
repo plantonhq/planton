@@ -187,6 +187,9 @@ resource "google_compute_instance_template" "this" {
           seconds = local_ssd_recovery_timeout.value
         }
       }
+      # Host-error detection timeout (90..330 s, steps of 30). Sent only
+      # when set so an unset spec keeps Compute Engine's default recovery.
+      host_error_timeout_seconds = scheduling.value.host_error_timeout_seconds
     }
   }
 
@@ -263,6 +266,17 @@ resource "google_compute_instance_template" "this" {
   can_ip_forward             = var.spec.template.can_ip_forward
   key_revocation_action_type = var.spec.template.key_revocation_action_type != "" ? var.spec.template.key_revocation_action_type : null
   resource_policies          = length(var.spec.template.resource_policies) > 0 ? var.spec.template.resource_policies : null
+
+  # Managed workload identity: a SPIFFE ID issued to each VM, optionally
+  # with X.509 identity certificates for mutual TLS. A template field, so
+  # changing it rotates the template.
+  dynamic "workload_identity_config" {
+    for_each = var.spec.template.workload_identity_config != null ? [var.spec.template.workload_identity_config] : []
+    content {
+      identity                     = workload_identity_config.value.identity
+      identity_certificate_enabled = workload_identity_config.value.identity_certificate_enabled
+    }
+  }
 
   lifecycle {
     create_before_destroy = true
@@ -417,6 +431,9 @@ resource "google_compute_region_instance_template" "this" {
           seconds = local_ssd_recovery_timeout.value
         }
       }
+      # Host-error detection timeout (90..330 s, steps of 30). Sent only
+      # when set so an unset spec keeps Compute Engine's default recovery.
+      host_error_timeout_seconds = scheduling.value.host_error_timeout_seconds
     }
   }
 
@@ -487,6 +504,17 @@ resource "google_compute_region_instance_template" "this" {
   can_ip_forward             = var.spec.template.can_ip_forward
   key_revocation_action_type = var.spec.template.key_revocation_action_type != "" ? var.spec.template.key_revocation_action_type : null
   resource_policies          = length(var.spec.template.resource_policies) > 0 ? var.spec.template.resource_policies : null
+
+  # Managed workload identity: a SPIFFE ID issued to each VM, optionally
+  # with X.509 identity certificates for mutual TLS. A template field, so
+  # changing it rotates the template.
+  dynamic "workload_identity_config" {
+    for_each = var.spec.template.workload_identity_config != null ? [var.spec.template.workload_identity_config] : []
+    content {
+      identity                     = workload_identity_config.value.identity
+      identity_certificate_enabled = workload_identity_config.value.identity_certificate_enabled
+    }
+  }
 
   # Only the REGIONAL template carries a deletion_policy in the
   # provider — the zonal one has none (always deleted on destroy).

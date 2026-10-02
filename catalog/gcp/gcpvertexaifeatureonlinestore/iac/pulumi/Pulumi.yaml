@@ -1,0 +1,4 @@
+name: gcpvertexaifeatureonlinestore-pulumi-project
+runtime:
+  name: go
+description: Planton GcpVertexAiFeatureOnlineStore Pulumi module

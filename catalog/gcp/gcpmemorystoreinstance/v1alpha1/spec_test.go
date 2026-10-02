@@ -16,6 +16,18 @@ func TestSuite(t *testing.T) {
 	ginkgo.RunSpecs(t, "GcpMemorystoreInstanceSpec Suite")
 }
 
+func litRef(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{
+		LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v},
+	}
+}
+
+func nameRef(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{
+		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Name: v}},
+	}
+}
+
 var _ = ginkgo.Describe("GcpMemorystoreInstanceSpec", func() {
 	var validator protovalidate.Validator
 
@@ -782,14 +794,30 @@ var _ = ginkgo.Describe("GcpMemorystoreInstanceSpec", func() {
 	ginkgo.It("should accept server_ca_pool paired with CUSTOMER_MANAGED_CAS_CA", func() {
 		msg := minimal()
 		msg.Spec.ServerCaMode = "CUSTOMER_MANAGED_CAS_CA"
-		msg.Spec.ServerCaPool = "projects/my-project/locations/us-central1/caPools/my-pool"
+		msg.Spec.ServerCaPool = litRef("projects/my-project/locations/us-central1/caPools/my-pool")
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should accept a GcpPrivateCaPool reference for server_ca_pool", func() {
+		msg := minimal()
+		msg.Spec.ServerCaMode = "CUSTOMER_MANAGED_CAS_CA"
+		msg.Spec.ServerCaPool = nameRef("valkey-ca")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed literal server_ca_pool", func() {
+		msg := minimal()
+		msg.Spec.ServerCaMode = "CUSTOMER_MANAGED_CAS_CA"
+		msg.Spec.ServerCaPool = litRef("my-pool")
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("a literal server_ca_pool must be"))
+	})
+
 	ginkgo.It("should reject server_ca_pool without CUSTOMER_MANAGED_CAS_CA mode", func() {
 		msg := minimal()
-		msg.Spec.ServerCaPool = "projects/my-project/locations/us-central1/caPools/my-pool"
+		msg.Spec.ServerCaPool = litRef("projects/my-project/locations/us-central1/caPools/my-pool")
 		err := validator.Validate(msg)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
@@ -815,6 +843,21 @@ var _ = ginkgo.Describe("GcpMemorystoreInstanceSpec", func() {
 		msg.Spec.DeletionPolicy = "KEEP"
 		err := validator.Validate(msg)
 		gomega.Expect(err).To(gomega.HaveOccurred())
+	})
+
+	ginkgo.It("should accept a full-resource-name acl_policy", func() {
+		msg := minimal()
+		msg.Spec.AclPolicy = "projects/my-gcp-project/locations/us-central1/aclPolicies/readers"
+		err := validator.Validate(msg)
+		gomega.Expect(err).ToNot(gomega.HaveOccurred())
+	})
+
+	ginkgo.It("should reject an acl_policy that is not a full resource name", func() {
+		msg := minimal()
+		msg.Spec.AclPolicy = "readers"
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("acl_policy"))
 	})
 
 	ginkgo.It("should reject when metadata is missing", func() {

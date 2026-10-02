@@ -53,6 +53,17 @@ disruption budget spaces disruptive events regardless of windows. Pin
 wins and the pin just fights it. `gkeAutoUpgradePatchMode: ACCELERATED`
 is for fleets that want CVE patches the day they ship.
 
+Three window forms, one choice: `dailyWindow` (same four hours every
+day), `recurringWindow` (an RFC 5545 rule anchored on an absolute first
+start/end timestamp), or `recurringTimeWindow` (the same rule as a time
+of day plus a duration, optionally delayed until a calendar date) — pick
+the last when the policy reads "every Saturday at 02:00 for six hours,
+starting next quarter". `rollbackSafeUpgrade.controlPlaneSoakDuration`
+(6 hours to 7 days) turns control-plane minor upgrades into two steps:
+the control plane upgrades but keeps emulating the old minor during the
+soak, so the upgrade can be rolled back; setting
+`desiredEmulatedVersion` to the target minor completes it declaratively.
+
 ## NAP is a cost brake wearing an autoscaler's clothes
 
 Node auto-provisioning creates pools you never wrote. The spec refuses
@@ -80,6 +91,21 @@ surgery, not an operating mode. A cluster deletion takes every workload,
 PV, and LoadBalancer with it; keep both guards on for anything real, and
 turn them off in the same change that means it.
 
+## Fleets and team scopes
+
+`fleetProject` registers the cluster with that project's fleet as part of
+creating it. Point it at the `GcpGkeFleet` with `valueFrom` (its
+`status.outputs.project_id`) so the registration waits for the fleet; a
+`GcpProject` reference or a literal project ID works when no fleet is
+declared. Google creates the membership, and the cluster exports its
+full name as `fleet_membership`. To give the cluster to a team, reference
+that output from the team's `GcpGkeFleetScope.membershipBindings`; to
+override a fleet feature's default for this cluster, reference it from
+`GcpGkeFleetFeature.membershipConfigs`. Declare the `GcpGkeFleet` first --
+a fleet declared after the cluster registers collides with the one the
+registration created -- and never also declare a `GcpGkeFleetMembership`
+for a cluster that sets `fleetProject`: it is already registered.
+
 ## On the diagram
 
 The cluster is the hub of the GKE family: it consumes `GcpVpcNetwork`
@@ -99,5 +125,7 @@ scaffolding — the diagram shows a control plane waiting for compute.
   images.
 - `GcpKmsKey` — etcd CMEK, NAP boot disks, and `userManagedKeys` for
   regulated estates.
+- `GcpPrivateCaPool` — the customer-managed control-plane CAs in
+  `userManagedKeys` (cluster, etcd API, etcd peer, aggregation).
 - `GcpSubnetwork` — plan the secondary ranges there first; the cluster
   only names them.

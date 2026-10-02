@@ -53,7 +53,8 @@ spec:
   zone: us-central1-a
   machineType: e2-standard-2
   bootDisk:
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
     sizeGb: 50
     type: pd-ssd
   networkInterfaces:
@@ -100,7 +101,7 @@ These are the most important decisions when configuring a Compute Engine instanc
 
 **Machine type and zone** -- The `machineType` field sets CPU and memory (e.g., `e2-standard-2` for 2 vCPU / 8 GB, `n2-standard-4` for 4 vCPU / 16 GB, or custom shapes like `custom-6-20480`). The `zone` determines physical placement and must match the subnet's region; it is immutable, and attached disks must live in the same zone.
 
-**Boot disk** -- Exactly one source: `bootDisk.image` (an OS image family like `debian-cloud/debian-12`), `bootDisk.sourceSnapshot`, or `bootDisk.sourceDisk` (an existing bootable GcpComputeDisk). Choose `bootDisk.type` based on I/O requirements: `pd-balanced` for the sensible default, `pd-ssd` for high IOPS, hyperdisk types for tunable performance.
+**Boot disk** -- Exactly one source: `bootDisk.image` (a `GcpComputeImage` reference to pin a golden build, or a literal OS image family like `debian-cloud/debian-12`), `bootDisk.sourceSnapshot`, or `bootDisk.sourceDisk` (an existing bootable GcpComputeDisk). Choose `bootDisk.type` based on I/O requirements: `pd-balanced` for the sensible default, `pd-ssd` for high IOPS, hyperdisk types for tunable performance.
 
 **Data disks** -- Durable data belongs on `attachedDisks` entries referencing first-class GcpComputeDisk resources by `self_link` -- the data survives this VM. Ephemeral `scratchDisks` (local SSD) offer extreme IOPS but lose contents on stop or preemption.
 
@@ -119,6 +120,7 @@ These are the most important decisions when configuring a Compute Engine instanc
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
+| **GcpComputeImage** (optional) | `bootDisk.image` | `status.outputs.self_link` |
 | **GcpComputeDisk** (optional) | `bootDisk.sourceDisk` | `status.outputs.self_link` |
 | **GcpComputeDisk** (optional) | `attachedDisks[].source` | `status.outputs.self_link` |
 | **GcpKmsKey** (optional) | `bootDisk.kmsKey`, `attachedDisks[].kmsKey`, `bootDisk.sourceImageEncryption.kmsKey`, `bootDisk.sourceSnapshotEncryption.kmsKey`, `instanceEncryptionKey.kmsKey` | `status.outputs.key_id` |

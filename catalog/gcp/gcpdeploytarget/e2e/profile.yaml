@@ -1,0 +1,26 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpdeploytarget
+spec:
+  # Awaiting the live proof lane. Every scenario runs in the harness
+  # project and region us-central1: a Cloud Run target (the canonical
+  # shape), a multi-target over two Cloud Run target fixtures, a custom
+  # target over a GcpDeployCustomTargetType fixture, and a Cloud Run target
+  # with execution configurations over a bucket and a service-account
+  # fixture. No release is created, so nothing deploys and nothing bills.
+  # Offline bar met: both modules build and validate, offline plans for
+  # the reference manifest and every scenario are clean on the pinned
+  # provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) each target creates and re-plans clean on both engines,
+  # with execution_configs (optional and computed) unset and set; (2) the
+  # multi-target accepts the children's target_id outputs and the custom
+  # target accepts the type's name output; (3) Google accepts an execution
+  # service account that holds no roles yet (jobs never run); (4) destroy
+  # removes each target before its fixtures (the verifier accepts 404).
+  # The GKE and fleet-membership arms are proven offline only (they need a
+  # cluster).
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

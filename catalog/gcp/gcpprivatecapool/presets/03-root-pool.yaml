@@ -1,0 +1,22 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaPool
+metadata:
+  name: root-pool
+spec:
+  location: us-central1
+  tier: ENTERPRISE
+  publishingOptions:
+    publishCaCert: true
+    publishCrl: true
+  issuancePolicy:
+    allowedIssuanceModes:
+      allowCsrBasedIssuance: true
+      allowConfigBasedIssuance: false
+    baselineValues:
+      caOptions:
+        isCa: true
+        maxIssuerPathLength: 0
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true

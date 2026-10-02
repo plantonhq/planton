@@ -513,6 +513,9 @@ Fields on other kinds that can point at this resource:
 | GcpCloudFunction | `spec.serviceConfig.directVpcNetworkInterface.subnetwork` | `status.outputs.subnetwork_name` |
 | GcpCloudRun | `spec.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
 | GcpCloudRunJob | `spec.template.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
+| GcpCloudRunWorkerPool | `spec.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
+| GcpColabRuntimeTemplate | `spec.networkSpec.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpColabSchedule | `spec.notebookExecutionJob.customEnvironmentSpec.networkSpec.subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpComputeInstance | `spec.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpComputeMig | `spec.template.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
@@ -525,7 +528,11 @@ Fields on other kinds that can point at this resource:
 | GcpGkeNodePool | `spec.networkConfig.additionalNodeNetworks[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpGkeNodePool | `spec.networkConfig.additionalPodNetworks[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpGlobalForwardingRule | `spec.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpManagedKafkaCluster | `spec.networkConfigs[].subnet` | `status.outputs.subnetwork_self_link` |
+| GcpManagedKafkaConnectCluster | `spec.networkConfigs[].primarySubnet` | `status.outputs.subnetwork_self_link` |
+| GcpNetworkEndpointGroup | `spec.subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpPlantonRunner | `spec.vpcAccess.subnetwork` | `status.outputs.subnetwork_name` |
+| GcpPscServiceAttachment | `spec.natSubnets` | `status.outputs.subnetwork_self_link` |
 | GcpRegionNetworkEndpointGroup | `spec.subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpRouterNat | `spec.subnetworks[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpRouterNat | `spec.rules[].action.sourceNatActiveRanges` | `status.outputs.subnetwork_self_link` |
@@ -533,6 +540,9 @@ Fields on other kinds that can point at this resource:
 | GcpRouterNat | `spec.nat64Subnetworks` | `status.outputs.subnetwork_self_link` |
 | GcpServerlessVpcConnector | `spec.subnet.name` | `status.outputs.subnetwork_name` |
 | GcpServiceConnectionPolicy | `spec.pscConfig.subnetworks` | `status.outputs.subnetwork_self_link` |
+| GcpTpuQueuedResource | `spec.nodeSpecs[].node.networkConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpTpuVm | `spec.networkConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpTpuVm | `spec.networkConfigs[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpVertexAiNotebook | `spec.networkInterface.subnet` | `status.outputs.subnetwork_self_link` |
 | KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.ip_cidr_range` |
 | KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `status.outputs.secondary_ranges` |

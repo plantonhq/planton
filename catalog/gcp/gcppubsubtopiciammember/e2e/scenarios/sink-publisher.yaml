@@ -1,0 +1,33 @@
+# GcpPubSubTopicIamMember scenario: the composition this kind exists for.
+# The topic fixture, then a project sink exporting to it, then this grant:
+# topic from the topic's `topic_id`, member from the sink's
+# `writer_identity`. A grant declared on the topic could not reference the
+# sink without a cycle; this one depends on both. Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopicIamMember
+metadata:
+  name: planton-oss-e2e-gcppstim-sinkpub
+  id: planton-oss-e2e-gcppstim-sinkpub
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcppubsubtopiciammember
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpPubSubTopic,GcpLoggingSink"
+  tags:
+    - planton-e2e
+spec:
+  topic:
+    valueFrom:
+      kind: GcpPubSubTopic
+      name: planton-oss-e2e-gcppstim-topic
+      fieldPath: status.outputs.topic_id
+  role:
+    value: roles/pubsub.publisher
+  member:
+    valueFrom:
+      kind: GcpLoggingSink
+      name: planton-oss-e2e-gcppstim-sink
+      fieldPath: status.outputs.writer_identity

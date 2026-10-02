@@ -1,0 +1,42 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkEndpointGroup
+metadata:
+  name: web-neg
+spec:
+  projectId:
+    value: my-gcp-project
+  negName: web-neg
+  description: Zonal group of web VMs behind the regional Application Load Balancer
+  # A zone name builds a ZONAL group inside the VPC; leave zone empty for
+  # a global internet group.
+  zone: us-central1-a
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: main-vpc
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: web-subnet
+      fieldPath: status.outputs.subnetwork_self_link
+  # GCE_VM_IP_PORT is the default: VM IP and port, the backend of
+  # Application and proxy load balancers.
+  networkEndpointType: GCE_VM_IP_PORT
+  defaultPort: 8080
+  # The list IS the membership: written as one set, changed in place.
+  endpoints:
+    - instance:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-1
+          fieldPath: status.outputs.instance_name
+      ipAddress: 10.0.1.5
+    - instance:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: web-2
+          fieldPath: status.outputs.instance_name
+      ipAddress: 10.0.1.6
+      port: 8081
+  deletionPolicy: DELETE

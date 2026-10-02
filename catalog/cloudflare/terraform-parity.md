@@ -145,7 +145,8 @@ All resources of `cloudflare@5.23.0` land in exactly one class:
 | Disposition | Resources | Meaning |
 |---|---|---|
 | Modeled | 111 | consumed by a kind's Terraform module today |
-| IAM-covered | 0 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
+| IAM-covered | 0 | authoritative per-resource IAM forms (binding, policy) of a resource a kind already grants on additively; deliberately not modeled |
+| IAM not offered per resource | 0 | per-resource IAM triplets for resources no kind grants on yet; access goes through a grant at a broader scope (the project or account) |
 | Composed | 0 | capability covered through an existing kind's surface rather than a kind of its own |
 | Planned | 94 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 45 | deliberately not offered, each with the recorded reason |

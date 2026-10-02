@@ -1,0 +1,23 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaCluster
+metadata:
+  name: prod-events
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  capacityConfig:
+    vcpuCount: 12
+    memoryBytes: 51539607552
+  brokerDiskSizeGib: 1000
+  networkConfigs:
+    - subnet:
+        value: projects/my-gcp-project/regions/us-central1/subnetworks/kafka
+    - subnet:
+        value: projects/shared-vpc-host/regions/us-central1/subnetworks/apps
+  kmsKey:
+    value: projects/my-gcp-project/locations/us-central1/keyRings/kafka/cryptoKeys/events
+  rebalanceMode: AUTO_REBALANCE_ON_SCALE_UP
+  labels:
+    tier: production
+  deletionPolicy: PREVENT

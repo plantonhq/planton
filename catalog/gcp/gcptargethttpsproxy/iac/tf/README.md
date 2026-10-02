@@ -1,12 +1,12 @@
 # GcpTargetHttpsProxy - Terraform Module
 
-This Terraform module provisions a GCP Compute Engine global target HTTPS proxy. It is the Terraform-side implementation of the Planton `GcpTargetHttpsProxy` resource kind and has feature parity with the Pulumi module.
+This Terraform module provisions a GCP Compute Engine target HTTPS proxy — global, or regional when `spec.region` is set. It is the Terraform-side implementation of the Planton `GcpTargetHttpsProxy` resource kind and has feature parity with the Pulumi module.
 
 ## Overview
 
-The module creates `google_compute_target_https_proxy` — the TLS-termination node binding a global forwarding rule (the VIP) to a URL map (the routing brain). Certificates attach through exactly one of three mechanisms (classic list, Certificate Manager list, or SNI-scale certificate map); SSL policy, QUIC, and TLS early data live here too.
+The module creates exactly one of `google_compute_target_https_proxy` (global; `spec.region` empty) or `google_compute_region_target_https_proxy` (regional; `spec.region` set) — the TLS-termination node binding a forwarding rule (the VIP) to a URL map (the routing brain). The two resources are count-gated on one `is_regional` local and mirror each other; outputs select whichever was created; the regional resource has no certificate map, QUIC, early-data, or mesh-bind argument, which the spec keeps off that arm. Certificates attach through exactly one of three mechanisms (classic list, Certificate Manager list, or SNI-scale certificate map); SSL policy, QUIC, and TLS early data live here too.
 
-`url_map`, the certificate wiring, `ssl_policy`, `server_tls_policy`, and `quic_override` update in place; name, description, keep-alive, `tls_early_data`, and `proxy_bind` are ForceNew.
+`url_map`, the certificate wiring, `ssl_policy`, `server_tls_policy`, and `quic_override` update in place; name, description, region, keep-alive, `tls_early_data`, and `proxy_bind` are ForceNew.
 
 ## Usage with Planton CLI
 
@@ -41,7 +41,8 @@ The `spec` object includes: the required `url_map`, one certificate mechanism (`
 
 | Name | Description |
 |------|-------------|
-| `self_link` | Self-link URI — the value a global forwarding rule references |
+| `self_link` | Self-link URI — the value a forwarding rule references (`regions/{region}` in place of `global` for a regional proxy) |
 | `proxy_name` | Name of the proxy in GCP |
 | `proxy_id` | Server-assigned numeric ID |
-| `fingerprint` | Server-computed fingerprint for concurrency control |
+| `fingerprint` | Server-computed fingerprint for concurrency control (empty for a regional proxy) |
+| `region` | Region of a regional proxy; empty for global |

@@ -51,8 +51,16 @@ type GcpGkeClusterStackOutputs struct {
 	SelfLink string `protobuf:"bytes,7,opt,name=self_link,json=selfLink,proto3" json:"self_link,omitempty"`
 	// The Kubernetes version currently running on the control plane.
 	MasterVersion string `protobuf:"bytes,8,opt,name=master_version,json=masterVersion,proto3" json:"master_version,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// Full name of the fleet membership Google created when the cluster
+	// joined a fleet through fleet_project:
+	// projects/{fleet_project}/locations/{location}/memberships/{id}. A team
+	// scope binds the cluster by referencing it
+	// (GcpGkeFleetScope.membership_bindings), and per-cluster fleet feature
+	// settings target it (GcpGkeFleetFeature.membership_configs). Empty when
+	// the cluster joins no fleet.
+	FleetMembership string `protobuf:"bytes,9,opt,name=fleet_membership,json=fleetMembership,proto3" json:"fleet_membership,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GcpGkeClusterStackOutputs) Reset() {
@@ -141,11 +149,18 @@ func (x *GcpGkeClusterStackOutputs) GetMasterVersion() string {
 	return ""
 }
 
+func (x *GcpGkeClusterStackOutputs) GetFleetMembership() string {
+	if x != nil {
+		return x.FleetMembership
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcpgkecluster/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpgkecluster.v1alpha1\"\xb6\x02\n" +
+	"0catalog/gcp/gcpgkecluster/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpgkecluster.v1alpha1\"\xe1\x02\n" +
 	"\x19GcpGkeClusterStackOutputs\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x124\n" +
 	"\x16cluster_ca_certificate\x18\x02 \x01(\tR\x14clusterCaCertificate\x124\n" +
@@ -155,7 +170,8 @@ const file_catalog_gcp_gcpgkecluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12\x1a\n" +
 	"\blocation\x18\x06 \x01(\tR\blocation\x12\x1b\n" +
 	"\tself_link\x18\a \x01(\tR\bselfLink\x12%\n" +
-	"\x0emaster_version\x18\b \x01(\tR\rmasterVersionB\xce\x02\n" +
+	"\x0emaster_version\x18\b \x01(\tR\rmasterVersion\x12)\n" +
+	"\x10fleet_membership\x18\t \x01(\tR\x0ffleetMembershipB\xce\x02\n" +
 	"*com.dev.planton.gcp.gcpgkecluster.v1alpha1B\fOutputsProtoP\x01ZUgithub.com/plantonhq/planton/catalog/gcp/gcpgkecluster/v1alpha1;gcpgkeclusterv1alpha1\xa2\x02\x04DPGG\xaa\x02&Dev.Planton.Gcp.Gcpgkecluster.V1alpha1\xca\x02&Dev\\Planton\\Gcp\\Gcpgkecluster\\V1alpha1\xe2\x022Dev\\Planton\\Gcp\\Gcpgkecluster\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Gcp::Gcpgkecluster::V1alpha1b\x06proto3"
 
 var (

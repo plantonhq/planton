@@ -38,4 +38,13 @@ message GcpGkeClusterStackOutputs {
 
   // The Kubernetes version currently running on the control plane.
   string master_version = 8;
+
+  // Full name of the fleet membership Google created when the cluster
+  // joined a fleet through fleet_project:
+  // projects/{fleet_project}/locations/{location}/memberships/{id}. A team
+  // scope binds the cluster by referencing it
+  // (GcpGkeFleetScope.membership_bindings), and per-cluster fleet feature
+  // settings target it (GcpGkeFleetFeature.membership_configs). Empty when
+  // the cluster joins no fleet.
+  string fleet_membership = 9;
 }

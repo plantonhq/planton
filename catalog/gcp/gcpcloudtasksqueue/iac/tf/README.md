@@ -4,7 +4,7 @@ Terraform implementation for provisioning a GCP Cloud Tasks queue.
 
 ## Provider
 
-Requires `hashicorp/google` provider `~> 7.43`.
+Requires `hashicorp/google` provider `~> 8.3`.
 
 ## Usage
 

@@ -88,7 +88,7 @@ var _ = ginkgo.Describe("GcpCertManagerCertSpec Validation Tests", func() {
 		ginkgo.It("should accept an issuance config instead of DNS authorizations", func() {
 			input := managedCert()
 			input.Spec.Managed.DnsAuthorizations = nil
-			input.Spec.Managed.IssuanceConfig = "projects/test-project-123/locations/global/certificateIssuanceConfigs/private-ca"
+			input.Spec.Managed.IssuanceConfig = literal("projects/test-project-123/locations/global/certificateIssuanceConfigs/private-ca")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -157,9 +157,29 @@ var _ = ginkgo.Describe("GcpCertManagerCertSpec Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept an issuance config by reference and a wildcard under it", func() {
+			input := managedCert()
+			input.Spec.Managed.DnsAuthorizations = nil
+			input.Spec.Managed.Domains = []string{"*.internal.example.com"}
+			input.Spec.Managed.IssuanceConfig = &foreignkeyv1.StringValueOrRef{
+				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{
+					Name:      "internal-tls",
+					FieldPath: "status.outputs.issuance_config_id",
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should reject a literal issuance config that is not a full resource name", func() {
+			input := managedCert()
+			input.Spec.Managed.DnsAuthorizations = nil
+			input.Spec.Managed.IssuanceConfig = literal("private-ca")
+			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
 		ginkgo.It("should reject DNS authorizations together with an issuance config", func() {
 			input := managedCert()
-			input.Spec.Managed.IssuanceConfig = "projects/p/locations/global/certificateIssuanceConfigs/ca"
+			input.Spec.Managed.IssuanceConfig = literal("projects/p/locations/global/certificateIssuanceConfigs/ca")
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 

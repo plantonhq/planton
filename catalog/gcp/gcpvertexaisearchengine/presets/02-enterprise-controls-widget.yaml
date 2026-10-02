@@ -1,0 +1,117 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: docs-search
+spec:
+  location: global
+  displayName: Documentation search
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: docs-site
+        fieldPath: status.outputs.data_store_id
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Acme
+  # Enterprise tier with generated answers.
+  searchEngineConfig:
+    searchTier: SEARCH_TIER_ENTERPRISE
+    searchAddOns:
+      - SEARCH_ADD_ON_LLM
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: search-global-key
+      fieldPath: status.outputs.key_id
+  # Serving controls, applied through the default serving config.
+  controls:
+    - controlId: synonyms-k8s
+      displayName: Kubernetes synonyms
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      synonymsAction:
+        synonyms:
+          - kubernetes
+          - k8s
+    - controlId: boost-latest
+      displayName: Latest release first
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      boostAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: docs-site
+            fieldPath: status.outputs.name
+        filter: '(version: ANY("latest"))'
+        fixedBoost: 0.7
+    - controlId: hide-archive
+      displayName: Hide archived pages
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+        - SEARCH_USE_CASE_BROWSE
+      filterAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: docs-site
+            fieldPath: status.outputs.name
+        filter: 'NOT (status: ANY("archived"))'
+    - controlId: promote-quickstart
+      displayName: Promote the quickstart
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      conditions:
+        - queryTerms:
+            - value: getting started
+      promoteAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: docs-site
+            fieldPath: status.outputs.name
+        searchLinkPromotion:
+          title: Quickstart
+          uri: https://docs.example.com/quickstart
+          description: Up and running in ten minutes
+          enabled: true
+    - controlId: redirect-status
+      displayName: Redirect status queries
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      conditions:
+        - queryRegex: "^(status|outage|incident)$"
+      redirectAction:
+        redirectUri: https://status.example.com
+  servingConfig:
+    synonymsControlIds:
+      - synonyms-k8s
+    boostControlIds:
+      - boost-latest
+    filterControlIds:
+      - hide-archive
+    promoteControlIds:
+      - promote-quickstart
+    redirectControlIds:
+      - redirect-status
+  # The embeddable widget on the public docs site, with a generated answer
+  # and follow-up questions above the results.
+  widgetConfig:
+    accessSettings:
+      allowPublicAccess: true
+      allowlistedDomains:
+        - docs.example.com
+    uiBranding:
+      logoUrl: https://docs.example.com/logo.svg
+    uiSettings:
+      interactionType: SEARCH_WITH_FOLLOW_UPS
+      resultDescriptionType: EXTRACTIVE_ANSWER
+      enableAutocomplete: true
+      enableSafeSearch: true
+      enableQualityFeedback: true
+      generativeAnswerConfig:
+        resultCount: 5
+        ignoreAdversarialQuery: true
+        ignoreNonAnswerSeekingQuery: true
+        modelPromptPreamble: Answer as the Acme documentation team, concisely, and cite the page.
+  deletionPolicy: PREVENT

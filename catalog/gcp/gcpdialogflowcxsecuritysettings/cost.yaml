@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpdialogflowcxsecuritysettings
+spec:
+  billing_model: free
+  free_tier: "Security settings are configuration of the Dialogflow CX service. Google's Conversational Agents pricing bills conversations -- chat requests and voice audio seconds on the agents -- and names no meter for security settings (cloud.google.com/dialogflow/pricing, read 2026-09-24), so the settings themselves cost nothing whether or not an agent uses them."
+  notes: "What the settings switch on bills under other products: audio_export_settings writes recordings into your Cloud Storage bucket (storage), enable_insights_export sends conversations to Conversational Insights (billed there per conversation analyzed), and inspect_template / deidentify_template run Sensitive Data Protection inspection under Google's terms for Dialogflow redaction. retention_strategy and retention_window_days reduce what is kept, never add a charge."

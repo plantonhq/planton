@@ -1,0 +1,23 @@
+# GcpDocumentAiProcessor scenario: a Form Parser processor in the eu
+# multi-region under an explicit display name carrying the run id -- the
+# second type and the second location, proving both reach Google as
+# declared and the process endpoint output follows the location.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDocumentAiProcessor
+metadata:
+  name: planton-oss-e2e-gcpdocai-forms
+  id: planton-oss-e2e-gcpdocai-forms
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdocumentaiprocessor
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: eu
+  type: FORM_PARSER_PROCESSOR
+  displayName: pln-e2e-forms-${E2E_RUN_ID}
+  deletionPolicy: DELETE

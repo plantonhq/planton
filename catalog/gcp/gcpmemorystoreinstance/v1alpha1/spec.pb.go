@@ -948,10 +948,11 @@ type GcpMemorystoreInstanceSpec struct {
 	// Immutable after creation.
 	ServerCaMode string `protobuf:"bytes,23,opt,name=server_ca_mode,json=serverCaMode,proto3" json:"server_ca_mode,omitempty"`
 	// The Certificate Authority Service CA pool that signs the server
-	// certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-	// Format: projects/{project}/locations/{region}/caPools/{caPoolId}.
-	// Immutable after creation.
-	ServerCaPool string `protobuf:"bytes,24,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
+	// certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a
+	// GcpPrivateCaPool reference (its full name) or a literal
+	// projects/{project}/locations/{region}/caPools/{caPoolId}. Immutable
+	// after creation.
+	ServerCaPool *v1.StringValueOrRef `protobuf:"bytes,24,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
 	// Self-service maintenance version. Setting this to a newer available
 	// version triggers the maintenance update on your schedule instead of
 	// waiting for GCP's rollout — the lever for applying a security patch
@@ -970,8 +971,18 @@ type GcpMemorystoreInstanceSpec struct {
 	//	"ABANDON" -- the instance is removed from management but left
 	//	             running (and billing) in GCP with its data intact
 	DeletionPolicy string `protobuf:"bytes,26,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The Memorystore ACL policy attached to the instance: a set of
+	// Valkey ACL rules (users, key patterns, allowed commands) authored once
+	// and shared across instances in the same region. Leave empty for the
+	// instance's built-in default ACL (the "default" user with full access,
+	// gated only by auth_enabled). Full resource name:
+	// projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}.
+	// Mutable: attaching or swapping a policy is an in-place update; the
+	// instance's is_acl_policy_in_sync status reports when the new rules
+	// have propagated to every node.
+	AclPolicy     string `protobuf:"bytes,27,opt,name=acl_policy,json=aclPolicy,proto3" json:"acl_policy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpMemorystoreInstanceSpec) Reset() {
@@ -1165,11 +1176,11 @@ func (x *GcpMemorystoreInstanceSpec) GetServerCaMode() string {
 	return ""
 }
 
-func (x *GcpMemorystoreInstanceSpec) GetServerCaPool() string {
+func (x *GcpMemorystoreInstanceSpec) GetServerCaPool() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ServerCaPool
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpMemorystoreInstanceSpec) GetMaintenanceVersion() string {
@@ -1182,6 +1193,13 @@ func (x *GcpMemorystoreInstanceSpec) GetMaintenanceVersion() string {
 func (x *GcpMemorystoreInstanceSpec) GetDeletionPolicy() string {
 	if x != nil {
 		return x.DeletionPolicy
+	}
+	return ""
+}
+
+func (x *GcpMemorystoreInstanceSpec) GetAclPolicy() string {
+	if x != nil {
+		return x.AclPolicy
 	}
 	return ""
 }
@@ -1237,7 +1255,7 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04uris\x18\x01 \x03(\tBr\xbaHo\x92\x01l\b\x01\"h\xba\x01e\n" +
 	"\x0egcs_uri_format\x129each URI must be a Cloud Storage path starting with gs://\x1a\x18this.startsWith('gs://')R\x04uris\"K\n" +
 	")GcpMemorystoreInstanceManagedBackupSource\x12\x1e\n" +
-	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\xd0 \n" +
+	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\xc4%\n" +
 	"\x1aGcpMemorystoreInstanceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12Q\n" +
@@ -1258,8 +1276,8 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12authorization_mode\x18\v \x01(\tB\x93\x01\xbaH\x8f\x01\xba\x01\x8b\x01\n" +
 	"\x1eauthorization_mode_valid_value\x124authorization_mode must be AUTH_DISABLED or IAM_AUTH\x1a3this == '' || this in ['AUTH_DISABLED', 'IAM_AUTH']R\x11authorizationMode\x12\x8c\x02\n" +
 	"\x17transit_encryption_mode\x18\f \x01(\tB\xd3\x01\xbaH\xcf\x01\xba\x01\xcb\x01\n" +
-	"#transit_encryption_mode_valid_value\x12Ttransit_encryption_mode must be TRANSIT_ENCRYPTION_DISABLED or SERVER_AUTHENTICATION\x1aNthis == '' || this in ['TRANSIT_ENCRYPTION_DISABLED', 'SERVER_AUTHENTICATION']R\x15transitEncryptionMode\x12k\n" +
-	"\akms_key\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\x12\x87\x01\n" +
+	"#transit_encryption_mode_valid_value\x12Ttransit_encryption_mode must be TRANSIT_ENCRYPTION_DISABLED or SERVER_AUTHENTICATION\x1aNthis == '' || this in ['TRANSIT_ENCRYPTION_DISABLED', 'SERVER_AUTHENTICATION']R\x15transitEncryptionMode\x12\xa8\x01\n" +
+	"\akms_key\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x06kmsKey\x12\x87\x01\n" +
 	"\x12persistence_config\x18\x0e \x01(\v2X.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstancePersistenceConfigR\x11persistenceConfig\x12\x97\x01\n" +
 	"\x18zone_distribution_config\x18\x0f \x01(\v2].dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceZoneDistributionConfigR\x16zoneDistributionConfig\x12\x87\x01\n" +
 	"\x12maintenance_policy\x18\x10 \x01(\v2X.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceMaintenancePolicyR\x11maintenancePolicy\x12\x94\x01\n" +
@@ -1271,11 +1289,15 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x06labels\x18\x15 \x03(\v2W.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.LabelsEntryR\x06labels\x12M\n" +
 	"\x1bdeletion_protection_enabled\x18\x16 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x19deletionProtectionEnabled\x88\x01\x01\x12\xa9\x02\n" +
 	"\x0eserver_ca_mode\x18\x17 \x01(\tB\x82\x02\xbaH\xfe\x01\xba\x01\xfa\x01\n" +
-	"\x1aserver_ca_mode_valid_value\x12kserver_ca_mode must be GOOGLE_MANAGED_PER_INSTANCE_CA, GOOGLE_MANAGED_SHARED_CA, or CUSTOMER_MANAGED_CAS_CA\x1aothis == '' || this in ['GOOGLE_MANAGED_PER_INSTANCE_CA', 'GOOGLE_MANAGED_SHARED_CA', 'CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12$\n" +
-	"\x0eserver_ca_pool\x18\x18 \x01(\tR\fserverCaPool\x12/\n" +
+	"\x1aserver_ca_mode_valid_value\x12kserver_ca_mode must be GOOGLE_MANAGED_PER_INSTANCE_CA, GOOGLE_MANAGED_SHARED_CA, or CUSTOMER_MANAGED_CAS_CA\x1aothis == '' || this in ['GOOGLE_MANAGED_PER_INSTANCE_CA', 'GOOGLE_MANAGED_SHARED_CA', 'CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12\xcb\x02\n" +
+	"\x0eserver_ca_pool\x18\x18 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf0\x01\xbaH\xcc\x01\xba\x01\xc8\x01\n" +
+	"\x15server_ca_pool_format\x12Ua literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\fserverCaPool\x12/\n" +
 	"\x13maintenance_version\x18\x19 \x01(\tR\x12maintenanceVersion\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x1a \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a@\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12\x8b\x02\n" +
+	"\n" +
+	"acl_policy\x18\x1b \x01(\tB\xeb\x01\xbaH\xe7\x01\xba\x01\xe3\x01\n" +
+	"\x11acl_policy_format\x12|acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}\x1aPthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$')R\taclPolicy\x1a@\n" +
 	"\x12EngineConfigsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a9\n" +
@@ -1283,7 +1305,7 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xf4\x02\xbaH\xf0\x02\x1a\xad\x01\n" +
 	"\x17at_most_one_seed_source\x12Vgcs_source and managed_backup_source are mutually exclusive — choose one seed source\x1a:!(has(this.gcs_source) && has(this.managed_backup_source))\x1a\xbd\x01\n" +
-	",server_ca_pool_requires_customer_managed_cas\x12>server_ca_pool requires server_ca_mode CUSTOMER_MANAGED_CAS_CA\x1aMthis.server_ca_pool == '' || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'B\x1e\n" +
+	",server_ca_pool_requires_customer_managed_cas\x12>server_ca_pool requires server_ca_mode CUSTOMER_MANAGED_CAS_CA\x1aM!has(this.server_ca_pool) || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'B\x1e\n" +
 	"\x1c_deletion_protection_enabledB\x8a\x03\n" +
 	"3com.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1B\tSpecProtoP\x01Zggithub.com/plantonhq/planton/catalog/gcp/gcpmemorystoreinstance/v1alpha1;gcpmemorystoreinstancev1alpha1\xa2\x02\x04DPGG\xaa\x02/Dev.Planton.Gcp.Gcpmemorystoreinstance.V1alpha1\xca\x02/Dev\\Planton\\Gcp\\Gcpmemorystoreinstance\\V1alpha1\xe2\x02;Dev\\Planton\\Gcp\\Gcpmemorystoreinstance\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Gcp::Gcpmemorystoreinstance::V1alpha1b\x06proto3"
 
@@ -1341,11 +1363,12 @@ var file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_depIdxs = []int3
 	11, // 18: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.gcs_source:type_name -> dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceGcsSource
 	12, // 19: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.managed_backup_source:type_name -> dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceManagedBackupSource
 	15, // 20: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.labels:type_name -> dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.LabelsEntry
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	16, // 21: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.server_ca_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_init() }

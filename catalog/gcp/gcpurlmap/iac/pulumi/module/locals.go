@@ -13,6 +13,11 @@ type Locals struct {
 	// The cloud-side name defaults to metadata.name when the spec leaves
 	// url_map_name empty — the same naming basis every kind uses.
 	UrlMapName string
+
+	// The scope selector: a set spec.region builds the regional URL map, an
+	// empty one the global map — the same switch the Terraform module's
+	// count guards make.
+	IsRegional bool
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *gcpurlmapv1alpha1.GcpUrlMapStackInput) *Locals {
@@ -26,5 +31,6 @@ func initializeLocals(ctx *pulumi.Context, stackInput *gcpurlmapv1alpha1.GcpUrlM
 	return &Locals{
 		GcpUrlMap:  target,
 		UrlMapName: urlMapName,
+		IsRegional: target.Spec.Region != "",
 	}
 }

@@ -36,7 +36,9 @@ resource "google_workflows_workflow" "this" {
   call_log_level          = var.spec.call_log_level != "" ? var.spec.call_log_level : null
   execution_history_level = var.spec.execution_history_level != "" ? var.spec.execution_history_level : null
 
-  user_env_vars = length(var.spec.user_env_vars) > 0 ? var.spec.user_env_vars : null
+  # The literals plus each stored secret's version resource name (see
+  # secrets.tf); never a secret value.
+  user_env_vars = length(local.user_env_vars) > 0 ? local.user_env_vars : null
 
   # ForceNew: a tag change REPLACES the workflow (fresh execution history).
   tags = length(var.spec.resource_manager_tags) > 0 ? var.spec.resource_manager_tags : null
@@ -47,5 +49,6 @@ resource "google_workflows_workflow" "this" {
   # Empty defers to the provider default (DELETE).
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 
-  depends_on = [google_project_service.workflows_api]
+  # Deployed after the grants so the first execution can read its secrets.
+  depends_on = [google_project_service.workflows_api, google_secret_manager_secret_iam_member.env]
 }

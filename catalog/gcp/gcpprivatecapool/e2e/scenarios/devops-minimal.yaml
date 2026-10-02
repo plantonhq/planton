@@ -1,0 +1,23 @@
+# GcpPrivateCaPool scenario: the smallest pool -- DevOps tier, no policy,
+# nothing published. A pool without an authority bills nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaPool
+metadata:
+  name: planton-oss-e2e-gcppca-devops
+  id: planton-oss-e2e-gcppca-devops
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecapool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  caPoolId: e2e-gcppca-dev-${E2E_RUN_ID}
+  tier: DEVOPS
+  labels:
+    e2e-arm: devops-minimal
+  deletionPolicy: DELETE

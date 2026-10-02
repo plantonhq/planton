@@ -1,0 +1,27 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVectorSearchCollection
+metadata:
+  name: product-docs
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Product docs
+  description: Semantic search over the product documentation
+  dataSchema: '{"type":"object","properties":{"title":{"type":"string"},"url":{"type":"string"},"body":{"type":"string"}}}'
+  vectorSchemas:
+    - fieldName: text_embedding
+      denseVector:
+        dimensions: 768
+        vertexEmbeddingConfig:
+          modelId: text-embedding-005
+          taskType: RETRIEVAL_DOCUMENT
+          textTemplate: "Title: {title} ---- Body: {body}"
+  indexes:
+    - indexId: docs-ann
+      indexField: text_embedding
+      distanceMetric: DOT_PRODUCT
+      storeFields:
+        - title
+        - url
+  deletionPolicy: DELETE

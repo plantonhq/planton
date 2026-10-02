@@ -1,0 +1,23 @@
+# GcpVertexAiFeatureOnlineStore scenario: the smallest Optimized store --
+# Google's empty optimized block from the spec's flag, no views. Google
+# gives it a public dedicated endpoint; the public_endpoint_domain_name
+# output populates. project_id is deliberately omitted: the store rides
+# the provider's default project. The store id carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureOnlineStore
+metadata:
+  name: planton-oss-e2e-gcpvfos-optimized
+  id: planton-oss-e2e-gcpvfos-optimized
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaifeatureonlinestore
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  featureOnlineStoreId: pln_e2e_vfos_opt_${E2E_RUN_ID_UNDERSCORE}
+  optimized: true

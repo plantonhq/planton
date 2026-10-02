@@ -1,0 +1,28 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiAgentEngine
+metadata:
+  name: support-agent
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Support agent
+  description: Answers support questions from the docs
+  spec:
+    agentFramework: google-adk
+    sourceCodeSpec:
+      # A base64 .tar.gz of the agent's source root (agent.py defining
+      # root_agent, requirements.txt). Replace with your own archive.
+      inlineSource:
+        sourceArchive: H4sIAGxTsmoAA+1U24rbMBDdZ3/F4JfuQuw414eFFNJtH0q3UMpSKKUErT22p5UlryTnsvTjO5ITCnlIobC9kYODHM9FR2c0IypULm13F0+ILMvm0yn4lXG8ZqPJNIPRbDybTmej2WQO2Wg8n8wuIHtKUgd01gnDVIzW7pTfpkaUJ+zHh/tHEMfxXY1gGyElWgdLfx/gJa5R6rbx72/IgQhfe9srVZFC2JCUcN+RLECoAkyn0ii6q8kCP86n1J3JEe6xJrb7L6SkjxQmr2nt/wKOcdgIRSVvne5EI0Mu9o1sjkoY0vYaBFhSlUS4vX27Z7IhV4PS4LSWdsBbhfwt17AE3KLJyWJgEQWGSWl0k+wJtYJjL2+k7gp4EfgzkX34F8zdAD6gcbiF5etnFt7tXK1Vn+bqwM6f1lGDgYfuHBTYoiqYJWjFTjsm4dAoIcGiWVOOrM177NXy8QcJRMlugAU5jr2OgMG3EfLHEhJIbiAXTkhdDau89b91ICYoiIChDkMvYUlb1xm0w2A4HDSFb3AvLM6nEVc5irwIUGnNUqai+JoGZy5X02qzL24U+TZY9SIv+m+XgZYSDS7iVgrltFrxpr1TPAjWRhcoF3GFDSlKxuksKaWw9d5aoM0NtY60WsRLZTdo7I+qPnRcfAq6FWCdbm26jyNlnenyPu6j7lg2lgxYMsurtcSty8ML+pS+jJqvlw3asOSc5Sr60/31t8PgQ0cGfafb1G1PjsBfxU/mv7cezX9+m5zn/+9APw+S3I/DRBA3uCu1aT6F7l71M8YOeFx8fr4YpaMsS7NzT51xxhln/Af4DhtSz9UADgAA
+      pythonSpec:
+        version: "3.12"
+        entrypointModule: agent
+        entrypointObject: root_agent
+    deploymentSpec:
+      minInstances: 1
+      maxInstances: 5
+      env:
+        - name: LOG_LEVEL
+          value: info
+  deletionPolicy: DELETE

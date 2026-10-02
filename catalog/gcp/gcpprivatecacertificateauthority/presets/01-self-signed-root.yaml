@@ -1,0 +1,25 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateAuthority
+metadata:
+  name: root-ca
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: root-pool
+  config:
+    subjectConfig:
+      subject:
+        commonName: Example Root CA
+        organization: Example
+    x509Config:
+      caOptions:
+        isCa: true
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true
+  keySpec:
+    algorithm: EC_P384_SHA384
+  lifetime: 630720000s

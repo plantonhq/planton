@@ -1,0 +1,22 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpprivatecacertificate
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: pool
+      sku_meter: certificate fee
+      pricing_unit: certificates
+      impact: Each certificate bills once when issued, at its pool's tier -- Enterprise, since this kind needs it -- in volume tiers shared across the billing account's authorities (cloud.google.com/certificate-authority-service/pricing, "Pricing table", read 2026-09-24).
+    - field_path: certificate_id
+      sku_meter: certificate fee
+      pricing_unit: certificates
+      impact: A new ID (or any change to an immutable field) issues and bills a new certificate; the old one is revoked, not refunded.
+  estimate_exclusions:
+    - the signing authority's monthly fee bills under GcpPrivateCaCertificateAuthority
+    - the volume tier a certificate lands in depends on every certificate the billing account issued that month
+  notes: "A certificate is a one-time charge; keeping it costs nothing further. Recreating resources that replace certificates on every apply re-bills each time."

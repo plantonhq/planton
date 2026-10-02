@@ -1,0 +1,18 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagValue
+metadata:
+  name: prod
+spec:
+  # The key this value belongs to: a GcpTagKey reference (its name output,
+  # tagKeys/{id}) or that literal. Immutable.
+  tagKey:
+    value: tagKeys/281475647562788
+
+  # The value as written in conditions; defaults to metadata.name. 1-256
+  # characters, none of / \ ' ". Immutable; reserved 30 days after deletion.
+  shortName: prod
+
+  description: Customer-facing workloads
+
+  # DELETE (default; refused while bindings exist), PREVENT, ABANDON.
+  deletionPolicy: DELETE

@@ -236,7 +236,7 @@ spec:
 | `spec.nodeConfig.reservationAffinity.key` | `string` |  |  |  |
 | `spec.nodeConfig.reservationAffinity.values` | `[]string` |  |  |  |
 | `spec.nodeConfig.secondaryBootDisks` | `[]GcpGkeNodePoolSecondaryBootDisk` |  |  |  |
-| `spec.nodeConfig.secondaryBootDisks[].diskImage` | `string` | yes |  |  |
+| `spec.nodeConfig.secondaryBootDisks[].diskImage` | `string \| valueFrom` | yes |  | GcpComputeImage (`status.outputs.image_id`) |
 | `spec.nodeConfig.secondaryBootDisks[].mode` | `string` |  |  |  |
 | `spec.nodeConfig.kubeletConfig` | `GcpGkeNodePoolKubeletConfig` |  |  |  |
 | `spec.nodeConfig.kubeletConfig.cpuManagerPolicy` | `string` |  |  |  |
@@ -282,6 +282,8 @@ spec:
 | `spec.nodeConfig.kubeletConfig.topologyManager` | `GcpGkeNodePoolTopologyManager` |  |  |  |
 | `spec.nodeConfig.kubeletConfig.topologyManager.policy` | `string` |  |  |  |
 | `spec.nodeConfig.kubeletConfig.topologyManager.scope` | `string` |  |  |  |
+| `spec.nodeConfig.kubeletConfig.shutdownGracePeriodSeconds` | `int64` |  |  |  |
+| `spec.nodeConfig.kubeletConfig.shutdownGracePeriodCriticalPodsSeconds` | `int64` |  |  |  |
 | `spec.nodeConfig.linuxNodeConfig` | `GcpGkeNodePoolLinuxNodeConfig` |  |  |  |
 | `spec.nodeConfig.linuxNodeConfig.sysctls` | `map<string, string>` |  |  |  |
 | `spec.nodeConfig.linuxNodeConfig.cgroupMode` | `string` |  |  |  |
@@ -304,6 +306,10 @@ spec:
 | `spec.nodeConfig.linuxNodeConfig.swapConfig.ephemeralLocalSsdProfile.swapSizePercent` | `int32` |  |  |  |
 | `spec.nodeConfig.linuxNodeConfig.swapConfig.encryptionConfig` | `GcpGkeNodePoolSwapEncryption` |  |  |  |
 | `spec.nodeConfig.linuxNodeConfig.swapConfig.encryptionConfig.disabled` | `bool` |  |  |  |
+| `spec.nodeConfig.linuxNodeConfig.customNodeInit` | `GcpGkeNodePoolCustomNodeInit` |  |  |  |
+| `spec.nodeConfig.linuxNodeConfig.customNodeInit.gcsUri` | `string` |  |  |  |
+| `spec.nodeConfig.linuxNodeConfig.customNodeInit.gcsGeneration` | `int64` |  |  |  |
+| `spec.nodeConfig.linuxNodeConfig.customNodeInit.secretManagerSecretUri` | `string` |  |  |  |
 | `spec.nodeConfig.loggingVariant` | `string` |  |  |  |
 | `spec.nodeConfig.flexStart` | `bool` |  |  |  |
 | `spec.nodeConfig.maxRunDuration` | `string` |  |  |  |
@@ -359,6 +365,7 @@ spec:
 | `spec.nodeDrainConfig.graceTerminationDuration` | `string` |  |  |  |
 | `spec.nodeDrainConfig.pdbTimeoutDuration` | `string` |  |  |  |
 | `spec.nodeDrainConfig.respectPdbDuringNodePoolDeletion` | `bool` |  |  |  |
+| `spec.excludeUpgradesUntilEndOfSupport` | `bool` |  |  |  |
 
 ## Field Details
 
@@ -1245,12 +1252,19 @@ node — cold-start acceleration for very large images. Immutable.
 
 ### spec.nodeConfig.secondaryBootDisks[].diskImage
 
-`string` · required
+`string | valueFrom` · required
 
-Disk image to create the secondary boot disk from (a prepared image
-containing the container images/data to preload).
+Disk image to create the secondary boot disk from: a prepared image
+containing the container images or data to preload (the output of
+Google's gke-disk-image-builder, or any image built for the purpose).
+A GcpComputeImage reference (its image_id,
+projects/{project}/global/images/{name}) or a literal in a form Google
+documents: global/images/{name} (an image in the pool's project) or
+projects/{project}/global/images/{name}. Required. Immutable.
 
+- references: GcpComputeImage (`status.outputs.image_id`)
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeImage, name: <that resource's name>, fieldPath: status.outputs.image_id}} -- a bare string does not parse
 
 ### spec.nodeConfig.secondaryBootDisks[].mode
 
@@ -1267,6 +1281,8 @@ container runtime. Empty attaches the disk without special handling.
 
 Kubelet tuning: CPU management, PID limits, log rotation, image GC.
 Only set what you need; unset fields keep GKE defaults.
+
+- rule: shutdown_grace_period_critical_pods_seconds cannot exceed shutdown_grace_period_seconds
 
 ### spec.nodeConfig.kubeletConfig.cpuManagerPolicy
 
@@ -1595,6 +1611,31 @@ independently) or pod (all containers of a pod share one alignment).
 
 - rule: scope must be empty, container, or pod
 
+### spec.nodeConfig.kubeletConfig.shutdownGracePeriodSeconds
+
+`int64` · optional (explicit presence)
+
+Graceful node shutdown: the total time, in seconds, a node delays its
+shutdown so every pod (critical and non-critical) can terminate
+cleanly when the VM is reclaimed. Only configurable on Spot or
+preemptible pools (the ones that get reclaimed). Between 10 and
+10000. Leave unset for GKE's default; sent only when set because the
+API fills the value itself.
+
+- rule: {"int64":{"lte":"10000","gte":"10"}}
+
+### spec.nodeConfig.kubeletConfig.shutdownGracePeriodCriticalPodsSeconds
+
+`int64` · optional (explicit presence)
+
+The portion of shutdown_grace_period_seconds reserved for critical
+pods (system-node-critical and system-cluster-critical priority
+classes) after ordinary pods have been given their share. Must not
+exceed shutdown_grace_period_seconds. Spot or preemptible pools only.
+Sent only when set because the API fills the value itself.
+
+- rule: {"int64":{"lte":"10000","gte":"0"}}
+
 ### spec.nodeConfig.linuxNodeConfig
 
 `GcpGkeNodePoolLinuxNodeConfig`
@@ -1763,6 +1804,51 @@ a little throughput).
 `bool` · optional (explicit presence)
 
 Set true to DISABLE swap encryption (encrypted by default).
+
+### spec.nodeConfig.linuxNodeConfig.customNodeInit
+
+`GcpGkeNodePoolCustomNodeInit`
+
+A custom initialization script GKE runs on every node at boot,
+before the node joins the cluster — for host-level setup that no
+DaemonSet can do (kernel parameters that need a reboot-free apply,
+vendor agents, custom certificates). Sourced from Cloud Storage or
+Secret Manager; exactly one source.
+
+- rule: set exactly one of gcs_uri or secret_manager_secret_uri for the init script
+- rule: gcs_generation pins a Cloud Storage object version — set gcs_uri alongside it
+
+### spec.nodeConfig.linuxNodeConfig.customNodeInit.gcsUri
+
+`string`
+
+Cloud Storage object holding the script, e.g.
+"gs://my-bucket/node-init.sh". The node's service account needs read
+access to the object.
+
+- rule: gcs_uri must be a gs:// object URI
+
+### spec.nodeConfig.linuxNodeConfig.customNodeInit.gcsGeneration
+
+`int64` · optional (explicit presence)
+
+Pin the Cloud Storage object to one generation so a later upload
+does not silently change what new nodes run. Leave unset to always
+fetch the current object; sent only when set because the API records
+the generation it resolved.
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.nodeConfig.linuxNodeConfig.customNodeInit.secretManagerSecretUri
+
+`string`
+
+Secret Manager secret version holding the script, e.g.
+"projects/P/secrets/node-init/versions/latest" — for scripts that
+embed credentials. The node's service account needs
+secretmanager.versions.access on it.
+
+- rule: secret_manager_secret_uri must be a Secret Manager version resource name: projects/{project}/secrets/{secret}/versions/{version}
 
 ### spec.nodeConfig.loggingVariant
 
@@ -2229,6 +2315,19 @@ proceeding anyway, seconds format, e.g. "3600s".
 Honor PodDisruptionBudgets while the pool is being deleted (bounded
 by pdb_timeout_duration) instead of evicting immediately.
 
+### spec.excludeUpgradesUntilEndOfSupport
+
+`bool`
+
+Holds this pool on its current Kubernetes version until that
+version's end-of-support date, exempting it from GKE's automatic
+upgrades (the cluster's maintenance windows and exclusions still
+govern everything else). For a workload that must not move minor
+versions until it has been re-qualified. GKE reports the resulting
+exclusion window (start and end) in the node pool's status; when the
+version reaches end of support the exclusion lapses and upgrades
+resume.
+
 ## Validation Rules
 
 - `initial_node_count_requires_autoscaling`: initial_node_count only applies to autoscaled pools — a fixed-size pool's size is node_count itself
@@ -2264,6 +2363,7 @@ Fields that can point at another resource's outputs:
 | `spec.networkConfig.additionalPodNetworks[].subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_self_link` |
 | `spec.nodeConfig.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.nodeConfig.bootDiskKmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.nodeConfig.secondaryBootDisks[].diskImage` | GcpComputeImage | `status.outputs.image_id` |
 
 ## Referenced By
 

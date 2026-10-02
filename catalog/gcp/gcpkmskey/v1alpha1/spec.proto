@@ -89,7 +89,7 @@ message GcpKmsKeySpec {
   };
   option (buf.validate.message).cel = {
     id: "crypto_key_backend_requires_external_vpc"
-    expression: "!has(this.crypto_key_backend) || (has(this.version_template) && this.version_template.protection_level == 'EXTERNAL_VPC')"
+    expression: "this.crypto_key_backend == '' || (has(this.version_template) && this.version_template.protection_level == 'EXTERNAL_VPC')"
     message: "crypto_key_backend applies only to keys with version_template.protection_level EXTERNAL_VPC (EXTERNAL keys link material per version via external key URIs instead)"
   };
 
@@ -185,11 +185,11 @@ message GcpKmsKeySpec {
 
   // The EKM connection through which an external key manager backs this
   // key's versions. Applies only when version_template.protection_level is
-  // EXTERNAL_VPC (enforced pre-deploy). Accepts the fully qualified
-  // connection path
+  // EXTERNAL_VPC (enforced pre-deploy). The EKM connection is made outside
+  // the catalog (no catalog kind produces it), so write its full name:
   //   projects/{project}/locations/{location}/ekmConnections/{name}
   // Immutable after creation.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef crypto_key_backend = 9;
+  string crypto_key_backend = 9;
 
   // User-defined labels attached to the key, for cost attribution and
   // fleet queries. Merged with Planton's platform labels (which win on

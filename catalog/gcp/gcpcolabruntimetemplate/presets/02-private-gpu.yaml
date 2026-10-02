@@ -1,0 +1,39 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntimeTemplate
+metadata:
+  name: private-gpu-t4
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Private GPU (T4)
+  machineSpec:
+    machineType: n1-standard-8
+    acceleratorType: NVIDIA_TESLA_T4
+    acceleratorCount: 1
+  dataPersistentDiskSpec:
+    diskType: pd-ssd
+    diskSizeGb: 200
+  networkSpec:
+    enableInternetAccess: false
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: ml-vpc
+        fieldPath: status.outputs.network_id
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: notebooks
+        fieldPath: status.outputs.subnetwork_self_link
+  idleTimeout: 1800s
+  eucDisabled: true
+  enableSecureBoot: true
+  networkTags:
+    - notebooks
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: notebooks-key
+      fieldPath: status.outputs.key_id
+  deletionPolicy: PREVENT

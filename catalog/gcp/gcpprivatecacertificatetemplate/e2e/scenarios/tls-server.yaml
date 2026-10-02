@@ -1,0 +1,47 @@
+# GcpPrivateCaCertificateTemplate scenario: a TLS server template with
+# predefined values, a CEL identity rule, and passthrough extensions. The
+# path length is set to 0 to prove the zero_max_issuer_path_length
+# derivation on the template resource.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateTemplate
+metadata:
+  name: planton-oss-e2e-gcppcat-tls
+  id: planton-oss-e2e-gcppcat-tls
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecacertificatetemplate
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  templateId: e2e-gcppcat-tls-${E2E_RUN_ID}
+  description: Planton E2E TLS server template
+  maximumLifetime: 604800s
+  predefinedValues:
+    caOptions:
+      isCa: false
+      maxIssuerPathLength: 0
+    keyUsage:
+      baseKeyUsage:
+        digitalSignature: true
+        keyEncipherment: true
+      extendedKeyUsage:
+        serverAuth: true
+  identityConstraints:
+    allowSubjectPassthrough: false
+    allowSubjectAltNamesPassthrough: true
+    celExpression:
+      title: E2E names
+      expression: subject_alt_names.all(san, san.type == DNS && san.value.endsWith(".e2e.example.com"))
+  passthroughExtensions:
+    knownExtensions:
+      - EXTENDED_KEY_USAGE
+    additionalExtensions:
+      - objectIdPath: [1, 3, 6, 1, 4, 1, 11129, 2, 4, 2]
+  labels:
+    e2e-arm: tls-server
+  deletionPolicy: DELETE

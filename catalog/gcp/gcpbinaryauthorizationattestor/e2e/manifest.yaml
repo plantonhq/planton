@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationAttestor
+metadata:
+  name: built-by-ci
+spec:
+  description: Images built from main by the CI pipeline
+  note:
+    humanReadableName: CI build pipeline
+  attestationAuthorityNote:
+    publicKeys:
+      - pkixPublicKey:
+          kmsKeyVersion:
+            value: projects/my-gcp-project/locations/global/keyRings/binauthz/cryptoKeys/ci-signer/cryptoKeyVersions/1

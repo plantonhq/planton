@@ -1,0 +1,4 @@
+name: gcpmanagedkafkatopic-pulumi-project
+runtime:
+  name: go
+description: Planton GcpManagedKafkaTopic Pulumi module

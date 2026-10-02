@@ -1,0 +1,34 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBackendService
+metadata:
+  name: internal-passthrough-nlb-backend
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Internal passthrough Network Load Balancer backend for the orders service in us-central1
+  region: us-central1
+  loadBalancingScheme: INTERNAL
+  protocol: TCP
+  network:
+    value: "<vpc-network-self-link>" # replace: the GcpVpcNetwork the backends live in
+  healthCheck:
+    value: "<regional-tcp-health-check-self-link>" # replace: a GcpHealthCheck declared with the same region and a TCP probe
+  backends:
+    # Passthrough load balancers spread connections by 5-tuple hash; the
+    # balancing mode and capacity dials are not consulted, so the default
+    # (UTILIZATION) is left in place.
+    - group:
+        value: "<primary-instance-group-self-link>" # replace: the primary pool (a zonal or regional instance group)
+    - group:
+        value: "<failover-instance-group-self-link>" # replace: the standby pool
+      failover: true
+  failoverPolicy:
+    failoverRatio: 0.5
+    dropTrafficIfUnhealthy: true
+  connectionTrackingPolicy:
+    trackingMode: PER_SESSION
+    connectionPersistenceOnUnhealthyBackends: NEVER_PERSIST
+  networkPassThroughLbTrafficPolicy:
+    zonalAffinity:
+      spillover: ZONAL_AFFINITY_SPILL_CROSS_ZONE
+      spilloverRatio: 0.7

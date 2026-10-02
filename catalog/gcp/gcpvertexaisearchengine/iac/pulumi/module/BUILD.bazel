@@ -1,0 +1,30 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "assistants.go",
+        "chat_engine.go",
+        "controls.go",
+        "engine.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "recommendation_engine.go",
+        "search_engine.go",
+        "serving_config.go",
+        "widget_config.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchengine/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/gcp",
+        "//catalog/gcp/gcpvertexaisearchengine/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/discoveryengine",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

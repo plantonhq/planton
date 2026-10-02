@@ -1,0 +1,52 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_datastream_stream:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+
+specExclusions:
+  - field: spec.backfill_none
+    reason: >-
+      the provider expresses "backfill nothing" as an EMPTY marker block
+      (backfill_none {}), exclusive with backfill_all; the spec carries it as
+      a presence bool and the modules emit the marker block from it (the
+      established marker-block judgment)
+  - field: spec.destination_config.gcs_destination_config.avro_file_format
+    reason: >-
+      the provider expresses Avro output as an EMPTY marker block
+      (avro_file_format {}), exclusive with json_file_format; the spec
+      carries it as a presence bool and the modules emit the marker block
+      from it (the established marker-block judgment)
+  - field: spec.source_config.mysql_source_config.cdc_method
+    reason: >-
+      the provider expresses MySQL's change-capture method as two EMPTY,
+      mutually exclusive marker blocks (gtid {} and binary_log_position {},
+      Google's cdc_method union); the spec carries the choice as one enum
+      and the modules emit only the chosen block
+  - field: spec.source_config.sql_server_source_config.cdc_method
+    reason: >-
+      the provider expresses SQL Server's change-capture method as two
+      EMPTY, mutually exclusive marker blocks (change_tables {} and
+      transaction_logs {}, Google's cdc_method union); the spec carries the
+      choice as one enum and the modules emit only the chosen block
+  - field: spec.source_config.oracle_source_config.large_objects_handling
+    reason: >-
+      the provider expresses Oracle LOB handling as two EMPTY, mutually
+      exclusive marker blocks (drop_large_objects {} and
+      stream_large_objects {}, Google's large_objects_handling union); the
+      spec carries the choice as one enum and the modules emit only the
+      chosen block
+  - field: spec.destination_config.bigquery_destination_config.write_mode
+    reason: >-
+      the provider expresses the BigQuery write mode as two EMPTY, mutually
+      exclusive marker blocks (merge {} and append_only {}, Google's
+      write_mode union); the spec carries the choice as one enum and the
+      modules emit only the chosen block

@@ -1,0 +1,25 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexaifeaturegroup
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness
+  # project with roles/aiplatform.admin and BigQuery table creation on the
+  # dataset install profile; the module enables aiplatform.googleapis.com
+  # itself: a feature group over a BigQuery table fixture (entity_id,
+  # feature_timestamp, and two feature columns) with two features
+  # registered. Offline bar met: both modules build and validate, offline
+  # plans for the reference manifest, the scenario, and its fixture are
+  # clean on the pinned provider, and the accounting is total. Live facts
+  # the proof lane confirms: (1) Google accepts a source table in the US
+  # multi-region for a us-central1 feature group; (2) the group and its
+  # features create and RE-PLAN CLEAN under the apply-idempotency gate on
+  # both engines -- the bq:// prefix the modules add matches what Google
+  # stores, and version_column_name left unset (Optional+Computed) shows no
+  # diff; (3) every exported feature reads back with the attribution
+  # labels; (4) destroy removes the features, then the group, then the
+  # table fixture, and the verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

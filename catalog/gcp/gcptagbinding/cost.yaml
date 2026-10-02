@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcptagbinding
+spec:
+  billing_model: free
+  free_tier: "A tag binding attaches Resource Manager metadata to a resource; Google's Resource Manager pricing states that all use of the Cloud Resource Manager API is free of charge -- bindings to organizations, folders, projects, Compute, GKE, Cloud SQL, and every other service except Cloud Storage carry no meter."
+  notes: "One field can create a charge. parent.resource_name naming a Cloud Storage BUCKET (//storage.googleapis.com/projects/_/buckets/{name}) attaches a tag Cloud Storage bills as a per-tag monthly fee on that bucket, listed on the Cloud Storage pricing page -- the only place in Google Cloud a tag costs money. Every other parent arm (project_id, folder_id, organization_id, and every non-bucket resource_name) is free. location changes which endpoint serves the binding, never what is billed."

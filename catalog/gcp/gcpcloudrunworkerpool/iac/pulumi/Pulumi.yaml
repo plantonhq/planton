@@ -1,0 +1,4 @@
+name: gcpcloudrunworkerpool-pulumi-project
+runtime:
+  name: go
+description: Planton GcpCloudRunWorkerPool Pulumi module

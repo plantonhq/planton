@@ -1,0 +1,42 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_bigquery_connection:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # One-leaf wrappers lifted.
+      - spec: spec.aws.iam_role_id
+        arg: aws.access_role.iam_role_id
+      - spec: spec.spark.metastore_service
+        arg: spark.metastore_service_config.metastore_service
+      - spec: spec.spark.history_server_dataproc_cluster
+        arg: spark.spark_history_server_config.dataproc_cluster
+      - spec: spec.configuration.host_port
+        arg: configuration.endpoint.host_port
+      - spec: spec.configuration.network_attachment
+        arg: configuration.network.private_service_connect.network_attachment
+      # The authentication and password wrappers lifted: the spec names the
+      # database user and password directly.
+      - spec: spec.configuration.username_password.username
+        arg: configuration.authentication.username_password.username
+      - spec: spec.configuration.username_password.password
+        arg: configuration.authentication.username_password.password.plaintext
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.
+
+specExclusions:
+  - field: spec.cloud_resource
+    reason: >-
+      the provider expresses the cloud-resource arm as an EMPTY marker block
+      (cloud_resource {}) whose only content is the service account Google
+      creates; the spec carries it as a presence bool and the modules emit
+      the marker block from it (the established marker-block judgment)

@@ -1,0 +1,34 @@
+# Folder-by-reference GcpProject scenario: the project is placed inside a
+# GcpFolder declared as a prerequisite, through the folder_id reference --
+# parent_type and parent_id stay empty and the module infers the folder
+# parent. Organization-level like every project creation (Project Creator
+# on the folder, plus roles/resourcemanager.folderAdmin for the prerequisite
+# folder); offline plans only until the organization identity exists. The
+# project id carries the run id: deleted project ids are reserved for 30
+# days.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpProject
+metadata:
+  name: planton-oss-e2e-gcpprj-folder-ref
+  id: planton-oss-e2e-gcpprj-folder-ref
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpproject
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  projectId: planton-e2e-${E2E_RUN_ID}
+  # Explicit: the display name defaults to metadata.name, which is longer
+  # than Google's 30-character limit for this fixture's name.
+  displayName: planton e2e folder ref
+  folderId:
+    valueFrom:
+      kind: GcpFolder
+      name: planton-oss-e2e-gcpfldr-prereq
+      fieldPath: status.outputs.folder_id
+  deletionPolicy: DELETE

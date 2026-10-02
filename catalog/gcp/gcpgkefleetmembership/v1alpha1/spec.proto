@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgkefleetmembership.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpGkeFleetMembershipSpec registers a cluster with a GKE fleet
+// (`google_gke_hub_membership`): the explicit form of joining a fleet.
+//
+// There are two ways a GKE cluster joins a fleet, and a cluster uses
+// exactly one:
+//
+//   - At creation, through GcpGkeCluster.fleet_project. Google creates the
+//     membership itself and the cluster exports its name as
+//     status.outputs.fleet_membership. This is the common path; no
+//     membership block is declared.
+//   - Explicitly, through this block: for a cluster created without
+//     fleet_project, a cluster created outside Planton, or a cluster in
+//     another project. Never declare this block for a cluster that sets
+//     fleet_project -- the cluster is already registered.
+//
+// Either way the membership's full name is what team scopes
+// (GcpGkeFleetScope.membership_bindings) and per-cluster feature settings
+// (GcpGkeFleetFeature.membership_configs) reference.
+//
+// Important behavioral notes:
+//
+//   - membership_id, location, the cluster, and the issuer are
+//     create-time decisions; changing one replaces the membership (and
+//     drops its scope bindings and per-cluster feature settings with it).
+//     Labels update in place.
+//   - Destroy unregisters the cluster from the fleet; the cluster itself
+//     is untouched.
+message GcpGkeFleetMembershipSpec {
+  // The fleet host project the membership lives in: a literal project ID
+  // or a GcpGkeFleet reference (the fleet this cluster joins, which orders
+  // the membership after the fleet in a chart). Empty means the provider's
+  // default project. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeFleet,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The membership's ID, unique in the fleet; by convention the cluster's
+  // name. 1-63 lowercase letters, digits, and hyphens, starting and ending
+  // with a letter or digit. Defaults to metadata.name. Immutable.
+  string membership_id = 2 [(buf.validate.field).cel = {
+    id: "membership_id.format"
+    message: "membership_id must be 1-63 lowercase letters, digits, or hyphens, starting and ending with a letter or digit"
+    expression: "this == '' || this.matches('^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$')"
+  }];
+
+  // Where the membership lives: "global" (the default, and what explicit
+  // registration normally uses) or a region. Immutable.
+  string location = 3 [(buf.validate.field).cel = {
+    id: "location.format"
+    message: "location must be global or a region"
+    expression: "this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')"
+  }];
+
+  // The GKE cluster to register: a GcpGkeCluster reference (its
+  // cluster_id, "projects/{p}/locations/{l}/clusters/{name}") or that
+  // literal path. Both modules send it as Google's resource link,
+  // "//container.googleapis.com/projects/{p}/locations/{l}/clusters/{name}".
+  // Omit it only for a cluster outside Google Cloud that registers through
+  // its own Connect agent. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef gke_cluster = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGkeCluster,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"
+  ];
+
+  // The cluster's OIDC issuer, which turns on fleet Workload Identity for
+  // this membership: Google then trusts tokens from this issuer within the
+  // fleet's workload identity pool ("{project}.hub.id.goog"). For a GKE
+  // cluster it is "https://container.googleapis.com/v1/" followed by the
+  // cluster's cluster_id output -- Google requires the locations/ form, so
+  // the cluster's self_link (zones/ for zonal clusters) does not fit.
+  // Empty leaves fleet Workload Identity off. Immutable: Google refuses an
+  // issuer change in place.
+  string issuer = 5 [(buf.validate.field).cel = {
+    id: "issuer.format"
+    message: "issuer must be an https:// URL shorter than 2000 characters"
+    expression: "this == '' || (this.startsWith('https://') && size(this) < 2000)"
+  }];
+
+  // Labels on the membership. The platform attribution labels are added on
+  // top and win on key conflicts.
+  map<string, string> labels = 6;
+
+  // What destroy does:
+  //   "" / "DELETE" -- the cluster is unregistered from the fleet
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the membership leaves management and stays in Google
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

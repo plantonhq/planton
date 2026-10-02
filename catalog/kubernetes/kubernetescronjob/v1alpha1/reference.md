@@ -1774,11 +1774,16 @@ Allowed values (use exactly as shown):
 - `GcpDataprocCluster`
 - `GcpDataprocAutoscalingPolicy`
 - `GcpBigQueryTable`
+- `GcpBigQueryCapacityCommitment` -- A BigQuery capacity commitment: slots bought for a fixed term in an administration project and location, pooled across every reservation there. A purchase Google will not delete before its term ends.
+- `GcpBigQueryReservationGroup` -- A BigQuery reservation group: reservations that share idle slots with each other first. Reservations reference it.
+- `GcpDatastreamConnectionProfile` -- A Datastream connection profile: where one source database or destination is and how Datastream signs in. Streams reference a source and a destination profile; one profile serves many streams.
+- `GcpDatastreamPrivateConnection` -- A Datastream private connection: the VPC peering or Private Service Connect interface through which Datastream reaches private databases, shared by every profile that reaches that network.
 - `GcpPubSubTopic`
 - `GcpPubSubSubscription`
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -1794,6 +1799,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -1802,8 +1808,11 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
+- `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
 - `GcpComputeDisk` -- 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that holds GcpComputeInstance is fully allocated)
 - `GcpComputeMig` -- GcpVpcNetwork is a prerequisite because the canonical group runs its fleet on a dedicated custom-mode VPC — a managed instance group's template must attach every VM to a network, and the default VPC is never assumed.
 - `GcpMonitoringNotificationChannel` -- 3140–3149: GCP observability & log routing
@@ -1824,11 +1833,84 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
+- `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHierarchicalFirewallPolicy`
+- `GcpNetworkFirewallPolicy`
+- `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
+- `GcpRedisCluster` -- 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka, BigQuery connections and reservations, Datastream) Memorystore for Redis Cluster: the sharded, horizontally scaled Redis. Connectivity is Private Service Connect, placed by service connectivity automation through a GcpServiceConnectionPolicy for the gcp-memorystore-redis class on the network in the cluster's region -- the prerequisite; its proof pin carries that class beside the network and subnet pins.
+- `GcpManagedKafkaCluster` -- Managed Service for Apache Kafka: a Google-operated broker fleet in one region, reachable from the VPC subnets it is attached to -- the prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so the teams that own them declare them without editing the cluster.
+- `GcpManagedKafkaTopic`
+- `GcpManagedKafkaConnectCluster` -- Kafka Connect workers attached to a Kafka cluster: a separate project-and-location root that names the cluster it serves.
+- `GcpBigQueryConnection` -- BigQuery's link to data outside its own storage (Cloud SQL, Spanner, AWS and Azure through Omni, Google resources through a managed service account, the Connector framework, Spark procedures).
+- `GcpBigQueryReservation` -- A BigQuery slot reservation with the assignments that route projects, folders, or an organization onto it.
+- `GcpDatastreamStream` -- A Datastream stream: continuous change data capture from one source database into BigQuery or Cloud Storage, through a source and a destination connection profile.
+- `GcpRedisClusterEndpointSet` -- The Private Service Connect connections a consumer builds by hand (forwarding rules in other VPCs or projects) registered on a Redis Cluster, as one set: Google's resource replaces the cluster's whole user-created endpoint list in one write, so exactly one set per cluster is the honest grain. Its own kind because every connection names a forwarding rule that targets one of the cluster's service attachments -- a fold would depend on its own output.
+- `GcpManagedKafkaAcl` -- The access rules for one resource pattern (a topic, a consumer group, a prefix, the cluster) on a Kafka cluster.
+- `GcpManagedKafkaConnector` -- One data pipeline running on a Kafka Connect cluster.
+- `GcpVertexAiAgentEngine` -- 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine, Vector Search, and the rest of the Vertex AI and generative-AI building blocks). The pre-existing Vertex AI kinds -- endpoint, index, index endpoint, deployed index, notebook -- live in the 3070s. Vertex AI Agent Engine: the managed runtime an AI agent runs in -- built from source or a container, hosted with its own identity and autoscaling, with an optional Memory Bank of long-term memories.
+- `GcpVertexAiModelGardenDeployment` -- A Model Garden or Hugging Face model deployed to a Vertex AI endpoint in one step; every argument is immutable, so a change redeploys.
+- `GcpVertexAiRagEngineConfig` -- The per-project, per-location tier of Vertex AI RAG Engine's managed vector database: a singleton Google owns, updated in place.
+- `GcpVectorSearchCollection` -- 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp bridges provider 8.x (the resource has no SDK type today). A Vector Search collection -- a schema'd store of data objects with vector fields -- together with the approximate-nearest-neighbor indexes built over those fields (folded: one collection owns them).
+- `GcpVertexAiSearchDataStore` -- Vertex AI Search (the Discovery Engine API behind the console's AI Applications / Gemini Enterprise): a data store is the corpus -- structured records, unstructured documents, or a public website -- with its schema, crawl patterns, and sitemaps folded in.
+- `GcpVertexAiSearchEngine` -- The app over one or more data stores -- a search, chat, or recommendation engine -- with its serving controls, serving config, search widget, and assistants folded in. Its data stores are prerequisites: an engine cannot exist without one.
+- `GcpVertexAiFeatureGroup` -- Vertex AI Feature Store: a feature group registers the features of some entities that live in a BigQuery table or view -- the features themselves folded in. Online stores serve them through feature views.
+- `GcpVertexAiFeatureOnlineStore` -- The low-latency serving layer of Vertex AI Feature Store (Bigtable or Optimized storage), with the feature views it serves folded in.
+- `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
+- `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
+- `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxAgent` -- A Dialogflow CX conversational agent with the infrastructure its console-authored content uses folded in: webhooks, tools and their frozen versions, flow versions, the environments that pin them, and generative settings per language.
+- `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
+- `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
+- `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
+- `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
+- `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -2693,11 +2775,16 @@ Allowed values (use exactly as shown):
 - `GcpDataprocCluster`
 - `GcpDataprocAutoscalingPolicy`
 - `GcpBigQueryTable`
+- `GcpBigQueryCapacityCommitment` -- A BigQuery capacity commitment: slots bought for a fixed term in an administration project and location, pooled across every reservation there. A purchase Google will not delete before its term ends.
+- `GcpBigQueryReservationGroup` -- A BigQuery reservation group: reservations that share idle slots with each other first. Reservations reference it.
+- `GcpDatastreamConnectionProfile` -- A Datastream connection profile: where one source database or destination is and how Datastream signs in. Streams reference a source and a destination profile; one profile serves many streams.
+- `GcpDatastreamPrivateConnection` -- A Datastream private connection: the VPC peering or Private Service Connect interface through which Datastream reaches private databases, shared by every profile that reaches that network.
 - `GcpPubSubTopic`
 - `GcpPubSubSubscription`
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -2713,6 +2800,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -2721,8 +2809,11 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
+- `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
 - `GcpComputeDisk` -- 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that holds GcpComputeInstance is fully allocated)
 - `GcpComputeMig` -- GcpVpcNetwork is a prerequisite because the canonical group runs its fleet on a dedicated custom-mode VPC — a managed instance group's template must attach every VM to a network, and the default VPC is never assumed.
 - `GcpMonitoringNotificationChannel` -- 3140–3149: GCP observability & log routing
@@ -2743,11 +2834,84 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
+- `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHierarchicalFirewallPolicy`
+- `GcpNetworkFirewallPolicy`
+- `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
+- `GcpRedisCluster` -- 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka, BigQuery connections and reservations, Datastream) Memorystore for Redis Cluster: the sharded, horizontally scaled Redis. Connectivity is Private Service Connect, placed by service connectivity automation through a GcpServiceConnectionPolicy for the gcp-memorystore-redis class on the network in the cluster's region -- the prerequisite; its proof pin carries that class beside the network and subnet pins.
+- `GcpManagedKafkaCluster` -- Managed Service for Apache Kafka: a Google-operated broker fleet in one region, reachable from the VPC subnets it is attached to -- the prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so the teams that own them declare them without editing the cluster.
+- `GcpManagedKafkaTopic`
+- `GcpManagedKafkaConnectCluster` -- Kafka Connect workers attached to a Kafka cluster: a separate project-and-location root that names the cluster it serves.
+- `GcpBigQueryConnection` -- BigQuery's link to data outside its own storage (Cloud SQL, Spanner, AWS and Azure through Omni, Google resources through a managed service account, the Connector framework, Spark procedures).
+- `GcpBigQueryReservation` -- A BigQuery slot reservation with the assignments that route projects, folders, or an organization onto it.
+- `GcpDatastreamStream` -- A Datastream stream: continuous change data capture from one source database into BigQuery or Cloud Storage, through a source and a destination connection profile.
+- `GcpRedisClusterEndpointSet` -- The Private Service Connect connections a consumer builds by hand (forwarding rules in other VPCs or projects) registered on a Redis Cluster, as one set: Google's resource replaces the cluster's whole user-created endpoint list in one write, so exactly one set per cluster is the honest grain. Its own kind because every connection names a forwarding rule that targets one of the cluster's service attachments -- a fold would depend on its own output.
+- `GcpManagedKafkaAcl` -- The access rules for one resource pattern (a topic, a consumer group, a prefix, the cluster) on a Kafka cluster.
+- `GcpManagedKafkaConnector` -- One data pipeline running on a Kafka Connect cluster.
+- `GcpVertexAiAgentEngine` -- 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine, Vector Search, and the rest of the Vertex AI and generative-AI building blocks). The pre-existing Vertex AI kinds -- endpoint, index, index endpoint, deployed index, notebook -- live in the 3070s. Vertex AI Agent Engine: the managed runtime an AI agent runs in -- built from source or a container, hosted with its own identity and autoscaling, with an optional Memory Bank of long-term memories.
+- `GcpVertexAiModelGardenDeployment` -- A Model Garden or Hugging Face model deployed to a Vertex AI endpoint in one step; every argument is immutable, so a change redeploys.
+- `GcpVertexAiRagEngineConfig` -- The per-project, per-location tier of Vertex AI RAG Engine's managed vector database: a singleton Google owns, updated in place.
+- `GcpVectorSearchCollection` -- 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp bridges provider 8.x (the resource has no SDK type today). A Vector Search collection -- a schema'd store of data objects with vector fields -- together with the approximate-nearest-neighbor indexes built over those fields (folded: one collection owns them).
+- `GcpVertexAiSearchDataStore` -- Vertex AI Search (the Discovery Engine API behind the console's AI Applications / Gemini Enterprise): a data store is the corpus -- structured records, unstructured documents, or a public website -- with its schema, crawl patterns, and sitemaps folded in.
+- `GcpVertexAiSearchEngine` -- The app over one or more data stores -- a search, chat, or recommendation engine -- with its serving controls, serving config, search widget, and assistants folded in. Its data stores are prerequisites: an engine cannot exist without one.
+- `GcpVertexAiFeatureGroup` -- Vertex AI Feature Store: a feature group registers the features of some entities that live in a BigQuery table or view -- the features themselves folded in. Online stores serve them through feature views.
+- `GcpVertexAiFeatureOnlineStore` -- The low-latency serving layer of Vertex AI Feature Store (Bigtable or Optimized storage), with the feature views it serves folded in.
+- `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
+- `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
+- `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxAgent` -- A Dialogflow CX conversational agent with the infrastructure its console-authored content uses folded in: webhooks, tools and their frozen versions, flow versions, the environments that pin them, and generative settings per language.
+- `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
+- `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
+- `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
+- `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
+- `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -4813,11 +4977,16 @@ Allowed values (use exactly as shown):
 - `GcpDataprocCluster`
 - `GcpDataprocAutoscalingPolicy`
 - `GcpBigQueryTable`
+- `GcpBigQueryCapacityCommitment` -- A BigQuery capacity commitment: slots bought for a fixed term in an administration project and location, pooled across every reservation there. A purchase Google will not delete before its term ends.
+- `GcpBigQueryReservationGroup` -- A BigQuery reservation group: reservations that share idle slots with each other first. Reservations reference it.
+- `GcpDatastreamConnectionProfile` -- A Datastream connection profile: where one source database or destination is and how Datastream signs in. Streams reference a source and a destination profile; one profile serves many streams.
+- `GcpDatastreamPrivateConnection` -- A Datastream private connection: the VPC peering or Private Service Connect interface through which Datastream reaches private databases, shared by every profile that reaches that network.
 - `GcpPubSubTopic`
 - `GcpPubSubSubscription`
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -4833,6 +5002,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -4841,8 +5011,11 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
+- `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
 - `GcpComputeDisk` -- 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that holds GcpComputeInstance is fully allocated)
 - `GcpComputeMig` -- GcpVpcNetwork is a prerequisite because the canonical group runs its fleet on a dedicated custom-mode VPC — a managed instance group's template must attach every VM to a network, and the default VPC is never assumed.
 - `GcpMonitoringNotificationChannel` -- 3140–3149: GCP observability & log routing
@@ -4863,11 +5036,84 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
+- `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHierarchicalFirewallPolicy`
+- `GcpNetworkFirewallPolicy`
+- `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
+- `GcpRedisCluster` -- 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka, BigQuery connections and reservations, Datastream) Memorystore for Redis Cluster: the sharded, horizontally scaled Redis. Connectivity is Private Service Connect, placed by service connectivity automation through a GcpServiceConnectionPolicy for the gcp-memorystore-redis class on the network in the cluster's region -- the prerequisite; its proof pin carries that class beside the network and subnet pins.
+- `GcpManagedKafkaCluster` -- Managed Service for Apache Kafka: a Google-operated broker fleet in one region, reachable from the VPC subnets it is attached to -- the prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so the teams that own them declare them without editing the cluster.
+- `GcpManagedKafkaTopic`
+- `GcpManagedKafkaConnectCluster` -- Kafka Connect workers attached to a Kafka cluster: a separate project-and-location root that names the cluster it serves.
+- `GcpBigQueryConnection` -- BigQuery's link to data outside its own storage (Cloud SQL, Spanner, AWS and Azure through Omni, Google resources through a managed service account, the Connector framework, Spark procedures).
+- `GcpBigQueryReservation` -- A BigQuery slot reservation with the assignments that route projects, folders, or an organization onto it.
+- `GcpDatastreamStream` -- A Datastream stream: continuous change data capture from one source database into BigQuery or Cloud Storage, through a source and a destination connection profile.
+- `GcpRedisClusterEndpointSet` -- The Private Service Connect connections a consumer builds by hand (forwarding rules in other VPCs or projects) registered on a Redis Cluster, as one set: Google's resource replaces the cluster's whole user-created endpoint list in one write, so exactly one set per cluster is the honest grain. Its own kind because every connection names a forwarding rule that targets one of the cluster's service attachments -- a fold would depend on its own output.
+- `GcpManagedKafkaAcl` -- The access rules for one resource pattern (a topic, a consumer group, a prefix, the cluster) on a Kafka cluster.
+- `GcpManagedKafkaConnector` -- One data pipeline running on a Kafka Connect cluster.
+- `GcpVertexAiAgentEngine` -- 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine, Vector Search, and the rest of the Vertex AI and generative-AI building blocks). The pre-existing Vertex AI kinds -- endpoint, index, index endpoint, deployed index, notebook -- live in the 3070s. Vertex AI Agent Engine: the managed runtime an AI agent runs in -- built from source or a container, hosted with its own identity and autoscaling, with an optional Memory Bank of long-term memories.
+- `GcpVertexAiModelGardenDeployment` -- A Model Garden or Hugging Face model deployed to a Vertex AI endpoint in one step; every argument is immutable, so a change redeploys.
+- `GcpVertexAiRagEngineConfig` -- The per-project, per-location tier of Vertex AI RAG Engine's managed vector database: a singleton Google owns, updated in place.
+- `GcpVectorSearchCollection` -- 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp bridges provider 8.x (the resource has no SDK type today). A Vector Search collection -- a schema'd store of data objects with vector fields -- together with the approximate-nearest-neighbor indexes built over those fields (folded: one collection owns them).
+- `GcpVertexAiSearchDataStore` -- Vertex AI Search (the Discovery Engine API behind the console's AI Applications / Gemini Enterprise): a data store is the corpus -- structured records, unstructured documents, or a public website -- with its schema, crawl patterns, and sitemaps folded in.
+- `GcpVertexAiSearchEngine` -- The app over one or more data stores -- a search, chat, or recommendation engine -- with its serving controls, serving config, search widget, and assistants folded in. Its data stores are prerequisites: an engine cannot exist without one.
+- `GcpVertexAiFeatureGroup` -- Vertex AI Feature Store: a feature group registers the features of some entities that live in a BigQuery table or view -- the features themselves folded in. Online stores serve them through feature views.
+- `GcpVertexAiFeatureOnlineStore` -- The low-latency serving layer of Vertex AI Feature Store (Bigtable or Optimized storage), with the feature views it serves folded in.
+- `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
+- `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
+- `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxAgent` -- A Dialogflow CX conversational agent with the infrastructure its console-authored content uses folded in: webhooks, tools and their frozen versions, flow versions, the environments that pin them, and generative settings per language.
+- `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
+- `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
+- `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
+- `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
+- `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -5732,11 +5978,16 @@ Allowed values (use exactly as shown):
 - `GcpDataprocCluster`
 - `GcpDataprocAutoscalingPolicy`
 - `GcpBigQueryTable`
+- `GcpBigQueryCapacityCommitment` -- A BigQuery capacity commitment: slots bought for a fixed term in an administration project and location, pooled across every reservation there. A purchase Google will not delete before its term ends.
+- `GcpBigQueryReservationGroup` -- A BigQuery reservation group: reservations that share idle slots with each other first. Reservations reference it.
+- `GcpDatastreamConnectionProfile` -- A Datastream connection profile: where one source database or destination is and how Datastream signs in. Streams reference a source and a destination profile; one profile serves many streams.
+- `GcpDatastreamPrivateConnection` -- A Datastream private connection: the VPC peering or Private Service Connect interface through which Datastream reaches private databases, shared by every profile that reaches that network.
 - `GcpPubSubTopic`
 - `GcpPubSubSubscription`
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -5752,6 +6003,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -5760,8 +6012,11 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
+- `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
 - `GcpComputeDisk` -- 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that holds GcpComputeInstance is fully allocated)
 - `GcpComputeMig` -- GcpVpcNetwork is a prerequisite because the canonical group runs its fleet on a dedicated custom-mode VPC — a managed instance group's template must attach every VM to a network, and the default VPC is never assumed.
 - `GcpMonitoringNotificationChannel` -- 3140–3149: GCP observability & log routing
@@ -5782,11 +6037,84 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
+- `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHierarchicalFirewallPolicy`
+- `GcpNetworkFirewallPolicy`
+- `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
+- `GcpRedisCluster` -- 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka, BigQuery connections and reservations, Datastream) Memorystore for Redis Cluster: the sharded, horizontally scaled Redis. Connectivity is Private Service Connect, placed by service connectivity automation through a GcpServiceConnectionPolicy for the gcp-memorystore-redis class on the network in the cluster's region -- the prerequisite; its proof pin carries that class beside the network and subnet pins.
+- `GcpManagedKafkaCluster` -- Managed Service for Apache Kafka: a Google-operated broker fleet in one region, reachable from the VPC subnets it is attached to -- the prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so the teams that own them declare them without editing the cluster.
+- `GcpManagedKafkaTopic`
+- `GcpManagedKafkaConnectCluster` -- Kafka Connect workers attached to a Kafka cluster: a separate project-and-location root that names the cluster it serves.
+- `GcpBigQueryConnection` -- BigQuery's link to data outside its own storage (Cloud SQL, Spanner, AWS and Azure through Omni, Google resources through a managed service account, the Connector framework, Spark procedures).
+- `GcpBigQueryReservation` -- A BigQuery slot reservation with the assignments that route projects, folders, or an organization onto it.
+- `GcpDatastreamStream` -- A Datastream stream: continuous change data capture from one source database into BigQuery or Cloud Storage, through a source and a destination connection profile.
+- `GcpRedisClusterEndpointSet` -- The Private Service Connect connections a consumer builds by hand (forwarding rules in other VPCs or projects) registered on a Redis Cluster, as one set: Google's resource replaces the cluster's whole user-created endpoint list in one write, so exactly one set per cluster is the honest grain. Its own kind because every connection names a forwarding rule that targets one of the cluster's service attachments -- a fold would depend on its own output.
+- `GcpManagedKafkaAcl` -- The access rules for one resource pattern (a topic, a consumer group, a prefix, the cluster) on a Kafka cluster.
+- `GcpManagedKafkaConnector` -- One data pipeline running on a Kafka Connect cluster.
+- `GcpVertexAiAgentEngine` -- 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine, Vector Search, and the rest of the Vertex AI and generative-AI building blocks). The pre-existing Vertex AI kinds -- endpoint, index, index endpoint, deployed index, notebook -- live in the 3070s. Vertex AI Agent Engine: the managed runtime an AI agent runs in -- built from source or a container, hosted with its own identity and autoscaling, with an optional Memory Bank of long-term memories.
+- `GcpVertexAiModelGardenDeployment` -- A Model Garden or Hugging Face model deployed to a Vertex AI endpoint in one step; every argument is immutable, so a change redeploys.
+- `GcpVertexAiRagEngineConfig` -- The per-project, per-location tier of Vertex AI RAG Engine's managed vector database: a singleton Google owns, updated in place.
+- `GcpVectorSearchCollection` -- 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp bridges provider 8.x (the resource has no SDK type today). A Vector Search collection -- a schema'd store of data objects with vector fields -- together with the approximate-nearest-neighbor indexes built over those fields (folded: one collection owns them).
+- `GcpVertexAiSearchDataStore` -- Vertex AI Search (the Discovery Engine API behind the console's AI Applications / Gemini Enterprise): a data store is the corpus -- structured records, unstructured documents, or a public website -- with its schema, crawl patterns, and sitemaps folded in.
+- `GcpVertexAiSearchEngine` -- The app over one or more data stores -- a search, chat, or recommendation engine -- with its serving controls, serving config, search widget, and assistants folded in. Its data stores are prerequisites: an engine cannot exist without one.
+- `GcpVertexAiFeatureGroup` -- Vertex AI Feature Store: a feature group registers the features of some entities that live in a BigQuery table or view -- the features themselves folded in. Online stores serve them through feature views.
+- `GcpVertexAiFeatureOnlineStore` -- The low-latency serving layer of Vertex AI Feature Store (Bigtable or Optimized storage), with the feature views it serves folded in.
+- `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
+- `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
+- `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxAgent` -- A Dialogflow CX conversational agent with the infrastructure its console-authored content uses folded in: webhooks, tools and their frozen versions, flow versions, the environments that pin them, and generative settings per language.
+- `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
+- `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
+- `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
+- `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
+- `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -7966,11 +8294,16 @@ Allowed values (use exactly as shown):
 - `GcpDataprocCluster`
 - `GcpDataprocAutoscalingPolicy`
 - `GcpBigQueryTable`
+- `GcpBigQueryCapacityCommitment` -- A BigQuery capacity commitment: slots bought for a fixed term in an administration project and location, pooled across every reservation there. A purchase Google will not delete before its term ends.
+- `GcpBigQueryReservationGroup` -- A BigQuery reservation group: reservations that share idle slots with each other first. Reservations reference it.
+- `GcpDatastreamConnectionProfile` -- A Datastream connection profile: where one source database or destination is and how Datastream signs in. Streams reference a source and a destination profile; one profile serves many streams.
+- `GcpDatastreamPrivateConnection` -- A Datastream private connection: the VPC peering or Private Service Connect interface through which Datastream reaches private databases, shared by every profile that reaches that network.
 - `GcpPubSubTopic`
 - `GcpPubSubSubscription`
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -7986,6 +8319,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -7994,8 +8328,11 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
+- `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
 - `GcpComputeDisk` -- 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that holds GcpComputeInstance is fully allocated)
 - `GcpComputeMig` -- GcpVpcNetwork is a prerequisite because the canonical group runs its fleet on a dedicated custom-mode VPC — a managed instance group's template must attach every VM to a network, and the default VPC is never assumed.
 - `GcpMonitoringNotificationChannel` -- 3140–3149: GCP observability & log routing
@@ -8016,11 +8353,84 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
+- `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHierarchicalFirewallPolicy`
+- `GcpNetworkFirewallPolicy`
+- `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
+- `GcpRedisCluster` -- 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka, BigQuery connections and reservations, Datastream) Memorystore for Redis Cluster: the sharded, horizontally scaled Redis. Connectivity is Private Service Connect, placed by service connectivity automation through a GcpServiceConnectionPolicy for the gcp-memorystore-redis class on the network in the cluster's region -- the prerequisite; its proof pin carries that class beside the network and subnet pins.
+- `GcpManagedKafkaCluster` -- Managed Service for Apache Kafka: a Google-operated broker fleet in one region, reachable from the VPC subnets it is attached to -- the prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so the teams that own them declare them without editing the cluster.
+- `GcpManagedKafkaTopic`
+- `GcpManagedKafkaConnectCluster` -- Kafka Connect workers attached to a Kafka cluster: a separate project-and-location root that names the cluster it serves.
+- `GcpBigQueryConnection` -- BigQuery's link to data outside its own storage (Cloud SQL, Spanner, AWS and Azure through Omni, Google resources through a managed service account, the Connector framework, Spark procedures).
+- `GcpBigQueryReservation` -- A BigQuery slot reservation with the assignments that route projects, folders, or an organization onto it.
+- `GcpDatastreamStream` -- A Datastream stream: continuous change data capture from one source database into BigQuery or Cloud Storage, through a source and a destination connection profile.
+- `GcpRedisClusterEndpointSet` -- The Private Service Connect connections a consumer builds by hand (forwarding rules in other VPCs or projects) registered on a Redis Cluster, as one set: Google's resource replaces the cluster's whole user-created endpoint list in one write, so exactly one set per cluster is the honest grain. Its own kind because every connection names a forwarding rule that targets one of the cluster's service attachments -- a fold would depend on its own output.
+- `GcpManagedKafkaAcl` -- The access rules for one resource pattern (a topic, a consumer group, a prefix, the cluster) on a Kafka cluster.
+- `GcpManagedKafkaConnector` -- One data pipeline running on a Kafka Connect cluster.
+- `GcpVertexAiAgentEngine` -- 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine, Vector Search, and the rest of the Vertex AI and generative-AI building blocks). The pre-existing Vertex AI kinds -- endpoint, index, index endpoint, deployed index, notebook -- live in the 3070s. Vertex AI Agent Engine: the managed runtime an AI agent runs in -- built from source or a container, hosted with its own identity and autoscaling, with an optional Memory Bank of long-term memories.
+- `GcpVertexAiModelGardenDeployment` -- A Model Garden or Hugging Face model deployed to a Vertex AI endpoint in one step; every argument is immutable, so a change redeploys.
+- `GcpVertexAiRagEngineConfig` -- The per-project, per-location tier of Vertex AI RAG Engine's managed vector database: a singleton Google owns, updated in place.
+- `GcpVectorSearchCollection` -- 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp bridges provider 8.x (the resource has no SDK type today). A Vector Search collection -- a schema'd store of data objects with vector fields -- together with the approximate-nearest-neighbor indexes built over those fields (folded: one collection owns them).
+- `GcpVertexAiSearchDataStore` -- Vertex AI Search (the Discovery Engine API behind the console's AI Applications / Gemini Enterprise): a data store is the corpus -- structured records, unstructured documents, or a public website -- with its schema, crawl patterns, and sitemaps folded in.
+- `GcpVertexAiSearchEngine` -- The app over one or more data stores -- a search, chat, or recommendation engine -- with its serving controls, serving config, search widget, and assistants folded in. Its data stores are prerequisites: an engine cannot exist without one.
+- `GcpVertexAiFeatureGroup` -- Vertex AI Feature Store: a feature group registers the features of some entities that live in a BigQuery table or view -- the features themselves folded in. Online stores serve them through feature views.
+- `GcpVertexAiFeatureOnlineStore` -- The low-latency serving layer of Vertex AI Feature Store (Bigtable or Optimized storage), with the feature views it serves folded in.
+- `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
+- `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
+- `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxAgent` -- A Dialogflow CX conversational agent with the infrastructure its console-authored content uses folded in: webhooks, tools and their frozen versions, flow versions, the environments that pin them, and generative settings per language.
+- `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
+- `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
+- `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
+- `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
+- `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`
@@ -8885,11 +9295,16 @@ Allowed values (use exactly as shown):
 - `GcpDataprocCluster`
 - `GcpDataprocAutoscalingPolicy`
 - `GcpBigQueryTable`
+- `GcpBigQueryCapacityCommitment` -- A BigQuery capacity commitment: slots bought for a fixed term in an administration project and location, pooled across every reservation there. A purchase Google will not delete before its term ends.
+- `GcpBigQueryReservationGroup` -- A BigQuery reservation group: reservations that share idle slots with each other first. Reservations reference it.
+- `GcpDatastreamConnectionProfile` -- A Datastream connection profile: where one source database or destination is and how Datastream signs in. Streams reference a source and a destination profile; one profile serves many streams.
+- `GcpDatastreamPrivateConnection` -- A Datastream private connection: the VPC peering or Private Service Connect interface through which Datastream reaches private databases, shared by every profile that reaches that network.
 - `GcpPubSubTopic`
 - `GcpPubSubSubscription`
 - `GcpCloudTasksQueue`
 - `GcpCloudSchedulerJob`
 - `GcpPubSubSchema`
+- `GcpPubSubTopicIamMember` -- One additive grant on a topic. Its own kind, not a field on the topic, because the identities that most need it (a logging sink's writer, a Security Command Center export's publisher) belong to resources that name the topic themselves; a grant on the topic that referenced them back would be a dependency cycle.
 - `GcpVertexAiNotebook`
 - `GcpVertexAiEndpoint`
 - `GcpVertexAiIndex`
@@ -8905,6 +9320,7 @@ Allowed values (use exactly as shown):
 - `GcpWorkloadIdentityPool` -- 3101–3109: IAM/identity family (overflow block; the 3000–3022 foundation/security sub-band is fully allocated)
 - `GcpWorkloadIdentityPoolProvider`
 - `GcpServiceAccountIamMember`
+- `GcpGcsBucketIamMember` -- One additive grant on a bucket, for a grantee that depends on the bucket itself (a logging sink writing into it): the bucket's own iam_members cannot reference such an identity without a cycle.
 - `GcpGlobalForwardingRule` -- 3110–3119: networking/load-balancer family (overflow block; the 3023–3029 LB sub-band is fully allocated)
 - `GcpSslPolicy`
 - `GcpSslCertificate`
@@ -8913,8 +9329,11 @@ Allowed values (use exactly as shown):
 - `GcpServiceConnectionPolicy`
 - `GcpCertManagerDnsAuthorization`
 - `GcpCertificateMap` -- GcpCertManagerCert is a prerequisite because a map entry binds hostnames to EXISTING certificates — the canonical map references a certificate fixture's resource name.
+- `GcpCertManagerTrustConfig` -- The CA certificates a load balancer validates client certificates against (mutual TLS). Its own kind: TLS policies reference it, never a certificate.
+- `GcpCertManagerIssuanceConfig` -- How Google-managed certificates are issued from a private CA pool. Its own kind: many certificates share one config by name.
 - `GcpCloudRunJob` -- 3120–3129: GCP serverless overflow
 - `GcpServerlessVpcConnector`
+- `GcpCloudRunWorkerPool` -- Cloud Run's no-ingress shape: a pool of always-running container instances (queue consumers, schedulers, background workers) that scales manually or by the owner's own signal instead of by requests. The proof deploys direct-VPC egress onto the prerequisite network.
 - `GcpComputeDisk` -- 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that holds GcpComputeInstance is fully allocated)
 - `GcpComputeMig` -- GcpVpcNetwork is a prerequisite because the canonical group runs its fleet on a dedicated custom-mode VPC — a managed instance group's template must attach every VM to a network, and the default VPC is never assumed.
 - `GcpMonitoringNotificationChannel` -- 3140–3149: GCP observability & log routing
@@ -8935,11 +9354,84 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys, KMS Autokey) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
+- `GcpApiKey`
+- `GcpKmsAutokeyConfig` -- Cloud KMS Autokey switched on for a folder or a project: where the customer-managed keys GcpKmsKeyHandle requests are created. A security control, so it groups with the KMS kinds rather than the hierarchy.
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHierarchicalFirewallPolicy`
+- `GcpNetworkFirewallPolicy`
+- `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
+- `GcpRedisCluster` -- 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka, BigQuery connections and reservations, Datastream) Memorystore for Redis Cluster: the sharded, horizontally scaled Redis. Connectivity is Private Service Connect, placed by service connectivity automation through a GcpServiceConnectionPolicy for the gcp-memorystore-redis class on the network in the cluster's region -- the prerequisite; its proof pin carries that class beside the network and subnet pins.
+- `GcpManagedKafkaCluster` -- Managed Service for Apache Kafka: a Google-operated broker fleet in one region, reachable from the VPC subnets it is attached to -- the prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so the teams that own them declare them without editing the cluster.
+- `GcpManagedKafkaTopic`
+- `GcpManagedKafkaConnectCluster` -- Kafka Connect workers attached to a Kafka cluster: a separate project-and-location root that names the cluster it serves.
+- `GcpBigQueryConnection` -- BigQuery's link to data outside its own storage (Cloud SQL, Spanner, AWS and Azure through Omni, Google resources through a managed service account, the Connector framework, Spark procedures).
+- `GcpBigQueryReservation` -- A BigQuery slot reservation with the assignments that route projects, folders, or an organization onto it.
+- `GcpDatastreamStream` -- A Datastream stream: continuous change data capture from one source database into BigQuery or Cloud Storage, through a source and a destination connection profile.
+- `GcpRedisClusterEndpointSet` -- The Private Service Connect connections a consumer builds by hand (forwarding rules in other VPCs or projects) registered on a Redis Cluster, as one set: Google's resource replaces the cluster's whole user-created endpoint list in one write, so exactly one set per cluster is the honest grain. Its own kind because every connection names a forwarding rule that targets one of the cluster's service attachments -- a fold would depend on its own output.
+- `GcpManagedKafkaAcl` -- The access rules for one resource pattern (a topic, a consumer group, a prefix, the cluster) on a Kafka cluster.
+- `GcpManagedKafkaConnector` -- One data pipeline running on a Kafka Connect cluster.
+- `GcpVertexAiAgentEngine` -- 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine, Vector Search, and the rest of the Vertex AI and generative-AI building blocks). The pre-existing Vertex AI kinds -- endpoint, index, index endpoint, deployed index, notebook -- live in the 3070s. Vertex AI Agent Engine: the managed runtime an AI agent runs in -- built from source or a container, hosted with its own identity and autoscaling, with an optional Memory Bank of long-term memories.
+- `GcpVertexAiModelGardenDeployment` -- A Model Garden or Hugging Face model deployed to a Vertex AI endpoint in one step; every argument is immutable, so a change redeploys.
+- `GcpVertexAiRagEngineConfig` -- The per-project, per-location tier of Vertex AI RAG Engine's managed vector database: a singleton Google owns, updated in place.
+- `GcpVectorSearchCollection` -- 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp bridges provider 8.x (the resource has no SDK type today). A Vector Search collection -- a schema'd store of data objects with vector fields -- together with the approximate-nearest-neighbor indexes built over those fields (folded: one collection owns them).
+- `GcpVertexAiSearchDataStore` -- Vertex AI Search (the Discovery Engine API behind the console's AI Applications / Gemini Enterprise): a data store is the corpus -- structured records, unstructured documents, or a public website -- with its schema, crawl patterns, and sitemaps folded in.
+- `GcpVertexAiSearchEngine` -- The app over one or more data stores -- a search, chat, or recommendation engine -- with its serving controls, serving config, search widget, and assistants folded in. Its data stores are prerequisites: an engine cannot exist without one.
+- `GcpVertexAiFeatureGroup` -- Vertex AI Feature Store: a feature group registers the features of some entities that live in a BigQuery table or view -- the features themselves folded in. Online stores serve them through feature views.
+- `GcpVertexAiFeatureOnlineStore` -- The low-latency serving layer of Vertex AI Feature Store (Bigtable or Optimized storage), with the feature views it serves folded in.
+- `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
+- `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
+- `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxAgent` -- A Dialogflow CX conversational agent with the infrastructure its console-authored content uses folded in: webhooks, tools and their frozen versions, flow versions, the environments that pin them, and generative settings per language.
+- `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
+- `GcpDialogflowCxSecuritySettings` -- Dialogflow CX security settings: the redaction, retention, audio-export, and Insights-export policy agents in one project and location apply to their conversations. A different root from an agent, referenced by agents and shared among them, which is why it is its own kind.
+- `GcpPrivateCaPool` -- 3230–3239: GCP security (Certificate Authority Service, Cloud KMS Autokey handles, Security Command Center, Binary Authorization) A Certificate Authority Service CA pool: the trust anchor and issuance policy its certificate authorities and certificates live inside.
+- `GcpKmsKeyHandle` -- An Autokey key handle: asks Autokey for a customer-managed key for one resource type in one project and location; the resource it protects names the key the handle returns.
+- `GcpSccNotificationConfig` -- Security Command Center streaming notifications to Pub/Sub at a project, folder, or organization.
+- `GcpSccMuteConfig` -- A Security Command Center mute rule at a project, folder, or organization.
+- `GcpSccBigQueryExport` -- A continuous Security Command Center findings export to a BigQuery dataset at a project, folder, or organization.
+- `GcpBinaryAuthorizationPolicy` -- A project's Binary Authorization policy: which container images GKE admits, per cluster. A project singleton.
+- `GcpBinaryAuthorizationAttestor` -- A Binary Authorization attestor with its Artifact Analysis note: the public keys that verify image attestations a policy requires.
+- `GcpPrivateCaCertificateAuthority` -- A certificate authority in a CA pool: a self-signed root, or a subordinate signed by another authority or an outside CA. Its own kind because a pool rotates through several and a subordinate references its parent.
+- `GcpPrivateCaCertificateTemplate` -- A certificate template: a reusable certificate shape in a project and location that certificates in any pool there reference.
+- `GcpPrivateCaCertificate` -- A certificate issued from a CA pool for a key its owner holds; destroy revokes it.
+- `GcpGkeFleet` -- 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build, Cloud Deploy) GcpGkeFleet is the container a fleet's scopes, namespaces, memberships, and features live in: the project's one fleet is the room, and a team scope or a fleet-wide feature is what is placed inside it.
+- `GcpGkeFleetFeature` -- The three fleet children name GcpGkeFleet as their prerequisite: Google requires the fleet before a scope, a fleet declared after a cluster registers collides with the fleet that registration created implicitly, and a feature configures the fleet it lives in. A chart that references the fleet's project_id output orders each child after it.
+- `GcpGkeFleetScope`
+- `GcpGkeFleetMembership`
+- `GcpComputeImage` -- A Compute Engine custom image: the golden boot image VMs, instance templates, and disks start from, rolled forward through image families.
+- `GcpCloudBuildConnection` -- GcpCloudBuildConnection is the container a code host's repositories live in: the connection to GitHub, GitLab, or Bitbucket is the room, and each linked repository is what is placed inside it.
+- `GcpCloudBuildRepository` -- A repository is created under its connection and cannot exist without it.
+- `GcpCloudBuildTrigger` -- A Cloud Build trigger: what starts a build (a code event, a Pub/Sub message, a webhook, or a manual run) and what the build does.
+- `GcpDeliveryPipeline` -- A Cloud Deploy delivery pipeline: the ordered stages a release is promoted through, with the automations that drive it.
+- `GcpDeployTarget` -- A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster, a Cloud Run location, a fleet cluster, several targets at once, or a custom target).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
 - `GcpFirebaseWebApp`
+- `GcpCloudBuildWorkerPool` -- 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud Deploy resources many pipelines share) A private Cloud Build worker pool: build machines many triggers and Cloud Deploy targets share, optionally on a private network.
+- `GcpDeployPolicy` -- A Cloud Deploy deploy policy: rollout restrictions (freeze windows) that apply to every pipeline and target its selectors match.
+- `GcpDeployCustomTargetType` -- A Cloud Deploy custom target type: how to render and deploy to a target Google does not deploy natively; many targets share one.
 - `KubernetesNamespace` -- 4000–4999: Kubernetes resources, organized in family sub-bands (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts analytics & ML; 4190–4199 reserved for growth) 4000–4029: Kubernetes building blocks (core API primitives)
 - `KubernetesDeployment`
 - `KubernetesStatefulSet`

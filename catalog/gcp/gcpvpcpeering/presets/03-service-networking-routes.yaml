@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: sql-routes
+spec:
+  peeringName: servicenetworking-googleapis-com
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: app-vpc
+      fieldPath: status.outputs.network_self_link
+  exportCustomRoutes: true
+  importCustomRoutes: false

@@ -9,4 +9,6 @@ const (
 	OpForwardingRuleId    = "forwarding_rule_id"
 	OpPscConnectionId     = "psc_connection_id"
 	OpPscConnectionStatus = "psc_connection_status"
+	OpRegion              = "region"
+	OpServiceName         = "service_name"
 )

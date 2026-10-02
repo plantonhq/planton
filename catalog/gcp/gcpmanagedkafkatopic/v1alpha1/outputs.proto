@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1;
+
+// GcpManagedKafkaTopicStackOutputs captures the topic's identity.
+message GcpManagedKafkaTopicStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic_id}.
+  string name = 1;
+
+  // The topic's name as Kafka clients use it (the last segment of name).
+  string topic_id = 2;
+}

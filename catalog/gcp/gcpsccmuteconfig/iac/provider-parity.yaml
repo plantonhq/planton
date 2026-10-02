@@ -1,0 +1,32 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# One kind, three mute-config resources -- the spec's scope selects which
+# one the module creates; each entry records the scope arm that names the
+# parent.
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_scc_v2_project_mute_config:
+    mappings:
+      - spec: spec.scope.project_id
+        arg: project
+
+  google_scc_v2_folder_mute_config:
+    mappings:
+      - spec: spec.scope.folder_id
+        arg: folder
+
+  google_scc_v2_organization_mute_config:
+    mappings:
+      - spec: spec.scope.organization_id
+        arg: organization
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

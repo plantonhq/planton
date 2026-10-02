@@ -1,0 +1,22 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcppscserviceattachment
+spec:
+  gcp:
+    groups:
+      - purpose: ManageServiceAttachment
+        permissions:
+          - compute.serviceAttachments.create
+          - compute.serviceAttachments.get
+          - compute.serviceAttachments.update
+          - compute.serviceAttachments.delete
+          - compute.forwardingRules.get
+          - compute.subnetworks.get
+        provenance: derived
+        notes: "Covers google_compute_service_attachment (Pulumi compute.ServiceAttachment): create on first apply, get on every refresh, update when the connection policy changes in place (connection_preference, accept and reject lists, reconcile_connections, enable_proxy_protocol, propagated_connection_limit, description), delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Google validates the target forwarding rule and the NAT subnets at create, which reads them. roles/compute.networkAdmin contains all six."

@@ -1,0 +1,45 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_bigquery_reservation:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.reservation_name
+        arg: name
+      # The autoscale block's one input, lifted.
+      - spec: spec.autoscale_max_slots
+        arg: autoscale.max_slots
+  # The assignments are folded: each lives under exactly one reservation and
+  # shares its owner.
+  google_bigquery_reservation_assignment:
+    specRoot: spec.assignments
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # Derived from the parent: the reservation's location and name, never
+      # declared twice.
+      - spec: spec.location
+        arg: location
+      - spec: spec.reservation_name
+        arg: reservation
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      # The assignee scope message: exactly one of its three fields composes
+      # the projects/, folders/, or organizations/ form Google takes.
+      - spec: spec.assignments.assignee.project_id
+        arg: assignee
+      - spec: spec.assignments.assignee.folder_id
+        arg: assignee
+      - spec: spec.assignments.assignee.organization_id
+        arg: assignee
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

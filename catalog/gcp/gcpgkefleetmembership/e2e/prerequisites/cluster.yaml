@@ -1,0 +1,33 @@
+# Second-project zonal Standard cluster for the gcpflmb chain -- the
+# fastest cluster GKE creates, inside the GKE free tier's monthly credit.
+# It sets no fleetProject: the membership under test registers it explicitly.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeCluster
+metadata:
+  name: planton-oss-e2e-gcpflmb-cluster
+  id: planton-oss-e2e-gcpflmb-cluster
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkecluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  description: Ephemeral zonal GKE cluster for a fleet E2E chain; safe to delete
+  location: us-east1-b
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpflmb-vpc
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcpflmb-subnet
+      fieldPath: status.outputs.subnetwork_self_link
+  deletionProtection: false

@@ -1,0 +1,34 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcloudbuildworkerpool
+spec:
+  gcp:
+    groups:
+      - purpose: EnableCloudBuildApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling cloudbuild.googleapis.com on the pool's project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageWorkerPool
+        permissions:
+          - cloudbuild.workerpools.create
+          - cloudbuild.workerpools.get
+          - cloudbuild.workerpools.update
+          - cloudbuild.workerpools.delete
+        provenance: derived
+        notes: Covers google_cloudbuild_worker_pool (Pulumi cloudbuild.WorkerPool) -- create, read on every refresh, in-place updates (display name, annotations, worker config), and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). The create, update, and delete return long-running operations the provider polls; roles/cloudbuild.workerPoolOwner contains exactly these four and no operations permission, so polling needs nothing beyond them.
+      - purpose: ResolvePeeredNetworkProjectNumber
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        condition:
+          spec_field_set: network_config
+        notes: Only when network_config.peered_network names its project by ID (a GcpVpcNetwork reference always does) -- both modules read that project once to build the projects/{NUMBER}/global/networks/{name} path Google requires (data.google_project on Terraform, organizations.LookupProject on Pulumi). A numeric path performs no read.

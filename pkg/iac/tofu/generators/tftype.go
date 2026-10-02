@@ -84,21 +84,59 @@ type TFObject struct {
 // validation on a pruned tfvars. Required attributes (those the renderer always
 // emits, identified from buf.validate constraints) stay bare.
 //
-// Presence marks a proto3 `optional` scalar -- a field whose absence is
-// meaningfully DIFFERENT from its zero value (a tri-state: the cloud default
-// applies when unset, an explicit zero overrides it). protojson emits such a
-// field whenever it is set, including at its zero value, so the attribute must
+// Presence marks a scalar with proto presence -- a proto3 `optional` field or
+// a oneof member -- whose absence is meaningfully DIFFERENT from its zero value
+// (a tri-state: the cloud default applies when unset, an explicit zero
+// overrides it; or a sibling oneof arm is the one chosen). protojson emits
+// such a field whenever it is set, including at its zero value, so the attribute must
 // default to null (optional(type) with no literal) rather than to the zero
 // value: collapsing "unset" into false/0 would silently override the cloud's
 // own default on every resource that left the field out. Modules null-guard
 // these attributes (`x == null ? ... : x`).
+//
+// Doc is the proto field's own documentation (the text above the field in
+// the .proto source, read from the embedded protodocs index), rendered as
+// `#` comment lines above the attribute. Nested object attributes cannot
+// carry a Terraform `description`, so the comment is the only place the
+// module can say what an input means -- and whoever wires main.tf reads the
+// generated file first. Because the text is the proto's, it cannot drift
+// from the spec the way a hand-written comment does. Note is the one extra
+// sentence a type rule asks for when it collapses a wrapper message to a
+// primitive (TypeRule.FlattenNote): the proto documentation describes the
+// wrapper, the attribute is the primitive, and the note bridges the two.
 type TFField struct {
 	Name     string
 	Type     TFType
 	Optional bool
 	Presence bool
+	Doc      string
+	Note     string
 }
 
+// commentLines returns the field's documentation and flatten note as the
+// lines of a `#` comment block (without the marker), or nil when the field
+// carries neither. Blank lines inside the documentation survive as bare `#`
+// lines so paragraph breaks in the proto read as paragraph breaks here.
+func (f TFField) commentLines() []string {
+	var lines []string
+	if doc := strings.TrimSpace(f.Doc); doc != "" {
+		for _, l := range strings.Split(doc, "\n") {
+			lines = append(lines, strings.TrimRight(l, " \t"))
+		}
+	}
+	if note := strings.TrimSpace(f.Note); note != "" {
+		lines = append(lines, note)
+	}
+	return lines
+}
+
+// Format renders the object type constraint. A documented attribute is set
+// off from its neighbours by a blank line on each side so the comment reads
+// as belonging to the attribute below it, the way every hand-authored module
+// in the catalog laid its variables out; undocumented attributes stay in a
+// compact run. Column alignment is not attempted here: the caller runs the
+// whole file through the HCL formatter, which is the only way to match
+// `tofu fmt` byte for byte.
 func (o TFObject) Format(indent int) string {
 	if len(o.Fields) == 0 {
 		return "object({})"
@@ -108,7 +146,8 @@ func (o TFObject) Format(indent int) string {
 	nextIndent := strings.Repeat("  ", indent+1)
 
 	var lines []string
-	for _, f := range o.Fields {
+	prevDocumented := false
+	for i, f := range o.Fields {
 		typeExpr := f.Type.Format(indent + 1)
 		if f.Optional {
 			if f.Presence {
@@ -118,7 +157,20 @@ func (o TFObject) Format(indent int) string {
 				typeExpr = wrapOptional(typeExpr, f.Type)
 			}
 		}
+		comment := f.commentLines()
+		documented := len(comment) > 0
+		if i > 0 && (documented || prevDocumented) {
+			lines = append(lines, "")
+		}
+		for _, c := range comment {
+			if c == "" {
+				lines = append(lines, nextIndent+"#")
+				continue
+			}
+			lines = append(lines, nextIndent+"# "+c)
+		}
 		lines = append(lines, fmt.Sprintf("%s%s = %s", nextIndent, f.Name, typeExpr))
+		prevDocumented = documented
 	}
 
 	return fmt.Sprintf("object({\n%s\n%s})", strings.Join(lines, "\n"), indentStr)

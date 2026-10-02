@@ -1,0 +1,28 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetScope
+metadata:
+  name: team-orders
+spec:
+  projectId:
+    value: my-gcp-project
+  scopeId: orders
+  namespaceLabels:
+    team: orders
+  namespaces:
+    - scopeNamespaceId: orders-api
+    - scopeNamespaceId: orders-workers
+  rbacRoleBindings:
+    - scopeRbacRoleBindingId: orders-devs
+      group:
+        value: orders-devs@example.com
+      role:
+        predefinedRole: EDIT
+    - scopeRbacRoleBindingId: orders-oncall
+      user:
+        value: oncall@example.com
+      role:
+        predefinedRole: VIEW
+  membershipBindings:
+    - membershipBindingId: orders-uc1
+      membership:
+        value: projects/my-gcp-project/locations/us-central1/memberships/orders-uc1

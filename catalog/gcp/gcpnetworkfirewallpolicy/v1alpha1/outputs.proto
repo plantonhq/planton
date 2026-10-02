@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1;
+
+// GcpNetworkFirewallPolicyStackOutputs captures the policy's identity after
+// provisioning.
+message GcpNetworkFirewallPolicyStackOutputs {
+  // The policy's name in GCP, as declared (or defaulted from
+  // metadata.name) -- what `gcloud compute network-firewall-policies
+  // describe` takes.
+  string policy_name = 1;
+
+  // The policy's server-assigned numeric ID.
+  string policy_id = 2;
+
+  // The policy's self-link URL: `.../global/firewallPolicies/{name}` for
+  // a global policy, `.../regions/{region}/firewallPolicies/{name}` for a
+  // regional one.
+  string self_link = 3;
+
+  // The region the policy lives in, or empty for a global policy -- the
+  // value that tells a consumer which resource family the policy is.
+  string region = 4;
+
+  // Google's complexity measure for the whole rule set -- the sum of each
+  // rule's tuple count (protocols x ports x sources x targets). A project
+  // has a quota of tuples per policy; watch this before adding wide rules.
+  int64 rule_tuple_count = 5;
+
+  // The association names, in the order declared -- what
+  // `gcloud compute network-firewall-policies associations list` shows
+  // and what a detach targets.
+  repeated string association_names = 6;
+}

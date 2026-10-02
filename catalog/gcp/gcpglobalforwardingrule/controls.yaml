@@ -74,7 +74,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: A global forwarding rule is an anycast VIP announced from Google's edge worldwide -- no single zone, region, or appliance embodies it, and no configuration can reduce it to one.
+        reference: A global forwarding rule is an anycast VIP announced from Google's edge worldwide -- no single zone, region, or appliance embodies it -- and a regional rule (region set) is a VIP served by the region's load-balancing fabric across its zones; neither can be reduced to one zone by configuration.
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_policy
@@ -84,4 +84,4 @@ spec:
       notes: An engine-side guard -- the Compute API has no deletion-protection flag on forwarding rules. The reserved IP behind a deleted rule stays reserved (its own kind's policy governs it), so recreation restores the same VIP.
     - control_id: managed-patching
       status: not_applicable
-      notes: The rule carries no software surface to patch -- the global load-balancing data plane is Google-managed infrastructure maintained invisibly.
+      notes: The rule carries no software surface to patch -- the load-balancing data plane (global or regional) is Google-managed infrastructure maintained invisibly.

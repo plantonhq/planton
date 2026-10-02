@@ -1,0 +1,4 @@
+name: gcphavpngateway-pulumi-project
+runtime:
+  name: go
+description: Planton GcpHaVpnGateway Pulumi module

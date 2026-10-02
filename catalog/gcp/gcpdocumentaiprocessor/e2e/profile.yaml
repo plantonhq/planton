@@ -1,0 +1,22 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpdocumentaiprocessor
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/documentai.admin; the module enables
+  # documentai.googleapis.com itself: an OCR processor in us and a Form
+  # Parser in eu. Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest, both scenarios, and the
+  # default-version and CMEK arms are clean on the pinned provider, and
+  # the accounting is total. Live facts the proof lane confirms: (1) both
+  # processor types are available to the harness project in those
+  # locations; (2) each processor RE-PLANS CLEAN on both engines; (3) the
+  # processor reads back ENABLED and the process endpoint output targets
+  # it; (4) destroy deletes the processor and the verifier reads 404. The
+  # default-version arm is proven offline (it needs a concrete version id
+  # Google publishes for the chosen type and location).
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

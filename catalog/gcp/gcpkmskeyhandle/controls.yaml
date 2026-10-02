@@ -1,0 +1,78 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpkmskeyhandle
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The handle is a pointer to a key; it stores no customer data of its own.
+    - control_id: enc-at-rest-cmk
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The handle exists to deliver a customer-managed Cloud HSM key to the resource that references kms_key; the key is the customer's, audited in Cloud KMS.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The handle terminates no connections; management calls ride Google's TLS-only Cloud KMS endpoint.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A key handle has no address of its own; Autokey grants only the protected service's agent encrypt and decrypt on the key.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The handle serves no traffic.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating a handle needs only cloudkms.keyHandles.create (roles/cloudkms.autokeyUser); the requester never gains key administration, and Autokey grants the service agent, not the requester, use of the key.
+    - control_id: workload-identity
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The protected service uses the key through its own Google-managed per-project service agent, which Autokey grants; no key material or long-lived credential is handed out.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Handle creation, the key Autokey creates, and its grant are Cloud KMS admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally; key use can be audited through Data Access logs.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The handle emits no metrics; its key appears in the Cloud KMS key inventory and key usage tracking.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Keys cannot be exported or backed up; a destroyed key version is recoverable only within its scheduled-destruction window, managed in Cloud KMS.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud KMS keys are replicated by Google within their location; there is no placement to choose.
+    - control_id: deletion-protection
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Google cannot delete a key handle or a Cloud KMS key -- destroy only forgets the handle, and the key keeps protecting its resources until an administrator schedules its versions for destruction.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud KMS Autokey and Cloud HSM are fully Google-operated.

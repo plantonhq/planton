@@ -32,4 +32,6 @@ spec:
         permissions:
           - datastore.databases.createTagBinding
         provenance: derived
-        notes: Required only when resource_manager_tags is set -- Google's Firestore IAM reference lists createTagBinding as the additional permission a create request with tags needs (listTagBindings/listEffectiveTags only matter for verifying bindings, which the modules never do). Verified against the same live reference; the committed inventory snapshot carries the datastore service prefix and lists this permission.
+        condition:
+          spec_field_set: resource_manager_tags
+        notes: Google's Firestore IAM reference lists createTagBinding as the additional permission a create request with tags needs (listTagBindings/listEffectiveTags only matter for verifying bindings, which the modules never do). Verified against the same live reference; the committed inventory snapshot carries the datastore service prefix and lists this permission.

@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "global_policy.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+        "regional_policy.go",
+        "rule_inputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/gcp/gcpnetworkfirewallpolicy/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "//shared/foreignkey/v1:foreignkey",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/compute",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

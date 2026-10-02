@@ -1,0 +1,54 @@
+# GcpCloudRunWorkerPool scenario: AUTOMATIC scaling between bounds, direct
+# VPC egress into the prerequisite subnet, a literal env var, revision
+# labels, and a TCP startup probe -- the levers a real queue worker sets.
+# The public worker-pool sample image idles without a health listener, so
+# the probe is left off the liveness side; the startup probe's TCP arm on
+# the sample's port proves the probe wiring.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudRunWorkerPool
+metadata:
+  name: planton-oss-e2e-gcprunwp-auto
+  id: planton-oss-e2e-gcprunwp-auto
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudrunworkerpool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  workerPoolName: planton-oss-e2e-gcprunwp-auto
+  description: Ephemeral autoscaled worker pool created by the Planton E2E harness; safe to delete
+  region: us-central1
+  containers:
+    - name: worker
+      image: us-docker.pkg.dev/cloudrun/container/worker-pool:latest
+      env:
+        - name: WORKER_MODE
+          value: idle
+      resources:
+        cpu: "1"
+        memory: 512Mi
+  revisionLabels:
+    e2e-scenario: automatic-scaling-vpc
+  vpcAccess:
+    networkInterfaces:
+      - network:
+          valueFrom:
+            kind: GcpVpcNetwork
+            name: planton-oss-e2e-gcpvpcnetwork-prereq
+            fieldPath: status.outputs.network_name
+        subnetwork:
+          valueFrom:
+            kind: GcpSubnetwork
+            name: planton-oss-e2e-gcpsnw-runwp-prereq
+            fieldPath: status.outputs.subnetwork_name
+    egress: PRIVATE_RANGES_ONLY
+  scaling:
+    scalingMode: AUTOMATIC
+    minInstanceCount: 1
+    maxInstanceCount: 2
+  deletionProtection: false
+  deletionPolicy: DELETE

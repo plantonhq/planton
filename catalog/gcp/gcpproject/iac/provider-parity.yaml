@@ -24,6 +24,11 @@ resources:
         arg: org_id
       - spec: spec.parent_id
         arg: folder_id
+      # A folder by reference (a GcpFolder's folder_id output) fills the
+      # same folder_id argument directly -- the composable form of the
+      # parent for a folder declared in the same chart.
+      - spec: spec.folder_id
+        arg: folder_id
 
   google_project_service:
     # Spec-driven fan-out: one resource per entry in spec.enabled_apis --

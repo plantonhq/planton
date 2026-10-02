@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	gcpcloudrunv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrun/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -43,7 +43,7 @@ func service(
 
 	// Secret values the env carries are stored in Secret Manager before the
 	// service exists, and the service reads each one by reference.
-	storedSecrets, err := cloudrunenv.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
+	storedSecrets, err := envsecrets.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to store the environment's secret values")
 	}
@@ -106,6 +106,12 @@ func service(
 		args.DeletionPolicy = pulumi.String(spec.DeletionPolicy)
 	}
 
+	// Resource Manager tags, bound at creation only (ForceNew): omitted
+	// when empty so a service without tags carries no tag surface.
+	if len(spec.ResourceManagerTags) > 0 {
+		args.Tags = pulumi.ToStringMap(spec.ResourceManagerTags)
+	}
+
 	// Deploy-from-source: Cloud Build produces the serving image (the
 	// Cloud Run functions build path) instead of a prebuilt image.
 	if spec.BuildConfig != nil {
@@ -128,8 +134,8 @@ func service(
 		if len(spec.BuildConfig.EnvironmentVariables) > 0 {
 			buildConfig.EnvironmentVariables = pulumi.ToStringMap(spec.BuildConfig.EnvironmentVariables)
 		}
-		if spec.BuildConfig.WorkerPool != "" {
-			buildConfig.WorkerPool = pulumi.String(spec.BuildConfig.WorkerPool)
+		if spec.BuildConfig.WorkerPool.GetValue() != "" {
+			buildConfig.WorkerPool = pulumi.String(spec.BuildConfig.WorkerPool.GetValue())
 		}
 		if spec.BuildConfig.ServiceAccount != "" {
 			buildConfig.ServiceAccount = pulumi.String(spec.BuildConfig.ServiceAccount)
@@ -255,7 +261,7 @@ func service(
 
 // buildTemplate maps the spec's revision-level surface onto the v2 revision
 // template: containers, volumes, scaling, networking, and hardware.
-func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) *cloudrunv2.ServiceTemplateArgs {
+func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[envsecrets.Key]envsecrets.Ref) *cloudrunv2.ServiceTemplateArgs {
 	template := &cloudrunv2.ServiceTemplateArgs{
 		Containers: buildContainers(spec, secretRefs),
 	}
@@ -437,12 +443,60 @@ func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[clo
 		template.Volumes = volumes
 	}
 
+	// Sandbox templates the supervisor container launches on demand.
+	// Emitted only when declared: the provider's wrapper block is a
+	// single-item list around the template list.
+	if len(spec.SandboxTemplates) > 0 {
+		templates := cloudrunv2.ServiceTemplateSandboxesTemplateArray{}
+		for _, sandbox := range spec.SandboxTemplates {
+			sandboxArgs := &cloudrunv2.ServiceTemplateSandboxesTemplateArgs{
+				Name:  pulumi.String(sandbox.Name),
+				Image: pulumi.String(sandbox.Image),
+			}
+			if len(sandbox.Command) > 0 {
+				sandboxArgs.Commands = pulumi.ToStringArray(sandbox.Command)
+			}
+			if len(sandbox.Args) > 0 {
+				sandboxArgs.Args = pulumi.ToStringArray(sandbox.Args)
+			}
+			if sandbox.WorkingDir != "" {
+				sandboxArgs.WorkingDir = pulumi.StringPtr(sandbox.WorkingDir)
+			}
+			if len(sandbox.Env) > 0 {
+				envs := cloudrunv2.ServiceTemplateSandboxesTemplateEnvArray{}
+				for _, env := range sandbox.Env {
+					envs = append(envs, &cloudrunv2.ServiceTemplateSandboxesTemplateEnvArgs{
+						Name:  pulumi.String(env.Name),
+						Value: pulumi.StringPtr(env.Value),
+					})
+				}
+				sandboxArgs.Envs = envs
+			}
+			if len(sandbox.VolumeMounts) > 0 {
+				mounts := cloudrunv2.ServiceTemplateSandboxesTemplateVolumeMountArray{}
+				for _, mount := range sandbox.VolumeMounts {
+					mountArgs := &cloudrunv2.ServiceTemplateSandboxesTemplateVolumeMountArgs{
+						Name:      pulumi.String(mount.Name),
+						MountPath: pulumi.String(mount.MountPath),
+					}
+					if mount.SubPath != "" {
+						mountArgs.SubPath = pulumi.StringPtr(mount.SubPath)
+					}
+					mounts = append(mounts, mountArgs)
+				}
+				sandboxArgs.VolumeMounts = mounts
+			}
+			templates = append(templates, sandboxArgs)
+		}
+		template.Sandboxes = &cloudrunv2.ServiceTemplateSandboxesArgs{Templates: templates}
+	}
+
 	return template
 }
 
 // buildContainers maps the spec's containers — the serving container plus
 // any sidecars sharing localhost and volumes, ordered by depends_on.
-func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) cloudrunv2.ServiceTemplateContainerArray {
+func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[envsecrets.Key]envsecrets.Ref) cloudrunv2.ServiceTemplateContainerArray {
 	containers := cloudrunv2.ServiceTemplateContainerArray{}
 
 	for containerIndex, container := range spec.Containers {
@@ -466,6 +520,12 @@ func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[c
 			containerArgs.DependsOns = pulumi.ToStringArray(container.DependsOn)
 		}
 
+		// Sandbox supervisor flag; omitted when false so the provider
+		// default applies cleanly.
+		if container.SandboxLauncher {
+			containerArgs.SandboxLauncher = pulumi.BoolPtr(true)
+		}
+
 		// Base image for automatic base-image updates on source deploys
 		// (pairs with build_config.enable_automatic_updates).
 		if container.BaseImageUri != "" {
@@ -480,7 +540,7 @@ func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[c
 				envArgs := &cloudrunv2.ServiceTemplateContainerEnvArgs{
 					Name: pulumi.String(envVar.Name),
 				}
-				if ref, stored := secretRefs[cloudrunenv.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
+				if ref, stored := secretRefs[envsecrets.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
 					envArgs.ValueSource = &cloudrunv2.ServiceTemplateContainerEnvValueSourceArgs{
 						SecretKeyRef: &cloudrunv2.ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs{
 							Secret:  ref.Secret,

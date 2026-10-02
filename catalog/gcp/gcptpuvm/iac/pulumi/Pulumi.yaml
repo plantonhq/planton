@@ -1,0 +1,4 @@
+name: gcptpuvm-pulumi-project
+runtime:
+  name: go
+description: Planton GcpTpuVm Pulumi module

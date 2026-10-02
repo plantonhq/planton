@@ -16,7 +16,7 @@ See `outputs.tf` — `table_id`, `self_link`, `project`, `dataset_id`, `type`,
 
 ## Provider
 
-Uses `hashicorp/google ~> 7.43` (GA line; dataset and table schemas are
+Uses `hashicorp/google ~> 8.3` (GA line; dataset and table schemas are
 byte-identical on google and google-beta).
 
 ## Destroy Parity

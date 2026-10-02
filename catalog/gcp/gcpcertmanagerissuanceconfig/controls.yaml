@@ -1,0 +1,66 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcertmanagerissuanceconfig
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The config stores no sensitive data -- a pool name, a key algorithm, a lifetime, and a percentage -- as Certificate Manager control-plane metadata inside Google's infrastructure. The private keys of issued certificates are generated and held by Google on the certificates, never here.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest to key (see enc-at-rest); key protection for the signing CA is the GcpPrivateCaCertificateAuthority's posture.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The config terminates no connections. It sets the strength of the certificates later served on TLS (key_algorithm) -- both choices are modern -- but the transport posture lives on the certificates and the proxies serving them.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: No network endpoint exists to expose; the config is read only by Certificate Manager when it issues certificates.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network surface exists to filter; the config is control-plane configuration.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The config receives no HTTP requests -- request filters have nothing to attach to.
+    - control_id: rbac
+      status: not_applicable
+      notes: Management access is project IAM posture (Certificate Manager roles). Issuance itself authorizes the Certificate Manager service agent against the pool through roles/privateca.certificateRequester, granted outside this resource.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The config runs no workloads and holds no credentials; issuance runs as Google's Certificate Manager service agent, a platform-issued identity.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths of its own exist to retire.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit surface. Control-plane changes land in Cloud Audit Logs as project-level posture, and each issued certificate is recorded by Certificate Authority Service on the pool.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The config publishes no metrics; issuance and renewal state surface on the certificates that name it.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from the manifest.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: A control-plane object with no zonal placement; Google serves it through the Certificate Manager control plane in its location.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset defaults to DELETE; setting deletion_policy=PREVENT makes destroy fail before touching the config -- a guard while certificates depend on it for renewal. Google additionally refuses deletion while a certificate still references it.
+      notes: No preset sets PREVENT; ABANDON leaves the config in GCP after it leaves management.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software to patch; certificate renewal is automatic, driven by lifetime and rotation_window_percentage.

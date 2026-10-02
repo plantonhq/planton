@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptpuqueuedresource.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpTpuQueuedResourceSpec defines a Cloud TPU queued resource
+// (`google_tpu_v2_queued_resource`) -- a request for TPU capacity that
+// waits in Google's queue until the capacity exists, then provisions the
+// TPU nodes it describes. It is Google's recommended way to get scarce TPU
+// capacity: instead of failing when a zone is out of chips (as a direct
+// GcpTpuVm create does), the request stays WAITING_FOR_RESOURCES and turns
+// into running TPUs when Google can place them.
+//
+// One request can ask for several nodes at once (one node_specs entry per
+// node), which Google provisions together. The nodes belong to the
+// request: destroying the request deletes them.
+//
+// Google publishes this resource only in its beta Terraform provider; the
+// module uses google-beta for it under the catalog's recorded admission.
+//
+// Immutable: everything. Any change replaces the request and the nodes it
+// created.
+message GcpTpuQueuedResourceSpec {
+  // The GCP project the request and its nodes live in: a literal project
+  // ID or a GcpProject reference. If omitted, the provider's default
+  // project is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The zone the capacity is requested in, e.g. "us-central1-a". Every
+  // node is created here.
+  string zone = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+-[a-z]$"
+  ];
+
+  // The request's id. Lowercase letters, digits, and hyphens, starting
+  // with a letter. Defaults to metadata.name.
+  string queued_resource_id = 3 [(buf.validate.field).cel = {
+    id: "queued_resource_id.format"
+    message: "queued_resource_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+  }];
+
+  // The TPU nodes requested, provisioned together once capacity exists.
+  repeated GcpTpuQueuedResourceNodeSpec node_specs = 4 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).cel = {
+      id: "node_specs.unique_node_id"
+      message: "node_id must be unique across node_specs"
+      expression: "this.filter(n, n.node_id != '').map(n, n.node_id).unique()"
+    }
+  ];
+
+  // What happens to the request when this resource is destroyed:
+  //   "" / "DELETE" -- the request is deleted, and with it every node it
+  //                    provisioned
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the request leaves management; its nodes keep
+  //                    running (and billing)
+  string deletion_policy = 5 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// GcpTpuQueuedResourceNodeSpec is one TPU node the request provisions.
+// The node's parent (projects/{project}/locations/{zone}) is derived by the
+// modules from the request's project and zone.
+message GcpTpuQueuedResourceNodeSpec {
+  // The node's id once provisioned -- its name in the project. Lowercase
+  // letters, digits, and hyphens, starting with a letter. Unset: Google
+  // generates one.
+  string node_id = 1 [(buf.validate.field).cel = {
+    id: "node_id.format"
+    message: "node_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+  }];
+
+  // The node itself.
+  GcpTpuQueuedResourceNode node = 2 [(buf.validate.field).required = true];
+}
+
+// GcpTpuQueuedResourceNode describes one requested TPU node.
+message GcpTpuQueuedResourceNode {
+  // The TPU software image, matched to the accelerator generation, e.g.
+  // "tpu-ubuntu2204-base" or "v2-alpha-tpuv5-lite".
+  string runtime_version = 1 [(buf.validate.field).required = true];
+
+  // The slice: generation and chip or core count, e.g. "v2-8",
+  // "v5litepod-8", "v6e-16". Unset: Google's default of "v2-8".
+  string accelerator_type = 2;
+
+  // What the node is for.
+  string description = 3;
+
+  // The node's network. Unset: the project's default network and
+  // subnetwork.
+  GcpTpuQueuedResourceNetworkConfig network_config = 4;
+}
+
+// GcpTpuQueuedResourceNetworkConfig is a requested node's network
+// interface.
+message GcpTpuQueuedResourceNetworkConfig {
+  // The VPC network: a GcpVpcNetwork reference or a literal
+  // projects/{project}/global/networks/{name}. Unset: "default".
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // The subnetwork in the zone's region: a GcpSubnetwork reference or a
+  // literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
+  // "default".
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnetwork = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_self_link"
+  ];
+
+  // Give the node's workers external IP addresses. Without them the
+  // subnetwork needs Private Google Access (or Cloud NAT).
+  bool enable_external_ips = 3;
+
+  // Let the workers forward packets with non-matching addresses.
+  bool can_ip_forward = 4;
+
+  // The number of queues on the interface. Unset: Google's default.
+  int32 queue_count = 5 [(buf.validate.field).int32.gte = 0];
+}

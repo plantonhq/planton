@@ -1,0 +1,9 @@
+package module
+
+// Output keys must match the field names in outputs.proto -- the outputs
+// transformer maps raw engine outputs onto the proto by name.
+const (
+	OpName               = "name"
+	OpSecuritySettingsId = "security_settings_id"
+	OpLocation           = "location"
+)

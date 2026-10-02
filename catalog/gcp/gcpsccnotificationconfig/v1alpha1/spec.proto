@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccnotificationconfig.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpSccNotificationConfigSpec streams Security Command Center findings to
+// a Pub/Sub topic as they are created or updated, at a project, folder, or
+// organization (`google_scc_v2_project_notification_config`,
+// `google_scc_v2_folder_notification_config`,
+// `google_scc_v2_organization_notification_config` -- the scope picks one).
+//
+// The topic is where alerting, ticketing, and SOAR pipelines subscribe. The
+// filter narrows the stream (e.g. only active high-severity findings), so a
+// team routes what matters and leaves the rest in the console.
+//
+// Two things must be true before findings arrive:
+//   - Security Command Center is activated on the scope (Standard is free;
+//     a project can be activated on its own when the organization is not).
+//   - The config's publisher can publish to the topic: a
+//     GcpPubSubTopicIamMember on the topic, role roles/pubsub.publisher,
+//     member referencing this config's service_account_member output.
+//     Creating the config does not check this; without the grant,
+//     notifications are silently dropped.
+message GcpSccNotificationConfigSpec {
+  option (buf.validate.message).cel = {
+    id: "pubsub_topic_required_off_project_scope"
+    message: "pubsub_topic is required on a folder or organization notification config"
+    expression: "(has(this.pubsub_topic) && (this.pubsub_topic.value != '' || has(this.pubsub_topic.value_from))) || !has(this.scope) || ((!has(this.scope.folder_id) || (this.scope.folder_id.value == '' && !has(this.scope.folder_id.value_from))) && this.scope.organization_id == '')"
+  };
+
+  // Whose findings are streamed. Omit for the provider's default project.
+  GcpSccNotificationConfigScope scope = 1;
+
+  // The config's ID, unique within its parent: 1-128 letters, digits,
+  // hyphens, or underscores. Immutable.
+  string config_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "config_id.format"
+      message: "config_id must be 1-128 letters, digits, hyphens, or underscores"
+      expression: "this.matches('^[a-zA-Z0-9_-]{1,128}$')"
+    }
+  ];
+
+  // What the config is for, up to 1024 characters.
+  string description = 3 [(buf.validate.field).string.max_len = 1024];
+
+  // The topic findings are published to: a literal
+  // projects/{project}/topics/{topic} or a GcpPubSubTopic reference.
+  // Required on folder and organization configs; Google lets a project
+  // config omit it. Grant the config's publisher on it with a
+  // GcpPubSubTopicIamMember (role roles/pubsub.publisher, member
+  // referencing the service_account_member output).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef pubsub_topic = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id",
+    (buf.validate.field).cel = {
+      id: "pubsub_topic.format"
+      message: "pubsub_topic must be projects/{project}/topics/{topic}"
+      expression: "!has(this.value) || this.value == '' || this.value.matches('^projects/[^/]+/topics/[^/]+$')"
+    }
+  ];
+
+  // Which finding create and update events are streamed (Google's
+  // streaming_config.filter). Restrictions of the form
+  // `<field> <operator> <value>`, combined with AND and OR (OR binds
+  // tighter), negated with a leading "-":
+  //   state = "ACTIVE" AND severity = "HIGH"
+  //   category = "OPEN_FIREWALL" AND state = "ACTIVE"
+  // Operators: = for every type; >, <, >=, <= for integers; : for substring
+  // match. Empty streams every finding.
+  string filter = 5;
+
+  // Where the config is stored. "global", the default, unless Security
+  // Command Center data residency was set up at activation (then the
+  // residency location, e.g. "eu" or "us").
+  string location = 6 [(buf.validate.field).cel = {
+    id: "location.format"
+    message: "location must be global or a residency location such as eu or us"
+    expression: "this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')"
+  }];
+
+  // What destroying this block does:
+  //   "" / "DELETE" -- the config is deleted and streaming stops
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the config leaves management and keeps streaming
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// GcpSccNotificationConfigScope names the project, folder, or organization
+// whose findings the config covers. At most one arm; all empty means the
+// provider's default project.
+message GcpSccNotificationConfigScope {
+  option (buf.validate.message).cel = {
+    id: "at_most_one_scope"
+    message: "set at most one of project_id, folder_id, or organization_id (empty means the provider's default project)"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1"
+  };
+
+  // A project: a literal project ID or a GcpProject reference.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // A folder: the folder's numeric ID -- a literal or a GcpFolder
+  // reference. Covers every project beneath it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+
+  // The organization: the numeric organization ID, without the
+  // organizations/ prefix.
+  string organization_id = 3 [(buf.validate.field).cel = {
+    id: "organization_id.numeric"
+    message: "organization_id must be the numeric organization ID, without the organizations/ prefix"
+    expression: "this == '' || this.matches('^[0-9]+$')"
+  }];
+}

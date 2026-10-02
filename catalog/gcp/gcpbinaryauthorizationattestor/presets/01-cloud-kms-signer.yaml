@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationAttestor
+metadata:
+  name: built-by-ci
+spec:
+  description: Images built from main by the CI pipeline
+  note:
+    humanReadableName: CI build pipeline
+  attestationAuthorityNote:
+    publicKeys:
+      - comment: Signing key held in Cloud KMS
+        pkixPublicKey:
+          kmsKeyVersion:
+            valueFrom:
+              kind: GcpKmsKey
+              name: ci-signing-key
+              fieldPath: status.outputs.initial_version_name

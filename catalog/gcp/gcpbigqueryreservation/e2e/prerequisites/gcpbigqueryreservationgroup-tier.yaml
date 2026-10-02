@@ -1,0 +1,19 @@
+# The reservation group the in-group scenario's reservation joins.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservationGroup
+metadata:
+  name: planton-oss-e2e-gcpbqrs-group
+  id: planton-oss-e2e-gcpbqrs-group
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigqueryreservationgroup
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  reservationGroupName: e2e-bqrs-group-${E2E_RUN_ID}
+  deletionPolicy: DELETE

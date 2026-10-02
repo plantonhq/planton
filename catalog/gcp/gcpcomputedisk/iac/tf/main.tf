@@ -34,7 +34,9 @@ resource "google_compute_disk" "this" {
 
   description = var.spec.description != "" ? var.spec.description : null
   type        = local.type
-  size        = var.spec.size_gb
+  # Zero means unset: the disk then takes the image or snapshot size, or
+  # the type's default, which the API computes.
+  size = var.spec.size_gb != 0 ? var.spec.size_gb : null
 
   image                   = local.image
   snapshot                = local.snapshot

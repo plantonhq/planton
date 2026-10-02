@@ -1,0 +1,4 @@
+name: gcpfolder-pulumi-project
+runtime:
+  name: go
+description: Planton GcpFolder Pulumi module

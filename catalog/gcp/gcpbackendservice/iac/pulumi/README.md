@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains the Pulumi implementation for deploying global GCP Compute Engine backend services using Planton's `GcpBackendService` API. The module is written in Go and creates a `compute.BackendService` (backed by `google_compute_backend_service`) plus one `compute.BackendServiceSignedUrlKey` per configured signing key.
+This directory contains the Pulumi implementation for deploying GCP Compute Engine backend services using Planton's `GcpBackendService` API. The module is written in Go and creates exactly one of `compute.BackendService` (global; `spec.region` empty) or `compute.RegionBackendService` (regional; `spec.region` set, in `region_backend_service.go`), the same switch the Terraform module makes with its count guards, plus — on the global arm — one `compute.BackendServiceSignedUrlKey` per configured signing key.
 
 A backend service is the hub of the L7 load balancing family: it owns the backend list, health checking, session affinity, Cloud CDN policy, IAP, Cloud Armor attachment, and request logging. URL maps route traffic to it by self-link.
 
@@ -92,14 +92,16 @@ Spec fields mirror the Terraform module: protocol/scheme/timeouts, the singular 
 
 | Output Key | Type | Description |
 |------------|------|-------------|
-| `self_link` | string | Self-link URI — the value URL maps reference |
+| `self_link` | string | Self-link URI — the value URL maps and passthrough forwarding rules reference (`regions/{region}` in place of `global` for a regional service) |
 | `backend_service_name` | string | Name of the backend service in GCP |
 | `generated_id` | string | Server-assigned numeric ID |
 | `fingerprint` | string | Optimistic-concurrency fingerprint |
+| `region` | string | Region of a regional backend service; empty for global |
 
 ## Behavior Notes
 
 - **Immutability**: `backend_service_name` and `project_id` are ForceNew; everything else — backends, CDN policy, affinity, IAP — updates in place.
+- **The scheme is always sent**: an unset `load_balancing_scheme` is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than omitted. The provider's own default is `EXTERNAL_MANAGED` and the scheme is immutable, so leaving the choice to the provider would replace an existing classic backend service on its next apply. The Terraform module does the same.
 - **Secrets**: the IAP `oauth2_client_secret`, the SigV4 `access_key`, and every signed-URL `key_value` are marked secret in Pulumi state (`pulumi.ToSecret`) and never exported.
 - **One health check**: GCP caps `health_checks` at one; the SDK flattens the one-element set to a plain string, matching the spec's singular reference.
 - **TTL semantics**: a 0 TTL in the spec means "unset — let the GCP API default"; cache-mode/TTL and scheme-applicability coherence is enforced by the spec before deploy.

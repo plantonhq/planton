@@ -1,0 +1,46 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisCluster
+metadata:
+  name: orders-cache
+spec:
+  projectId:
+    value: my-gcp-project
+  clusterName: orders-cache
+  region: us-central1
+  # Three shards, one replica each: six nodes, every shard survives a node
+  # failure and serves reads from its replica.
+  shardCount: 3
+  replicaCount: 1
+  nodeType: REDIS_HIGHMEM_MEDIUM
+  redisConfigs:
+    maxmemory-policy: allkeys-lru
+  pscConfigs:
+    - network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: prod-vpc
+          fieldPath: status.outputs.network_id
+  # Both security modes are immutable -- decided here, at creation.
+  authorizationMode: AUTH_MODE_IAM_AUTH
+  transitEncryptionMode: TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION
+  serverCaMode: SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA
+  # Every write reaches disk within a second; a node restart keeps its data.
+  persistenceConfig:
+    mode: AOF
+    aofConfig:
+      appendFsync: EVERYSEC
+  zoneDistributionConfig:
+    mode: MULTI_ZONE
+  # Daily backups at 02:00 UTC, kept 35 days.
+  automatedBackupConfig:
+    startHour: 2
+    retention: "3024000s"
+  # Google may apply maintenance Sundays from 03:00 UTC.
+  maintenancePolicy:
+    weeklyMaintenanceWindow:
+      day: SUNDAY
+      hour: 3
+  labels:
+    tier: production
+  deletionProtectionEnabled: true
+  deletionPolicy: PREVENT

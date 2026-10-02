@@ -42,7 +42,7 @@ locals {
   kms_key_id = try(var.spec.kms_key_id, "") != "" ? var.spec.kms_key_id : null
 
   # Snapshots (Redis/Valkey only — CEL guards prevent Memcached usage)
-  daily_snapshot_time     = try(var.spec.daily_snapshot_time, null) != "" ? var.spec.daily_snapshot_time : null
+  daily_snapshot_time      = try(var.spec.daily_snapshot_time, null) != "" ? var.spec.daily_snapshot_time : null
   snapshot_retention_limit = coalesce(try(var.spec.snapshot_retention_limit, null), 0)
   snapshot_arns_to_restore = coalesce(try(var.spec.snapshot_arns_to_restore, []), [])
 

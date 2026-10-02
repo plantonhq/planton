@@ -34,6 +34,13 @@ spec:
   #     arms need multi-apply choreography the framework does not model
   #     yet.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: both templates gained
+  # scheduling.host_error_timeout_seconds (the regional-autoscaled scenario
+  # sets 120) and managed workload identity; the earlier live proof predates
+  # them. Workload identity stays offline-proven (needs a pool); the next
+  # proof confirms the timeout round-trips on the regional template and re-
+  # plans clean.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 45

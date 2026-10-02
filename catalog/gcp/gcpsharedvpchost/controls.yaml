@@ -1,0 +1,71 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpsharedvpchost
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: Enabling a Shared VPC host stores no customer data -- it is one bit of Compute Engine control-plane state on the project.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The host role terminates no connections; management API calls ride Google's TLS-only endpoints like every GCP API.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: There is no endpoint to expose -- the host role is evaluated inside Google's control plane when a service project places a workload; the networks themselves carry their own posture on GcpVpcNetwork and GcpSubnetwork.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network path exists on the role itself; firewall posture belongs to the host's networks.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served; there is no inbound traffic for a WAF or request filter to inspect.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Enabling and disabling the host role authorizes against compute.organizations.enableXpnHost / disableXpnHost, which Google grants only through roles/compute.xpnAdmin on the ORGANIZATION or a folder -- never on the project alone -- so the act is gated to organization-level network administrators by design.
+      notes: Which service projects may use which subnetworks is a separate grant (roles/compute.networkUser) declared with the catalog's IAM kinds.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through the host role -- it carries no credentials and calls no APIs.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: enableXpnHost and disableXpnHost land in Cloud Audit Logs (Admin Activity) unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: The host role emits no operational metrics and the spec has no logging or monitoring surface; the networks it shares carry their own VPC Flow Logs posture.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The host role is global project state in Google's control plane with no failure-domain choice; the shared networks' regional and zonal posture belongs to their own kinds.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE (disable the host role; refused by Google while any service project is still attached); PREVENT makes destroy fail outright; ABANDON unmanages the resource while the project stays a host with every attachment intact.
+      notes: Google's own guard -- no disable while attachments exist -- bounds the blast radius; PREVENT is the guard for the host every service project in the organization depends on.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; the Compute Engine control plane that holds the host role is Google's own infrastructure.

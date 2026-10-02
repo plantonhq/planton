@@ -1,0 +1,35 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBillingBudget
+metadata:
+  name: data-platform-baseline
+spec:
+  billingAccount: 012345-6789AB-CDEF01
+  displayName: Data platform -- no worse than last month
+  # Last calendar period's spend is this period's budget: the guardrail
+  # follows the team's own baseline instead of a number someone updates.
+  amount:
+    lastPeriodAmount: true
+  budgetFilter:
+    # Everything under the data-platform folder.
+    resourceAncestors:
+      - valueFrom:
+          kind: GcpFolder
+          name: data-platform
+          fieldPath: status.outputs.name
+    calendarPeriod: MONTH
+    # Gross usage: a promotion ending must not look like growth.
+    creditTypesTreatment: EXCLUDE_ALL_CREDITS
+  thresholdRules:
+    - thresholdPercent: 1.0
+      spendBasis: FORECASTED_SPEND
+    - thresholdPercent: 1.2
+  # Every update to a Pub/Sub topic: the hook for an automated response.
+  notifications:
+    pubsubTopic:
+      valueFrom:
+        kind: GcpPubSubTopic
+        name: budget-events
+        fieldPath: status.outputs.topic_id
+    disableDefaultIamRecipients: true
+  ownershipScope: BILLING_ACCOUNT
+  deletionPolicy: PREVENT

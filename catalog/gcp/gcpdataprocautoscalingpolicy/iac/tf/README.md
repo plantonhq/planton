@@ -6,7 +6,7 @@ This Terraform module provisions a Dataproc autoscaling policy (`google_dataproc
 
 One policy can govern many clusters: each cluster attaches it by reference (`autoscaling_policy_uri`), so scaling behavior is tuned in one place. Policy contents are mutable — updating re-tunes every attached cluster — but the API refuses to delete a policy while any cluster references it.
 
-The module enables the Dataproc API with `disable_on_destroy=false` so a fresh project works first try and teardown never disables the API project-wide. Zero-valued optional fields (weights, floors, fractions, cooldown) are withheld so GCP's defaults apply, identically to the Pulumi module. The autoscaling-policy API has no labels surface, so no platform attribution labels are stamped. The module runs on the plain `google` provider — every modeled field is GA on the released 7.x line.
+The module enables the Dataproc API with `disable_on_destroy=false` so a fresh project works first try and teardown never disables the API project-wide. Zero-valued optional fields (weights, floors, fractions, cooldown) are withheld so GCP's defaults apply, identically to the Pulumi module. The autoscaling-policy API has no labels surface, so no platform attribution labels are stamped. The module runs on the plain `google` provider — every modeled field is GA on the released 8.x line.
 
 ## Usage with Planton CLI
 

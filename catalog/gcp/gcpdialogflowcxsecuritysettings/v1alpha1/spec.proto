@@ -1,0 +1,185 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDialogflowCxSecuritySettingsAudioExport records the audio of
+// telephony conversations into a Cloud Storage bucket for post-conversation
+// analytics (`audio_export_settings`). Export is off when gcs_bucket is
+// empty or when retention_strategy is REMOVE_AFTER_CONVERSATION. Audio
+// sent to implicit sessions through Sessions.DetectIntent is never
+// exported.
+message GcpDialogflowCxSecuritySettingsAudioExport {
+  // The bucket the audio lands in: a GcpGcsBucket reference or a literal
+  // bucket name. Setting it makes Google grant the Dialogflow service agent
+  // roles/storage.objectCreator on the bucket, so whoever applies this
+  // needs storage.buckets.setIamPolicy there. Objects then follow the
+  // bucket's own retention and lifecycle rules.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef gcs_bucket = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  // The object-name pattern for exported audio files. Empty uses Google's
+  // default naming.
+  string audio_export_pattern = 2;
+
+  // The file format of exported audio -- telephony recordings only today:
+  //   MULAW -- G.711 mu-law PCM at 8 kHz (the telephone-native format)
+  //   MP3   -- MP3
+  //   OGG   -- OGG Vorbis
+  // Empty leaves Google's default.
+  string audio_format = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "MULAW",
+        "MP3",
+        "OGG"
+      ]
+    }
+  ];
+
+  // Redact sensitive spoken content in the exported audio as well as in the
+  // transcripts.
+  bool enable_audio_redaction = 4;
+}
+
+// GcpDialogflowCxSecuritySettingsSpec defines Dialogflow CX security
+// settings (`google_dialogflow_cx_security_settings`) -- the redaction,
+// retention, audio-export, and Insights-export policy that one or more
+// Dialogflow CX agents in the same project and location apply to every
+// conversation. A GcpDialogflowCxAgent attaches by referencing the `name`
+// output from its security_settings field; several agents may share one
+// set, which is why the settings are a block of their own rather than part
+// of an agent.
+//
+// What it governs:
+//   - redaction: PII found by Sensitive Data Protection (DLP) is scrubbed
+//     from everything Dialogflow persists, optionally shaped by your own
+//     inspect and de-identify templates
+//   - retention: how long conversation history is kept (a window in days,
+//     or removed when the conversation ends)
+//   - audio export: telephony audio recorded into your Cloud Storage bucket
+//   - Insights export: finished conversations sent to Conversational
+//     Insights for its analyzers
+//
+// Immutable: project_id and location (a change replaces the settings).
+// Everything else updates in place.
+message GcpDialogflowCxSecuritySettingsSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.one_retention_rule"
+    expression: "!(this.retention_strategy != '' && this.retention_window_days > 0)"
+    message: "set at most one of retention_strategy and retention_window_days -- Google accepts only one retention rule"
+  };
+
+  // The GCP project the settings live in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Dialogflow CX location, e.g. "global" or "us-central1". The
+  // settings apply only to agents in this same location, and the inspect
+  // and de-identify templates must live in this region too. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^(global|[a-z]+(-[a-z]+[0-9]+)?)$"
+  ];
+
+  // Human-readable name, unique within the location. Defaults to
+  // metadata.name. Mutable in place.
+  string display_name = 3;
+
+  // How Dialogflow redacts sensitive data before it persists anything:
+  //   REDACT_WITH_SERVICE -- call Sensitive Data Protection to scrub the
+  //                          data (the inspect and de-identify templates
+  //                          below shape what is found and how it is
+  //                          replaced)
+  // Empty means no redaction.
+  string redaction_strategy = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: ["REDACT_WITH_SERVICE"]
+    }
+  ];
+
+  // Which data redaction applies to:
+  //   REDACT_DISK_STORAGE -- everything written to disk or other durable
+  //                          storage, temporary files included
+  // Empty means nothing is redacted, even with a redaction strategy set.
+  string redaction_scope = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: ["REDACT_DISK_STORAGE"]
+    }
+  ];
+
+  // A Sensitive Data Protection inspect template deciding WHAT counts as
+  // sensitive (info types, likelihood, custom detectors):
+  // projects/{project}/locations/{location}/inspectTemplates/{template} or
+  // organizations/{org}/locations/{location}/inspectTemplates/{template},
+  // in the same region as these settings. Empty uses Google's default
+  // inspect configuration.
+  string inspect_template = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^(projects|organizations)/[^/]+/locations/[^/]+/inspectTemplates/[^/]+$"
+  ];
+
+  // A Sensitive Data Protection de-identify template deciding HOW found
+  // data is replaced (masking, tokenization, bucketing):
+  // projects/{project}/locations/{location}/deidentifyTemplates/{template}
+  // or the organizations/ form, in the same region. Empty replaces
+  // sensitive values with "[redacted]".
+  string deidentify_template = 7 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^(projects|organizations)/[^/]+/locations/[^/]+/deidentifyTemplates/[^/]+$"
+  ];
+
+  // What the retention rule purges when it fires. DIALOGFLOW_HISTORY
+  // (conversation history) is the only data type Google defines.
+  repeated string purge_data_types = 8 [(buf.validate.field).repeated.items.string = {
+    in: ["DIALOGFLOW_HISTORY"]
+  }];
+
+  // Retain sensitive conversation data only while the conversation lasts:
+  //   REMOVE_AFTER_CONVERSATION -- removed when the conversation ends (a
+  //                                session without an explicit
+  //                                conversation ends with the session)
+  // This also turns off audio export and Insights export. Set this or
+  // retention_window_days, never both.
+  string retention_strategy = 9 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: ["REMOVE_AFTER_CONVERSATION"]
+    }
+  ];
+
+  // Keep sensitive conversation data for this many days. Only values below
+  // Dialogflow's default TTL (365 days; 30 for Agent Assist traffic) take
+  // effect -- a larger value is ignored and the default applies, as does 0
+  // or unset. Set this or retention_strategy, never both.
+  int32 retention_window_days = 10 [(buf.validate.field).int32.gte = 0];
+
+  // Record telephony audio into a Cloud Storage bucket.
+  GcpDialogflowCxSecuritySettingsAudioExport audio_export_settings = 11;
+
+  // Send each finished conversation to Conversational Insights and run its
+  // analyzers. Ignored under REMOVE_AFTER_CONVERSATION.
+  bool enable_insights_export = 12;
+
+  // What happens to the settings when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (an agent that references the settings is
+  //                    destroyed first, because it depends on them)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the settings leave management and stay in GCP
+  string deletion_policy = 13 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

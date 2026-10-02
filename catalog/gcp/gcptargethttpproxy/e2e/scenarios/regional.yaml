@@ -1,0 +1,32 @@
+# GcpTargetHttpProxy scenario: the REGIONAL arm
+# (google_compute_region_target_http_proxy) -- a set region routes the module
+# down the regional branch and the proxy points at a regional URL map fixture
+# (itself over a regional backend service and health check, the whole chain
+# declared here because a path-declared fixture's own annotation is never
+# read). Keep-alive is set to prove the immutable regional argument
+# round-trips.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTargetHttpProxy
+metadata:
+  name: planton-oss-e2e-gcpthp-regional
+  id: planton-oss-e2e-gcpthp-regional
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptargethttpproxy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcptargethttpproxy/e2e/prerequisites/gcphealthcheck-regional.yaml,catalog/gcp/gcptargethttpproxy/e2e/prerequisites/gcpbackendservice-regional.yaml,catalog/gcp/gcptargethttpproxy/e2e/prerequisites/gcpurlmap-regional.yaml"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional target HTTP proxy created by the Planton E2E harness; safe to delete
+  region: us-central1
+  urlMap:
+    valueFrom:
+      kind: GcpUrlMap
+      name: planton-oss-e2e-gcpthp-rum
+      fieldPath: status.outputs.self_link
+  httpKeepAliveTimeoutSec: 610
+  deletionPolicy: DELETE

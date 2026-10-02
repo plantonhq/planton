@@ -120,7 +120,7 @@ func TestVerify_Pulumi_ASecretHomeReadThroughUnreachableCatalogHelpersIsANoticeN
 		"Pulumi.yaml": "name: x\nruntime: go\n",
 		"main.go":     validPulumiMain,
 		"module/module.go": "package module\n\nimport _ \"" + catalogModulePath +
-			"/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv\"\n",
+			"/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets\"\n",
 	})
 	result := mustVerify(t, Input{KindName: "GcpCloudRun", ModuleDir: delegating, Provisioner: provisioner.ProvisionerTypePulumi})
 	if warnings := secretHomeWarnings(result); len(warnings) > 0 {

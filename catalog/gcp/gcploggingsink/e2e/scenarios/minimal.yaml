@@ -4,8 +4,8 @@
 # writer-identity mint live. project_id is deliberately omitted (the
 # harness-exported test project applies). Sink names are project-scoped
 # and hard-deleted, so a fixed name is safe across runs. NOTE: the lane
-# proves the sink; granting writer_identity on the bucket is chart
-# surface exercised by the destination kind's own iamMembers.
+# proves the sink; granting writer_identity on the bucket is a separate
+# GcpGcsBucketIamMember whose member references this sink's output.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpLoggingSink
 metadata:

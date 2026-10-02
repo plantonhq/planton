@@ -1,0 +1,18 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: restrict-locations
+spec:
+  scope:
+    folderId:
+      valueFrom:
+        kind: GcpFolder
+        name: production
+        fieldPath: status.outputs.folder_id
+  constraint: gcp.resourceLocations
+  policy:
+    inheritFromParent: false
+    rules:
+      - values:
+          allowedValues:
+            - in:us-locations

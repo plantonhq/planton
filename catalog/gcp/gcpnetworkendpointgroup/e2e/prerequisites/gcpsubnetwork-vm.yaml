@@ -1,0 +1,28 @@
+# Extra-instance GcpSubnetwork fixture: the subnet the endpoint VM and the
+# zonal group live in (the registry's prerequisite network is custom-mode,
+# so a subnet is required).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSubnetwork
+metadata:
+  name: planton-oss-e2e-gcpneg-subnet
+  id: planton-oss-e2e-gcpneg-subnet
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkendpointgroup
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral subnet for the gcpnetworkendpointgroup E2E chain; safe to delete
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: planton-oss-e2e-gcpneg-subnet
+  region: us-central1
+  ipCidrRange: 10.132.0.0/24
+  deletionPolicy: DELETE

@@ -49,6 +49,63 @@ Layer-7 DDoS detection learns baselines and can auto-deploy mitigations
 via `thresholdConfigs` (confidence, impacted-baseline, expiration).
 Start with detection only (`enable` without auto-deploy thresholds) and
 graduate to auto-deploy once you trust its verdicts on your traffic.
+Adaptive Protection watches global Application Load Balancers only; a
+regional policy cannot carry it.
+
+## One kind, two scopes
+
+`region` empty builds Google's GLOBAL security policy — the one a global
+backend service or backend bucket attaches. `region` set builds the
+REGIONAL policy — the one a regional backend service (regional external
+or internal Application Load Balancer) attaches. Scopes must match: a
+regional backend service refuses a global policy and vice versa, and the
+`policy_self_link` output carries `regions/{region}` so a chart can tell
+them apart. A policy cannot move between scopes; changing `region`
+recreates it, and the backend service must be re-pointed.
+
+The regional collection is a narrower product. It has no labels (a
+regional policy carries no platform labels either), no Adaptive
+Protection, no reCAPTCHA (neither the policy-level site key nor
+per-rule token options), no `requestBodyInspectionSize` (the WAF
+inspects the default 8KB), no `redirect` action, and no header
+injection; rate limits exceed to `deny(STATUS)` only. Every one of those
+is rejected before deploy when `region` is set, with the message naming
+the lever, so a manifest moved from global to regional fails loudly
+instead of silently dropping protection.
+
+## Network policies filter packets, not requests
+
+`type: CLOUD_ARMOR_NETWORK` (regional only) is a different product under
+the same name: it sits in front of passthrough Network Load Balancers,
+protocol forwarding rules, and VMs with public IPs, and it sees packets.
+Its rules match through `networkMatch` — source and destination ranges
+and ports, IP protocols, source country codes, source ASNs, and
+`userDefinedFields` (up to 4 bytes read at a fixed offset from the IPv4,
+IPv6, TCP, or UDP header, optionally masked) — never through the HTTP
+`match`. Every listed field must match (AND); within a field any listed
+value matches (OR); an empty `networkMatch: {}` matches every packet and
+is how the default rule is written. A rule that names a user-defined
+field the policy never defined is rejected before deploy.
+
+`ddosProtectionConfig.ddosProtection` is the reason most network
+policies exist. `STANDARD` is Google's always-on protection, free with
+the load balancer. `ADVANCED` adds the network-layer mitigations of
+Cloud Armor Enterprise (Managed Protection Plus) and needs two things:
+the project enrolled in Enterprise, and the region enrolled through a
+network edge security service — declare `networkEdgeSecurityService` on
+exactly one policy per region per project (Google allows one). Use
+`ADVANCED_PREVIEW` first: Google logs what it would mitigate without
+mitigating, the same preview habit as the rules. Without an Enterprise
+subscription, `ADVANCED` is accepted by the API and silently does
+nothing more than `STANDARD`; the module cannot check the subscription
+for you.
+
+## Priority 0 is a real rule
+
+Priorities run 0 to 2147483647 and 0 is the HIGHEST — the rule Google
+evaluates first. It is a legal, common choice for an emergency block. The
+spec treats priority by presence, so 0 is accepted; only an omitted
+priority is rejected.
 
 ## Teardown discipline
 

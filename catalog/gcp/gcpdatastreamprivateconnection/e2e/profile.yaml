@@ -1,0 +1,21 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpdatastreamprivateconnection
+spec:
+  # Awaiting the live proof lane. The vpc-peering scenario proves in the
+  # harness project with roles/datastream.admin and roles/compute.networkAdmin
+  # (the peering lands on the VPC): the registry's prerequisite VPC deploys
+  # first, then Datastream peers with it through a free /29; the module
+  # enables datastream.googleapis.com itself. Offline bar met: both modules
+  # build and validate, offline plans for the reference manifest, the
+  # scenario, its fixture, and a PSC-interface arm are clean on the pinned
+  # provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) the connection reaches CREATED (peering can take several
+  # minutes) and RE-PLANS CLEAN on both engines; (2) the platform attribution
+  # labels land; (3) destroy with FORCE removes Datastream's routes and the
+  # peering, the verifier reads 404, and the VPC then deletes cleanly.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 45

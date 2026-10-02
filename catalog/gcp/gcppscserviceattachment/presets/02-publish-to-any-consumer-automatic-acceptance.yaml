@@ -1,0 +1,35 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPscServiceAttachment
+metadata:
+  name: platform-metrics-psc
+spec:
+  projectId:
+    value: my-gcp-project
+  attachmentName: platform-metrics-psc
+  description: Internal metrics gateway published to every project in the organization
+  region: us-central1
+  targetService:
+    valueFrom:
+      kind: GcpGlobalForwardingRule
+      name: metrics-gateway-ilb
+      fieldPath: status.outputs.self_link
+  # Two NAT subnets: capacity for a large consumer fleet.
+  natSubnets:
+    - valueFrom:
+        kind: GcpSubnetwork
+        name: metrics-psc-nat-a
+        fieldPath: status.outputs.subnetwork_self_link
+    - valueFrom:
+        kind: GcpSubnetwork
+        name: metrics-psc-nat-b
+        fieldPath: status.outputs.subnetwork_self_link
+  # Any project connects; only the reject list stands in the way.
+  connectionPreference: ACCEPT_AUTOMATIC
+  consumerRejectLists:
+    - value: untrusted-vendor-project
+  # Backends speak the PROXY protocol and log the consumer's real address.
+  enableProxyProtocol: true
+  # Register connected endpoints under an internal domain via Cloud DNS.
+  domainNames:
+    - metrics.internal.example.
+  deletionPolicy: DELETE

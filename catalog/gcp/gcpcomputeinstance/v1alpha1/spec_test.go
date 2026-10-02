@@ -41,7 +41,7 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 			Zone:        "us-central1-a",
 			MachineType: "e2-medium",
 			BootDisk: &GcpComputeInstanceBootDisk{
-				Image: "debian-cloud/debian-12",
+				Image: strVal("debian-cloud/debian-12"),
 			},
 			NetworkInterfaces: []*GcpComputeInstanceNetworkInterface{
 				{Network: strVal("default")},
@@ -142,8 +142,23 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 	Context("boot_disk source arms (CEL)", func() {
 		It("accepts image as the sole source", func() {
 			spec := makeValidSpec()
-			spec.BootDisk = &GcpComputeInstanceBootDisk{Image: "debian-cloud/debian-12"}
+			spec.BootDisk = &GcpComputeInstanceBootDisk{Image: strVal("debian-cloud/debian-12")}
 			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("accepts a GcpComputeImage reference as the sole source", func() {
+			spec := makeValidSpec()
+			spec.BootDisk = &GcpComputeInstanceBootDisk{Image: refVal("web-base", "status.outputs.self_link")}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects an image reference together with source_snapshot", func() {
+			spec := makeValidSpec()
+			spec.BootDisk = &GcpComputeInstanceBootDisk{
+				Image:          refVal("web-base", "status.outputs.self_link"),
+				SourceSnapshot: "base-snap",
+			}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 
 		It("accepts source_snapshot as the sole source", func() {
@@ -169,7 +184,7 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 		It("rejects a boot disk with both image and snapshot", func() {
 			spec := makeValidSpec()
 			spec.BootDisk = &GcpComputeInstanceBootDisk{
-				Image:          "debian-cloud/debian-12",
+				Image:          strVal("debian-cloud/debian-12"),
 				SourceSnapshot: "my-snapshot",
 			}
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
@@ -178,7 +193,7 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 		It("rejects a boot disk with image and source_disk", func() {
 			spec := makeValidSpec()
 			spec.BootDisk = &GcpComputeInstanceBootDisk{
-				Image:      "debian-cloud/debian-12",
+				Image:      strVal("debian-cloud/debian-12"),
 				SourceDisk: strVal("projects/p/zones/us-central1-a/disks/d"),
 			}
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
@@ -259,7 +274,7 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 			spec := makeValidSpec()
 			// Regional boot disks are legal only from a snapshot source —
 			// GCP rejects creating one from an image (live-verified 400).
-			spec.BootDisk.Image = ""
+			spec.BootDisk.Image = nil
 			spec.BootDisk.SourceSnapshot = "projects/my-project/global/snapshots/base-snap"
 			spec.BootDisk.ReplicaZones = []string{"us-central1-a", "us-central1-b"}
 			Expect(protovalidate.Validate(spec)).To(BeNil())
@@ -956,7 +971,7 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 				MachineType:  "n2-standard-8",
 				Description:  "PostgreSQL primary",
 				BootDisk: &GcpComputeInstanceBootDisk{
-					Image:      "ubuntu-os-cloud/ubuntu-2404-lts-amd64",
+					Image:      strVal("ubuntu-os-cloud/ubuntu-2404-lts-amd64"),
 					SizeGb:     100,
 					Type:       "pd-balanced",
 					AutoDelete: boolPtr(true),
@@ -998,6 +1013,39 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 				AllowStoppingForUpdate: boolPtr(true),
 			}
 			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+	})
+
+	Context("host error timeout and workload identity", func() {
+		It("accepts host_error_timeout_seconds on the 30-second grid", func() {
+			for _, v := range []int32{90, 120, 330} {
+				spec := makeValidSpec()
+				spec.Scheduling = &GcpComputeInstanceScheduling{HostErrorTimeoutSeconds: proto.Int32(v)}
+				Expect(protovalidate.Validate(spec)).To(BeNil())
+			}
+		})
+
+		It("rejects host_error_timeout_seconds off the grid or out of range", func() {
+			for _, v := range []int32{100, 60, 360} {
+				spec := makeValidSpec()
+				spec.Scheduling = &GcpComputeInstanceScheduling{HostErrorTimeoutSeconds: proto.Int32(v)}
+				Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+			}
+		})
+
+		It("accepts a SPIFFE workload identity", func() {
+			spec := makeValidSpec()
+			spec.WorkloadIdentityConfig = &GcpComputeInstanceWorkloadIdentityConfig{
+				Identity:                   "spiffe://my-project.svc.id.goog/ns/default/sa/app",
+				IdentityCertificateEnabled: true,
+			}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a workload identity that is not a SPIFFE ID", func() {
+			spec := makeValidSpec()
+			spec.WorkloadIdentityConfig = &GcpComputeInstanceWorkloadIdentityConfig{Identity: "app@my-project.iam.gserviceaccount.com"}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 	})
 })

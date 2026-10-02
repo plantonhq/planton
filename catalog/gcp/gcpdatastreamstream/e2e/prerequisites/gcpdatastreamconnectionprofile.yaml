@@ -1,0 +1,22 @@
+# Consumer-scoped GcpDatastreamConnectionProfile install profile for the
+# gcpdstrm chain: the BigQuery destination profile the stream writes
+# through. Fixture-free and free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: planton-oss-e2e-gcpdstrm-bigquery
+  id: planton-oss-e2e-gcpdstrm-bigquery
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdatastreamconnectionprofile
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionProfileId: e2e-gcpdstrm-bq-${E2E_RUN_ID}
+  bigqueryProfile: true
+  deletionPolicy: DELETE

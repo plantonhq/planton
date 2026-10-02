@@ -1,0 +1,25 @@
+# GcpDatastreamConnectionProfile scenario: a BigQuery destination profile --
+# the marker bool emits Google's empty bigquery_profile block. Fixture-free
+# and free: a profile bills nothing on its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: planton-oss-e2e-gcpdscp-bigquery
+  id: planton-oss-e2e-gcpdscp-bigquery
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdatastreamconnectionprofile
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionProfileId: e2e-gcpdscp-bq-${E2E_RUN_ID}
+  displayName: E2E BigQuery destination
+  bigqueryProfile: true
+  labels:
+    e2e-arm: bigquery
+  deletionPolicy: DELETE

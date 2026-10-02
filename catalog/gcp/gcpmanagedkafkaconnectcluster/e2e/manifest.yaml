@@ -1,0 +1,22 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnectCluster
+metadata:
+  name: events-connect
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  kafkaCluster:
+    value: projects/my-gcp-project/locations/us-central1/clusters/events
+  capacityConfig:
+    vcpuCount: 6
+    memoryBytes: 25769803776
+  networkConfigs:
+    - primarySubnet:
+        value: projects/my-gcp-project/regions/us-central1/subnetworks/kafka
+      # Lets a MirrorMaker 2 connector resolve a second Kafka cluster.
+      dnsDomainNames:
+        - legacy-events.us-central1.managedkafka.my-gcp-project.cloud.goog
+  labels:
+    team: data-platform
+  deletionPolicy: DELETE

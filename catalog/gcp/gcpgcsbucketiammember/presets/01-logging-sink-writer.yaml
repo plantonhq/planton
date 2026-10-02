@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucketIamMember
+metadata:
+  name: my-sink-writer
+spec:
+  bucket:
+    # Reference the destination GcpGcsBucket; its `bucket_id` output is the
+    # bucket name this field expects.
+    valueFrom:
+      kind: GcpGcsBucket
+      name: <bucket-resource-name>
+      fieldPath: status.outputs.bucket_id
+  role:
+    # Write-only: the sink adds hourly batches and can never read them.
+    value: roles/storage.objectCreator
+  member:
+    # The sink's writer identity, already in serviceAccount:<email> form.
+    valueFrom:
+      kind: GcpLoggingSink
+      name: <logging-sink-resource-name>
+      fieldPath: status.outputs.writer_identity

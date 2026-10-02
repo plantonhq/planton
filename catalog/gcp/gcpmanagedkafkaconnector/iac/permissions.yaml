@@ -1,0 +1,20 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpmanagedkafkaconnector
+spec:
+  gcp:
+    groups:
+      - purpose: ManageConnector
+        permissions:
+          - managedkafka.connectors.create
+          - managedkafka.connectors.get
+          - managedkafka.connectors.update
+          - managedkafka.connectors.delete
+        provenance: derived
+        notes: Covers google_managed_kafka_connector (Pulumi managedkafka.Connector) -- created, its configs and restart policy patched, read on every refresh, deleted. Names grounded in Google's Managed Kafka roles page; roles/managedkafka.admin contains all four.

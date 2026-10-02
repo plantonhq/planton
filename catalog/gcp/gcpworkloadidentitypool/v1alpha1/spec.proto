@@ -134,12 +134,22 @@ message GcpWorkloadIdentityPoolCertificateIssuance {
     expression: "(size(this.ca_pools) > 0) != this.use_default_shared_ca"
   };
 
-  // Maps a cloud region to the Certificate Authority Service CA pool (full
-  // resource path projects/<project>/locations/<location>/caPools/<pool>)
-  // that issues certificates for workloads in that region. The region in the
-  // key must match the CA pool's own region. Exactly one of ca_pools or
+  // Maps a cloud region to the Certificate Authority Service CA pool that
+  // issues certificates for workloads in that region. Each value is a
+  // GcpPrivateCaPool reference (its full name) or a literal
+  // projects/<project>/locations/<location>/caPools/<pool>. The region in
+  // the key must match the CA pool's own region. Exactly one of ca_pools or
   // use_default_shared_ca supplies the signing authority.
-  map<string, string> ca_pools = 1;
+  map<string, dev.planton.shared.foreignkey.v1.StringValueOrRef> ca_pools = 1 [
+    (buf.validate.field).cel = {
+      id: "ca_pools_format"
+      expression: "this.all(k, !has(this[k].value) || this[k].value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$'))"
+      message: "a literal ca_pools value must be projects/{project}/locations/{location}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
   // Key algorithm for the generated certificate key pairs. Defaults
   // server-side to ECDSA_P256 — the right choice unless a legacy verifier

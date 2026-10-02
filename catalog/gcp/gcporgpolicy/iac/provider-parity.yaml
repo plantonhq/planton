@@ -1,0 +1,90 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# One kind, one resource. The provider's identity arguments (name, parent)
+# are derived from the spec's scope and constraint; its two rule sets keep
+# the provider's shape under the spec names policy / dry_run_policy (so a
+# manifest never reads spec: { spec: ... }); the rule verdicts are the
+# API's one-of of booleans in the spec and the provider's "TRUE"/"FALSE"
+# strings in both modules.
+
+resources:
+  google_org_policy_policy:
+    mappings:
+      # The scope: the provider's parent is one string (projects/{id} |
+      # folders/{id} | organizations/{id}); the spec models it as a message
+      # with one arm per hierarchy node, each a reference where a catalog
+      # kind exists. An empty scope resolves the provider's default project.
+      - spec: spec.scope.project_id
+        arg: parent
+      - spec: spec.scope.folder_id
+        arg: parent
+      - spec: spec.scope.organization_id
+        arg: parent
+      # The name is {parent}/policies/{constraint}: assembled by the module
+      # from the scope and the constraint -- a predefined constraint by
+      # literal, or a custom constraint by reference to its
+      # GcpOrgPolicyCustomConstraint.
+      - spec: spec.constraint
+        arg: name
+      - spec: spec.custom_constraint
+        arg: name
+
+      # The enforced rule set: the provider's `spec` block under the spec's
+      # `policy`.
+      - spec: spec.policy.inherit_from_parent
+        arg: spec.inherit_from_parent
+      - spec: spec.policy.reset
+        arg: spec.reset
+      - spec: spec.policy.rules.allow_all
+        arg: spec.rules.allow_all
+      - spec: spec.policy.rules.deny_all
+        arg: spec.rules.deny_all
+      - spec: spec.policy.rules.enforce
+        arg: spec.rules.enforce
+      - spec: spec.policy.rules.values.allowed_values
+        arg: spec.rules.values.allowed_values
+      - spec: spec.policy.rules.values.denied_values
+        arg: spec.rules.values.denied_values
+      - spec: spec.policy.rules.condition.expression
+        arg: spec.rules.condition.expression
+      - spec: spec.policy.rules.condition.title
+        arg: spec.rules.condition.title
+      - spec: spec.policy.rules.condition.description
+        arg: spec.rules.condition.description
+      - spec: spec.policy.rules.condition.location
+        arg: spec.rules.condition.location
+      - spec: spec.policy.rules.parameters
+        arg: spec.rules.parameters
+
+      # The audit-only rule set: the provider's `dry_run_spec` block under
+      # the spec's `dry_run_policy`.
+      - spec: spec.dry_run_policy.inherit_from_parent
+        arg: dry_run_spec.inherit_from_parent
+      - spec: spec.dry_run_policy.reset
+        arg: dry_run_spec.reset
+      - spec: spec.dry_run_policy.rules.allow_all
+        arg: dry_run_spec.rules.allow_all
+      - spec: spec.dry_run_policy.rules.deny_all
+        arg: dry_run_spec.rules.deny_all
+      - spec: spec.dry_run_policy.rules.enforce
+        arg: dry_run_spec.rules.enforce
+      - spec: spec.dry_run_policy.rules.values.allowed_values
+        arg: dry_run_spec.rules.values.allowed_values
+      - spec: spec.dry_run_policy.rules.values.denied_values
+        arg: dry_run_spec.rules.values.denied_values
+      - spec: spec.dry_run_policy.rules.condition.expression
+        arg: dry_run_spec.rules.condition.expression
+      - spec: spec.dry_run_policy.rules.condition.title
+        arg: dry_run_spec.rules.condition.title
+      - spec: spec.dry_run_policy.rules.condition.description
+        arg: dry_run_spec.rules.condition.description
+      - spec: spec.dry_run_policy.rules.condition.location
+        arg: dry_run_spec.rules.condition.location
+      - spec: spec.dry_run_policy.rules.parameters
+        arg: dry_run_spec.rules.parameters

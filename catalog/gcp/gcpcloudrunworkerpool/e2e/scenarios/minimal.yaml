@@ -1,0 +1,32 @@
+# GcpCloudRunWorkerPool scenario: the smallest worker pool -- one public
+# image that idles, MANUAL scaling at one instance, no networking, no
+# probes. project_id is deliberately omitted: the pool rides the provider's
+# default project, which the harness exports as GOOGLE_PROJECT. Deletion
+# protection is explicitly disabled so the ephemeral create -> verify ->
+# destroy cycle tears down without a two-step disable.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudRunWorkerPool
+metadata:
+  name: planton-oss-e2e-gcprunwp-smoke
+  id: planton-oss-e2e-gcprunwp-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudrunworkerpool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-central1
+  containers:
+    - image: us-docker.pkg.dev/cloudrun/container/worker-pool:latest
+      resources:
+        cpu: "1"
+        memory: 512Mi
+  scaling:
+    scalingMode: MANUAL
+    manualInstanceCount: 1
+  deletionProtection: false
+  deletionPolicy: DELETE

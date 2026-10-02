@@ -1,0 +1,37 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabSchedule
+metadata:
+  name: weekly-retraining
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Weekly retraining
+  cron: "0 2 * * 1"
+  maxConcurrentRunCount: 1
+  maxConcurrentActiveRunCount: 1
+  pipelineJob:
+    displayName: churn-retraining
+    templateUri: https://us-central1-kfp.pkg.dev/my-gcp-project/pipelines/churn-retraining/v3
+    runtimeConfig:
+      gcsOutputDirectory: gs://acme-ml-pipelines/churn
+      failurePolicy: PIPELINE_FAILURE_POLICY_FAIL_FAST
+      parameterValues:
+        training_window_days: "90"
+    serviceAccount:
+      valueFrom:
+        kind: GcpServiceAccount
+        name: pipeline-runner
+        fieldPath: status.outputs.email
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: ml-vpc
+        fieldPath: status.outputs.network_self_link
+    kmsKeyName:
+      valueFrom:
+        kind: GcpKmsKey
+        name: ml-key
+        fieldPath: status.outputs.key_id
+    labels:
+      model: churn

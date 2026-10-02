@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDocumentAiProcessorSpec defines a Document AI processor
+// (`google_document_ai_processor`) -- a managed model that turns documents
+// (PDFs, scans, photos) into structured data: text and layout (OCR), form
+// fields, or the fields of a specialized document such as an invoice,
+// receipt, pay slip, or ID. Applications send documents to the processor's
+// process endpoint (an output of this block) and get a structured Document
+// back.
+//
+// The processor's type decides what it extracts and is fixed at creation.
+// Optionally the block also sets which processor version serves requests
+// by default (`google_document_ai_processor_default_version`, folded in).
+//
+// Immutable: every field except default_version and deletion_policy -- a
+// change replaces the processor, and its id and endpoint change with it.
+message GcpDocumentAiProcessorSpec {
+  // The GCP project the processor lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where documents are processed and stored: the multi-region "us" or
+  // "eu" (Document AI's main locations), or a region Google lists for
+  // Document AI. Your documents never leave it. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+(-[a-z]+[0-9]+)?$"
+  ];
+
+  // What the processor extracts -- one of the types Google lists through
+  // fetchProcessorTypes for your project and location, for example:
+  //   OCR_PROCESSOR          text, layout, and handwriting (Enterprise OCR)
+  //   FORM_PARSER_PROCESSOR  key-value pairs, tables, and checkboxes
+  //   LAYOUT_PARSER_PROCESSOR document structure and chunks for RAG
+  //   INVOICE_PROCESSOR, EXPENSE_PROCESSOR, ID_PROOFING_PROCESSOR, and
+  //   other specialized parsers; CUSTOM_EXTRACTION_PROCESSOR for a
+  //   generative extractor you train in the console
+  // Some types need an allowlist or a specific location. Immutable.
+  string type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[A-Z][A-Z0-9_]*$"
+  ];
+
+  // The processor's display name -- unique among the project's processors
+  // in the location. Defaults to metadata.name. Immutable.
+  string display_name = 4;
+
+  // Customer-managed encryption key for the documents and results the
+  // processor stores: a GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // in a location compatible with the processor's. The Document AI service
+  // agent needs roles/cloudkms.cryptoKeyEncrypterDecrypter on it. Omit for
+  // Google-managed encryption. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // The processor version that serves requests which do not name one --
+  // its short id, e.g. "pretrained-ocr-v2.1-2024-08-07" for a Google
+  // version or the id of a version you trained. The modules compose the
+  // full path under this processor. Omit to keep Google's default.
+  //
+  // Use a concrete version, never the "stable" or "rc" channel alias:
+  // Google answers with the version the alias currently resolves to, so a
+  // declared alias would never match what Google stores and every deploy
+  // would set the default again. Pinning a version is also what makes
+  // extraction results reproducible. Changing it re-points the default in
+  // place; destroying the block leaves the last default set (Google has no
+  // "unset").
+  string default_version = 6 [(buf.validate.field).cel = {
+    id: "default_version.concrete"
+    message: "default_version must be a concrete version id (not stable or rc, and not a full path)"
+    expression: "this == '' || (!(this in ['stable', 'rc']) && this.matches('^[A-Za-z0-9][A-Za-z0-9._-]*$'))"
+  }];
+
+  // What happens to the processor when this resource is destroyed:
+  //   "" / "DELETE" -- the processor, its versions, and any version you
+  //                    trained are deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the processor leaves management and stays in GCP
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

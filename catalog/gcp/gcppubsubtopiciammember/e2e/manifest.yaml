@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopicIamMember
+metadata:
+  name: my-sample-topic-grant
+spec:
+  # The topic whose IAM policy receives this grant, as its full resource
+  # name. Reference a GcpPubSubTopic -- its `topic_id` output is exactly
+  # this value.
+  topic:
+    value: projects/my-gcp-project-123/topics/audit-events
+
+  # The role to grant on the topic: what a sink's writer identity needs.
+  role:
+    value: roles/pubsub.publisher
+
+  # The identity receiving the grant, in GCP IAM member format -- here a
+  # project's Cloud Logging writer identity. Reference a GcpLoggingSink's
+  # `writer_identity` output to follow the sink's own identity.
+  member:
+    value: serviceAccount:service-123456789@gcp-sa-logging.iam.gserviceaccount.com

@@ -879,6 +879,20 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			spec.Containers[0].BaseImageUri = "us-central1-docker.pkg.dev/serverless-runtimes/google-24-full/runtimes/nodejs24"
 			Expect(protovalidate.Validate(spec)).To(BeNil())
 		})
+
+		It("takes the build worker pool as a reference or a full literal name", func() {
+			spec := makeValidSpec()
+			spec.BuildConfig = &GcpCloudRunBuildConfig{SourceLocation: "gs://my-bucket/source.zip", WorkerPool: strRef("GcpCloudBuildWorkerPool", "private-builds")}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+			spec.BuildConfig.WorkerPool = strVal("projects/my-gcp-project/locations/us-central1/workerPools/private")
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a literal build worker pool that is not a full name", func() {
+			spec := makeValidSpec()
+			spec.BuildConfig = &GcpCloudRunBuildConfig{SourceLocation: "gs://my-bucket/source.zip", WorkerPool: strVal("private")}
+			Expect(violatedRules(protovalidate.Validate(spec))).To(ContainElement("worker_pool.format"))
+		})
 	})
 
 	Context("Deletion policy", func() {
@@ -993,6 +1007,48 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 				Handler:       &GcpCloudRunReadinessProbe_HttpGet{HttpGet: &GcpCloudRunReadinessHttpGetAction{Path: "/ready"}},
 			}
 			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+	})
+
+	Context("sandboxes and resource manager tags", func() {
+		It("accepts sandbox templates with exactly one supervisor container", func() {
+			spec := makeValidSpec()
+			spec.Containers[0].SandboxLauncher = true
+			spec.SandboxTemplates = []*GcpCloudRunSandboxTemplate{{
+				Name:         "python-runner",
+				Image:        "us-docker.pkg.dev/my-project/repo/sandbox:v1",
+				Command:      []string{"python3"},
+				Args:         []string{"-u", "run.py"},
+				Env:          []*GcpCloudRunSandboxEnvVar{{Name: "PYTHONUNBUFFERED", Value: "1"}},
+				VolumeMounts: []*GcpCloudRunVolumeMount{{Name: "scratch", MountPath: "/scratch"}},
+				WorkingDir:   "/work",
+			}}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects sandbox templates without a supervisor container", func() {
+			spec := makeValidSpec()
+			spec.SandboxTemplates = []*GcpCloudRunSandboxTemplate{{Name: "runner", Image: "busybox"}}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+
+		It("rejects a sandbox template whose name is not a DNS label", func() {
+			spec := makeValidSpec()
+			spec.Containers[0].SandboxLauncher = true
+			spec.SandboxTemplates = []*GcpCloudRunSandboxTemplate{{Name: "Python_Runner", Image: "busybox"}}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+
+		It("accepts resource manager tags in the tagKeys/tagValues form", func() {
+			spec := makeValidSpec()
+			spec.ResourceManagerTags = map[string]string{"tagKeys/123456789012": "tagValues/987654321098"}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects resource manager tags by short name", func() {
+			spec := makeValidSpec()
+			spec.ResourceManagerTags = map[string]string{"env": "prod"}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 	})
 })

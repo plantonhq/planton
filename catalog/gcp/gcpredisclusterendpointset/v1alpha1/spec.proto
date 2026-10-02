@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpredisclusterendpointset.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpRedisClusterEndpointSetConnection is one Private Service Connect
+// connection a consumer built by hand: a forwarding rule in the consumer's
+// VPC whose target is one of the cluster's service attachments. Google
+// needs every field to recognize the rule as a cluster connection; all of
+// them are outputs of the catalog blocks that built it.
+message GcpRedisClusterEndpointSetConnection {
+  // The consumer-side forwarding rule, as its URI. A GcpGlobalForwardingRule
+  // reference (the regional PSC form: empty scheme, the cluster's service
+  // attachment as target) resolves to its self_link output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef forwarding_rule = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGlobalForwardingRule,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
+
+  // The PSC connection ID Google assigned to that forwarding rule. The SAME
+  // GcpGlobalForwardingRule as forwarding_rule, referenced on its
+  // psc_connection_id output -- a reference names one output path, so the
+  // rule is named twice.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef psc_connection_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGlobalForwardingRule,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.psc_connection_id"
+  ];
+
+  // The IP address the forwarding rule serves on the consumer network. A
+  // GcpAddress reference (the reserved internal address the rule was given)
+  // resolves to its address output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef address = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpAddress,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.address"
+  ];
+
+  // The consumer VPC network the address lives in, as
+  // projects/{project}/global/networks/{name}. A GcpVpcNetwork reference
+  // resolves to its network_id output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // The cluster service attachment this connection targets, as
+  // projects/{project}/regions/{region}/serviceAttachments/{id}. A
+  // GcpRedisCluster reference resolves to its discovery_service_attachment
+  // output by default; the connection for the primary or reader endpoint
+  // names that handle through an explicit fieldPath
+  // (status.outputs.primary_service_attachment,
+  // status.outputs.reader_service_attachment).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_attachment = 5 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpRedisCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.discovery_service_attachment"
+  ];
+
+  // The consumer project the forwarding rule was created in. If omitted,
+  // Google records the project it finds on the rule -- set it only when
+  // the rule lives in a different project than the cluster.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+}
+
+// GcpRedisClusterEndpointSetEndpoint is one consumer network's group of
+// connections. Google's rule: a group carries exactly one connection per
+// service attachment the cluster publishes (discovery and primary always;
+// reader when the cluster has replicas), all in the same VPC. The spec
+// cannot count the cluster's attachments, so the rule is checked by Google
+// at apply.
+message GcpRedisClusterEndpointSetEndpoint {
+  // The connections that make up this endpoint, one per cluster service
+  // attachment, all in one consumer VPC.
+  repeated GcpRedisClusterEndpointSetConnection connections = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpRedisClusterEndpointSetSpec registers the Private Service Connect
+// connections a consumer built by hand on a Memorystore for Redis Cluster
+// (`google_redis_cluster_user_created_connections`) -- Google's
+// "user-created connections", the way a cluster is reached from VPCs or
+// projects its own connectivity automation cannot place endpoints in.
+//
+// The flow is three blocks in order: the cluster (usually without
+// psc_configs, so it only publishes service attachments), then in each
+// consumer VPC one reserved GcpAddress and one regional
+// GcpGlobalForwardingRule per service attachment (empty scheme, the
+// attachment handle as target), then this set naming every rule. Google
+// replaces the cluster's whole user-created endpoint list with this set on
+// every apply, so declare exactly one set per cluster and list every
+// consumer network in it. Removing a connection here stops the matching
+// forwarding rule from working; delete the rule in the same change.
+//
+// Only the project is immutable; the set updates in place.
+message GcpRedisClusterEndpointSetSpec {
+  // The GCP project the cluster lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The cluster the connections belong to. A GcpRedisCluster reference
+  // resolves to its full resource path (name output); a literal takes
+  // either the full path or the bare cluster name. The modules derive the
+  // bare name Google's resource expects.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpRedisCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The cluster's region (e.g. "us-central1").
+  string region = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // One entry per consumer VPC, each carrying a connection per cluster
+  // service attachment. This list IS the cluster's user-created endpoint
+  // set: anything not listed is removed on apply.
+  repeated GcpRedisClusterEndpointSetEndpoint endpoints = 4 [(buf.validate.field).repeated.min_items = 1];
+
+  // What happens to the registration when this resource is destroyed:
+  //   "" / "DELETE" -- the connections are deregistered (the forwarding
+  //                    rules themselves belong to their own blocks)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the registration leaves management but stays on
+  //                    the cluster
+  string deletion_policy = 5 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

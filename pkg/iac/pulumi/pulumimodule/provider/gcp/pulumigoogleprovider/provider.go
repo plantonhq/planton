@@ -83,7 +83,7 @@ const gcpSdkModulePath = "github.com/pulumi/pulumi-gcp/sdk/v9"
 // fallbackGcpPluginVersion mirrors the pulumi-gcp SDK version pinned in go.mod, for build modes
 // whose binaries carry no embedded module info (e.g. Bazel). TestGcpPluginVersion_MatchesSdkPin
 // guards this constant against go.mod drift, so an SDK bump cannot strand a stale version here.
-const fallbackGcpPluginVersion = "9.29.0"
+const fallbackGcpPluginVersion = "9.37.0"
 
 // Get builds a gcp.Provider from the given GcpProviderConfig. There is no region argument: the
 // GCP provider is not region-scoped -- each resource carries its own location. nameSuffixes

@@ -10,10 +10,17 @@ deploy's second half, not an optional extra.
 Every sink gets a `writer_identity` service account, and that identity
 must hold write access ON THE DESTINATION: `roles/storage.objectCreator`
 (bucket), `roles/bigquery.dataEditor` (dataset),
-`roles/pubsub.publisher` (topic). Wire it through the destination kind's
-iamMembers in the same chart — the sink's output feeds the grant, the
-ordering resolves itself, and a recreated sink (new identity) re-grants
-automatically.
+`roles/pubsub.publisher` (topic). Grant it with a standalone grant block
+that depends on both the sink and the destination: a
+`GcpGcsBucketIamMember` for a bucket, a `GcpPubSubTopicIamMember` for a
+topic, each with `member` referencing the sink's
+`status.outputs.writer_identity` (already `serviceAccount:{email}`).
+The grant deploys after both, and a recreated sink (new identity)
+re-grants automatically. Never grant it through the destination kind's
+own IAM fields: the sink references its destination, so a destination that references the sink's identity back would be a dependency cycle. A BigQuery dataset's access list is authoritative
+on `GcpBigQueryDataset.access`, so grant `roles/bigquery.dataEditor`
+outside the catalog, or as a literal `access` entry once the identity is
+known.
 
 ## Renaming is recreation is a new identity
 

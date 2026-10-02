@@ -1,0 +1,27 @@
+# GcpFolder install profile used when the folder is an E2E PREREQUISITE for
+# another component (a GcpProject placed in it by reference). The display
+# name carries ${E2E_RUN_ID}: a deleted folder's name stays reserved under
+# its parent for 30 days, so a fixed name would collide with the previous
+# run's tombstone. metadata.name stays fixed (prerequisite FK resolution is
+# kind-keyed). The destroy guard is OFF so the harness teardown succeeds.
+# Needs the organization identity (roles/resourcemanager.folderAdmin).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFolder
+metadata:
+  name: planton-oss-e2e-gcpfldr-prereq
+  id: planton-oss-e2e-gcpfldr-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfolder
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    organizationId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  displayName: planton-e2e-prereq-${E2E_RUN_ID}
+  deletionProtection: false
+  deletionPolicy: DELETE

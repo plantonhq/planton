@@ -110,6 +110,10 @@ resources:
         arg: control_plane_endpoints_config.dns_endpoint_config.enable_k8s_certs_via_dns
       - spec: spec.control_plane_endpoints.ip_endpoints_enabled
         arg: control_plane_endpoints_config.ip_endpoints_config.enabled
+      # The time-of-day + duration recurring form keeps its own spec
+      # message name (the provider's name says "maintenance" twice).
+      - spec: spec.maintenance_policy.recurring_time_window
+        arg: maintenance_policy.recurring_maintenance_window
       - spec: spec.maintenance_policy.daily_window
         arg: maintenance_policy.daily_maintenance_window
       - spec: spec.maintenance_policy.exclusions
@@ -202,6 +206,10 @@ resources:
         arg: addons_config.slice_controller_config.enabled
       - spec: spec.addons.slurm_operator_enabled
         arg: addons_config.slurm_operator_config.enabled
+      - spec: spec.addons.high_scale_checkpointing_enabled
+        arg: addons_config.high_scale_checkpointing_config.enabled
+      - spec: spec.addons.node_readiness_controller_enabled
+        arg: addons_config.node_readiness_config.enabled
 
       # Fleet registration.
       - spec: spec.fleet_project
@@ -330,30 +338,6 @@ resources:
           The cluster's Google-assigned DNS endpoint name — output
           surface the provider marks settable only for state
           round-tripping; there is no operational reason to author it.
-      # Not yet bridged by the pinned Pulumi SDK (pulumi-gcp v9.29.0,
-      # google-beta 7.38): modeling these only in Terraform would break
-      # cross-engine parity. Re-evaluate at the next SDK bump.
-      - arg: maintenance_policy.recurring_maintenance_window
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. The RFC5545
-          recurring_window form is modeled. Re-evaluate at the next
-          pulumi-gcp bump.
-      - arg: rollback_safe_upgrade
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump (pairs with desired_emulated_version).
-      - arg: desired_emulated_version
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump (pairs with rollback_safe_upgrade).
-      - arg: addons_config.node_readiness_config
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump.
   google_project_service:
     internal: >-
       API enablement plumbing — the module enables

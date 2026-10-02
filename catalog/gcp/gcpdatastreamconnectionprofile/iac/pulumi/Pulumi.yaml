@@ -1,0 +1,4 @@
+name: gcpdatastreamconnectionprofile-pulumi-project
+runtime:
+  name: go
+description: Planton GcpDatastreamConnectionProfile Pulumi module

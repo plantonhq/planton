@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcloudbuildrepository
+spec:
+  billing_model: free
+  free_tier: "Cloud Build repository connections and linked repositories carry no charge of their own (Cloud Build pricing page, read 2026-10-01); builds that use them bill as build minutes on their trigger's pool."
+  notes: "The Secret Manager secrets holding the credentials bill through their own GcpSecretManagerSecret blocks."

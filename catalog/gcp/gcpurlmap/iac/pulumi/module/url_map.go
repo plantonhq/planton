@@ -11,22 +11,32 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// urlMap provisions the global Compute Engine URL map — the L7 routing brain
-// of a global external Application Load Balancer. Host rules map request Host
-// headers to named path matchers; path matchers evaluate route_rules (priority-
-// ordered, rich matching) then path_rules (longest prefix), then their own
-// default; anything unmatched falls through to the URL map's top-level default.
+// urlMap provisions the Compute Engine URL map — the L7 routing brain of an
+// Application Load Balancer. Host rules map request Host headers to named
+// path matchers; path matchers evaluate route_rules (priority-ordered, rich
+// matching) then path_rules (longest prefix), then their own default;
+// anything unmatched falls through to the URL map's top-level default.
 //
-// name and project are immutable (ForceNew): changing either destroys and
-// recreates the map, briefly breaking every target proxy referencing the old
-// self_link. Routing tables, header actions, and tests update in place.
+// GCP models the global and regional URL maps as two API collections that
+// share the whole routing surface except Cloud CDN route caching, custom
+// error pages, stream-duration limits (outside a path matcher's default
+// action), and header-driven routing tests, which exist only on the global
+// map; the regional map alone honors a path_template_rewrite in a path
+// matcher's default route action. spec.region selects the branch, exactly
+// as the Terraform module's count guards do: this file carries the global
+// builders, region_url_map.go the regional ones, in the same order.
+//
+// name, project, and region are immutable (ForceNew): changing any destroys
+// and recreates the map, briefly breaking every target proxy referencing
+// the old self_link. Routing tables, header actions, and tests update in
+// place.
 //
 // Cross-field exclusivity (exactly one default target, path_rules XOR
-// route_rules, redirect vs route_action, path_template_rewrite only in route
-// rules) is enforced by the spec's CEL rules before deploy — no defensive
-// logic lives here. route_action carries the full traffic-management surface
-// at every site: weighted splits, rewrites, timeout/retry/mirror/CORS/
-// fault-injection/stream-duration policies, and the route-scoped CDN
+// route_rules, redirect vs route_action, where path_template_rewrite is
+// honored) is enforced by the spec's CEL rules before deploy — no defensive
+// logic lives here. route_action carries the full traffic-management
+// surface at every site: weighted splits, rewrites, timeout/retry/mirror/
+// CORS/fault-injection/stream-duration policies, and the route-scoped CDN
 // cache_policy.
 func urlMap(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error {
 	spec := locals.GcpUrlMap.Spec
@@ -43,6 +53,18 @@ func urlMap(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 	if err != nil {
 		return errors.Wrap(err, "failed to enable compute.googleapis.com api")
 	}
+
+	opts := []pulumi.ResourceOption{pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{createdProjectService})}
+
+	if locals.IsRegional {
+		return regionalUrlMap(ctx, locals, opts)
+	}
+	return globalUrlMap(ctx, locals, opts)
+}
+
+// globalUrlMap builds the global resource (spec.region empty).
+func globalUrlMap(ctx *pulumi.Context, locals *Locals, opts []pulumi.ResourceOption) error {
+	spec := locals.GcpUrlMap.Spec
 
 	args := &compute.URLMapArgs{
 		Name: pulumi.String(locals.UrlMapName),
@@ -86,8 +108,7 @@ func urlMap(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 		args.Tests = buildTests(spec.Tests)
 	}
 
-	createdUrlMap, err := compute.NewURLMap(ctx, "url-map", args,
-		pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{createdProjectService}))
+	createdUrlMap, err := compute.NewURLMap(ctx, "url-map", args, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create url map")
 	}
@@ -98,6 +119,7 @@ func urlMap(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 		return strconv.Itoa(id)
 	}).(pulumi.StringOutput))
 	ctx.Export(OpFingerprint, createdUrlMap.Fingerprint)
+	ctx.Export(OpRegion, pulumi.String(""))
 
 	return nil
 }

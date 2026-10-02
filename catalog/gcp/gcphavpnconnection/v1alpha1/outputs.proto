@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcphavpnconnection.v1alpha1;
+
+import "shared/options/options.proto";
+
+// GcpHaVpnConnectionStackOutputs captures the identities of everything the
+// connection created, and the keys the modules generated. The tunnel lists
+// are index-aligned with spec.tunnels -- the one place a repeated output
+// is right, because the tunnels are the connection's own many.
+message GcpHaVpnConnectionStackOutputs {
+  // The self links of the tunnels, in spec order.
+  repeated string tunnel_self_links = 1;
+
+  // The tunnel names in GCP, in spec order.
+  repeated string tunnel_names = 2;
+
+  // The names of the Cloud Router interfaces created for the sessions, in
+  // spec order (one per tunnel).
+  repeated string router_interface_names = 3;
+
+  // The names of the BGP peers created for the sessions, in spec order (one
+  // per tunnel). `gcloud compute routers get-status` reports each peer's
+  // BGP state under this name.
+  repeated string bgp_peer_names = 4;
+
+  // The external VPN gateway's self link, when the peer is an external
+  // device; empty for a Google-to-Google connection.
+  string external_gateway_self_link = 5;
+
+  // The gateway the tunnels leave from, as a self link (the resolved
+  // reference).
+  string gateway_self_link = 6;
+
+  // The Cloud Router the sessions run on, by name (the resolved reference).
+  string router_name = 7;
+
+  // The IKE pre-shared key the modules generated, set ONLY when
+  // spec.shared_secret was left empty and at least one tunnel declares no
+  // key of its own; every such tunnel uses it. A declared key is never
+  // echoed back. The other side reads it from here: the peer
+  // GcpHaVpnConnection's spec.shared_secret references this output, or an
+  // operator configures an external device with it.
+  string shared_secret = 8 [(dev.planton.shared.options.sensitive) = true];
+
+  // The BGP MD5 key the modules generated, set ONLY when
+  // spec.md5_authentication_key was left empty and at least one session
+  // declares an md5_authentication_key block without its own key; every
+  // such session uses it. A declared key is never echoed back. The peer
+  // GcpHaVpnConnection's spec.md5_authentication_key references this
+  // output, or an operator configures an external device with it.
+  string md5_authentication_key = 9 [(dev.planton.shared.options.sensitive) = true];
+}

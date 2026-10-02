@@ -79,7 +79,7 @@ spec:
 | `spec.mode` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
 | `spec.labels` | `map<string, string>` |  |  |  |
-| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.dockerConfig` | `GcpArtifactRegistryRepoDockerConfig` |  |  |  |
 | `spec.dockerConfig.immutableTags` | `bool` |  |  |  |
 | `spec.mavenConfig` | `GcpArtifactRegistryRepoMavenConfig` |  |  |  |
@@ -238,7 +238,7 @@ agent needs roles/cloudkms.cryptoKeyEncrypterDecrypter on the key.
 If omitted, artifacts are encrypted with Google-managed keys.
 Immutable after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.dockerConfig
@@ -763,6 +763,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.remoteRepositoryConfig.commonRepository.uri` | GcpArtifactRegistryRepo | `status.outputs.repository_path` |
 | `spec.virtualRepositoryConfig.upstreamPolicies[].repository` | GcpArtifactRegistryRepo | `status.outputs.repository_path` |
 | `spec.iamMembers[].member` | GcpServiceAccount | `status.outputs.member` |

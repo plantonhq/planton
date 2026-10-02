@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1;
+
+// GcpCloudBuildWorkerPoolStackOutputs carries the pool's identity: what a
+// trigger's build options, a cloudbuild.yaml's options.pool.name, and a
+// Cloud Deploy target's execution environment name.
+message GcpCloudBuildWorkerPoolStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/workerPools/{worker_pool_id}.
+  string name = 1;
+  // The pool's ID.
+  string worker_pool_id = 2;
+  // The pool's state: CREATING, RUNNING, UPDATING, DELETING, or DELETED.
+  string state = 3;
+  // Google's unique identifier for the pool.
+  string uid = 4;
+}

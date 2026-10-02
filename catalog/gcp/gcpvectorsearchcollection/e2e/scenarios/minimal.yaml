@@ -1,0 +1,33 @@
+# GcpVectorSearchCollection scenario: one dense field with Vertex-computed
+# embeddings and one ANN index over it -- the shape Google's own provider
+# test deploys. project_id is deliberately omitted: the collection rides
+# the provider's default project, which the harness exports as
+# GOOGLE_PROJECT.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVectorSearchCollection
+metadata:
+  name: planton-oss-e2e-gcpvsc-minimal
+  id: planton-oss-e2e-gcpvsc-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvectorsearchcollection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  dataSchema: '{"type":"object","properties":{"title":{"type":"string"},"body":{"type":"string"}}}'
+  vectorSchemas:
+    - fieldName: text_embedding
+      denseVector:
+        dimensions: 768
+        vertexEmbeddingConfig:
+          modelId: text-embedding-005
+          taskType: RETRIEVAL_DOCUMENT
+          textTemplate: "Title: {title} ---- Body: {body}"
+  indexes:
+    - indexId: docs-ann
+      indexField: text_embedding

@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateTemplate
+metadata:
+  name: tls-server
+spec:
+  location: us-central1
+  description: Internal TLS server certificates
+  maximumLifetime: 2592000s
+  predefinedValues:
+    caOptions:
+      isCa: false
+    keyUsage:
+      baseKeyUsage:
+        digitalSignature: true
+        keyEncipherment: true
+      extendedKeyUsage:
+        serverAuth: true
+  identityConstraints:
+    allowSubjectPassthrough: true
+    allowSubjectAltNamesPassthrough: true

@@ -10,14 +10,21 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// backendService provisions the global Compute Engine backend service — the
-// hub of the L7 load balancing family — plus its signed-URL keys.
+// backendService provisions the Compute Engine backend service — the hub of
+// the load balancing family — plus, on the global arm, its signed-URL keys.
 //
-// name and project are immutable (ForceNew in the provider): changing either
-// destroys and recreates the backend service, briefly breaking every URL map
-// referencing the old self_link. Everything else — backends, CDN policy,
-// affinity, IAP — updates in place, which is what makes this node the
-// operational lever of a running load balancer.
+// GCP models the global and regional backend services as two API
+// collections. They share the core surface; the regional one adds the
+// passthrough Network Load Balancer levers and lacks the global edge
+// features. spec.region selects the branch, exactly as the Terraform
+// module's count guards do: this file carries the global builder,
+// region_backend_service.go the regional one, in the same order.
+//
+// name, project, and region are immutable (ForceNew in the provider):
+// changing any destroys and recreates the backend service, briefly breaking
+// every URL map referencing the old self_link. Everything else — backends,
+// CDN policy, affinity, IAP — updates in place, which is what makes this
+// node the operational lever of a running load balancer.
 //
 // Two provider subtleties worth knowing when comparing previews to API
 // calls: the provider applies security_policy and edge_security_policy via
@@ -28,8 +35,9 @@ import (
 //
 // Cross-field applicability (CDN only on external schemes, circuit breakers /
 // max_stream_duration only on INTERNAL_SELF_MANAGED, consistent_hash only
-// with MAGLEV/RING_HASH, cache-mode/TTL coherence) is enforced by the spec's
-// CEL rules before deploy, so no defensive logic lives here.
+// with MAGLEV/RING_HASH, cache-mode/TTL coherence, ha_policy's conflicts) is
+// enforced by the spec's CEL rules before deploy, so no defensive logic
+// lives here.
 func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error {
 	spec := locals.GcpBackendService.Spec
 
@@ -50,6 +58,19 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 		return errors.Wrap(err, "failed to enable compute.googleapis.com api")
 	}
 
+	opts := []pulumi.ResourceOption{pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{createdProjectService})}
+
+	if locals.IsRegional {
+		return regionalBackendService(ctx, locals, opts)
+	}
+	return globalBackendService(ctx, locals, opts, gcpProvider)
+}
+
+// globalBackendService builds the global resource (spec.region empty) and
+// its signed-URL keys.
+func globalBackendService(ctx *pulumi.Context, locals *Locals, opts []pulumi.ResourceOption, gcpProvider *gcp.Provider) error {
+	spec := locals.GcpBackendService.Spec
+
 	args := &compute.BackendServiceArgs{
 		Name:      pulumi.String(locals.BackendServiceName),
 		EnableCdn: pulumi.Bool(spec.EnableCdn),
@@ -65,16 +86,29 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 
 	// Omitted optionals stay unset (matching the Terraform module's null)
 	// rather than being sent as empty strings the API would reject or
-	// misread. Every one of these has a GCP API default that matches the
-	// spec's proto default (protocol HTTP, scheme EXTERNAL, affinity NONE).
+	// misread. Each of these has a GCP API default that matches the spec's
+	// proto default (protocol HTTP, affinity NONE).
 	if spec.Description != "" {
 		args.Description = pulumi.String(spec.Description)
 	}
 	if spec.GetProtocol() != "" {
 		args.Protocol = pulumi.String(spec.GetProtocol())
 	}
+	// The scheme is the ONE exception: the spec's default is EXTERNAL (the
+	// classic global external ALB, or the external passthrough NLB on a
+	// regional service), but the provider's own default differs per scope
+	// (EXTERNAL_MANAGED globally, INTERNAL regionally), and the scheme is
+	// immutable -- letting the provider decide would replace every existing
+	// classic backend service the next time it was applied, and would give
+	// a manifest a different meaning depending on where it lives. The
+	// module therefore sends EXTERNAL itself when the spec leaves the scheme
+	// empty, on BOTH scopes (the manifest defaults applier normally fills it
+	// first; this guard covers every path that bypasses the applier). The
+	// Terraform module makes the same choice.
 	if spec.GetLoadBalancingScheme() != "" {
 		args.LoadBalancingScheme = pulumi.String(spec.GetLoadBalancingScheme())
+	} else {
+		args.LoadBalancingScheme = pulumi.String("EXTERNAL")
 	}
 	if spec.PortName != "" {
 		args.PortName = pulumi.String(spec.PortName)
@@ -341,6 +375,26 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 			}
 			logConfig.OptionalFields = optionalFields
 		}
+		// Each logged header is its own block in the provider; the spec
+		// holds a flat name list.
+		if len(spec.LogConfig.RequestHeaders) > 0 {
+			requestHeaders := compute.BackendServiceLogConfigRequestHeaderArray{}
+			for _, headerName := range spec.LogConfig.RequestHeaders {
+				requestHeaders = append(requestHeaders, &compute.BackendServiceLogConfigRequestHeaderArgs{
+					HeaderName: pulumi.String(headerName),
+				})
+			}
+			logConfig.RequestHeaders = requestHeaders
+		}
+		if len(spec.LogConfig.ResponseHeaders) > 0 {
+			responseHeaders := compute.BackendServiceLogConfigResponseHeaderArray{}
+			for _, headerName := range spec.LogConfig.ResponseHeaders {
+				responseHeaders = append(responseHeaders, &compute.BackendServiceLogConfigResponseHeaderArgs{
+					HeaderName: pulumi.String(headerName),
+				})
+			}
+			logConfig.ResponseHeaders = responseHeaders
+		}
 		args.LogConfig = logConfig
 	}
 
@@ -591,8 +645,7 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 		args.DeletionPolicy = pulumi.StringPtr(spec.DeletionPolicy)
 	}
 
-	createdBackendService, err := compute.NewBackendService(ctx, "backend-service", args,
-		pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{createdProjectService}))
+	createdBackendService, err := compute.NewBackendService(ctx, "backend-service", args, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create backend service")
 	}
@@ -630,6 +683,7 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 		return strconv.Itoa(generatedId)
 	}).(pulumi.StringOutput))
 	ctx.Export(OpFingerprint, createdBackendService.Fingerprint)
+	ctx.Export(OpRegion, pulumi.String(""))
 
 	return nil
 }

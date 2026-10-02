@@ -2,6 +2,7 @@ package module
 
 import (
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/composer"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -43,6 +44,15 @@ func composerEnvironment(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.P
 	envName := spec.EnvironmentName
 	if envName == "" && locals.GcpCloudComposerEnvironment.Metadata != nil {
 		envName = locals.GcpCloudComposerEnvironment.Metadata.Name
+	}
+
+	// Secret values are stored in Secret Manager before the environment
+	// exists; Airflow receives each version's resource name as the variable
+	// and reads the value at run time. The environment is created after the
+	// grants so its first DAG run can read them.
+	storedSecrets, err := envsecrets.Store(ctx, secretPlacement(locals, envName), secretVariables(spec), gcpProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to store the environment's secret values")
 	}
 
 	// -- Build config args ------------------------------------------------
@@ -131,8 +141,8 @@ func composerEnvironment(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.P
 			softwareConfigArgs.PypiPackages = pulumi.ToStringMap(sc.PypiPackages)
 			hasSoftwareConfig = true
 		}
-		if len(sc.EnvVariables) > 0 {
-			softwareConfigArgs.EnvVariables = pulumi.ToStringMap(sc.EnvVariables)
+		if len(sc.EnvVariables)+len(sc.SecretEnvVariables) > 0 {
+			softwareConfigArgs.EnvVariables = envVariables(sc, storedSecrets.Refs)
 			hasSoftwareConfig = true
 		}
 		if sc.WebServerPluginsMode != "" {
@@ -457,7 +467,7 @@ func composerEnvironment(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.P
 
 	createdEnv, err := composer.NewEnvironment(ctx, "composer-environment", args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdComposerApi}))
+		pulumi.DependsOn(append([]pulumi.Resource{createdComposerApi}, storedSecrets.Grants...)))
 	if err != nil {
 		return errors.Wrap(err, "failed to create cloud composer environment")
 	}

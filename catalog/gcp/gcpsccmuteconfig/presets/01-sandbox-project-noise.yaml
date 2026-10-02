@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccMuteConfig
+metadata:
+  name: sandbox-public-buckets
+spec:
+  scope:
+    projectId:
+      value: sandbox-project
+  muteConfigId: sandbox-public-buckets
+  description: Sandbox buckets are public by design; accepted 2026 by the security team
+  filter: category = "PUBLIC_BUCKET_ACL"
+  type: DYNAMIC

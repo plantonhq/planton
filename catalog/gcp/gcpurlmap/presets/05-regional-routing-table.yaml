@@ -1,0 +1,32 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpUrlMap
+metadata:
+  name: regional-routing-table
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Routing table of the us-central1 regional external Application Load Balancer
+  region: us-central1
+  defaultService:
+    value: "<regional-backend-service-self-link>" # replace: a GcpBackendService declared with the same region
+  hostRules:
+    - hosts: ["api.example.com"]
+      pathMatcher: api
+  pathMatchers:
+    - name: api
+      defaultService:
+        value: "<regional-backend-service-self-link>" # replace: the same or another regional GcpBackendService
+      # A path template rewrite in the matcher's DEFAULT action is the regional
+      # map's own knob; Google requires a route rule in the same matcher to
+      # declare the template variables it rewrites with (pathTemplateMatch).
+      defaultRouteAction:
+        urlRewrite:
+          pathTemplateRewrite: "/v2/{path}"
+        timeout:
+          seconds: 30
+      routeRules:
+        - priority: 1
+          service:
+            value: "<regional-backend-service-self-link>" # replace: the regional GcpBackendService serving /v1
+          matchRules:
+            - pathTemplateMatch: "/v1/{path=**}"

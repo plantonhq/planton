@@ -2,9 +2,9 @@
 
 ## Overview
 
-This directory contains the Pulumi implementation for deploying GCP Compute Engine global target HTTP proxies using Planton's `GcpTargetHttpProxy` API. The module is written in Go and creates `compute.TargetHttpProxy`.
+This directory contains the Pulumi implementation for deploying GCP Compute Engine target HTTP proxies using Planton's `GcpTargetHttpProxy` API. The module is written in Go and creates exactly one of `compute.TargetHttpProxy` (global; `spec.region` empty) or `compute.RegionTargetHttpProxy` (regional; `spec.region` set), the same switch the Terraform module makes with its count guards.
 
-A target HTTP proxy binds a global forwarding rule (the VIP) to a URL map (the routing brain); its standard production role is serving the http→https redirect on port 80.
+A target HTTP proxy binds a forwarding rule (the VIP) to a URL map (the routing brain); its standard production role is serving the http→https redirect on port 80. A regional proxy's URL map and forwarding rule must be regional in the same region.
 
 ## Prerequisites
 
@@ -87,10 +87,11 @@ The module consumes `GcpTargetHttpProxyStackInput`:
 
 | Output Key | Type | Description |
 |------------|------|-------------|
-| `self_link` | string | Self-link URI — the value a global forwarding rule references |
+| `self_link` | string | Self-link URI — the value a forwarding rule references (`regions/{region}` in place of `global` for a regional proxy) |
 | `proxy_name` | string | Name of the proxy in GCP |
 | `proxy_id` | string | Server-assigned numeric ID |
-| `fingerprint` | string | Server-computed fingerprint |
+| `fingerprint` | string | Server-computed fingerprint (empty for a regional proxy) |
+| `region` | string | Region of a regional proxy; empty for global |
 
 ## Behavior Notes
 

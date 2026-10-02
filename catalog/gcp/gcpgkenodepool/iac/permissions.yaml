@@ -28,4 +28,6 @@ spec:
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
+        condition:
+          spec_field_set: node_config.service_account
         notes: Required when node_config.service_account pins a custom node identity (the 01-on-demand-autoscaling preset does) -- GKE demands actAs on that account before provisioning nodes running as it. Not needed when node identity is left to the provider default.

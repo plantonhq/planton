@@ -1,0 +1,37 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificate
+metadata:
+  name: api-server
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  pool:
+    value: projects/my-gcp-project/locations/us-central1/caPools/internal-servers
+  certificateId: api-server-2026-09
+  certificateAuthority:
+    value: issuing-ca
+  certificateTemplate:
+    value: projects/my-gcp-project/locations/us-central1/certificateTemplates/tls-server
+  lifetime: 2592000s
+  config:
+    subjectConfig:
+      subject:
+        commonName: api.internal.example.com
+      subjectAltName:
+        dnsNames:
+          - api.internal.example.com
+    x509Config:
+      caOptions:
+        isCa: false
+      keyUsage:
+        baseKeyUsage:
+          digitalSignature: true
+          keyEncipherment: true
+        extendedKeyUsage:
+          serverAuth: true
+    publicKey:
+      key: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcy9jMjdMT3BJdmJWU0RzalMvTWp6VDM3bk5IeQp1dUtmNVZ0eVE2SmNUTUltOEQyRzl4MmNRVXZteFdjZzFFVzQrbXpwZ0RKOXdWR1dDeitQclUrejNBPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+  labels:
+    app: api
+  deletionPolicy: DELETE

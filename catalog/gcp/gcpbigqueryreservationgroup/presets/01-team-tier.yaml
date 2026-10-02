@@ -1,0 +1,8 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservationGroup
+metadata:
+  name: analytics-tier
+spec:
+  projectId:
+    value: bq-admin-project
+  location: US

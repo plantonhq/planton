@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcporgpolicy.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcporgpolicy/v1alpha1/outputs.proto";
+import "catalog/gcp/gcporgpolicy/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-org-policy
+message GcpOrgPolicy {
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+  string kind = 2 [(buf.validate.field).string.const = 'GcpOrgPolicy'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  GcpOrgPolicySpec spec = 4 [(buf.validate.field).required = true];
+  GcpOrgPolicyStatus status = 5;
+}
+
+message GcpOrgPolicyStatus {
+  GcpOrgPolicyStackOutputs outputs = 1;
+}

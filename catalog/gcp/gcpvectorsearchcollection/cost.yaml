@@ -1,0 +1,42 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvectorsearchcollection
+spec:
+  billing_model: usage_based
+  baseline_charges:
+    - service_name: Vector Search
+      sku_meter: stored data
+      pricing_unit: GiB-months
+      description: The collection's data objects and their vectors bill per GiB-month stored, from the first object written (per cloud.google.com/vertex-ai/pricing, Vector Search section, read 2026-09-22). An empty collection stores nothing and owes nothing.
+    - service_name: Vector Search
+      sku_meter: index serving
+      pricing_unit: node-hours or queries
+      description: An index on the pooled infrastructure bills per query and per GiB indexed; an index with dedicated_infrastructure bills its serving nodes per node-hour around the clock, replicas times the mode's node rate, whether or not queries arrive.
+  cost_drivers:
+    - field_path: indexes
+      sku_meter: index serving
+      pricing_unit: node-hours or queries
+      impact: Every index adds a serving meter; a pooled index costs per query, a dedicated one per node-hour from creation. Declare only the indexes searches use.
+    - field_path: indexes.dedicated_infrastructure.autoscaling_spec.min_replica_count
+      sku_meter: index serving
+      pricing_unit: node-hours
+      impact: The committed spend of a dedicated index -- this many nodes run around the clock; the ceiling is max_replica_count.
+    - field_path: indexes.dedicated_infrastructure.mode
+      sku_meter: index serving
+      pricing_unit: node-hours
+      impact: PERFORMANCE_OPTIMIZED nodes cost more per hour than STORAGE_OPTIMIZED ones and hold fewer vectors each; choose by latency need.
+    - field_path: vector_schemas.dense_vector.vertex_embedding_config
+      sku_meter: embedding tokens
+      pricing_unit: characters
+      impact: When set, every object write also bills the Vertex AI embedding model for the text template's characters; precomputed vectors avoid that meter.
+    - field_path: vector_schemas.dense_vector.dimensions
+      sku_meter: stored data
+      pricing_unit: GiB-months
+      impact: Storage scales with dimensions times objects; 3072-dimension embeddings store four times the bytes of 768-dimension ones.
+  estimate_exclusions:
+    - query volume bills per request against pooled indexes
+    - Cloud KMS key operations bill under the referenced key when kms_key_name is set

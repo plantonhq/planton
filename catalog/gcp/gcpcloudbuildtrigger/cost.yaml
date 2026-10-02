@@ -1,0 +1,27 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcloudbuildtrigger
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: build.options.machine_type
+      sku_meter: build time
+      pricing_unit: build-minutes
+      impact: Each build the trigger starts bills per build minute at the rate of its machine type (Cloud Build pricing page); the default machine draws on Cloud Build's monthly free build minutes, and a larger machine type bills a higher per-minute rate from the first minute.
+    - field_path: build.options.worker_pool
+      sku_meter: private pool build time
+      pricing_unit: build-minutes
+      impact: Builds on a private pool bill per build minute at the pool's machine type rate instead of the default pool's, through the GcpCloudBuildWorkerPool block.
+    - field_path: build.timeout
+      sku_meter: build time
+      pricing_unit: build-minutes
+      impact: The timeout caps how many billed minutes one build can run before Google stops it.
+  estimate_exclusions:
+    - how many builds run depends on how often the event source fires, which the spec does not declare
+    - how long each build takes depends on its steps and source, which the spec does not declare
+    - images, logs, and artifacts the builds write bill on Artifact Registry, Cloud Storage, and Cloud Logging
+  notes: "The trigger itself is free: creating and holding it costs nothing, and every charge is the build minutes of the builds it starts (Cloud Build pricing page, read 2026-10-01). A Pub/Sub trigger's subscription delivers through Pub/Sub, billed on the topic's project."

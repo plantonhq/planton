@@ -75,7 +75,7 @@ spec:
 | **Engine** | `engine_version` (e.g., `VALKEY_8_0`, `VALKEY_7_2`); `engine_configs` for tuning |
 | **Persistence** | `persistence_config.mode`: `DISABLED`, `RDB` (periodic snapshots), or `AOF` (append-only file) |
 | **Encryption** | `transit_encryption_mode: SERVER_AUTHENTICATION` for TLS; `kms_key` for CMEK at rest |
-| **Server CA** | `server_ca_mode` — which CA signs the TLS server certificate: `GOOGLE_MANAGED_PER_INSTANCE_CA` (default), `GOOGLE_MANAGED_SHARED_CA` (one CA to trust fleet-wide), or `CUSTOMER_MANAGED_CAS_CA` paired with `server_ca_pool` (your CA Service pool); both immutable |
+| **Server CA** | `server_ca_mode` — which CA signs the TLS server certificate: `GOOGLE_MANAGED_PER_INSTANCE_CA` (default), `GOOGLE_MANAGED_SHARED_CA` (one CA to trust fleet-wide), or `CUSTOMER_MANAGED_CAS_CA` paired with `server_ca_pool` (your CA Service pool: a `GcpPrivateCaPool` reference or its full name); both immutable |
 | **Auth** | `authorization_mode: IAM_AUTH` for IAM-based client authentication |
 | **Networking** | `psc_auto_connections` — PSC endpoints in consumer VPCs (immutable after creation); a per-entry `project_id` omitted rides the provider's effective project |
 | **Zones** | `zone_distribution_config`: `MULTI_ZONE` (HA default) or `SINGLE_ZONE` |

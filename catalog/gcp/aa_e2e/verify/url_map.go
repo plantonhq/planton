@@ -4,10 +4,22 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/googleapi"
 )
 
-// urlMapVerifier probes a global URL map by name and confirms default-service
+// getUrlMap reads the map from the global or regional API collection by the
+// region output, the same switch the modules make.
+func getUrlMap(ctx context.Context, svc *Services, outputs map[string]string) (*compute.UrlMap, error) {
+	name := outputs["url_map_name"]
+	if region := outputs["region"]; region != "" {
+		return svc.Compute.RegionUrlMaps.Get(svc.Project, region, name).Context(ctx).Do()
+	}
+	return svc.Compute.UrlMaps.Get(svc.Project, name).Context(ctx).Do()
+}
+
+// urlMapVerifier probes a URL map by name -- the global or regional
+// collection, chosen by the region output -- and confirms default-service
 // wiring when the scenario sets one.
 type urlMapVerifier struct{}
 
@@ -15,7 +27,7 @@ func (v *urlMapVerifier) IDOutputKey() string { return "self_link" }
 
 func (v *urlMapVerifier) VerifyExists(ctx context.Context, svc *Services, outputs map[string]string) error {
 	name := outputs["url_map_name"]
-	urlMap, err := svc.Compute.UrlMaps.Get(svc.Project, name).Context(ctx).Do()
+	urlMap, err := getUrlMap(ctx, svc, outputs)
 	if err != nil {
 		return errors.Wrapf(err, "url map %s not found after deploy", name)
 	}
@@ -27,7 +39,7 @@ func (v *urlMapVerifier) VerifyExists(ctx context.Context, svc *Services, output
 
 func (v *urlMapVerifier) VerifyAbsent(ctx context.Context, svc *Services, outputs map[string]string) error {
 	name := outputs["url_map_name"]
-	_, err := svc.Compute.UrlMaps.Get(svc.Project, name).Context(ctx).Do()
+	_, err := getUrlMap(ctx, svc, outputs)
 	if err != nil {
 		var apiErr *googleapi.Error
 		if errors.As(err, &apiErr) && apiErr.Code == 404 {

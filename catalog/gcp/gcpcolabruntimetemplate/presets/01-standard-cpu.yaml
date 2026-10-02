@@ -1,0 +1,18 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntimeTemplate
+metadata:
+  name: standard-cpu
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Standard CPU
+  description: Everyday notebooks on a mid-size CPU machine
+  machineSpec:
+    machineType: e2-standard-4
+  dataPersistentDiskSpec:
+    diskType: pd-balanced
+    diskSizeGb: 100
+  networkSpec:
+    enableInternetAccess: true
+  idleTimeout: 3600s

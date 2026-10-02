@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetMembership
+metadata:
+  name: orders-uc1
+spec:
+  projectId:
+    value: my-gcp-project
+  gkeCluster:
+    value: projects/my-gcp-project/locations/us-central1/clusters/orders-uc1
+  issuer: https://container.googleapis.com/v1/projects/my-gcp-project/locations/us-central1/clusters/orders-uc1

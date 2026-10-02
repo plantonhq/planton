@@ -66,6 +66,56 @@ resources:
       - spec: spec.adaptive_protection_config.threshold_configs
         arg: adaptive_protection_config.layer_7_ddos_defense_config.threshold_configs
 
+  # The REGIONAL policy, built when spec.region is set. The regional
+  # collection names its rule list `rules` (the global one says `rule`)
+  # and nests the HTTP match the same way; it lacks labels, Adaptive
+  # Protection, reCAPTCHA options, request-body inspection size, redirect,
+  # header injection, and reCAPTCHA token options (each walled to the
+  # global arm by spec CEL), and adds the network-policy levers the spec
+  # walls to this arm: ddos_protection_config, user_defined_fields, and
+  # rules[].network_match.
+  google_compute_region_security_policy:
+    mappings:
+      - spec: spec.policy_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.rules
+        arg: rules
+      - spec: spec.rules.match.src_ip_ranges
+        arg: rules.match.config.src_ip_ranges
+      - spec: spec.rules.match.expression
+        arg: rules.match.expr.expression
+      - spec: spec.rules.preconfigured_waf_config.exclusions
+        arg: rules.preconfigured_waf_config.exclusion
+      - spec: spec.rules.preconfigured_waf_config.exclusions.request_cookies
+        arg: rules.preconfigured_waf_config.exclusion.request_cookie
+      - spec: spec.rules.preconfigured_waf_config.exclusions.request_headers
+        arg: rules.preconfigured_waf_config.exclusion.request_header
+      - spec: spec.rules.preconfigured_waf_config.exclusions.request_query_params
+        arg: rules.preconfigured_waf_config.exclusion.request_query_param
+      - spec: spec.rules.preconfigured_waf_config.exclusions.request_uris
+        arg: rules.preconfigured_waf_config.exclusion.request_uri
+
+  # The region's enrollment in advanced network DDoS protection, created
+  # only when the spec declares network_edge_security_service. Its
+  # security_policy is the composed regional policy's link; its
+  # deletion_policy is the kind's own, fanned out.
+  google_compute_network_edge_security_service:
+    specRoot: spec.network_edge_security_service
+    mappings:
+      - spec: spec.region
+        arg: region
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: security_policy
+        reason: >-
+          composed link -- the module attaches the regional security policy
+          this kind builds, never a caller-supplied one
+
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables compute.googleapis.com

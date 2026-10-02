@@ -22,15 +22,17 @@ func TestBuildReport(t *testing.T) {
 		{
 			Kind:      "GcpGcsBucket",
 			ModuleDir: "catalog/gcp/gcpgcsbucket/iac/tf",
-			Resources: []string{"google_storage_bucket", "google_made_up_thing"},
+			Resources: []string{"google_storage_bucket", "google_made_up_thing", "random_password"},
 			Pins:      map[string]string{"google": "~> 6.0"},
 		},
 	}
 
-	r := buildReport("gcp", spec, modules, schemas)
+	// random_password is judged internal by the kind's manifest: plumbing
+	// no cloud schema serves, never an unknown.
+	r := buildReport("gcp", spec, modules, schemas, map[string]map[string]bool{"GcpGcsBucket": {"random_password": true}})
 
-	if r.Kinds != 1 || r.TotalSpecFields != 3 || r.DistinctResources != 2 {
-		t.Errorf("aggregates = kinds %d, specFields %d, distinct %d; want 1, 3, 2",
+	if r.Kinds != 1 || r.TotalSpecFields != 3 || r.DistinctResources != 3 {
+		t.Errorf("aggregates = kinds %d, specFields %d, distinct %d; want 1, 3, 3",
 			r.Kinds, r.TotalSpecFields, r.DistinctResources)
 	}
 	// Only the known resource's non-deprecated configurable surface counts.

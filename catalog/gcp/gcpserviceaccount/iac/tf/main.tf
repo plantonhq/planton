@@ -15,7 +15,10 @@ resource "google_service_account" "main" {
 
   # Adopt an existing account with the same email instead of failing —
   # idempotent bootstrap flows that may race other provisioning paths.
-  create_ignore_already_exists = var.spec.create_ignore_already_exists
+  # Sent only when enabled, the same posture as the Pulumi module: the flag
+  # is provider-side (never sent to the API), so an explicit false would only
+  # add a null -> false diff on every existing deployment.
+  create_ignore_already_exists = var.spec.create_ignore_already_exists ? true : null
 
   # Destroy-time guard: PREVENT fails any destroy while set. Null falls
   # back to the provider default (DELETE).

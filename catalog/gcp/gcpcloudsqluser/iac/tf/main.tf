@@ -12,7 +12,9 @@
 # on PostgreSQL the instance must first set the database flag
 # "cloudsql.iam_authentication" = "on".
 resource "google_sql_user" "this" {
-  name     = var.spec.user_name
+  # Derived in locals: the IAM service-account form when the user is a
+  # service account, the spec's user_name otherwise.
+  name     = local.user_name
   project  = local.project_id
   instance = var.spec.instance
 

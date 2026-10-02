@@ -1,0 +1,82 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcppscserviceattachment
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A service attachment stores no customer data -- it is a connection policy in front of a load balancer.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Traffic from a consumer's PSC endpoint to the attachment stays on Google's network and is encrypted at the physical layer like all intra-Google traffic; it never crosses the public internet. Application-layer TLS remains the published service's responsibility.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A service attachment is reachable only from Private Service Connect endpoints in consumer VPC networks over internal addresses; it has no public IP and admits no traffic from the internet.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: connection_preference
+      evidence:
+        type: spec_default
+        reference: ACCEPT_MANUAL admits only the consumers in consumer_accept_lists (each a project, network, or endpoint with a connection limit) and leaves every other connection request PENDING; ACCEPT_AUTOMATIC admits any Google Cloud project except those in consumer_reject_lists. The field is required, so the manifest always states the posture.
+      notes: reconcile_connections decides whether a list edit disconnects already-accepted consumers (true) or affects only pending ones (false, Google's default). The 01 preset is ACCEPT_MANUAL with named consumer projects and a reject list.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served at an edge; the attachment forwards private traffic to the producer's load balancer, whose backends carry any request filtering.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating and changing the attachment authorizes against compute.serviceAttachments.* on the producer project; a consumer connects only by creating an endpoint in its own project (compute.forwardingRules.create there) AND being admitted by the producer's connection preference, so neither party can open the door alone.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through the attachment -- it carries no credentials and calls no APIs; the published service authenticates its own callers.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Attachment insert, patch, and delete land in Cloud Audit Logs (Admin Activity) unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Google exposes every connected endpoint with its status (ACCEPTED, PENDING, REJECTED) on the attachment, and the connected_endpoints_count output records the count at provisioning time; traffic through the attachment appears in the producer load balancer's metrics and, when the NAT subnets enable them, VPC Flow Logs.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A service attachment is a regional object with no zonal component; Google's SDN carries consumer traffic to the producer's regional load balancer across every zone in the region.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE -- the attachment is removed and every consumer endpoint connected through it loses the service at once; PREVENT makes destroy fail outright; ABANDON unmanages the attachment while it keeps serving.
+      notes: PREVENT is the guard for a published service other teams depend on; removing a consumer from the accept list (with reconcile_connections true) is the surgical alternative to deleting the attachment.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; Google's SDN implements Private Service Connect.

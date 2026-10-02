@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetMembership
+metadata:
+  name: analytics-cluster
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: platform-fleet
+      fieldPath: status.outputs.project_id
+  gkeCluster:
+    value: projects/analytics-prod/locations/us-central1/clusters/analytics
+  issuer: https://container.googleapis.com/v1/projects/analytics-prod/locations/us-central1/clusters/analytics

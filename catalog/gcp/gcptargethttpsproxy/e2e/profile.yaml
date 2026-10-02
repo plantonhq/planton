@@ -9,9 +9,14 @@ spec:
   # proxy's url_map + ssl_certificates references, then runs deploy ->
   # compute targetHttpsProxies.get verify (incl. url-map and TLS wiring) ->
   # destroy -> verify 404, on both provisioners.
+  #
+  # Awaiting re-proof: the kind gained its regional arm
+  # (google_compute_region_target_https_proxy behind spec.region), and the
+  # module now count-gates two resources. The regional scenario proves the
+  # regional family with a regional self-managed certificate fixture over a
+  # regional URL map chain; the classic scenarios re-prove the global arm
+  # unchanged (offline plan equivalence already shows identical plans).
   tier: 1
-  status: green
-  validated_provisioners:
-    - pulumi
-    - terraform
-  timeout_minutes: 20
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

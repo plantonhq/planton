@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiRagEngineConfig
+metadata:
+  name: rag-engine-europe-west4
+spec:
+  projectId:
+    value: my-gcp-project
+  location: europe-west4
+  tier: SCALED
+  deletionPolicy: PREVENT

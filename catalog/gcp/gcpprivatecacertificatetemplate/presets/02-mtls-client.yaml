@@ -1,0 +1,25 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateTemplate
+metadata:
+  name: mtls-client
+spec:
+  location: us-central1
+  description: Workload mTLS client certificates with SPIFFE identities
+  maximumLifetime: 86400s
+  predefinedValues:
+    caOptions:
+      isCa: false
+    keyUsage:
+      baseKeyUsage:
+        digitalSignature: true
+      extendedKeyUsage:
+        clientAuth: true
+  identityConstraints:
+    allowSubjectPassthrough: false
+    allowSubjectAltNamesPassthrough: true
+    celExpression:
+      title: SPIFFE IDs only
+      expression: subject_alt_names.all(san, san.type == URI && san.value.startsWith("spiffe://example.org/"))
+  passthroughExtensions:
+    knownExtensions:
+      - EXTENDED_KEY_USAGE

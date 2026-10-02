@@ -57,11 +57,6 @@ func cloudTasksQueue(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provi
 		args.Project = pulumi.StringPtr(spec.ProjectId.GetValue())
 	}
 
-	// PARITY: the bridged provider also carries desired_state (pause/resume)
-	// from the 7.x line; it is deliberately NOT set — the released 6.x
-	// Terraform provider has no such surface, and pause/resume is a runtime
-	// operation, not part of this declarative contract.
-
 	// Queue-level HTTP task settings. These OVERRIDE task-level
 	// configuration at dispatch time — the pattern that lets producers
 	// enqueue bare payloads while the queue owns auth and routing.

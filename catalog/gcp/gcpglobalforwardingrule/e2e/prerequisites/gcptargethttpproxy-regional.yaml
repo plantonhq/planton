@@ -1,0 +1,27 @@
+# Extra-instance GcpTargetHttpProxy fixture: the REGIONAL target HTTP proxy
+# a regional external Application Load Balancer's forwarding rule points at.
+# Declared through the consuming scenario's e2e-prerequisites annotation;
+# the registry's standard proxy prerequisite is global.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTargetHttpProxy
+metadata:
+  name: planton-oss-e2e-gcpgfr-rthp
+  id: planton-oss-e2e-gcpgfr-rthp
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpglobalforwardingrule
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional target HTTP proxy for the gcpglobalforwardingrule regional E2E chain; safe to delete
+  region: us-central1
+  urlMap:
+    valueFrom:
+      kind: GcpUrlMap
+      name: planton-oss-e2e-gcpgfr-rum
+      fieldPath: status.outputs.self_link
+  deletionPolicy: DELETE

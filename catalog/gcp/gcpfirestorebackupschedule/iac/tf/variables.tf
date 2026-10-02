@@ -1,37 +1,56 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Firestore backup schedule"
+  description = "GcpFirestoreBackupSchedule specification"
   type = object({
-    # StringValueOrRef fields arrive from the proto→tfvars converter as
-    # plain strings (already resolved), never as object({value}).
+    # GCP project owning the database. Can be a literal project ID or a
+    # reference to a GcpProject resource. If omitted, the provider's
+    # default project is used.
+    # Immutable: changing the project destroys and recreates the schedule.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
-    database   = string
-    retention  = string
 
-    # Exactly one recurrence shape: daily true, or weekly_recurrence.day set.
+    # The Firestore database to back up — the database name (a
+    # GcpFirestoreDatabase reference resolves to it). Immutable after
+    # creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+    database = string
+
+    # How long each backup is kept, as a seconds duration string (e.g.
+    # "604800s" for 7 days). Maximum 14 weeks ("8467200s"). The only
+    # mutable field — extend or shorten protection in place.
+    retention = string
+
+    # Take a backup every day. Exactly one of daily or weekly_recurrence
+    # must be set. Immutable after creation.
     daily = optional(bool, false)
-    weekly_recurrence = optional(object({
-      day = string
-    }), null)
 
-    # DELETE (default), PREVENT, or ABANDON.
+    # Take a backup every week on the given day. Exactly one of daily or
+    # weekly_recurrence must be set. Immutable after creation.
+    weekly_recurrence = optional(object({
+      # Day of the week the weekly backup runs.
+      day = string
+    }))
+
+    # Deletion policy — what happens when this resource is destroyed:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the schedule is deleted (backups already taken
+    #                outlive it either way, aging out per retention)
+    #   "PREVENT" -- destroy FAILS; protects a compliance-mandated backup
+    #                cadence from accidental teardown
+    #   "ABANDON" -- the schedule is removed from management but keeps
+    #                taking backups in GCP
     deletion_policy = optional(string, "")
   })
-
-  validation {
-    condition     = var.spec.database != ""
-    error_message = "database is required."
-  }
 }

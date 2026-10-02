@@ -1,0 +1,30 @@
+# GcpHaVpnGateway install profile used when the gateway is an E2E PREREQUISITE
+# for another component (a GcpHaVpnConnection). Rides the registry's
+# GcpVpcNetwork prerequisite by reference; names are project+region-scoped
+# with no soft-delete reservation, so they stay fixed. ASN 64514 is the "hub"
+# side; the connection kind's second-gateway fixture speaks 64515.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: planton-oss-e2e-gcpvpngw-prereq
+  id: planton-oss-e2e-gcpvpngw-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpngateway
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-central1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  description: Planton E2E fixture HA VPN gateway (hub side); safe to delete
+  router:
+    bgp:
+      asn: 64514

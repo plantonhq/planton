@@ -1,0 +1,4 @@
+name: gcpvpcpeering-pulumi-project
+runtime:
+  name: go
+description: Planton GcpVpcPeering Pulumi module

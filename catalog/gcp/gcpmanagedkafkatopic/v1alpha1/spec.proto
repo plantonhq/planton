@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpManagedKafkaTopicSpec defines one topic on a Managed Service for
+// Apache Kafka cluster (`google_managed_kafka_topic`). Topics are their own
+// block so the team that produces to a topic owns it in its own manifest,
+// without touching the cluster's.
+//
+// Immutable: project_id, location, cluster, topic_id, replication_factor
+// (a change replaces the topic and DELETES its messages). partition_count
+// grows in place but never shrinks; configs update in place.
+message GcpManagedKafkaTopicSpec {
+  // The GCP project the cluster lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The cluster's region, e.g. "us-central1". Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The cluster the topic lives on. A GcpManagedKafkaCluster reference
+  // resolves to its full resource path (name output); a literal takes the
+  // full path or the bare cluster ID. The modules derive the bare ID
+  // Google's resource expects. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpManagedKafkaCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The topic's name as producers and consumers see it -- Kafka's own
+  // rule: letters, digits, dots, underscores, hyphens, at most 249
+  // characters (avoid mixing dots and underscores; Kafka treats them as
+  // colliding in metric names). Defaults to metadata.name. Immutable.
+  string topic_id = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-zA-Z0-9._-]{1,249}$"
+  ];
+
+  // How many partitions the topic has -- the unit of consumer parallelism.
+  // Can be raised in place, never lowered; raising it changes which
+  // partition a keyed message lands on, so per-key ordering is only
+  // guaranteed for messages written after the change. Empty leaves
+  // Google's default.
+  int32 partition_count = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 1
+  ];
+
+  // How many copies of each partition the cluster keeps. Google
+  // recommends 3 for high availability (the brokers span three zones).
+  // Immutable.
+  int32 replication_factor = 6 [(buf.validate.field).int32.gte = 1];
+
+  // Topic-level overrides of the cluster's defaults, keyed by Kafka topic
+  // property, e.g. "cleanup.policy" = "compact", "retention.ms" =
+  // "604800000", "compression.type" = "producer". Keys absent here follow
+  // the cluster default.
+  map<string, string> configs = 7;
+
+  // What happens to the topic when this resource is destroyed:
+  //   "" / "DELETE" -- deleted, with its messages
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the topic leaves management and stays on the cluster
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

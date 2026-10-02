@@ -1,0 +1,24 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcphavpnconnection
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: tunnels
+      sku_meter: Cloud VPN tunnel hours
+      pricing_unit: hours
+      impact: Every tunnel bills a flat hourly rate from the moment it is created until it is deleted, whether or not the BGP session is up or any traffic flows -- two tunnels (the 99.99% shape) are two tunnel-hours per hour, four tunnels are four. The tunnel count is the whole fixed cost of a connection.
+    - field_path: peer.external_gateway
+      sku_meter: network egress
+      impact: Traffic leaving Google through the tunnels to an on-premises or other-cloud device bills per GiB at Google's internet egress rates for the gateway's region; inbound traffic is free. Route advertisement (advertise_mode / advertised_ip_ranges on the sessions) decides which destinations the peer sends through the tunnel and therefore how much egress flows.
+    - field_path: peer.gcp_gateway
+      sku_meter: network egress
+      impact: Traffic between two Google Cloud VPCs over HA VPN bills as inter-region (or inter-zone) VPC egress on top of the tunnel hours; VPC Network Peering carries the same traffic at intra-VPC rates with no tunnel meter, and is the cheaper choice whenever the two networks can peer.
+  estimate_exclusions:
+    - tunnel egress bills per GiB on the traffic that actually crosses; the volume is unknowable from this manifest
+    - Cloud Router and the external VPN gateway resource are free; BFD and MD5 add no meter
+  notes: "The committed money is the tunnel count -- tunnels bill from creation, up or down, so an idle connection is not free. Everything else is traffic."

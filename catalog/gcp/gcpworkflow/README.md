@@ -7,6 +7,7 @@ Creates a Cloud Workflows workflow — a serverless orchestrator that executes a
 When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Workflow** -- a `workflows.Workflow` with the configured source, service account, CMEK, logging levels, and env vars
+- **Secret Manager secrets** -- for each `secretEnvVars` entry, one secret in the workflow's region holding the value as a pinned version, readable only by the workflow's service account; the workflow's env var holds the version's resource name, never the value
 - **Workflows API enablement** -- `workflows.googleapis.com` enabled in the target project (never disabled on destroy)
 
 ## Before You Deploy

@@ -16,7 +16,7 @@ spec:
           - serviceusage.services.get
           - serviceusage.services.list
         provenance: derived
-        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling logging.googleapis.com -- created only on the PROJECT-scope path; folder/organization/billing buckets are not project resources, so no API enablement happens there. The Terraform module pins disable_on_destroy=false and the Pulumi module leaves the field unset -- the provider's own reference states false OR UNSET leaves the service enabled on destroy (pinned 7.x line), so neither engine calls the disable path and no disable permission is needed.
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling logging.googleapis.com -- created only on the PROJECT-scope path; folder/organization/billing buckets are not project resources, so no API enablement happens there. The Terraform module pins disable_on_destroy=false and the Pulumi module leaves the field unset -- the provider's own reference states false OR UNSET leaves the service enabled on destroy (at the pinned release), so neither engine calls the disable path and no disable permission is needed.
       - purpose: ManageLogBucket
         permissions:
           - logging.buckets.create
@@ -32,7 +32,9 @@ spec:
           - logging.views.update
           - logging.views.delete
         provenance: derived
-        notes: Covers google_logging_log_view (Terraform) / logging.LogView (Pulumi), one per log_views entry -- filter and description update in place; a view_id change replaces the view. Needed only when log_views is non-empty.
+        condition:
+          spec_field_set: log_views
+        notes: Covers google_logging_log_view (Terraform) / logging.LogView (Pulumi), one per log_views entry -- filter and description update in place; a view_id change replaces the view.
       - purpose: ManageLinkedDataset
         permissions:
           - logging.links.create
@@ -40,10 +42,14 @@ spec:
           - logging.links.delete
           - logging.operations.get
         provenance: derived
-        notes: Covers google_logging_linked_dataset (Terraform) / logging.LinkedDataset (Pulumi). Links are create-time-only (no update permission exists or is needed -- any change replaces the link), and link create/delete are long-running operations the provider polls with logging.operations.get. Needed only when linked_bigquery_dataset is set.
+        condition:
+          spec_field_set: linked_bigquery_dataset
+        notes: Covers google_logging_linked_dataset (Terraform) / logging.LinkedDataset (Pulumi). Links are create-time-only (no update permission exists or is needed -- any change replaces the link), and link create/delete are long-running operations the provider polls with logging.operations.get.
       - purpose: ManageScopeSettings
         permissions:
           - logging.settings.get
           - logging.settings.update
         provenance: derived
-        notes: Covers google_logging_{folder|organization}_settings -- the scope-level singleton is adopted on create, patched in place (default-sink disable, default CMEK, default storage location), and left standing on destroy (the API has no delete). Needed only when scope_settings is set on a folder- or organization-scoped bucket, and the grant must live at that scope.
+        condition:
+          spec_field_set: scope_settings
+        notes: Covers google_logging_{folder|organization}_settings -- the scope-level singleton is adopted on create, patched in place (default-sink disable, default CMEK, default storage location), and left standing on destroy (the API has no delete). scope_settings applies only to a folder- or organization-scoped bucket, and the grant must live at that scope.

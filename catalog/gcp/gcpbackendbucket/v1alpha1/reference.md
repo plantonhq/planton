@@ -479,10 +479,14 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpUrlMap | `spec.defaultService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.defaultCustomErrorResponsePolicy.errorService` | `status.outputs.self_link` |
+| GcpUrlMap | `spec.pathMatchers[].defaultService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].defaultCustomErrorResponsePolicy.errorService` | `status.outputs.self_link` |
+| GcpUrlMap | `spec.pathMatchers[].pathRules[].service` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].pathRules[].customErrorResponsePolicy.errorService` | `status.outputs.self_link` |
 | GcpUrlMap | `spec.pathMatchers[].routeRules[].customErrorResponsePolicy.errorService` | `status.outputs.self_link` |
+| GcpUrlMap | `spec.tests[].service` | `status.outputs.self_link` |
 
 ## See Also
 

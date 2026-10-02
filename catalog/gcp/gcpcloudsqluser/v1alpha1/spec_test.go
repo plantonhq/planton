@@ -203,4 +203,46 @@ var _ = ginkgo.Describe("GcpCloudSqlUserSpec", func() {
 		r.Spec.DeletionPolicy = "RETAIN"
 		expectInvalid(r, "deletion_policy")
 	})
+
+	ginkgo.Context("service account users", func() {
+		ginkgo.It("accepts a service account by reference with the IAM service-account type", func() {
+			r := minimalBuiltIn()
+			r.Spec.UserName = ""
+			r.Spec.Password = ""
+			r.Spec.Type = ptr("CLOUD_IAM_SERVICE_ACCOUNT")
+			r.Spec.ServiceAccount = fromRef("orders-runner")
+			expectValid(r)
+		})
+
+		ginkgo.It("accepts a literal service account email", func() {
+			r := minimalBuiltIn()
+			r.Spec.UserName = ""
+			r.Spec.Password = ""
+			r.Spec.Type = ptr("CLOUD_IAM_SERVICE_ACCOUNT")
+			r.Spec.ServiceAccount = litRef("orders-runner@my-project.iam.gserviceaccount.com")
+			expectValid(r)
+		})
+
+		ginkgo.It("rejects a service account without the IAM service-account type", func() {
+			r := minimalBuiltIn()
+			r.Spec.UserName = ""
+			r.Spec.Password = ""
+			r.Spec.ServiceAccount = litRef("orders-runner@my-project.iam.gserviceaccount.com")
+			expectInvalid(r, "CLOUD_IAM_SERVICE_ACCOUNT")
+		})
+
+		ginkgo.It("rejects both user_name and service_account", func() {
+			r := minimalBuiltIn()
+			r.Spec.Password = ""
+			r.Spec.Type = ptr("CLOUD_IAM_SERVICE_ACCOUNT")
+			r.Spec.ServiceAccount = litRef("orders-runner@my-project.iam.gserviceaccount.com")
+			expectInvalid(r, "exactly one")
+		})
+
+		ginkgo.It("rejects neither user_name nor service_account", func() {
+			r := minimalBuiltIn()
+			r.Spec.UserName = ""
+			expectInvalid(r, "exactly one")
+		})
+	})
 })

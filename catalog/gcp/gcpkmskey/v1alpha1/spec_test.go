@@ -165,11 +165,7 @@ var _ = ginkgo.Describe("GcpKmsKeySpec", func() {
 			Algorithm:       "EXTERNAL_SYMMETRIC_ENCRYPTION",
 			ProtectionLevel: "EXTERNAL_VPC",
 		}
-		msg.Spec.CryptoKeyBackend = &foreignkeyv1.StringValueOrRef{
-			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-				Value: "projects/my-project/locations/us-central1/ekmConnections/my-ekm",
-			},
-		}
+		msg.Spec.CryptoKeyBackend = "projects/my-project/locations/us-central1/ekmConnections/my-ekm"
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
 	})
@@ -339,11 +335,7 @@ var _ = ginkgo.Describe("GcpKmsKeySpec", func() {
 
 	ginkgo.It("should reject crypto_key_backend without EXTERNAL_VPC protection", func() {
 		msg := minimal()
-		msg.Spec.CryptoKeyBackend = &foreignkeyv1.StringValueOrRef{
-			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-				Value: "projects/my-project/locations/us-central1/ekmConnections/my-ekm",
-			},
-		}
+		msg.Spec.CryptoKeyBackend = "projects/my-project/locations/us-central1/ekmConnections/my-ekm"
 		err := validator.Validate(msg)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
@@ -354,11 +346,7 @@ var _ = ginkgo.Describe("GcpKmsKeySpec", func() {
 			Algorithm:       "GOOGLE_SYMMETRIC_ENCRYPTION",
 			ProtectionLevel: "HSM",
 		}
-		msg.Spec.CryptoKeyBackend = &foreignkeyv1.StringValueOrRef{
-			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
-				Value: "projects/my-project/locations/us-central1/ekmConnections/my-ekm",
-			},
-		}
+		msg.Spec.CryptoKeyBackend = "projects/my-project/locations/us-central1/ekmConnections/my-ekm"
 		err := validator.Validate(msg)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})

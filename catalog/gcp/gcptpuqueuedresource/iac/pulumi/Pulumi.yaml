@@ -1,0 +1,4 @@
+name: gcptpuqueuedresource-pulumi-project
+runtime:
+  name: go
+description: Planton GcpTpuQueuedResource Pulumi module

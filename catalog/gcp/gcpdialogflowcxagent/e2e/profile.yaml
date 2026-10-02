@@ -1,0 +1,33 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpdialogflowcxagent
+spec:
+  # Awaiting the live proof lane. All four scenarios prove in the harness
+  # project with roles/dialogflow.admin (and roles/discoveryengine.admin for
+  # the data store fixture); the module enables dialogflow.googleapis.com
+  # itself: the agent alone; a playbook-first agent with a webhook, an
+  # OpenAPI tool, a versioned function tool, a data store tool over a store
+  # fixture, and generative settings; a start-flow version pinned by an
+  # environment; and an agent attached to a security-settings fixture.
+  # Offline bar met: both modules build and validate, offline plans for the
+  # reference manifest, every scenario, both fixtures, and every preset are
+  # clean on the pinned provider, and the accounting is total. Live facts
+  # the proof lane confirms: (1) the agent and every folded child create
+  # and RE-PLAN CLEAN under the apply-idempotency gate on both engines --
+  # the fields Google never reads back (start_playbook, answer feedback,
+  # logging settings, credentials, prompt templates) hold the declared
+  # values, and advanced_settings left unset (Optional+Computed) shows no
+  # diff; (2) the wildcard default-playbook path is accepted at create;
+  # (3) the version create waits out the start flow's training and the
+  # environment accepts the composed version path; (4) the data store tool
+  # accepts an empty chat-solution store in the global location; (5)
+  # generative settings outlive destroy in Google (the provider only forgets
+  # them) and a re-run PATCHes them clean; (6) destroy removes environments,
+  # versions, tool versions, tools, and webhooks, then the agent, and the
+  # verifier reads 404; (7) a leaked agent's display name blocks nothing,
+  # because every scenario's name carries the run id.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 40

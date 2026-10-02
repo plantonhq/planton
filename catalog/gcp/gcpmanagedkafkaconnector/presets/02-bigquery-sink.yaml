@@ -1,0 +1,22 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnector
+metadata:
+  name: orders-to-bigquery
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  connectCluster:
+    value: events-connect
+  configs:
+    connector.class: com.wepay.kafka.connect.bigquery.BigQuerySinkConnector
+    tasks.max: "3"
+    topics: orders
+    project: my-gcp-project
+    defaultDataset: orders
+    autoCreateTables: "true"
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter.schemas.enable: "false"
+  taskRestartPolicy:
+    minimumBackoff: 60s
+    maximumBackoff: 1800s

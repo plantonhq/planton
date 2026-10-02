@@ -1,0 +1,48 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVectorSearchCollection
+metadata:
+  name: catalog-hybrid
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Catalog hybrid search
+  description: Dense and sparse vectors over the product catalog
+  labels:
+    team: search
+  dataSchema: '{"type":"object","properties":{"name":{"type":"string"},"category":{"type":"string"},"price":{"type":"number"}}}'
+  vectorSchemas:
+    # Precomputed dense vectors written by the indexing pipeline.
+    - fieldName: dense
+      denseVector:
+        dimensions: 1024
+    # Sparse lexical vectors (SPLADE / BM25 style) for keyword recall.
+    - fieldName: lexical
+      sparseVector: true
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: search-data-key
+  indexes:
+    - indexId: dense-cosine
+      indexField: dense
+      displayName: Dense cosine
+      distanceMetric: COSINE_DISTANCE
+      featureNormType: UNIT_L2_NORM
+      filterFields:
+        - category
+      storeFields:
+        - name
+        - price
+      dedicatedInfrastructure:
+        mode: PERFORMANCE_OPTIMIZED
+        autoscalingSpec:
+          minReplicaCount: 2
+          maxReplicaCount: 6
+    - indexId: lexical-ann
+      indexField: lexical
+      filterFields:
+        - category
+      storeFields:
+        - name
+  deletionPolicy: PREVENT

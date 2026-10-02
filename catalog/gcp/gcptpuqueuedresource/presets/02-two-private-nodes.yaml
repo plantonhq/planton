@@ -1,0 +1,42 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTpuQueuedResource
+metadata:
+  name: paired-request
+spec:
+  projectId:
+    value: my-gcp-project
+  zone: us-west4-a
+  nodeSpecs:
+    - nodeId: worker-a
+      node:
+        runtimeVersion: v2-alpha-tpuv5-lite
+        acceleratorType: v5litepod-8
+        networkConfig:
+          network:
+            valueFrom:
+              kind: GcpVpcNetwork
+              name: ml-vpc
+              fieldPath: status.outputs.network_id
+          subnetwork:
+            valueFrom:
+              kind: GcpSubnetwork
+              name: tpu
+              fieldPath: status.outputs.subnetwork_self_link
+          enableExternalIps: false
+    - nodeId: worker-b
+      node:
+        runtimeVersion: v2-alpha-tpuv5-lite
+        acceleratorType: v5litepod-8
+        networkConfig:
+          network:
+            valueFrom:
+              kind: GcpVpcNetwork
+              name: ml-vpc
+              fieldPath: status.outputs.network_id
+          subnetwork:
+            valueFrom:
+              kind: GcpSubnetwork
+              name: tpu
+              fieldPath: status.outputs.subnetwork_self_link
+          enableExternalIps: false
+  deletionPolicy: PREVENT

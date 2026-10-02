@@ -27,14 +27,14 @@ spec:
       evidence:
         type: spec_default
         reference: Rules with versioned_expr SRC_IPS_V1 restrict inbound traffic to declared CIDR allowlists for every backend attaching the policy; an empty rule set (the API's automatic allow-all default) restricts nothing.
-      notes: The 01-basic-ip-allowlist preset allows only corporate ranges and default-denies everything else with deny(403) at priority 2147483647.
+      notes: The 01-basic-ip-allowlist preset allows only corporate ranges and default-denies everything else with deny(403) at priority 2147483647. On a regional CLOUD_ARMOR_NETWORK policy the same restriction is packet-level -- rules[].network_match.src_ip_ranges, src_asns, ip_protocols, and dest_ports (the 05 preset) gate what reaches a passthrough Network Load Balancer.
     - control_id: edge-protection
       status: configurable
       field_path: rules
       evidence:
         type: spec_default
         reference: The policy IS the request filter -- rules with evaluatePreconfiguredWaf expressions apply Google's preconfigured OWASP rule sets (SQLi, XSS, RCE, LFI), IP and CEL matches gate sources, and rate_limit_options throttle or ban abusers. An empty rule set means the API's default allow-all rule and no filtering.
-      notes: "The 03-waf-owasp-protection preset blocks sqli-v33-stable and xss-v33-stable; adaptive_protection_config adds Layer 7 DDoS detection on top. The protection reaches traffic only for backends that attach the policy -- attachment lives on the backend service, outside this spec."
+      notes: "The 03-waf-owasp-protection preset blocks sqli-v33-stable and xss-v33-stable; adaptive_protection_config adds Layer 7 DDoS detection on top (global policies only). A regional CLOUD_ARMOR_NETWORK policy protects at the packet layer instead: ddos_protection_config.ddos_protection turns on Google's network DDoS protection (STANDARD always-on; ADVANCED with Cloud Armor Enterprise and network_edge_security_service enrolling the region), and network_match rules filter packets. The protection reaches traffic only for backends that attach the policy -- attachment lives on the backend service, outside this spec, and a regional backend service accepts only a regional policy."
     - control_id: rbac
       status: not_applicable
       notes: Management access is project IAM posture (compute security-admin roles), not a component choice; the policy exposes no authentication plane of its own.
@@ -69,13 +69,13 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: Enforcement happens at Google's global edge fleet -- the policy has no zonal footprint, and single-zone operation is unrepresentable.
+        reference: Enforcement happens at Google's edge fleet -- globally for a global policy, across the region's load-balancing fleet for a regional one; the policy has no zonal footprint, and single-zone operation is unrepresentable.
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_policy
       evidence:
         type: spec_default
-        reference: Unset means DELETE -- destroy removes the policy and every rule, leaving the traffic it filtered unprotected once detached. PREVENT makes the destroy fail; ABANDON leaves the policy enforcing in GCP unmanaged. The API itself additionally refuses deletion while any backend service still attaches the policy.
+        reference: Unset means DELETE -- destroy removes the policy and every rule (and, on a regional network policy that declared it, the network edge security service enrolling the region in advanced DDoS protection), leaving the traffic it filtered unprotected once detached. PREVENT makes the destroy fail; ABANDON leaves the policy enforcing in GCP unmanaged. The API itself additionally refuses deletion while any backend service still attaches the policy.
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

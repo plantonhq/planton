@@ -304,7 +304,7 @@ The component's authored data files -- `cost.yaml`, `controls.yaml`,
 `lint.catalog-data` lane. Evaluation is mechanical:
 
 ```bash
-go test ./pkg/finops/... ./pkg/compliance/... ./pkg/iac/permissions/...
+go test ./pkg/finops/... ./pkg/compliance/... ./pkg/iac/permissions/... ./pkg/iac/actioninventory/
 ```
 
 Beyond the gate, audit the JUDGMENT the gate cannot check: do the cost drivers

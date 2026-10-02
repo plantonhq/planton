@@ -1,0 +1,22 @@
+# Consumer-scoped GcpCloudBuildWorkerPool install profile for the gcpcbtrg
+# worker-pool scenario: a default (no network) private pool in us-central1,
+# the region the scenario's trigger lives in. Free to hold; no build runs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildWorkerPool
+metadata:
+  name: planton-oss-e2e-gcpcbtrg-pool
+  id: planton-oss-e2e-gcpcbtrg-pool
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudbuildworkerpool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  workerPoolId: planton-e2e-cbtrg-${E2E_RUN_ID}
+  workerConfig:
+    machineType: e2-standard-2

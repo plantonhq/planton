@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: hub-vpn
+spec:
+  region: us-central1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: hub
+      fieldPath: status.outputs.network_self_link
+  description: Hub VPN gateway for every branch office and peer cloud
+  router:
+    description: BGP for the hub VPN
+    bgp:
+      asn: 64514
+  deletionPolicy: PREVENT

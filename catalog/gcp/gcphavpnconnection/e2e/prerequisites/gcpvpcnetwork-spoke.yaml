@@ -1,0 +1,22 @@
+# The SPOKE network of the Google-to-Google VPN chain: an extra GcpVpcNetwork
+# instance the scenarios declare through the e2e-prerequisites annotation
+# (the registry's own GcpVpcNetwork prerequisite is the hub network, reached
+# transitively through the GcpHaVpnGateway prerequisite). Custom-mode, no
+# subnets. VPC names are project-scoped with no soft-delete reservation.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcNetwork
+metadata:
+  name: planton-oss-e2e-gcpvpncn-spoke-vpc
+  id: planton-oss-e2e-gcpvpncn-spoke-vpc
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpnconnection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  networkName: planton-oss-e2e-gcpvpncn-spoke-vpc
+  autoCreateSubnetworks: false

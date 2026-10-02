@@ -1,0 +1,18 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaAcl
+metadata:
+  name: orders-topic
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  cluster:
+    value: events
+  aclId: topic/orders
+  aclEntries:
+    - principal: User:orders-api@my-gcp-project.iam.gserviceaccount.com
+      operation: WRITE
+    - principal: User:orders-api@my-gcp-project.iam.gserviceaccount.com
+      operation: DESCRIBE
+    - principal: User:billing-worker@my-gcp-project.iam.gserviceaccount.com
+      operation: READ

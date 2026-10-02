@@ -88,7 +88,7 @@ resources:
       - spec: spec.initial_version.deletion_policy
         arg: deletion_policy
     exclusions:
-      # Unlike the global version resource, the regional one at 7.43
+      # Unlike the global version resource, the regional one at the pin
       # carries no project/location arguments (the secret path carries
       # them) and no write-only secret_data twin -- only the wired parent
       # reference needs recording here.

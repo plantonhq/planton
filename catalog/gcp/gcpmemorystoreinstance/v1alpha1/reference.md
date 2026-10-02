@@ -111,7 +111,7 @@ spec:
 | `spec.pscAutoConnections[].projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.authorizationMode` | `string` |  |  |  |
 | `spec.transitEncryptionMode` | `string` |  |  |  |
-| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.persistenceConfig` | `GcpMemorystoreInstancePersistenceConfig` |  |  |  |
 | `spec.persistenceConfig.mode` | `string` | yes |  |  |
 | `spec.persistenceConfig.rdbConfig` | `GcpMemorystoreInstanceRdbConfig` |  |  |  |
@@ -142,9 +142,10 @@ spec:
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.deletionProtectionEnabled` | `bool` |  | `true` |  |
 | `spec.serverCaMode` | `string` |  |  |  |
-| `spec.serverCaPool` | `string` |  |  |  |
+| `spec.serverCaPool` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.maintenanceVersion` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.aclPolicy` | `string` |  |  |  |
 
 ## Field Details
 
@@ -317,7 +318,7 @@ Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{k
 If not specified, data is encrypted with Google-managed keys.
 Immutable after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.persistenceConfig
@@ -600,12 +601,17 @@ Immutable after creation.
 
 ### spec.serverCaPool
 
-`string`
+`string | valueFrom`
 
 The Certificate Authority Service CA pool that signs the server
-certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-Format: projects/{project}/locations/{region}/caPools/{caPoolId}.
-Immutable after creation.
+certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a
+GcpPrivateCaPool reference (its full name) or a literal
+projects/{project}/locations/{region}/caPools/{caPoolId}. Immutable
+after creation.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.maintenanceVersion
 
@@ -633,6 +639,22 @@ the destroy at all):
                running (and billing) in GCP with its data intact
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+### spec.aclPolicy
+
+`string`
+
+The Memorystore ACL policy attached to the instance: a set of
+Valkey ACL rules (users, key patterns, allowed commands) authored once
+and shared across instances in the same region. Leave empty for the
+instance's built-in default ACL (the "default" user with full access,
+gated only by auth_enabled). Full resource name:
+projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}.
+Mutable: attaching or swapping a policy is an in-place update; the
+instance's is_acl_policy_in_sync status reports when the new rules
+have propagated to every node.
+
+- rule: acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}
 
 ## Validation Rules
 
@@ -662,8 +684,10 @@ Fields that can point at another resource's outputs:
 | `spec.pscAutoConnections[].network` | GcpVpcNetwork | `status.outputs.network_id` |
 | `spec.pscAutoConnections[].projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.crossInstanceReplicationConfig.primaryInstance.instance` | GcpMemorystoreInstance | `status.outputs.name` |
 | `spec.crossInstanceReplicationConfig.secondaryInstances[].instance` | GcpMemorystoreInstance | `status.outputs.name` |
+| `spec.serverCaPool` | GcpPrivateCaPool | `status.outputs.name` |
 
 ## Referenced By
 

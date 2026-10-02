@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpkmsautokeyconfig/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpkmsautokeyconfig/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-kms-autokey-config
+message GcpKmsAutokeyConfig {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpKmsAutokeyConfig'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpKmsAutokeyConfigSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpKmsAutokeyConfigStatus status = 5;
+}
+
+//gcp-kms-autokey-config status
+message GcpKmsAutokeyConfigStatus {
+  //stack-outputs
+  GcpKmsAutokeyConfigStackOutputs outputs = 1;
+}

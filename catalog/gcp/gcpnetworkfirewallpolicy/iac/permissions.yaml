@@ -1,0 +1,48 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpnetworkfirewallpolicy
+spec:
+  gcp:
+    groups:
+      - purpose: EnableComputeApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: "Covers google_project_service (Pulumi projects.Service) for compute.googleapis.com -- enable on first apply, get on every refresh. disable_on_destroy is false, so no disable permission is ever exercised."
+      - purpose: ManageNetworkFirewallPolicy
+        permissions:
+          - compute.firewallPolicies.create
+          - compute.regionFirewallPolicies.create
+          - compute.firewallPolicies.get
+          - compute.regionFirewallPolicies.get
+          - compute.firewallPolicies.update
+          - compute.regionFirewallPolicies.update
+          - compute.firewallPolicies.delete
+          - compute.regionFirewallPolicies.delete
+          - compute.firewallPolicies.use
+          - compute.regionFirewallPolicies.use
+        provenance: derived
+        notes: "Covers the policy and its rules on BOTH families -- google_compute_network_firewall_policy / google_compute_region_network_firewall_policy (Pulumi compute.NetworkFirewallPolicy / RegionNetworkFirewallPolicy) and their _rule resources, whose addRule, patchRule, removeRule, and getRule calls are update/get on the policy. Global network policies authorize against compute.firewallPolicies -- the family hierarchical policies use -- and regional ones against compute.regionFirewallPolicies; GCP defines no networkFirewallPolicies permission. create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). roles/compute.securityAdmin contains all of these."
+      - purpose: AssociateNetworkFirewallPolicy
+        permissions:
+          - compute.networks.setFirewallPolicy
+          - compute.networks.get
+        provenance: derived
+        condition:
+          spec_field_set: associations
+        notes: "Covers the _association resources on both families (Pulumi compute.NetworkFirewallPolicyAssociation / RegionNetworkFirewallPolicyAssociation), one per associations entry: the addAssociation and removeAssociation calls authorize as firewallPolicies.use or regionFirewallPolicies.use on the policy (listed above) plus setFirewallPolicy on the attached network -- GCP defines no addAssociation or removeAssociation permission -- (Google checks it on the attachment target), and networks.get to resolve the network. roles/compute.securityAdmin and roles/compute.networkAdmin both contain them."
+      - purpose: ReadReferencedForwardingRules
+        permissions:
+          - compute.forwardingRules.get
+        provenance: derived
+        condition:
+          spec_field_set: rules.target_forwarding_rules
+        notes: "A regional rule with target_type INTERNAL_MANAGED_LB names forwarding rules in target_forwarding_rules, and Google validates each one at rule create. Secure tags (tag values) and service accounts are passed by name and validated by the API without a read permission on this identity."

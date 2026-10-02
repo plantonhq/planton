@@ -1,0 +1,41 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHierarchicalFirewallPolicy
+metadata:
+  name: org-baseline
+spec:
+  parent:
+    organizationId: "123456789012"
+  description: Organization-wide baseline nobody may undo
+  rules:
+    - priority: 1000
+      action: deny
+      direction: INGRESS
+      description: No SSH from the internet, anywhere in the organization
+      enableLogging: true
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["22"]
+    - priority: 1100
+      action: deny
+      direction: INGRESS
+      description: No RDP from the internet either
+      enableLogging: true
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["3389"]
+    - priority: 2000
+      action: goto_next
+      direction: INGRESS
+      description: Everything else is decided by the folder, network, and legacy rules below
+      match:
+        layer4Configs:
+          - ipProtocol: all
+  associations:
+    - name: org-baseline-org
+      target:
+        organizationId: "123456789012"
+  deletionPolicy: PREVENT

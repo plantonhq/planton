@@ -1,0 +1,28 @@
+# GcpVertexAiPersistentResource scenario: the smallest persistent resource
+# -- one pool of one n1-standard-4 replica with Google's boot disk
+# defaults and a generated pool id. project_id is deliberately omitted:
+# the resource rides the provider's default project. It bills for one
+# small VM from provisioning until the destroy. The id carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiPersistentResource
+metadata:
+  name: planton-oss-e2e-gcpvpr-minimal
+  id: planton-oss-e2e-gcpvpr-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaipersistentresource
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  persistentResourceId: pln-e2e-vpr-${E2E_RUN_ID}
+  displayName: Planton OSS E2E persistent resource
+  resourcePools:
+    - machineSpec:
+        machineType: n1-standard-4
+      replicaCount: 1
+  deletionPolicy: DELETE

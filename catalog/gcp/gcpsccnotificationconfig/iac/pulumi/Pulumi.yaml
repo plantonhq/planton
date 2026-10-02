@@ -1,0 +1,4 @@
+name: gcpsccnotificationconfig-pulumi-project
+runtime:
+  name: go
+description: Planton GcpSccNotificationConfig Pulumi module

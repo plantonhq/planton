@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisCluster
+metadata:
+  name: dev-cache
+spec:
+  projectId:
+    value: my-gcp-project
+  clusterName: dev-cache
+  region: us-central1
+  # The smallest cluster Google sells: one shared-core shard, no replicas.
+  shardCount: 1
+  replicaCount: 0
+  nodeType: REDIS_SHARED_CORE_NANO
+  # Google places the endpoints in this VPC; a GcpServiceConnectionPolicy
+  # for gcp-memorystore-redis must exist on it in this region first.
+  pscConfigs:
+    - network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: dev-vpc
+          fieldPath: status.outputs.network_id
+  # A dev cache is disposable: let a destroy succeed the first time.
+  deletionProtectionEnabled: false
+  deletionPolicy: DELETE

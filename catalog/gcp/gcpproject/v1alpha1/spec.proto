@@ -3,6 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpproject.v1alpha1;
 
 import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
 import "shared/options/options.proto";
 
 // GcpProjectParentType selects the resource-hierarchy node a project is
@@ -22,6 +23,12 @@ enum GcpProjectParentType {
 // IAM grants on the project are deliberately NOT bundled here — model them
 // as first-class GcpProjectIamMember resources, one additive grant each.
 message GcpProjectSpec {
+  option (buf.validate.message).cel = {
+    id: "folder_id_is_the_parent"
+    message: "when folder_id is set it IS the parent: leave parent_id empty and parent_type either empty or folder"
+    expression: "!(has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from))) || (this.parent_id == '' && this.parent_type in [0, 2])"
+  };
+
   // Unique project ID for the GCP project. Must be 6-30 characters long,
   // contain only lowercase letters, digits, and hyphens, must start with
   // a letter, and cannot end with a hyphen. Globally unique across all of
@@ -42,10 +49,13 @@ message GcpProjectSpec {
   string display_name = 2;
 
   // The type of parent node the project is created under. Changing the
-  // parent migrates the project within the hierarchy.
+  // parent migrates the project within the hierarchy. May be left empty
+  // when folder_id names the parent.
   GcpProjectParentType parent_type = 3;
 
   // Organization ID or Folder ID (numeric string) matching parent_type.
+  // For a folder declared in the same chart, prefer folder_id (a
+  // reference) and leave this empty.
   string parent_id = 4 [(buf.validate.field).cel = {
     id: "parent_id.numeric"
     message: "parent_id must be the numeric organization/folder ID"
@@ -67,9 +77,11 @@ message GcpProjectSpec {
   map<string, string> labels = 6;
 
   // Resource Manager tags bound to the project at CREATE TIME only
-  // (tagKeys/{id} -> tagValues/{id}). Tags drive org policies and IAM
-  // conditions. Changing this after creation recreates the project — for
-  // tags on an existing project, bind tag values out-of-band instead.
+  // (tagKeys/{id} -> tagValues/{id}, the `name` outputs of GcpTagKey and
+  // GcpTagValue). Tags drive org policies and IAM conditions. Changing this
+  // after creation recreates the project — for tags on an existing project,
+  // bind tag values with GcpTagBinding instead, which attaches and detaches
+  // without touching the project.
   map<string, string> tags = 7;
 
   // Whether GCP auto-creates the "default" VPC network in the new project.
@@ -100,4 +112,17 @@ message GcpProjectSpec {
     message: "deletion_policy must be DELETE, PREVENT, or ABANDON"
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
   }];
+
+  // The folder the project lives in, by reference: a GcpFolder resource
+  // (its folder_id output) or the folder's numeric ID as a literal. This is
+  // how a chart places a project inside a folder it also declares -- the
+  // project waits for the folder to exist. When set it IS the parent:
+  // leave parent_id empty and parent_type empty (or `folder`). Changing it
+  // moves the project into the new folder in place; nothing is recreated,
+  // but the IAM and organization policies inherited from the old folder
+  // stop applying and the new folder's start.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 11 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
 }

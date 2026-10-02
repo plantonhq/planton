@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbillingbudget.v1alpha1;
+
+// GcpBillingBudgetStackOutputs captures the budget after provisioning.
+message GcpBillingBudgetStackOutputs {
+  // The budget's resource name, `billingAccounts/{account}/budgets/{id}` --
+  // the handle the Cloud Billing API and console address it by.
+  string name = 1;
+
+  // The server-assigned budget id (the last segment of name).
+  string budget_id = 2;
+
+  // The billing account the budget belongs to, as `billingAccounts/{id}`.
+  string billing_account = 3;
+}

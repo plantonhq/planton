@@ -1,0 +1,409 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecapool.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpPrivateCaPoolX509Parameters describes the X.509 fields every certificate the pool issues carries (its baseline values): what the key may
+// be used for, the CA basic constraints, certificate policies, OCSP
+// responders, name constraints, and custom extensions (Google's
+// X509Parameters message).
+message GcpPrivateCaPoolX509Parameters {
+  // What the certificate's key may be used for (the key usage and extended
+  // key usage extensions). Omit for no key-usage statement; both usage
+  // groups are optional and an empty group states nothing.
+  GcpPrivateCaPoolKeyUsage key_usage = 1;
+
+  // The basic constraints extension: whether the certificate is a CA and
+  // how many CA levels may sit below it. Omit to leave the extension to
+  // Google's default (for a leaf certificate, is_ca false).
+  GcpPrivateCaPoolCaOptions ca_options = 2;
+
+  // Certificate policy object identifiers (RFC 5280 section 4.2.1.4), each
+  // an OID path such as [2, 23, 140, 1, 2, 1] (CA/Browser Forum
+  // domain-validated).
+  repeated GcpPrivateCaPoolObjectId policy_ids = 3;
+
+  // OCSP responder URLs placed in the Authority Information Access
+  // extension, e.g. "http://ocsp.example.com". Google runs no OCSP
+  // responder; list your own.
+  repeated string aia_ocsp_servers = 4;
+
+  // Custom X.509 extensions, each an OID, a base64 DER value, and whether
+  // a relying party that does not understand it must reject the
+  // certificate (critical).
+  repeated GcpPrivateCaPoolX509Extension additional_extensions = 5;
+
+  // The name constraints extension (RFC 5280 section 4.2.1.10): the names
+  // certificates below a CA may and may not carry. Meaningful on CA
+  // certificates.
+  GcpPrivateCaPoolNameConstraints name_constraints = 6;
+}
+
+// GcpPrivateCaPoolKeyUsage states what the certificate's key may do.
+message GcpPrivateCaPoolKeyUsage {
+  // The key usage extension's bits.
+  GcpPrivateCaPoolBaseKeyUsage base_key_usage = 1;
+
+  // The extended key usage extension's well-known purposes.
+  GcpPrivateCaPoolExtendedKeyUsage extended_key_usage = 2;
+
+  // Extended key usages with no named field here, each an OID path.
+  repeated GcpPrivateCaPoolObjectId unknown_extended_key_usages = 3;
+}
+
+// GcpPrivateCaPoolBaseKeyUsage is the key usage extension (RFC 5280 section 4.2.1.3).
+// A CA certificate sets cert_sign and crl_sign; a TLS leaf typically sets
+// digital_signature and key_encipherment.
+message GcpPrivateCaPoolBaseKeyUsage {
+  // The key may make digital signatures other than certificate and CRL
+  // signatures (TLS handshakes, signed tokens).
+  bool digital_signature = 1;
+
+  // The key may protect content against the signer later denying it
+  // (non-repudiation).
+  bool content_commitment = 2;
+
+  // The key may encipher other keys (RSA key transport in TLS).
+  bool key_encipherment = 3;
+
+  // The key may encipher raw data directly.
+  bool data_encipherment = 4;
+
+  // The key may be used in key agreement (ECDH).
+  bool key_agreement = 5;
+
+  // The key may sign certificates -- set on every CA certificate.
+  bool cert_sign = 6;
+
+  // The key may sign certificate revocation lists -- set on every CA
+  // certificate that publishes CRLs.
+  bool crl_sign = 7;
+
+  // With key_agreement, the key may only encipher.
+  bool encipher_only = 8;
+
+  // With key_agreement, the key may only decipher.
+  bool decipher_only = 9;
+}
+
+// GcpPrivateCaPoolExtendedKeyUsage is the extended key usage extension's well-known
+// purposes (RFC 5280 section 4.2.1.12).
+message GcpPrivateCaPoolExtendedKeyUsage {
+  // TLS server authentication -- what an HTTPS or gRPC server certificate
+  // needs.
+  bool server_auth = 1;
+
+  // TLS client authentication -- what an mTLS client certificate needs.
+  bool client_auth = 2;
+
+  // Code signing.
+  bool code_signing = 3;
+
+  // S/MIME email protection.
+  bool email_protection = 4;
+
+  // Trusted timestamping.
+  bool time_stamping = 5;
+
+  // Signing OCSP responses.
+  bool ocsp_signing = 6;
+}
+
+// GcpPrivateCaPoolCaOptions is the basic constraints extension (RFC 5280 section
+// 4.2.1.9). Both fields are presence-based: an unset field is left out of
+// the certificate, which is different from setting it to false or 0.
+message GcpPrivateCaPoolCaOptions {
+  // true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
+  // leaves the CA flag out of the extension.
+  optional bool is_ca = 1;
+
+  // The path length constraint: how many CA levels may sit below this
+  // certificate. 0 means it may sign only leaf certificates -- a
+  // subordinate that issues workload certificates; unset means no limit
+  // is stated.
+  optional int32 max_issuer_path_length = 2 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpPrivateCaPoolObjectId is an ASN.1 object identifier as its numeric arcs, most
+// significant first, e.g. [1, 3, 6, 1, 5, 5, 7, 3, 1].
+message GcpPrivateCaPoolObjectId {
+  // The OID's arcs, most significant first.
+  repeated int32 object_id_path = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.int32.gte = 0
+  ];
+}
+
+// GcpPrivateCaPoolX509Extension is one custom X.509 extension.
+message GcpPrivateCaPoolX509Extension {
+  // The extension's OID.
+  GcpPrivateCaPoolObjectId object_id = 1 [(buf.validate.field).required = true];
+
+  // A relying party that does not understand a critical extension must
+  // reject the certificate. Mark an extension critical only when every
+  // consumer knows it.
+  bool critical = 2;
+
+  // The extension's DER value, base64-encoded.
+  string value = 3 [(buf.validate.field).string.min_len = 1];
+}
+
+// GcpPrivateCaPoolNameConstraints is the name constraints extension. A name matches a
+// DNS constraint when adding labels to its left gives the name
+// ("example.com" admits "www.example.com", not "example1.com"); an email
+// constraint is an address, a host, or ".domain" for every host in it; a
+// URI constraint matches the URI's host the same way; IP ranges are CIDR.
+message GcpPrivateCaPoolNameConstraints {
+  // Whether the constraints are marked critical. RFC 5280 requires true on
+  // a CA certificate that carries them.
+  bool critical = 1;
+
+  // DNS names certificates below this CA may carry.
+  repeated string permitted_dns_names = 2;
+
+  // DNS names certificates below this CA must not carry.
+  repeated string excluded_dns_names = 3;
+
+  // IP ranges (CIDR) certificates below this CA may carry.
+  repeated string permitted_ip_ranges = 4;
+
+  // IP ranges (CIDR) certificates below this CA must not carry.
+  repeated string excluded_ip_ranges = 5;
+
+  // Email addresses, hosts, or ".domain" suffixes that may appear.
+  repeated string permitted_email_addresses = 6;
+
+  // Email addresses, hosts, or ".domain" suffixes that must not appear.
+  repeated string excluded_email_addresses = 7;
+
+  // URI hosts or ".domain" suffixes that may appear.
+  repeated string permitted_uris = 8;
+
+  // URI hosts or ".domain" suffixes that must not appear.
+  repeated string excluded_uris = 9;
+}
+
+// GcpPrivateCaPoolIdentityConstraints limits the identities certificates may carry.
+message GcpPrivateCaPoolIdentityConstraints {
+  // Copy the Subject from the certificate request into the certificate;
+  // false discards the requested Subject.
+  bool allow_subject_passthrough = 1;
+
+  // Copy the subject alternative names from the request; false discards
+  // them.
+  bool allow_subject_alt_names_passthrough = 2;
+
+  // A CEL expression over the resolved subject and subject alternative
+  // names that must hold before a certificate is signed, e.g.
+  // subject_alt_names.all(san, san.type == DNS && san.value.endsWith(".internal.example.com")).
+  GcpPrivateCaPoolCelExpression cel_expression = 3;
+}
+
+// GcpPrivateCaPoolCelExpression is a CEL expression with its descriptive fields
+// (Google's Expr); see Google's CA Service CEL guide for the variables.
+message GcpPrivateCaPoolCelExpression {
+  // The expression.
+  string expression = 1 [(buf.validate.field).string.min_len = 1];
+
+  // A short title for the expression.
+  string title = 2;
+
+  // What the expression checks.
+  string description = 3;
+
+  // Where the expression came from, for error messages (a file and line).
+  string location = 4;
+}
+
+// GcpPrivateCaPoolAllowedKeyType is one key type a certificate request's public key may
+// use: an RSA key within a modulus range, or an elliptic-curve key for one
+// signature algorithm. Exactly one.
+message GcpPrivateCaPoolAllowedKeyType {
+  option (buf.validate.message).cel = {
+    id: "allowed_key_type.exactly_one"
+    expression: "has(this.rsa) != (this.elliptic_curve_signature_algorithm != '')"
+    message: "an allowed key type is exactly one of rsa or elliptic_curve_signature_algorithm"
+  };
+
+  // An RSA key; an empty message admits any RSA key the service accepts.
+  GcpPrivateCaPoolRsaKeyType rsa = 1;
+
+  // An elliptic-curve key for this signature algorithm:
+  //   ECDSA_P256 -- the common choice for TLS
+  //   ECDSA_P384
+  //   EDDSA_25519
+  string elliptic_curve_signature_algorithm = 2 [(buf.validate.field).cel = {
+    id: "elliptic_curve_signature_algorithm_valid"
+    expression: "this == '' || this in ['ECDSA_P256', 'ECDSA_P384', 'EDDSA_25519']"
+    message: "elliptic_curve_signature_algorithm must be ECDSA_P256, ECDSA_P384, or EDDSA_25519"
+  }];
+}
+
+// GcpPrivateCaPoolRsaKeyType bounds an RSA key's modulus, in bits. 0 (or unset) leaves
+// a bound to Google: the service minimum below, no upper limit above.
+message GcpPrivateCaPoolRsaKeyType {
+  option (buf.validate.message).cel = {
+    id: "rsa.min_not_above_max"
+    expression: "this.max_modulus_size == 0 || this.min_modulus_size <= this.max_modulus_size"
+    message: "min_modulus_size must not exceed max_modulus_size"
+  };
+
+  // Smallest allowed modulus (inclusive), e.g. 2048.
+  int64 min_modulus_size = 1 [(buf.validate.field).int64.gte = 0];
+
+  // Largest allowed modulus (inclusive), e.g. 4096.
+  int64 max_modulus_size = 2 [(buf.validate.field).int64.gte = 0];
+}
+
+// GcpPrivateCaPoolIssuanceModes decides how certificates may be requested. When the
+// message is set, both flags are sent: a false flag forbids that mode.
+message GcpPrivateCaPoolIssuanceModes {
+  // Requests that carry a PEM certificate signing request (pem_csr).
+  bool allow_csr_based_issuance = 1;
+
+  // Requests that describe the certificate as structured config (subject,
+  // SANs, public key) instead of a CSR.
+  bool allow_config_based_issuance = 2;
+}
+
+// GcpPrivateCaPoolIssuancePolicy controls every certificate the pool issues. A
+// certificate request that conflicts with baseline_values is overwritten
+// by them; a certificate template whose predefined values conflict with
+// them fails the request.
+message GcpPrivateCaPoolIssuancePolicy {
+  // The key types a request's public key must match. Empty admits any key.
+  repeated GcpPrivateCaPoolAllowedKeyType allowed_key_types = 1;
+
+  // The longest lifetime an issued certificate may have, e.g. 7776000s
+  // (90 days). A certificate is also cut short when its issuing authority
+  // expires first.
+  string maximum_lifetime = 2 [(buf.validate.field).cel = {
+    id: "maximum_lifetime_duration"
+    expression: "this == '' || (this.matches('^[0-9]+(\\\\.[0-9]{1,9})?s$'))"
+    message: "maximum_lifetime must be a duration in seconds with an 's' suffix, e.g. 86400s"
+  }];
+
+  // Backdate every issued certificate's not-before time by this much (the
+  // lifetime is preserved), to absorb clock skew on clients, e.g. 3600s.
+  // Google allows at most 48 hours.
+  string backdate_duration = 3 [(buf.validate.field).cel = {
+    id: "backdate_duration_duration"
+    expression: "this == '' || (this.matches('^[0-9]+(\\\\.[0-9]{1,9})?s$') && duration(this) <= duration('172800s'))"
+    message: "backdate_duration must be a duration in seconds with an 's' suffix, e.g. 86400s at most 172800s"
+  }];
+
+  // Which request forms are allowed. Omit to allow both.
+  GcpPrivateCaPoolIssuanceModes allowed_issuance_modes = 4;
+
+  // Limits on the identities certificates may carry. Omit for no limits.
+  GcpPrivateCaPoolIdentityConstraints identity_constraints = 5;
+
+  // X.509 values stamped onto every certificate the pool issues.
+  GcpPrivateCaPoolX509Parameters baseline_values = 6;
+}
+
+// GcpPrivateCaPoolPublishingOptions decides what each authority in the pool publishes
+// to its Cloud Storage bucket and advertises in the certificates it
+// issues. When the message is set, both flags are sent.
+message GcpPrivateCaPoolPublishingOptions {
+  // Publish each authority's CA certificate and put its URL in the
+  // Authority Information Access extension of issued certificates.
+  bool publish_ca_cert = 1;
+
+  // Publish each authority's CRL (rebuilt daily and shortly after a
+  // revocation; each expires after 7 days) and put its URL in the CRL
+  // Distribution Points extension.
+  bool publish_crl = 2;
+
+  // How published CA certificates and CRLs are encoded: "PEM" (the
+  // default) or "DER".
+  string encoding_format = 3 [(buf.validate.field).cel = {
+    id: "encoding_format_valid"
+    expression: "this == '' || this in ['PEM', 'DER']"
+    message: "encoding_format must be PEM or DER"
+  }];
+}
+
+// GcpPrivateCaPoolSpec defines a Certificate Authority Service CA pool
+// (`google_privateca_ca_pool`) -- a group of certificate authorities that
+// form one trust anchor, with the policy every certificate they issue
+// follows. Authorities (GcpPrivateCaCertificateAuthority) and certificates
+// (GcpPrivateCaCertificate) live inside the pool and reference it; relying
+// services trust the pool, so authorities rotate in and out behind it.
+//
+// Choose the tier for the workload, once -- it is immutable:
+//   ENTERPRISE -- long-lived certificates with lifecycle management: Google
+//                 stores every certificate, lists, describes, and revokes
+//                 them; authorities may use your own Cloud KMS key
+//   DEVOPS     -- high-volume, short-lived certificates (about 3.5x the
+//                 issuance rate per authority); certificates are not
+//                 stored, so they cannot be listed, described, or revoked,
+//                 and authorities use Google-managed keys only
+message GcpPrivateCaPoolSpec {
+  // The GCP project the pool lives in: a literal project ID or a GcpProject reference.
+  // If omitted, the provider's default project is used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The CA Service region, e.g. "us-central1"; the pool's authorities and certificates live in the same region. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The pool's ID, unique in its parent: letters, digits, "-" and "_",
+  // at most 63 characters. Defaults to metadata.name. Immutable.
+  string ca_pool_id = 3 [(buf.validate.field).cel = {
+    id: "ca_pool_id_format"
+    expression: "this == '' || this.matches('^[a-zA-Z0-9_-]{1,63}$')"
+    message: "ca_pool_id must be 1-63 letters, digits, '-' or '_'"
+  }];
+
+  // ENTERPRISE or DEVOPS (see the message comment). Immutable.
+  string tier = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "tier_valid"
+      expression: "this in ['ENTERPRISE', 'DEVOPS']"
+      message: "tier must be ENTERPRISE or DEVOPS"
+    }
+  ];
+
+  // The policy every certificate the pool issues follows. Omit for no
+  // policy: any key, both request forms, any identity, no baseline values.
+  GcpPrivateCaPoolIssuancePolicy issuance_policy = 5;
+
+  // What the pool's authorities publish. Omit to publish nothing.
+  GcpPrivateCaPoolPublishingOptions publishing_options = 6;
+
+  // The Cloud KMS key that encrypts the subject, SANs, and PEM certificate
+  // of stored certificates at rest -- a GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // in the pool's region. CA Service's service agent needs
+  // cryptoKeyEncrypterDecrypter on it. Empty keeps Google's encryption.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Labels on the pool. The platform attribution labels are added on
+  // top and win on a key conflict.
+  map<string, string> labels = 8;
+
+  // What happens to the pool when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (the provider's default); Google refuses while the
+  //                    pool still holds an authority, even one in its 30-day
+  //                    soft delete (destroy authorities with skip_grace_period
+  //                    first)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- it leaves management and stays in GCP
+  string deletion_policy = 9 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryCapacityCommitment
+metadata:
+  name: enterprise-annual-100
+spec:
+  projectId:
+    value: bq-admin-project
+  location: US
+  slotCount: 100
+  plan: ANNUAL
+  renewalPlan: ANNUAL
+  edition: ENTERPRISE
+  deletionPolicy: ABANDON

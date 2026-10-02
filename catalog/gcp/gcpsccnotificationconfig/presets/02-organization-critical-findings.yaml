@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccNotificationConfig
+metadata:
+  name: org-critical-findings
+spec:
+  scope:
+    organizationId: "123456789012"
+  configId: org-critical-findings
+  description: Every critical finding in the organization to the SOC
+  pubsubTopic:
+    value: projects/security-ops/topics/soc-findings
+  filter: state = "ACTIVE" AND severity = "CRITICAL"
+  deletionPolicy: PREVENT

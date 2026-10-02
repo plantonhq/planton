@@ -1,0 +1,20 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcloudbuildrepository
+spec:
+  gcp:
+    groups:
+      - purpose: ManageRepositoryLink
+        permissions:
+          - cloudbuild.repositories.create
+          - cloudbuild.repositories.get
+          - cloudbuild.repositories.delete
+          - cloudbuild.operations.get
+        provenance: derived
+        notes: Covers google_cloudbuildv2_repository (Pulumi cloudbuildv2.Repository) -- long-running create under the parent connection, read on every refresh, and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Every field is immutable, so there is no update. roles/cloudbuild.connectionAdmin contains all four. The module enables no API -- the parent connection's block enabled Cloud Build in this project.

@@ -1,0 +1,11 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: staging
+spec:
+  projectId:
+    value: acme-delivery
+  location: us-central1
+  description: Staging on Cloud Run
+  run:
+    location: projects/acme-staging/locations/us-central1

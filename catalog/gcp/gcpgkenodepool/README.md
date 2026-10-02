@@ -25,7 +25,7 @@ The pool inherits its project and location from the parent cluster (both resolve
 - **Networking**: dedicated per-pool pod ranges (create-new or use-existing), a pool-specific subnetwork, multi-networking (additional node interfaces and pod networks), per-pool private nodes override, TIER_1 egress bandwidth, pod CIDR overprovision control
 - **Registry access**: containerd configuration — private registries behind custom CAs (Secret Manager-held certificates), per-registry mirrors with capabilities, timeouts, client TLS and custom headers, writable cgroups
 - **Node tuning**: kubelet (CPU/memory/topology managers, CFS quota, PID limits, log rotation, image GC by threshold AND age, parallel image pulls, soft-eviction thresholds with grace periods and minimum reclaim (reclaim values are percentage-only — GKE rejects absolute quantities), crash-loop backoff caps, single-process OOM kill, unsafe sysctl allowlists, the insecure read-only port), Linux (sysctls, cgroup mode, hugepages, transparent hugepage modes, signed-kernel-module enforcement, PTP/KVM time sync, swap with sizing profiles and encryption), logging variant, image streaming (GCFS)
-- **Capacity**: Spot and legacy preemptible VMs, Compute Engine reservation affinity (incl. reserve-or-fail), secondary boot disks for image preloading
+- **Capacity**: Spot and legacy preemptible VMs, Compute Engine reservation affinity (incl. reserve-or-fail), secondary boot disks for image preloading (each disk image a `GcpComputeImage` reference to its `image_id`, or the image's path)
 
 ## Stack Outputs
 
@@ -48,7 +48,7 @@ matched, mapped, or excluded with the reason recorded in
 
 | Excluded Feature | Why |
 |---|---|
-| Kubelet `shutdown_grace_period_seconds` / `shutdown_grace_period_critical_pods_seconds`, `custom_node_init`, `maintenance_policy.exclusion_until_end_of_support` | GA at the pinned provider but not yet bridged by the pinned Pulumi SDK — modeling them only in Terraform would break cross-engine parity (a spec field one engine silently drops). Re-evaluated at every SDK bump. |
+| `maintenance_policy.exclusion_until_end_of_support.start_time` / `end_time` | Computed-only in the provider: GKE derives the exclusion window from the pool's version once `excludeUpgradesUntilEndOfSupport` is set; there is no input to author. |
 
 ## Related Components
 

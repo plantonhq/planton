@@ -1,0 +1,33 @@
+# GcpGkeFleetMembership scenario: explicit registration of a cluster that
+# set no fleet_project, into the second project's fleet. The fixture chain
+# (network, subnetwork, zonal cluster) lives in the second project. Cost:
+# one zonal Standard cluster for the lane's duration, inside the GKE free
+# tier's monthly cluster credit, plus its default node pool.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetMembership
+metadata:
+  name: planton-oss-e2e-gcpflmb-register
+  id: planton-oss-e2e-gcpflmb-register
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleetmembership
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/vpc.yaml,catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/subnet.yaml,catalog/gcp/gcpgkefleetmembership/e2e/prerequisites/cluster.yaml"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: planton-oss-e2e-gcpflmb-fleet
+      fieldPath: status.outputs.project_id
+  membershipId: e2e-gcpflmb-${E2E_RUN_ID}
+  gkeCluster:
+    valueFrom:
+      kind: GcpGkeCluster
+      name: planton-oss-e2e-gcpflmb-cluster
+      fieldPath: status.outputs.cluster_id

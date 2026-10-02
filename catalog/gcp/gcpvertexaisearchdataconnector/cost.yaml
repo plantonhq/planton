@@ -1,0 +1,39 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaisearchdataconnector
+spec:
+  billing_model: usage_based
+  baseline_charges:
+    - service_name: Vertex AI Search
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      description: The data stores a connector creates and fills bill per GiB-month indexed, like any data store, from the first sync (per cloud.google.com/generative-ai-app-builder/pricing, "Data indexing" row, read 2026-09-23). Setting up the connector and its collection is free; a connector that never syncs owes nothing.
+    - service_name: Gemini Enterprise
+      sku_meter: licenses
+      pricing_unit: seats per month
+      description: Third-party connectors (Jira, Confluence, ServiceNow, SharePoint, Salesforce, ...) are a Gemini Enterprise feature and need licensed seats on the project, billed per user per month (per the same pricing page, "Gemini Enterprise" rows).
+  cost_drivers:
+    - field_path: entities
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      impact: Every entity is a data store filled from the source; the more entities and the wider their inclusion filters, the more GiB-months indexed.
+    - field_path: refresh_interval
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      impact: A shorter full-sync interval re-reads the source more often; indexed volume does not grow with sync frequency, but the source's own API quotas and rate limits do.
+    - field_path: connector_modes
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      impact: FEDERATED searches the source live and indexes nothing, so it carries no indexing meter; DATA_INGESTION indexes the source into the stores.
+    - field_path: static_ip_enabled
+      sku_meter: private connectivity
+      pricing_unit: connectors
+      impact: Static egress addresses and private destinations route through Google's private connectivity, which may carry its own charge per connector.
+  estimate_exclusions:
+    - queries bill on the engines that search the connector's stores
+    - Secret Manager access to the connector's credentials bills under Secret Manager
+    - Cloud KMS key operations bill under the referenced key when kms_key_name is set

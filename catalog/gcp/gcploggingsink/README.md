@@ -41,7 +41,7 @@ spec:
 planton apply -f logging-sink.yaml
 ```
 
-Then grant the `writer_identity` output `roles/storage.objectCreator` on the bucket (via the bucket's `iamMembers`) — without the grant, the sink silently exports nothing.
+Then grant the `writer_identity` output `roles/storage.objectCreator` on the bucket with a `GcpGcsBucketIamMember` whose `member` references the sink's `status.outputs.writer_identity` — without the grant, the sink silently exports nothing.
 
 ## Configuration Reference
 
@@ -90,7 +90,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 ## Important Notes
 
-- **The grant is the deploy's second half**: `roles/storage.objectCreator` (bucket), `roles/bigquery.dataEditor` (dataset), or `roles/pubsub.publisher` (topic) for the `writer_identity` — wire it through the destination kind's `iamMembers` in the same chart.
+- **The grant is the deploy's second half**: a standalone grant block that depends on both the sink and the destination, its `member` referencing `writer_identity` — `GcpGcsBucketIamMember` with `roles/storage.objectCreator` for a bucket, `GcpPubSubTopicIamMember` with `roles/pubsub.publisher` for a topic. Never through the destination kind's own IAM fields: the sink references its destination, so a destination that references the sink's identity back would be a dependency cycle. A BigQuery dataset takes `roles/bigquery.dataEditor` outside the catalog, or as a literal `GcpBigQueryDataset.access` entry once the identity is known (that access list is authoritative).
 - **Renaming the sink recreates it and mints a NEW writer identity** — re-grant on the destination.
 - **`interceptChildren` changes what child projects see** — intercepted logs stop reaching the children's own sinks. Use deliberately for compliance capture.
 
@@ -100,7 +100,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 
 ## Related Components
 
-- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — the archival destination (grant the writer through its iamMembers)
+- [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — the archival destination (grant the writer through a `GcpGcsBucketIamMember`)
 - [GcpBigQueryDataset](/docs/catalog/gcp/gcpbigquerydataset) — the queryable destination
 - [GcpPubSubTopic](/docs/catalog/gcp/gcppubsubtopic) — the streaming destination
 

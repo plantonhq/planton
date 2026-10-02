@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: cost-center
+spec:
+  parent:
+    projectId:
+      valueFrom:
+        kind: GcpProject
+        name: app-project
+        fieldPath: status.outputs.project_id
+  shortName: cost-center
+  description: Internal cost center code
+  allowedValuesRegex: ^CC-[0-9]{4}$

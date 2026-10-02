@@ -459,7 +459,12 @@ type GcpCloudFunctionBuildConfig struct {
 	Source *GcpCloudFunctionSource `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`
 	// Environment variables available at build time (e.g. buildpack knobs
 	// like GOOGLE_ENTRYPOINT). Not injected into the runtime — use
-	// service_config.environment_variables for that.
+	// service_config.environment_variables for that. Values are stored in
+	// plain text on the function and must never be secrets: Google's build
+	// API has no Secret Manager path for build-time variables. A build that
+	// needs a private package index reaches it through the build service
+	// account's own access (an Artifact Registry repository it can read) or
+	// a private worker pool (worker_pool), never a token here.
 	BuildEnvironmentVariables map[string]string `protobuf:"bytes,4,rep,name=build_environment_variables,json=buildEnvironmentVariables,proto3" json:"build_environment_variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Service account Cloud Build runs the build as — the identity that
 	// reads the source and pushes the image. FULLY-QUALIFIED resource name
@@ -467,10 +472,13 @@ type GcpCloudFunctionBuildConfig struct {
 	// Accepts a literal or a reference to a GcpServiceAccount resource. If
 	// omitted, GCP uses its default build identity.
 	ServiceAccount *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=service_account,json=serviceAccount,proto3" json:"service_account,omitempty"`
-	// Cloud Build Custom Worker Pool that builds the function — for builds
-	// that must run inside a private network perimeter. Format:
-	// projects/{project}/locations/{region}/workerPools/{name}.
-	WorkerPool string `protobuf:"bytes,6,opt,name=worker_pool,json=workerPool,proto3" json:"worker_pool,omitempty"`
+	// The Cloud Build private worker pool the build runs in, as
+	// projects/{project}/locations/{location}/workerPools/{pool}: a
+	// GcpCloudBuildWorkerPool reference (its name output), or the literal
+	// name. Use one when the build must reach a private network (a private
+	// package index, an internal artifact store). Empty runs the build on
+	// Google's default pool.
+	WorkerPool *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=worker_pool,json=workerPool,proto3" json:"worker_pool,omitempty"`
 	// User-managed Artifact Registry repository the built container is
 	// stored in, optionally CMEK-protected (required when kms_key_name is
 	// set). FULLY-QUALIFIED path
@@ -553,11 +561,11 @@ func (x *GcpCloudFunctionBuildConfig) GetServiceAccount() *v1.StringValueOrRef {
 	return nil
 }
 
-func (x *GcpCloudFunctionBuildConfig) GetWorkerPool() string {
+func (x *GcpCloudFunctionBuildConfig) GetWorkerPool() *v1.StringValueOrRef {
 	if x != nil {
 		return x.WorkerPool
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpCloudFunctionBuildConfig) GetDockerRepository() *v1.StringValueOrRef {
@@ -835,13 +843,18 @@ type GcpCloudFunctionServiceConfig struct {
 	// at least 1 CPU and thread-safe code.
 	MaxInstanceRequestConcurrency int32 `protobuf:"varint,5,opt,name=max_instance_request_concurrency,json=maxInstanceRequestConcurrency,proto3" json:"max_instance_request_concurrency,omitempty"`
 	// Environment variables injected into the runtime as plain-text
-	// KEY=VALUE pairs. Configuration only — never place credentials here;
-	// use secret_environment_variables so material stays in Secret Manager.
+	// KEY=VALUE pairs, written into the function where anyone who can view
+	// it reads them. Configuration only — a credential goes in
+	// secret_environment_variables, as a value this component stores in
+	// Secret Manager or a secret you already own.
 	EnvironmentVariables map[string]string `protobuf:"bytes,6,rep,name=environment_variables,json=environmentVariables,proto3" json:"environment_variables,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Secret Manager references injected as environment variables. The
-	// material never appears in the spec — each entry names a secret and
-	// version resolved at instance start. The runtime service account needs
-	// roles/secretmanager.secretAccessor on each secret.
+	// Environment variables whose value comes from Secret Manager, resolved
+	// at instance start. Each entry either names a secret you already own
+	// (secret, version, project_id) or carries a value this component
+	// stores for you (value). The function holds only the reference, never
+	// the material. A secret you own needs roles/secretmanager.secretAccessor
+	// granted to the runtime service account; a stored value gets that grant
+	// from the component.
 	SecretEnvironmentVariables []*GcpCloudFunctionSecretEnvVar `protobuf:"bytes,7,rep,name=secret_environment_variables,json=secretEnvironmentVariables,proto3" json:"secret_environment_variables,omitempty"`
 	// Secret Manager secret versions projected as files under a mount path
 	// — for consumers that read credentials from disk (certificates, config
@@ -1113,19 +1126,36 @@ func (x *GcpCloudFunctionDirectVpcNetworkInterface) GetTags() []string {
 }
 
 // GcpCloudFunctionSecretEnvVar resolves one Secret Manager secret version
-// into one environment variable at instance start.
+// into one environment variable at instance start: a secret you already
+// own (secret, with version and project_id), or a secret value this
+// component stores for you (value). Exactly one.
 type GcpCloudFunctionSecretEnvVar struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Environment variable name, e.g. "DATABASE_PASSWORD".
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	// The secret: a short name for a secret in the function's project
-	// ("my-secret"). Cross-project secrets set project_id.
+	// A Secret Manager secret you already own: its short name in the
+	// function's project ("my-secret"). Cross-project secrets set
+	// project_id. The runtime service account needs
+	// roles/secretmanager.secretAccessor on it.
 	Secret string `protobuf:"bytes,2,opt,name=secret,proto3" json:"secret,omitempty"`
-	// Secret version to resolve: a version number or "latest" — the common
-	// choice, at the cost of new instances silently picking up rotations.
+	// Version of the secret you own to resolve: a version number or
+	// "latest" — the common choice, at the cost of new instances silently
+	// picking up rotations. Only with secret.
 	Version string `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`
-	// Project the secret lives in, when it is not the function's project.
-	ProjectId     string `protobuf:"bytes,4,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	// Project the secret you own lives in, when it is not the function's
+	// project. Only with secret.
+	ProjectId string `protobuf:"bytes,4,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	// A secret value this component keeps in Secret Manager for you. It
+	// creates one secret for this variable, replicated only in the
+	// function's region, stores the value as a version, grants the
+	// function's runtime identity (service_account_email, or the project's
+	// Compute Engine default service account when unset) secretAccessor on
+	// that secret alone, and points the variable at that exact version —
+	// the function carries a reference, never the value. A changed value
+	// adds a version and redeploys the function, so rotation is a deploy;
+	// destroying the function removes the secret. The secret's id is
+	// function_<region>_<function name>_<key>.
+	Value         string `protobuf:"bytes,5,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1184,6 +1214,13 @@ func (x *GcpCloudFunctionSecretEnvVar) GetVersion() string {
 func (x *GcpCloudFunctionSecretEnvVar) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
+	}
+	return ""
+}
+
+func (x *GcpCloudFunctionSecretEnvVar) GetValue() string {
+	if x != nil {
+		return x.Value
 	}
 	return ""
 }
@@ -1629,7 +1666,7 @@ const file_catalog_gcp_gcpcloudfunction_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x88\a\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xbf\t\n" +
 	"\x1bGcpCloudFunctionBuildConfig\x126\n" +
 	"\aruntime\x18\x01 \x01(\tB\x1c\xbaH\x19\xc8\x01\x01r\x14\x18 2\x10^[a-z][a-z0-9]*$R\aruntime\x12.\n" +
 	"\ventry_point\x18\x02 \x01(\tB\r\xbaH\n" +
@@ -1637,8 +1674,9 @@ const file_catalog_gcp_gcpcloudfunction_v1alpha1_spec_proto_rawDesc = "" +
 	"entryPoint\x12a\n" +
 	"\x06source\x18\x03 \x01(\v2A.dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSourceB\x06\xbaH\x03\xc8\x01\x01R\x06source\x12\xa5\x01\n" +
 	"\x1bbuild_environment_variables\x18\x04 \x03(\v2e.dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.BuildEnvironmentVariablesEntryR\x19buildEnvironmentVariables\x12y\n" +
-	"\x0fservice_account\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\x88\xd4a\xc6\x17\x92\xd4a\x13status.outputs.nameR\x0eserviceAccount\x12\x1f\n" +
-	"\vworker_pool\x18\x06 \x01(\tR\n" +
+	"\x0fservice_account\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\x88\xd4a\xc6\x17\x92\xd4a\x13status.outputs.nameR\x0eserviceAccount\x12\xd5\x02\n" +
+	"\vworker_pool\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xff\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
+	"\x12worker_pool.format\x12gworker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}\x1a\\!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$')\x88\xd4a\xbc\x19\x92\xd4a\x13status.outputs.nameR\n" +
 	"workerPool\x12\x88\x01\n" +
 	"\x11docker_repository\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\xb8\x17\x92\xd4a\x1estatus.outputs.repository_pathR\x10dockerRepository\x12\x80\x01\n" +
 	"\rupdate_policy\x18\b \x01(\x0e2L.dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildUpdatePolicyB\r\x92\xa6\x1d\tAUTOMATICR\fupdatePolicy\x1aL\n" +
@@ -1670,7 +1708,7 @@ const file_catalog_gcp_gcpcloudfunction_v1alpha1_spec_proto_rawDesc = "" +
 	"\finvert_regex\x18\x06 \x01(\bR\vinvertRegex\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\a \x01(\tR\tprojectId:\xdd\x01\xbaH\xd9\x01\x1a\xd6\x01\n" +
-	" repo_source.exactly_one_revision\x12Ipin the source to exactly one revision: branchName, tagName, or commitSha\x1ag(this.branch_name != '' ? 1 : 0) + (this.tag_name != '' ? 1 : 0) + (this.commit_sha != '' ? 1 : 0) == 1\"\xab\x12\n" +
+	" repo_source.exactly_one_revision\x12Ipin the source to exactly one revision: branchName, tagName, or commitSha\x1ag(this.branch_name != '' ? 1 : 0) + (this.tag_name != '' ? 1 : 0) + (this.commit_sha != '' ? 1 : 0) == 1\"\xcd\x12\n" +
 	"\x1dGcpCloudFunctionServiceConfig\x12\x85\x01\n" +
 	"\x15service_account_email\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x13serviceAccountEmail\x12^\n" +
 	"\x10available_memory\x18\x02 \x01(\tB3\xbaH(\xd8\x01\x01r#2!^[0-9]+(\\.[0-9]+)?(k|M|G|Mi|Gi)?$\x92\xa6\x1d\x04256MR\x0favailableMemory\x12B\n" +
@@ -1678,8 +1716,8 @@ const file_catalog_gcp_gcpcloudfunction_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0ftimeout_seconds\x18\x04 \x01(\x05B\x13\xbaH\n" +
 	"\xd8\x01\x01\x1a\x05\x18\x90\x1c(\x01\x92\xa6\x1d\x0260R\x0etimeoutSeconds\x12[\n" +
 	" max_instance_request_concurrency\x18\x05 \x01(\x05B\x12\xbaH\n" +
-	"\xd8\x01\x01\x1a\x05\x18\xe8\a(\x01\x92\xa6\x1d\x011R\x1dmaxInstanceRequestConcurrency\x12\x97\x01\n" +
-	"\x15environment_variables\x18\x06 \x03(\v2b.dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.EnvironmentVariablesEntryR\x14environmentVariables\x12\x89\x01\n" +
+	"\xd8\x01\x01\x1a\x05\x18\xe8\a(\x01\x92\xa6\x1d\x011R\x1dmaxInstanceRequestConcurrency\x12\xb9\x01\n" +
+	"\x15environment_variables\x18\x06 \x03(\v2b.dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.EnvironmentVariablesEntryB Ҧ\x1d\x1csecret_environment_variablesR\x14environmentVariables\x12\x89\x01\n" +
 	"\x1csecret_environment_variables\x18\a \x03(\v2G.dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretEnvVarR\x1asecretEnvironmentVariables\x12n\n" +
 	"\x0esecret_volumes\x18\b \x03(\v2G.dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretVolumeR\rsecretVolumes\x12z\n" +
 	"\rvpc_connector\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xb1\x18\x92\xd4a\x18status.outputs.self_linkR\fvpcConnector\x12\xa7\x01\n" +
@@ -1703,14 +1741,17 @@ const file_catalog_gcp_gcpcloudfunction_v1alpha1_spec_proto_rawDesc = "" +
 	"subnetwork\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB+\x88\xd4a\xc3\x17\x92\xd4a\x1estatus.outputs.subnetwork_name\x98\xd4a\x01R\n" +
 	"subnetwork\x12A\n" +
 	"\x04tags\x18\x03 \x03(\tB-\xbaH*\xd8\x01\x01\x92\x01$\x18\x01\" r\x1e2\x1c^[a-z]([-a-z0-9]*[a-z0-9])?$R\x04tags:\xaa\x02\xbaH\xa6\x02\x1a\xa3\x02\n" +
-	" direct_vpc.network_or_subnetwork\x12Eset at least one of network or subnetwork on the direct VPC interface\x1a\xb7\x01(has(this.network.value) && this.network.value != '') || has(this.network.value_from) || (has(this.subnetwork.value) && this.subnetwork.value != '') || has(this.subnetwork.value_from)\"\xa5\x02\n" +
+	" direct_vpc.network_or_subnetwork\x12Eset at least one of network or subnetwork on the direct VPC interface\x1a\xb7\x01(has(this.network.value) && this.network.value != '') || has(this.network.value_from) || (has(this.subnetwork.value) && this.subnetwork.value != '') || has(this.subnetwork.value_from)\"\xe9\x05\n" +
 	"\x1cGcpCloudFunctionSecretEnvVar\x124\n" +
-	"\x03key\x18\x01 \x01(\tB\"\xbaH\x1f\xc8\x01\x01r\x1a2\x18^[A-Za-z_][A-Za-z0-9_]*$R\x03key\x12\x89\x01\n" +
-	"\x06secret\x18\x02 \x01(\tBq\xbaH\a\xc8\x01\x01r\x02\x10\x01\xaa\xa6\x1dcSecret Manager secret NAME/identifier only — the secret material itself never appears in the specR\x06secret\x12$\n" +
+	"\x03key\x18\x01 \x01(\tB\"\xbaH\x1f\xc8\x01\x01r\x1a2\x18^[A-Za-z_][A-Za-z0-9_]*$R\x03key\x12\x7f\n" +
+	"\x06secret\x18\x02 \x01(\tBg\xaa\xa6\x1dcSecret Manager secret NAME/identifier only — the secret material itself never appears in the specR\x06secret\x12$\n" +
 	"\aversion\x18\x03 \x01(\tB\n" +
 	"\x92\xa6\x1d\x06latestR\aversion\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x04 \x01(\tR\tprojectId\"\xe0\x02\n" +
+	"project_id\x18\x04 \x01(\tR\tprojectId\x12\x1a\n" +
+	"\x05value\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\x05value:\xb0\x03\xbaH\xac\x03\x1a\xd6\x01\n" +
+	"\x1bsecret_env.secret_xor_value\x12\x8b\x01a secret environment variable takes exactly one of secret (a Secret Manager secret you own) or value (a secret value this component stores)\x1a)(this.secret != '') != (this.value != '')\x1a\xd0\x01\n" +
+	"*secret_env.version_and_project_need_secret\x12^version and project_id address a secret you own; they apply only with secret, never with value\x1aBthis.secret != '' || (this.version == '' && this.project_id == '')\"\xe0\x02\n" +
 	"\x1cGcpCloudFunctionSecretVolume\x12)\n" +
 	"\n" +
 	"mount_path\x18\x01 \x01(\tB\n" +
@@ -1815,35 +1856,36 @@ var file_catalog_gcp_gcpcloudfunction_v1alpha1_spec_proto_depIdxs = []int32{
 	7,  // 6: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.source:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSource
 	20, // 7: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.build_environment_variables:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.BuildEnvironmentVariablesEntry
 	22, // 8: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 9: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.docker_repository:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 10: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.update_policy:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildUpdatePolicy
-	8,  // 11: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSource.storage_source:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionStorageSource
-	9,  // 12: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSource.repo_source:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionRepoSource
-	22, // 13: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionStorageSource.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 14: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.service_account_email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 15: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.environment_variables:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.EnvironmentVariablesEntry
-	12, // 16: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.secret_environment_variables:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretEnvVar
-	13, // 17: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.secret_volumes:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretVolume
-	22, // 18: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.vpc_connector:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 19: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.vpc_connector_egress_settings:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionVpcEgressSetting
-	2,  // 20: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.ingress_settings:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionIngressSetting
-	15, // 21: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.scaling:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionScalingConfig
-	11, // 22: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.direct_vpc_network_interface:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface
-	3,  // 23: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.direct_vpc_egress:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionVpcEgressSetting
-	22, // 24: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 25: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	14, // 26: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretVolume.versions:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretVolumeVersion
-	1,  // 27: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionTrigger.trigger_type:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionTriggerType
-	17, // 28: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionTrigger.event_trigger:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger
-	22, // 29: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.pubsub_topic:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	18, // 30: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.event_filters:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventFilter
-	4,  // 31: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.retry_policy:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionRetryPolicy
-	22, // 32: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.service_account_email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // [33:33] is the sub-list for method output_type
-	33, // [33:33] is the sub-list for method input_type
-	33, // [33:33] is the sub-list for extension type_name
-	33, // [33:33] is the sub-list for extension extendee
-	0,  // [0:33] is the sub-list for field type_name
+	22, // 9: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.worker_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // 10: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.docker_repository:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 11: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildConfig.update_policy:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionBuildUpdatePolicy
+	8,  // 12: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSource.storage_source:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionStorageSource
+	9,  // 13: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSource.repo_source:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionRepoSource
+	22, // 14: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionStorageSource.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // 15: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.service_account_email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	21, // 16: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.environment_variables:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.EnvironmentVariablesEntry
+	12, // 17: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.secret_environment_variables:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretEnvVar
+	13, // 18: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.secret_volumes:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretVolume
+	22, // 19: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.vpc_connector:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3,  // 20: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.vpc_connector_egress_settings:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionVpcEgressSetting
+	2,  // 21: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.ingress_settings:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionIngressSetting
+	15, // 22: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.scaling:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionScalingConfig
+	11, // 23: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.direct_vpc_network_interface:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface
+	3,  // 24: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionServiceConfig.direct_vpc_egress:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionVpcEgressSetting
+	22, // 25: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // 26: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	14, // 27: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretVolume.versions:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSecretVolumeVersion
+	1,  // 28: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionTrigger.trigger_type:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionTriggerType
+	17, // 29: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionTrigger.event_trigger:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger
+	22, // 30: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.pubsub_topic:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 31: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.event_filters:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventFilter
+	4,  // 32: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.retry_policy:type_name -> dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionRetryPolicy
+	22, // 33: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionEventTrigger.service_account_email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	34, // [34:34] is the sub-list for method output_type
+	34, // [34:34] is the sub-list for method input_type
+	34, // [34:34] is the sub-list for extension type_name
+	34, // [34:34] is the sub-list for extension extendee
+	0,  // [0:34] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudfunction_v1alpha1_spec_proto_init() }

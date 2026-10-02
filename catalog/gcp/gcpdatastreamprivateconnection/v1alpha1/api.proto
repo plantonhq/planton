@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamprivateconnection.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpdatastreamprivateconnection/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpdatastreamprivateconnection/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-datastream-private-connection
+message GcpDatastreamPrivateConnection {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpDatastreamPrivateConnection'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpDatastreamPrivateConnectionSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpDatastreamPrivateConnectionStatus status = 5;
+}
+
+//gcp-datastream-private-connection status
+message GcpDatastreamPrivateConnectionStatus {
+  //stack-outputs
+  GcpDatastreamPrivateConnectionStackOutputs outputs = 1;
+}

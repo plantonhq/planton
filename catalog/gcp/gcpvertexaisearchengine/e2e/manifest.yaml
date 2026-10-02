@@ -1,0 +1,64 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: product-search
+spec:
+  projectId:
+    value: my-gcp-project
+  # The same location as the data stores it searches.
+  location: global
+  # Empty means SEARCH; CHAT and RECOMMENDATION build the other two engines.
+  engineType: SEARCH
+  displayName: Product search
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: product-docs
+        fieldPath: status.outputs.data_store_id
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Acme
+  # Enterprise tier with the LLM add-on: generative answers and summaries.
+  searchEngineConfig:
+    searchTier: SEARCH_TIER_ENTERPRISE
+    searchAddOns:
+      - SEARCH_ADD_ON_LLM
+  # Serving controls, applied through the default serving config below.
+  controls:
+    - controlId: synonyms-laptop
+      displayName: Laptop synonyms
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      synonymsAction:
+        synonyms:
+          - laptop
+          - notebook
+    - controlId: boost-docs
+      displayName: Boost documentation
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      boostAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: product-docs
+            fieldPath: status.outputs.name
+        filter: '(category: ANY("docs"))'
+        fixedBoost: 0.5
+  servingConfig:
+    synonymsControlIds:
+      - synonyms-laptop
+    boostControlIds:
+      - boost-docs
+  # The embeddable widget: public, from the company's site, with a
+  # generated answer above the results.
+  widgetConfig:
+    accessSettings:
+      allowPublicAccess: true
+      allowlistedDomains:
+        - www.example.com
+    uiSettings:
+      interactionType: SEARCH_WITH_ANSWER
+      resultDescriptionType: SNIPPET
+      enableAutocomplete: true
+  deletionPolicy: DELETE

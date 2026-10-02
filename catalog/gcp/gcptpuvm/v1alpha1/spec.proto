@@ -1,0 +1,229 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptpuvm.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpTpuVmSpec defines a Cloud TPU VM (`google_tpu_v2_vm`) -- a slice of
+// Google's AI accelerators (v2 through v6e / Trillium) with its host VMs,
+// for training and serving large models with JAX, PyTorch/XLA, or
+// TensorFlow. The accelerator type or topology decides the slice size
+// (v5litepod-8 is 8 chips on one host; larger slices span hosts that each
+// get their own VM and network endpoint).
+//
+// Google publishes this resource only in its beta Terraform provider; the
+// module uses google-beta for it under the catalog's recorded admission.
+//
+// Capacity is the practical constraint: TPUs live in specific zones, need
+// quota, and are often scarce. spot (or preemptible) capacity is far
+// cheaper and can be reclaimed at any time; reserved draws from a
+// reservation. When on-demand capacity is short, request the slice
+// through a GcpTpuQueuedResource instead, which waits for capacity.
+//
+// Immutable: almost everything -- zone, node_id, runtime_version, the
+// accelerator, networking, service account, scheduling, and Secure Boot.
+// Mutable in place: description, labels, metadata, tags, and data_disks.
+message GcpTpuVmSpec {
+  option (buf.validate.message).cel = {
+    id: "accelerator_type_xor_config"
+    message: "set at most one of accelerator_type or accelerator_config"
+    expression: "!(this.accelerator_type != '' && has(this.accelerator_config))"
+  };
+  option (buf.validate.message).cel = {
+    id: "network_config_xor_configs"
+    message: "set at most one of network_config or network_configs"
+    expression: "!(has(this.network_config) && size(this.network_configs) > 0)"
+  };
+
+  // The GCP project the TPU lives in: a literal project ID or a GcpProject
+  // reference. If omitted, the provider's default project is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The zone the TPU runs in, e.g. "us-central1-a" or "europe-west4-a".
+  // Only some zones offer each TPU generation; check Google's TPU regions
+  // and zones list. Immutable.
+  string zone = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+-[a-z]$"
+  ];
+
+  // The TPU's id -- its name in the project. Lowercase letters, digits,
+  // and hyphens, starting with a letter. Defaults to metadata.name.
+  // Immutable.
+  string node_id = 3 [(buf.validate.field).cel = {
+    id: "node_id.format"
+    message: "node_id must be lowercase letters, digits, and hyphens, starting with a letter, up to 63 characters"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+  }];
+
+  // The TPU software image, matched to the accelerator generation and
+  // framework, e.g. "tpu-ubuntu2204-base", "v2-alpha-tpuv5-lite",
+  // "v2-alpha-tpuv6e". Immutable.
+  string runtime_version = 4 [(buf.validate.field).required = true];
+
+  // The slice by name: generation and chip or core count, e.g. "v2-8",
+  // "v3-8", "v5litepod-8", "v6e-8". Set this or accelerator_config; with
+  // neither, Google's provider asks for "v2-8". Immutable.
+  string accelerator_type = 5;
+
+  // The slice by generation and topology -- how you ask for shapes the
+  // type names do not cover. Set this or accelerator_type. Immutable.
+  GcpTpuVmAcceleratorConfig accelerator_config = 6;
+
+  // What the TPU is for.
+  string description = 7;
+
+  // A /29 CIDR block the TPU picks its address from. It must not overlap
+  // any subnetwork of the network, any peered network, or another TPU's
+  // block. Unset: Google chooses. Immutable.
+  string cidr_block = 8 [(buf.validate.field).cel = {
+    id: "cidr_block.slash29"
+    message: "cidr_block must be an IPv4 /29 block"
+    expression: "this == '' || this.matches('^([0-9]{1,3}\\\\.){3}[0-9]{1,3}/29$')"
+  }];
+
+  // The TPU's network. Set this or network_configs. Unset: the project's
+  // default network and subnetwork. Immutable.
+  GcpTpuVmNetworkConfig network_config = 9;
+
+  // Several network interfaces, one per entry, for multi-NIC TPU VMs.
+  // Set this or network_config. Immutable.
+  repeated GcpTpuVmNetworkConfig network_configs = 10;
+
+  // The identity the TPU host VMs run as. Unset: the Compute Engine
+  // default service account with access to every Cloud API. Immutable.
+  GcpTpuVmServiceAccount service_account = 11;
+
+  // Spot, preemptible, or reserved capacity. Unset: on-demand. Immutable.
+  GcpTpuVmSchedulingConfig scheduling_config = 12;
+
+  // Existing persistent disks to attach -- training data or checkpoints
+  // shared across TPUs. Mutable.
+  repeated GcpTpuVmDataDisk data_disks = 13;
+
+  // Boot the host VMs with Secure Boot (Shielded VM). Sent only when true.
+  // Immutable.
+  bool enable_secure_boot = 14;
+
+  // Labels on the TPU. The platform attribution labels are merged in and
+  // win on key conflicts.
+  map<string, string> labels = 15;
+
+  // Custom metadata on the host VMs -- for example "startup-script" (runs
+  // on every worker at boot) and "shutdown-script". Mutable.
+  map<string, string> metadata = 16;
+
+  // Network tags on the host VMs -- the handle VPC firewall rules target.
+  // Mutable.
+  repeated string tags = 17 [(buf.validate.field).repeated.unique = true];
+
+  // What happens to the TPU when this resource is destroyed:
+  //   "" / "DELETE" -- the TPU and its host VMs are deleted (attached data
+  //                    disks are only detached)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the TPU leaves management and keeps running (and
+  //                    billing)
+  string deletion_policy = 18 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// GcpTpuVmAcceleratorConfig is a slice by generation and topology.
+message GcpTpuVmAcceleratorConfig {
+  // The TPU generation: "V2", "V3", "V4", "V5LITE_POD", "V5P", or "V6E".
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^V[0-9][A-Z0-9_]*$"
+  ];
+
+  // The chip topology, e.g. "2x2" or "2x2x1".
+  string topology = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[0-9]+(x[0-9]+)+$"
+  ];
+}
+
+// GcpTpuVmNetworkConfig is one TPU network interface.
+message GcpTpuVmNetworkConfig {
+  // The VPC network: a GcpVpcNetwork reference or a literal
+  // projects/{project}/global/networks/{name}. Unset: "default".
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // The subnetwork in the TPU's region: a GcpSubnetwork reference or a
+  // literal projects/{project}/regions/{region}/subnetworks/{name}. Unset:
+  // "default".
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnetwork = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_self_link"
+  ];
+
+  // Give the TPU workers external IP addresses. Without them the
+  // subnetwork needs Private Google Access (or Cloud NAT) to reach
+  // Google APIs and the internet.
+  bool enable_external_ips = 3;
+
+  // Let the workers send and receive packets with non-matching source or
+  // destination addresses -- needed only when they forward routes.
+  bool can_ip_forward = 4;
+
+  // The number of queues on the interface (higher network throughput on
+  // large hosts). Unset: Google's default.
+  int32 queue_count = 5 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpTpuVmServiceAccount is the host VMs' identity.
+message GcpTpuVmServiceAccount {
+  // The service account: a GcpServiceAccount reference or a literal email.
+  // Unset: the Compute Engine default service account.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef email = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // OAuth scopes granted to it. Unset: every Cloud API
+  // (https://www.googleapis.com/auth/cloud-platform); access is then
+  // governed by the account's IAM roles.
+  repeated string scopes = 2;
+}
+
+// GcpTpuVmSchedulingConfig chooses the capacity model.
+message GcpTpuVmSchedulingConfig {
+  // Preemptible capacity (the older model; Google may reclaim it and ends
+  // it after 24 hours).
+  bool preemptible = 1;
+
+  // Spot capacity -- the cheapest; Google may reclaim it at any time, with
+  // no 24-hour limit. Checkpoint often.
+  bool spot = 2;
+
+  // Draw from a reservation made for this project and zone.
+  bool reserved = 3;
+}
+
+// GcpTpuVmDataDisk is one attached persistent disk.
+message GcpTpuVmDataDisk {
+  // The disk: a GcpComputeDisk reference or a literal
+  // projects/{project}/zones/{zone}/disks/{name} in the TPU's zone.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef source_disk = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeDisk,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
+
+  // "READ_WRITE" (the default; one TPU at a time) or "READ_ONLY" (shared
+  // read access for many TPUs).
+  string mode = 2 [(buf.validate.field).cel = {
+    id: "mode.valid"
+    message: "mode must be READ_WRITE or READ_ONLY"
+    expression: "this == '' || this in ['READ_WRITE', 'READ_ONLY']"
+  }];
+}

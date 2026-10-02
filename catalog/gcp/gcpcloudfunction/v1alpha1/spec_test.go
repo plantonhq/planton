@@ -307,13 +307,52 @@ var _ = Describe("GcpCloudFunctionSpec validations", func() {
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 
-		It("rejects a secret env var without a secret", func() {
+		It("rejects a secret env var with neither a secret nor a value", func() {
 			spec := withSecretEnv(&GcpCloudFunctionSecretEnvVar{Key: "DATABASE_PASSWORD"})
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 
+		It("accepts a secret value the component stores", func() {
+			spec := withSecretEnv(&GcpCloudFunctionSecretEnvVar{Key: "DATABASE_PASSWORD", Value: "hunter2"})
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a secret env var with both a secret and a value", func() {
+			spec := withSecretEnv(&GcpCloudFunctionSecretEnvVar{Key: "DATABASE_PASSWORD", Secret: "db-password", Value: "hunter2"})
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+			Expect(err.Error()).To(ContainSubstring("exactly one of secret"))
+		})
+
+		It("rejects a version or project_id beside a stored value", func() {
+			spec := withSecretEnv(&GcpCloudFunctionSecretEnvVar{Key: "DATABASE_PASSWORD", Value: "hunter2", Version: "latest"})
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+			Expect(err.Error()).To(ContainSubstring("apply only with secret"))
+			spec = withSecretEnv(&GcpCloudFunctionSecretEnvVar{Key: "DATABASE_PASSWORD", Value: "hunter2", ProjectId: "shared-secrets"})
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+			spec = withSecretEnv(&GcpCloudFunctionSecretEnvVar{Key: "DATABASE_PASSWORD", Secret: "db-password", Version: "3", ProjectId: "shared-secrets"})
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
 		It("rejects an env var name starting with a digit", func() {
 			spec := withSecretEnv(&GcpCloudFunctionSecretEnvVar{Key: "1BAD", Secret: "s"})
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+	})
+
+	Context("Build worker pool", func() {
+		It("takes the worker pool as a reference or a full literal name", func() {
+			spec := makeValidSpec()
+			spec.BuildConfig.WorkerPool = strRef("private-builds")
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+			spec.BuildConfig.WorkerPool = strVal("projects/my-gcp-project/locations/us-central1/workerPools/private")
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a literal worker pool that is not a full name", func() {
+			spec := makeValidSpec()
+			spec.BuildConfig.WorkerPool = strVal("private")
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 	})

@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDocumentAiProcessor
+metadata:
+  name: document-ocr
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us
+  type: OCR_PROCESSOR
+  displayName: Document OCR

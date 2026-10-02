@@ -6,6 +6,24 @@ Its levers are all MUTABLE (in-place, zero-downtime), which is exactly why
 routing self-tests and a deliberate destroy stance matter more here than on
 any resource behind it.
 
+## One kind, two scopes
+
+`region` empty builds the GLOBAL URL map — the routing brain of the global
+external ALB, the cross-region internal ALB, and Traffic Director. `region`
+set builds the REGIONAL map — the routing brain of the regional external
+ALB and the regional internal ALB. A regional map routes only to regional
+`GcpBackendService` blocks in its own region (never to a backend bucket,
+which is global-only) and is referenced only by regional target proxies.
+Four surfaces exist only on the global map and are rejected when `region`
+is set: route-scoped `cachePolicy` (regional ALBs have no Cloud CDN),
+custom error response policies, `maxStreamDuration` (except in a path
+matcher's default route action, which both scopes carry), and the
+header-driven routing-test fields (`headers`, `expectedOutputUrl`,
+`expectedRedirectResponseCode` — a regional test names its `service` and
+nothing else). One knob exists only on the regional map:
+`pathTemplateRewrite` in a path matcher's default route action. `region` is
+immutable — a map never moves between scopes.
+
 ## Route evaluation order
 
 Host rules pick a path matcher; inside the matcher, route rules run first

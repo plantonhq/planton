@@ -105,31 +105,20 @@ resources:
         arg: node_config.linux_node_config.node_kernel_module_loading.policy
       - spec: spec.node_config.linux_node_config.enable_ptp_kvm_time_sync
         arg: node_config.linux_node_config.accurate_time_config.enable_ptp_kvm_time_sync
-    exclusions:
-      # Not yet bridged by the pinned Pulumi SDK (pulumi-gcp v9.29.0,
-      # google-beta 7.38): modeling these only in Terraform would break
-      # cross-engine parity — a spec field one engine silently drops.
-      # Re-evaluate at the next SDK bump.
-      - arg: node_config.kubelet_config.shutdown_grace_period_seconds
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump (bridged from google-beta 7.39).
-      - arg: node_config.kubelet_config.shutdown_grace_period_critical_pods_seconds
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump (bridged from google-beta 7.39).
-      - arg: node_config.linux_node_config.custom_node_init
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK
-          (entered google-beta at 7.40); modeling it would break
-          cross-engine parity. Re-evaluate at the next pulumi-gcp bump.
-      - arg: maintenance_policy.exclusion_until_end_of_support
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK
-          (entered google-beta at 7.40); modeling it would break
-          cross-engine parity. Re-evaluate at the next pulumi-gcp bump.
+      # The init script's single-source block is flattened: the spec names
+      # the source (GCS or Secret Manager) where the provider nests
+      # custom_node_init.init_script.
+      - spec: spec.node_config.linux_node_config.custom_node_init.gcs_uri
+        arg: node_config.linux_node_config.custom_node_init.init_script.gcs_uri
+      - spec: spec.node_config.linux_node_config.custom_node_init.gcs_generation
+        arg: node_config.linux_node_config.custom_node_init.init_script.gcs_generation
+      - spec: spec.node_config.linux_node_config.custom_node_init.secret_manager_secret_uri
+        arg: node_config.linux_node_config.custom_node_init.init_script.gcp_secret_manager_secret_uri
+      # One switch holds the pool on its version until end of support; the
+      # provider's block carries only that switch as input (its start_time
+      # and end_time are computed-only: GKE derives the window).
+      - spec: spec.exclude_upgrades_until_end_of_support
+        arg: maintenance_policy.exclusion_until_end_of_support.enabled
   google_project_service:
     internal: >-
       API enablement plumbing — the module enables

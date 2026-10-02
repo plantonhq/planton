@@ -1,0 +1,26 @@
+# Extra-instance GcpHealthCheck fixture: the REGIONAL health check a regional
+# backend service requires (Google rejects a global one behind a regional
+# Application Load Balancer). Declared through the consuming scenario's
+# e2e-prerequisites annotation; the registry's standard health-check
+# prerequisite is global.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHealthCheck
+metadata:
+  name: planton-oss-e2e-gcpgfr-rhc
+  id: planton-oss-e2e-gcpgfr-rhc
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpglobalforwardingrule
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional health check for the gcpglobalforwardingrule regional E2E chain; safe to delete
+  region: us-central1
+  http:
+    port: 80
+    requestPath: /
+  deletionPolicy: DELETE

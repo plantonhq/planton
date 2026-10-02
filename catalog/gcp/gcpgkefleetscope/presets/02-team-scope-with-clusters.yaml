@@ -1,0 +1,26 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetScope
+metadata:
+  name: team-payments
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: platform-fleet
+      fieldPath: status.outputs.project_id
+  scopeId: payments
+  namespaces:
+    - scopeNamespaceId: payments
+  rbacRoleBindings:
+    - scopeRbacRoleBindingId: payments-admins
+      group:
+        value: payments-admins@example.com
+      role:
+        predefinedRole: ADMIN
+  membershipBindings:
+    - membershipBindingId: prod-us-east1
+      membership:
+        valueFrom:
+          kind: GcpGkeCluster
+          name: prod-us-east1
+          fieldPath: status.outputs.fleet_membership

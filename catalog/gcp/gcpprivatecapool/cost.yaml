@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpprivatecapool
+spec:
+  billing_model: free
+  free_tier: "A CA pool is configuration. Google's Certificate Authority Service pricing (cloud.google.com/certificate-authority-service/pricing, read 2026-09-24) bills a monthly fee per certificate authority and a fee per certificate issued, both at the pool's tier, not the pool itself."
+  notes: "The tier set here decides the rates its authorities and certificates bill at: Enterprise authorities cost ten times the DevOps monthly fee and its certificates more per issue, with per-certificate prices falling in volume tiers shared across the billing account's authorities."

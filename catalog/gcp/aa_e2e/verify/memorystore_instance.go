@@ -2,10 +2,7 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/pkg/errors"
 )
@@ -35,30 +32,12 @@ type memorystoreInstance struct {
 }
 
 func (v *memorystoreInstanceVerifier) get(ctx context.Context, svc *Services, name string) (*memorystoreInstance, int, error) {
-	url := fmt.Sprintf("https://memorystore.googleapis.com/v1/%s", name)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build memorystore GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "memorystore GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read memorystore response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("memorystore GET %s returned %d: %s", name, resp.StatusCode, string(body))
-	}
-
 	instance := &memorystoreInstance{}
-	if err := json.Unmarshal(body, instance); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode memorystore instance")
+	status, err := googleRestGet(ctx, svc, "memorystore instance", fmt.Sprintf("https://memorystore.googleapis.com/v1/%s", name), instance)
+	if err != nil {
+		return nil, status, err
 	}
-	return instance, resp.StatusCode, nil
+	return instance, status, nil
 }
 
 func (v *memorystoreInstanceVerifier) VerifyExists(ctx context.Context, svc *Services, outputs map[string]string) error {
@@ -102,11 +81,5 @@ func (v *memorystoreInstanceVerifier) VerifyAbsent(ctx context.Context, svc *Ser
 	}
 
 	_, status, err := v.get(ctx, svc, name)
-	if err != nil {
-		if status == http.StatusNotFound {
-			return nil
-		}
-		return errors.Wrapf(err, "unexpected error probing memorystore instance %s after destroy", name)
-	}
-	return errors.Errorf("memorystore instance %s still exists after destroy", name)
+	return restAbsent("memorystore instance", name, status, err)
 }

@@ -4,7 +4,7 @@ This Terraform module provisions a GCP Compute Engine health check. It is the Te
 
 ## Overview
 
-The module creates exactly one of `google_compute_health_check` (global, when `spec.region` is empty) or `google_compute_region_health_check` (regional, when it is set) — GCP models the two scopes as separate API collections with an identical probe surface. Everything, including the gRPC-with-TLS protocol block, is GA on the `hashicorp/google` 7.x line; no beta provider is involved.
+The module creates exactly one of `google_compute_health_check` (global, when `spec.region` is empty) or `google_compute_region_health_check` (regional, when it is set) — GCP models the two scopes as separate API collections with an identical probe surface. Everything, including the gRPC-with-TLS protocol block, is GA on the `hashicorp/google` 8.x line; no beta provider is involved.
 
 `name` and `project` are immutable (ForceNew); all probe knobs (cadence, thresholds, protocol settings) update in place. Ports left unset fall through to the API's protocol defaults (http/tcp 80, https/http2/ssl 443).
 

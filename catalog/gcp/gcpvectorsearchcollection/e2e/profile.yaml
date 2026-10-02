@@ -1,0 +1,26 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvectorsearchcollection
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/vectorsearch.admin (or the owner role) once
+  # vectorsearch.googleapis.com is enabled: a dense collection whose
+  # embeddings Vertex computes with one index, and a hybrid dense + sparse
+  # collection with two indexes exercising every index lever. Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest and every scenario are clean on the pinned provider, and the
+  # accounting is total. Live facts the proof lane confirms: (1) the
+  # collection and its indexes reach a ready state and the index_names
+  # output lists them in manifest order on both engines; (2) the compact
+  # data_schema JSON RE-PLANS CLEAN under the apply-idempotency gate
+  # (Google normalizes it); (3) an index's Optional+Computed levers left
+  # unset show no diff against Google's defaults, and the ones set on the
+  # hybrid scenario round-trip; (4) the sparse_vector marker block
+  # round-trips as an empty block on both engines; (5) destroy order is
+  # indexes -> collection -- a resourceInUse on teardown means the fold's
+  # dependency edge was lost.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 60

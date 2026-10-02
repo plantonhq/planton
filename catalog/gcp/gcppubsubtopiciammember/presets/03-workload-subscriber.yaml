@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopicIamMember
+metadata:
+  name: my-consumer-subscriber
+spec:
+  topic:
+    valueFrom:
+      kind: GcpPubSubTopic
+      name: <topic-resource-name>
+      fieldPath: status.outputs.topic_id
+  role:
+    # Lets the member attach subscriptions to this topic -- how a consumer
+    # in another project reads a stream it does not own.
+    value: roles/pubsub.subscriber
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: <service-account-resource-name>
+      fieldPath: status.outputs.member

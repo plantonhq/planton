@@ -1,0 +1,22 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpsccnotificationconfig
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: pubsub_topic
+      sku_meter: Pub/Sub message delivery
+      pricing_unit: data volume
+      impact: Every streamed finding is a message on the topic, billed by Pub/Sub on its own pricing (the config itself is free; Security Command Center pricing page, read 2026-10-01). Subscribers' processing bills on their side.
+    - field_path: filter
+      sku_meter: Pub/Sub message delivery
+      pricing_unit: data volume
+      impact: An empty filter streams every finding create and update -- in a large organization a steady message volume; a narrow filter keeps it to the findings responders act on.
+  free_tier: Notification configs carry no Security Command Center charge; the tier the scope is activated on (Standard free, Premium and Enterprise priced) bills separately from this block.
+  estimate_exclusions:
+    - finding volume -- follows what Security Command Center detects in the scope, not any spec field
+  notes: "Pub/Sub's own free monthly allowance usually covers a filtered findings stream."

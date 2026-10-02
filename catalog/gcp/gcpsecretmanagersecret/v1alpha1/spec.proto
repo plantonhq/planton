@@ -255,7 +255,15 @@ message GcpSecretManagerSecretCmek {
   dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 }
 
@@ -284,9 +292,12 @@ message GcpSecretManagerSecretRotation {
 message GcpSecretManagerSecretInitialVersion {
   // The secret payload (at most 64KiB). A secret value: the platform
   // stores it as a managed-secret reference and resolves it just-in-time
-  // at deploy — it never sits in plaintext in the control plane. In
-  // charts, wire it via valueFrom from a producing resource's sensitive
-  // output (e.g. a generated credential) instead of a literal.
+  // at deploy — it never sits in plaintext in the control plane. A
+  // literal or a reference to ANY kind's output (no default kind, since a
+  // secret can hold anything): in charts, wire it via valueFrom from a
+  // producing resource's sensitive output instead of a literal -- e.g. a
+  // GcpApiKey's status.outputs.key_string or a GcpIamOauthClient's
+  // status.outputs.client_secret.
   // Immutable: changing the payload creates a NEW version through GCP
   // tooling or rotation — this field only seeds version 1.
   dev.planton.shared.foreignkey.v1.StringValueOrRef data = 1 [

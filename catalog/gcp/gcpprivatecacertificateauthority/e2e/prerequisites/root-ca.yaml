@@ -1,0 +1,45 @@
+# An extra GcpPrivateCaCertificateAuthority instance for the gcppcaa
+# two-tier chain: the self-signed root that signs the scenario's
+# subordinate. Deletion protection off, skip_grace_period, and
+# ignore_active_certificates_on_deletion (the subordinate's certificate is
+# still valid when the root goes) let teardown delete it immediately.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateAuthority
+metadata:
+  name: planton-oss-e2e-gcppcaa-root-ca
+  id: planton-oss-e2e-gcppcaa-root-ca
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecacertificateauthority
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: planton-oss-e2e-gcppcaa-root-pool
+      fieldPath: status.outputs.name
+  certificateAuthorityId: e2e-gcppcaa-root-${E2E_RUN_ID}
+  config:
+    subjectConfig:
+      subject:
+        commonName: Planton E2E Root
+    x509Config:
+      caOptions:
+        isCa: true
+        maxIssuerPathLength: 1
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true
+  keySpec:
+    algorithm: EC_P256_SHA256
+  lifetime: 2592000s
+  deletionProtection: false
+  skipGracePeriod: true
+  ignoreActiveCertificatesOnDeletion: true

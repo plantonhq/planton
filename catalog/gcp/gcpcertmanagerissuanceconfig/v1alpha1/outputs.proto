@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1;
+
+// Outputs produced after provisioning a Certificate Manager certificate
+// issuance config.
+message GcpCertManagerIssuanceConfigStackOutputs {
+  // Full resource name of the issuance config
+  // (projects/{project}/locations/{location}/certificateIssuanceConfigs/{name})
+  // -- the value a GcpCertManagerCert's managed.issuance_config takes.
+  string issuance_config_id = 1;
+
+  // Name of the issuance config as it exists in GCP.
+  string issuance_config_name = 2;
+
+  // The Certificate Manager location the issuance config lives in
+  // ("global" unless a regional location was configured).
+  string location = 3;
+}

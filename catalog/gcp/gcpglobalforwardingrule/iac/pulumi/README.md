@@ -2,9 +2,9 @@
 
 ## Overview
 
-This directory contains the Pulumi implementation for deploying GCP Compute Engine global forwarding rules using Planton's `GcpGlobalForwardingRule` API. The module is written in Go and creates `compute.GlobalForwardingRule`.
+This directory contains the Pulumi implementation for deploying GCP Compute Engine forwarding rules using Planton's `GcpGlobalForwardingRule` API. The module is written in Go and creates exactly one of `compute.GlobalForwardingRule` (global; `spec.region` empty) or `compute.ForwardingRule` (regional; `spec.region` set), the same switch the Terraform module makes with its count guards.
 
-The forwarding rule is the VIP node of a global load balancer — it binds an IP address and port to a target proxy — and doubles as the Private Service Connect entry point.
+The forwarding rule is the VIP node of a load balancer — it binds an IP address and port to a target proxy or, on a regional passthrough Network Load Balancer, straight to a backend service — and doubles as the Private Service Connect entry point.
 
 ## Prerequisites
 
@@ -94,11 +94,14 @@ The module consumes `GcpGlobalForwardingRuleStackInput`:
 | `forwarding_rule_id` | string | Server-assigned numeric ID |
 | `psc_connection_id` | string | PSC connection id (PSC frontends only) |
 | `psc_connection_status` | string | PSC connection status (PSC frontends only) |
+| `region` | string | Region of a regional rule; empty for global |
+| `service_name` | string | Internal DNS name of an internal passthrough NLB with `service_label` (empty otherwise) |
 
 ## Behavior Notes
 
 - **Mutability**: only `target` (via `setTarget`) and `labels` update in place — everything else recreates the rule, so bind a reserved static IP for production.
-- **The PSC sentinel**: spec scheme `NONE` is sent to the API as an EMPTY scheme string — Private Service Connect's form; an unset scheme lets GCP default to `EXTERNAL`.
+- **The PSC sentinel**: spec scheme `NONE` is sent to the API as an EMPTY scheme string — Private Service Connect's form.
+- **The scheme is always sent**: an unset scheme is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than omitted. The provider's own default is `EXTERNAL_MANAGED` and the scheme is immutable, so leaving the choice to the provider would replace an existing classic frontend on its next apply. The Terraform module does the same.
 - **Ambient project**: an empty `project_id` falls back to the provider's default project.
 - **API enablement**: the module enables `compute.googleapis.com` before creating the rule (`disable_on_destroy=false`).
 

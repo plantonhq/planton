@@ -31,6 +31,8 @@ spec:
           - run.services.setIamPolicy
           - run.services.getIamPolicy
         provenance: derived
+        condition:
+          spec_field_set: service_config.allow_unauthenticated
         notes: Covers google_cloud_run_service_iam_member -- Gen 2 functions are served by Cloud Run, so "allow unauthenticated" is a roles/run.invoker grant to allUsers on the UNDERLYING Cloud Run service, created only for HTTP-triggered functions with service_config.allow_unauthenticated true (the 01-http-api preset). IAM member resources read the current policy before modifying it, so getIamPolicy rides along.
       - purpose: ActAsServiceAccounts
         permissions:
@@ -41,4 +43,60 @@ spec:
         permissions:
           - resourcemanager.projects.get
         provenance: derived
-        notes: Covers the count-gated data google_project lookup, needed only when a secret env var or secret volume omits its project_id and the manifest names no project of its own -- the v2 API requires an explicit project on every secret reference, so the module resolves the ambient one. Plans that name their project (or carry no ambient-project secrets) never exercise it.
+        notes: Covers the count-gated data google_project lookup, needed only when a secret env var naming a secret the author owns, or a secret volume, omits its project_id and the manifest names no project of its own (a stored value takes its project from the secret the module created) -- the v2 API requires an explicit project on every secret reference, so the module resolves the ambient one. Plans that name their project (or carry no ambient-project secrets) never exercise it.
+      - purpose: ManageEnvSecrets
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+          - secretmanager.secrets.create
+          - secretmanager.secrets.get
+          - secretmanager.secrets.update
+          - secretmanager.secrets.delete
+          - secretmanager.secrets.getIamPolicy
+          - secretmanager.secrets.setIamPolicy
+          - secretmanager.versions.add
+          - secretmanager.versions.get
+          - secretmanager.versions.access
+          - secretmanager.versions.enable
+          - secretmanager.versions.disable
+          - secretmanager.versions.destroy
+        provenance: derived
+        condition:
+          spec_field_set: service_config.secret_environment_variables.value
+        notes: Covers the secret the modules keep per service_config.secret_environment_variables[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the function's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the function's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+      - purpose: ResolveDefaultRuntimeIdentity
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        condition:
+          spec_field_set: service_config.secret_environment_variables.value
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_config.service_account_email is unset -- google_project reads the project to learn its number. Not exercised when service_config.service_account_email names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).
+      - purpose: ManageEnvSecrets
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+          - secretmanager.secrets.create
+          - secretmanager.secrets.get
+          - secretmanager.secrets.update
+          - secretmanager.secrets.delete
+          - secretmanager.secrets.getIamPolicy
+          - secretmanager.secrets.setIamPolicy
+          - secretmanager.versions.add
+          - secretmanager.versions.get
+          - secretmanager.versions.access
+          - secretmanager.versions.enable
+          - secretmanager.versions.disable
+          - secretmanager.versions.destroy
+        provenance: derived
+        condition:
+          spec_field_set: service_config.secret_environment_variables.value
+        notes: Covers the secret the modules keep per service_config.secret_environment_variables[].value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the function's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the function's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+      - purpose: ResolveDefaultRuntimeIdentity
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        condition:
+          spec_field_set: service_config.secret_environment_variables.value
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_config.service_account_email is unset -- google_project reads the project to learn its number. Not exercised when service_config.service_account_email names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).

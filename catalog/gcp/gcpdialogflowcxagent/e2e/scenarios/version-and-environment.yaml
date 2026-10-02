@@ -1,0 +1,32 @@
+# GcpDialogflowCxAgent scenario: a version of the agent's start flow (the
+# one flow every agent has; its version path is composed from the agent's
+# name) and an environment that pins it through the declared version's
+# display name. Proves the long-running version create (the flow's model
+# trains) and the environment create that waits on it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: planton-oss-e2e-gcpdfcx-release
+  id: planton-oss-e2e-gcpdfcx-release
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdialogflowcxagent
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcx-release-${E2E_RUN_ID}
+  defaultLanguageCode: en
+  timeZone: America/Los_Angeles
+  versions:
+    - displayName: release-1
+      description: First release of the start flow
+  environments:
+    - displayName: production
+      description: Serves release-1
+      versionConfigs:
+        - version: release-1

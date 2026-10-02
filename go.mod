@@ -116,7 +116,7 @@ require (
 	github.com/pulumi/pulumi-azure/sdk/v6 v6.38.0
 	github.com/pulumi/pulumi-cloudflare/sdk/v6 v6.19.0
 	github.com/pulumi/pulumi-digitalocean/sdk/v4 v4.79.1
-	github.com/pulumi/pulumi-gcp/sdk/v9 v9.29.0
+	github.com/pulumi/pulumi-gcp/sdk/v9 v9.37.0
 	github.com/pulumi/pulumi-kubernetes/sdk/v4 v4.33.0
 	github.com/pulumi/pulumi-random/sdk/v4 v4.16.7
 	github.com/pulumi/pulumi-tls/sdk/v4 v4.11.1

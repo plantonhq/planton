@@ -7,4 +7,5 @@ const (
 	OpBackendServiceName = "backend_service_name"
 	OpGeneratedId        = "generated_id"
 	OpFingerprint        = "fingerprint"
+	OpRegion             = "region"
 )

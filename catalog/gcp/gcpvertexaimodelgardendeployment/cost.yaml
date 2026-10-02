@@ -1,0 +1,43 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaimodelgardendeployment
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Vertex AI
+      sku_meter: prediction machine hours
+      pricing_unit: node-hours
+      description: Every deployed replica bills its machine type per node-hour from the moment it is ready until it is undeployed, serving or idle -- Vertex AI online prediction has no scale-to-zero (per cloud.google.com/vertex-ai/pricing, online prediction, read 2026-09-22). With deploy_config omitted the meter is Model Garden's recommended shape for the model, which for most open LLMs carries a GPU.
+    - service_name: Vertex AI
+      sku_meter: accelerator hours
+      pricing_unit: hours
+      description: Each accelerator on each replica bills per hour alongside the machine -- an NVIDIA L4 in us-central1 is roughly a dollar an hour, an A100 or H100 several times that; on any GPU deployment this line is the bill.
+  cost_drivers:
+    - field_path: deploy_config.dedicated_resources.min_replica_count
+      sku_meter: prediction machine hours
+      pricing_unit: node-hours
+      impact: The committed spend -- this many replicas run around the clock, each billing its machine and accelerators; the ceiling is max_replica_count.
+    - field_path: deploy_config.dedicated_resources.machine_spec.machine_type
+      sku_meter: prediction machine hours
+      pricing_unit: node-hours
+      impact: The per-replica machine rate; larger machines and more accelerators multiply every replica-hour.
+    - field_path: deploy_config.dedicated_resources.machine_spec.accelerator_count
+      sku_meter: accelerator hours
+      pricing_unit: hours
+      impact: Accelerators per replica; each one bills for the replica's whole lifetime and dominates the machine meter.
+    - field_path: deploy_config.dedicated_resources.spot
+      sku_meter: prediction machine hours
+      pricing_unit: node-hours
+      impact: True runs replicas on Spot VMs at a steep discount, preemptible at any time; false (the default) buys on-demand capacity.
+    - field_path: endpoint_config.dedicated_endpoint_enabled
+      sku_meter: prediction machine hours
+      pricing_unit: node-hours
+      impact: No extra meter of its own, but a dedicated endpoint keeps its replicas warm for isolated traffic; the cost is the replicas.
+  estimate_exclusions:
+    - prediction requests bill nothing beyond the replica hours on dedicated resources
+    - Hugging Face model downloads are free; hugging_face_cache_enabled avoids egress inside VPC Service Controls
+    - Private Service Connect endpoints created by psc_automation_config bill forwarding-rule hours in the consumer project

@@ -1,0 +1,574 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpDatastreamConnectionProfileGcsProfile is a Cloud Storage destination
+// (`gcs_profile`): the bucket a stream writes Avro or JSON files into.
+message GcpDatastreamConnectionProfileGcsProfile {
+  // The bucket name -- a GcpGcsBucket reference (its bucket_name output) or
+  // a literal. Datastream's service agent needs object write access on it
+  // (grant roles/storage.objectAdmin through the bucket's iam_members).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  // The folder inside the bucket every stream using this profile writes
+  // under, e.g. "/datastream". A stream's own path nests below it.
+  string root_path = 2;
+}
+
+// GcpDatastreamConnectionProfileMysqlSslConfig encrypts the MySQL session
+// with TLS (`mysql_profile.ssl_config`). Declared -- even empty -- turns TLS
+// on; the certificates add server and client verification. Every value is
+// input-only: Google stores it and never returns it. Immutable.
+message GcpDatastreamConnectionProfileMysqlSslConfig {
+  option (buf.validate.message).cel = {
+    id: "mysql_ssl.client_pair_needs_ca"
+    expression: "(this.client_certificate == '' && this.client_key == '') || (this.client_certificate != '' && this.client_key != '' && this.ca_certificate != '')"
+    message: "client_certificate and client_key go together, and both require ca_certificate"
+  };
+
+  // PEM certificate of the CA that signed the server's certificate.
+  string ca_certificate = 1 [(dev.planton.shared.options.sensitive) = true];
+
+  // PEM certificate Datastream presents to the server. Google requires
+  // client_key and ca_certificate with it.
+  string client_certificate = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  // PEM private key of client_certificate. Google requires
+  // client_certificate and ca_certificate with it.
+  string client_key = 3 [(dev.planton.shared.options.sensitive) = true];
+}
+
+// GcpDatastreamConnectionProfileMysqlProfile is a MySQL source
+// (`mysql_profile`) -- Cloud SQL for MySQL, a self-managed server, or
+// another cloud's managed MySQL. The server needs binary logging in ROW
+// format and a user with REPLICATION SLAVE, REPLICATION CLIENT, and SELECT.
+message GcpDatastreamConnectionProfileMysqlProfile {
+  option (buf.validate.message).cel = {
+    id: "mysql.one_password_source"
+    expression: "!(this.password != '' && has(this.secret_manager_stored_password))"
+    message: "password and secret_manager_stored_password are mutually exclusive"
+  };
+
+  // The server's address. Defaults to a GcpCloudSql reference's public_ip
+  // -- Google's direct path to Cloud SQL, with Datastream's regional IPs
+  // allowlisted in the instance's authorized networks. For a private
+  // instance, point at a proxy VM in your VPC reached through a private
+  // connection (a reference with another fieldPath, or a literal).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef hostname = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudSql,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.public_ip"
+  ];
+
+  // The port. Empty uses 3306.
+  int32 port = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The replication user.
+  string username = 3 [(buf.validate.field).required = true];
+
+  // The user's password, stored by Google and never returned. Mutually
+  // exclusive with secret_manager_stored_password.
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret VERSION holding the password, as
+  // projects/{project}/secrets/{secret}/versions/{version} -- a
+  // GcpSecretManagerSecret reference (its latest_version_name output, set
+  // when the secret declares an initial version) or a literal version
+  // name. Datastream's service agent reads it
+  // (roles/secretmanager.secretAccessor on the secret). Mutually exclusive
+  // with password.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_manager_stored_password = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the password itself never appears in the spec"
+  ];
+
+  // TLS for the session.
+  GcpDatastreamConnectionProfileMysqlSslConfig ssl_config = 6;
+}
+
+// GcpDatastreamConnectionProfilePostgresqlServerVerification verifies the
+// server's certificate (`ssl_config.server_verification`). Immutable.
+message GcpDatastreamConnectionProfilePostgresqlServerVerification {
+  // PEM root CA certificate of the server.
+  string ca_certificate = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// GcpDatastreamConnectionProfilePostgresqlServerAndClientVerification
+// verifies the server's certificate and presents Datastream's own
+// (`ssl_config.server_and_client_verification`) -- mutual TLS. Immutable.
+message GcpDatastreamConnectionProfilePostgresqlServerAndClientVerification {
+  // PEM root CA certificate of the server.
+  string ca_certificate = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  // PEM certificate Datastream presents, signed by a CA the server trusts.
+  string client_certificate = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  // PEM private key of client_certificate.
+  string client_key = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// GcpDatastreamConnectionProfilePostgresqlSslConfig chooses how the
+// PostgreSQL session is secured (`postgresql_profile.ssl_config`). Set at
+// most one mode; both are TLS-encrypted, and they differ in who proves
+// its identity. Omitted, the session follows the server's own SSL policy.
+message GcpDatastreamConnectionProfilePostgresqlSslConfig {
+  option (buf.validate.message).cel = {
+    id: "postgresql_ssl.one_mode"
+    expression: "!(has(this.server_verification) && has(this.server_and_client_verification))"
+    message: "set at most one of server_verification or server_and_client_verification"
+  };
+
+  // The server proves its identity.
+  GcpDatastreamConnectionProfilePostgresqlServerVerification server_verification = 1;
+
+  // Both the server and Datastream prove their identity.
+  GcpDatastreamConnectionProfilePostgresqlServerAndClientVerification server_and_client_verification = 2;
+}
+
+// GcpDatastreamConnectionProfilePostgresqlProfile is a PostgreSQL source
+// (`postgresql_profile`) -- Cloud SQL for PostgreSQL, AlloyDB, a
+// self-managed server, or another cloud's managed PostgreSQL. The database
+// needs logical decoding on (cloudsql.logical_decoding for Cloud SQL), a
+// publication, and a replication slot; the stream names both.
+message GcpDatastreamConnectionProfilePostgresqlProfile {
+  option (buf.validate.message).cel = {
+    id: "postgresql.one_password_source"
+    expression: "!(this.password != '' && has(this.secret_manager_stored_password))"
+    message: "password and secret_manager_stored_password are mutually exclusive"
+  };
+
+  // The server's address. Defaults to a GcpCloudSql reference's public_ip
+  // -- Google's direct path to Cloud SQL, with Datastream's regional IPs
+  // allowlisted. AlloyDB: reference a GcpAlloydbInstance with fieldPath
+  // status.outputs.ip_address, reached through a private connection and a
+  // proxy VM. A literal takes any hostname or IP.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef hostname = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudSql,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.public_ip"
+  ];
+
+  // The port. Empty uses 5432.
+  int32 port = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The replication user (it needs the REPLICATION attribute, or
+  // cloudsqlsuperuser's replication role on Cloud SQL).
+  string username = 3 [(buf.validate.field).required = true];
+
+  // The user's password, stored by Google and never returned. Mutually
+  // exclusive with secret_manager_stored_password.
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret VERSION holding the password -- a
+  // GcpSecretManagerSecret reference (its latest_version_name output) or a
+  // literal projects/{project}/secrets/{secret}/versions/{version}.
+  // Datastream's service agent reads it. Mutually exclusive with password.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_manager_stored_password = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the password itself never appears in the spec"
+  ];
+
+  // The database to replicate from.
+  string database = 6 [(buf.validate.field).required = true];
+
+  // TLS for the session.
+  GcpDatastreamConnectionProfilePostgresqlSslConfig ssl_config = 7;
+}
+
+// GcpDatastreamConnectionProfileOracleProfile is an Oracle source
+// (`oracle_profile`). The database needs archive logging and supplemental
+// logging, and a user that can read LogMiner.
+message GcpDatastreamConnectionProfileOracleProfile {
+  option (buf.validate.message).cel = {
+    id: "oracle.one_password_source"
+    expression: "!(this.password != '' && has(this.secret_manager_stored_password))"
+    message: "password and secret_manager_stored_password are mutually exclusive"
+  };
+
+  // The server's hostname or IP.
+  string hostname = 1 [(buf.validate.field).required = true];
+
+  // The port. Empty uses 1521.
+  int32 port = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The database user.
+  string username = 3 [(buf.validate.field).required = true];
+
+  // The user's password, stored by Google and never returned. Mutually
+  // exclusive with secret_manager_stored_password.
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret VERSION holding the password -- a
+  // GcpSecretManagerSecret reference (its latest_version_name output) or a
+  // literal version name. Mutually exclusive with password.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_manager_stored_password = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the password itself never appears in the spec"
+  ];
+
+  // The database service (the Oracle service name) to connect to, e.g.
+  // "ORCL".
+  string database_service = 6 [(buf.validate.field).required = true];
+
+  // Extra Oracle connection-string attributes, as key/value pairs.
+  map<string, string> connection_attributes = 7;
+}
+
+// GcpDatastreamConnectionProfileSqlServerProfile is a SQL Server source
+// (`sql_server_profile`) -- Cloud SQL for SQL Server or a self-managed
+// server, with CDC enabled on the database (change tables) or transaction
+// log access granted (transaction logs); the stream chooses which.
+message GcpDatastreamConnectionProfileSqlServerProfile {
+  option (buf.validate.message).cel = {
+    id: "sql_server.one_password_source"
+    expression: "!(this.password != '' && has(this.secret_manager_stored_password))"
+    message: "password and secret_manager_stored_password are mutually exclusive"
+  };
+
+  // The server's address. Defaults to a GcpCloudSql reference's public_ip,
+  // with Datastream's regional IPs allowlisted; a literal takes any
+  // hostname or IP.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef hostname = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudSql,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.public_ip"
+  ];
+
+  // The port. Empty uses 1433.
+  int32 port = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The database user.
+  string username = 3 [(buf.validate.field).required = true];
+
+  // The user's password, stored by Google and never returned. Mutually
+  // exclusive with secret_manager_stored_password.
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret VERSION holding the password -- a
+  // GcpSecretManagerSecret reference (its latest_version_name output) or a
+  // literal version name. Mutually exclusive with password.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_manager_stored_password = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the password itself never appears in the spec"
+  ];
+
+  // The database to replicate from.
+  string database = 6 [(buf.validate.field).required = true];
+}
+
+// GcpDatastreamConnectionProfileMongodbHostAddress is one MongoDB host
+// (`mongodb_profile.host_addresses`).
+message GcpDatastreamConnectionProfileMongodbHostAddress {
+  // The host's name or IP. For the SRV format, the SRV record's domain.
+  string hostname = 1 [(buf.validate.field).required = true];
+
+  // The host's port. Leave empty for the SRV format (the record carries
+  // it).
+  int32 port = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+}
+
+// GcpDatastreamConnectionProfileMongodbStandardConnectionFormat connects
+// with a standard mongodb:// URI to the listed hosts
+// (`standard_connection_format`).
+message GcpDatastreamConnectionProfileMongodbStandardConnectionFormat {
+  // Connect straight to the one listed host instead of discovering the
+  // replica set. Google now recommends additional_options
+  // {"directConnection": "true"} instead.
+  bool direct_connection = 1;
+}
+
+// GcpDatastreamConnectionProfileMongodbSslConfig encrypts the MongoDB
+// session with TLS (`mongodb_profile.ssl_config`). Every value is
+// input-only. Immutable.
+message GcpDatastreamConnectionProfileMongodbSslConfig {
+  option (buf.validate.message).cel = {
+    id: "mongodb_ssl.one_client_key_source"
+    expression: "!(this.client_key != '' && has(this.secret_manager_stored_client_key))"
+    message: "client_key and secret_manager_stored_client_key are mutually exclusive"
+  };
+  option (buf.validate.message).cel = {
+    id: "mongodb_ssl.client_identity_complete"
+    expression: "(this.client_certificate == '' && this.client_key == '' && !has(this.secret_manager_stored_client_key)) || (this.client_certificate != '' && this.ca_certificate != '' && (this.client_key != '' || has(this.secret_manager_stored_client_key)))"
+    message: "a client identity needs client_certificate, ca_certificate, and one of client_key or secret_manager_stored_client_key"
+  };
+
+  // PEM certificate of the CA that signed the server's certificate.
+  string ca_certificate = 1 [(dev.planton.shared.options.sensitive) = true];
+
+  // PEM certificate Datastream presents to the server.
+  string client_certificate = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  // PEM private key of client_certificate. Mutually exclusive with
+  // secret_manager_stored_client_key.
+  string client_key = 3 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret VERSION holding the client key -- a
+  // GcpSecretManagerSecret reference (its latest_version_name output) or a
+  // literal version name. Mutually exclusive with client_key.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_manager_stored_client_key = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the private key itself never appears in the spec"
+  ];
+}
+
+// GcpDatastreamConnectionProfileMongodbProfile is a MongoDB source
+// (`mongodb_profile`) -- a self-managed replica set or sharded cluster, or
+// MongoDB Atlas. Choose exactly one connection format: standard (listed
+// hosts, a named replica set) or SRV (a DNS seed list, as Atlas uses).
+message GcpDatastreamConnectionProfileMongodbProfile {
+  option (buf.validate.message).cel = {
+    id: "mongodb.exactly_one_format"
+    expression: "[this.srv_connection_format, has(this.standard_connection_format)].filter(x, x).size() == 1"
+    message: "set exactly one of srv_connection_format or standard_connection_format"
+  };
+  option (buf.validate.message).cel = {
+    id: "mongodb.srv_has_no_replica_set"
+    expression: "!this.srv_connection_format || this.replica_set == ''"
+    message: "replica_set must be empty with the SRV connection format"
+  };
+  option (buf.validate.message).cel = {
+    id: "mongodb.one_password_source"
+    expression: "!(this.password != '' && has(this.secret_manager_stored_password))"
+    message: "password and secret_manager_stored_password are mutually exclusive"
+  };
+
+  // The hosts to connect to -- every member of a replica set for the
+  // standard format, the one SRV domain for the SRV format.
+  repeated GcpDatastreamConnectionProfileMongodbHostAddress host_addresses = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // The database user.
+  string username = 2 [(buf.validate.field).required = true];
+
+  // The user's password, stored by Google and never returned. Mutually
+  // exclusive with secret_manager_stored_password.
+  string password = 3 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret VERSION holding the password -- a
+  // GcpSecretManagerSecret reference (its latest_version_name output) or a
+  // literal version name. Mutually exclusive with password.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_manager_stored_password = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.latest_version_name",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the password itself never appears in the spec"
+  ];
+
+  // The replica set's name -- needed for a self-hosted replica set with the
+  // standard format; must be empty with the SRV format.
+  string replica_set = 5;
+
+  // Connect through a DNS SRV seed list (mongodb+srv://). Google's SRV
+  // block has no settings: true declares it.
+  bool srv_connection_format = 6;
+
+  // Connect through a standard mongodb:// URI to the listed hosts.
+  GcpDatastreamConnectionProfileMongodbStandardConnectionFormat standard_connection_format = 7;
+
+  // TLS for the session.
+  GcpDatastreamConnectionProfileMongodbSslConfig ssl_config = 8;
+
+  // Extra MongoDB connection-string options, keyed exactly as MongoDB
+  // names them, e.g. {"serverSelectionTimeoutMS": "10000"}.
+  map<string, string> additional_options = 9;
+}
+
+// GcpDatastreamConnectionProfileForwardSshConnectivity reaches the
+// database through an SSH bastion (`forward_ssh_connectivity`): Datastream
+// opens a tunnel to the bastion and connects to the database from there.
+// Allowlist Datastream's regional IPs on the bastion.
+message GcpDatastreamConnectionProfileForwardSshConnectivity {
+  option (buf.validate.message).cel = {
+    id: "ssh.one_credential"
+    expression: "!(this.password != '' && this.private_key != '')"
+    message: "password and private_key are mutually exclusive"
+  };
+
+  // The bastion's hostname or IP.
+  string hostname = 1 [(buf.validate.field).required = true];
+
+  // The bastion's SSH port. Empty uses 22.
+  int32 port = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 65535
+    }
+  ];
+
+  // The SSH user.
+  string username = 3 [(buf.validate.field).required = true];
+
+  // The SSH password. Mutually exclusive with private_key. Immutable.
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // The SSH private key, PEM. Mutually exclusive with password; the
+  // stronger choice.
+  string private_key = 5 [(dev.planton.shared.options.sensitive) = true];
+}
+
+// GcpDatastreamConnectionProfileSpec defines a Datastream connection
+// profile (`google_datastream_connection_profile`) -- where one source
+// database or destination is and how Datastream signs in. Streams
+// reference a source profile and a destination profile; one profile
+// serves every stream that reads the same database or writes the same
+// destination.
+//
+// Set exactly ONE profile type: bigquery_profile or gcs_profile
+// (destinations), or mysql_profile, postgresql_profile, oracle_profile,
+// sql_server_profile, or mongodb_profile (sources). Salesforce and Spanner
+// sources use profiles Google's GA provider cannot create yet; a stream
+// names such a profile by its full resource name.
+//
+// Connectivity for a source: omit both options for public connectivity
+// (allowlist Datastream's regional IPs on the database), set
+// private_connection to go through a GcpDatastreamPrivateConnection, or
+// set forward_ssh_connectivity to tunnel through a bastion -- never both.
+//
+// Immutable: project_id, location, connection_profile_id,
+// create_without_validation, certificates and keys. Hosts, users,
+// passwords, and connectivity update in place.
+message GcpDatastreamConnectionProfileSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_profile"
+    expression: "[this.bigquery_profile, has(this.gcs_profile), has(this.mysql_profile), has(this.postgresql_profile), has(this.oracle_profile), has(this.sql_server_profile), has(this.mongodb_profile)].filter(x, x).size() == 1"
+    message: "set exactly one of bigquery_profile, gcs_profile, mysql_profile, postgresql_profile, oracle_profile, sql_server_profile, mongodb_profile"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.one_connectivity"
+    expression: "!(has(this.private_connection) && has(this.forward_ssh_connectivity))"
+    message: "private_connection and forward_ssh_connectivity are mutually exclusive"
+  };
+
+  // The GCP project the profile lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Datastream region, e.g. "us-central1". Streams using the profile
+  // live in the same region. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The profile's ID. Defaults to metadata.name. Immutable.
+  string connection_profile_id = 3;
+
+  // The name shown in the console. Defaults to metadata.name.
+  string display_name = 4;
+
+  // Labels on the profile. The platform attribution labels are added on
+  // top and win on a key conflict.
+  map<string, string> labels = 5;
+
+  // Create the profile without Google's connectivity test. Useful when the
+  // database or its network is not reachable yet; a wrong host or
+  // password then surfaces when a stream starts. Immutable.
+  bool create_without_validation = 6;
+
+  // A BigQuery destination. Google's block has no settings -- the stream
+  // decides datasets -- so true declares it. Datastream's service agent
+  // writes with BigQuery Data Editor on the target datasets.
+  bool bigquery_profile = 7;
+
+  // A Cloud Storage destination.
+  GcpDatastreamConnectionProfileGcsProfile gcs_profile = 8;
+
+  // A MySQL source.
+  GcpDatastreamConnectionProfileMysqlProfile mysql_profile = 9;
+
+  // A PostgreSQL source.
+  GcpDatastreamConnectionProfilePostgresqlProfile postgresql_profile = 10;
+
+  // An Oracle source.
+  GcpDatastreamConnectionProfileOracleProfile oracle_profile = 11;
+
+  // A SQL Server source.
+  GcpDatastreamConnectionProfileSqlServerProfile sql_server_profile = 12;
+
+  // A MongoDB source.
+  GcpDatastreamConnectionProfileMongodbProfile mongodb_profile = 13;
+
+  // Reach the source through a private connection -- a
+  // GcpDatastreamPrivateConnection reference (its name output) or a literal
+  // projects/{project}/locations/{location}/privateConnections/{id} in the
+  // profile's location. Mutually exclusive with forward_ssh_connectivity.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef private_connection = 14 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDatastreamPrivateConnection,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // Reach the source through an SSH bastion. Mutually exclusive with
+  // private_connection.
+  GcpDatastreamConnectionProfileForwardSshConnectivity forward_ssh_connectivity = 15;
+
+  // What happens to the profile when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (Google refuses while a stream uses it)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- it leaves management and stays in GCP
+  string deletion_policy = 16 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccbigqueryexport.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpSccBigQueryExportSpec continuously exports Security Command Center
+// findings to a BigQuery dataset, at a project, folder, or organization
+// (`google_scc_v2_project_scc_big_query_export`,
+// `google_scc_v2_folder_scc_big_query_export`,
+// `google_scc_v2_organization_scc_big_query_export` -- the scope picks one).
+//
+// The dataset becomes the findings history: dashboards, trend reports, and
+// joins with asset inventories query it with SQL. New and updated findings
+// arrive within minutes; Security Command Center creates and manages the
+// findings table itself.
+//
+// Two things must be true before rows arrive:
+//   - Security Command Center is activated on the scope.
+//   - The principal output can create tables and write data in the dataset
+//     (roles/bigquery.dataEditor through the dataset's access entries).
+message GcpSccBigQueryExportSpec {
+  // Whose findings are exported. Omit for the provider's default project.
+  GcpSccBigQueryExportScope scope = 1;
+
+  // The export's ID, unique within its parent: lowercase letters, digits,
+  // and hyphens, starting with a letter and ending with a letter or digit,
+  // at most 63 characters. Immutable.
+  string big_query_export_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "big_query_export_id.format"
+      message: "big_query_export_id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and ending with a letter or digit"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // The dataset findings are written to: a literal
+  // projects/{project}/datasets/{dataset} or a GcpBigQueryDataset
+  // reference (the module trims the dataset's self link to Google's form).
+  // Dataset IDs use letters, digits, and underscores only. Required: an
+  // export without a dataset writes nothing.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dataset = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBigQueryDataset,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link",
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (buf.validate.field).cel = {
+      id: "dataset.format"
+      message: "dataset must be projects/{project}/datasets/{dataset} or a BigQuery dataset self link"
+      expression: "!has(this.value) || this.value == '' || this.value.matches('^(https://bigquery\\\\.googleapis\\\\.com/bigquery/v2/)?projects/[^/]+/datasets/[A-Za-z0-9_]+$')"
+    }
+  ];
+
+  // Which finding create and update events are exported, in the same
+  // syntax as notification filters:
+  //   state = "ACTIVE" AND NOT mute = "MUTED"
+  // Empty exports every finding.
+  string filter = 4;
+
+  // What the export is for, up to 1024 characters.
+  string description = 5 [(buf.validate.field).string.max_len = 1024];
+
+  // Where the export configuration is stored. "global", the default,
+  // unless Security Command Center data residency was set up at activation
+  // (then the residency location, e.g. "eu" or "us").
+  string location = 6 [(buf.validate.field).cel = {
+    id: "location.format"
+    message: "location must be global or a residency location such as eu or us"
+    expression: "this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')"
+  }];
+
+  // What destroying this block does:
+  //   "" / "DELETE" -- the export is deleted; the dataset and the rows
+  //                    already written stay
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the export leaves management and keeps writing
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// GcpSccBigQueryExportScope names the project, folder, or organization
+// whose findings the config covers. At most one arm; all empty means the
+// provider's default project.
+message GcpSccBigQueryExportScope {
+  option (buf.validate.message).cel = {
+    id: "at_most_one_scope"
+    message: "set at most one of project_id, folder_id, or organization_id (empty means the provider's default project)"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1"
+  };
+
+  // A project: a literal project ID or a GcpProject reference.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // A folder: the folder's numeric ID -- a literal or a GcpFolder
+  // reference. Covers every project beneath it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+
+  // The organization: the numeric organization ID, without the
+  // organizations/ prefix.
+  string organization_id = 3 [(buf.validate.field).cel = {
+    id: "organization_id.numeric"
+    message: "organization_id must be the numeric organization ID, without the organizations/ prefix"
+    expression: "this == '' || this.matches('^[0-9]+$')"
+  }];
+}

@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGlobalForwardingRule
+metadata:
+  name: regional-external-alb-vip
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Port-80 VIP of the us-central1 regional external Application Load Balancer
+  region: us-central1
+  target:
+    value: "<regional-target-http-proxy-self-link>" # replace: a GcpTargetHttpProxy declared with the same region
+  ipAddress:
+    value: "<regional-reserved-ip>" # replace: a GcpAddress reserved in the same region (or omit for an ephemeral IP)
+  portRange: "80"
+  loadBalancingScheme: EXTERNAL_MANAGED
+  network:
+    value: "<vpc-network-self-link>" # replace: the GcpVpcNetwork holding the region's proxy-only subnet
+  networkTier: STANDARD
+  labels:
+    env: production

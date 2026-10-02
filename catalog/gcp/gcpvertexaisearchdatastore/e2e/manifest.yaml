@@ -1,0 +1,36 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: product-docs
+spec:
+  projectId:
+    value: my-gcp-project
+  # Discovery Engine multi-regions: global, us, or eu. Engines must match.
+  location: global
+  displayName: Product docs
+  industryVertical: GENERIC
+  # Unstructured documents (PDF, HTML, DOCX) imported later through the
+  # API, BigQuery, or Cloud Storage; the store enrolls in search and chat.
+  contentConfig: CONTENT_REQUIRED
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH
+    - SOLUTION_TYPE_CHAT
+  # Parse documents by layout (headings, tables) and chunk them into
+  # passages -- the shape RAG applications want. PDFs that are scans go
+  # through OCR instead.
+  documentProcessingConfig:
+    chunkingConfig:
+      chunkSize: 500
+      includeAncestorHeadings: true
+    defaultParsingConfig:
+      layoutParsingConfig:
+        enableTableAnnotation: true
+        excludeHtmlElements:
+          - nav
+          - footer
+    parsingConfigOverrides:
+      - fileType: pdf
+        parsingConfig:
+          ocrParsingConfig:
+            useNativeText: true
+  deletionPolicy: DELETE

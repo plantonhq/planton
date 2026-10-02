@@ -1,12 +1,12 @@
 # GCP Global Forwarding Rule
 
-Deploys a global Compute Engine forwarding rule — the VIP node of a global load balancer. It binds an IP address and port to a target proxy (HTTP or HTTPS), which is where client traffic enters. With the load-balancing scheme set to `NONE`, the same resource becomes a Private Service Connect entry point for Google APIs (`all-apis` / `vpc-sc`) or a producer service attachment. The target is mutable in place — repointing a live VIP at a new proxy is GCP's zero-downtime frontend swap — while the IP, protocol, port range, and scheme are immutable.
+Deploys a Compute Engine forwarding rule — the VIP node of a load balancer, global (the default) or regional when `region` is set. It binds an IP address and port to a target proxy (HTTP or HTTPS) — or, for the passthrough Network Load Balancers, straight to a regional backend service — which is where client traffic enters. With the load-balancing scheme set to `NONE`, the same resource becomes a Private Service Connect entry point for Google APIs (`all-apis` / `vpc-sc`) or a producer service attachment. The target is mutable in place — repointing a live VIP at a new proxy is GCP's zero-downtime frontend swap — while the IP, protocol, port range, and scheme are immutable.
 
 ## What Gets Created
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
-- **Compute Engine Global Forwarding Rule** -- bound to the configured target, IP address, protocol, port range, and load-balancing scheme
+- **Compute Engine Forwarding Rule** -- global, or regional when `region` is set; bound to the configured target (or backend service), IP address, protocol, ports, and load-balancing scheme
 - **Compute Engine API enablement** -- `compute.googleapis.com` enabled in the target project (never disabled on destroy)
 
 ## Before You Deploy
@@ -80,6 +80,8 @@ The InfraPipeline resolves the dependency graph — address and proxy first, the
 
 These are the most important decisions when configuring a global forwarding rule. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
+**Scope** -- `region` empty builds the global rule (global external ALB, cross-region internal ALB, Traffic Director, PSC to Google APIs); a region name builds the regional rule (regional external and internal ALBs, internal and external passthrough Network Load Balancers, PSC consumer endpoints), whose target, backend service, and address must be regional in the same region. Immutable.
+
 **Load balancer family** -- `EXTERNAL` / `EXTERNAL_MANAGED` (internet edge), `INTERNAL_*` (VPC-facing), or `NONE` (PSC). Immutable and the controlling fork: it decides whether network, PSC, and Traffic Director filter steps apply.
 
 **Target** -- Required; mutable in place (setTarget) — repointing a live VIP at a new proxy causes zero downtime. Defaults to GcpTargetHttpsProxy; use an explicit kind for HTTP proxies, or type `all-apis` / `vpc-sc` for PSC Google APIs.
@@ -112,6 +114,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `forwarding_rule_name` | Name as it exists in GCP | gcloud commands, log filters |
 | `psc_connection_id` | PSC connection id (scheme NONE only) | PSC diagnostics |
 | `psc_connection_status` | PENDING / ACCEPTED / REJECTED / CLOSED | PSC readiness |
+| `region` | Region of a regional rule; empty for global | Scope checks on downstream blocks |
+| `service_name` | Internal DNS name of an internal passthrough NLB with `serviceLabel` | Client configuration inside the VPC |
 
 ## Common Patterns
 
@@ -122,6 +126,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 **HTTP redirect frontend** -- Port 80 → HTTP proxy (redirect URL map) sharing the same reserved IP. Start from the **HTTP Redirect VIP (Shared IP)** preset.
 
 **PSC Google APIs** -- Scheme NONE with target `all-apis` or `vpc-sc`. Start from the **Private Service Connect to Google APIs** preset.
+
+**Regional external ALB VIP** -- A regional rule on EXTERNAL_MANAGED with STANDARD tier in front of a regional proxy. Start from the **Regional External ALB VIP** preset.
+
+**Internal passthrough NLB** -- A regional rule on INTERNAL naming a regional backend service directly, with a stable internal DNS name and global access. Start from the **Internal Passthrough NLB VIP** preset.
 
 ## Works With
 

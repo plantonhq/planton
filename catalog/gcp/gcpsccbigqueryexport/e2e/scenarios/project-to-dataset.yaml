@@ -1,0 +1,33 @@
+# GcpSccBigQueryExport scenario: a project export on the project where
+# Security Command Center is activated (owner-arranged:
+# PLANTON_E2E_GCP_SCC_PROJECT_ID), to a dataset fixture in the harness
+# project. The filter matches a category no detector emits, so no rows are
+# written. Exports are free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccBigQueryExport
+metadata:
+  name: planton-oss-e2e-gcpsccx-project
+  id: planton-oss-e2e-gcpsccx-project
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsccbigqueryexport
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SCC_PROJECT_ID
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpsccbigqueryexport/e2e/prerequisites/dataset.yaml"
+  tags:
+    - planton-e2e
+spec:
+  scope:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_SCC_PROJECT_ID}
+  bigQueryExportId: e2e-gcpsccx-${E2E_RUN_ID}
+  description: Planton E2E BigQuery export
+  dataset:
+    valueFrom:
+      kind: GcpBigQueryDataset
+      name: planton-oss-e2e-gcpsccx-dataset
+      fieldPath: status.outputs.self_link
+  filter: category = "PLANTON_E2E_NO_SUCH_CATEGORY"

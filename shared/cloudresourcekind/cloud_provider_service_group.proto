@@ -219,6 +219,16 @@ enum CloudProviderServiceGroup {
     provider: gcp
     display_name: "Firebase"
   }];
+  // Resource Manager governance: the hierarchy (projects, folders), the
+  // guardrails on it (organization policies and custom constraints), and
+  // the tags policies key on. IAM roles and bindings stay under Identity &
+  // Access; a project is filed here because it is the unit governance acts
+  // on. Same label as the AWS shelf so the console groups both clouds'
+  // governance blocks under one word.
+  gcp_management_governance = 314 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Management & Governance"
+  }];
 
   // 400–499: Kubernetes — three groups: native API objects, cluster
   // machinery, and applications deployed on the cluster.

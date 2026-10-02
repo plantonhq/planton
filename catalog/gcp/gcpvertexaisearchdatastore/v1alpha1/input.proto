@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1;
+
+import "catalog/gcp/gcpvertexaisearchdatastore/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-vertex-ai-search-data-store stack-input
+message GcpVertexAiSearchDataStoreStackInput {
+  //target cloud-resource
+  GcpVertexAiSearchDataStore target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

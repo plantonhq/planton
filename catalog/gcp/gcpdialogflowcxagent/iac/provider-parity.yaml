@@ -1,0 +1,115 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# One kind, seven engine resources: the agent and, folded in because each
+# lives under exactly one agent and has no other root, its webhooks, tools,
+# tool versions, flow versions, environments, and generative settings.
+
+resources:
+  google_dialogflow_cx_agent:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # Google allows only the default playbook as a start playbook, so the
+      # spec is a bool and the modules send the default playbook's path.
+      - spec: spec.start_with_default_playbook
+        arg: start_playbook
+      # Four one-leaf blocks, lifted: each block is sent only when its leaf
+      # is set.
+      - spec: spec.enable_answer_feedback
+        arg: answer_feedback_settings.enable_answer_feedback
+      - spec: spec.default_end_user_metadata
+        arg: personalization_settings.default_end_user_metadata
+      - spec: spec.enable_speech_adaptation
+        arg: speech_to_text_settings.enable_speech_adaptation
+      - spec: spec.synthesize_speech_configs
+        arg: text_to_speech_settings.synthesize_speech_configs
+  google_dialogflow_cx_webhook:
+    specRoot: spec.webhooks
+    mappings:
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      # The service-account block's one field, lifted, at both endpoint
+      # levels.
+      - spec: spec.webhooks.generic_web_service.service_account
+        arg: generic_web_service.service_account_auth_config.service_account
+      - spec: spec.webhooks.service_directory.generic_web_service.service_account
+        arg: service_directory.generic_web_service.service_account_auth_config.service_account
+    exclusions:
+      - arg: parent
+        reason: wired by the module to the agent it creates -- a webhook belongs to this agent and no other
+      - arg: security_settings
+        reason: >-
+          the provider describes it "Deprecated." and Google's Dialogflow v3
+          Webhook resource carries no such field (its fields are name,
+          displayName, genericWebService, serviceDirectory, timeout,
+          disabled); security settings attach to the agent, which models
+          them
+      - arg: enable_spell_correction
+        reason: >-
+          the provider describes it "Deprecated." and Google's Dialogflow v3
+          Webhook resource carries no such field; spell correction is an
+          agent setting, which the agent models
+      - arg: enable_stackdriver_logging
+        reason: >-
+          the provider describes it "Deprecated." and Google's Dialogflow v3
+          Webhook resource carries no such field; logging is an agent
+          setting, modeled at advanced_settings.logging_settings
+  google_dialogflow_cx_tool:
+    specRoot: spec.tools
+    mappings:
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: parent
+        reason: wired by the module to the agent it creates -- a tool belongs to this agent and no other
+  # Tool versions are folded under their tool.
+  google_dialogflow_cx_tool_version:
+    specRoot: spec.tools.versions
+    mappings:
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: parent
+        reason: wired by the module to the tool the version is declared under -- a version belongs to that tool and no other
+  google_dialogflow_cx_version:
+    specRoot: spec.versions
+    mappings:
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      # A version's parent is a flow; the modules compose its path from the
+      # agent's name and the flow id (empty is the start flow), because the
+      # agent's id does not exist before the first apply.
+      - spec: spec.versions.flow_id
+        arg: parent
+  google_dialogflow_cx_environment:
+    specRoot: spec.environments
+    mappings:
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      # A version config's full path is composed from a declared version's
+      # display name (resolved to that version) or an outside version's id,
+      # each under its flow id.
+      - spec: spec.environments.version_configs.version
+        arg: version_configs.version
+      - spec: spec.environments.version_configs.version_id
+        arg: version_configs.version
+      - spec: spec.environments.version_configs.flow_id
+        arg: version_configs.version
+    exclusions:
+      - arg: parent
+        reason: wired by the module to the agent it creates -- an environment belongs to this agent and no other
+  google_dialogflow_cx_generative_settings:
+    specRoot: spec.generative_settings
+    exclusions:
+      - arg: parent
+        reason: wired by the module to the agent it creates -- the settings belong to this agent and no other
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

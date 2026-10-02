@@ -1,0 +1,24 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcomputeimage
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Compute Engine
+      sku_meter: custom image storage
+      pricing_unit: GiB-months
+      description: Every custom image bills image storage for its archived size from the moment it exists until it is deleted, whether or not any VM boots from it (Compute Engine disk and image pricing page).
+  cost_drivers:
+    - field_path: storage_locations
+      sku_meter: custom image storage
+      pricing_unit: GiB-months
+      impact: Where the image is stored; a multi-region and a region carry different storage rates.
+    - field_path: source_image
+      sku_meter: custom image storage
+      pricing_unit: GiB-months
+      impact: The source sets the archived size the storage bills on; licensed sources (Windows Server, SQL Server, premium Linux) also carry license fees on every VM that boots the image.
+  notes: "Images are versioned rather than edited, so every build adds an image that bills until deleted -- retire old builds of a family."

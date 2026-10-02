@@ -8,12 +8,11 @@
 
 **Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
 
-GcpUrlMapSpec defines a global Compute Engine URL map — the L7 routing brain
-of a global external Application Load Balancer (and of Traffic Director /
-cross-region internal ALBs). A URL map matches each request's host and path
-and decides what happens: send it to a backend service or backend bucket,
-split it across weighted backends, rewrite or redirect it, inject faults, or
-return a custom error page.
+GcpUrlMapSpec defines a Compute Engine URL map — the L7 routing brain of an
+Application Load Balancer (and of Traffic Director meshes). A URL map
+matches each request's host and path and decides what happens: send it to
+a backend service or backend bucket, split it across weighted backends,
+rewrite or redirect it, inject faults, or return a custom error page.
 
 Routing is evaluated in this order:
   1. host_rules match the request Host header to a named path_matcher.
@@ -27,9 +26,15 @@ service or bucket), a url_redirect, or a route_action (which can weight
 across backends and rewrite/retry/mirror). Target proxies reference this URL
 map; forwarding rules and addresses sit in front of the proxy.
 
-This models the GLOBAL URL map. The regional URL map is a separate GCP
-resource (region-scoped, no custom error response policies) reserved for the
-regional-LB wave.
+One kind, two scopes. With region empty the map is GLOBAL (the global
+external ALB, the cross-region internal ALB, Traffic Director); with region
+set it is REGIONAL (the regional external ALB and the regional internal
+ALB), routing only to regional backend services in that region. The two
+scopes share the whole routing surface except Cloud CDN route caching,
+custom error pages, stream-duration limits, and header-driven routing
+tests, which exist only on the global map (and are rejected when region is
+set); the regional map alone honors a path_template_rewrite in a path
+matcher's default route action. A URL map cannot move between scopes.
 
 ## Example
 
@@ -109,7 +114,8 @@ spec:
 | `spec.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.urlMapName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
-| `spec.defaultService` | `string \| valueFrom` |  |  |  |
+| `spec.region` | `string` |  |  |  |
+| `spec.defaultService` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.defaultUrlRedirect` | `GcpUrlMapUrlRedirect` |  |  |  |
 | `spec.defaultUrlRedirect.hostRedirect` | `string` |  |  |  |
 | `spec.defaultUrlRedirect.httpsRedirect` | `bool` |  |  |  |
@@ -221,7 +227,7 @@ spec:
 | `spec.hostRules[].description` | `string` |  |  |  |
 | `spec.pathMatchers` | `[]GcpUrlMapPathMatcher` |  |  |  |
 | `spec.pathMatchers[].name` | `string` | yes |  |  |
-| `spec.pathMatchers[].defaultService` | `string \| valueFrom` |  |  |  |
+| `spec.pathMatchers[].defaultService` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.pathMatchers[].defaultUrlRedirect` | `GcpUrlMapUrlRedirect` |  |  |  |
 | `spec.pathMatchers[].defaultUrlRedirect.hostRedirect` | `string` |  |  |  |
 | `spec.pathMatchers[].defaultUrlRedirect.httpsRedirect` | `bool` |  |  |  |
@@ -330,7 +336,7 @@ spec:
 | `spec.pathMatchers[].headerAction.responseHeadersToRemove` | `[]string` |  |  |  |
 | `spec.pathMatchers[].pathRules` | `[]GcpUrlMapPathRule` |  |  |  |
 | `spec.pathMatchers[].pathRules[].paths` | `[]string` | yes |  |  |
-| `spec.pathMatchers[].pathRules[].service` | `string \| valueFrom` |  |  |  |
+| `spec.pathMatchers[].pathRules[].service` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.pathMatchers[].pathRules[].routeAction` | `GcpUrlMapRouteAction` |  |  |  |
 | `spec.pathMatchers[].pathRules[].routeAction.weightedBackendServices` | `[]GcpUrlMapWeightedBackendService` |  |  |  |
 | `spec.pathMatchers[].pathRules[].routeAction.weightedBackendServices[].backendService` | `string \| valueFrom` | yes |  | GcpBackendService (`status.outputs.self_link`) |
@@ -563,7 +569,7 @@ spec:
 | `spec.tests` | `[]GcpUrlMapTest` |  |  |  |
 | `spec.tests[].host` | `string` | yes |  |  |
 | `spec.tests[].path` | `string` | yes |  |  |
-| `spec.tests[].service` | `string \| valueFrom` |  |  |  |
+| `spec.tests[].service` | `string \| valueFrom` |  |  | GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`) |
 | `spec.tests[].description` | `string` |  |  |  |
 | `spec.tests[].expectedOutputUrl` | `string` |  |  |  |
 | `spec.tests[].expectedRedirectResponseCode` | `int32` |  |  |  |
@@ -607,16 +613,38 @@ reading a routing incident later. Mutable.
 
 - rule: {"string":{"maxLen":"2048"}}
 
+### spec.region
+
+`string`
+
+The scope selector. Empty builds a GLOBAL URL map (the global external
+ALB, the cross-region internal ALB, Traffic Director); a region name
+such as us-central1 builds a REGIONAL one (the regional external ALB and
+the regional internal ALB). A regional map routes only to regional
+backend services in its own region — never to a backend bucket, which
+is a global-only resource — and is referenced only by regional target
+proxies. Cloud CDN route caching (cache_policy), custom error pages
+(custom_error_response_policy), max_stream_duration, and the
+header-driven routing-test fields exist only on the global map and are
+rejected when region is set. Immutable: a URL map cannot move between
+scopes or regions.
+
+- rule: region must be a valid GCP region name such as us-central1, or empty for a global URL map
+
 ### spec.defaultService
 
 `string | valueFrom`
 
 The default target when no host/path rule matches — a backend service or
-backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-provide a self-link directly. Exactly one of default_service,
-default_url_redirect, or default_route_action must be set. Mutable.
+backend bucket. Reference a GcpBackendService (the default kind) or a
+GcpBackendBucket (both are declared candidates, so the self_link output
+fills in), or provide a self-link directly (a regional map takes only a
+regional GcpBackendService in its region). Exactly one of
+default_service, default_url_redirect, or default_route_action must be
+set. Mutable.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.defaultUrlRedirect
 
@@ -829,9 +857,10 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action — GCP rejects it in
-default and path-rule route actions. Mutually exclusive with
-path_prefix_rewrite.
+Honored inside a route_rule's route_action on both scopes and, on a
+REGIONAL map only, in a path matcher's default route action — GCP
+rejects it in the map's default route action and in path-rule route
+actions everywhere. Mutually exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -1090,7 +1119,9 @@ unless the URL map's backend service uses the INTERNAL_SELF_MANAGED
 (Traffic Director) load-balancing scheme ("Max stream duration is
 only supported when UrlMap is used with BackendService whose Load
 Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-external application load balancers.
+external application load balancers. Global maps only: the regional
+map has no such argument (except in a path matcher's default route
+action, which carries it on both scopes).
 
 ### spec.defaultRouteAction.maxStreamDuration.seconds
 
@@ -1116,7 +1147,8 @@ Durations under one second use seconds = 0 and a positive nanos.
 Cloud CDN caching for the routes using this action — overrides the
 backend service's cdn_policy for matching traffic only. Takes effect
 only when the target backend service (or bucket) has CDN enabled;
-GCP ignores it otherwise.
+GCP ignores it otherwise. Global maps only — regional Application Load
+Balancers have no Cloud CDN, and the regional map has no such argument.
 
 - rule: with cache_mode USE_ORIGIN_HEADERS the origin's headers control lifetimes — remove client_ttl, default_ttl, and max_ttl (GCP would silently ignore them)
 
@@ -1361,7 +1393,8 @@ Durations under one second use seconds = 0 and a positive nanos.
 `GcpUrlMapCustomErrorResponsePolicy`
 
 Return a custom error page (from a backend bucket) for chosen response
-codes at the top level. Global external Application Load Balancers only.
+codes at the top level. Global external Application Load Balancers only
+— rejected when region is set.
 
 ### spec.defaultCustomErrorResponsePolicy.errorService
 
@@ -1531,7 +1564,6 @@ routing (path_rules, route_rules, and its own default). Mutable.
 
 - rule: a path matcher may set at most one default target: default_service, default_url_redirect, or default_route_action with weighted_backend_services (a route action carrying only sub-policies may accompany default_service)
 - rule: default_route_action and default_url_redirect are mutually exclusive — a redirect never reaches a backend
-- rule: path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in a path matcher's default route action
 - rule: a path matcher uses either path_rules or route_rules, not both
 
 ### spec.pathMatchers[].name
@@ -1547,11 +1579,13 @@ The path matcher's name, referenced by host_rules.path_matcher.
 `string | valueFrom`
 
 The default target when no path_rule or route_rule matches — a backend
-service or backend bucket. Reference a GcpBackendService or
-GcpBackendBucket, or provide a self-link. Set exactly one of
-default_service, default_url_redirect, or default_route_action.
+service or backend bucket. Reference a GcpBackendService (the default
+kind) or a GcpBackendBucket (both are declared candidates), or provide a
+self-link. Set exactly one of default_service, default_url_redirect, or
+default_route_action.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.pathMatchers[].defaultUrlRedirect
 
@@ -1616,6 +1650,8 @@ string is preserved).
 `GcpUrlMapRouteAction`
 
 Advanced default handling (weighted split / rewrite) for the path matcher.
+On a regional map this is the one place besides route rules where a
+url_rewrite may carry path_template_rewrite.
 
 ### spec.pathMatchers[].defaultRouteAction.weightedBackendServices
 
@@ -1759,9 +1795,10 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action — GCP rejects it in
-default and path-rule route actions. Mutually exclusive with
-path_prefix_rewrite.
+Honored inside a route_rule's route_action on both scopes and, on a
+REGIONAL map only, in a path matcher's default route action — GCP
+rejects it in the map's default route action and in path-rule route
+actions everywhere. Mutually exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -2020,7 +2057,9 @@ unless the URL map's backend service uses the INTERNAL_SELF_MANAGED
 (Traffic Director) load-balancing scheme ("Max stream duration is
 only supported when UrlMap is used with BackendService whose Load
 Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-external application load balancers.
+external application load balancers. Global maps only: the regional
+map has no such argument (except in a path matcher's default route
+action, which carries it on both scopes).
 
 ### spec.pathMatchers[].defaultRouteAction.maxStreamDuration.seconds
 
@@ -2046,7 +2085,8 @@ Durations under one second use seconds = 0 and a positive nanos.
 Cloud CDN caching for the routes using this action — overrides the
 backend service's cdn_policy for matching traffic only. Takes effect
 only when the target backend service (or bucket) has CDN enabled;
-GCP ignores it otherwise.
+GCP ignores it otherwise. Global maps only — regional Application Load
+Balancers have no Cloud CDN, and the regional map has no such argument.
 
 - rule: with cache_mode USE_ORIGIN_HEADERS the origin's headers control lifetimes — remove client_ttl, default_ttl, and max_ttl (GCP would silently ignore them)
 
@@ -2291,7 +2331,7 @@ Durations under one second use seconds = 0 and a positive nanos.
 `GcpUrlMapCustomErrorResponsePolicy`
 
 Custom error pages for this path matcher's default. Global external ALBs
-only.
+only — rejected when the map's region is set.
 
 ### spec.pathMatchers[].defaultCustomErrorResponsePolicy.errorService
 
@@ -2450,10 +2490,12 @@ a single "*" wildcard (e.g. "/api/*"). At least one required.
 `string | valueFrom`
 
 The target when a path matches — a backend service or backend bucket.
-Reference a GcpBackendService or GcpBackendBucket, or provide a self-link.
-Set exactly one of service, url_redirect, or route_action.
+Reference a GcpBackendService (the default kind) or a GcpBackendBucket
+(both are declared candidates), or provide a self-link. Set exactly one
+of service, url_redirect, or route_action.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.pathMatchers[].pathRules[].routeAction
 
@@ -2603,9 +2645,10 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action — GCP rejects it in
-default and path-rule route actions. Mutually exclusive with
-path_prefix_rewrite.
+Honored inside a route_rule's route_action on both scopes and, on a
+REGIONAL map only, in a path matcher's default route action — GCP
+rejects it in the map's default route action and in path-rule route
+actions everywhere. Mutually exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -2864,7 +2907,9 @@ unless the URL map's backend service uses the INTERNAL_SELF_MANAGED
 (Traffic Director) load-balancing scheme ("Max stream duration is
 only supported when UrlMap is used with BackendService whose Load
 Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-external application load balancers.
+external application load balancers. Global maps only: the regional
+map has no such argument (except in a path matcher's default route
+action, which carries it on both scopes).
 
 ### spec.pathMatchers[].pathRules[].routeAction.maxStreamDuration.seconds
 
@@ -2890,7 +2935,8 @@ Durations under one second use seconds = 0 and a positive nanos.
 Cloud CDN caching for the routes using this action — overrides the
 backend service's cdn_policy for matching traffic only. Takes effect
 only when the target backend service (or bucket) has CDN enabled;
-GCP ignores it otherwise.
+GCP ignores it otherwise. Global maps only — regional Application Load
+Balancers have no Cloud CDN, and the regional map has no such argument.
 
 - rule: with cache_mode USE_ORIGIN_HEADERS the origin's headers control lifetimes — remove client_ttl, default_ttl, and max_ttl (GCP would silently ignore them)
 
@@ -3614,9 +3660,10 @@ path_template_rewrite.
 
 Rewrite the path using a template that references named path variables
 captured by a route rule's path_template_match (e.g. "/v2/{country}").
-Honored only inside a route_rule's route_action — GCP rejects it in
-default and path-rule route actions. Mutually exclusive with
-path_prefix_rewrite.
+Honored inside a route_rule's route_action on both scopes and, on a
+REGIONAL map only, in a path matcher's default route action — GCP
+rejects it in the map's default route action and in path-rule route
+actions everywhere. Mutually exclusive with path_prefix_rewrite.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -3875,7 +3922,9 @@ unless the URL map's backend service uses the INTERNAL_SELF_MANAGED
 (Traffic Director) load-balancing scheme ("Max stream duration is
 only supported when UrlMap is used with BackendService whose Load
 Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-external application load balancers.
+external application load balancers. Global maps only: the regional
+map has no such argument (except in a path matcher's default route
+action, which carries it on both scopes).
 
 ### spec.pathMatchers[].routeRules[].routeAction.maxStreamDuration.seconds
 
@@ -3901,7 +3950,8 @@ Durations under one second use seconds = 0 and a positive nanos.
 Cloud CDN caching for the routes using this action — overrides the
 backend service's cdn_policy for matching traffic only. Takes effect
 only when the target backend service (or bucket) has CDN enabled;
-GCP ignores it otherwise.
+GCP ignores it otherwise. Global maps only — regional Application Load
+Balancers have no Cloud CDN, and the regional map has no such argument.
 
 - rule: with cache_mode USE_ORIGIN_HEADERS the origin's headers control lifetimes — remove client_ttl, default_ttl, and max_ttl (GCP would silently ignore them)
 
@@ -4336,7 +4386,9 @@ Path within the error backend bucket to serve for matched codes (e.g.
 Routing self-tests evaluated by GCP at create/update time: each asserts
 that a given host+path resolves to an expected service or redirect. A
 failing test blocks the update — a guard against a routing change that
-silently breaks a path. Mutable.
+silently breaks a path. On a regional map every test names its expected
+service and carries no headers or redirect expectations (those forms
+exist only on the global map). Mutable.
 
 ### spec.tests[].host
 
@@ -4359,11 +4411,14 @@ The request path the test sends.
 `string | valueFrom`
 
 The backend service or backend bucket the request is expected to resolve
-to. Reference a GcpBackendService or GcpBackendBucket, or provide a
-self-link. Leave empty when asserting a redirect via
-expected_redirect_response_code.
+to. Reference a GcpBackendService (the default kind) or a
+GcpBackendBucket (both are declared candidates), or provide a self-link.
+Leave empty when asserting a redirect via
+expected_redirect_response_code. Required on a regional map, whose
+tests can only assert a service.
 
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
+- references: GcpBackendService (`status.outputs.self_link`), GcpBackendBucket (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpBackendService, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.tests[].description
 
@@ -4378,7 +4433,7 @@ What this test guards — write it for whoever reads a failed-test error.
 `string`
 
 The URL the request is expected to be redirected/rewritten to. Optional
-when service is set.
+when service is set. Global maps only.
 
 - rule: {"string":{"maxLen":"1024"}}
 
@@ -4387,7 +4442,7 @@ when service is set.
 `int32`
 
 The redirect status code the request is expected to produce. Cannot be set
-together with service.
+together with service. Global maps only.
 
 - rule: {"int32":{"gte":0}}
 
@@ -4395,7 +4450,7 @@ together with service.
 
 `[]GcpUrlMapTestHeader`
 
-Request headers the test sends.
+Request headers the test sends. Global maps only.
 
 ### spec.tests[].headers[].name
 
@@ -4430,7 +4485,12 @@ the GCP API.
 
 - `exactly_one_default_target`: set exactly one default target: default_service, default_url_redirect, or default_route_action (with weighted_backend_services)
 - `default_route_action_conflicts_redirect`: default_route_action and default_url_redirect are mutually exclusive
-- `default_no_path_template_rewrite`: path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in the URL map's default route action
+- `default_no_path_template_rewrite`: path_template_rewrite is honored only inside a route rule's route_action (and, on a regional map, a path matcher's default route action) — GCP rejects it in the URL map's default route action
+- `path_matcher_path_template_rewrite_regional_only`: path_template_rewrite in a path matcher's default route action is honored only by a regional URL map — set region, move the rewrite into a route rule, or use path_prefix_rewrite
+- `cache_policy_global_only`: cache_policy (Cloud CDN route caching) exists only on a global URL map — a regional Application Load Balancer has no Cloud CDN; clear region or remove every cache_policy
+- `custom_error_response_policy_global_only`: custom error response policies exist only on a global URL map — the regional map has no error-page surface; clear region or remove every custom_error_response_policy and default_custom_error_response_policy
+- `max_stream_duration_global_only`: max_stream_duration exists only on a global URL map (Traffic Director) at the map's default route action and inside path rules and route rules — a regional map carries none; clear region or remove it
+- `regional_tests_are_service_only`: on a regional URL map every routing test names its expected service and carries no headers, expected_output_url, or expected_redirect_response_code — those test forms exist only on the global map
 
 ## Outputs
 
@@ -4442,6 +4502,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpUrlMap, name:
 | `status.outputs.url_map_name` | `string` | Name of the URL map as it exists in GCP. |
 | `status.outputs.map_id` | `string` | Server-assigned numeric ID of the URL map. |
 | `status.outputs.fingerprint` | `string` | Server-computed fingerprint of the URL map. Used for optimistic concurrency control when updating the map outside of IaC. |
+| `status.outputs.region` | `string` | Region of a regional URL map; empty for a global one. Downstream blocks read it to confirm scope compatibility (a regional link must point at a regional target in the same region), and the E2E verifier picks the regional or global API by it. |
 
 ## References
 
@@ -4450,12 +4511,18 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.defaultService` | GcpBackendService | `status.outputs.self_link` |
+| `spec.defaultService` | GcpBackendBucket | `status.outputs.self_link` |
 | `spec.defaultRouteAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.defaultRouteAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.defaultCustomErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
+| `spec.pathMatchers[].defaultService` | GcpBackendService | `status.outputs.self_link` |
+| `spec.pathMatchers[].defaultService` | GcpBackendBucket | `status.outputs.self_link` |
 | `spec.pathMatchers[].defaultRouteAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].defaultRouteAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].defaultCustomErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
+| `spec.pathMatchers[].pathRules[].service` | GcpBackendService | `status.outputs.self_link` |
+| `spec.pathMatchers[].pathRules[].service` | GcpBackendBucket | `status.outputs.self_link` |
 | `spec.pathMatchers[].pathRules[].routeAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].pathRules[].routeAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].pathRules[].customErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
@@ -4463,6 +4530,8 @@ Fields that can point at another resource's outputs:
 | `spec.pathMatchers[].routeRules[].routeAction.weightedBackendServices[].backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].routeRules[].routeAction.requestMirrorPolicy.backendService` | GcpBackendService | `status.outputs.self_link` |
 | `spec.pathMatchers[].routeRules[].customErrorResponsePolicy.errorService` | GcpBackendBucket | `status.outputs.self_link` |
+| `spec.tests[].service` | GcpBackendService | `status.outputs.self_link` |
+| `spec.tests[].service` | GcpBackendBucket | `status.outputs.self_link` |
 
 ## Referenced By
 

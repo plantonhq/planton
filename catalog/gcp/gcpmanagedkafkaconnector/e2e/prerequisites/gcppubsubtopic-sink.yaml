@@ -1,0 +1,18 @@
+# The Pub/Sub topic the sink connector publishes into.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopic
+metadata:
+  name: planton-oss-e2e-gcpkcnr-pubsub
+  id: planton-oss-e2e-gcpkcnr-pubsub
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcppubsubtopic
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  topicName: e2e-kcnr-sink-${E2E_RUN_ID}
+  deletionPolicy: DELETE

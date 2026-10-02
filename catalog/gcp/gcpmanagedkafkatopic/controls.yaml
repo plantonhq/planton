@@ -1,0 +1,86 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpmanagedkafkatopic
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "A topic's messages live on the cluster's disks, which Google encrypts at rest."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "Customer-managed encryption is a property of the cluster (GcpManagedKafkaCluster kms_key); a topic inherits it."
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Clients reach the topic only through the cluster's TLS listeners."
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "A topic is reachable only through its cluster, which has no public access."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "Network reachability is the cluster's (network_configs); a topic has no listener of its own."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "No edge is served."
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Using a topic requires roles/managedkafka.client and a Kafka ACL on the topic; administering it requires managedkafka.topics.* permissions."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: "The topic authenticates nothing; clients authenticate to the cluster."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "Authentication is the cluster's; the topic has no authentication path."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "No end-user sign-in exists on a topic."
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Topic creation, updates, and deletion are recorded in Cloud Audit Logs (Admin Activity) unconditionally."
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google publishes per-topic metrics to Cloud Monitoring without configuration."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "Managed Kafka offers no topic backup; cross-cluster copies are a MirrorMaker 2 connector."
+    - control_id: backup-retention-policy
+      status: configurable
+      field_path: configs
+      evidence:
+        type: spec_default
+        reference: "Unset follows the cluster default; configs retention.ms and cleanup.policy set how long and which messages the topic keeps."
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: replication_factor
+      evidence:
+        type: spec_default
+        reference: "replication_factor 3 keeps a copy of every partition in each of the cluster's three zones; lower values do not survive a zone outage."
+      notes: "Both presets use 3."
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: "Unset means DELETE -- the topic and its messages are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves the topic on the cluster."
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google operates the brokers that host the topic."

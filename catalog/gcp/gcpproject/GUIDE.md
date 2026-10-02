@@ -44,7 +44,7 @@ fail on network quota even with `autoCreateNetwork: false`.
 
 ## Parent and billing moves are org-level events
 
-`parentType`/`parentId` moves re-scope every inherited IAM policy and
+`parentType`/`parentId` (or `folderId`) moves re-scope every inherited IAM policy and
 org constraint; `billingAccountId` changes who pays retroactively for
 nothing and prospectively for everything. Both are one-line edits here
 and multi-team conversations in real life — treat the spec change as

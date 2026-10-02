@@ -4669,7 +4669,7 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "gcpprj"
     container_kind: true
-    service_group: gcp_identity_access
+    service_group: gcp_management_governance
   }];
   GcpVpcNetwork = 3010 [(kind_meta) = {
     provider: gcp
@@ -4881,7 +4881,10 @@ enum CloudResourceKind {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcpsqlu"
-    prerequisites: [GcpCloudSql]
+    prerequisites: [
+      GcpCloudSql,
+      GcpServiceAccount
+    ]
     service_group: gcp_databases
   }];
   GcpAlloydbInstance = 3039 [(kind_meta) = {
@@ -4968,6 +4971,42 @@ enum CloudResourceKind {
     prerequisites: [GcpBigQueryDataset]
     service_group: gcp_data_analytics
   }];
+  // A BigQuery capacity commitment: slots bought for a fixed term in an
+  // administration project and location, pooled across every reservation
+  // there. A purchase Google will not delete before its term ends.
+  GcpBigQueryCapacityCommitment = 3054 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqcc"
+    service_group: gcp_data_analytics
+  }];
+  // A BigQuery reservation group: reservations that share idle slots with
+  // each other first. Reservations reference it.
+  GcpBigQueryReservationGroup = 3055 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqrg"
+    service_group: gcp_data_analytics
+  }];
+  // A Datastream connection profile: where one source database or
+  // destination is and how Datastream signs in. Streams reference a source
+  // and a destination profile; one profile serves many streams.
+  GcpDatastreamConnectionProfile = 3056 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdscp"
+    service_group: gcp_data_analytics
+  }];
+  // A Datastream private connection: the VPC peering or Private Service
+  // Connect interface through which Datastream reaches private databases,
+  // shared by every profile that reaches that network.
+  GcpDatastreamPrivateConnection = 3057 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdspc"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_data_analytics
+  }];
   GcpPubSubTopic = 3060 [(kind_meta) = {
     provider: gcp
     version: "v1alpha1"
@@ -5010,6 +5049,17 @@ enum CloudResourceKind {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcppsch"
+    service_group: gcp_data_analytics
+  }];
+  // One additive grant on a topic. Its own kind, not a field on the topic,
+  // because the identities that most need it (a logging sink's writer, a
+  // Security Command Center export's publisher) belong to resources that
+  // name the topic themselves; a grant on the topic that referenced them
+  // back would be a dependency cycle.
+  GcpPubSubTopicIamMember = 3065 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppstim"
     service_group: gcp_data_analytics
   }];
   GcpVertexAiNotebook = 3070 [(kind_meta) = {
@@ -5142,6 +5192,15 @@ enum CloudResourceKind {
     prerequisites: [GcpServiceAccount]
     service_group: gcp_identity_access
   }];
+  // One additive grant on a bucket, for a grantee that depends on the
+  // bucket itself (a logging sink writing into it): the bucket's own
+  // iam_members cannot reference such an identity without a cycle.
+  GcpGcsBucketIamMember = 3104 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpgcsim"
+    service_group: gcp_storage
+  }];
   // 3110–3119: networking/load-balancer family (overflow block; the 3023–3029
   // LB sub-band is fully allocated)
   GcpGlobalForwardingRule = 3110 [(kind_meta) = {
@@ -5212,6 +5271,23 @@ enum CloudResourceKind {
     prerequisites: [GcpCertManagerCert]
     service_group: gcp_security
   }];
+  // The CA certificates a load balancer validates client certificates
+  // against (mutual TLS). Its own kind: TLS policies reference it, never a
+  // certificate.
+  GcpCertManagerTrustConfig = 3118 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcmtc"
+    service_group: gcp_security
+  }];
+  // How Google-managed certificates are issued from a private CA pool. Its
+  // own kind: many certificates share one config by name.
+  GcpCertManagerIssuanceConfig = 3119 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcmic"
+    service_group: gcp_security
+  }];
 
   // 3120–3129: GCP serverless overflow
   GcpCloudRunJob = 3120 [(kind_meta) = {
@@ -5224,6 +5300,20 @@ enum CloudResourceKind {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcpvpcc"
+    prerequisites: [
+      GcpVpcNetwork,
+      GcpSubnetwork
+    ]
+    service_group: gcp_serverless
+  }];
+  // Cloud Run's no-ingress shape: a pool of always-running container
+  // instances (queue consumers, schedulers, background workers) that
+  // scales manually or by the owner's own signal instead of by requests.
+  // The proof deploys direct-VPC egress onto the prerequisite network.
+  GcpCloudRunWorkerPool = 3122 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcprunwp"
     prerequisites: [
       GcpVpcNetwork,
       GcpSubnetwork
@@ -5393,12 +5483,660 @@ enum CloudResourceKind {
   }];
 
   // 3170–3179: GCP organization & governance (folders, org policies, tags,
-  // budgets, identity groups, API keys)
+  // budgets, identity groups, API keys, KMS Autokey)
+  // GcpFolder is a container: the hierarchy node projects, sub-folders,
+  // policies, and tag bindings are placed inside.
+  GcpFolder = 3170 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfldr"
+    container_kind: true
+    service_group: gcp_management_governance
+  }];
+  GcpOrgPolicy = 3171 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcporgp"
+    service_group: gcp_management_governance
+  }];
+  GcpTagKey = 3172 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptagk"
+    service_group: gcp_management_governance
+  }];
+  GcpTagValue = 3173 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptagv"
+    prerequisites: [GcpTagKey]
+    service_group: gcp_management_governance
+  }];
+  GcpTagBinding = 3174 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptagb"
+    prerequisites: [GcpTagValue]
+    service_group: gcp_management_governance
+  }];
+  // A spending guardrail on a Cloud Billing account: amount, period,
+  // filters, thresholds, and where the alerts go. Lives on the billing
+  // account, so no project prerequisite; the proof lane needs a billing
+  // account the harness identity can administer.
+  GcpBillingBudget = 3175 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbdgt"
+    service_group: gcp_management_governance
+  }];
+  // A Google Group in Cloud Identity or Workspace with its memberships
+  // folded in -- the unit IAM bindings should name. Lives under a Cloud
+  // Identity customer, beside the service accounts and workload identity
+  // pools in the identity service group.
+  GcpCloudIdentityGroup = 3176 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcigrp"
+    service_group: gcp_identity_access
+  }];
   GcpApiKey = 3177 [(kind_meta) = {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcpakey"
     service_group: gcp_identity_access
+  }];
+  // Cloud KMS Autokey switched on for a folder or a project: where the
+  // customer-managed keys GcpKmsKeyHandle requests are created. A security
+  // control, so it groups with the KMS kinds rather than the hierarchy.
+  GcpKmsAutokeyConfig = 3178 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpakcfg"
+    service_group: gcp_security
+  }];
+  // A custom constraint is a DEFINITION the organization owns; the
+  // GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
+  // bindings reference a custom role.
+  GcpOrgPolicyCustomConstraint = 3179 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpocc"
+    service_group: gcp_management_governance
+  }];
+
+  // 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN,
+  // firewall policies, PSC, network endpoint groups).
+  // HA VPN is two kinds: the gateway (with its Cloud Router) is declared
+  // once per VPC and region and referenced by every site connection, so
+  // two Google Cloud VPCs can point their connections at each other's
+  // gateway without a dependency cycle.
+  // Firewall policies are two kinds by scope: the hierarchical policy lives
+  // on the organization or a folder and is inherited by every network
+  // beneath its association; the network policy lives in a project and is
+  // attached to that project's VPC networks (globally or per region). Each
+  // folds its rules and associations -- a rule is keyed by priority inside
+  // its policy and an association is the edge that makes the policy act.
+  GcpSharedVpcHost = 3180 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsvph"
+    service_group: gcp_networking
+  }];
+  GcpSharedVpcServiceProject = 3181 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsvps"
+    prerequisites: [GcpSharedVpcHost]
+    service_group: gcp_networking
+  }];
+  GcpVpcPeering = 3182 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppeer"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+  GcpHaVpnGateway = 3183 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvpngw"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+  GcpHierarchicalFirewallPolicy = 3184 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcphfwp"
+    service_group: gcp_networking
+  }];
+  GcpNetworkFirewallPolicy = 3185 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpnfwp"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+  GcpHaVpnConnection = 3188 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvpncn"
+    prerequisites: [GcpHaVpnGateway]
+    service_group: gcp_networking
+  }];
+  // The producer half of Private Service Connect: publishes an internal
+  // load balancer's regional forwarding rule through NAT subnets so
+  // consumers in other VPCs reach it over a PSC endpoint (a regional
+  // GcpGlobalForwardingRule with an empty scheme targeting this
+  // attachment). The proof chain deploys the internal passthrough load
+  // balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+  GcpPscServiceAttachment = 3186 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppsca"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+  // Zonal (VM, hybrid, internet) and global (internet) network endpoint
+  // groups behind a `zone` selector; serverless, PSC, and regional
+  // internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof
+  // attaches a GcpComputeInstance fixture as an endpoint on the
+  // prerequisite network.
+  GcpNetworkEndpointGroup = 3187 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpneg"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+
+  // 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka,
+  // BigQuery connections and reservations, Datastream)
+  // Memorystore for Redis Cluster: the sharded, horizontally scaled Redis.
+  // Connectivity is Private Service Connect, placed by service connectivity
+  // automation through a GcpServiceConnectionPolicy for the
+  // gcp-memorystore-redis class on the network in the cluster's region --
+  // the prerequisite; its proof pin carries that class beside the network
+  // and subnet pins.
+  GcpRedisCluster = 3190 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcprcl"
+    prerequisites: [GcpServiceConnectionPolicy]
+    service_group: gcp_databases
+  }];
+  // Managed Service for Apache Kafka: a Google-operated broker fleet in one
+  // region, reachable from the VPC subnets it is attached to -- the
+  // prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so
+  // the teams that own them declare them without editing the cluster.
+  GcpManagedKafkaCluster = 3191 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkafka"
+    prerequisites: [GcpSubnetwork]
+    container_kind: true
+    service_group: gcp_data_analytics
+  }];
+  GcpManagedKafkaTopic = 3192 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpktpc"
+    prerequisites: [GcpManagedKafkaCluster]
+    service_group: gcp_data_analytics
+  }];
+  // Kafka Connect workers attached to a Kafka cluster: a separate
+  // project-and-location root that names the cluster it serves.
+  GcpManagedKafkaConnectCluster = 3193 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkcon"
+    prerequisites: [GcpManagedKafkaCluster]
+    container_kind: true
+    service_group: gcp_data_analytics
+  }];
+  // BigQuery's link to data outside its own storage (Cloud SQL, Spanner,
+  // AWS and Azure through Omni, Google resources through a managed service
+  // account, the Connector framework, Spark procedures).
+  GcpBigQueryConnection = 3194 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqcn"
+    service_group: gcp_data_analytics
+  }];
+  // A BigQuery slot reservation with the assignments that route projects,
+  // folders, or an organization onto it.
+  GcpBigQueryReservation = 3195 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqrs"
+    service_group: gcp_data_analytics
+  }];
+  // A Datastream stream: continuous change data capture from one source
+  // database into BigQuery or Cloud Storage, through a source and a
+  // destination connection profile.
+  GcpDatastreamStream = 3196 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdstrm"
+    prerequisites: [GcpDatastreamConnectionProfile]
+    service_group: gcp_data_analytics
+  }];
+  // The Private Service Connect connections a consumer builds by hand
+  // (forwarding rules in other VPCs or projects) registered on a Redis
+  // Cluster, as one set: Google's resource replaces the cluster's whole
+  // user-created endpoint list in one write, so exactly one set per
+  // cluster is the honest grain. Its own kind because every connection
+  // names a forwarding rule that targets one of the cluster's service
+  // attachments -- a fold would depend on its own output.
+  GcpRedisClusterEndpointSet = 3197 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcprclep"
+    prerequisites: [GcpRedisCluster]
+    service_group: gcp_databases
+  }];
+  // The access rules for one resource pattern (a topic, a consumer group,
+  // a prefix, the cluster) on a Kafka cluster.
+  GcpManagedKafkaAcl = 3198 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkacl"
+    prerequisites: [GcpManagedKafkaCluster]
+    service_group: gcp_data_analytics
+  }];
+  // One data pipeline running on a Kafka Connect cluster.
+  GcpManagedKafkaConnector = 3199 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkcnr"
+    prerequisites: [GcpManagedKafkaConnectCluster]
+    service_group: gcp_data_analytics
+  }];
+
+  // 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine,
+  // Vector Search, and the rest of the Vertex AI and generative-AI
+  // building blocks). The pre-existing Vertex AI kinds -- endpoint, index,
+  // index endpoint, deployed index, notebook -- live in the 3070s.
+  //
+  // Vertex AI Agent Engine: the managed runtime an AI agent runs in --
+  // built from source or a container, hosted with its own identity and
+  // autoscaling, with an optional Memory Bank of long-term memories.
+  GcpVertexAiAgentEngine = 3200 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpagent"
+    service_group: gcp_ai_ml
+  }];
+  // A Model Garden or Hugging Face model deployed to a Vertex AI endpoint
+  // in one step; every argument is immutable, so a change redeploys.
+  GcpVertexAiModelGardenDeployment = 3201 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpmgdep"
+    service_group: gcp_ai_ml
+  }];
+  // The per-project, per-location tier of Vertex AI RAG Engine's managed
+  // vector database: a singleton Google owns, updated in place.
+  GcpVertexAiRagEngineConfig = 3202 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpragcf"
+    service_group: gcp_ai_ml
+  }];
+  // 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp
+  // bridges provider 8.x (the resource has no SDK type today).
+  // A Vector Search collection -- a schema'd store of data objects with
+  // vector fields -- together with the approximate-nearest-neighbor indexes
+  // built over those fields (folded: one collection owns them).
+  GcpVectorSearchCollection = 3204 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvsc"
+    service_group: gcp_ai_ml
+  }];
+  // Vertex AI Search (the Discovery Engine API behind the console's AI
+  // Applications / Gemini Enterprise): a data store is the corpus --
+  // structured records, unstructured documents, or a public website --
+  // with its schema, crawl patterns, and sitemaps folded in.
+  GcpVertexAiSearchDataStore = 3205 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvsds"
+    service_group: gcp_ai_ml
+  }];
+  // The app over one or more data stores -- a search, chat, or
+  // recommendation engine -- with its serving controls, serving config,
+  // search widget, and assistants folded in. Its data stores are
+  // prerequisites: an engine cannot exist without one.
+  GcpVertexAiSearchEngine = 3206 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvseng"
+    service_group: gcp_ai_ml
+    prerequisites: [GcpVertexAiSearchDataStore]
+  }];
+  // Vertex AI Feature Store: a feature group registers the features of
+  // some entities that live in a BigQuery table or view -- the features
+  // themselves folded in. Online stores serve them through feature views.
+  GcpVertexAiFeatureGroup = 3207 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvfg"
+    service_group: gcp_ai_ml
+  }];
+  // The low-latency serving layer of Vertex AI Feature Store (Bigtable or
+  // Optimized storage), with the feature views it serves folded in.
+  GcpVertexAiFeatureOnlineStore = 3208 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvfos"
+    service_group: gcp_ai_ml
+  }];
+  // A Vertex AI managed dataset: the registered container training,
+  // AutoML, labeling, and evaluation read their examples from.
+  GcpVertexAiDataset = 3209 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvds"
+    service_group: gcp_ai_ml
+  }];
+  // A managed Vertex AI TensorBoard training jobs stream metrics into, with
+  // the experiments and runs declared in it folded in.
+  GcpVertexAiTensorboard = 3210 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvtb"
+    service_group: gcp_ai_ml
+  }];
+  // A long-running cluster Vertex AI keeps provisioned so training jobs and
+  // Ray on Vertex AI start in seconds and scarce accelerators stay held
+  // between jobs.
+  GcpVertexAiPersistentResource = 3211 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvpr"
+    service_group: gcp_ai_ml
+  }];
+  // A Model Armor template: the named safety filters (prompt injection and
+  // jailbreak, Responsible AI content, sensitive data, malicious URLs) an
+  // AI application screens prompts and responses through.
+  GcpModelArmorTemplate = 3212 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpmarm"
+    service_group: gcp_ai_ml
+  }];
+  // A Document AI processor: a managed model that turns documents into
+  // structured data (OCR, forms, invoices, IDs), with its default version.
+  GcpDocumentAiProcessor = 3213 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdocai"
+    service_group: gcp_ai_ml
+  }];
+  // A Colab Enterprise runtime template: the machine, network, image, and
+  // security settings every notebook runtime created from it gets.
+  GcpColabRuntimeTemplate = 3214 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcolt"
+    service_group: gcp_ai_ml
+  }];
+  // A Colab Enterprise runtime: a notebook VM assigned to one user, built
+  // from a runtime template and started or stopped on purpose.
+  GcpColabRuntime = 3215 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcolr"
+    service_group: gcp_ai_ml
+  }];
+  // A Vertex AI schedule: a cron that launches a Colab Enterprise notebook
+  // run or a Vertex AI Pipelines run.
+  GcpColabSchedule = 3216 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcols"
+    service_group: gcp_ai_ml
+  }];
+  // A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs.
+  // Beta-only in Google's provider (a recorded google-beta admission).
+  GcpTpuVm = 3217 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptpu"
+    service_group: gcp_ai_ml
+  }];
+  // A Dialogflow CX conversational agent with the infrastructure its
+  // console-authored content uses folded in: webhooks, tools and their
+  // frozen versions, flow versions, the environments that pin them, and
+  // generative settings per language.
+  GcpDialogflowCxAgent = 3218 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdfcx"
+    service_group: gcp_ai_ml
+  }];
+  // A data connector is a COLLECTION of data stores Google syncs from a
+  // source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
+  // Drive, ...) on a schedule -- a different root from a data store, which
+  // is why it is its own kind. Engines search its stores by naming the
+  // collection.
+  GcpVertexAiSearchDataConnector = 3219 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvsdc"
+    service_group: gcp_ai_ml
+  }];
+  // A Model Armor floor setting: the minimum safety screening a project,
+  // folder, or organization enforces on its templates and directly on
+  // Vertex AI and Google MCP server traffic. A different parent from a
+  // template (and a singleton Google never deletes), which is why it is
+  // its own kind.
+  GcpModelArmorFloorSetting = 3220 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpmafs"
+    service_group: gcp_ai_ml
+  }];
+  // A Cloud TPU queued resource: a request that waits for TPU capacity and
+  // then provisions the nodes it describes. A different root from a TPU VM
+  // that owns many nodes, which is why it is its own kind. Beta-only in
+  // Google's provider (a recorded google-beta admission).
+  GcpTpuQueuedResource = 3221 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptpuq"
+    service_group: gcp_ai_ml
+  }];
+  // Dialogflow CX security settings: the redaction, retention, audio-export,
+  // and Insights-export policy agents in one project and location apply to
+  // their conversations. A different root from an agent, referenced by
+  // agents and shared among them, which is why it is its own kind.
+  GcpDialogflowCxSecuritySettings = 3222 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdfcxs"
+    service_group: gcp_ai_ml
+  }];
+
+  // 3230–3239: GCP security (Certificate Authority Service, Cloud KMS
+  // Autokey handles, Security Command Center, Binary Authorization)
+  // A Certificate Authority Service CA pool: the trust anchor and issuance
+  // policy its certificate authorities and certificates live inside.
+  GcpPrivateCaPool = 3230 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppca"
+    container_kind: true
+    service_group: gcp_security
+  }];
+  // An Autokey key handle: asks Autokey for a customer-managed key for one
+  // resource type in one project and location; the resource it protects
+  // names the key the handle returns.
+  GcpKmsKeyHandle = 3231 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkmsh"
+    prerequisites: [GcpKmsAutokeyConfig]
+    service_group: gcp_security
+  }];
+  // Security Command Center streaming notifications to Pub/Sub at a
+  // project, folder, or organization.
+  GcpSccNotificationConfig = 3232 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsccn"
+    service_group: gcp_security
+  }];
+  // A Security Command Center mute rule at a project, folder, or
+  // organization.
+  GcpSccMuteConfig = 3233 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsccm"
+    service_group: gcp_security
+  }];
+  // A continuous Security Command Center findings export to a BigQuery
+  // dataset at a project, folder, or organization.
+  GcpSccBigQueryExport = 3234 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsccx"
+    service_group: gcp_security
+  }];
+  // A project's Binary Authorization policy: which container images GKE
+  // admits, per cluster. A project singleton.
+  GcpBinaryAuthorizationPolicy = 3235 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbapol"
+    service_group: gcp_security
+  }];
+  // A Binary Authorization attestor with its Artifact Analysis note: the
+  // public keys that verify image attestations a policy requires.
+  GcpBinaryAuthorizationAttestor = 3236 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbaatt"
+    service_group: gcp_security
+  }];
+  // A certificate authority in a CA pool: a self-signed root, or a
+  // subordinate signed by another authority or an outside CA. Its own kind
+  // because a pool rotates through several and a subordinate references
+  // its parent.
+  GcpPrivateCaCertificateAuthority = 3237 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppcaa"
+    prerequisites: [GcpPrivateCaPool]
+    service_group: gcp_security
+  }];
+  // A certificate template: a reusable certificate shape in a project and
+  // location that certificates in any pool there reference.
+  GcpPrivateCaCertificateTemplate = 3238 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppcat"
+    service_group: gcp_security
+  }];
+  // A certificate issued from a CA pool for a key its owner holds; destroy
+  // revokes it.
+  GcpPrivateCaCertificate = 3239 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppcac"
+    prerequisites: [GcpPrivateCaCertificateAuthority]
+    service_group: gcp_security
+  }];
+
+  // 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build,
+  // Cloud Deploy)
+  // GcpGkeFleet is the container a fleet's scopes, namespaces, memberships,
+  // and features live in: the project's one fleet is the room, and a team
+  // scope or a fleet-wide feature is what is placed inside it.
+  GcpGkeFleet = 3240 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfleet"
+    container_kind: true
+    service_group: gcp_containers
+  }];
+  // The three fleet children name GcpGkeFleet as their prerequisite: Google
+  // requires the fleet before a scope, a fleet declared after a cluster
+  // registers collides with the fleet that registration created implicitly,
+  // and a feature configures the fleet it lives in. A chart that references
+  // the fleet's project_id output orders each child after it.
+  GcpGkeFleetFeature = 3241 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpflft"
+    prerequisites: [GcpGkeFleet]
+    service_group: gcp_containers
+  }];
+  GcpGkeFleetScope = 3242 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpflsc"
+    prerequisites: [GcpGkeFleet]
+    service_group: gcp_containers
+  }];
+  GcpGkeFleetMembership = 3243 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpflmb"
+    prerequisites: [GcpGkeFleet]
+    service_group: gcp_containers
+  }];
+  // A Compute Engine custom image: the golden boot image VMs, instance
+  // templates, and disks start from, rolled forward through image families.
+  GcpComputeImage = 3244 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpimg"
+    service_group: gcp_compute
+  }];
+  // GcpCloudBuildConnection is the container a code host's repositories
+  // live in: the connection to GitHub, GitLab, or Bitbucket is the room,
+  // and each linked repository is what is placed inside it.
+  GcpCloudBuildConnection = 3245 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbcon"
+    container_kind: true
+    service_group: gcp_developer_tools
+  }];
+  // A repository is created under its connection and cannot exist without
+  // it.
+  GcpCloudBuildRepository = 3246 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbrep"
+    prerequisites: [GcpCloudBuildConnection]
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Build trigger: what starts a build (a code event, a Pub/Sub
+  // message, a webhook, or a manual run) and what the build does.
+  GcpCloudBuildTrigger = 3247 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbtrg"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy delivery pipeline: the ordered stages a release is
+  // promoted through, with the automations that drive it.
+  GcpDeliveryPipeline = 3248 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdpip"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster,
+  // a Cloud Run location, a fleet cluster, several targets at once, or a
+  // custom target).
+  GcpDeployTarget = 3249 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdtgt"
+    service_group: gcp_developer_tools
   }];
 
   // 3250–3259: GCP Firebase (project enablement, app registrations, and
@@ -5437,6 +6175,33 @@ enum CloudResourceKind {
     id_prefix: "gcpfbweb"
     prerequisites: [GcpFirebaseProject]
     service_group: gcp_firebase
+  }];
+
+  // 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud
+  // Deploy resources many pipelines share)
+  // A private Cloud Build worker pool: build machines many triggers and
+  // Cloud Deploy targets share, optionally on a private network.
+  GcpCloudBuildWorkerPool = 3260 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcbwp"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy deploy policy: rollout restrictions (freeze windows)
+  // that apply to every pipeline and target its selectors match.
+  GcpDeployPolicy = 3261 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdpol"
+    service_group: gcp_developer_tools
+  }];
+  // A Cloud Deploy custom target type: how to render and deploy to a
+  // target Google does not deploy natively; many targets share one.
+  GcpDeployCustomTargetType = 3262 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcdctt"
+    service_group: gcp_developer_tools
   }];
 
   // 4000–4999: Kubernetes resources, organized in family sub-bands

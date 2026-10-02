@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpdeploycustomtargettype
+spec:
+  billing_model: free
+  free_tier: "Custom target types carry no charge of their own; Cloud Deploy bills per active delivery pipeline, not per target type (Cloud Deploy pricing page, read 2026-10-01)."
+  notes: "The render and deploy containers run as Cloud Build jobs in the execution environment of each target that uses the type, billed as build minutes on that target's pool, and the pipeline bills through its GcpDeliveryPipeline block."

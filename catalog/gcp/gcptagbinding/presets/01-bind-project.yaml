@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagBinding
+metadata:
+  name: app-project-environment-prod
+spec:
+  tagValue:
+    valueFrom:
+      kind: GcpTagValue
+      name: environment-prod
+      fieldPath: status.outputs.name
+  parent:
+    projectId:
+      valueFrom:
+        kind: GcpProject
+        name: app-project
+        fieldPath: status.outputs.project_number

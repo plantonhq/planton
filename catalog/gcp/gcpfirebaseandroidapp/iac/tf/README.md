@@ -6,7 +6,7 @@ This Terraform module registers an Android app in a Firebase-enabled Google Clou
 
 The registration's `package_name` is the app's identity in Firebase: it forces replacement, and a project accepts each package name once. `deletion_policy` DELETE posts `:remove` with `immediate=true` — the app is gone PERMANENTLY at once, skipping Firebase's 30-day recoverable window. The spec's `deletion_policy` governs the app and every debug token; the Play Integrity configuration has no delete on Google's side (a per-app singleton the provider only forgets), so it carries none.
 
-Two blocks ride the `google-beta` provider: Google publishes `google_firebase_android_app` and its `google_firebase_android_app_config` lookup only there. The resource attaches `provider = google-beta` under a recorded admission in `pkg/providerparity/admissions/google-beta.yaml`; the beta channel is pinned to the same `~> 7.43` line as `google`, and both provider blocks set `user_project_override = true` (the Firebase Management API needs a quota project on user-credential calls). App Check and API enablement stay on the GA provider.
+Two blocks ride the `google-beta` provider: Google publishes `google_firebase_android_app` and its `google_firebase_android_app_config` lookup only there. The resource attaches `provider = google-beta` under a recorded admission in `pkg/providerparity/admissions/google-beta.yaml`; the beta channel is pinned to the same `~> 8.3` line as `google`, and both provider blocks set `user_project_override = true` (the Firebase Management API needs a quota project on user-credential calls). App Check and API enablement stay on the GA provider.
 
 ## Usage with Planton CLI
 

@@ -1,0 +1,23 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpsccbigqueryexport
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: dataset
+      sku_meter: BigQuery streaming inserts and storage
+      pricing_unit: data volume
+      impact: Every exported finding is a row streamed into the dataset and stored there, billed by BigQuery on its own pricing (the export itself is free; Security Command Center pricing page, read 2026-10-01). Queries over the table bill to whoever runs them.
+    - field_path: filter
+      sku_meter: BigQuery streaming inserts and storage
+      pricing_unit: data volume
+      impact: An empty filter exports every finding create and update; a narrow filter (active, unmuted findings) keeps the row volume and the stored history small.
+  free_tier: BigQuery exports carry no Security Command Center charge; the tier the scope is activated on bills separately from this block.
+  estimate_exclusions:
+    - finding volume -- follows what Security Command Center detects in the scope, not any spec field
+    - query spend -- billed to the analysts and dashboards that read the table
+  notes: "Bound storage with the dataset's default table or partition expiration (GcpBigQueryDataset)."

@@ -1,0 +1,25 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureGroup
+metadata:
+  name: customer-features
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  featureGroupId: customer_features
+  description: Customer features for churn and ranking models
+  bigQuery:
+    inputUri:
+      valueFrom:
+        kind: GcpBigQueryTable
+        name: customer-features-source
+        fieldPath: status.outputs.qualified_name
+    entityIdColumns:
+      - customer_id
+  features:
+    - featureId: age
+      description: Age in years
+    - featureId: tenure_days
+      description: Days since the first order
+    - featureId: orders_last_30d
+      description: Orders placed in the last 30 days

@@ -39,7 +39,8 @@ spec:
   zone: us-central1-a
   machineType: e2-medium
   bootDisk:
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
   networkInterfaces:
     - network:
         value: default
@@ -62,7 +63,7 @@ This creates a Spot Debian 12 VM on the default network with an ephemeral extern
 | `machineType` | string | Yes | e.g. `e2-medium`, `n2-standard-4`, `custom-6-20480`. Changing it stops/restarts the VM |
 | `description` | string | No | Human-readable description |
 | `hostname` | string | No | Custom FQDN; default `<name>.c.<project>.internal`. Immutable |
-| `bootDisk` | object | Yes | Exactly one source: `image`, `sourceSnapshot`, or `sourceDisk` (a `GcpComputeDisk` reference); plus size, type, `autoDelete`, CMEK `kmsKey` (+`kmsKeyServiceAccount`), hyperdisk tuning, `guestOsFeatures`, regional `replicaZones` (exactly two), `resourceManagerTags`, attachment `mode`/`interface`/`forceAttach`, and CMEK decryption of encrypted sources (`sourceImageEncryption` / `sourceSnapshotEncryption`) |
+| `bootDisk` | object | Yes | Exactly one source: `image` (a `GcpComputeImage` reference or a family/image path), `sourceSnapshot`, or `sourceDisk` (a `GcpComputeDisk` reference); plus size, type, `autoDelete`, CMEK `kmsKey` (+`kmsKeyServiceAccount`), hyperdisk tuning, `guestOsFeatures`, regional `replicaZones` (exactly two), `resourceManagerTags`, attachment `mode`/`interface`/`forceAttach`, and CMEK decryption of encrypted sources (`sourceImageEncryption` / `sourceSnapshotEncryption`) |
 | `attachedDisks[]` | list | No | Existing `GcpComputeDisk` references (`source`, `deviceName`, `mode`, `kmsKey` + `kmsKeyServiceAccount`, `forceAttach` for regional-disk takeover) — each disk keeps its own lifecycle |
 | `scratchDisks[]` | list | No | Ephemeral local SSDs (`interface` NVME/SCSI, 375 GB units). Contents lost on stop/preemption. Create-time only |
 | `networkInterfaces[]` | list | Yes | Each needs an attachment point: `network` (`GcpVpcNetwork`), `subnetwork` (`GcpSubnetwork`), or a PSC `networkAttachment` alone; static `networkIp` references `GcpAddress`; `accessConfigs[].natIp` (external IP, also `GcpAddress`), IPv6 (`stackType`, `ipv6Address`, `ipv6AccessConfigs[].externalIpv6`), `nicType`, `vlan` (dynamic sub-interface), `igmpQuery`, `queueCount`, alias ranges |

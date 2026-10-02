@@ -1,0 +1,81 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpmanagedkafkaconnector
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: "A connector moves data; at-rest encryption belongs to the Kafka cluster and the destination system."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "Customer-managed keys are properties of the Kafka cluster and the destination."
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Connectors read and write the Kafka cluster over TLS and call Google APIs over TLS."
+    - control_id: no-public-access
+      status: not_applicable
+      notes: "A connector has no address of its own."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "Network reach is the Connect cluster's network_configs."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "No edge is served."
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Administering a connector requires managedkafka.connectors.* permissions; what it may reach is IAM grants to the Managed Kafka service agent."
+    - control_id: workload-identity
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "The connector acts as the Managed Kafka service agent for Google services; no key files are involved unless a plugin's configs carry credentials."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "Authentication to destinations is the plugin's configuration."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "No end-user sign-in exists."
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Connector creation, changes, and deletion are recorded in Cloud Audit Logs (Admin Activity) unconditionally."
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google publishes connector and task state metrics to Cloud Monitoring without configuration."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "The connector is redeclared from the spec; its offsets live on the Kafka cluster."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "No backups exist."
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: task_restart_policy
+      evidence:
+        type: spec_default
+        reference: "Unset leaves failed tasks stopped; task_restart_policy restarts them with backoff, and the Connect cluster reschedules tasks across its workers."
+      notes: "Every preset sets a restart policy."
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: "Unset means DELETE -- the connector is deleted on destroy and the pipeline stops; PREVENT makes destroy fail; ABANDON leaves it running."
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google operates the Connect runtime and the plugins it provides."

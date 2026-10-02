@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgkefleet.v1alpha1;
+
+// GcpGkeFleetStackOutputs carries the fleet's identity.
+message GcpGkeFleetStackOutputs {
+  // The fleet host project's ID -- the value every fleet child's
+  // project_id references, so a chart places scopes, features, and
+  // memberships inside this fleet and orders them after it.
+  string project_id = 1;
+
+  // Full resource name: projects/{project}/locations/global/fleets/default.
+  string name = 2;
+
+  // Google's unique identifier for the fleet.
+  string uid = 3;
+}

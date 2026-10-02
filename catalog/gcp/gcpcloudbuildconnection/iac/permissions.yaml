@@ -1,0 +1,28 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcloudbuildconnection
+spec:
+  gcp:
+    groups:
+      - purpose: EnableCloudBuildApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling cloudbuild.googleapis.com on the connection's project. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageConnection
+        permissions:
+          - cloudbuild.connections.create
+          - cloudbuild.connections.get
+          - cloudbuild.connections.update
+          - cloudbuild.connections.delete
+          - cloudbuild.operations.get
+        provenance: derived
+        notes: Covers google_cloudbuildv2_connection (Pulumi cloudbuildv2.Connection) -- long-running create, read on every refresh, in-place PATCH (annotations, disabled, credentials, the GitHub installation ID), and delete under deletion_policy DELETE (ABANDON and PREVENT call no delete API). roles/cloudbuild.connectionAdmin contains all five. The secret versions are read by Google's Cloud Build service agent, not by this identity, so no Secret Manager permission is needed here -- grant the agent roles/secretmanager.secretAccessor on each secret instead.

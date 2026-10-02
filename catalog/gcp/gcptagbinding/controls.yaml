@@ -1,0 +1,71 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcptagbinding
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A tag binding stores no customer data -- it is the attachment of one tag value to one resource, control-plane metadata Google holds on its own encrypted Resource Manager infrastructure.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest); the resource exposes no Cloud KMS surface.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: A tag binding terminates no connections; management API calls ride Google's TLS-only endpoints like every GCP API.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: There is no endpoint to expose -- the attachment of one tag value to one resource is evaluated inside Google's control plane, never served to a network.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network path exists; nothing listens, so there are no sources to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served; there is no inbound traffic for a WAF or request filter to inspect.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every mutation authorizes against the resourcemanager.tagValues (tagUser) on the value and the tagged resource permission family on the parent; the resource has no data plane to govern separately.
+      notes: The component is itself a governance building block; who may change it is decided by IAM on its parent, granted through the catalog's IAM member kinds.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through the attachment of one tag value to one resource -- it carries no credentials and calls no APIs.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Tag binding create and delete land in Cloud Audit Logs (Admin Activity) unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: A tag binding emits no operational metrics and the spec has no logging or monitoring surface; it is evaluated inside Google's control plane.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: Resource Manager tags are a globally replicated control plane (location-scoped bindings are served from their resource's region but evaluated globally); the binding is evaluated wherever a tag condition is checked with no failure-domain choice on the resource.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE (the binding is removed at once; the resource no longer carries the tag and there is no recovery window); PREVENT makes destroy fail outright; ABANDON unmanages the binding while the resource stays tagged.
+      notes: A binding is the moment a tag starts governing a resource, so deleting one lifts every policy conditioned on it for that resource and everything beneath it. PREVENT is the guard for the bindings organization policies depend on (an environment folder's environment tag).
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; the Resource Manager control plane that stores and evaluates the resource is Google's own infrastructure.

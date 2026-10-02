@@ -1,0 +1,22 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcptpuvm
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness
+  # project with roles/tpu.admin and TPU v2 spot quota in us-central1-f
+  # (a fresh project's TPU quota and the zone's spot stock are on the
+  # watch list); the module enables tpu.googleapis.com itself and attaches
+  # the TPU through google-beta under the recorded admission. Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest, the scenario, and the accelerator-config, multi-NIC,
+  # data-disk, and service-account arms are clean on the pinned providers,
+  # and the accounting is total against the beta schema. Live facts the
+  # proof lane confirms: (1) the spot v2-8 reaches READY and RE-PLANS CLEAN
+  # on both engines (Pulumi serves the beta resource from its single
+  # provider); (2) the verifier reads the attribution labels and a network
+  # endpoint; (3) destroy deletes the TPU and the verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

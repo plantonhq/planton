@@ -1,0 +1,38 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_clouddeploy_delivery_pipeline:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.delivery_pipeline_id
+        arg: name
+  # Automations are folded: they are children of the pipeline by path
+  # (deliveryPipelines/*/automations/*), nothing references them, and the
+  # pipeline's delete (always force=true) removes them.
+  google_clouddeploy_automation:
+    specRoot: spec.automations
+    mappings:
+      - spec: spec.automations.automation_id
+        arg: name
+      # An automation lives in its pipeline's project and region -- never
+      # declared twice.
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.location
+        arg: location
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: delivery_pipeline
+        reason: wired by the module to the ID of the pipeline it creates -- an automation belongs to this pipeline and no other
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

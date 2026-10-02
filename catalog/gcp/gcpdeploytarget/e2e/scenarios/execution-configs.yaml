@@ -1,0 +1,50 @@
+# GcpDeployTarget scenario: a Cloud Run target whose render and deploy
+# jobs run as a service-account fixture and store artifacts in a bucket
+# fixture (the top-level fields), and whose verify jobs use the
+# default-pool block form. Free: no release is created, so no job runs;
+# the empty bucket bills nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-exec
+  id: planton-oss-e2e-gcpcdtgt-exec
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeploytarget
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeploytarget/e2e/prerequisites/artifact-bucket.yaml,catalog/gcp/gcpdeploytarget/e2e/prerequisites/deployer.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  targetId: e2e-exec-${E2E_RUN_ID}
+  description: Ephemeral Cloud Run target with execution configurations; safe to delete
+  run:
+    location: projects/${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}/locations/us-central1
+  executionConfigs:
+    - usages:
+        - RENDER
+        - DEPLOY
+      serviceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: planton-oss-e2e-gcpcdtgt-deployer
+          fieldPath: status.outputs.email
+      artifactStorage:
+        valueFrom:
+          kind: GcpGcsBucket
+          name: planton-oss-e2e-gcpcdtgt-artifacts
+          fieldPath: status.outputs.url
+      executionTimeout: 1800s
+      verbose: true
+    - usages:
+        - VERIFY
+      defaultPool:
+        serviceAccount:
+          valueFrom:
+            kind: GcpServiceAccount
+            name: planton-oss-e2e-gcpcdtgt-deployer
+            fieldPath: status.outputs.email

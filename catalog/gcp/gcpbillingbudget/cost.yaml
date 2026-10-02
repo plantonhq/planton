@@ -1,0 +1,13 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpbillingbudget
+spec:
+  billing_model: free
+  free_tier: "Cloud Billing budgets have no charge -- no per-budget fee, no per-alert fee, and no meter on notifications; a budget exists to watch the bill, not to add to it."
+  notes: "No field of this spec buys anything. The Pub/Sub topic a budget publishes to bills the topic's own message volume (a handful of small messages per budget per day, within Pub/Sub's free tier for any realistic count), and a Cloud Monitoring notification channel bills nothing for budget alerts; both are declared and priced under their own kinds."
+  estimate_exclusions:
+    - the Pub/Sub topic and notification channels a budget alerts through bill under GcpPubSubTopic and GcpMonitoringNotificationChannel

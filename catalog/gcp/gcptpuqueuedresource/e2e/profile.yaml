@@ -1,0 +1,22 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcptpuqueuedresource
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness
+  # project with roles/tpu.admin; the module enables tpu.googleapis.com
+  # itself and attaches the request through google-beta under the
+  # recorded admission. Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest, the scenario, and a
+  # two-node throwaway arm are clean on the pinned providers, and the
+  # accounting is total against the beta schema. Live facts the proof lane
+  # confirms: (1) Google accepts the request and the apply returns once it
+  # is queued (a request still WAITING_FOR_RESOURCES is a live state the
+  # verifier accepts); (2) the request RE-PLANS CLEAN on both engines --
+  # the node parent the modules derive matches what Google stores; (3)
+  # destroy deletes the request and any node it provisioned, and the
+  # verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

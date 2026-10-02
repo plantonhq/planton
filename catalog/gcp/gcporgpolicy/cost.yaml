@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcporgpolicy
+spec:
+  billing_model: free
+  free_tier: "An organization policy is a rule the Organization Policy Service enforces on every create and update beneath its scope; Google's Resource Manager pricing states that all use of the Resource Manager and Organization Policy APIs is free of charge -- no meter counts policies, rules, conditions, evaluations, or dry-run audits."
+  notes: "No field of this spec buys anything, and the policy's whole purpose is to bound spend elsewhere: gcp.resourceLocations keeps resources out of regions you did not choose, compute.vmExternalIpAccess and storage.publicAccessPrevention keep egress-billed and public-facing configurations from appearing, and a custom constraint can forbid any expensive shape a service exposes. dry_run_policy costs nothing beyond the audit log entries it writes (Admin Activity logs are retained free). The resources the policy governs bill as their own catalog kinds."

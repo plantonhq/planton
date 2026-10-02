@@ -6,7 +6,7 @@ This Terraform module provisions a Compute Engine SSL policy (`google_compute_ss
 
 The module creates one SSL policy — the control for which TLS versions and cipher suites a load balancer accepts from clients. Target HTTPS (and SSL) proxies reference the policy's `self_link`; without one, GCP applies its permissive default (minimum TLS 1.0, COMPATIBLE ciphers).
 
-`profile`, `min_tls_version`, and `custom_features` update in place and apply fleet-wide to every referencing proxy; name, project, and description are ForceNew. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+`profile`, `min_tls_version`, and `custom_features` update in place and apply fleet-wide to every referencing proxy; name, project, and description are ForceNew. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

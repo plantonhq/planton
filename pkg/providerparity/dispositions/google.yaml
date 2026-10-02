@@ -83,6 +83,9 @@ resources:
   - resource: google_agent_registry_service
     disposition: deferred
     reason: "agent-platform registry surfaces are emerging and pre-consolidation; deferred pending demand"
+  - resource: google_agentic_applications_analyst_agent_persona
+    disposition: deferred
+    reason: "Agentic Applications analyst personas are a conversational-analytics specialty; deferred pending demand"
   - resource: google_alloydb_backup
     disposition: deferred
     reason: "judged to fold into the existing GcpAlloyDbCluster kind's spec (on-demand backups); the composition is not built"
@@ -287,15 +290,6 @@ resources:
   - resource: google_backup_dr_service_config
     disposition: deferred
     reason: "Backup and DR judged as backup-vault and backup-plan kinds with companions composed; deferred pending demand"
-  - resource: google_beyondcorp_app_connection
-    disposition: deferred
-    reason: "BeyondCorp app connectors are a zero-trust specialty; deferred"
-  - resource: google_beyondcorp_app_connector
-    disposition: deferred
-    reason: "BeyondCorp app connectors are a zero-trust specialty; deferred"
-  - resource: google_beyondcorp_app_gateway
-    disposition: deferred
-    reason: "BeyondCorp app connectors are a zero-trust specialty; deferred"
   - resource: google_beyondcorp_security_gateway
     disposition: deferred
     reason: "BeyondCorp app connectors are a zero-trust specialty; deferred"
@@ -308,6 +302,15 @@ resources:
   - resource: google_biglake_database
     disposition: deferred
     reason: "BigLake catalog metadata is emerging; revisit with lakehouse demand"
+  - resource: google_biglake_hive_catalog
+    disposition: deferred
+    reason: "BigLake Hive metastore catalogs, databases, and tables are a lakehouse metastore specialty; deferred pending demand"
+  - resource: google_biglake_hive_database
+    disposition: deferred
+    reason: "BigLake Hive metastore catalogs, databases, and tables are a lakehouse metastore specialty; deferred pending demand"
+  - resource: google_biglake_hive_table
+    disposition: deferred
+    reason: "BigLake Hive metastore catalogs, databases, and tables are a lakehouse metastore specialty; deferred pending demand"
   - resource: google_biglake_iceberg_catalog
     disposition: deferred
     reason: "BigLake catalog metadata is emerging; revisit with lakehouse demand"
@@ -334,16 +337,13 @@ resources:
     reason: "Analytics Hub judged as data-exchange and listing kinds (subscriptions composed); deferred pending demand"
   - resource: google_bigquery_bi_reservation
     disposition: deferred
-    reason: "BigQuery Reservations judged as one reservation kind (assignments, commitments, and BI reservation composed); deferred pending demand"
-  - resource: google_bigquery_capacity_commitment
-    disposition: deferred
-    reason: "BigQuery Reservations judged as one reservation kind (assignments, commitments, and BI reservation composed); deferred pending demand"
-  - resource: google_bigquery_connection
-    disposition: deferred
-    reason: "judged to deserve a GcpBigQueryConnection kind (prerequisite for BigLake, federated queries, and remote functions); deferred pending demand"
+    reason: "candidate kind -- BI Engine's in-memory acceleration capacity, a singleton per project and location billed per GiB, a different product from slot reservations (GcpBigQueryReservation); nothing in the catalog references it, so it would be its own small kind (size, preferred tables) when demand appears"
   - resource: google_bigquery_data_transfer_config
     disposition: deferred
     reason: "judged to deserve a GcpBigQueryDataTransfer kind (scheduled queries and SaaS ingestion); deferred pending demand"
+  - resource: google_bigquery_data_transfer_data_source_enrollment
+    disposition: deferred
+    reason: "BigQuery Data Transfer enrollment is a console-set-once switch beside the transfer configs, which are themselves deferred"
   - resource: google_bigquery_datapolicy_data_policy
     disposition: excluded-deprecated
     reason: "superseded by the BigQuery Data Policy v2 API"
@@ -356,15 +356,6 @@ resources:
   - resource: google_bigquery_job
     disposition: deferred
     reason: "BigQuery jobs are imperative one-shot operations, a poor declarative fit"
-  - resource: google_bigquery_reservation
-    disposition: deferred
-    reason: "BigQuery Reservations judged as one reservation kind (assignments, commitments, and BI reservation composed); deferred pending demand"
-  - resource: google_bigquery_reservation_assignment
-    disposition: deferred
-    reason: "BigQuery Reservations judged as one reservation kind (assignments, commitments, and BI reservation composed); deferred pending demand"
-  - resource: google_bigquery_reservation_group
-    disposition: deferred
-    reason: "BigQuery Reservations judged as one reservation kind (assignments, commitments, and BI reservation composed); deferred pending demand"
   - resource: google_bigquery_routine
     disposition: deferred
     reason: "judged to fold into the existing GcpBigQueryDataset kind's spec (stored routines); the composition is not built"
@@ -386,30 +377,15 @@ resources:
   - resource: google_bigtable_schema_bundle
     disposition: deferred
     reason: "judged to fold into the existing GcpBigtableTable kind's spec (views and schema bundles); the composition is not built"
-  - resource: google_billing_budget
-    disposition: deferred
-    reason: "judged to deserve a GcpBillingBudget kind (FinOps staple); deferred pending demand"
   - resource: google_billing_project_info
     disposition: deferred
     reason: "judged to fold into the existing GcpProject kind's spec (billing-account link); the composition is not built"
   - resource: google_billing_subaccount
     disposition: deferred
     reason: "billing subaccounts serve resellers; deferred"
-  - resource: google_binary_authorization_attestor
-    disposition: deferred
-    reason: "Binary Authorization judged as policy and attestor kinds; deferred pending demand"
-  - resource: google_binary_authorization_policy
-    disposition: deferred
-    reason: "Binary Authorization judged as policy and attestor kinds; deferred pending demand"
   - resource: google_blockchain_node_engine_blockchain_nodes
     disposition: excluded-deprecated
     reason: "Blockchain Node Engine is sunset by Google"
-  - resource: google_certificate_manager_certificate_issuance_config
-    disposition: model-planned
-    reason: "planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration)"
-  - resource: google_certificate_manager_trust_config
-    disposition: model-planned
-    reason: "planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration)"
   - resource: google_ces_agent
     disposition: deferred
     reason: "Customer Engagement Suite conversational-agent authoring is a specialty family; deferred pending demand"
@@ -440,6 +416,15 @@ resources:
   - resource: google_chronicle_big_query_export
     disposition: deferred
     reason: "Chronicle SecOps is a named niche family (an eventual ~8 kind family); deferred pending demand"
+  - resource: google_chronicle_case_close_definition
+    disposition: deferred
+    reason: "Chronicle SecOps SOAR case definitions are a security-operations specialty; deferred"
+  - resource: google_chronicle_case_stage_definition
+    disposition: deferred
+    reason: "Chronicle SecOps SOAR case definitions are a security-operations specialty; deferred"
+  - resource: google_chronicle_case_tag_definition
+    disposition: deferred
+    reason: "Chronicle SecOps SOAR case definitions are a security-operations specialty; deferred"
   - resource: google_chronicle_custom_list
     disposition: deferred
     reason: "Chronicle SecOps is a named niche family (an eventual ~8 kind family); deferred pending demand"
@@ -497,6 +482,9 @@ resources:
   - resource: google_chronicle_rule_deployment
     disposition: deferred
     reason: "Chronicle SecOps is a named niche family (an eventual ~8 kind family); deferred pending demand"
+  - resource: google_chronicle_soar_network
+    disposition: deferred
+    reason: "Chronicle SecOps SOAR networks are a security-operations specialty; deferred"
   - resource: google_chronicle_watchlist
     disposition: deferred
     reason: "Chronicle SecOps is a named niche family (an eventual ~8 kind family); deferred pending demand"
@@ -509,12 +497,6 @@ resources:
   - resource: google_cloud_asset_project_feed
     disposition: deferred
     reason: "Cloud Asset feeds judged as one feed kind with project/folder/organization scope; deferred pending demand"
-  - resource: google_cloud_identity_group
-    disposition: deferred
-    reason: "Cloud Identity groups judged as a group kind (memberships composed) for Google Groups IAM; deferred pending demand"
-  - resource: google_cloud_identity_group_membership
-    disposition: deferred
-    reason: "Cloud Identity groups judged as a group kind (memberships composed) for Google Groups IAM; deferred pending demand"
   - resource: google_cloud_ids_endpoint
     disposition: deferred
     reason: "Cloud IDS is superseded in practice by NGFW intrusion features; deferred"
@@ -527,9 +509,6 @@ resources:
   - resource: google_cloud_run_service
     disposition: excluded-deprecated
     reason: "first-generation Knative-serving Cloud Run resource, superseded by the v2 API (modeled by GcpCloudRun)"
-  - resource: google_cloud_run_v2_worker_pool
-    disposition: deferred
-    reason: "judged to deserve a GcpCloudRunWorkerPool kind (the third Cloud Run runtime shape beside service and job); deferred pending demand"
   - resource: google_cloud_security_compliance_cloud_control
     disposition: deferred
     reason: "Compliance Manager frameworks are org-governance surface; deferred pending demand"
@@ -545,33 +524,6 @@ resources:
   - resource: google_cloudbuild_bitbucket_server_config
     disposition: excluded-deprecated
     reason: "first-generation Bitbucket Server integration, superseded by Cloud Build v2 connections"
-  - resource: google_cloudbuild_trigger
-    disposition: deferred
-    reason: "Cloud Build judged as trigger and worker-pool kinds; deferred pending demand"
-  - resource: google_cloudbuild_worker_pool
-    disposition: deferred
-    reason: "Cloud Build judged as trigger and worker-pool kinds; deferred pending demand"
-  - resource: google_cloudbuildv2_connection
-    disposition: deferred
-    reason: "Cloud Build v2 judged as a connection kind (repositories composed); deferred pending demand"
-  - resource: google_cloudbuildv2_repository
-    disposition: deferred
-    reason: "Cloud Build v2 judged as a connection kind (repositories composed); deferred pending demand"
-  - resource: google_clouddeploy_automation
-    disposition: deferred
-    reason: "Cloud Deploy judged as delivery-pipeline and target kinds (automations and policies composed); deferred pending demand"
-  - resource: google_clouddeploy_custom_target_type
-    disposition: deferred
-    reason: "Cloud Deploy judged as delivery-pipeline and target kinds (automations and policies composed); deferred pending demand"
-  - resource: google_clouddeploy_delivery_pipeline
-    disposition: deferred
-    reason: "Cloud Deploy judged as delivery-pipeline and target kinds (automations and policies composed); deferred pending demand"
-  - resource: google_clouddeploy_deploy_policy
-    disposition: deferred
-    reason: "Cloud Deploy judged as delivery-pipeline and target kinds (automations and policies composed); deferred pending demand"
-  - resource: google_clouddeploy_target
-    disposition: deferred
-    reason: "Cloud Deploy judged as delivery-pipeline and target kinds (automations and policies composed); deferred pending demand"
   - resource: google_clouddomains_registration
     disposition: deferred
     reason: "domain registration through IaC is rare; deferred"
@@ -580,16 +532,7 @@ resources:
     reason: "first-generation Cloud Functions, superseded by Cloud Functions 2nd gen (modeled by GcpCloudFunction)"
   - resource: google_colab_notebook_execution
     disposition: deferred
-    reason: "Colab Enterprise runtimes are a specialty; Workbench covers the mainstream need"
-  - resource: google_colab_runtime
-    disposition: deferred
-    reason: "Colab Enterprise runtimes are a specialty; Workbench covers the mainstream need"
-  - resource: google_colab_runtime_template
-    disposition: deferred
-    reason: "Colab Enterprise runtimes are a specialty; Workbench covers the mainstream need"
-  - resource: google_colab_schedule
-    disposition: deferred
-    reason: "Colab Enterprise runtimes are a specialty; Workbench covers the mainstream need"
+    reason: "a one-shot notebook run: every argument is immutable and the resource completes rather than lives, so it is an action, not infrastructure -- the recurring form is GcpColabSchedule's notebook_execution_job arm"
   - resource: google_compute_attached_disk
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeInstance kind's spec (attached disks, from-template creation, and instance settings); the composition is not built"
@@ -605,45 +548,18 @@ resources:
   - resource: google_compute_disk_resource_policy_attachment
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built"
-  - resource: google_compute_external_vpn_gateway
-    disposition: deferred
-    reason: "HA VPN judged as one kind (HA gateway, external gateway, and tunnels composed); deferred pending demand"
-  - resource: google_compute_firewall_policy
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_firewall_policy_association
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_firewall_policy_rule
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
   - resource: google_compute_firewall_policy_with_rules
     disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_forwarding_rule
-    disposition: deferred
-    reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
-  - resource: google_compute_global_network_endpoint
-    disposition: deferred
-    reason: "network-endpoint-group surface for VM and hybrid backends; deferred pending demand — the serverless path is modeled by GcpRegionNetworkEndpointGroup, and the productized HTTPS-to-Cloud-Run composition ships as an infra chart over the modeled kinds rather than a facade kind"
-  - resource: google_compute_global_network_endpoint_group
-    disposition: deferred
-    reason: "network-endpoint-group surface for VM and hybrid backends; deferred pending demand — the serverless path is modeled by GcpRegionNetworkEndpointGroup, and the productized HTTPS-to-Cloud-Run composition ships as an infra chart over the modeled kinds rather than a facade kind"
+    reason: "the all-in-one variant of the policy GcpHierarchicalFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
   - resource: google_compute_global_vm_extension_policy
     disposition: deferred
     reason: "VM extension policies are emerging fleet tooling; deferred pending demand"
-  - resource: google_compute_ha_vpn_gateway
-    disposition: deferred
-    reason: "HA VPN judged as one kind (HA gateway, external gateway, and tunnels composed); deferred pending demand"
   - resource: google_compute_http_health_check
     disposition: excluded-deprecated
     reason: "legacy HTTP/HTTPS health checks, superseded by google_compute_health_check (modeled by GcpHealthCheck)"
   - resource: google_compute_https_health_check
     disposition: excluded-deprecated
     reason: "legacy HTTP/HTTPS health checks, superseded by google_compute_health_check (modeled by GcpHealthCheck)"
-  - resource: google_compute_image
-    disposition: deferred
-    reason: "judged to deserve a compute-image kind (golden images); deferred pending demand"
   - resource: google_compute_instance_from_template
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeInstance kind's spec (attached disks, from-template creation, and instance settings); the composition is not built"
@@ -679,31 +595,10 @@ resources:
     reason: "judged to fold into the existing GcpVpcNetwork kind's spec (static routes and network attachments); the composition is not built"
   - resource: google_compute_network_endpoint
     disposition: deferred
-    reason: "network-endpoint-group surface for VM and hybrid backends; deferred pending demand — the serverless path is modeled by GcpRegionNetworkEndpointGroup, and the productized HTTPS-to-Cloud-Run composition ships as an infra chart over the modeled kinds rather than a facade kind"
-  - resource: google_compute_network_endpoint_group
-    disposition: deferred
-    reason: "network-endpoint-group surface for VM and hybrid backends; deferred pending demand — the serverless path is modeled by GcpRegionNetworkEndpointGroup, and the productized HTTPS-to-Cloud-Run composition ships as an infra chart over the modeled kinds rather than a facade kind"
-  - resource: google_compute_network_endpoints
-    disposition: deferred
-    reason: "network-endpoint-group surface for VM and hybrid backends; deferred pending demand — the serverless path is modeled by GcpRegionNetworkEndpointGroup, and the productized HTTPS-to-Cloud-Run composition ships as an infra chart over the modeled kinds rather than a facade kind"
-  - resource: google_compute_network_firewall_policy
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_network_firewall_policy_association
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_network_firewall_policy_rule
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
+    reason: "superseded by composition -- GcpNetworkEndpointGroup writes a zonal group's membership as one set through google_compute_network_endpoints (the manifest's list is the membership), so the per-endpoint resource has no separate role in the catalog"
   - resource: google_compute_network_firewall_policy_with_rules
     disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_network_peering
-    disposition: deferred
-    reason: "judged as VPC-peering and shared-VPC kinds; deferred pending demand"
-  - resource: google_compute_network_peering_routes_config
-    disposition: deferred
-    reason: "judged as VPC-peering and shared-VPC kinds; deferred pending demand"
+    reason: "the all-in-one variant of the policy GcpNetworkFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
   - resource: google_compute_node_group
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"
@@ -743,9 +638,6 @@ resources:
   - resource: google_compute_public_delegated_prefix
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"
-  - resource: google_compute_region_backend_service
-    disposition: deferred
-    reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
   - resource: google_compute_region_commitment
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"
@@ -770,34 +662,13 @@ resources:
   - resource: google_compute_region_network_endpoint
     disposition: deferred
     reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
-  - resource: google_compute_region_network_firewall_policy
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_region_network_firewall_policy_association
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_region_network_firewall_policy_rule
-    disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
   - resource: google_compute_region_network_firewall_policy_with_rules
     disposition: deferred
-    reason: "firewall policies judged as hierarchical and network firewall-policy kinds (regional as a flag; rules and associations composed); deferred pending demand"
-  - resource: google_compute_region_security_policy
-    disposition: deferred
-    reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
+    reason: "the all-in-one variant of the policy GcpNetworkFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
   - resource: google_compute_region_security_policy_rule
     disposition: deferred
-    reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
-  - resource: google_compute_region_target_http_proxy
-    disposition: deferred
-    reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
-  - resource: google_compute_region_target_https_proxy
-    disposition: deferred
-    reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
+    reason: "superseded by composition -- GcpCloudArmorPolicy carries its rules inline on both the global and the regional security policy (spec.rules), so the standalone rule resource has no separate role in the catalog"
   - resource: google_compute_region_target_tcp_proxy
-    disposition: deferred
-    reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
-  - resource: google_compute_region_url_map
     disposition: deferred
     reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
   - resource: google_compute_reservation
@@ -815,33 +686,18 @@ resources:
   - resource: google_compute_route
     disposition: deferred
     reason: "judged to fold into the existing GcpVpcNetwork kind's spec (static routes and network attachments); the composition is not built"
-  - resource: google_compute_router_interface
-    disposition: deferred
-    reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
   - resource: google_compute_router_named_set
     disposition: deferred
     reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
   - resource: google_compute_router_nat_address
     disposition: deferred
     reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
-  - resource: google_compute_router_peer
-    disposition: deferred
-    reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
   - resource: google_compute_router_route_policy
     disposition: deferred
-    reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
+    reason: "BGP import/export route policies on a Cloud Router; GcpHaVpnConnection sessions reference policies by name (import_policies / export_policies) and the policy resource itself is its own kind on the first ask"
   - resource: google_compute_security_policy_rule
     disposition: deferred
-    reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
-  - resource: google_compute_service_attachment
-    disposition: deferred
-    reason: "judged to deserve a Private Service Connect service-attachment kind; deferred pending demand"
-  - resource: google_compute_shared_vpc_host_project
-    disposition: deferred
-    reason: "judged as VPC-peering and shared-VPC kinds; deferred pending demand"
-  - resource: google_compute_shared_vpc_service_project
-    disposition: deferred
-    reason: "judged as VPC-peering and shared-VPC kinds; deferred pending demand"
+    reason: "superseded by composition -- GcpCloudArmorPolicy carries its rules inline on both the global and the regional security policy (spec.rules), so the standalone rule resource has no separate role in the catalog"
   - resource: google_compute_snapshot
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built"
@@ -869,9 +725,6 @@ resources:
   - resource: google_compute_vpn_gateway
     disposition: excluded-deprecated
     reason: "Classic VPN gateway, superseded by HA VPN"
-  - resource: google_compute_vpn_tunnel
-    disposition: deferred
-    reason: "HA VPN judged as one kind (HA gateway, external gateway, and tunnels composed); deferred pending demand"
   - resource: google_compute_wire_group
     disposition: deferred
     reason: "Cross-Site Interconnect (cross-site networks, wire groups) is specialty networking; deferred pending demand"
@@ -905,12 +758,9 @@ resources:
   - resource: google_contact_center_insights_view
     disposition: deferred
     reason: "Contact Center AI Insights is a specialty; deferred"
-  - resource: google_container_analysis_note
-    disposition: deferred
-    reason: "judged to fold into a Binary Authorization attestor kind when admitted (attestation notes and occurrences); deferred"
   - resource: google_container_analysis_occurrence
     disposition: deferred
-    reason: "judged to fold into a Binary Authorization attestor kind when admitted (attestation notes and occurrences); deferred"
+    reason: "an occurrence (a Binary Authorization attestation among them) is data a build or scanning pipeline writes per image digest against a note GcpBinaryAuthorizationAttestor owns; data-plane, not infrastructure"
   - resource: google_container_attached_cluster
     disposition: deferred
     reason: "attached and multi-cloud GKE clusters (AWS/Azure) are a specialty; deferred"
@@ -941,6 +791,9 @@ resources:
   - resource: google_data_lineage_config
     disposition: deferred
     reason: "data lineage config folds into the Dataplex governance family judgment; deferred pending demand"
+  - resource: google_data_loss_prevention_content_policy
+    disposition: deferred
+    reason: "Sensitive Data Protection is a data-governance specialty judged as its own kind family; deferred pending demand"
   - resource: google_data_loss_prevention_deidentify_template
     disposition: deferred
     reason: "Cloud DLP judged as template and job-trigger kinds (stored info types and discovery configs composed); deferred pending demand"
@@ -974,6 +827,9 @@ resources:
   - resource: google_dataform_folder
     disposition: deferred
     reason: "folds into a Dataform repository kind whose core resource is beta-only at the pin and would enter through the google-beta admission list; deferred pending demand"
+  - resource: google_dataform_repository
+    disposition: deferred
+    reason: "Dataform repositories are a data-transformation specialty judged as its own kind family; deferred pending demand"
   - resource: google_dataform_team_folder
     disposition: deferred
     reason: "folds into a Dataform repository kind whose core resource is beta-only at the pin and would enter through the google-beta admission list; deferred pending demand"
@@ -1052,84 +908,51 @@ resources:
   - resource: google_dataproc_workflow_template
     disposition: deferred
     reason: "judged to fold into the existing Dataproc kinds' specs (workflow and session templates); the composition is not built"
-  - resource: google_datastream_connection_profile
-    disposition: deferred
-    reason: "Datastream judged as a stream kind (connection profiles and private connections composed) for CDC; deferred pending demand"
-  - resource: google_datastream_private_connection
-    disposition: deferred
-    reason: "Datastream judged as a stream kind (connection profiles and private connections composed) for CDC; deferred pending demand"
-  - resource: google_datastream_stream
-    disposition: deferred
-    reason: "Datastream judged as a stream kind (connection profiles and private connections composed) for CDC; deferred pending demand"
   - resource: google_deployment_manager_deployment
     disposition: excluded-deprecated
     reason: "Deployment Manager is legacy and sunsetting; competing IaC deployment engines are out of scope by design"
   - resource: google_developer_connect_account_connector
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate kind: a Developer Connect account connector (per-user OAuth access to a code host for Developer Connect and Gemini Code Assist); no Cloud Build counterpart, built when demand appears"
   - resource: google_developer_connect_connection
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate kind: Developer Connect's own code-host connection (GitHub, GitLab, Bitbucket, and generic HTTP hosts), parallel to GcpCloudBuildConnection; built when demand appears"
   - resource: google_developer_connect_git_repository_link
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate companion kind of a Developer Connect connection (a linked repository, the GcpCloudBuildRepository analogue); GcpCloudBuildTrigger.developer_connect_event_config takes a link by name until it exists"
   - resource: google_developer_connect_insights_config
     disposition: deferred
-    reason: "Developer Connect is new; revisit with Cloud Build v2 adoption"
+    reason: "candidate kind: Developer Connect insights (delivery metadata linking builds and runtimes back to repositories); no Cloud Build counterpart, built when demand appears"
   - resource: google_dialogflow_agent
     disposition: excluded-deprecated
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
   - resource: google_dialogflow_conversation_profile
     disposition: excluded-deprecated
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
-  - resource: google_dialogflow_cx_agent
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
   - resource: google_dialogflow_cx_entity_type
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_environment
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_flow
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_generative_settings
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_generator
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_intent
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_page
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_playbook
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_security_settings
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_test_case
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_tool
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_tool_version
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_version
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_webhook
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
+    reason: "a conversation test case replays turns against console-authored flows and pages and records the results; it exercises conversation content, not infrastructure, and lives with that content"
   - resource: google_dialogflow_encryption_spec
-    disposition: excluded-deprecated
-    reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
+    disposition: deferred
+    reason: "the per-project, per-location customer-managed encryption key for Dialogflow -- CX agents included -- initialized once through the v2 encryptionSpec API; a candidate kind of its own (a location singleton holding one immutable kms_key), outside GcpDialogflowCxAgent, whose agents inherit it"
   - resource: google_dialogflow_entity_type
     disposition: excluded-deprecated
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
@@ -1153,52 +976,16 @@ resources:
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
   - resource: google_discovery_engine_acl_config
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_assistant
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_chat_engine
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
+    reason: "a per-location singleton that names the identity provider ACL-enabled data stores enforce (GcpVertexAiSearchDataStore.acl_enabled); PATCH-only and never deleted; a candidate kind of its own -- a location-scoped identity setting, not a property of any one store"
   - resource: google_discovery_engine_cmek_config
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_control
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_data_connector
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_data_store
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
+    reason: "a per-location CMEK registration that data stores and engines then reference by kms_key_name (both modeled as GcpKmsKey references); a candidate kind of its own -- a location-scoped key registration, not a property of any one store or engine"
   - resource: google_discovery_engine_license_config
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_recommendation_engine
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_schema
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_search_engine
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_serving_config
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_sitemap
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_target_site
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
+    reason: "Gemini Enterprise licensing -- a per-location subscription (tier, seat count, term) with one argument the pinned pulumi-gcp SDK lacks (last_user_update_time); a candidate kind beside google_discovery_engine_user_store, forged together when license administration is demanded"
   - resource: google_discovery_engine_user_store
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_widget_config
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
+    reason: "Gemini Enterprise licensing -- the per-location user store that assigns license configs to users; PATCH-only and never deleted; a candidate kind beside google_discovery_engine_license_config, forged together when license administration is demanded"
   - resource: google_dns_policy
     disposition: deferred
     reason: "judged to fold into the existing GcpVpcNetwork kind's spec (per-network DNS server policy); the composition is not built"
@@ -1208,15 +995,9 @@ resources:
   - resource: google_dns_response_policy_rule
     disposition: deferred
     reason: "judged to deserve a GcpDnsResponsePolicy kind (DNS firewall, rules composed); deferred pending demand"
-  - resource: google_document_ai_processor
-    disposition: deferred
-    reason: "Document AI processors are a specialty; deferred"
-  - resource: google_document_ai_processor_default_version
-    disposition: deferred
-    reason: "Document AI processors are a specialty; deferred"
   - resource: google_document_ai_schema
     disposition: deferred
-    reason: "Document AI processors are a specialty; deferred"
+    reason: "a Document AI schema is only a container (display name and labels) for the schema versions a custom extractor is trained against, and those versions have no resource at the pin -- a candidate companion of GcpDocumentAiProcessor when they arrive"
   - resource: google_document_ai_warehouse_document_schema
     disposition: excluded-deprecated
     reason: "Document AI Warehouse is deprecated by Google"
@@ -1280,6 +1061,9 @@ resources:
   - resource: google_firebaserules_ruleset
     disposition: deferred
     reason: "judged to fold into the Firestore database and Firebase storage kinds (security rules); the composition is not built"
+  - resource: google_firestore_change_stream
+    disposition: deferred
+    reason: "Firestore change streams are a data-plane consumer configured beside the database kind; deferred pending demand"
   - resource: google_firestore_document
     disposition: deferred
     reason: "Firestore documents are data-plane content, not infrastructure"
@@ -1289,9 +1073,6 @@ resources:
   - resource: google_firestore_user_creds
     disposition: deferred
     reason: "Firestore user credentials are data-plane auth material, not infrastructure; deferred"
-  - resource: google_folder
-    disposition: deferred
-    reason: "judged to deserve a GcpFolder kind (resource hierarchy); deferred pending demand"
   - resource: google_folder_access_approval_settings
     disposition: deferred
     reason: "Access Approval settings judged as one kind with project/folder/organization scope; deferred pending demand"
@@ -1316,6 +1097,12 @@ resources:
   - resource: google_gemini_data_sharing_with_google_setting_binding
     disposition: deferred
     reason: "Gemini Code Assist admin settings are a niche; deferred"
+  - resource: google_gemini_gda_observability_setting
+    disposition: deferred
+    reason: "Gemini Data Analytics observability settings are a console-set-once administrative toggle, not a per-environment resource"
+  - resource: google_gemini_gda_observability_setting_binding
+    disposition: deferred
+    reason: "Gemini Data Analytics observability settings are a console-set-once administrative toggle, not a per-environment resource"
   - resource: google_gemini_gemini_gcp_enablement_setting
     disposition: deferred
     reason: "Gemini Code Assist admin settings are a niche; deferred"
@@ -1349,33 +1136,9 @@ resources:
   - resource: google_gke_backup_restore_plan
     disposition: deferred
     reason: "Backup for GKE judged as backup-plan and restore-plan kinds (channels composed); deferred pending demand"
-  - resource: google_gke_hub_feature
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_feature_membership
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_fleet
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_membership
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_membership_binding
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_namespace
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
   - resource: google_gke_hub_rollout_sequence
     disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_scope
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
-  - resource: google_gke_hub_scope_rbac_role_binding
-    disposition: deferred
-    reason: "GKE fleet management judged as fleet, feature, scope, and membership kinds; deferred pending demand"
+    reason: "candidate kind -- an upgrade order across several fleet host projects; its minimum-version fields force-upgrade every matching cluster after create (the provider waits on the sequence, then calls upgrade with force), so it is its own kind with dedicated-fleet proofs when demand appears; GcpGkeFleetFeature's clusterupgrade block covers upgrade sequencing behind an upstream fleet today"
   - resource: google_gkeonprem_bare_metal_admin_cluster
     disposition: deferred
     reason: "GKE on-prem (bare metal and VMware) clusters are a niche class; deferred"
@@ -1421,15 +1184,24 @@ resources:
   - resource: google_iam_access_boundary_policy
     disposition: excluded-deprecated
     reason: "superseded by principal access boundary policies (google_iam_principal_access_boundary_policy)"
+  - resource: google_iam_folder_access_policy
+    disposition: deferred
+    reason: "Principal Access Boundary policies are an organization-governance specialty judged as its own kind family; deferred pending demand"
   - resource: google_iam_folders_policy_binding
     disposition: deferred
     reason: "judged to deserve a GcpPrincipalAccessBoundaryPolicy kind (scope bindings composed); deferred pending demand"
+  - resource: google_iam_organization_access_policy
+    disposition: deferred
+    reason: "Principal Access Boundary policies are an organization-governance specialty judged as its own kind family; deferred pending demand"
   - resource: google_iam_organizations_policy_binding
     disposition: deferred
     reason: "judged to deserve a GcpPrincipalAccessBoundaryPolicy kind (scope bindings composed); deferred pending demand"
   - resource: google_iam_principal_access_boundary_policy
     disposition: deferred
     reason: "judged to deserve a GcpPrincipalAccessBoundaryPolicy kind (scope bindings composed); deferred pending demand"
+  - resource: google_iam_project_access_policy
+    disposition: deferred
+    reason: "Principal Access Boundary policies are an organization-governance specialty judged as its own kind family; deferred pending demand"
   - resource: google_iam_projects_policy_binding
     disposition: deferred
     reason: "judged to deserve a GcpPrincipalAccessBoundaryPolicy kind (scope bindings composed); deferred pending demand"
@@ -1475,24 +1247,15 @@ resources:
   - resource: google_integrations_client
     disposition: deferred
     reason: "Application Integration is a niche; deferred"
-  - resource: google_kms_autokey_config
-    disposition: deferred
-    reason: "KMS Autokey judged as a GcpKmsAutokey kind (autokey config and key handles composed); deferred pending demand"
   - resource: google_kms_crypto_key_version
     disposition: deferred
     reason: "judged to fold into the existing GcpKmsKey kind's spec (key versions); the composition is not built"
   - resource: google_kms_ekm_connection
     disposition: deferred
     reason: "external key manager connections are a specialty; deferred"
-  - resource: google_kms_key_handle
-    disposition: deferred
-    reason: "KMS Autokey judged as a GcpKmsAutokey kind (autokey config and key handles composed); deferred pending demand"
   - resource: google_kms_key_ring_import_job
     disposition: deferred
     reason: "judged to fold into the existing GcpKmsKeyRing kind's spec (import jobs); the composition is not built"
-  - resource: google_kms_project_autokey_config
-    disposition: deferred
-    reason: "KMS Autokey judged as a GcpKmsAutokey kind (autokey config and key handles composed); deferred pending demand"
   - resource: google_kms_secret_ciphertext
     disposition: deferred
     reason: "secret ciphertext is an imperative encrypt operation, a poor declarative fit"
@@ -1523,27 +1286,15 @@ resources:
   - resource: google_lustre_instance
     disposition: deferred
     reason: "Managed Lustre is an HPC niche; deferred"
-  - resource: google_managed_kafka_acl
-    disposition: deferred
-    reason: "Managed Kafka judged as a cluster kind (topics and ACLs composed); deferred pending demand"
-  - resource: google_managed_kafka_cluster
-    disposition: deferred
-    reason: "Managed Kafka judged as a cluster kind (topics and ACLs composed); deferred pending demand"
-  - resource: google_managed_kafka_connect_cluster
-    disposition: deferred
-    reason: "Managed Kafka judged as a cluster kind (topics and ACLs composed); deferred pending demand"
-  - resource: google_managed_kafka_connector
-    disposition: deferred
-    reason: "Managed Kafka judged as a cluster kind (topics and ACLs composed); deferred pending demand"
-  - resource: google_managed_kafka_topic
-    disposition: deferred
-    reason: "Managed Kafka judged as a cluster kind (topics and ACLs composed); deferred pending demand"
   - resource: google_memcache_instance
     disposition: deferred
     reason: "Memorystore Memcached is fading relative to Redis/Valkey; deferred"
+  - resource: google_memorystore_acl_policy
+    disposition: deferred
+    reason: "a Memorystore ACL policy is a standalone object instances attach by name and share; the instance's acl_policy argument is the reference, the policy itself is a candidate kind on the first ask"
   - resource: google_memorystore_instance_desired_user_created_endpoints
     disposition: deferred
-    reason: "judged to fold into the existing GcpMemorystoreInstance kind's spec (user-created endpoint connections); the composition is not built"
+    reason: "registers consumer-built PSC connections on a Memorystore (Valkey) instance; it cannot fold into GcpMemorystoreInstance because every connection names a forwarding rule that targets the instance's own service attachment (a fold would depend on its own output) -- the companion-kind shape is GcpRedisClusterEndpointSet, and the Valkey twin is a candidate kind on the first ask"
   - resource: google_migration_center_assets_export_job
     disposition: deferred
     reason: "Migration Center assessment tooling is episodic; deferred"
@@ -1574,12 +1325,6 @@ resources:
   - resource: google_migration_center_source
     disposition: deferred
     reason: "Migration Center assessment tooling is episodic; deferred"
-  - resource: google_model_armor_floorsetting
-    disposition: deferred
-    reason: "Model Armor prompt-safety templates are new; deferred"
-  - resource: google_model_armor_template
-    disposition: deferred
-    reason: "Model Armor prompt-safety templates are new; deferred"
   - resource: google_monitoring_group
     disposition: deferred
     reason: "monitoring groups are a separate grouping resource with no adopter ask; GcpMonitoringAlertPolicy and GcpMonitoringUptimeCheck reference existing groups by ID -- revisit with a grouping-focused ask"
@@ -1589,6 +1334,9 @@ resources:
   - resource: google_monitoring_monitored_project
     disposition: deferred
     reason: "metrics-scope membership is organization-level observability plumbing with no adopter ask; revisit with a multi-project-monitoring ask"
+  - resource: google_monitoring_snooze
+    disposition: deferred
+    reason: "alert snoozes are an operational action with a start and end time, not durable infrastructure; deferred"
   - resource: google_netapp_active_directory
     disposition: deferred
     reason: "NetApp Volumes judged as storage-pool, volume, backup-vault, and backup-policy kinds (companions composed); deferred pending demand"
@@ -1655,6 +1403,9 @@ resources:
   - resource: google_network_management_connectivity_test
     disposition: deferred
     reason: "connectivity tests are diagnostics, not infrastructure; deferred"
+  - resource: google_network_management_network_monitoring_provider
+    disposition: deferred
+    reason: "Network Management third-party monitoring providers are a network-observability specialty; deferred pending demand"
   - resource: google_network_management_organization_vpc_flow_logs_config
     disposition: deferred
     reason: "organization-scoped VPC flow-logs config is org-admin surface; deferred pending demand"
@@ -1663,7 +1414,7 @@ resources:
     reason: "judged to fold into the VPC network family's specs (VPC flow-logs configuration); the composition is not built"
   - resource: google_network_security_address_group
     disposition: deferred
-    reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"
+    reason: "its own kind on the first ask: GcpHierarchicalFirewallPolicy and GcpNetworkFirewallPolicy rules name address groups by their resource name as literals (match.src_address_groups / dest_address_groups), which becomes a reference the day the kind exists"
   - resource: google_network_security_authz_policy
     disposition: deferred
     reason: "authorization and backend-authentication policies attach to the modeled load-balancer chain; judged to fold into the owning kinds (GcpBackendService and its proxy family) when demand appears; deferred"
@@ -1720,7 +1471,7 @@ resources:
     reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"
   - resource: google_network_security_security_profile_group
     disposition: deferred
-    reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"
+    reason: "its own kind on the first ask: GcpHierarchicalFirewallPolicy and GcpNetworkFirewallPolicy rules with action apply_security_profile_group name the group by its resource URL as a literal (security_profile_group), which becomes a reference the day the kind exists"
   - resource: google_network_security_server_tls_policy
     disposition: deferred
     reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"
@@ -1814,6 +1565,21 @@ resources:
   - resource: google_network_services_wasm_plugin
     disposition: deferred
     reason: "service extensions and callouts attach to the modeled load-balancer chain; judged to fold into the owning kinds (GcpUrlMap, GcpBackendService, and their proxy family) when demand appears; deferred"
+  - resource: google_observability_bucket
+    disposition: deferred
+    reason: "Cloud Observability analytics buckets, links, and settings are a new observability-storage surface judged as its own kind family; deferred pending demand"
+  - resource: google_observability_folder_settings
+    disposition: deferred
+    reason: "Cloud Observability analytics buckets, links, and settings are a new observability-storage surface judged as its own kind family; deferred pending demand"
+  - resource: google_observability_link
+    disposition: deferred
+    reason: "Cloud Observability analytics buckets, links, and settings are a new observability-storage surface judged as its own kind family; deferred pending demand"
+  - resource: google_observability_organization_settings
+    disposition: deferred
+    reason: "Cloud Observability analytics buckets, links, and settings are a new observability-storage surface judged as its own kind family; deferred pending demand"
+  - resource: google_observability_project_settings
+    disposition: deferred
+    reason: "Cloud Observability analytics buckets, links, and settings are a new observability-storage surface judged as its own kind family; deferred pending demand"
   - resource: google_observability_trace_scope
     disposition: deferred
     reason: "observability scopes are console organization, not provisioned infrastructure; deferred"
@@ -1853,12 +1619,6 @@ resources:
   - resource: google_oracle_database_odb_subnet
     disposition: deferred
     reason: "Oracle Database at Google Cloud is a named niche family (an eventual ~6 kind family); deferred pending demand"
-  - resource: google_org_policy_custom_constraint
-    disposition: deferred
-    reason: "Organization Policy judged as policy and custom-constraint kinds (core enterprise governance); deferred pending demand"
-  - resource: google_org_policy_policy
-    disposition: deferred
-    reason: "Organization Policy judged as policy and custom-constraint kinds (core enterprise governance); deferred pending demand"
   - resource: google_organization_access_approval_settings
     disposition: deferred
     reason: "Access Approval settings judged as one kind with project/folder/organization scope; deferred pending demand"
@@ -1904,18 +1664,6 @@ resources:
   - resource: google_parameter_manager_regional_parameter_version
     disposition: deferred
     reason: "Parameter Manager judged as one parameter kind with versions composed and regional variants as a location flag (the Secret Manager pattern); deferred pending demand"
-  - resource: google_privateca_ca_pool
-    disposition: deferred
-    reason: "Private CA judged as a CA-pool kind (pool with certificate authorities and leaf issuance composed) and a certificate-template kind; deferred pending demand"
-  - resource: google_privateca_certificate
-    disposition: deferred
-    reason: "Private CA judged as a CA-pool kind (pool with certificate authorities and leaf issuance composed) and a certificate-template kind; deferred pending demand"
-  - resource: google_privateca_certificate_authority
-    disposition: deferred
-    reason: "Private CA judged as a CA-pool kind (pool with certificate authorities and leaf issuance composed) and a certificate-template kind; deferred pending demand"
-  - resource: google_privateca_certificate_template
-    disposition: deferred
-    reason: "Private CA judged as a CA-pool kind (pool with certificate authorities and leaf issuance composed) and a certificate-template kind; deferred pending demand"
   - resource: google_privileged_access_manager_entitlement
     disposition: deferred
     reason: "judged to deserve a just-in-time privileged-access entitlement kind; deferred pending demand"
@@ -1943,12 +1691,9 @@ resources:
   - resource: google_recaptcha_enterprise_key
     disposition: deferred
     reason: "judged to deserve a GcpRecaptchaKey kind; deferred pending demand"
-  - resource: google_redis_cluster
+  - resource: google_redis_cluster_acl_policy
     disposition: deferred
-    reason: "judged to deserve a GcpRedisCluster kind (Memorystore cluster tier, user-created connections composed); deferred pending demand"
-  - resource: google_redis_cluster_user_created_connections
-    disposition: deferred
-    reason: "judged to deserve a GcpRedisCluster kind (Memorystore cluster tier, user-created connections composed); deferred pending demand"
+    reason: "a Memorystore for Redis Cluster ACL policy is a standalone object clusters attach by name and share; GcpRedisCluster's acl_policy field is the reference (a validated resource name), and the policy itself is a candidate kind on the first ask -- built together with google_memorystore_acl_policy, its Valkey twin"
   - resource: google_resource_manager_capability
     disposition: deferred
     reason: "Resource Manager capabilities are org-admin toggles; deferred pending demand"
@@ -1985,6 +1730,9 @@ resources:
   - resource: google_scc_notification_config
     disposition: excluded-deprecated
     reason: "Security Command Center v1 API surface, superseded by the SCC v2 and SCC Management APIs (equivalents exist for every resource)"
+  - resource: google_scc_notification_service_account
+    disposition: deferred
+    reason: "the Security Command Center notification service account is an organization-level, set-once identity beside the notification configs; deferred"
   - resource: google_scc_organization_custom_module
     disposition: excluded-deprecated
     reason: "Security Command Center v1 API surface, superseded by the SCC v2 and SCC Management APIs (equivalents exist for every resource)"
@@ -2003,36 +1751,9 @@ resources:
   - resource: google_scc_source
     disposition: excluded-deprecated
     reason: "Security Command Center v1 API surface, superseded by the SCC v2 and SCC Management APIs (equivalents exist for every resource)"
-  - resource: google_scc_v2_folder_mute_config
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_folder_notification_config
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_folder_scc_big_query_export
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_organization_mute_config
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_organization_notification_config
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_organization_scc_big_query_export
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
   - resource: google_scc_v2_organization_source
     disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_project_mute_config
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_project_notification_config
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
-  - resource: google_scc_v2_project_scc_big_query_export
-    disposition: deferred
-    reason: "SCC v2 judged as notification-config, mute-config, and BigQuery-export kinds with project/folder/organization scope; deferred pending demand"
+    reason: "a custom Security Command Center findings source a third-party integration writes findings into; a candidate kind of its own, unrelated to the notification, mute, and export kinds; deferred pending demand"
   - resource: google_secure_source_manager_branch_rule
     disposition: deferred
     reason: "Secure Source Manager is a niche; deferred"
@@ -2120,6 +1841,12 @@ resources:
   - resource: google_storage_default_object_acl
     disposition: excluded-deprecated
     reason: "legacy per-object ACL model, superseded by uniform bucket-level IAM (the GcpGcsBucket kind's iam_members)"
+  - resource: google_storage_ftp_server
+    disposition: deferred
+    reason: "Cloud Storage FTP servers and users are a legacy-protocol gateway specialty; deferred pending demand"
+  - resource: google_storage_ftp_user
+    disposition: deferred
+    reason: "Cloud Storage FTP servers and users are a legacy-protocol gateway specialty; deferred pending demand"
   - resource: google_storage_hmac_key
     disposition: deferred
     reason: "mints a long-lived S3-interoperability credential whose secret lands in provisioning state, and it is project/service-account scoped rather than a bucket child; belongs to a credential-management flow, not the bucket kind — revisit with an interoperability-credential ask"
@@ -2141,57 +1868,24 @@ resources:
   - resource: google_storage_transfer_job
     disposition: deferred
     reason: "judged to deserve a GcpStorageTransferJob kind (agent pools composed); deferred pending demand"
-  - resource: google_tags_location_tag_binding
-    disposition: deferred
-    reason: "resource tags judged as tag-key and tag-value kinds with bindings composed onto target kinds; deferred pending demand"
-  - resource: google_tags_tag_binding
-    disposition: deferred
-    reason: "resource tags judged as tag-key and tag-value kinds with bindings composed onto target kinds; deferred pending demand"
-  - resource: google_tags_tag_key
-    disposition: deferred
-    reason: "resource tags judged as tag-key and tag-value kinds with bindings composed onto target kinds; deferred pending demand"
-  - resource: google_tags_tag_value
-    disposition: deferred
-    reason: "resource tags judged as tag-key and tag-value kinds with bindings composed onto target kinds; deferred pending demand"
   - resource: google_transcoder_job
     disposition: deferred
     reason: "media transcoding jobs are imperative and a niche; deferred"
   - resource: google_transcoder_job_template
     disposition: deferred
     reason: "media transcoding jobs are imperative and a niche; deferred"
-  - resource: google_vector_search_collection
-    disposition: deferred
-    reason: "standalone Vector Search is new; judged to fold into the Vertex AI family when it stabilizes; deferred pending demand"
   - resource: google_vector_search_data_object
     disposition: deferred
-    reason: "standalone Vector Search is new; judged to fold into the Vertex AI family when it stabilizes; deferred pending demand"
-  - resource: google_vector_search_index
-    disposition: deferred
-    reason: "standalone Vector Search is new; judged to fold into the Vertex AI family when it stabilizes; deferred pending demand"
+    reason: "data-plane writes into a collection (rows, not infrastructure); the collection and its indexes are GcpVectorSearchCollection, and applications write objects through the Vector Search API"
   - resource: google_vertex_ai_cache_config
     disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_dataset
-    disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
+    reason: "a per-project singleton with one switch (disable Gemini context caching); a candidate for a project-level Vertex AI settings kind, not a building block of its own"
   - resource: google_vertex_ai_deployment_resource_pool
     disposition: deferred
     reason: "judged to fold into the existing GcpVertexAiEndpoint kind's spec (deployment resource pools and Model Garden deployments); the composition is not built"
-  - resource: google_vertex_ai_endpoint_with_model_garden_deployment
+  - resource: google_vertex_ai_evaluation_metric
     disposition: deferred
-    reason: "judged to fold into the existing GcpVertexAiEndpoint kind's spec (deployment resource pools and Model Garden deployments); the composition is not built"
-  - resource: google_vertex_ai_feature_group
-    disposition: deferred
-    reason: "Vertex AI feature platform judged as feature-group and feature-online-store kinds (features and feature views composed); deferred pending demand"
-  - resource: google_vertex_ai_feature_group_feature
-    disposition: deferred
-    reason: "Vertex AI feature platform judged as feature-group and feature-online-store kinds (features and feature views composed); deferred pending demand"
-  - resource: google_vertex_ai_feature_online_store
-    disposition: deferred
-    reason: "Vertex AI feature platform judged as feature-group and feature-online-store kinds (features and feature views composed); deferred pending demand"
-  - resource: google_vertex_ai_feature_online_store_featureview
-    disposition: deferred
-    reason: "Vertex AI feature platform judged as feature-group and feature-online-store kinds (features and feature views composed); deferred pending demand"
+    reason: "Vertex AI custom evaluation metrics are an ML-evaluation specialty; deferred pending demand"
   - resource: google_vertex_ai_featurestore
     disposition: excluded-deprecated
     reason: "legacy Vertex AI Featurestore, superseded by feature groups and feature online stores"
@@ -2201,27 +1895,12 @@ resources:
   - resource: google_vertex_ai_featurestore_entitytype_feature
     disposition: excluded-deprecated
     reason: "legacy Vertex AI Featurestore, superseded by feature groups and feature online stores"
-  - resource: google_vertex_ai_persistent_resource
+  - resource: google_vertex_ai_rag_corpus
     disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_rag_engine_config
-    disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_reasoning_engine
-    disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
+    reason: "a RAG Engine corpus is its own kind (GcpVertexAiRagCorpus), built the day pulumi-gcp bridges provider 8.x: the resource arrived in provider 8.3 and has no type in the pinned pulumi-gcp SDK, and a kind is never one-engine; its registry number and prefix are reserved"
   - resource: google_vertex_ai_semantic_governance_policy_engine
     disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_tensorboard
-    disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_tensorboard_experiment
-    disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_tensorboard_run
-    disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
+    reason: "a per-location singleton that places agent-governance gateways behind Private Service Connect; a candidate kind of its own once agent governance has demand, shaped like the RAG Engine config (location-scoped, PATCH-created)"
   - resource: google_vmwareengine_cluster
     disposition: deferred
     reason: "VMware Engine is a named niche family (an eventual ~5 kind family); deferred pending demand"

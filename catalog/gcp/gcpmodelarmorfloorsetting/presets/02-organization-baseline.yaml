@@ -1,0 +1,35 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorFloorSetting
+metadata:
+  name: org-ai-baseline
+spec:
+  scope:
+    organizationId: "123456789012"
+  enableFloorSettingEnforcement: true
+  integratedServices:
+    - AI_PLATFORM
+    - GOOGLE_MCP_SERVER
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: MEDIUM_AND_ABOVE
+    raiSettings:
+      raiFilters:
+        - filterType: SEXUALLY_EXPLICIT
+          confidenceLevel: MEDIUM_AND_ABOVE
+        - filterType: HATE_SPEECH
+          confidenceLevel: MEDIUM_AND_ABOVE
+        - filterType: DANGEROUS
+          confidenceLevel: HIGH
+    sdpSettings:
+      basicConfig:
+        filterEnforcement: ENABLED
+    maliciousUriFilterSettings:
+      filterEnforcement: ENABLED
+  aiPlatformFloorSetting:
+    enforcementType: INSPECT_AND_BLOCK
+    enableCloudLogging: true
+  googleMcpServerFloorSetting:
+    enforcementType: INSPECT_AND_BLOCK
+    enableCloudLogging: true
+  enableMultiLanguageDetection: true

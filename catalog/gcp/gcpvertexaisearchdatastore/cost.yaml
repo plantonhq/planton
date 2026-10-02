@@ -1,0 +1,39 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaisearchdatastore
+spec:
+  billing_model: usage_based
+  baseline_charges:
+    - service_name: Vertex AI Search
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      description: Indexed documents bill per GiB-month stored in the data store, from the first document imported (per cloud.google.com/generative-ai-app-builder/pricing, "Data indexing" row, read 2026-09-23). An empty store indexes nothing and owes nothing; creating the store, its schema, target sites, and sitemaps is free.
+  cost_drivers:
+    - field_path: content_config
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      impact: CONTENT_REQUIRED stores index whole documents (PDF, HTML) and their parsed text, the largest footprint; NO_CONTENT indexes structured records only; PUBLIC_WEBSITE indexes crawled pages, whose volume the target sites decide.
+    - field_path: target_sites
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      impact: Every INCLUDE pattern widens the crawl and the indexed volume; EXCLUDE patterns narrow it. Basic site search over public pages indexes with a lower quota than advanced site search.
+    - field_path: create_advanced_site_search
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      impact: Advanced site search indexes more pages (verified domains, sitemaps) and unlocks Enterprise-tier features on engines over the store; more pages indexed is more GiB-months.
+    - field_path: document_processing_config.default_parsing_config.layout_parsing_config
+      sku_meter: document parsing
+      pricing_unit: pages
+      impact: The layout parser (and its LLM image and table annotation, LLM layout refinement) bills per page parsed at import; the digital parser is included in indexing. OCR parsing of scanned PDFs likewise bills per page.
+    - field_path: document_processing_config.chunking_config
+      sku_meter: data indexing
+      pricing_unit: GiB-months
+      impact: Chunked documents store passages alongside the source, a modest increase in indexed volume for a large gain in RAG answer quality.
+  estimate_exclusions:
+    - queries bill on the engine that searches the store, not on the store
+    - Cloud KMS key operations bill under the referenced key when kms_key_name is set
+    - document import through BigQuery or Cloud Storage bills those services for the source data

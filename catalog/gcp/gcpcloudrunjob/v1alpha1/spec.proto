@@ -162,6 +162,20 @@ message GcpCloudRunJobSpec {
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
   }];
+
+  // Resource Manager tags bound to the job at creation, as a map of
+  // tagKeys/{tag_key_id} to tagValues/{tag_value_id} — the tag bindings
+  // that organization policies, IAM conditions, and cost reports key on.
+  // Immutable: changing the map replaces the job (Cloud Run applies tags
+  // only at create), so plan tag changes as a recreate.
+  map<string, string> resource_manager_tags = 18 [(buf.validate.field).map = {
+    keys: {
+      string: {pattern: "^tagKeys/[0-9]+$"}
+    }
+    values: {
+      string: {pattern: "^tagValues/[0-9]+$"}
+    }
+  }];
 }
 
 // GcpCloudRunJobTemplate describes one task: the container(s), volumes,
@@ -196,7 +210,15 @@ message GcpCloudRunJobTemplate {
   dev.planton.shared.foreignkey.v1.StringValueOrRef encryption_key = 5 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
-    (dev.planton.shared.options.sensitive_exempt_reason) = "KMS crypto key resource ID/reference only — never key material"
+    (dev.planton.shared.options.sensitive_exempt_reason) = "KMS crypto key resource ID/reference only — never key material",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 
   // Maximum time one task attempt may run before GCP marks it failed, in

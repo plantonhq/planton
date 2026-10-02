@@ -1,0 +1,40 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiPersistentResource
+metadata:
+  name: gpu-training-pool
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: GPU training pool
+  labels:
+    team: ml
+  resourcePools:
+    - id: gpu-workers
+      machineSpec:
+        machineType: g2-standard-8
+        acceleratorType: NVIDIA_L4
+        acceleratorCount: 1
+      replicaCount: 1
+      autoscalingSpec:
+        minReplicaCount: 1
+        maxReplicaCount: 4
+      diskSpec:
+        bootDiskSizeGb: 200
+        bootDiskType: pd-ssd
+  # Peered into the VPC through private services access; the modules turn
+  # the reference into the project-number path Google requires.
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: ml-vpc
+      fieldPath: status.outputs.network_self_link
+  reservedIpRanges:
+    - vertex-ai-range
+  enableCustomServiceAccount: true
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: vertex-ai-key
+      fieldPath: status.outputs.key_id
+  deletionPolicy: PREVENT

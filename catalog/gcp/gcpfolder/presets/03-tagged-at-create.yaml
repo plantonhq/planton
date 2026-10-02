@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFolder
+metadata:
+  name: sandbox
+spec:
+  parent:
+    organizationId: "123456789012"
+  displayName: sandbox
+  tags:
+    tagKeys/281475647562788: tagValues/281476102962987
+  deletionProtection: false
+  deletionPolicy: DELETE

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpvertexairagengineconfig/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpvertexairagengineconfig/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-vertex-ai-rag-engine-config
+message GcpVertexAiRagEngineConfig {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpVertexAiRagEngineConfig'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpVertexAiRagEngineConfigSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpVertexAiRagEngineConfigStatus status = 5;
+}
+
+//gcp-vertex-ai-rag-engine-config status
+message GcpVertexAiRagEngineConfigStatus {
+  //stack-outputs
+  GcpVertexAiRagEngineConfigStackOutputs outputs = 1;
+}

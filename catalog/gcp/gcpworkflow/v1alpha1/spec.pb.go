@@ -99,11 +99,14 @@ type GcpWorkflowSpec struct {
 	//	                                         debugging in the console)
 	ExecutionHistoryLevel string `protobuf:"bytes,10,opt,name=execution_history_level,json=executionHistoryLevel,proto3" json:"execution_history_level,omitempty"`
 	// Environment variables visible to the workflow source via sys.get_env().
-	// At most 20 entries (the API's own cap, enforced here); each value up to
-	// 4KiB. Keys must be non-empty and must NOT start with "GOOGLE" or
-	// "WORKFLOWS" (reserved prefixes the API rejects — key-shape rules live
-	// here in the comment because map KEYS are not CEL-addressable). Changing
-	// env vars deploys a NEW revision.
+	// Values are written into the workflow revision, where anyone who can
+	// view the workflow reads them: configuration only, never a credential
+	// -- a credential goes in secret_env_vars. At most 20 entries across
+	// user_env_vars and secret_env_vars together (the API's own cap,
+	// enforced here); each value up to 4KiB. Keys must be non-empty and must
+	// NOT start with "GOOGLE" or "WORKFLOWS" (reserved prefixes the API
+	// rejects — key-shape rules live here in the comment because map KEYS
+	// are not CEL-addressable). Changing env vars deploys a NEW revision.
 	UserEnvVars map[string]string `protobuf:"bytes,11,rep,name=user_env_vars,json=userEnvVars,proto3" json:"user_env_vars,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Resource manager tags bound at workflow creation, keyed
 	// tagKeys/{tag_key_id} with values tagValues/{tag_value_id} — the
@@ -127,8 +130,39 @@ type GcpWorkflowSpec struct {
 	//	"ABANDON" -- the workflow is removed from management but keeps
 	//	             running in GCP
 	DeletionPolicy string `protobuf:"bytes,14,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Secret values the workflow reads at run time, keyed by environment
+	// variable name. Cloud Workflows has no secret field, so the component
+	// never puts the value on the workflow: it keeps each one in a Secret
+	// Manager secret it owns (id workflow_<region>_<workflow name>_<key>,
+	// replicated only in the workflow's region), grants the workflow's
+	// runtime identity (service_account, or the project's Compute Engine
+	// default service account when unset) secretAccessor on that secret
+	// alone, and sets the variable to the version's resource name,
+	// projects/<project>/secrets/<id>/versions/<n>. The workflow reads the
+	// value through the Secret Manager connector, which returns the payload
+	// base64-encoded:
+	//
+	//   - read_token:
+	//     call: googleapis.secretmanager.v1.projects.secrets.versions.access
+	//     args:
+	//     name: ${sys.get_env("API_TOKEN")}
+	//     result: token_version
+	//   - decode_token:
+	//     assign:
+	//   - api_token: ${text.decode(base64.decode(token_version.payload.data))}
+	//
+	// (The accessString helper returns the decoded string, but takes the
+	// secret's short id, version, and project as separate arguments rather
+	// than the full name.) A changed value adds a version, which changes the
+	// variable and deploys a new revision, so rotation is a deploy;
+	// destroying the workflow removes the secrets.
+	// The variable itself counts toward the 20-variable cap and carries the
+	// same key rules as user_env_vars; a key may not appear in both maps,
+	// region must be set (the secrets replicate there), and a literal
+	// service_account must name the account by email.
+	SecretEnvVars map[string]string `protobuf:"bytes,15,rep,name=secret_env_vars,json=secretEnvVars,proto3" json:"secret_env_vars,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpWorkflowSpec) Reset() {
@@ -259,11 +293,18 @@ func (x *GcpWorkflowSpec) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpWorkflowSpec) GetSecretEnvVars() map[string]string {
+	if x != nil {
+		return x.SecretEnvVars
+	}
+	return nil
+}
+
 var File_catalog_gcp_gcpworkflow_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcpworkflow/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpworkflow.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x96\x10\n" +
+	"+catalog/gcp/gcpworkflow/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpworkflow.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9d\x18\n" +
 	"\x0fGcpWorkflowSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x16\n" +
@@ -272,20 +313,20 @@ const file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDesc = "" +
 	"\vdescription\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\vdescription\x12Y\n" +
 	"\x06labels\x18\x05 \x03(\v2A.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.LabelsEntryR\x06labels\x125\n" +
 	"\x0fsource_contents\x18\x06 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04(\x80\x80\bR\x0esourceContents\x12z\n" +
-	"\x0fservice_account\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x0eserviceAccount\x12q\n" +
+	"\x0fservice_account\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x0eserviceAccount\x12\xae\x01\n" +
 	"\n" +
-	"crypto_key\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\tcryptoKey\x12\x90\x02\n" +
+	"crypto_key\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\tcryptoKey\x12\x90\x02\n" +
 	"\x0ecall_log_level\x18\t \x01(\tB\xe9\x01\xbaH\xe5\x01\xba\x01\xe1\x01\n" +
 	"\x14valid_call_log_level\x12ccall_log_level must be one of: CALL_LOG_LEVEL_UNSPECIFIED, LOG_ALL_CALLS, LOG_ERRORS_ONLY, LOG_NONE\x1adthis == '' || this in ['CALL_LOG_LEVEL_UNSPECIFIED', 'LOG_ALL_CALLS', 'LOG_ERRORS_ONLY', 'LOG_NONE']R\fcallLogLevel\x12\xdb\x02\n" +
 	"\x17execution_history_level\x18\n" +
 	" \x01(\tB\xa2\x02\xbaH\x9e\x02\xba\x01\x9a\x02\n" +
-	"\x1dvalid_execution_history_level\x12\x80\x01execution_history_level must be one of: EXECUTION_HISTORY_LEVEL_UNSPECIFIED, EXECUTION_HISTORY_BASIC, EXECUTION_HISTORY_DETAILED\x1avthis == '' || this in ['EXECUTION_HISTORY_LEVEL_UNSPECIFIED', 'EXECUTION_HISTORY_BASIC', 'EXECUTION_HISTORY_DETAILED']R\x15executionHistoryLevel\x12\xd2\x01\n" +
-	"\ruser_env_vars\x18\v \x03(\v2F.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.UserEnvVarsEntryBf\xbaHc\xba\x01`\n" +
-	"\x14user_env_vars_max_20\x126user_env_vars accepts at most 20 entries (the API cap)\x1a\x10size(this) <= 20R\vuserEnvVars\x12\x82\x01\n" +
+	"\x1dvalid_execution_history_level\x12\x80\x01execution_history_level must be one of: EXECUTION_HISTORY_LEVEL_UNSPECIFIED, EXECUTION_HISTORY_BASIC, EXECUTION_HISTORY_DETAILED\x1avthis == '' || this in ['EXECUTION_HISTORY_LEVEL_UNSPECIFIED', 'EXECUTION_HISTORY_BASIC', 'EXECUTION_HISTORY_DETAILED']R\x15executionHistoryLevel\x12\x7f\n" +
+	"\ruser_env_vars\x18\v \x03(\v2F.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.UserEnvVarsEntryB\x13Ҧ\x1d\x0fsecret_env_varsR\vuserEnvVars\x12\x82\x01\n" +
 	"\x15resource_manager_tags\x18\f \x03(\v2N.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.ResourceManagerTagsEntryR\x13resourceManagerTags\x12>\n" +
 	"\x13deletion_protection\x18\r \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x12deletionProtection\x88\x01\x01\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x0e \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12v\n" +
+	"\x0fsecret_env_vars\x18\x0f \x03(\v2H.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.SecretEnvVarsEntryB\x04\xa0\xa6\x1d\x01R\rsecretEnvVars\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
@@ -294,7 +335,14 @@ const file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x16\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a@\n" +
+	"\x12SecretEnvVarsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xe0\x06\xbaH\xdc\x06\x1a\xa2\x01\n" +
+	"\x0fenv_vars_max_20\x12Ruser_env_vars and secret_env_vars together accept at most 20 entries (the API cap)\x1a;size(this.user_env_vars) + size(this.secret_env_vars) <= 20\x1a\x9d\x01\n" +
+	"\x18secret_env_vars_disjoint\x12Ga variable is either in user_env_vars or in secret_env_vars, never both\x1a8!this.secret_env_vars.exists(k, k in this.user_env_vars)\x1a\xad\x01\n" +
+	"\x1bsecret_env_vars_need_region\x12Xsecret_env_vars needs region: the stored secrets replicate only in the workflow's region\x1a4size(this.secret_env_vars) == 0 || this.region != ''\x1a\xe4\x02\n" +
+	"#secret_env_vars_need_email_identity\x12\x9c\x01with secret_env_vars, service_account must name the account by email (or projects/{project}/serviceAccounts/{email}): the secret grant is made to that email\x1a\x9d\x01size(this.secret_env_vars) == 0 || !has(this.service_account.value) || this.service_account.value.matches('^(projects/[^/]+/serviceAccounts/)?[^/@]+@[^/]+$')B\x16\n" +
 	"\x14_deletion_protectionB\xbd\x02\n" +
 	"(com.dev.planton.gcp.gcpworkflow.v1alpha1B\tSpecProtoP\x01ZQgithub.com/plantonhq/planton/catalog/gcp/gcpworkflow/v1alpha1;gcpworkflowv1alpha1\xa2\x02\x04DPGG\xaa\x02$Dev.Planton.Gcp.Gcpworkflow.V1alpha1\xca\x02$Dev\\Planton\\Gcp\\Gcpworkflow\\V1alpha1\xe2\x020Dev\\Planton\\Gcp\\Gcpworkflow\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Gcp::Gcpworkflow::V1alpha1b\x06proto3"
 
@@ -310,26 +358,28 @@ func file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDescGZIP() []byte {
 	return file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpWorkflowSpec)(nil),     // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec
 	nil,                         // 1: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.LabelsEntry
 	nil,                         // 2: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.UserEnvVarsEntry
 	nil,                         // 3: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.ResourceManagerTagsEntry
-	(*v1.StringValueOrRef)(nil), // 4: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	nil,                         // 4: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.SecretEnvVarsEntry
+	(*v1.StringValueOrRef)(nil), // 5: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_depIdxs = []int32{
-	4, // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5, // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1, // 1: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.labels:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.LabelsEntry
-	4, // 2: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 3: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5, // 2: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5, // 3: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	2, // 4: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.user_env_vars:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.UserEnvVarsEntry
 	3, // 5: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.ResourceManagerTagsEntry
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	4, // 6: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.secret_env_vars:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.SecretEnvVarsEntry
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_init() }
@@ -344,7 +394,7 @@ func file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpworkflow_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

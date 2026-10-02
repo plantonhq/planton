@@ -1,0 +1,28 @@
+# The data store the chat-agent-creation scenario answers from: an extra
+# GcpVertexAiSearchDataStore instance enrolled in SOLUTION_TYPE_CHAT (a chat
+# engine can only use chat stores; the registry prerequisite installs a
+# search store). Its data_store_id output is what the engine's
+# data_store_ids references. The store id carries the run id; metadata.name
+# stays fixed.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: planton-oss-e2e-gcpvseng-chat-store
+  id: planton-oss-e2e-gcpvseng-chat-store
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchengine
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  dataStoreId: planton-oss-e2e-vseng-chat-store-${E2E_RUN_ID}
+  displayName: Planton OSS E2E chat store
+  industryVertical: GENERIC
+  contentConfig: NO_CONTENT
+  solutionTypes:
+    - SOLUTION_TYPE_CHAT

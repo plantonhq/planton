@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudidentitygroup.v1alpha1;
+
+// GcpCloudIdentityGroupStackOutputs captures the group after provisioning.
+message GcpCloudIdentityGroupStackOutputs {
+  // The group's resource name, `groups/{group_id}` -- the handle the Cloud
+  // Identity API addresses it by.
+  string name = 1;
+
+  // The group's email address -- its identity in IAM bindings
+  // (`group:{email}`).
+  string group_email = 2;
+
+  // Number of memberships this manifest manages on the group.
+  string membership_count = 3;
+}

@@ -212,13 +212,13 @@ type GcpKmsKeySpec struct {
 	ImportOnly bool `protobuf:"varint,8,opt,name=import_only,json=importOnly,proto3" json:"import_only,omitempty"`
 	// The EKM connection through which an external key manager backs this
 	// key's versions. Applies only when version_template.protection_level is
-	// EXTERNAL_VPC (enforced pre-deploy). Accepts the fully qualified
-	// connection path
+	// EXTERNAL_VPC (enforced pre-deploy). The EKM connection is made outside
+	// the catalog (no catalog kind produces it), so write its full name:
 	//
 	//	projects/{project}/locations/{location}/ekmConnections/{name}
 	//
 	// Immutable after creation.
-	CryptoKeyBackend *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=crypto_key_backend,json=cryptoKeyBackend,proto3" json:"crypto_key_backend,omitempty"`
+	CryptoKeyBackend string `protobuf:"bytes,9,opt,name=crypto_key_backend,json=cryptoKeyBackend,proto3" json:"crypto_key_backend,omitempty"`
 	// User-defined labels attached to the key, for cost attribution and
 	// fleet queries. Merged with Planton's platform labels (which win on
 	// key conflicts). Mutable in place.
@@ -329,11 +329,11 @@ func (x *GcpKmsKeySpec) GetImportOnly() bool {
 	return false
 }
 
-func (x *GcpKmsKeySpec) GetCryptoKeyBackend() *v1.StringValueOrRef {
+func (x *GcpKmsKeySpec) GetCryptoKeyBackend() string {
 	if x != nil {
 		return x.CryptoKeyBackend
 	}
-	return nil
+	return ""
 }
 
 func (x *GcpKmsKeySpec) GetLabels() map[string]string {
@@ -358,7 +358,7 @@ const file_catalog_gcp_gcpkmskey_v1alpha1_spec_proto_rawDesc = "" +
 	"\x18GcpKmsKeyVersionTemplate\x12$\n" +
 	"\talgorithm\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\talgorithm\x12\xdb\x01\n" +
 	"\x10protection_level\x18\x02 \x01(\tB\xaf\x01\xbaH\xab\x01\xba\x01\xa7\x01\n" +
-	"\x16valid_protection_level\x12Fprotection_level must be one of: SOFTWARE, HSM, EXTERNAL, EXTERNAL_VPC\x1aEthis == '' || this in ['SOFTWARE', 'HSM', 'EXTERNAL', 'EXTERNAL_VPC']R\x0fprotectionLevel\"\xe8\x11\n" +
+	"\x16valid_protection_level\x12Fprotection_level must be one of: SOFTWARE, HSM, EXTERNAL, EXTERNAL_VPC\x1aEthis == '' || this in ['SOFTWARE', 'HSM', 'EXTERNAL', 'EXTERNAL_VPC']R\x0fprotectionLevel\"\xb4\x11\n" +
 	"\rGcpKmsKeySpec\x12}\n" +
 	"\vkey_ring_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x03\xc8\x01\x01\x88\xd4a\x92\x18\x92\xd4a\x1astatus.outputs.key_ring_idR\tkeyRingId\x12:\n" +
 	"\bkey_name\x18\x02 \x01(\tB\x1f\xbaH\x1c\xc8\x01\x01r\x172\x15^[a-zA-Z0-9_-]{1,63}$R\akeyName\x12\x18\n" +
@@ -370,8 +370,8 @@ const file_catalog_gcp_gcpkmskey_v1alpha1_spec_proto_rawDesc = "" +
 	"\x10version_template\x18\x06 \x01(\v2<.dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeyVersionTemplateR\x0fversionTemplate\x12A\n" +
 	"\x1dskip_initial_version_creation\x18\a \x01(\bR\x1askipInitialVersionCreation\x12\x1f\n" +
 	"\vimport_only\x18\b \x01(\bR\n" +
-	"importOnly\x12`\n" +
-	"\x12crypto_key_backend\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x10cryptoKeyBackend\x12U\n" +
+	"importOnly\x12,\n" +
+	"\x12crypto_key_backend\x18\t \x01(\tR\x10cryptoKeyBackend\x12U\n" +
 	"\x06labels\x18\n" +
 	" \x03(\v2=.dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.LabelsEntryR\x06labels\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\v \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
@@ -381,7 +381,7 @@ const file_catalog_gcp_gcpkmskey_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xc1\x06\xbaH\xbd\x06\x1a\xed\x01\n" +
 	"!rotation_only_for_encrypt_decrypt\x12qrotation_period can only be set for ENCRYPT_DECRYPT keys — other purposes require manual key version management\x1aUthis.rotation_period == '' || this.purpose == '' || this.purpose == 'ENCRYPT_DECRYPT'\x1a\xfc\x01\n" +
 	")import_only_requires_skip_initial_version\x12\x95\x01import_only keys must also set skip_initial_version_creation — GCP cannot generate an initial version for a key that only accepts imported material\x1a7!this.import_only || this.skip_initial_version_creation\x1a\xcb\x02\n" +
-	"(crypto_key_backend_requires_external_vpc\x12\xa3\x01crypto_key_backend applies only to keys with version_template.protection_level EXTERNAL_VPC (EXTERNAL keys link material per version via external key URIs instead)\x1ay!has(this.crypto_key_backend) || (has(this.version_template) && this.version_template.protection_level == 'EXTERNAL_VPC')B\xaf\x02\n" +
+	"(crypto_key_backend_requires_external_vpc\x12\xa3\x01crypto_key_backend applies only to keys with version_template.protection_level EXTERNAL_VPC (EXTERNAL keys link material per version via external key URIs instead)\x1aythis.crypto_key_backend == '' || (has(this.version_template) && this.version_template.protection_level == 'EXTERNAL_VPC')B\xaf\x02\n" +
 	"&com.dev.planton.gcp.gcpkmskey.v1alpha1B\tSpecProtoP\x01ZMgithub.com/plantonhq/planton/catalog/gcp/gcpkmskey/v1alpha1;gcpkmskeyv1alpha1\xa2\x02\x04DPGG\xaa\x02\"Dev.Planton.Gcp.Gcpkmskey.V1alpha1\xca\x02\"Dev\\Planton\\Gcp\\Gcpkmskey\\V1alpha1\xe2\x02.Dev\\Planton\\Gcp\\Gcpkmskey\\V1alpha1\\GPBMetadata\xea\x02&Dev::Planton::Gcp::Gcpkmskey::V1alpha1b\x06proto3"
 
 var (
@@ -406,13 +406,12 @@ var file_catalog_gcp_gcpkmskey_v1alpha1_spec_proto_goTypes = []any{
 var file_catalog_gcp_gcpkmskey_v1alpha1_spec_proto_depIdxs = []int32{
 	3, // 0: dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.key_ring_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	0, // 1: dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.version_template:type_name -> dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeyVersionTemplate
-	3, // 2: dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.crypto_key_backend:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2, // 3: dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.labels:type_name -> dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.LabelsEntry
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2, // 2: dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.labels:type_name -> dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.LabelsEntry
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpkmskey_v1alpha1_spec_proto_init() }

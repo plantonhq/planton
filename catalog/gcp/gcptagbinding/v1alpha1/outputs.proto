@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptagbinding.v1alpha1;
+
+// GcpTagBindingStackOutputs captures the binding's identity after
+// provisioning.
+message GcpTagBindingStackOutputs {
+  // The binding's resource name,
+  // `tagBindings/{url-encoded full resource name}/{tagValues/id}` -- the
+  // handle Google's Tag Bindings API deletes and lists the binding by.
+  string name = 1;
+
+  // The full resource name the tag is bound to, exactly as sent to Google
+  // (`//cloudresourcemanager.googleapis.com/projects/{number}` for a
+  // project) -- the resolved form of whichever parent arm the spec set,
+  // useful when the spec named a project by ID and the module resolved
+  // its number.
+  string parent = 2;
+
+  // The bound tag value's resource name, `tagValues/{numeric_id}`.
+  string tag_value = 3;
+}

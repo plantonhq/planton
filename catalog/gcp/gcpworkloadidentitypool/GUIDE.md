@@ -39,7 +39,8 @@ a documented plan/apply mismatch. Changing modes is a new pool.
 failed apply can leave a pool without rules — re-apply converges).
 `inlineCertificateIssuanceConfig` decides who SIGNS their mTLS
 certificates: exactly one of your own CA Service pools (`caPools`,
-region-keyed) or the zero-setup GCP shared CA
+region-keyed, each value a `GcpPrivateCaPool` reference or the pool's
+full name) or the zero-setup GCP shared CA
 (`useDefaultSharedCa`). `inlineTrustConfig` extends trust to foreign
 trust domains — note GCP requires at least one PEM anchor per bundle
 even when `trustDefaultSharedCa` is on: the shared CA is added to a

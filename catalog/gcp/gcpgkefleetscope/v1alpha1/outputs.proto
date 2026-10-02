@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgkefleetscope.v1alpha1;
+
+// GcpGkeFleetScopeStackOutputs carries the scope's identity.
+message GcpGkeFleetScopeStackOutputs {
+  // Full resource name: projects/{project}/locations/global/scopes/{scope_id}.
+  string name = 1;
+
+  // The scope's ID.
+  string scope_id = 2;
+
+  // Google's unique identifier for the scope.
+  string uid = 3;
+}

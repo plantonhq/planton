@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccmuteconfig.v1alpha1;
+
+import "catalog/gcp/gcpsccmuteconfig/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-scc-mute-config stack-input
+message GcpSccMuteConfigStackInput {
+  //target cloud-resource
+  GcpSccMuteConfig target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

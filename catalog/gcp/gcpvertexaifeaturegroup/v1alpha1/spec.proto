@@ -1,0 +1,142 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiFeatureGroupBigQuery points the feature group at the BigQuery
+// table or view its feature values come from. Vertex AI Feature Store
+// reads the data where it lives -- nothing is copied until an online store
+// syncs a feature view -- and by default treats the source as a sparse
+// time series: every row is one entity's feature values at one moment.
+message GcpVertexAiFeatureGroupBigQuery {
+  // The BigQuery table or view holding the feature data: a GcpBigQueryTable
+  // reference (its {project}.{dataset}.{table} name), a literal
+  // "project.dataset.table", or the bq:// form Google stores
+  // ("bq://project.dataset.table"). The modules add the bq:// prefix when
+  // it is missing. The source must have at least one entity ID column and
+  // a TIMESTAMP column named `feature_timestamp` -- Google's contract for a
+  // feature group source. Jobs read it as the Vertex AI Service Agent,
+  // which needs roles/bigquery.dataViewer on the table. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef input_uri = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBigQueryTable,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.qualified_name"
+  ];
+
+  // The source columns whose values together form an entity's ID (the row
+  // key an online store serves by). Empty means the single column
+  // `entity_id`. Mutable in place.
+  repeated string entity_id_columns = 2 [(buf.validate.field).repeated.items.string.min_len = 1];
+}
+
+// GcpVertexAiFeatureGroupFeature registers one column of the source as a
+// feature (`google_vertex_ai_feature_group_feature`) -- the unit a feature
+// view selects and an online store serves. Registering a feature copies
+// nothing; it names a column Feature Store may read.
+//
+// Immutable: feature_id (a change replaces the feature). The description,
+// labels, and version column update in place.
+message GcpVertexAiFeatureGroupFeature {
+  // The feature's id within the group -- what a feature view's
+  // feature_ids names. Up to 128 characters of lowercase letters, digits,
+  // and underscores; the first character cannot be a digit. By default it
+  // is also the source column the feature reads (see version_column_name).
+  // Immutable.
+  string feature_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z_][a-z0-9_]{0,127}$"
+  ];
+
+  // Free-text description of the feature.
+  string description = 2;
+
+  // Labels on the feature. The platform attribution labels are merged in
+  // and win on key conflicts.
+  map<string, string> labels = 3;
+
+  // The source column that holds this feature's values, when it differs
+  // from feature_id. Empty means the column named like the feature. Sent
+  // only when set (Google computes it otherwise).
+  string version_column_name = 4;
+}
+
+// GcpVertexAiFeatureGroupSpec defines a Vertex AI Feature Store feature
+// group (`google_vertex_ai_feature_group`) -- the registry entry that says
+// "these features of these entities live in this BigQuery table" --
+// together with the features registered in it
+// (`google_vertex_ai_feature_group_feature`). Features are folded in
+// because they belong to exactly one group and nothing else in the catalog
+// references a feature as a resource: a feature view names features by id
+// inside a group it references.
+//
+// Feature Store keeps the data in BigQuery. A GcpVertexAiFeatureOnlineStore
+// serves the features at low latency through feature views that reference
+// this group by feature_group_id and pick features by feature_id.
+//
+// Immutable: feature_group_id, location, and the BigQuery source (a change
+// replaces the group and its features). The description, labels, entity
+// ID columns, and features update in place.
+message GcpVertexAiFeatureGroupSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.unique_feature_ids"
+    expression: "this.features.map(f, f.feature_id).unique()"
+    message: "feature_id must be unique within the feature group"
+  };
+
+  // The GCP project the feature group lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) the feature group lives in, e.g.
+  // "us-central1". Online stores that serve it must be in the same
+  // location. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The feature group's id -- the last segment of its resource name and
+  // what an online store's feature view references. Up to 128 characters
+  // of lowercase letters, digits, and underscores; the first character
+  // cannot be a digit (hyphens are not allowed, so metadata.name cannot
+  // stand in). Unique within the project and location. Treat it as
+  // immutable: the provider does not mark it ForceNew, so change it by
+  // replacing the block.
+  string feature_group_id = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z_][a-z0-9_]{0,127}$"
+  ];
+
+  // Free-text description of the feature group.
+  string description = 4;
+
+  // Labels on the feature group. The platform attribution labels are
+  // merged in and win on key conflicts.
+  map<string, string> labels = 5;
+
+  // The BigQuery table or view the features come from. Google's API has no
+  // other source type today.
+  GcpVertexAiFeatureGroupBigQuery big_query = 6;
+
+  // The source columns registered as features, each keyed by feature_id.
+  // Add or remove a feature by editing this list.
+  repeated GcpVertexAiFeatureGroupFeature features = 7;
+
+  // What happens to the feature group and its features when this resource
+  // is destroyed:
+  //   "" / "DELETE" -- the features and the group are deleted (the BigQuery
+  //                    source is never touched)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in GCP
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

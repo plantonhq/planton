@@ -1,0 +1,27 @@
+# GcpDeployTarget scenario: a custom target over a GcpDeployCustomTargetType
+# fixture, referenced through its name output. Free: no release is created.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-custom
+  id: planton-oss-e2e-gcpcdtgt-custom
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeploytarget
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeploytarget/e2e/prerequisites/custom-target-type.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  targetId: e2e-custom-${E2E_RUN_ID}
+  description: Ephemeral custom target created by the Planton E2E harness; safe to delete
+  customTarget:
+    customTargetType:
+      valueFrom:
+        kind: GcpDeployCustomTargetType
+        name: planton-oss-e2e-gcpcdtgt-ctt
+        fieldPath: status.outputs.name

@@ -190,7 +190,7 @@ locals {
         try(s.size_constraint.text_transformations, []),
         try(s.regex_match.text_transformations, []),
         try(s.regex_pattern_set_reference.text_transformations, [])
-      ) : {
+        ) : {
         Priority = try(transformation.priority, 0)
         Type     = transformation.type
       }
@@ -204,7 +204,7 @@ locals {
       for override in concat(
         try(s.managed_rule_group.rule_action_overrides, []),
         try(s.rule_group_reference.rule_action_overrides, [])
-      ) : {
+        ) : {
         Name = override.name
         ActionToUse = (
           override.action == "allow" ? { Allow = {} } :

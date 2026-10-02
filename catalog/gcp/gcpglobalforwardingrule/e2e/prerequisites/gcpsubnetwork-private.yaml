@@ -1,0 +1,29 @@
+# Extra-instance GcpSubnetwork fixture: the private subnet an internal
+# passthrough Network Load Balancer's VIP is drawn from (the registry's
+# prerequisite network is custom-mode, so a subnet is required). Lives on
+# that network.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSubnetwork
+metadata:
+  name: planton-oss-e2e-gcpgfr-subnet
+  id: planton-oss-e2e-gcpgfr-subnet
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpglobalforwardingrule
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral subnet for the gcpglobalforwardingrule regional E2E chain; safe to delete
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: planton-oss-e2e-gcpgfr-subnet
+  region: us-central1
+  ipCidrRange: 10.130.0.0/24
+  deletionPolicy: DELETE

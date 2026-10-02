@@ -1,0 +1,37 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcphavpnconnection
+spec:
+  gcp:
+    groups:
+      - purpose: ManageExternalVpnGateway
+        permissions:
+          - compute.externalVpnGateways.create
+          - compute.externalVpnGateways.get
+          - compute.externalVpnGateways.delete
+          - compute.externalVpnGateways.setLabels
+          - compute.externalVpnGateways.use
+        provenance: derived
+        notes: "Covers google_compute_external_vpn_gateway (Pulumi compute.ExternalVpnGateway), created only when spec.peer.external_gateway is set. create on first apply; get on refresh and import; setLabels when labels change (every other argument is ForceNew); delete on destroy under deletion_policy DELETE; use when a tunnel references it as peer_external_gateway. roles/compute.networkAdmin contains all five."
+      - purpose: ManageVpnTunnels
+        permissions:
+          - compute.vpnTunnels.create
+          - compute.vpnTunnels.get
+          - compute.vpnTunnels.delete
+          - compute.vpnTunnels.setLabels
+          - compute.vpnGateways.use
+          - compute.routers.use
+        provenance: derived
+        notes: "Covers google_compute_vpn_tunnel (Pulumi compute.VPNTunnel), one per spec.tunnels entry. create on first apply; get on refresh and import; setLabels when labels change (every other argument is ForceNew and recreates the tunnel); delete on destroy under deletion_policy DELETE; vpnGateways.use on the referenced GcpHaVpnGateway and routers.use on its router at create. For a Google peer, vpnGateways.use is also needed on the PEER gateway (peer_gcp_gateway). roles/compute.networkAdmin contains all of these."
+      - purpose: ManageRouterInterfacesAndPeers
+        permissions:
+          - compute.routers.get
+          - compute.routers.update
+        provenance: derived
+        notes: "Covers google_compute_router_interface and google_compute_router_peer (Pulumi compute.RouterInterface, compute.RouterPeer), one each per tunnel. Both are nested objects on the Cloud Router: create, update (BGP policy, BFD, MD5 key -- which the peer writes into the router's key table), and delete are all routers.update PATCHes, and every refresh is routers.get. roles/compute.networkAdmin contains both."

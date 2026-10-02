@@ -268,6 +268,44 @@ whose user the module creates: the minted credential is reported as a sensitive 
 output (`sensitive = true` in Terraform, `pulumi.ToSecret` in Pulumi), set ONLY when
 the module generated it, so a declared credential is never echoed back and the output
 is the credential's first home for the store that owns it. Reference shape: `Auth0User`.
+When both ends of a link need the SAME secret (a VPN pre-shared key), one end generates
+it and exports it as a scalar sensitive output, and the other end's field is a sensitive
+reference to that output; the comments say plainly that exactly one end generates.
+Reference shape: `GcpHaVpnConnection`.
+
+## Environment values that can carry secrets have a home for them (NON-NEGOTIABLE)
+
+An environment variable written into a runtime's configuration is read by anyone who can
+view the resource, so a spec field holding environment values is marked
+`(dev.planton.shared.options.secret_home) = "<sibling>"`, naming the field in the same
+message where the kind keeps a secret instead; the platform refuses a secret reference in
+the marked field and points at the home. Both modules read the home (`planton module
+verify` checks it). Where the home sits follows the provider's own shape:
+
+- **The provider lists variables as entries** (Cloud Run): the home is a sensitive arm
+  on the same entry (`value` / `secret_value`), at most one arm set.
+- **Google already has a secret list beside the plain one** (Cloud Functions'
+  `secret_environment_variables`, Agent Engine's `secret_env`): the home is that list,
+  and each of its entries gains a sensitive `value` arm beside the secret reference --
+  the Kubernetes `SecretEnvVar` `oneof source` shape.
+- **The provider models variables as a map** (Workflows, Composer): the home is a
+  sensitive sibling map (the Azure Container Instances `secure_environment_variables`
+  grain).
+
+The module keeps every value the home receives in a Secret Manager secret it owns (one
+secret per variable, replicated where the runtime runs), grants exactly the runtime's
+identity `roles/secretmanager.secretAccessor` on exactly that secret, and orders the
+runtime after the grant. When Google's runtime resolves a Secret Manager reference
+itself, the variable is injected natively; when it cannot (Workflows, Composer), the
+variable carries the secret VERSION's resource name and the field comment shows how the
+runtime reads it (the Workflows Secret Manager connector, the Secret Manager client).
+A runtime that can neither inject a secret nor know the identity it will run as (Model
+Garden's prebuilt serving containers, a Colab runtime template) gets no home: its
+environment field's comment says plainly that values are stored in plain text and names
+where secrets belong instead. The rendered offline sweep asserts the plaintext test
+value appears nowhere in the runtime resource's planned attributes. Reference shapes:
+`GcpCloudRun` (per entry), `GcpCloudFunction` (Google's secret list), `GcpWorkflow`
+(sibling map, pointer form).
 
 FOREIGN-KEY FIELD-PATH FORMAT (verify against the CONSUMING API)
 When wiring `default_kind_field_path` for a network/resource reference, verify which
@@ -593,8 +631,14 @@ them and the `lint.catalog-data` lane holds their content to schema:
 
 `catalog/aws/awsalb` and `catalog/aws/awsdynamodb` are the reference
 examples. Validate with `go test ./pkg/finops/... ./pkg/compliance/...
-./pkg/iac/permissions/...` -- file presence is enrollment, so the sidecars
-are gated from this commit on.
+./pkg/iac/permissions/... ./pkg/iac/actioninventory/` -- file presence is
+enrollment, so the sidecars are gated from this commit on. The last package
+proves every permission name exists in the provider's own inventory
+snapshot; a permission under a service prefix the snapshot does not yet
+cover fails it until `make generate-action-inventory ARMS=<provider>`
+refreshes the snapshot in the same change. A name the refreshed snapshot
+still lacks is invented: find the permission the provider actually checks
+(its predefined roles list them), never keep the guess.
 
 ### Phase 8: Final Validation (Rules 016-017)
 

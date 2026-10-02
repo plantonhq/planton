@@ -64,7 +64,7 @@ deployment from state but keeps it serving (and billing).
 
 ## Provider Requirements
 
-- `hashicorp/google` ~> 7.43
+- `hashicorp/google` ~> 8.3
 
 Note: deploy timeouts are 45 minutes (create/update) and 20 (delete) —
 deploys genuinely take tens of minutes.

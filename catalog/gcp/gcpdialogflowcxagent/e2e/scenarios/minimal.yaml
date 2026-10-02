@@ -1,0 +1,25 @@
+# GcpDialogflowCxAgent scenario: the agent alone, in the global location
+# (which needs no one-time location settings), flow-first. project_id is
+# deliberately omitted: the agent rides the provider's default project,
+# which the harness exports as GOOGLE_PROJECT. Google requires the display
+# name unique within the location, so it carries the run id. An agent that
+# receives no conversations bills nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: planton-oss-e2e-gcpdfcx-minimal
+  id: planton-oss-e2e-gcpdfcx-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdialogflowcxagent
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcx-minimal-${E2E_RUN_ID}
+  defaultLanguageCode: en
+  timeZone: America/Los_Angeles

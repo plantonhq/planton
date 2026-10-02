@@ -54,7 +54,7 @@ This creates a symmetric encryption key with 90-day automatic rotation — the m
 | `versionTemplate.protectionLevel` | string | No | `SOFTWARE` (default), `HSM`, `EXTERNAL`, `EXTERNAL_VPC`. Immutable |
 | `skipInitialVersionCreation` | bool | No | Create the key empty (required for import-only keys). Create-time only |
 | `importOnly` | bool | No | BYOK container: only imported versions ever. Immutable; requires `skipInitialVersionCreation` |
-| `cryptoKeyBackend` | StringValueOrRef | No | EKM connection path backing `EXTERNAL_VPC` keys. Immutable |
+| `cryptoKeyBackend` | string | No | Full name of the EKM connection (made outside the catalog) backing `EXTERNAL_VPC` keys. Immutable |
 | `labels` | map | No | User labels, merged beneath Planton's attribution labels. Mutable |
 | `deletionPolicy` | string | No | `DELETE` (default: destroy schedules EVERY key version for destruction — data becomes unrecoverable), `PREVENT` (destroy fails — the safe posture for production keys), `ABANDON` (the key leaves management with all versions intact). Mutable |
 
@@ -68,6 +68,7 @@ Cross-field rules enforced before deploy: rotation only on ENCRYPT_DECRYPT keys;
 | `key_name` | The short name of the key |
 | `primary_version_name` | Resource name of the current primary version (ENCRYPT_DECRYPT keys; empty otherwise) |
 | `primary_state` | Lifecycle state of the primary version (e.g. `ENABLED`) — the quick health probe that the key can encrypt |
+| `initial_version_name` | Resource name of the version created with the key (version 1), for every purpose — the version an asymmetric-sign key's consumers (a CA Service authority, a Binary Authorization attestor) name; empty with `skip_initial_version_creation` |
 
 ## Important Notes
 

@@ -1,0 +1,72 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcppubsubtopiciammember
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The grant stores no customer data -- it is one (role, member) entry in the topic's IAM policy, control-plane metadata Google holds on its own encrypted infrastructure. Message encryption belongs to the GcpPubSubTopic resource.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists here to key; a topic's customer-managed key is configured on the GcpPubSubTopic, and the grant has no KMS surface.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: A policy entry terminates no connections -- it is consulted inside IAM's authorization checks, never on a wire the operator configures. Publishing clients reach Pub/Sub over Google's TLS endpoints regardless of this grant.
+    - control_id: no-public-access
+      status: configurable
+      field_path: member
+      evidence:
+        type: spec_validation
+        reference: The member-format rule (member.format) deliberately admits allUsers and allAuthenticatedUsers alongside the identity-scoped formats, so public exposure is always an explicit, reviewable value in the manifest -- never a default or a side effect.
+      notes: "member is the public-exposure lever for the topic: allUsers or allAuthenticatedUsers paired with roles/pubsub.publisher would let anyone push messages into the topic on the owner's bill, and paired with roles/pubsub.subscriber would let anyone read the stream. There is no legitimate public-grant shape on a topic; treat any such value as a finding."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network path exists to restrict -- IAM authorization on the topic is identity-based, not source-based. Network-level control of who can reach Pub/Sub endpoints is VPC Service Controls territory, configured outside this resource.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The grant receives no inbound traffic; there is no request path for a WAF to front.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: This component IS role-based access control on the topic -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against pubsub.topics.getIamPolicy and pubsub.topics.setIamPolicy on the target topic; no unauthenticated management path exists.
+      notes: Topic-scoped grants are the least-privilege shape -- IAM also flows down onto the topic from its project, so a project-level publisher grant silently covers every topic; prefer this resource when a writer needs exactly one destination.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through a grant -- it consumes identities as grantees and issues no credentials. The canonical grantees are Google-managed identities (a sink's writer identity, a Security Command Center service account), themselves platform-issued; the principal:// formats let federated keyless workloads receive access the same way.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The grant carries no authentication path to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every create and destroy is a SetIamPolicy call on the topic, landing in Cloud Audit Logs (Admin Activity) unconditionally -- Google's Cloud Audit Logs overview states Admin Activity logs are always written and cannot be configured, excluded, or disabled.
+      notes: Admin Activity records changes TO the topic's policy (with the etag output usable for correlation); logging of the member's publish calls is Pub/Sub's Data Access audit configuration, disabled by default and enabled on the topic's project.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: A single policy entry emits no metrics and has no export knob; Pub/Sub publishes its metrics on topic and subscription dimensions, which belong to those resources.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The grant is declarative configuration fully re-creatable from source control; there is no data to back up or restore.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The topic's IAM policy is control-plane metadata Google replicates as part of the platform; no failure-domain choice exists on the resource.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: "Neither GCP nor this spec offers a deletion-protection flag for an IAM grant -- every field is immutable and destroy subtracts exactly this (role, member) pair. The blast radius is quiet: revoking a sink writer's publisher grant deletes nothing, but Cloud Logging stops delivering to the topic and drops the entries it cannot publish. Plan removals with the sink, not separately."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface here to patch; IAM's evaluation engine and Pub/Sub's control plane are Google's own infrastructure, patched as part of the platform.

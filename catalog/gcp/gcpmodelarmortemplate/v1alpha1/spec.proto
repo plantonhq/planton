@@ -1,0 +1,299 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmodelarmortemplate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpModelArmorTemplateSpec defines a Model Armor template
+// (`google_model_armor_template`) -- a named set of safety filters an AI
+// application sends prompts and model responses through before trusting
+// them. A template screens for prompt injection and jailbreak attempts,
+// harmful content (the Responsible AI categories), sensitive data
+// (Sensitive Data Protection), and malicious URLs; it can only inspect and
+// report, or inspect and block.
+//
+// Who uses a template: an application calling Model Armor's
+// sanitizeUserPrompt / sanitizeModelResponse methods names it; Vertex AI
+// Search engines name one for prompts and one for responses; a
+// GcpModelArmorFloorSetting sets the minimum every template in a project,
+// folder, or organization must meet.
+//
+// Immutable: location and template_id. Everything else updates in place.
+message GcpModelArmorTemplateSpec {
+  // The GCP project the template lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where the template lives: a region (e.g. "us-central1") or a
+  // multi-region ("us", "eu"). Prompts are screened in this location, so
+  // pick the one your application's data-residency rules allow; the
+  // application calls Model Armor's endpoint for this location. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+(-[a-z]+[0-9]+)?$"
+  ];
+
+  // The template's id -- the last segment of its resource name, what an
+  // application passes to Model Armor. Letters, digits, hyphens, and
+  // underscores, up to 63 characters. Defaults to metadata.name.
+  // Immutable.
+  string template_id = 3 [(buf.validate.field).cel = {
+    id: "template_id.format"
+    message: "template_id must be 1-63 letters, digits, hyphens, or underscores"
+    expression: "this == '' || this.matches('^[A-Za-z0-9_-]{1,63}$')"
+  }];
+
+  // Labels on the template. The platform attribution labels are merged in
+  // and win on key conflicts.
+  map<string, string> labels = 4;
+
+  // Which filters run and how sensitive each one is. Required: a template
+  // with no filter configuration screens nothing.
+  GcpModelArmorTemplateFilterConfig filter_config = 5 [(buf.validate.field).required = true];
+
+  // How the template behaves around the filters: whether it blocks or only
+  // reports, what an end user sees when a prompt or response is blocked,
+  // logging, and which filter version it runs. Omit for Google's defaults.
+  GcpModelArmorTemplateMetadata template_metadata = 6;
+
+  // What happens to the template when this resource is destroyed:
+  //   "" / "DELETE" -- the template is deleted; applications and engines
+  //                    that still name it start failing their screens
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the template leaves management and stays in GCP
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// GcpModelArmorTemplateFilterConfig selects the filters. Each filter is
+// off unless its message is set.
+message GcpModelArmorTemplateFilterConfig {
+  // Malicious URL detection: flags links to known phishing and malware
+  // sites in prompts and responses.
+  GcpModelArmorTemplateMaliciousUriFilterSettings malicious_uri_filter_settings = 1;
+
+  // Prompt injection and jailbreak detection: flags attempts to override
+  // the model's instructions or talk it out of its safety rules.
+  GcpModelArmorTemplatePiAndJailbreakFilterSettings pi_and_jailbreak_filter_settings = 2;
+
+  // Responsible AI content filters: sexually explicit, hate speech,
+  // harassment, and dangerous content, each with its own threshold.
+  GcpModelArmorTemplateRaiSettings rai_settings = 3;
+
+  // Sensitive Data Protection: finds (and optionally redacts) personal and
+  // confidential data such as card numbers, credentials, and IDs.
+  GcpModelArmorTemplateSdpSettings sdp_settings = 4;
+}
+
+// GcpModelArmorTemplateMaliciousUriFilterSettings switches the malicious
+// URL filter.
+message GcpModelArmorTemplateMaliciousUriFilterSettings {
+  // "ENABLED" or "DISABLED". Unset leaves Google's default (disabled).
+  string filter_enforcement = 1 [(buf.validate.field).cel = {
+    id: "filter_enforcement.valid"
+    message: "filter_enforcement must be ENABLED or DISABLED"
+    expression: "this == '' || this in ['ENABLED', 'DISABLED']"
+  }];
+}
+
+// GcpModelArmorTemplatePiAndJailbreakFilterSettings switches the prompt
+// injection and jailbreak filter and sets its threshold.
+message GcpModelArmorTemplatePiAndJailbreakFilterSettings {
+  // "ENABLED" or "DISABLED". Unset leaves Google's default (disabled).
+  string filter_enforcement = 1 [(buf.validate.field).cel = {
+    id: "filter_enforcement.valid"
+    message: "filter_enforcement must be ENABLED or DISABLED"
+    expression: "this == '' || this in ['ENABLED', 'DISABLED']"
+  }];
+
+  // How confident Model Armor must be before it flags a prompt:
+  //   "LOW_AND_ABOVE"    -- flags the most; the strictest setting, with
+  //                         the most false positives
+  //   "MEDIUM_AND_ABOVE" -- the balanced choice
+  //   "HIGH"             -- flags only clear attempts
+  string confidence_level = 2 [(buf.validate.field).cel = {
+    id: "confidence_level.valid"
+    message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
+    expression: "this == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']"
+  }];
+}
+
+// GcpModelArmorTemplateRaiSettings lists the Responsible AI filters the
+// template runs.
+message GcpModelArmorTemplateRaiSettings {
+  // One entry per content category to screen for; a category not listed
+  // is not screened.
+  repeated GcpModelArmorTemplateRaiFilter rai_filters = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).cel = {
+      id: "rai_filters.unique_filter_type"
+      message: "each filter_type may appear only once"
+      expression: "this.map(f, f.filter_type).unique()"
+    }
+  ];
+}
+
+// GcpModelArmorTemplateRaiFilter is one Responsible AI content filter.
+message GcpModelArmorTemplateRaiFilter {
+  // The content category: "SEXUALLY_EXPLICIT", "HATE_SPEECH",
+  // "HARASSMENT", or "DANGEROUS".
+  string filter_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "SEXUALLY_EXPLICIT",
+        "HATE_SPEECH",
+        "HARASSMENT",
+        "DANGEROUS"
+      ]
+    }
+  ];
+
+  // How confident Model Armor must be before it flags content in this
+  // category: "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+  string confidence_level = 2 [(buf.validate.field).cel = {
+    id: "confidence_level.valid"
+    message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
+    expression: "this == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']"
+  }];
+}
+
+// GcpModelArmorTemplateSdpSettings configures Sensitive Data Protection
+// screening -- either Google's basic detector set or your own Sensitive
+// Data Protection templates, never both.
+message GcpModelArmorTemplateSdpSettings {
+  option (buf.validate.message).cel = {
+    id: "sdp_settings.basic_xor_advanced"
+    message: "set at most one of basic_config or advanced_config"
+    expression: "!(has(this.basic_config) && has(this.advanced_config))"
+  };
+
+  // Google's predefined set of sensitive-data detectors (card numbers,
+  // government IDs, credentials, and similar). The quick start.
+  GcpModelArmorTemplateSdpBasicConfig basic_config = 1;
+
+  // Your own Sensitive Data Protection templates: an inspect template
+  // decides what counts as sensitive, and an optional de-identify template
+  // decides how findings are redacted in the sanitized text.
+  GcpModelArmorTemplateSdpAdvancedConfig advanced_config = 2;
+}
+
+// GcpModelArmorTemplateSdpBasicConfig switches Google's basic
+// sensitive-data detectors.
+message GcpModelArmorTemplateSdpBasicConfig {
+  // "ENABLED" or "DISABLED".
+  string filter_enforcement = 1 [(buf.validate.field).cel = {
+    id: "filter_enforcement.valid"
+    message: "filter_enforcement must be ENABLED or DISABLED"
+    expression: "this == '' || this in ['ENABLED', 'DISABLED']"
+  }];
+}
+
+// GcpModelArmorTemplateSdpAdvancedConfig names Sensitive Data Protection
+// templates. The Model Armor service agent needs permission to use them.
+message GcpModelArmorTemplateSdpAdvancedConfig {
+  // Inspect template:
+  // projects/{project}/locations/{location}/inspectTemplates/{template}.
+  // With only an inspect template, Model Armor reports findings.
+  string inspect_template = 1 [(buf.validate.field).cel = {
+    id: "inspect_template.format"
+    message: "inspect_template must be projects/{project}/locations/{location}/inspectTemplates/{template}"
+    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/inspectTemplates/[^/]+$')"
+  }];
+
+  // De-identify template:
+  // projects/{project}/locations/{location}/deidentifyTemplates/{template}.
+  // Adds redaction to the sanitized result. Every info type the
+  // de-identify template names must also be in the inspect template.
+  string deidentify_template = 2 [(buf.validate.field).cel = {
+    id: "deidentify_template.format"
+    message: "deidentify_template must be projects/{project}/locations/{location}/deidentifyTemplates/{template}"
+    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/deidentifyTemplates/[^/]+$')"
+  }];
+}
+
+// GcpModelArmorTemplateMetadata shapes the template's behavior around its
+// filters. Every field is optional; unset fields keep Google's defaults.
+message GcpModelArmorTemplateMetadata {
+  // Log template create, update, and delete operations to Cloud Logging.
+  bool log_template_operations = 1;
+
+  // Log every sanitize call (the prompt or response screened and the
+  // verdict) to Cloud Logging. Useful for tuning thresholds; the logs
+  // carry the screened text.
+  bool log_sanitize_operations = 2;
+
+  // Detect and screen prompts in languages other than English. Sent only
+  // when true.
+  bool enable_multi_language_detection = 3;
+
+  // When one of several detectors fails, return the other detectors'
+  // verdicts instead of failing the whole call.
+  bool ignore_partial_invocation_failures = 4;
+
+  // The error code a service extension returns to the end user when a
+  // prompt trips a filter (for example 403). Sent only when set.
+  int32 custom_prompt_safety_error_code = 5;
+
+  // The error message returned to the end user when a prompt trips a
+  // filter.
+  string custom_prompt_safety_error_message = 6;
+
+  // The error code returned to the end user when a model response trips a
+  // filter. Sent only when set.
+  int32 custom_llm_response_safety_error_code = 7;
+
+  // The error message returned to the end user when a model response
+  // trips a filter.
+  string custom_llm_response_safety_error_message = 8;
+
+  // What happens when a filter trips:
+  //   "INSPECT_ONLY"      -- the verdict is reported and the traffic
+  //                          passes (a safe way to tune a new template)
+  //   "INSPECT_AND_BLOCK" -- the traffic is blocked
+  // Unset keeps Google's default.
+  string enforcement_type = 9 [(buf.validate.field).cel = {
+    id: "enforcement_type.valid"
+    message: "enforcement_type must be INSPECT_ONLY or INSPECT_AND_BLOCK"
+    expression: "this == '' || this in ['INSPECT_ONLY', 'INSPECT_AND_BLOCK']"
+  }];
+
+  // Which version of Google's filters the template runs. Omit to follow
+  // Google's default.
+  GcpModelArmorTemplateFilterVersionSelector filter_version_selector = 10;
+}
+
+// GcpModelArmorTemplateFilterVersionSelector pins or follows a filter
+// version -- exactly one of alias or version.
+message GcpModelArmorTemplateFilterVersionSelector {
+  option (buf.validate.message).cel = {
+    id: "filter_version_selector.exactly_one"
+    message: "set exactly one of alias or version"
+    expression: "(this.alias != '') != (this.version != '')"
+  };
+
+  // Follow a moving version: "FILTER_VERSION_ALIAS_STABLE" (Google's
+  // recommended version) or "FILTER_VERSION_ALIAS_LATEST" (newest filters
+  // first, verdicts may shift as Google updates them).
+  string alias = 1 [(buf.validate.field).cel = {
+    id: "alias.valid"
+    message: "alias must be FILTER_VERSION_ALIAS_STABLE or FILTER_VERSION_ALIAS_LATEST"
+    expression: "this == '' || this in ['FILTER_VERSION_ALIAS_STABLE', 'FILTER_VERSION_ALIAS_LATEST']"
+  }];
+
+  // Pin an exact, immutable filter version such as "v1" or "v2"
+  // (case-sensitive), so verdicts never shift under you.
+  string version = 2 [(buf.validate.field).cel = {
+    id: "version.format"
+    message: "version must look like v1, v2, ..."
+    expression: "this == '' || this.matches('^v[0-9]+$')"
+  }];
+}

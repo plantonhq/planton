@@ -35,6 +35,13 @@ spec:
   # cryptoKeyEncrypterDecrypter grant), and resource_manager_tags (needs
   # org-level tagKeys/tagValues — the standing org-fixture item).
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the VM gained scheduling.host_error_timeout_seconds
+  # (the features scenario sets 120) and managed workload identity
+  # (workload_identity_config); the earlier live proof predates them. Workload
+  # identity needs a workload identity pool the test project does not carry,
+  # so it stays offline-proven; the next proof confirms the timeout round-
+  # trips and re-plans clean.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 30

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccbigqueryexport.v1alpha1;
+
+// GcpSccBigQueryExportStackOutputs carries the export's identity and the
+// writer it needs on its dataset.
+message GcpSccBigQueryExportStackOutputs {
+  // Full resource name:
+  // {parent}/locations/{location}/bigQueryExports/{big_query_export_id}.
+  string name = 1;
+
+  // The Security Command Center service account that writes the findings.
+  // Grant it roles/bigquery.dataEditor on the dataset (a
+  // GcpBigQueryDataset access entry), or no rows arrive.
+  string principal = 2;
+}

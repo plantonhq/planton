@@ -114,7 +114,7 @@ spec:
 | `spec.network.enablePrivatePathForGoogleCloudServices` | `bool` |  |  |  |
 | `spec.network.sslMode` | `string` |  |  |  |
 | `spec.network.serverCaMode` | `string` |  |  |  |
-| `spec.network.serverCaPool` | `string` |  |  |  |
+| `spec.network.serverCaPool` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.network.customSubjectAlternativeNames` | `[]string` |  |  |  |
 | `spec.network.psc` | `GcpCloudSqlPscConfig` |  |  |  |
 | `spec.network.psc.enabled` | `bool` |  |  |  |
@@ -125,6 +125,7 @@ spec:
 | `spec.network.psc.autoConnections[].consumerServiceProjectId` | `string` |  |  |  |
 | `spec.network.psc.autoDnsEnabled` | `bool` |  |  |  |
 | `spec.network.psc.writeEndpointDnsEnabled` | `bool` |  |  |  |
+| `spec.network.psc.autoConnectionPolicyEnabled` | `bool` |  |  |  |
 | `spec.network.serverCertificateRotationMode` | `string` |  |  |  |
 | `spec.locationPreference` | `GcpCloudSqlLocationPreference` |  |  |  |
 | `spec.locationPreference.zone` | `string` |  |  |  |
@@ -181,7 +182,7 @@ spec:
 | `spec.connectorEnforcement` | `string` |  |  |  |
 | `spec.enableGoogleMlIntegration` | `bool` |  |  |  |
 | `spec.enableDataplexIntegration` | `bool` |  |  |  |
-| `spec.encryptionKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.encryptionKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.deletionProtection` | `bool` |  |  |  |
 | `spec.deletionProtectionEnabled` | `bool` |  |  |  |
 | `spec.retainBackupsOnDelete` | `bool` |  |  |  |
@@ -245,6 +246,10 @@ spec:
 | `spec.entraId` | `GcpCloudSqlEntraIdConfig` |  |  |  |
 | `spec.entraId.applicationId` | `string` | yes |  |  |
 | `spec.entraId.tenantId` | `string` | yes |  |  |
+| `spec.switchTransactionLogsToCloudStorageEnabled` | `bool` |  |  |  |
+| `spec.includeReplicasForMajorVersionUpgrade` | `bool` |  |  |  |
+| `spec.enforceNewSqlNetworkArchitecture` | `bool` |  |  |  |
+| `spec.replicationLagMaxSeconds` | `int32` |  |  |  |
 
 ## Field Details
 
@@ -526,10 +531,17 @@ Immutable after creation.
 
 ### spec.network.serverCaPool
 
-`string`
+`string | valueFrom`
 
-The CA Service CA pool (full resource path) that signs the server
-certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
+The CA Service CA pool that signs the server certificate when
+server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a GcpPrivateCaPool
+reference (its full name) or a literal
+projects/{project}/locations/{region}/caPools/{pool}. The pool must be
+in the instance's region.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.network.customSubjectAlternativeNames
 
@@ -611,6 +623,16 @@ tracking endpoint IPs.
 
 Enterprise Plus only: also create a DNS record for the PSA write
 endpoint, so clients follow the primary across switchovers by name.
+
+### spec.network.psc.autoConnectionPolicyEnabled
+
+`bool` · optional (explicit presence)
+
+Whether Cloud SQL also creates a Service Connection Policy for the
+auto_connections above, so the consumer networks need no separately
+authored policy before the automatic endpoints can be provisioned.
+Leave unset to keep the API's own default; sent only when set because
+the API fills the value itself.
 
 ### spec.network.serverCertificateRotationMode
 
@@ -1072,7 +1094,7 @@ Accepts a full crypto key path
 to a GcpKmsKey resource. The key MUST be in the same region as the
 instance. Immutable: CMEK cannot be added or changed after creation.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.deletionProtection
@@ -1569,6 +1591,50 @@ The Entra ID tenant (directory) ID.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 
+### spec.switchTransactionLogsToCloudStorageEnabled
+
+`bool`
+
+Opt-in that lets the instance move point-in-time-recovery transaction
+logs from the data disk to Cloud Storage, freeing disk space and
+allowing longer transaction-log retention windows. An input-only
+instruction: Cloud SQL acts on it but never stores it, so it is sent
+exactly as written and never read back.
+
+### spec.includeReplicasForMajorVersionUpgrade
+
+`bool`
+
+Opt-in that upgrades this primary's read replicas in place, together
+with the primary, when database_version moves to a new major version.
+Without it a major-version upgrade leaves replicas on the old version
+to be upgraded (or recreated) separately. Input-only: consulted only
+during a major-version upgrade and never stored by the API.
+
+### spec.enforceNewSqlNetworkArchitecture
+
+`bool` · optional (explicit presence)
+
+Irreversible opt-in to Cloud SQL's new network architecture for an
+instance created in a project that predates it (projects created after
+August 2021 already use it). Required before features such as PSC
+and outbound network attachments on those older projects. Once true
+it cannot be set back to false. Leave unset to let Cloud SQL report
+the instance's current architecture; sent only when set because the
+API fills the value itself.
+
+### spec.replicationLagMaxSeconds
+
+`int32` · optional (explicit presence)
+
+Read replicas only: the replication lag, in seconds, beyond which the
+replica recreates itself. The lag must persist for at least five
+minutes before recreation triggers. Between 300 (five minutes) and
+31536000 (one year). Leave unset for no automatic recreation; sent
+only when set because the API fills the value itself.
+
+- rule: {"int32":{"lte":31536000,"gte":300}}
+
 ## Validation Rules
 
 - `database_version_matches_engine`: database_version must match database_engine: MYSQL_* for MYSQL, POSTGRES_* for POSTGRESQL, SQLSERVER_* for SQLSERVER
@@ -1613,7 +1679,9 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.network.privateNetwork` | GcpVpcNetwork | `status.outputs.network_id` |
+| `spec.network.serverCaPool` | GcpPrivateCaPool | `status.outputs.name` |
 | `spec.encryptionKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.encryptionKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.masterInstanceName` | GcpCloudSql | `status.outputs.instance_name` |
 
 ## Referenced By
@@ -1622,11 +1690,16 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpBigQueryConnection | `spec.cloudSql.instanceId` | `status.outputs.connection_name` |
 | GcpCloudRun | `spec.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
 | GcpCloudRunJob | `spec.template.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
+| GcpCloudRunWorkerPool | `spec.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
 | GcpCloudSql | `spec.masterInstanceName` | `status.outputs.instance_name` |
 | GcpCloudSqlDatabase | `spec.instance` | `status.outputs.instance_name` |
 | GcpCloudSqlUser | `spec.instance` | `status.outputs.instance_name` |
+| GcpDatastreamConnectionProfile | `spec.mysqlProfile.hostname` | `status.outputs.public_ip` |
+| GcpDatastreamConnectionProfile | `spec.postgresqlProfile.hostname` | `status.outputs.public_ip` |
+| GcpDatastreamConnectionProfile | `spec.sqlServerProfile.hostname` | `status.outputs.public_ip` |
 
 ## See Also
 

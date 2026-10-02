@@ -1,0 +1,36 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBillingBudget
+metadata:
+  name: payments-prod-monthly
+spec:
+  billingAccount: 012345-6789AB-CDEF01
+  displayName: Payments production -- monthly guardrail
+  # A fixed monthly amount for one project.
+  amount:
+    specifiedAmount:
+      currencyCode: USD
+      units: 8000
+  budgetFilter:
+    projects:
+      - valueFrom:
+          kind: GcpProject
+          name: payments-prod
+          fieldPath: status.outputs.project_number
+    calendarPeriod: MONTH
+    creditTypesTreatment: INCLUDE_ALL_CREDITS
+  # Warn at half, act at 90% of actual spend, and act early when the
+  # forecast says the month will overshoot.
+  thresholdRules:
+    - thresholdPercent: 0.5
+    - thresholdPercent: 0.9
+    - thresholdPercent: 1.0
+      spendBasis: FORECASTED_SPEND
+  # The team's own channel, not every billing administrator.
+  notifications:
+    monitoringNotificationChannels:
+      - valueFrom:
+          kind: GcpMonitoringNotificationChannel
+          name: payments-oncall
+          fieldPath: status.outputs.channel_name
+    disableDefaultIamRecipients: true
+  deletionPolicy: PREVENT

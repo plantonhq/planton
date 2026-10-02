@@ -1,0 +1,55 @@
+# GcpCertManagerTrustConfig leaf scenario: one trust store holding a
+# throwaway self-signed test root CA, plus one allowlisted self-signed
+# device certificate. Both are public test material; neither private key
+# exists anywhere in the repository. Location is left empty so the
+# modules' "global" fallback is proven. Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerTrustConfig
+metadata:
+  name: planton-oss-e2e-gcpcmtc-anchor
+  id: planton-oss-e2e-gcpcmtc-anchor
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcertmanagertrustconfig
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  trustConfigName: planton-e2e-cmtc-${E2E_RUN_ID}
+  description: Planton E2E trust config with a test root; safe to delete
+  trustStores:
+    - trustAnchors:
+        - |
+          -----BEGIN CERTIFICATE-----
+          MIIB1zCCAX2gAwIBAgIUO2SNH168IsDjUhIgSU4EP3xeQKYwCgYIKoZIzj0EAwIw
+          OTEUMBIGA1UECgwLUGxhbnRvbiBFMkUxITAfBgNVBAMMGFBsYW50b24gRTJFIFRl
+          c3QgUm9vdCBDQTAeFw0yNjEwMDExOTE2NTFaFw0zNjA5MjgxOTE2NTFaMDkxFDAS
+          BgNVBAoMC1BsYW50b24gRTJFMSEwHwYDVQQDDBhQbGFudG9uIEUyRSBUZXN0IFJv
+          b3QgQ0EwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARlRV2vfedOKCAxnsgVMT5x
+          D1IamqbmJ7AgN71cIHYfXjUZ7u5r020iNNvwovXuKWZXMFhJ62ok9OW/qZiAqu3j
+          o2MwYTAdBgNVHQ4EFgQU0v4IPTNioqt/DriQUmKQs6JWu2wwHwYDVR0jBBgwFoAU
+          0v4IPTNioqt/DriQUmKQs6JWu2wwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8E
+          BAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIgXVQFo6r/EinTlZs7eJvchpGs7i3AjOAd
+          r/nQXKMQCjwCIQCQp4chcMFKRLJcS2msaZEETsyv/Q79yZg5AwvfarrTig==
+          -----END CERTIFICATE-----
+  allowlistedCertificates:
+    - |
+      -----BEGIN CERTIFICATE-----
+      MIICAjCCAaigAwIBAgIUYB7zNOy1YTgKcLpPokgxk8mUeIwwCgYIKoZIzj0EAwIw
+      MzEUMBIGA1UECgwLUGxhbnRvbiBFMkUxGzAZBgNVBAMMEnBsYW50b24tZTJlLWRl
+      dmljZTAeFw0yNjEwMDExOTE2NTJaFw0zNjA5MjgxOTE2NTJaMDMxFDASBgNVBAoM
+      C1BsYW50b24gRTJFMRswGQYDVQQDDBJwbGFudG9uLWUyZS1kZXZpY2UwWTATBgcq
+      hkjOPQIBBggqhkjOPQMBBwNCAAQItlVleMHQMgV/mj9Uh21+szUyoa7oZ2mZ0yUf
+      TX5QmoYhRKciPgIPrGvgCErKdmpsu/Eg1nstJ2dbYG5ipuBAo4GZMIGWMB0GA1Ud
+      DgQWBBQmwWKUVLC0VTJKaiRq7N88rmf2QDAfBgNVHSMEGDAWgBQmwWKUVLC0VTJK
+      aiRq7N88rmf2QDAMBgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUE
+      DDAKBggrBgEFBQcDAjAhBgNVHREEGjAYghZkZXZpY2UuZTJlLmV4YW1wbGUuY29t
+      MAoGCCqGSM49BAMCA0gAMEUCIDHxXzOIz8SI6Y56zzfXivOvu0iX2ag6tuG3NsBz
+      BsPxAiEAgAZTpn8pk1XsjH7eT3+J3+wt9GuIIEiq10wbW7EEhKs=
+      -----END CERTIFICATE-----
+  labels:
+    e2e-arm: self-signed-anchor
+  deletionPolicy: DELETE

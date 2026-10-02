@@ -6,7 +6,8 @@ spec:
   zone: us-central1-a # replace — the attached disk must live in this zone
   machineType: n2-standard-4
   bootDisk:
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
     sizeGb: 50
     type: pd-balanced
   attachedDisks:

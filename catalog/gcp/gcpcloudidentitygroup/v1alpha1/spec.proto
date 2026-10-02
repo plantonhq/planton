@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudidentitygroup.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpCloudIdentityGroupMembershipRole is one role a member holds in the
+// group. Every membership carries MEMBER; MANAGER and OWNER are added on
+// top. Only a MEMBER role may expire.
+message GcpCloudIdentityGroupMembershipRole {
+  option (buf.validate.message).cel = {
+    id: "expiry_only_on_member"
+    message: "expire_time applies only to the MEMBER role"
+    expression: "this.expire_time == '' || this.name == 'MEMBER'"
+  };
+
+  // The role: MEMBER (belongs to the group), MANAGER (manages members),
+  // OWNER (full control, including deleting the group).
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_role_name"
+      message: "name must be OWNER, MANAGER, or MEMBER"
+      expression: "this in ['OWNER', 'MANAGER', 'MEMBER']"
+    }
+  ];
+
+  // When the MEMBER role expires and the membership is removed, as an RFC
+  // 3339 timestamp (e.g. 2027-01-01T00:00:00Z). Unset never expires.
+  string expire_time = 2 [(buf.validate.field).cel = {
+    id: "valid_expire_time"
+    message: "expire_time must be an RFC 3339 timestamp such as 2027-01-01T00:00:00Z"
+    expression: "this == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$')"
+  }];
+}
+
+// GcpCloudIdentityGroupMembership is one member of the group: a user, a
+// service account, or another group, by email, with the roles it holds.
+message GcpCloudIdentityGroupMembership {
+  option (buf.validate.message).cel = {
+    id: "membership_roles_include_member"
+    message: "every membership carries the MEMBER role; add MANAGER or OWNER on top"
+    expression: "this.roles.size() == 0 || this.roles.exists(r, r.name == 'MEMBER')"
+  };
+  option (buf.validate.message).cel = {
+    id: "membership_roles_unique"
+    message: "each role appears at most once on a membership"
+    expression: "this.roles.all(r, this.roles.filter(x, x.name == r.name).size() == 1)"
+  };
+
+  // The member's email: a Google user, a Google Group, or a service
+  // account -- a GcpServiceAccount reference or a literal address.
+  // Immutable: a different member is a different membership.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef member = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // The namespace of an identity-mapped (non-Google) member, in the form
+  // `identitysources/{id}`. Unset means a Google-managed identity.
+  // Immutable.
+  string member_namespace = 2;
+
+  // The roles the member holds. Unset means MEMBER only; listed roles must
+  // include MEMBER. Roles change in place.
+  repeated GcpCloudIdentityGroupMembershipRole roles = 3;
+
+  // Skip creating the membership when one for this member already exists
+  // (adopt it instead of failing). Unset means fail on a duplicate.
+  bool create_ignore_already_exists = 4;
+}
+
+// GcpCloudIdentityGroupSpec creates a Google Group in Cloud Identity or
+// Google Workspace and manages its members: the unit every IAM binding
+// should point at instead of individual people, so access changes are a
+// membership edit, not a policy edit. The group is created under a Cloud
+// Identity customer (`customers/{id}`), which is the organization's
+// account, and gets an email address in one of the customer's domains.
+//
+// Two kinds of Google Group exist: a discussion forum (the default, a
+// mailing list that IAM can also bind) and a security group, which adds
+// the security label and cannot be turned back into a plain group. Members
+// are folded in: each is a user, group, or service account by email with
+// its roles; the manifest's list is the whole managed membership.
+message GcpCloudIdentityGroupSpec {
+  option (buf.validate.message).cel = {
+    id: "members_unique"
+    message: "each member email appears once"
+    expression: "this.memberships.all(m, m.member.value == '' || this.memberships.filter(x, x.member.value == m.member.value).size() == 1)"
+  };
+
+  // The group's email address, in a domain the customer owns
+  // (e.g. platform-admins@example.com). This is the group's identity in
+  // IAM (`group:platform-admins@example.com`). Required. Immutable.
+  string group_email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_group_email"
+      message: "group_email must be an email address in a domain the Cloud Identity customer owns"
+      expression: "this.matches('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$')"
+    }
+  ];
+
+  // The Cloud Identity customer the group is created under, as
+  // `customers/{id}` (the customer ID from the Google Admin console or
+  // `gcloud organizations list`). Required. Immutable.
+  string customer_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_customer_id"
+      message: "customer_id must be of the form customers/{id}, e.g. customers/C01abc2de"
+      expression: "this.matches('^customers/[A-Za-z0-9]+$')"
+    }
+  ];
+
+  // The namespace of an identity-mapped (non-Google) group, in the form
+  // `identitysources/{id}`. Unset means a Google Group. Immutable.
+  string group_namespace = 9;
+
+  // Name shown in the Admin console and Groups UI. Defaults to
+  // metadata.name.
+  string display_name = 3;
+
+  // Free-text description of the group's purpose (up to 4096 characters).
+  string description = 4 [(buf.validate.field).string.max_len = 4096];
+
+  // Make this a security group: adds the
+  // cloudidentity.googleapis.com/groups.security label on top of the
+  // discussion-forum label every Google Group carries. Security groups are
+  // for access control only (no mailing-list features) and the label
+  // cannot be removed once added. Immutable in practice.
+  bool security = 5;
+
+  // Who the group starts with: EMPTY (the default; the members below are
+  // the whole membership), WITH_INITIAL_OWNER (the caller becomes an owner
+  // so the group is never orphaned). Immutable.
+  optional string initial_group_config = 6 [
+    (dev.planton.shared.options.default) = "EMPTY",
+    (buf.validate.field).cel = {
+      id: "valid_initial_group_config"
+      message: "initial_group_config must be EMPTY or WITH_INITIAL_OWNER"
+      expression: "this == '' || this in ['EMPTY', 'WITH_INITIAL_OWNER']"
+    }
+  ];
+
+  // The group's members. Each is one membership resource keyed by the
+  // member's email; a member removed here is removed from the group, one
+  // added is added. Roles change in place.
+  repeated GcpCloudIdentityGroupMembership memberships = 7;
+
+  // What destroy does to the group:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the group and every membership are deleted; IAM
+  //                bindings that named the group stop granting anything
+  //   "PREVENT" -- destroy FAILS; protects a group IAM policies depend on
+  //   "ABANDON" -- the group leaves management but keeps existing
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}

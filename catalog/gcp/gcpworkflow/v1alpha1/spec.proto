@@ -78,7 +78,15 @@ message GcpWorkflowSpec {
   // encryption.
   dev.planton.shared.foreignkey.v1.StringValueOrRef crypto_key = 8 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
   ];
 
   // How much call detail execution history records:
@@ -108,16 +116,15 @@ message GcpWorkflowSpec {
   }];
 
   // Environment variables visible to the workflow source via sys.get_env().
-  // At most 20 entries (the API's own cap, enforced here); each value up to
-  // 4KiB. Keys must be non-empty and must NOT start with "GOOGLE" or
-  // "WORKFLOWS" (reserved prefixes the API rejects — key-shape rules live
-  // here in the comment because map KEYS are not CEL-addressable). Changing
-  // env vars deploys a NEW revision.
-  map<string, string> user_env_vars = 11 [(buf.validate.field).cel = {
-    id: "user_env_vars_max_20"
-    message: "user_env_vars accepts at most 20 entries (the API cap)"
-    expression: "size(this) <= 20"
-  }];
+  // Values are written into the workflow revision, where anyone who can
+  // view the workflow reads them: configuration only, never a credential
+  // -- a credential goes in secret_env_vars. At most 20 entries across
+  // user_env_vars and secret_env_vars together (the API's own cap,
+  // enforced here); each value up to 4KiB. Keys must be non-empty and must
+  // NOT start with "GOOGLE" or "WORKFLOWS" (reserved prefixes the API
+  // rejects — key-shape rules live here in the comment because map KEYS
+  // are not CEL-addressable). Changing env vars deploys a NEW revision.
+  map<string, string> user_env_vars = 11 [(dev.planton.shared.options.secret_home) = "secret_env_vars"];
 
   // Resource manager tags bound at workflow creation, keyed
   // tagKeys/{tag_key_id} with values tagValues/{tag_value_id} — the
@@ -146,4 +153,57 @@ message GcpWorkflowSpec {
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
   }];
+
+  // Secret values the workflow reads at run time, keyed by environment
+  // variable name. Cloud Workflows has no secret field, so the component
+  // never puts the value on the workflow: it keeps each one in a Secret
+  // Manager secret it owns (id workflow_<region>_<workflow name>_<key>,
+  // replicated only in the workflow's region), grants the workflow's
+  // runtime identity (service_account, or the project's Compute Engine
+  // default service account when unset) secretAccessor on that secret
+  // alone, and sets the variable to the version's resource name,
+  // projects/<project>/secrets/<id>/versions/<n>. The workflow reads the
+  // value through the Secret Manager connector, which returns the payload
+  // base64-encoded:
+  //
+  //   - read_token:
+  //       call: googleapis.secretmanager.v1.projects.secrets.versions.access
+  //       args:
+  //         name: ${sys.get_env("API_TOKEN")}
+  //       result: token_version
+  //   - decode_token:
+  //       assign:
+  //         - api_token: ${text.decode(base64.decode(token_version.payload.data))}
+  //
+  // (The accessString helper returns the decoded string, but takes the
+  // secret's short id, version, and project as separate arguments rather
+  // than the full name.) A changed value adds a version, which changes the
+  // variable and deploys a new revision, so rotation is a deploy;
+  // destroying the workflow removes the secrets.
+  // The variable itself counts toward the 20-variable cap and carries the
+  // same key rules as user_env_vars; a key may not appear in both maps,
+  // region must be set (the secrets replicate there), and a literal
+  // service_account must name the account by email.
+  map<string, string> secret_env_vars = 15 [(dev.planton.shared.options.sensitive) = true];
+
+  option (buf.validate.message).cel = {
+    id: "env_vars_max_20"
+    message: "user_env_vars and secret_env_vars together accept at most 20 entries (the API cap)"
+    expression: "size(this.user_env_vars) + size(this.secret_env_vars) <= 20"
+  };
+  option (buf.validate.message).cel = {
+    id: "secret_env_vars_disjoint"
+    message: "a variable is either in user_env_vars or in secret_env_vars, never both"
+    expression: "!this.secret_env_vars.exists(k, k in this.user_env_vars)"
+  };
+  option (buf.validate.message).cel = {
+    id: "secret_env_vars_need_region"
+    message: "secret_env_vars needs region: the stored secrets replicate only in the workflow's region"
+    expression: "size(this.secret_env_vars) == 0 || this.region != ''"
+  };
+  option (buf.validate.message).cel = {
+    id: "secret_env_vars_need_email_identity"
+    message: "with secret_env_vars, service_account must name the account by email (or projects/{project}/serviceAccounts/{email}): the secret grant is made to that email"
+    expression: "size(this.secret_env_vars) == 0 || !has(this.service_account.value) || this.service_account.value.matches('^(projects/[^/]+/serviceAccounts/)?[^/@]+@[^/]+$')"
+  };
 }

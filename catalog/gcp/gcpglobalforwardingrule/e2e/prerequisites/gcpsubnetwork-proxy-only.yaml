@@ -1,0 +1,32 @@
+# Extra-instance GcpSubnetwork fixture: the PROXY-ONLY subnet every regional
+# external Application Load Balancer needs in its region before a forwarding
+# rule can be created -- the address space the region's Envoy proxies draw
+# from (purpose REGIONAL_MANAGED_PROXY, role ACTIVE). One per region per
+# network. Lives on the registry's prerequisite network.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSubnetwork
+metadata:
+  name: planton-oss-e2e-gcpgfr-proxy-subnet
+  id: planton-oss-e2e-gcpgfr-proxy-subnet
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpglobalforwardingrule
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral subnet for the gcpglobalforwardingrule regional E2E chain; safe to delete
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: planton-oss-e2e-gcpgfr-proxy-subnet
+  region: us-central1
+  ipCidrRange: 10.129.0.0/23
+  purpose: REGIONAL_MANAGED_PROXY
+  role: ACTIVE
+  deletionPolicy: DELETE

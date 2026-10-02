@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpSharedVpcServiceProjectSpec attaches one SERVICE project to a Shared
+// VPC HOST project (GcpSharedVpcHost), so workloads in the service project
+// can be placed in the host's subnetworks: the application team keeps its
+// own project, IAM, quotas, and bill, while the network team keeps the one
+// set of networks every team shares.
+//
+// One resource per attachment. A host may have many service projects; a
+// project can be a service project of at most one host. Both projects are
+// IMMUTABLE here -- moving a service project to another host is a detach
+// and an attach.
+//
+// Attaching is not enough by itself: the service project's deployers (and
+// the Google-managed service agents that create its VMs, GKE nodes, and
+// Cloud SQL instances) still need `roles/compute.networkUser` on the
+// host's subnetworks -- or on the whole host project -- to actually use
+// them. Grant that with the catalog's IAM kinds (GcpProjectIamMember on
+// the host project, or subnetwork-level IAM); it is deliberately not part
+// of this resource, because those grants have their own lifecycle and are
+// usually per subnetwork, per team.
+//
+// Permissions: the deploying identity needs `roles/compute.xpnAdmin` on the
+// organization (or the folder above both projects) to attach, plus
+// `roles/resourcemanager.projectIamAdmin`-class rights to read the service
+// project.
+message GcpSharedVpcServiceProjectSpec {
+  // The Shared VPC host to attach to: a reference to a GcpSharedVpcHost
+  // (its host_project_id output) or the host's project ID as a literal.
+  // Referencing the HOST KIND, not the project, is what orders a chart
+  // correctly -- the project is enabled as a host before anything attaches
+  // to it. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef host_project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSharedVpcHost,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.host_project_id"
+  ];
+
+  // The project being attached as a service project: a reference to a
+  // GcpProject (its project_id output) or the project ID as a literal.
+  // Required -- Google's API takes both projects explicitly and the
+  // provider has no ambient default for this one. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_project_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // What destroying this resource does to the attachment in GCP. This
+  // resource's own provider argument accepts ONE value, not the usual
+  // DELETE/PREVENT/ABANDON trio:
+  //   ""        -- the attachment is removed: the service project is
+  //                detached from the host (the provider default). Fails
+  //                while any resource in the service project still uses a
+  //                host subnetwork.
+  //   "ABANDON" -- the resource leaves management but the project stays
+  //                attached with every workload intact -- for a service
+  //                project whose VMs must outlive the chart that attached
+  //                it (a shared platform project handed to another team).
+  string deletion_policy = 3 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be empty (detach on destroy) or ABANDON -- this resource accepts no other value"
+    expression: "this == '' || this == 'ABANDON'"
+  }];
+}

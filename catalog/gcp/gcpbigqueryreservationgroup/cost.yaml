@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpbigqueryreservationgroup
+spec:
+  billing_model: free
+  free_tier: "A reservation group is configuration; Google's BigQuery pricing (read 2026-09-24) bills slots, not groups."
+  notes: "The reservations in the group bill under GcpBigQueryReservation; grouping changes who borrows idle slots, not the price."

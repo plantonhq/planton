@@ -95,7 +95,8 @@ spec:
     insecureKubeletReadonlyPortEnabled: "FALSE"
     loggingVariant: DEFAULT
   userManagedKeys:
-    clusterCa: projects/test-project-123/locations/us-central1/caPools/test-cluster-ca
+    clusterCa:
+      value: projects/test-project-123/locations/us-central1/caPools/test-cluster-ca
     controlPlaneDiskEncryptionKey:
       value: projects/test-project-123/locations/us-central1/keyRings/test-ring/cryptoKeys/cp-disk-key
   addons:

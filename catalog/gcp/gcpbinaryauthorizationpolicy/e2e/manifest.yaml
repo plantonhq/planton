@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationPolicy
+metadata:
+  name: prod-policy
+spec:
+  projectId:
+    value: my-gcp-project
+  globalPolicyEvaluationMode: ENABLE
+  defaultAdmissionRule:
+    evaluationMode: REQUIRE_ATTESTATION
+    enforcementMode: DRYRUN_AUDIT_LOG_ONLY
+    requireAttestationsBy:
+      - value: projects/my-gcp-project/attestors/built-by-ci
+  clusterAdmissionRules:
+    - cluster: us-central1.sandbox
+      evaluationMode: ALWAYS_ALLOW
+      enforcementMode: DRYRUN_AUDIT_LOG_ONLY

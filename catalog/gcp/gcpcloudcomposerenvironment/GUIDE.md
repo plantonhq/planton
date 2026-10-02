@@ -43,6 +43,10 @@ behavior is legacy Composer 2 only. Wire a dedicated
 `GcpServiceAccount` reference; granting its roles after a failed
 create does not resume the create.
 
+## Secrets are pointers, not values
+
+`envVariables` is plain text that every Airflow component and anyone reading the environment can see. Put secrets in `secretEnvVariables`. The module stores each value in its own Secret Manager secret in `region`, grants `nodeConfig.serviceAccount` (or the default compute account when it is empty) `secretmanager.secretAccessor` on that secret alone, and sets an env var of the same name to the version's resource name (`projects/<p>/secrets/<id>/versions/<n>`). DAGs read the value from Secret Manager with that name. With secrets, `nodeConfig.serviceAccount` must be an email, and the two maps cannot share a key.
+
 ## Operational surfaces worth setting on day one
 
 A `maintenanceWindow` (12h+ recurring) keeps Google's maintenance out

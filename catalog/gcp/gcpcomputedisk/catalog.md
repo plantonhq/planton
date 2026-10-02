@@ -99,6 +99,7 @@ These are the most important decisions when configuring a persistent disk. Explo
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
+| **GcpComputeImage** (optional) | `image` (bootable) | `status.outputs.self_link` |
 | **GcpComputeDisk** (optional) | `sourceDisk` (clone) | `status.outputs.self_link` |
 | **GcpComputeDisk** (optional) | `asyncPrimaryDisk` (async replication) | `status.outputs.self_link` |
 | **GcpKmsKey** (optional) | `kmsKey` | `status.outputs.key_id` |

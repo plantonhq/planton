@@ -45,6 +45,8 @@ resources:
         arg: settings.time_zone
       - spec: spec.collation
         arg: settings.collation
+      - spec: spec.replication_lag_max_seconds
+        arg: settings.replication_lag_max_seconds
 
       # The disk message gathers the provider's flat data-disk arguments.
       - spec: spec.disk.type
@@ -73,6 +75,8 @@ resources:
         arg: settings.ip_configuration.psc_config.psc_auto_dns_enabled
       - spec: spec.network.psc.write_endpoint_dns_enabled
         arg: settings.ip_configuration.psc_config.psc_write_endpoint_dns_enabled
+      - spec: spec.network.psc.auto_connection_policy_enabled
+        arg: settings.ip_configuration.psc_config.psc_auto_connection_policy_enabled
 
       # Settings blocks the spec carries under their configuring name.
       - spec: spec.location_preference
@@ -144,31 +148,6 @@ resources:
         reason: >-
           version counter that only accompanies root_password_wo;
           meaningless without the write-only variant
-
-      # Not yet bridged by the pinned Pulumi SDK (pulumi-gcp v9.29.0,
-      # google-beta 7.38): modeling these only in Terraform would break
-      # cross-engine parity -- a spec field one engine silently drops.
-      # Re-evaluate at the next SDK bump.
-      - arg: switch_transaction_logs_to_cloud_storage_enabled
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump.
-      - arg: include_replicas_for_major_version_upgrade
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump.
-      - arg: enforce_new_sql_network_architecture
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump.
-      - arg: settings.ip_configuration.psc_config.psc_auto_connection_policy_enabled
-        reason: >-
-          GA at the pin but not yet bridged by the pinned Pulumi SDK;
-          modeling it would break cross-engine parity. Re-evaluate at the
-          next pulumi-gcp bump.
 
       # Legacy first-generation surfaces with named modern successors.
       - arg: settings.pricing_plan

@@ -58,5 +58,7 @@ renders the DR pairing as an edge between two disk nodes — one per region.
 
 - `GcpComputeInstance` — the attachment consumer of `self_link`.
 - `GcpKmsKey` — CMEK for the disk and its encrypted sources.
+- `GcpComputeImage` — the golden image a bootable disk starts from
+  (`image`, its `self_link`).
 - A second `GcpComputeDisk` in another region — the async-replication
   primary.

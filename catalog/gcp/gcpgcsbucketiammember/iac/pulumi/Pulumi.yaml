@@ -1,0 +1,4 @@
+name: gcpgcsbucketiammember-pulumi-project
+runtime:
+  name: go
+description: Planton GcpGcsBucketIamMember Pulumi module

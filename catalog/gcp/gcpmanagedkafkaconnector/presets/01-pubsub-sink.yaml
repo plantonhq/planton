@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnector
+metadata:
+  name: orders-to-pubsub
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  connectCluster:
+    value: events-connect
+  configs:
+    connector.class: com.google.pubsub.kafka.sink.CloudPubSubSinkConnector
+    tasks.max: "3"
+    topics: orders
+    cps.project: my-gcp-project
+    cps.topic: orders-events
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+  taskRestartPolicy:
+    minimumBackoff: 60s
+    maximumBackoff: 1800s

@@ -44,7 +44,15 @@ spec:
   # throwaway apply (2026-08-12): a function with no projectId and one
   # projectless secret ref deployed clean once the runtime SA held
   # secretAccessor, re-planned idempotent, destroyed clean.
+  #
+  # Awaiting re-proof: secretEnvironmentVariables gained a value arm the
+  # module stores in its own Secret Manager secret (with-secret-env), and
+  # buildConfig.workerPool became a reference. Offline bar met: both
+  # modules build and validate, plans are clean, and no value reaches the
+  # function. Live facts the proof lane confirms: the function starts and
+  # reads the stored version through the default compute account's grant,
+  # re-plans clean, and destroy removes the secret.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 60

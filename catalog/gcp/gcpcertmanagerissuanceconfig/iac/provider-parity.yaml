@@ -1,0 +1,27 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason.
+
+resources:
+  google_certificate_manager_certificate_issuance_config:
+    mappings:
+      # Renames: the spec says what each field IS.
+      - spec: spec.issuance_config_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      # The provider nests the pool under two single-field blocks
+      # (certificate_authority_config.certificate_authority_service_config);
+      # the spec lifts both wrappers.
+      - spec: spec.ca_pool
+        arg: certificate_authority_config.certificate_authority_service_config.ca_pool
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables
+      certificatemanager.googleapis.com with fixed arguments
+      (disable_on_destroy false so destroying one issuance config never
+      disables the API project-wide); not spec surface.

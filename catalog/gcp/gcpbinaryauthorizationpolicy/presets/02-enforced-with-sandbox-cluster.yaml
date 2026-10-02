@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBinaryAuthorizationPolicy
+metadata:
+  name: enforced-with-sandbox
+spec:
+  projectId:
+    value: my-gcp-project
+  description: Signed images only, except the sandbox cluster
+  globalPolicyEvaluationMode: ENABLE
+  admissionWhitelistPatterns:
+    - us-docker.pkg.dev/my-gcp-project/base-images/*
+  defaultAdmissionRule:
+    evaluationMode: REQUIRE_ATTESTATION
+    enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+    requireAttestationsBy:
+      - value: projects/my-gcp-project/attestors/built-by-ci
+  clusterAdmissionRules:
+    - cluster: us-central1.sandbox
+      evaluationMode: ALWAYS_ALLOW
+      enforcementMode: DRYRUN_AUDIT_LOG_ONLY
+  deletionPolicy: PREVENT

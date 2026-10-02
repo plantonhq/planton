@@ -1,0 +1,94 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpvertexaisearchengine
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Vertex AI Search encrypts an engine's configuration, controls, and serving state at rest with Google-managed keys without configuration; the documents live in the data stores, encrypted there.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key_name
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; on a SEARCH engine a Cloud KMS key in the engine's location encrypts the engine under the customer-managed key (the chat and recommendation resources offer no key). Updatable.
+      notes: The 02-enterprise-controls-widget preset references a GcpKmsKey. The Discovery Engine service agent needs encrypt/decrypt on the key as a prerequisite.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every search, answer, and widget request is TLS over discoveryengine.googleapis.com or Google's hosted widget; there is no plaintext path.
+    - control_id: no-public-access
+      status: configurable
+      field_path: widget_config.access_settings.allow_public_access
+      evidence:
+        type: spec_default
+        reference: Unset means the engine is reached only through the Discovery Engine API under IAM and the widget, if configured, requires an authenticated user; allow_public_access lets anyone load the embeddable widget from an allowlisted domain and search without signing in.
+      notes: The 02-enterprise-controls-widget preset opens the widget to the public deliberately, for a public documentation site, and restricts it to allowlisted domains.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: widget_config.access_settings.allowlisted_domains
+      evidence:
+        type: spec_default
+        reference: The widget loads only from the listed domains; unset means no domain may embed it. The API itself has no network listener to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The widget is served from Google's edge; there is no customer-facing load balancer or WAF to attach.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Managing the engine, its controls, serving config, widget config, and assistants, and issuing searches through the API are governed by Discovery Engine IAM permissions -- no anonymous API plane exists. What a signed-in end user sees is decided per document by the data stores' ACLs.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The engine authenticates nothing of its own; a chat engine's Dialogflow CX agent runs under Google's service agent, and callers use their own identities.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: configurable
+      field_path: widget_config.access_settings.workforce_identity_pool_provider
+      evidence:
+        type: spec_default
+        reference: Unset means widget users sign in with Google identities in the project's organization; a workforce identity pool provider federates the widget's sign-in to the organization's own identity provider (SAML or OIDC, with its MFA policy).
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating, changing, and deleting the engine and every folded resource land in Cloud Audit Logs (Admin Activity) unconditionally; searches and answers are Data Access logs enabled at the project. disable_analytics switches off Google's search analytics, not audit logging.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Discovery Engine emits query volume, latency, and answer metrics per engine to Cloud Monitoring without configuration; disable_analytics stops the console's search analytics only.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The engine, its controls, serving config, widget config, and assistants are declarative and re-creatable from source control; the searchable data lives in the data stores.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: An engine lives in a Discovery Engine multi-region (global, us, or eu) and is served across it by Google; there is no zonal placement to configure.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the assistants, controls, and then the engine are deleted (the serving and widget configs are Google's own and go with the engine); PREVENT makes any destroying plan fail; ABANDON removes everything from management while it keeps serving. The data stores are separate resources and are never touched.
+      notes: The 02-enterprise-controls-widget preset sets PREVENT.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Vertex AI Search is fully Google-operated; there is no software surface the customer patches.

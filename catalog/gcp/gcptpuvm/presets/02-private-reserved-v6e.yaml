@@ -1,0 +1,41 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTpuVm
+metadata:
+  name: train-v6e
+spec:
+  projectId:
+    value: my-gcp-project
+  zone: us-east5-b
+  acceleratorType: v6e-8
+  runtimeVersion: v2-alpha-tpuv6e
+  schedulingConfig:
+    reserved: true
+  networkConfig:
+    network:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: ml-vpc
+        fieldPath: status.outputs.network_id
+    subnetwork:
+      valueFrom:
+        kind: GcpSubnetwork
+        name: tpu
+        fieldPath: status.outputs.subnetwork_self_link
+    enableExternalIps: false
+  serviceAccount:
+    email:
+      valueFrom:
+        kind: GcpServiceAccount
+        name: tpu-trainer
+        fieldPath: status.outputs.email
+  dataDisks:
+    - sourceDisk:
+        valueFrom:
+          kind: GcpComputeDisk
+          name: training-dataset
+          fieldPath: status.outputs.self_link
+      mode: READ_ONLY
+  enableSecureBoot: true
+  tags:
+    - tpu
+  deletionPolicy: PREVENT

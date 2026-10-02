@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTargetHttpProxy
+metadata:
+  name: regional-http-frontend
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Regional HTTP front door for the us-central1 external Application Load Balancer
+  region: us-central1
+  urlMap:
+    value: "<regional-url-map-self-link>" # replace: a GcpUrlMap declared with the same region
+  httpKeepAliveTimeoutSec: 610

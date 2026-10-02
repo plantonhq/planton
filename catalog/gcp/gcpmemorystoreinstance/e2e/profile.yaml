@@ -30,6 +30,12 @@ spec:
   #     multi-instance shapes beyond the minimal scenario's scope,
   #     offline-rendered.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the instance gained acl_policy (a shared Valkey ACL
+  # policy attached by name); the earlier live proof predates it. Attaching
+  # needs an ACL policy resource the catalog does not yet model, so the arm
+  # stays offline-proven; the next proof confirms the untouched shape still
+  # re-plans clean with the new argument unset.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 120

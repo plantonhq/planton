@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpkmskeyhandle.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpkmskeyhandle/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpkmskeyhandle/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-kms-key-handle
+message GcpKmsKeyHandle {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpKmsKeyHandle'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpKmsKeyHandleSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpKmsKeyHandleStatus status = 5;
+}
+
+//gcp-kms-key-handle status
+message GcpKmsKeyHandleStatus {
+  //stack-outputs
+  GcpKmsKeyHandleStackOutputs outputs = 1;
+}

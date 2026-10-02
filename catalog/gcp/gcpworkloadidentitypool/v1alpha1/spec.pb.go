@@ -260,12 +260,13 @@ func (x *GcpWorkloadIdentityPoolAttestationRule) GetGoogleCloudResource() string
 // use_default_shared_ca (GCP-provisioned regional CAs).
 type GcpWorkloadIdentityPoolCertificateIssuance struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Maps a cloud region to the Certificate Authority Service CA pool (full
-	// resource path projects/<project>/locations/<location>/caPools/<pool>)
-	// that issues certificates for workloads in that region. The region in the
-	// key must match the CA pool's own region. Exactly one of ca_pools or
+	// Maps a cloud region to the Certificate Authority Service CA pool that
+	// issues certificates for workloads in that region. Each value is a
+	// GcpPrivateCaPool reference (its full name) or a literal
+	// projects/<project>/locations/<location>/caPools/<pool>. The region in
+	// the key must match the CA pool's own region. Exactly one of ca_pools or
 	// use_default_shared_ca supplies the signing authority.
-	CaPools map[string]string `protobuf:"bytes,1,rep,name=ca_pools,json=caPools,proto3" json:"ca_pools,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	CaPools map[string]*v1.StringValueOrRef `protobuf:"bytes,1,rep,name=ca_pools,json=caPools,proto3" json:"ca_pools,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Key algorithm for the generated certificate key pairs. Defaults
 	// server-side to ECDSA_P256 — the right choice unless a legacy verifier
 	// requires RSA.
@@ -318,7 +319,7 @@ func (*GcpWorkloadIdentityPoolCertificateIssuance) Descriptor() ([]byte, []int) 
 	return file_catalog_gcp_gcpworkloadidentitypool_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GcpWorkloadIdentityPoolCertificateIssuance) GetCaPools() map[string]string {
+func (x *GcpWorkloadIdentityPoolCertificateIssuance) GetCaPools() map[string]*v1.StringValueOrRef {
 	if x != nil {
 		return x.CaPools
 	}
@@ -545,17 +546,18 @@ const file_catalog_gcp_gcpworkloadidentitypool_v1alpha1_spec_proto_rawDesc = "" 
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicyB\a\n" +
 	"\x05_mode\"d\n" +
 	"&GcpWorkloadIdentityPoolAttestationRule\x12:\n" +
-	"\x15google_cloud_resource\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x13googleCloudResource\"\x96\a\n" +
-	"*GcpWorkloadIdentityPoolCertificateIssuance\x12\x84\x01\n" +
-	"\bca_pools\x18\x01 \x03(\v2i.dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolCertificateIssuance.CaPoolsEntryR\acaPools\x12\xe8\x01\n" +
+	"\x15google_cloud_resource\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x13googleCloudResource\"\xcc\t\n" +
+	"*GcpWorkloadIdentityPoolCertificateIssuance\x12\x86\x03\n" +
+	"\bca_pools\x18\x01 \x03(\v2i.dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolCertificateIssuance.CaPoolsEntryB\xff\x01\xbaH\xdb\x01\xba\x01\xd7\x01\n" +
+	"\x0fca_pools_format\x12Wa literal ca_pools value must be projects/{project}/locations/{location}/caPools/{pool}\x1akthis.all(k, !has(this[k].value) || this[k].value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$'))\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\acaPools\x12\xe8\x01\n" +
 	"\rkey_algorithm\x18\x02 \x01(\tB\xbd\x01\xbaH\xb9\x01\xba\x01\xb5\x01\n" +
 	"\x13key_algorithm_valid\x12Tkey_algorithm must be one of RSA_2048, RSA_3072, RSA_4096, ECDSA_P256, or ECDSA_P384\x1aHthis in ['RSA_2048', 'RSA_3072', 'RSA_4096', 'ECDSA_P256', 'ECDSA_P384']H\x00R\fkeyAlgorithm\x88\x01\x01\x121\n" +
 	"\blifetime\x18\x03 \x01(\tB\x10\xbaH\rr\v2\t^[0-9]+s$H\x01R\blifetime\x88\x01\x01\x12L\n" +
 	"\x1arotation_window_percentage\x18\x04 \x01(\x05B\t\xbaH\x06\x1a\x04\x18P(2H\x02R\x18rotationWindowPercentage\x88\x01\x01\x121\n" +
-	"\x15use_default_shared_ca\x18\x05 \x01(\bR\x12useDefaultSharedCa\x1a:\n" +
+	"\x15use_default_shared_ca\x18\x05 \x01(\bR\x12useDefaultSharedCa\x1an\n" +
 	"\fCaPoolsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xc7\x01\xbaH\xc3\x01\x1a\xc0\x01\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12H\n" +
+	"\x05value\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x05value:\x028\x01:\xc7\x01\xbaH\xc3\x01\x1a\xc0\x01\n" +
 	"\x15ca_source_exactly_one\x12nchoose exactly one certificate authority source: ca_pools (your own CA Service pools) or use_default_shared_ca\x1a7(size(this.ca_pools) > 0) != this.use_default_shared_caB\x10\n" +
 	"\x0e_key_algorithmB\v\n" +
 	"\t_lifetimeB\x1d\n" +
@@ -603,11 +605,12 @@ var file_catalog_gcp_gcpworkloadidentitypool_v1alpha1_spec_proto_depIdxs = []int
 	6, // 4: dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolCertificateIssuance.ca_pools:type_name -> dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolCertificateIssuance.CaPoolsEntry
 	4, // 5: dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolTrustConfig.additional_trust_bundles:type_name -> dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolTrustBundle
 	5, // 6: dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolTrustBundle.trust_anchors:type_name -> dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolTrustAnchor
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	7, // 7: dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolCertificateIssuance.CaPoolsEntry.value:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpworkloadidentitypool_v1alpha1_spec_proto_init() }

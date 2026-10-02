@@ -1,0 +1,4 @@
+name: gcpgkefleetmembership-pulumi-project
+runtime:
+  name: go
+description: Planton GcpGkeFleetMembership Pulumi module

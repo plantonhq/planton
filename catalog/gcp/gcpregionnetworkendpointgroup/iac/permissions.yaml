@@ -30,4 +30,14 @@ spec:
           - compute.networks.use
           - compute.subnetworks.use
         provenance: derived
-        notes: "Service-side checks, not module API calls -- GCP's regionNetworkEndpointGroups.insert reference documents compute.networks.use on the referenced network and compute.subnetworks.use on the referenced subnetwork. Needed only for PRIVATE_SERVICE_CONNECT, INTERNET, and GCE_VM_IP_PORTMAP NEGs that set those fields; SERVERLESS NEGs (the spec default, preset 01) reference no VPC and need neither."
+        condition:
+          spec_field_set: network
+        notes: Service-side checks, not module API calls -- GCP's regionNetworkEndpointGroups.insert reference documents compute.networks.use on the referenced network and compute.subnetworks.use on the referenced subnetwork. network applies to PRIVATE_SERVICE_CONNECT, INTERNET, and GCE_VM_IP_PORTMAP NEGs; SERVERLESS NEGs (the spec default, preset 01) reference no VPC and need neither.
+      - purpose: UseReferencedSubnetwork
+        permissions:
+          - compute.networks.use
+          - compute.subnetworks.use
+        provenance: derived
+        condition:
+          spec_field_set: subnetwork
+        notes: Service-side checks, not module API calls -- GCP's regionNetworkEndpointGroups.insert reference documents compute.networks.use on the referenced network and compute.subnetworks.use on the referenced subnetwork. subnetwork applies to PRIVATE_SERVICE_CONNECT and GCE_VM_IP_PORTMAP NEGs; SERVERLESS NEGs (the spec default, preset 01) reference no VPC and need neither.

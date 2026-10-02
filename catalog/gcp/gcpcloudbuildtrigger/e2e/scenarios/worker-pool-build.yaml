@@ -1,0 +1,48 @@
+# GcpCloudBuildTrigger scenario: a regional Pub/Sub trigger in
+# us-central1 whose inline build names the worker-pool fixture (its full
+# name, in the build options' worker_pool field -- the form this scenario
+# proves Google accepts). Nothing publishes to the topic fixture, so no
+# build runs. Free: a pool bills only for build minutes.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildTrigger
+metadata:
+  name: planton-oss-e2e-gcpcbtrg-pool
+  id: planton-oss-e2e-gcpcbtrg-pool
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudbuildtrigger
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcloudbuildtrigger/e2e/prerequisites/serviceaccount.yaml,catalog/gcp/gcpcloudbuildtrigger/e2e/prerequisites/topic.yaml,catalog/gcp/gcpcloudbuildtrigger/e2e/prerequisites/workerpool.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  triggerName: planton-e2e-pool-${E2E_RUN_ID}
+  description: Planton E2E private-pool trigger; safe to delete
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-oss-e2e-gcpcbtrg-sa
+      fieldPath: status.outputs.name
+  pubsubConfig:
+    topic:
+      valueFrom:
+        kind: GcpPubSubTopic
+        name: planton-oss-e2e-gcpcbtrg-topic
+        fieldPath: status.outputs.topic_id
+  build:
+    steps:
+      - name: ubuntu
+        args:
+          - echo
+          - private pool
+    options:
+      logging: CLOUD_LOGGING_ONLY
+      workerPool:
+        valueFrom:
+          kind: GcpCloudBuildWorkerPool
+          name: planton-oss-e2e-gcpcbtrg-pool
+          fieldPath: status.outputs.name

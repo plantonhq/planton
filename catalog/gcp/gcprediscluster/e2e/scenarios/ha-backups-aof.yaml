@@ -1,0 +1,57 @@
+# GcpRedisCluster scenario: the production shape at the smallest node --
+# two shards with one replica each across zones, TLS with Google's
+# per-cluster CA, IAM authentication, AOF persistence flushed every second,
+# a daily backup with one-day retention, a Redis config, and a Sunday
+# maintenance window on the hour. Exercises every mutable lever the
+# canonical manifest sets plus the two immutable security modes, on the
+# REDIS_SHARED_CORE_NANO type to keep the node-hours honest.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisCluster
+metadata:
+  name: planton-oss-e2e-gcprcl-ha
+  id: planton-oss-e2e-gcprcl-ha
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcprediscluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  clusterName: e2e-rcl-ha-${E2E_RUN_ID}
+  region: us-central1
+  shardCount: 2
+  replicaCount: 1
+  nodeType: REDIS_SHARED_CORE_NANO
+  redisConfigs:
+    maxmemory-policy: allkeys-lru
+  pscConfigs:
+    - network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_id
+  authorizationMode: AUTH_MODE_IAM_AUTH
+  transitEncryptionMode: TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION
+  serverCaMode: SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA
+  persistenceConfig:
+    mode: AOF
+    aofConfig:
+      appendFsync: EVERYSEC
+  zoneDistributionConfig:
+    mode: MULTI_ZONE
+  automatedBackupConfig:
+    startHour: 2
+    retention: "86400s"
+  # Weekly window on the hour -- Google exposes the Redis Cluster window
+  # start by the hour only.
+  maintenancePolicy:
+    weeklyMaintenanceWindow:
+      day: SUNDAY
+      hour: 3
+  labels:
+    e2e-scenario: ha-backups-aof
+  deletionProtectionEnabled: false
+  deletionPolicy: DELETE

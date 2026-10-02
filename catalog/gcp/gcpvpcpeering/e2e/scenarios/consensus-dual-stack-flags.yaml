@@ -1,0 +1,40 @@
+# GcpVpcPeering scenario exercising every create-form knob the reference
+# manifest leaves at its default: CONSENSUS update strategy, both public-IP
+# subnet-route flags flipped from their defaults, IPV4_ONLY stated
+# explicitly, and PREVENT held off so the harness can destroy. Same two
+# fixture networks and the same side-B fixture as the reference manifest, so
+# the pair goes ACTIVE (side B's flags are independent of side A's).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: planton-oss-e2e-gcppeer-consensus
+  id: planton-oss-e2e-gcppeer-consensus
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvpcpeering
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b.yaml"
+  tags:
+    - planton-e2e
+spec:
+  peeringName: planton-oss-e2e-gcppeer-side-a
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  peerNetwork:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcppeer-peer-vpc
+      fieldPath: status.outputs.network_self_link
+  exportCustomRoutes: true
+  importCustomRoutes: true
+  exportSubnetRoutesWithPublicIp: false
+  importSubnetRoutesWithPublicIp: true
+  stackType: IPV4_ONLY
+  updateStrategy: CONSENSUS
+  deletionPolicy: DELETE

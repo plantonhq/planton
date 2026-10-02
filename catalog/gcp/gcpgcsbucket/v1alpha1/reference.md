@@ -96,7 +96,7 @@ spec:
 | `spec.retentionPolicy.isLocked` | `bool` |  |  |  |
 | `spec.softDeletePolicy` | `GcpGcsBucketSoftDeletePolicy` |  |  |  |
 | `spec.softDeletePolicy.retentionDurationSeconds` | `int64` |  |  |  |
-| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.requesterPays` | `bool` |  |  |  |
 | `spec.defaultEventBasedHold` | `bool` |  |  |  |
 | `spec.enableObjectRetention` | `bool` |  |  |  |
@@ -493,7 +493,7 @@ Google-managed encryption is used. Accepts the fully qualified crypto
 key path or a reference to a GcpKmsKey resource. Mutable in place
 (existing objects keep the key they were written with).
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.requesterPays
@@ -672,6 +672,13 @@ Common roles:
 Public access: grant roles/storage.objectViewer to "allUsers" (also
 requires public_access_prevention to be "inherited" and the org policy
 to allow it).
+
+A grantee that depends on this bucket -- a GcpLoggingSink exporting
+into it, whose writer identity needs roles/storage.objectCreator here --
+cannot be referenced from this list without a dependency cycle (the
+sink already references the bucket). Grant it with a standalone
+GcpGcsBucketIamMember, which depends on both. Never declare the same
+(role, member) pair in both places: removing either removes the grant.
 
 ### spec.iamMembers[].role
 
@@ -1045,6 +1052,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.logging.logBucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.iamMembers[].member` | GcpServiceAccount | `status.outputs.member` |
 | `spec.ipFilter.vpcNetworkSources[].network` | GcpVpcNetwork | `status.outputs.network_id` |
@@ -1057,15 +1065,26 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpBackendBucket | `spec.bucketName` | `status.outputs.bucket_id` |
+| GcpCloudBuildTrigger | `spec.build.logsBucket` | `status.outputs.url` |
 | GcpCloudComposerEnvironment | `spec.storageBucket` | `status.outputs.bucket_id` |
 | GcpCloudFunction | `spec.buildConfig.source.storageSource.bucket` | `status.outputs.bucket_id` |
 | GcpCloudRun | `spec.volumes[].gcs.bucket` | `status.outputs.bucket_id` |
 | GcpCloudRunJob | `spec.template.volumes[].gcs.bucket` | `status.outputs.bucket_id` |
+| GcpCloudRunWorkerPool | `spec.volumes[].gcs.bucket` | `status.outputs.bucket_id` |
+| GcpColabSchedule | `spec.notebookExecutionJob.gcsOutputUri` | `status.outputs.url` |
 | GcpDataprocCluster | `spec.clusterConfig.stagingBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.clusterConfig.tempBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.virtualClusterConfig.stagingBucket` | `status.outputs.bucket_id` |
+| GcpDatastreamConnectionProfile | `spec.gcsProfile.bucket` | `status.outputs.bucket_name` |
+| GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.blmtConfig.bucket` | `status.outputs.bucket_name` |
+| GcpDeployTarget | `spec.executionConfigs[].artifactStorage` | `status.outputs.url` |
+| GcpDeployTarget | `spec.executionConfigs[].defaultPool.artifactStorage` | `status.outputs.url` |
+| GcpDeployTarget | `spec.executionConfigs[].privatePool.artifactStorage` | `status.outputs.url` |
+| GcpDialogflowCxSecuritySettings | `spec.audioExportSettings.gcsBucket` | `status.outputs.bucket_name` |
 | GcpGcsBucket | `spec.logging.logBucket` | `status.outputs.bucket_id` |
+| GcpGcsBucketIamMember | `spec.bucket` | `status.outputs.bucket_id` |
 | GcpLoggingSink | `spec.destination.gcsBucket` | `status.outputs.bucket_id` |
+| GcpPrivateCaCertificateAuthority | `spec.gcsBucket` | `status.outputs.bucket_name` |
 | GcpPubSubSubscription | `spec.cloudStorageConfig.bucket` | `status.outputs.bucket_id` |
 | GcpPubSubTopic | `spec.ingestionDataSourceSettings.cloudStorage.bucket` | `status.outputs.bucket_id` |
 | KubernetesOpenBao | `spec.backup.objectStore.gcs.bucket` | `status.outputs.bucket_name` |

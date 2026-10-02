@@ -37,10 +37,25 @@ const (
 //
 // THE post-create step every sink needs: GCP mints a `writer_identity`
 // service account for the sink, and that identity must be GRANTED write
-// access on the destination (e.g. roles/storage.objectCreator on the
-// bucket) or the sink silently exports nothing. The writer_identity stack
-// output exists exactly for that wiring — grant it through the destination
-// kind's iam_members in the same chart.
+// access on the destination or the sink silently exports nothing. The
+// writer_identity stack output (already in IAM member form,
+// serviceAccount:{email}) exists exactly for that wiring. Grant it with a
+// standalone grant that depends on both the sink and the destination,
+// its member referencing this sink's writer_identity output:
+//
+//	GCS bucket       -- a GcpGcsBucketIamMember, role
+//	                    roles/storage.objectCreator
+//	Pub/Sub topic    -- a GcpPubSubTopicIamMember, role
+//	                    roles/pubsub.publisher
+//	BigQuery dataset -- roles/bigquery.dataEditor, granted outside the
+//	                    catalog or as a literal entry in the
+//	                    GcpBigQueryDataset's access list once the identity
+//	                    is known (the dataset's access list is
+//	                    authoritative, so there is no separate grant kind)
+//
+// Never grant it through the destination kind's own IAM fields: the sink
+// references its destination, so a destination that references the
+// sink's identity back is a dependency cycle.
 type GcpLoggingSinkSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Where the sink lives. Omit entirely for a project sink in the
@@ -227,9 +242,11 @@ type GcpLoggingSinkScope struct {
 	// Project sink: the owning project — a literal project ID or a reference
 	// to a GcpProject resource.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	// Folder sink: the folder ID (numeric, with or without the "folders/"
-	// prefix).
-	FolderId string `protobuf:"bytes,2,opt,name=folder_id,json=folderId,proto3" json:"folder_id,omitempty"`
+	// Folder sink: the folder's numeric ID (with or without the "folders/"
+	// prefix) -- a literal, or a reference to a GcpFolder resource (its
+	// folder_id output). The sink lives in the folder and, with
+	// include_children, sees every project and folder beneath it.
+	FolderId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=folder_id,json=folderId,proto3" json:"folder_id,omitempty"`
 	// Organization sink: the numeric organization ID.
 	OrganizationId string `protobuf:"bytes,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	// Billing-account sink: the billing account ID
@@ -276,11 +293,11 @@ func (x *GcpLoggingSinkScope) GetProjectId() *v1.StringValueOrRef {
 	return nil
 }
 
-func (x *GcpLoggingSinkScope) GetFolderId() string {
+func (x *GcpLoggingSinkScope) GetFolderId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.FolderId
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpLoggingSinkScope) GetOrganizationId() string {
@@ -306,14 +323,19 @@ type GcpLoggingSinkDestination struct {
 	// Export to a Cloud Storage bucket (hourly batches of JSON files). The
 	// bucket NAME — a literal or a reference to a GcpGcsBucket resource.
 	// Rendered as storage.googleapis.com/{bucket}. Grant the sink's
-	// writer_identity roles/storage.objectCreator on the bucket.
+	// writer_identity roles/storage.objectCreator on the bucket with a
+	// GcpGcsBucketIamMember whose member references the writer_identity
+	// output.
 	GcsBucket *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=gcs_bucket,json=gcsBucket,proto3" json:"gcs_bucket,omitempty"`
 	// Export to a BigQuery dataset (near-real-time, queryable). Accepts the
 	// dataset SELF LINK (https://bigquery.googleapis.com/bigquery/v2/projects/
 	// {p}/datasets/{d} — the GcpBigQueryDataset self_link output) or a bare
 	// projects/{p}/datasets/{d} path; the module normalizes either into the
 	// bigquery.googleapis.com/... destination URI. Grant the writer_identity
-	// roles/bigquery.dataEditor on the dataset. The reference is
+	// roles/bigquery.dataEditor on the dataset -- outside the catalog, or as
+	// a literal entry in the GcpBigQueryDataset's access list once the
+	// identity is known (a reference there would make the dataset depend on
+	// the sink that depends on it). The reference is
 	// containment-exempt: the sink EXPORTS INTO the dataset, it does not live
 	// inside it (the sink's home is its scope).
 	BigqueryDataset *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=bigquery_dataset,json=bigqueryDataset,proto3" json:"bigquery_dataset,omitempty"`
@@ -326,7 +348,9 @@ type GcpLoggingSinkDestination struct {
 	// log pipelines). The full topic path projects/{p}/topics/{t} — a literal
 	// or a reference to a GcpPubSubTopic resource (its topic_id output).
 	// Rendered as pubsub.googleapis.com/projects/{p}/topics/{t}. Grant the
-	// writer_identity roles/pubsub.publisher on the topic.
+	// writer_identity roles/pubsub.publisher on the topic with a
+	// GcpPubSubTopicIamMember whose member references the writer_identity
+	// output.
 	PubsubTopic *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=pubsub_topic,json=pubsubTopic,proto3" json:"pubsub_topic,omitempty"`
 	// Escape hatch: a complete destination URI passed through verbatim, for
 	// destinations without a first-class arm — chiefly Cloud Logging buckets
@@ -485,7 +509,7 @@ var File_catalog_gcp_gcploggingsink_v1alpha1_spec_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcploggingsink_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcploggingsink/v1alpha1/spec.proto\x12'dev.planton.gcp.gcploggingsink.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbb\x0e\n" +
+	".catalog/gcp/gcploggingsink/v1alpha1/spec.proto\x12'dev.planton.gcp.gcploggingsink.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xda\x0f\n" +
 	"\x12GcpLoggingSinkSpec\x12R\n" +
 	"\x05scope\x18\x01 \x01(\v2<.dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkScopeR\x05scope\x12\x1b\n" +
 	"\tsink_name\x18\x02 \x01(\tR\bsinkName\x12l\n" +
@@ -502,18 +526,18 @@ const file_catalog_gcp_gcploggingsink_v1alpha1_spec_proto_rawDesc = "" +
 	" \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x14uniqueWriterIdentity\x88\x01\x01\x124\n" +
 	"\x16custom_writer_identity\x18\v \x01(\tR\x14customWriterIdentity\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\f \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xcb\a\xbaH\xc7\a\x1a\x94\x02\n" +
-	"'children_flags_need_folder_or_org_scope\x12Yinclude_children and intercept_children apply only to folder or organization scoped sinks\x1a\x8d\x01(!this.include_children && !this.intercept_children) || (has(this.scope) && (this.scope.folder_id != '' || this.scope.organization_id != ''))\x1a\xae\x03\n" +
-	"/writer_identity_controls_are_project_scope_only\x12\x92\x01unique_writer_identity=false and custom_writer_identity apply only to project-scoped sinks — other scopes always create a unique writer identity\x1a\xe5\x01((!has(this.unique_writer_identity) || this.unique_writer_identity) && this.custom_writer_identity == '') || !has(this.scope) || (this.scope.folder_id == '' && this.scope.organization_id == '' && this.scope.billing_account == '')\x1a\xfc\x01\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xea\b\xbaH\xe6\b\x1a\xe3\x02\n" +
+	"'children_flags_need_folder_or_org_scope\x12Yinclude_children and intercept_children apply only to folder or organization scoped sinks\x1a\xdc\x01(!this.include_children && !this.intercept_children) || (has(this.scope) && ((has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from))) || this.scope.organization_id != ''))\x1a\xfe\x03\n" +
+	"/writer_identity_controls_are_project_scope_only\x12\x92\x01unique_writer_identity=false and custom_writer_identity apply only to project-scoped sinks — other scopes always create a unique writer identity\x1a\xb5\x02((!has(this.unique_writer_identity) || this.unique_writer_identity) && this.custom_writer_identity == '') || !has(this.scope) || (!(has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from))) && this.scope.organization_id == '' && this.scope.billing_account == '')\x1a\xfc\x01\n" +
 	"+bigquery_destination_requires_unique_writer\x12Ea BigQuery destination requires unique_writer_identity to remain true\x1a\x85\x01!has(this.destination) || !has(this.destination.bigquery_dataset) || !has(this.unique_writer_identity) || this.unique_writer_identityB\x19\n" +
-	"\x17_unique_writer_identity\"\xd8\x04\n" +
+	"\x17_unique_writer_identity\"\xf0\x05\n" +
 	"\x13GcpLoggingSinkScope\x12u\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x1b\n" +
-	"\tfolder_id\x18\x02 \x01(\tR\bfolderId\x12'\n" +
+	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12r\n" +
+	"\tfolder_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x18\x92\xd4a\x18status.outputs.folder_idR\bfolderId\x12'\n" +
 	"\x0forganization_id\x18\x03 \x01(\tR\x0eorganizationId\x12'\n" +
-	"\x0fbilling_account\x18\x04 \x01(\tR\x0ebillingAccount:\xda\x02\xbaH\xd6\x02\x1a\xd3\x02\n" +
-	"\x11at_most_one_scope\x12zset at most one of project_id, folder_id, organization_id, or billing_account (empty means the provider's default project)\x1a\xc1\x01[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), this.folder_id != '', this.organization_id != '', this.billing_account != ''].filter(x, x).size() <= 1\"\xf9\x06\n" +
+	"\x0fbilling_account\x18\x04 \x01(\tR\x0ebillingAccount:\x9b\x03\xbaH\x97\x03\x1a\x94\x03\n" +
+	"\x11at_most_one_scope\x12zset at most one of project_id, folder_id, organization_id, or billing_account (empty means the provider's default project)\x1a\x82\x02[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != '', this.billing_account != ''].filter(x, x).size() <= 1\"\xf9\x06\n" +
 	"\x19GcpLoggingSinkDestination\x12t\n" +
 	"\n" +
 	"gcs_bucket\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbe\x17\x92\xd4a\x18status.outputs.bucket_idR\tgcsBucket\x12\x84\x01\n" +
@@ -556,14 +580,15 @@ var file_catalog_gcp_gcploggingsink_v1alpha1_spec_proto_depIdxs = []int32{
 	2, // 1: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkSpec.destination:type_name -> dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination
 	3, // 2: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkSpec.exclusions:type_name -> dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkExclusion
 	4, // 3: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkScope.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 4: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.gcs_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 5: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.bigquery_dataset:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	4, // 6: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.pubsub_topic:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	4, // 4: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkScope.folder_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // 5: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.gcs_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // 6: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.bigquery_dataset:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // 7: dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.pubsub_topic:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcploggingsink_v1alpha1_spec_proto_init() }

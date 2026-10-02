@@ -33,6 +33,16 @@ func Resources(ctx *pulumi.Context, stackInput *gcpcloudarmorpolicyv1alpha1.GcpC
 		return errors.Wrap(err, "failed to enable compute.googleapis.com api")
 	}
 
+	// spec.region selects the API collection: empty builds the global
+	// security policy, a region name builds the regional one -- the same
+	// switch the Terraform module makes with its count guards.
+	if locals.IsRegional {
+		if err := regionSecurityPolicy(ctx, locals, gcpProvider, createdProjectService); err != nil {
+			return errors.Wrap(err, "failed to create regional cloud armor security policy")
+		}
+		return nil
+	}
+
 	if err := securityPolicy(ctx, locals, gcpProvider, createdProjectService); err != nil {
 		return errors.Wrap(err, "failed to create cloud armor security policy")
 	}

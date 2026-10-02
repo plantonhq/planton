@@ -1,0 +1,46 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployPolicy
+metadata:
+  name: holiday-freeze
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: Year-end freeze and Friday-afternoon quiet hours for every pipeline
+  rules:
+    - rolloutRestriction:
+        id: year-end
+        invokers:
+          - USER
+        timeWindows:
+          timeZone: Europe/Berlin
+          oneTimeWindows:
+            - startDate:
+                year: 2026
+                month: 12
+                day: 19
+              startTime:
+                hours: 17
+              endDate:
+                year: 2027
+                month: 1
+                day: 4
+              endTime:
+                hours: 9
+    - rolloutRestriction:
+        id: friday-afternoons
+        actions:
+          - CREATE
+        timeWindows:
+          timeZone: Europe/Berlin
+          weeklyWindows:
+            - daysOfWeek:
+                - FRIDAY
+              startTime:
+                hours: 15
+              endTime:
+                hours: 24
+  selectors:
+    - deliveryPipeline:
+        id:
+          value: "*"

@@ -167,8 +167,14 @@ type GcpCloudRunJobSpec struct {
 	//	"ABANDON"     -- the job is removed from management but left
 	//	                 running in GCP
 	DeletionPolicy string `protobuf:"bytes,17,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Resource Manager tags bound to the job at creation, as a map of
+	// tagKeys/{tag_key_id} to tagValues/{tag_value_id} — the tag bindings
+	// that organization policies, IAM conditions, and cost reports key on.
+	// Immutable: changing the map replaces the job (Cloud Run applies tags
+	// only at create), so plan tag changes as a recreate.
+	ResourceManagerTags map[string]string `protobuf:"bytes,18,rep,name=resource_manager_tags,json=resourceManagerTags,proto3" json:"resource_manager_tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *GcpCloudRunJobSpec) Reset() {
@@ -318,6 +324,13 @@ func (x *GcpCloudRunJobSpec) GetDeletionPolicy() string {
 		return x.DeletionPolicy
 	}
 	return ""
+}
+
+func (x *GcpCloudRunJobSpec) GetResourceManagerTags() map[string]string {
+	if x != nil {
+		return x.ResourceManagerTags
+	}
+	return nil
 }
 
 // GcpCloudRunJobTemplate describes one task: the container(s), volumes,
@@ -2045,7 +2058,7 @@ var File_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpcloudrunjob/v1alpha1/spec.proto\x12'dev.planton.gcp.gcpcloudrunjob.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd2\x15\n" +
+	".catalog/gcp/gcpcloudrunjob/v1alpha1/spec.proto\x12'dev.planton.gcp.gcpcloudrunjob.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdb\x17\n" +
 	"\x12GcpCloudRunJobSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x127\n" +
@@ -2067,7 +2080,8 @@ const file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15start_execution_token\x18\x0f \x01(\tB\x86\x01\xbaH\a\xd8\x01\x01r\x02\x18?\xaa\xa6\x1dxtrigger marker, not a credential — an arbitrary uniqueness suffix whose only meaning is 'differs from the last deploy'R\x13startExecutionToken\x12\xb7\x01\n" +
 	"\x13run_execution_token\x18\x10 \x01(\tB\x86\x01\xbaH\a\xd8\x01\x01r\x02\x18?\xaa\xa6\x1dxtrigger marker, not a credential — an arbitrary uniqueness suffix whose only meaning is 'differs from the last deploy'R\x11runExecutionToken\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x11 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12\xbe\x01\n" +
+	"\x15resource_manager_tags\x18\x12 \x03(\v2T.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.ResourceManagerTagsEntryB4\xbaH1\x9a\x01.\"\x14r\x122\x10^tagKeys/[0-9]+$*\x16r\x142\x12^tagValues/[0-9]+$R\x13resourceManagerTags\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
@@ -2079,21 +2093,24 @@ const file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aG\n" +
 	"\x19ExecutionAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
+	"\x18ResourceManagerTagsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xf2\x04\xbaH\xee\x04\x1a\xe7\x01\n" +
 	"#gpu.redundancy_requires_accelerator\x12agpu_zonal_redundancy_disabled only applies to GPU jobs — set template.node_selector.accelerator\x1a]!this.gpu_zonal_redundancy_disabled || has(this.template) && has(this.template.node_selector)\x1a\xac\x01\n" +
 	"\x1aparallelism_lte_task_count\x126parallelism cannot exceed task_count when both are set\x1aV!has(this.parallelism) || !has(this.task_count) || this.parallelism <= this.task_count\x1a\xd2\x01\n" +
 	"\x1dexecution_token.start_xor_run\x12jstart_execution_token and run_execution_token conflict — a deploy triggers at most one kind of execution\x1aE!(this.start_execution_token != '' && this.run_execution_token != '')B\r\n" +
 	"\v_task_countB\x0e\n" +
 	"\f_parallelismB\x16\n" +
-	"\x14_deletion_protection\"\x95\b\n" +
+	"\x14_deletion_protection\"\xd3\b\n" +
 	"\x16GcpCloudRunJobTemplate\x12j\n" +
 	"\n" +
 	"containers\x18\x01 \x03(\v2@.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainerB\b\xbaH\x05\x92\x01\x02\b\x01R\n" +
 	"containers\x12W\n" +
 	"\avolumes\x18\x02 \x03(\v2=.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeR\avolumes\x12z\n" +
 	"\x0fservice_account\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x0eserviceAccount\x12\xa0\x01\n" +
-	"\x15execution_environment\x18\x04 \x01(\x0e2K.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobExecutionEnvironmentB\x1e\x92\xa6\x1d\x1aEXECUTION_ENVIRONMENT_GEN2R\x14executionEnvironment\x12\xbd\x01\n" +
-	"\x0eencryption_key\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBb\xaa\xa6\x1d@KMS crypto key resource ID/reference only — never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\rencryptionKey\x129\n" +
+	"\x15execution_environment\x18\x04 \x01(\x0e2K.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobExecutionEnvironmentB\x1e\x92\xa6\x1d\x1aEXECUTION_ENVIRONMENT_GEN2R\x14executionEnvironment\x12\xfb\x01\n" +
+	"\x0eencryption_key\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x9f\x01\xaa\xa6\x1d@KMS crypto key resource ID/reference only — never key material\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\rencryptionKey\x129\n" +
 	"\x0ftimeout_seconds\x18\x06 \x01(\x05B\v\xbaH\b\x1a\x06\x18\x80\xa3\x05(\x01H\x00R\x0etimeoutSeconds\x88\x01\x01\x12-\n" +
 	"\vmax_retries\x18\a \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x01R\n" +
 	"maxRetries\x88\x01\x01\x12_\n" +
@@ -2252,7 +2269,7 @@ func file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDescGZIP() []byte {
 }
 
 var file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
+var file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
 var file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_goTypes = []any{
 	(GcpCloudRunJobExecutionEnvironment)(0),   // 0: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobExecutionEnvironment
 	(*GcpCloudRunJobSpec)(nil),                // 1: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec
@@ -2283,50 +2300,52 @@ var file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_goTypes = []any{
 	nil,                         // 26: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.AnnotationsEntry
 	nil,                         // 27: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.ExecutionLabelsEntry
 	nil,                         // 28: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.ExecutionAnnotationsEntry
-	(*v1.StringValueOrRef)(nil), // 29: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	nil,                         // 29: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.ResourceManagerTagsEntry
+	(*v1.StringValueOrRef)(nil), // 30: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_depIdxs = []int32{
-	29, // 0: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 0: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	25, // 1: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.labels:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.LabelsEntry
 	26, // 2: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.annotations:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.AnnotationsEntry
 	2,  // 3: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.template:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate
 	24, // 4: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.binary_authorization:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobBinaryAuthorization
 	27, // 5: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.execution_labels:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.ExecutionLabelsEntry
 	28, // 6: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.execution_annotations:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.ExecutionAnnotationsEntry
-	3,  // 7: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.containers:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer
-	13, // 8: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.volumes:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume
-	29, // 9: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 10: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.execution_environment:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobExecutionEnvironment
-	29, // 11: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.encryption_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 12: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.vpc_access:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVpcAccess
-	23, // 13: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.node_selector:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNodeSelector
-	10, // 14: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.env:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobEnvVar
-	12, // 15: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.resources:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainerResources
-	20, // 16: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.volume_mounts:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeMount
-	4,  // 17: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.ports:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainerPort
-	5,  // 18: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.startup_probe:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe
-	6,  // 19: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe.http_get:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobHttpGetAction
-	8,  // 20: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe.tcp_socket:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTcpSocketAction
-	9,  // 21: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe.grpc:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobGrpcAction
-	7,  // 22: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobHttpGetAction.http_headers:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobHttpHeader
-	11, // 23: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobEnvVar.value_from_secret:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSecretEnvSource
-	14, // 24: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.cloud_sql_instance:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeCloudSql
-	15, // 25: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.secret:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeSecret
-	17, // 26: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.empty_dir:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeEmptyDir
-	18, // 27: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.gcs:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeGcs
-	19, // 28: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.nfs:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeNfs
-	29, // 29: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeCloudSql.instances:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 30: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeSecret.items:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeSecretItem
-	29, // 31: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeGcs.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 32: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVpcAccess.connector:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 33: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVpcAccess.network_interfaces:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface
-	29, // 34: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 35: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	36, // [36:36] is the sub-list for method output_type
-	36, // [36:36] is the sub-list for method input_type
-	36, // [36:36] is the sub-list for extension type_name
-	36, // [36:36] is the sub-list for extension extendee
-	0,  // [0:36] is the sub-list for field type_name
+	29, // 7: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.ResourceManagerTagsEntry
+	3,  // 8: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.containers:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer
+	13, // 9: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.volumes:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume
+	30, // 10: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 11: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.execution_environment:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobExecutionEnvironment
+	30, // 12: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.encryption_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	21, // 13: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.vpc_access:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVpcAccess
+	23, // 14: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTemplate.node_selector:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNodeSelector
+	10, // 15: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.env:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobEnvVar
+	12, // 16: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.resources:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainerResources
+	20, // 17: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.volume_mounts:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeMount
+	4,  // 18: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.ports:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainerPort
+	5,  // 19: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobContainer.startup_probe:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe
+	6,  // 20: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe.http_get:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobHttpGetAction
+	8,  // 21: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe.tcp_socket:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobTcpSocketAction
+	9,  // 22: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobProbe.grpc:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobGrpcAction
+	7,  // 23: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobHttpGetAction.http_headers:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobHttpHeader
+	11, // 24: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobEnvVar.value_from_secret:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSecretEnvSource
+	14, // 25: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.cloud_sql_instance:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeCloudSql
+	15, // 26: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.secret:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeSecret
+	17, // 27: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.empty_dir:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeEmptyDir
+	18, // 28: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.gcs:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeGcs
+	19, // 29: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolume.nfs:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeNfs
+	30, // 30: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeCloudSql.instances:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 31: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeSecret.items:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeSecretItem
+	30, // 32: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeGcs.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 33: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVpcAccess.connector:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // 34: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVpcAccess.network_interfaces:type_name -> dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface
+	30, // 35: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 36: dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	37, // [37:37] is the sub-list for method output_type
+	37, // [37:37] is the sub-list for method input_type
+	37, // [37:37] is the sub-list for extension type_name
+	37, // [37:37] is the sub-list for extension extendee
+	0,  // [0:37] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_init() }
@@ -2360,7 +2379,7 @@ func file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   28,
+			NumMessages:   29,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -14,8 +14,8 @@ locals {
   # Creation mode. Exactly one of these is true (CEL enforces the
   # exclusivity at validation time): a domain selects requested or private
   # issuance; imported material selects import.
-  is_imported = var.spec.imported != null
-  is_private  = !local.is_imported && var.spec.certificate_authority_arn != ""
+  is_imported  = var.spec.imported != null
+  is_private   = !local.is_imported && var.spec.certificate_authority_arn != ""
   is_requested = !local.is_imported && !local.is_private
 
   # Requested certificates validate via DNS unless EMAIL is chosen.

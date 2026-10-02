@@ -23,13 +23,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpTargetHttpProxySpec defines a global Compute Engine target HTTP proxy —
-// the plaintext-HTTP frontend adapter of a global external Application Load
-// Balancer (and of Traffic Director meshes). A target HTTP proxy binds a
-// global forwarding rule (the VIP) to a URL map (the routing brain): the
-// forwarding rule delivers client connections to the proxy, and the proxy
-// consults the URL map to pick the backend service or bucket for each
-// request.
+// GcpTargetHttpProxySpec defines a Compute Engine target HTTP proxy — the
+// plaintext-HTTP frontend adapter of an Application Load Balancer (and of
+// Traffic Director meshes). A target HTTP proxy binds a forwarding rule (the
+// VIP) to a URL map (the routing brain): the forwarding rule delivers client
+// connections to the proxy, and the proxy consults the URL map to pick the
+// backend service or bucket for each request.
+//
+// One kind, two scopes. With region empty the proxy is GLOBAL (the global
+// external ALB, the cross-region internal ALB, Traffic Director); with
+// region set it is REGIONAL (the regional external ALB and the regional
+// internal ALB), and every link in its chain must be regional too: a
+// regional URL map in front of regional backend services, and a regional
+// forwarding rule pointing at it. A proxy cannot move between scopes.
 //
 // The proxy itself is deliberately thin — TLS termination lives on the
 // target HTTPS proxy, routing lives on the URL map, and traffic policy lives
@@ -57,24 +63,37 @@ type GcpTargetHttpProxySpec struct {
 	// What this proxy fronts and which forwarding rule points at it — write it
 	// for the operator tracing a request path later. Immutable.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// The scope selector. Empty builds a GLOBAL target HTTP proxy (the global
+	// external ALB, the cross-region internal ALB, Traffic Director); a region
+	// name such as us-central1 builds a REGIONAL one (the regional external
+	// ALB and the regional internal ALB). The URL map it references must live
+	// in the same scope — and, for a regional proxy, the same region — and so
+	// must the forwarding rule in front of it. Immutable: a proxy cannot move
+	// between scopes or regions.
+	Region string `protobuf:"bytes,8,opt,name=region,proto3" json:"region,omitempty"`
 	// The URL map that decides where each request goes — the proxy's single
 	// routing dependency. Reference a GcpUrlMap resource or provide a URL map
-	// self-link directly. Required. Mutable: GCP swaps it in place (a
-	// dedicated setUrlMap call), so repointing a live frontend at a new
-	// routing table causes no downtime.
+	// self-link directly. Required. A regional proxy can only point at a
+	// regional URL map in its own region (a GcpUrlMap declared with the same
+	// region). Mutable: GCP swaps it in place (a dedicated setUrlMap call),
+	// so repointing a live frontend at a new routing table causes no
+	// downtime.
 	UrlMap *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=url_map,json=urlMap,proto3" json:"url_map,omitempty"`
 	// Seconds an idle client connection is kept open after a response while no
 	// matching traffic flows (5-1200). Only honored by load balancers with the
-	// EXTERNAL_MANAGED scheme (the envoy-based global external ALB), where the
-	// GCP default is 610; the classic EXTERNAL ALB ignores it. Raise it above
-	// your clients' own keep-alive to avoid the load balancer closing
-	// connections first. 0 means unset (GCP applies its default). Immutable:
-	// changing it destroys and recreates the proxy.
+	// EXTERNAL_MANAGED scheme (the envoy-based external ALBs, global and
+	// regional), where the GCP default is 610; the classic EXTERNAL ALB
+	// ignores it. Raise it above your clients' own keep-alive to avoid the
+	// load balancer closing connections first. 0 means unset (GCP applies its
+	// default). Immutable on both scopes: changing it destroys and recreates
+	// the proxy.
 	HttpKeepAliveTimeoutSec int32 `protobuf:"varint,5,opt,name=http_keep_alive_timeout_sec,json=httpKeepAliveTimeoutSec,proto3" json:"http_keep_alive_timeout_sec,omitempty"`
 	// Bind the proxy to the private IPs of the Traffic Director mesh instead
 	// of Google's edge. Only meaningful when the forwarding rule that
 	// references this proxy uses the INTERNAL_SELF_MANAGED scheme (Traffic
-	// Director); leave false for internet-facing load balancers. Immutable.
+	// Director); leave false for internet-facing load balancers. Global
+	// proxies only — Traffic Director has no regional proxy, and the regional
+	// resource carries no such argument. Immutable.
 	ProxyBind bool `protobuf:"varint,6,opt,name=proxy_bind,json=proxyBind,proto3" json:"proxy_bind,omitempty"`
 	// Deletion policy for the proxy — what happens when this resource is
 	// destroyed:
@@ -143,6 +162,13 @@ func (x *GcpTargetHttpProxySpec) GetDescription() string {
 	return ""
 }
 
+func (x *GcpTargetHttpProxySpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *GcpTargetHttpProxySpec) GetUrlMap() *v1.StringValueOrRef {
 	if x != nil {
 		return x.UrlMap
@@ -175,21 +201,24 @@ var File_catalog_gcp_gcptargethttpproxy_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcptargethttpproxy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcptargethttpproxy/v1alpha1/spec.proto\x12+dev.planton.gcp.gcptargethttpproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x93\b\n" +
+	"2catalog/gcp/gcptargethttpproxy/v1alpha1/spec.proto\x12+dev.planton.gcp.gcptargethttpproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc2\v\n" +
 	"\x16GcpTargetHttpProxySpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x87\x02\n" +
 	"\n" +
 	"proxy_name\x18\x02 \x01(\tB\xe7\x01\xbaH\xe3\x01\xba\x01\xdf\x01\n" +
 	"\x10valid_proxy_name\x12\x89\x01proxy_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\tproxyName\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12t\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xd0\x01\n" +
+	"\x06region\x18\b \x01(\tB\xb7\x01\xbaH\xb3\x01\xba\x01\xaf\x01\n" +
+	"\fvalid_region\x12cregion must be a valid GCP region name such as us-central1, or empty for a global target HTTP proxy\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12t\n" +
 	"\aurl_map\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd3\x17\x92\xd4a\x18status.outputs.self_linkR\x06urlMap\x12\xf8\x01\n" +
 	"\x1bhttp_keep_alive_timeout_sec\x18\x05 \x01(\x05B\xb9\x01\xbaH\xb5\x01\xba\x01\xb1\x01\n" +
 	"!valid_http_keep_alive_timeout_sec\x12bhttp_keep_alive_timeout_sec must be between 5 and 1200 seconds (or 0 to let GCP apply its default)\x1a(this == 0 || (this >= 5 && this <= 1200)R\x17httpKeepAliveTimeoutSec\x12\x1d\n" +
 	"\n" +
 	"proxy_bind\x18\x06 \x01(\bR\tproxyBind\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\a \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicyB\xee\x02\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xd9\x01\xbaH\xd5\x01\x1a\xd2\x01\n" +
+	"\x16proxy_bind_global_only\x12\x90\x01proxy_bind is a global-proxy (Traffic Director) lever — a regional target HTTP proxy has no mesh to bind to; clear region or remove proxy_bind\x1a%!this.proxy_bind || this.region == ''B\xee\x02\n" +
 	"/com.dev.planton.gcp.gcptargethttpproxy.v1alpha1B\tSpecProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcptargethttpproxy/v1alpha1;gcptargethttpproxyv1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcptargethttpproxy.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcptargethttpproxy\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcptargethttpproxy\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcptargethttpproxy::V1alpha1b\x06proto3"
 
 var (

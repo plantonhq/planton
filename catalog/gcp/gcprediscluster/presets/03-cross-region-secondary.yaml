@@ -1,0 +1,37 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisCluster
+metadata:
+  name: orders-cache-eu
+spec:
+  projectId:
+    value: my-gcp-project
+  clusterName: orders-cache-eu
+  region: europe-west1
+  # The secondary's shape must match the primary's shard count.
+  shardCount: 3
+  replicaCount: 1
+  nodeType: REDIS_HIGHMEM_MEDIUM
+  pscConfigs:
+    - network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: prod-vpc-eu
+          fieldPath: status.outputs.network_id
+  authorizationMode: AUTH_MODE_IAM_AUTH
+  transitEncryptionMode: TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION
+  # Read-only replica of the primary in another region until promoted.
+  crossClusterReplicationConfig:
+    clusterRole: SECONDARY
+    primaryCluster:
+      cluster:
+        valueFrom:
+          kind: GcpRedisCluster
+          name: orders-cache
+          fieldPath: status.outputs.name
+  zoneDistributionConfig:
+    mode: MULTI_ZONE
+  labels:
+    tier: production
+    role: dr-secondary
+  deletionProtectionEnabled: true
+  deletionPolicy: PREVENT

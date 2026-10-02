@@ -4,7 +4,7 @@ This Terraform module provisions a Cloud Run domain mapping (`google_cloud_run_d
 
 ## Overview
 
-The mapping is fully IMMUTABLE at the provider: every argument is create-only, so any spec change replaces the mapping (cheap — the object is free and re-creates in seconds, with a brief serving gap while the managed certificate re-issues). The domain MUST already be verified by the provisioning identity (Search Console / `gcloud domains verify`) — GCP rejects the create otherwise. After apply, the `resource_records` output carries the DNS records the domain's zone must publish before the domain serves. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+The mapping is fully IMMUTABLE at the provider: every argument is create-only, so any spec change replaces the mapping (cheap — the object is free and re-creates in seconds, with a brief serving gap while the managed certificate re-issues). The domain MUST already be verified by the provisioning identity (Search Console / `gcloud domains verify`) — GCP rejects the create otherwise. After apply, the `resource_records` output carries the DNS records the domain's zone must publish before the domain serves. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

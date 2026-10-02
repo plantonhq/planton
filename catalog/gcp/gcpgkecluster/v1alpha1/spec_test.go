@@ -924,11 +924,43 @@ var _ = ginkgo.Describe("GcpGkeClusterSpec Custom Validation Tests", func() {
 		ginkgo.It("accepts user-managed keys with KMS references", func() {
 			spec := minimalSpec()
 			spec.UserManagedKeys = &GcpGkeClusterUserManagedKeys{
-				ClusterCa:                     "projects/p/locations/l/caPools/pool",
+				ClusterCa:                     literal("projects/p/locations/l/caPools/pool"),
 				ControlPlaneDiskEncryptionKey: ref("my-kms-key"),
 				ServiceAccountSigningKeys:     []string{"projects/p/locations/l/keyRings/r/cryptoKeys/k/cryptoKeyVersions/1"},
 			}
 			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts GcpPrivateCaPool references for every user-managed CA", func() {
+			spec := minimalSpec()
+			spec.UserManagedKeys = &GcpGkeClusterUserManagedKeys{
+				ClusterCa:     ref("cluster-ca"),
+				EtcdApiCa:     ref("etcd-api-ca"),
+				EtcdPeerCa:    ref("etcd-peer-ca"),
+				AggregationCa: literal("projects/p/locations/us-central1/caPools/aggregation-ca"),
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a malformed literal user-managed CA pool", func() {
+			for _, keys := range []*GcpGkeClusterUserManagedKeys{
+				{ClusterCa: literal("cluster-ca")},
+				{EtcdApiCa: literal("projects/p/caPools/etcd-api-ca")},
+				{EtcdPeerCa: literal("projects/p/locations/l/keyRings/r")},
+				{AggregationCa: literal("caPools/aggregation-ca")},
+			} {
+				spec := minimalSpec()
+				spec.UserManagedKeys = keys
+				gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+			}
+		})
+
+		ginkgo.It("accepts fleet_project as a literal or a fleet reference", func() {
+			for _, fleet := range []*foreignkeyv1.StringValueOrRef{literal("fleet-host-project"), ref("platform-fleet")} {
+				spec := minimalSpec()
+				spec.FleetProject = fleet
+				gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+			}
 		})
 
 		ginkgo.It("rejects an additional IP range without a subnetwork", func() {
@@ -954,6 +986,79 @@ var _ = ginkgo.Describe("GcpGkeClusterSpec Custom Validation Tests", func() {
 				},
 			}
 			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+		})
+	})
+
+	ginkgo.Describe("recurring time window, rollback-safe upgrades, and new addons", func() {
+
+		ginkgo.It("accepts a time-of-day recurring window with a delay date", func() {
+			spec := minimalSpec()
+			spec.MaintenancePolicy = &GcpGkeClusterMaintenancePolicy{
+				RecurringTimeWindow: &GcpGkeClusterRecurringTimeMaintenanceWindow{
+					WindowStartTime: &GcpGkeClusterTimeOfDay{Hours: 2},
+					WindowDuration:  "6h",
+					Recurrence:      "FREQ=WEEKLY;BYDAY=SA",
+					DelayUntil:      &GcpGkeClusterCalendarDate{Year: 2027, Month: 1, Day: 15},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects two window forms at once", func() {
+			spec := minimalSpec()
+			spec.MaintenancePolicy = &GcpGkeClusterMaintenancePolicy{
+				DailyWindow: &GcpGkeClusterDailyMaintenanceWindow{StartTime: "03:00"},
+				RecurringTimeWindow: &GcpGkeClusterRecurringTimeMaintenanceWindow{
+					WindowStartTime: &GcpGkeClusterTimeOfDay{Hours: 2},
+					WindowDuration:  "4h",
+					Recurrence:      "FREQ=DAILY",
+				},
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a malformed window duration and an out-of-range start hour", func() {
+			spec := minimalSpec()
+			spec.MaintenancePolicy = &GcpGkeClusterMaintenancePolicy{
+				RecurringTimeWindow: &GcpGkeClusterRecurringTimeMaintenanceWindow{
+					WindowStartTime: &GcpGkeClusterTimeOfDay{Hours: 2},
+					WindowDuration:  "four hours",
+					Recurrence:      "FREQ=DAILY",
+				},
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+			spec.MaintenancePolicy.RecurringTimeWindow.WindowDuration = "4h"
+			spec.MaintenancePolicy.RecurringTimeWindow.WindowStartTime.Hours = 24
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a rollback-safe soak within bounds and a major.minor emulated version", func() {
+			spec := minimalSpec()
+			spec.RollbackSafeUpgrade = &GcpGkeClusterRollbackSafeUpgrade{ControlPlaneSoakDuration: "604800s"}
+			spec.DesiredEmulatedVersion = "1.33"
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+			spec.RollbackSafeUpgrade.ControlPlaneSoakDuration = "21600s"
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a soak outside six hours to seven days", func() {
+			for _, d := range []string{"3600s", "700000s", "7d"} {
+				spec := minimalSpec()
+				spec.RollbackSafeUpgrade = &GcpGkeClusterRollbackSafeUpgrade{ControlPlaneSoakDuration: d}
+				gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil(), "duration %q", d)
+			}
+		})
+
+		ginkgo.It("rejects a patch-level desired_emulated_version", func() {
+			spec := minimalSpec()
+			spec.DesiredEmulatedVersion = "1.33.2"
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts the checkpointing and node-readiness addons", func() {
+			spec := minimalSpec()
+			spec.Addons = &GcpGkeClusterAddons{HighScaleCheckpointingEnabled: true, NodeReadinessControllerEnabled: true}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
 		})
 	})
 })

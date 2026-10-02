@@ -1,0 +1,38 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_model_armor_floorsetting:
+    mappings:
+      # The scope's three arms render Google's single parent
+      # (projects/{id} | folders/{id} | organizations/{id}); an empty scope
+      # renders the provider's own project.
+      - spec: spec.scope.project_id
+        arg: parent
+      - spec: spec.scope.folder_id
+        arg: parent
+      - spec: spec.scope.organization_id
+        arg: parent
+      # Google wants exactly one of the two flags; the spec carries the
+      # choice as enforcement_type and the modules send only the chosen flag.
+      - spec: spec.ai_platform_floor_setting.enforcement_type
+        arg: ai_platform_floor_setting.inspect_only
+      - spec: spec.ai_platform_floor_setting.enforcement_type
+        arg: ai_platform_floor_setting.inspect_and_block
+      - spec: spec.google_mcp_server_floor_setting.enforcement_type
+        arg: google_mcp_server_floor_setting.inspect_only
+      - spec: spec.google_mcp_server_floor_setting.enforcement_type
+        arg: google_mcp_server_floor_setting.inspect_and_block
+      # Two one-leaf wrappers lifted to a bool; the blocks are sent only
+      # when it is true.
+      - spec: spec.enable_multi_language_detection
+        arg: floor_setting_metadata.multi_language_detection.enable_multi_language_detection
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

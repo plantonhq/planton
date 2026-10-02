@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicyCustomConstraint
+metadata:
+  name: deny-public-gke-nodes
+spec:
+  organizationId: "123456789012"
+  constraintName: denyPublicGkeNodes
+  displayName: GKE node pools must be private
+  description: Node pools must not expose public IPs; set networkConfig.enablePrivateNodes to true
+  resourceTypes:
+    - container.googleapis.com/NodePool
+  methodTypes:
+    - CREATE
+    - UPDATE
+  condition: resource.networkConfig.enablePrivateNodes == false
+  actionType: DENY

@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployCustomTargetType
+metadata:
+  name: vendor-deployer
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: Deploys releases through the vendor's API
+  tasks:
+    deploy:
+      container:
+        image: us-docker.pkg.dev/my-gcp-project/deploy/vendor-deployer:1.4
+        args:
+          - --wait
+        env:
+          VENDOR_REGION: us

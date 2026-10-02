@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaCluster
+metadata:
+  name: events
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  clusterId: events
+  # 3 vCPU and 12 GiB across the cluster (4 GiB per vCPU).
+  capacityConfig:
+    vcpuCount: 3
+    memoryBytes: 12884901888
+  brokerDiskSizeGib: 200
+  networkConfigs:
+    - subnet:
+        value: projects/my-gcp-project/regions/us-central1/subnetworks/kafka
+  rebalanceMode: AUTO_REBALANCE_ON_SCALE_UP
+  labels:
+    team: data-platform
+  deletionPolicy: PREVENT

@@ -1,0 +1,20 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcptagkey
+spec:
+  gcp:
+    groups:
+      - purpose: ManageTagKey
+        permissions:
+          - resourcemanager.tagKeys.create
+          - resourcemanager.tagKeys.get
+          - resourcemanager.tagKeys.update
+          - resourcemanager.tagKeys.delete
+        provenance: derived
+        notes: "Covers google_tags_tag_key (Pulumi tags.TagKey) -- the modules' only resource. create on first apply; get on every refresh and import; update when the description or allowed_values_regex change (parent, short_name, purpose, and purpose_data are ForceNew and recreate instead); delete on destroy under deletion_policy DELETE (refused by Google while values exist; ABANDON and PREVENT call no delete API). Granted on the OWNER -- the organization for an organization-owned key, the project for a project-owned one (the shape that needs no organization-level grant). roles/resourcemanager.tagAdmin contains all four."

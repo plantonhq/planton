@@ -1,0 +1,84 @@
+# GcpRedisClusterEndpointSet scenario: the consumer-built connections of one
+# VPC registered on a cluster that publishes attachments only. The chain --
+# the registry's prerequisite cluster pinned WITHOUT psc_configs (so it
+# publishes a discovery and a primary attachment), then per attachment one
+# reserved internal GcpAddress in the prerequisite subnet and one regional
+# GcpGlobalForwardingRule in the Private Service Connect form (scheme NONE,
+# the attachment handle as target) -- is declared here because a
+# path-declared fixture's own annotation is never read. Every field of each
+# connection is an output of the block that built it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisClusterEndpointSet
+metadata:
+  name: planton-oss-e2e-gcprclep-two
+  id: planton-oss-e2e-gcprclep-two
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpredisclusterendpointset
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpRedisCluster,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpaddress-discovery.yaml,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpaddress-primary.yaml,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpglobalforwardingrule-discovery.yaml,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpglobalforwardingrule-primary.yaml"
+  tags:
+    - planton-e2e
+spec:
+  cluster:
+    valueFrom:
+      kind: GcpRedisCluster
+      name: planton-oss-e2e-gcprcl-prereq
+      fieldPath: status.outputs.name
+  region: us-central1
+  endpoints:
+    - connections:
+        - forwardingRule:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: planton-oss-e2e-gcprclep-fr-disc
+              fieldPath: status.outputs.self_link
+          pscConnectionId:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: planton-oss-e2e-gcprclep-fr-disc
+              fieldPath: status.outputs.psc_connection_id
+          address:
+            valueFrom:
+              kind: GcpAddress
+              name: planton-oss-e2e-gcprclep-ip-disc
+              fieldPath: status.outputs.address
+          network:
+            valueFrom:
+              kind: GcpVpcNetwork
+              name: planton-oss-e2e-gcpvpcnetwork-prereq
+              fieldPath: status.outputs.network_id
+          serviceAttachment:
+            valueFrom:
+              kind: GcpRedisCluster
+              name: planton-oss-e2e-gcprcl-prereq
+              fieldPath: status.outputs.discovery_service_attachment
+        - forwardingRule:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: planton-oss-e2e-gcprclep-fr-prim
+              fieldPath: status.outputs.self_link
+          pscConnectionId:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: planton-oss-e2e-gcprclep-fr-prim
+              fieldPath: status.outputs.psc_connection_id
+          address:
+            valueFrom:
+              kind: GcpAddress
+              name: planton-oss-e2e-gcprclep-ip-prim
+              fieldPath: status.outputs.address
+          network:
+            valueFrom:
+              kind: GcpVpcNetwork
+              name: planton-oss-e2e-gcpvpcnetwork-prereq
+              fieldPath: status.outputs.network_id
+          serviceAttachment:
+            valueFrom:
+              kind: GcpRedisCluster
+              name: planton-oss-e2e-gcprcl-prereq
+              fieldPath: status.outputs.primary_service_attachment
+  deletionPolicy: DELETE

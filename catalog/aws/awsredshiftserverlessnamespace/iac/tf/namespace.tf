@@ -26,9 +26,9 @@ resource "aws_redshiftserverless_namespace" "this" {
   # manage_admin_password is forwarded ONLY when true: an explicit
   # false conflicts with admin_user_password in the provider's
   # ConflictsWith machinery.
-  manage_admin_password             = var.spec.manage_admin_password ? true : null
-  admin_user_password               = var.spec.admin_user_password != "" ? var.spec.admin_user_password : null
-  admin_password_secret_kms_key_id  = var.spec.admin_password_secret_kms_key_id != "" ? var.spec.admin_password_secret_kms_key_id : null
+  manage_admin_password            = var.spec.manage_admin_password ? true : null
+  admin_user_password              = var.spec.admin_user_password != "" ? var.spec.admin_user_password : null
+  admin_password_secret_kms_key_id = var.spec.admin_password_secret_kms_key_id != "" ? var.spec.admin_password_secret_kms_key_id : null
 
   # Data encryption at rest. Empty keeps the AWS-owned Redshift service
   # key; switching keys later is an in-place but long-running

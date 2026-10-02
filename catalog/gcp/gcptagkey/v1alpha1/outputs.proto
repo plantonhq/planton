@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptagkey.v1alpha1;
+
+// GcpTagKeyStackOutputs captures the tag key's identity after
+// provisioning.
+message GcpTagKeyStackOutputs {
+  // The key's resource name, `tagKeys/{numeric_id}` -- what a
+  // GcpTagValue's tag_key references, what a GcpFolder's or GcpProject's
+  // create-time `tags` map uses as its key, and what
+  // `resource.matchTagId('tagKeys/...', ...)` tests.
+  string name = 1;
+
+  // The key's namespaced name, `{org_id}/{short_name}` or
+  // `{project_id}/{short_name}` -- the form
+  // `resource.matchTag('{org_id}/{short_name}', ...)` tests, and the form
+  // `gcloud` shows.
+  string namespaced_name = 2;
+
+  // The numeric ID alone (the part after `tagKeys/`).
+  string tag_key_id = 3;
+
+  // When the key was created (RFC 3339 UTC).
+  string create_time = 4;
+}

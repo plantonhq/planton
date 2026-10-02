@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcptagkey
+spec:
+  billing_model: free
+  free_tier: "A tag key is Resource Manager metadata; Google's Resource Manager pricing states that all use of the Cloud Resource Manager API is free of charge -- no meter counts tag keys, their values, or their purposes."
+  notes: "No field of this spec buys anything. purpose GCE_FIREWALL makes the key's values usable in network firewall policy rules and DATA_GOVERNANCE in data-classification products, neither of which bills for the key itself. Google's one tag caveat, a per-tag monthly fee for tags attached to Cloud Storage BUCKETS, is a cost of the binding to a bucket (see GcpTagBinding), never of the key."

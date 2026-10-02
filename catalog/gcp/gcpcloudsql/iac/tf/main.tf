@@ -69,6 +69,16 @@ resource "google_sql_database_instance" "this" {
   # Description recorded on the final backup (final_backup.enabled only).
   final_backup_description = local.final_backup_description
 
+  # Input-only instructions Cloud SQL acts on but never stores: sent as
+  # written, never read back, so an explicit false is safe.
+  switch_transaction_logs_to_cloud_storage_enabled = var.spec.switch_transaction_logs_to_cloud_storage_enabled
+  include_replicas_for_major_version_upgrade       = var.spec.include_replicas_for_major_version_upgrade
+
+  # Irreversible opt-in to the new network architecture. API-computed, so
+  # sent only when the spec sets it — an explicit value where the API
+  # reports its own would re-plan forever.
+  enforce_new_sql_network_architecture = var.spec.enforce_new_sql_network_architecture
+
   # Create-time clone source: this instance is born as a copy of another.
   dynamic "clone" {
     for_each = var.spec.clone != null ? [var.spec.clone] : []
@@ -147,6 +157,10 @@ resource "google_sql_database_instance" "this" {
     # ExecuteSql API posture (ALLOW_DATA_API / DISALLOW_DATA_API).
     data_api_access = local.data_api_access
 
+    # Read replicas: self-recreate past this lag. API-computed, so sent only
+    # when the spec sets it (null otherwise).
+    replication_lag_max_seconds = var.spec.replication_lag_max_seconds
+
     # HYPERDISK_BALANCED provisioned performance (spec CEL gates the disk
     # type).
     data_disk_provisioned_iops       = try(var.spec.disk.provisioned_iops, null)
@@ -210,6 +224,10 @@ resource "google_sql_database_instance" "this" {
           # Enterprise Plus only).
           psc_auto_dns_enabled           = psc_config.value.auto_dns_enabled
           psc_write_endpoint_dns_enabled = psc_config.value.write_endpoint_dns_enabled
+
+          # Service Connection Policy for the auto connections. API-computed,
+          # so sent only when the spec sets it.
+          psc_auto_connection_policy_enabled = psc_config.value.auto_connection_policy_enabled
 
           dynamic "psc_auto_connections" {
             for_each = psc_config.value.auto_connections

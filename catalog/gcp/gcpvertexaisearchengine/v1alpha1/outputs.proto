@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaisearchengine.v1alpha1;
+
+// GcpVertexAiSearchEngineStackOutputs captures what the engine and its
+// folded controls, serving config, widget config, and assistants resolved
+// to.
+message GcpVertexAiSearchEngineStackOutputs {
+  // Full resource name of the engine:
+  // projects/{project}/locations/{location}/collections/{collection_id}/engines/{engine_id}.
+  string name = 1;
+
+  // The engine's id -- what search and answer requests address the app by.
+  string engine_id = 2;
+
+  // The engine's location (global, us, or eu).
+  string location = 3;
+
+  // The collection the engine lives in (default_collection unless a
+  // connector's collection was named).
+  string collection_id = 4;
+
+  // Which app was built: SEARCH, CHAT, or RECOMMENDATION.
+  string engine_type = 5;
+
+  // Full resource name of the engine's default serving config when the
+  // spec configured it (empty otherwise).
+  string serving_config_name = 6;
+
+  // Full resource name of the widget config when the spec configured it
+  // (empty otherwise).
+  string widget_config_name = 7;
+
+  // The Dialogflow CX agent a CHAT engine answers through
+  // (projects/{project}/locations/{location}/agents/{agent}); empty on
+  // other engine types.
+  string dialogflow_agent = 8;
+
+  // Full resource names of the controls declared on the engine, in
+  // manifest order.
+  repeated string control_names = 9;
+
+  // Full resource names of the assistants declared on the engine, in
+  // manifest order.
+  repeated string assistant_names = 10;
+}

@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: hub-to-spoke
+spec:
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: hub
+      fieldPath: status.outputs.network_self_link
+  peerNetwork:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: spoke
+      fieldPath: status.outputs.network_self_link
+  exportCustomRoutes: true
+  deletionPolicy: PREVENT

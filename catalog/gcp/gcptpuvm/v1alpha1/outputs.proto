@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptpuvm.v1alpha1;
+
+// GcpTpuVmStackOutputs carries the TPU's identity.
+message GcpTpuVmStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{zone}/nodes/{node_id}.
+  string name = 1;
+
+  // The TPU's id (the last segment of name) -- what `gcloud compute tpus
+  // tpu-vm ssh` and the TPU client libraries take.
+  string node_id = 2;
+
+  // The zone the TPU runs in.
+  string zone = 3;
+}

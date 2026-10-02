@@ -49,7 +49,7 @@ spec:
 planton apply -f logging-sink.yaml
 ```
 
-This exports every ERROR-and-above entry in the project to hourly JSON batches in the bucket. The deploy's second half: grant the `writer_identity` output `roles/storage.objectCreator` on the bucket. A Stack Job tracks the provisioning in real time.
+This exports every ERROR-and-above entry in the project to hourly JSON batches in the bucket. The deploy's second half: grant the `writer_identity` output `roles/storage.objectCreator` on the bucket with a `GcpGcsBucketIamMember`. A Stack Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -66,7 +66,7 @@ spec:
   filter: severity>=ERROR
 ```
 
-The InfraPipeline deploys the bucket first, then the sink with the resolved bucket name — and the same chart closes the loop by granting this sink's `writer_identity` output `roles/storage.objectCreator` on the bucket resource.
+The InfraPipeline deploys the bucket first, then the sink with the resolved bucket name — and the same chart closes the loop with a `GcpGcsBucketIamMember` (role `roles/storage.objectCreator`, `member` referencing this sink's `status.outputs.writer_identity`), which deploys after both. Never grant through the bucket's own `iamMembers`: the sink references its destination, so a destination that references the sink's identity back would be a dependency cycle.
 
 ## Key Configuration
 
@@ -97,7 +97,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
-| `writer_identity` | `serviceAccount:{email}` | The destination kind's `iamMembers` — the grant that makes the export actually flow |
+| `writer_identity` | `serviceAccount:{email}` | The `member` of a `GcpGcsBucketIamMember` / `GcpPubSubTopicIamMember` — the grant that makes the export actually flow |
 | `sink_name` | The sink name in GCP | Audit, Logging API cross-references |
 
 ## Common Patterns

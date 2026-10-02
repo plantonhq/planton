@@ -1,0 +1,32 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabSchedule
+metadata:
+  name: nightly-report
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Nightly report
+  cron: "TZ=America/New_York 0 6 * * *"
+  maxConcurrentRunCount: 1
+  notebookExecutionJob:
+    gcsNotebookSource:
+      uri: gs://acme-notebooks/reports/nightly.ipynb
+    notebookRuntimeTemplateResourceName:
+      valueFrom:
+        kind: GcpColabRuntimeTemplate
+        name: standard-cpu
+        fieldPath: status.outputs.name
+    gcsOutputUri:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: notebook-runs
+        fieldPath: status.outputs.url
+    serviceAccount:
+      valueFrom:
+        kind: GcpServiceAccount
+        name: notebook-runner
+        fieldPath: status.outputs.email
+    executionTimeout: 3600s
+    labels:
+      report: nightly

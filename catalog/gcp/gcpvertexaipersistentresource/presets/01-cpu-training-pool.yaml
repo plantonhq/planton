@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiPersistentResource
+metadata:
+  name: cpu-training-pool
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: CPU training pool
+  resourcePools:
+    - id: cpu-workers
+      machineSpec:
+        machineType: n1-standard-8
+      replicaCount: 2

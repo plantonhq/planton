@@ -171,6 +171,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `location` | The cluster's region or zone, as provided | `GcpGkeNodePool.location` references |
 | `self_link` | Server-defined URL of the cluster resource | Automation and audit tooling |
 | `master_version` | Kubernetes version running on the control plane | Version dashboards, upgrade automation |
+| `fleet_membership` | The fleet membership Google created through `fleetProject`; empty without a fleet | `GcpGkeFleetScope.membershipBindings`, `GcpGkeFleetFeature.membershipConfigs` |
 
 ## Common Patterns
 

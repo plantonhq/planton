@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcertmanagertrustconfig
+spec:
+  billing_model: free
+  free_tier: A trust config carries no meter of its own -- Certificate Manager's pricing page bills certificates per month, TLS connections that use large-key certificates, and mutual-TLS connections, and a trust config is none of those. It is the list of CAs and allowlisted certificates a load balancer validates clients against, and holding it costs nothing at any count of anchors, intermediates, or allowlisted certificates, in any location.
+  notes: "No field of this spec buys anything, but the trust config exists to switch on a meter elsewhere. Once a server TLS policy names it and a target HTTPS proxy attaches that policy, every client connection the load balancer validates against it counts toward Certificate Manager's mutual-TLS connection meter, billed to the load balancer's project -- the cost scales with client connection volume, not with what this config holds. The CA whose root becomes a trust anchor bills on its own terms (a GcpPrivateCaPool's authority bills monthly and per issued certificate)."

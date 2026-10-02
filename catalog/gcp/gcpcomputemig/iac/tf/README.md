@@ -22,7 +22,7 @@ iac/tf/
 ├── locals.tf      # Names, label merge, location selector, rotation prefix
 ├── variables.tf   # GENERATED from the spec proto (planton tofu generate-variables)
 ├── outputs.tf     # one(concat()) branch-independent outputs
-├── provider.tf    # google ~> 7.43 pin
+├── provider.tf    # google ~> 8.3 pin
 ├── backend.tf     # local backend for direct runs
 └── README.md      # This file
 ```
@@ -75,12 +75,13 @@ rolls automatically; OPPORTUNISTIC waits).
   autoscaler, per-instance configs, resize requests, and the REGIONAL
   template); the ZONAL template has no deletion policy in the provider —
   it is always deleted on destroy.
-- `workload_identity_config` (GA provider surface) is not modeled — not
-  bridged by pulumi-gcp v9.29.0 (cross-engine parity holds; recorded
-  SDK-gap exclusion, re-evaluate when the bridge ships it). Template
-  `name`/`name_prefix` are module-internal (the rotation mechanism), and
-  CSEK raw-key encryption arms are deliberately not modeled
-  (secure-by-default — use CMEK).
+- `workload_identity_config` (a SPIFFE ID per VM, optional X.509
+  certificates) and `scheduling.host_error_timeout_seconds` land on both
+  templates; the identity block is emitted only when the spec sets it and
+  the timeout only when set (Compute Engine's default recovery otherwise).
+  Template `name`/`name_prefix` are module-internal (the rotation
+  mechanism), and CSEK raw-key encryption arms are deliberately not
+  modeled (secure-by-default — use CMEK).
 
 ## Outputs
 

@@ -1,0 +1,84 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcloudbuildworkerpool
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Worker disks are Compute Engine persistent disks Google encrypts at rest by default; workers are ephemeral and discarded after each build.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: Cloud Build private pools take no customer-managed key; build artifacts land in the buckets and registries whose own blocks carry their keys.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Workers reach Google APIs over TLS; the pool's management calls ride Google's TLS-only Cloud Build endpoint.
+    - control_id: no-public-access
+      status: configurable
+      field_path: worker_config.no_external_ip
+      evidence:
+        type: spec_default
+        reference: no_external_ip true runs workers without public IP addresses; pair it with network_config or private_service_connect so builds reach private services only.
+    - control_id: restricted-ingress
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Workers accept no inbound connections; they are build machines Google starts per build and discards.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The pool serves no traffic.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Running a build on the pool requires cloudbuild.workerpools.use on the pool's project, granted through IAM only.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Builds run as the service account their trigger or build names; the pool carries no identity of its own.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Worker pool creates, updates, and deletes are Cloud Build admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Builds on the pool emit Cloud Build's build logs and metrics like any other build.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The pool holds configuration only; it is recreated from its manifest.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Google places each build's worker in the pool's region; there is no zone to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: deletion_policy PREVENT makes destroy fail.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Google builds, patches, and replaces the worker images; each build gets a fresh worker.

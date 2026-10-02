@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdialogflowcxagent.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpdialogflowcxagent/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpdialogflowcxagent/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-dialogflow-cx-agent
+message GcpDialogflowCxAgent {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpDialogflowCxAgent'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpDialogflowCxAgentSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpDialogflowCxAgentStatus status = 5;
+}
+
+//gcp-dialogflow-cx-agent status
+message GcpDialogflowCxAgentStatus {
+  //stack-outputs
+  GcpDialogflowCxAgentStackOutputs outputs = 1;
+}

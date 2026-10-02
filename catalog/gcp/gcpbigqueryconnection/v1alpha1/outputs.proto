@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigqueryconnection.v1alpha1;
+
+// GcpBigQueryConnectionStackOutputs captures the connection's identity and
+// the Google-owned identities its arm created -- the principals you grant
+// access to the data the connection reads. Only the declared arm's values
+// are populated.
+message GcpBigQueryConnectionStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/connections/{connection_id}.
+  string name = 1;
+
+  // The connection's ID -- what a BigQuery table, routine, or remote model
+  // names as {project}.{location}.{connection_id}.
+  string connection_id = 2;
+
+  // The connection's location.
+  string location = 3;
+
+  // cloud_resource: the service account BigQuery acts as. Grant it access
+  // to the buckets, models, or functions it reaches.
+  string cloud_resource_service_account_id = 4;
+
+  // spark: the service account the Spark procedures run as.
+  string spark_service_account_id = 5;
+
+  // cloud_sql: the service account BigQuery connects to the instance as.
+  string cloud_sql_service_account_id = 6;
+
+  // configuration: the service account the connector authenticates with.
+  string connector_service_account = 7;
+
+  // aws: the Google-owned identity your IAM role must trust.
+  string aws_identity = 8;
+
+  // azure: the Google-owned identity your federated credential trusts.
+  string azure_identity = 9;
+
+  // azure: the Azure AD application Google created (when no federated
+  // application was given).
+  string azure_application = 10;
+
+  // azure: that application's client ID.
+  string azure_client_id = 11;
+
+  // azure: that application's object ID.
+  string azure_object_id = 12;
+
+  // azure: the consent redirect URL for that application.
+  string azure_redirect_uri = 13;
+}

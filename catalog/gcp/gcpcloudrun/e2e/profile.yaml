@@ -18,6 +18,15 @@ spec:
   # endpoint -- each is an arm the proof lane designs live or records as a
   # deferral with its unblock condition.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the service gained sandbox templates with a supervisor
+  # container (sandboxes.templates + sandbox_launcher) and Resource Manager
+  # tags; the earlier live proof predates them. Live proof of the sandbox arm
+  # needs an image the sandbox feature accepts and tags need org-level
+  # tagKeys/tagValues (the standing org-fixture unblock condition); the
+  # committed scenarios stay on the proven shape, so the next proof confirms
+  # the untouched shape still re-plans clean and records what the rendered
+  # arms can only prove offline.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 30

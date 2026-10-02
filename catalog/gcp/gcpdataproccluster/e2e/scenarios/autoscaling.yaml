@@ -56,6 +56,11 @@ spec:
       diskConfig:
         bootDiskSizeGb: 50
         bootDiskType: pd-balanced
+        # One additional persistent disk on every worker (the cheapest
+        # class); proves the attached-disk list round-trips.
+        attachedDisks:
+          - diskSizeGb: 50
+            diskType: pd-standard
       instanceFlexibilityPolicy:
         instanceSelectionList:
           - machineTypes:

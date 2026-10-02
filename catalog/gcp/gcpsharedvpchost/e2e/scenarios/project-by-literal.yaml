@@ -1,0 +1,24 @@
+# GcpSharedVpcHost scenario naming the host project explicitly, by literal
+# ID -- the form a chart uses when the network project was created outside
+# it. Names the harness project through the exported token so the plan and
+# the live run target the same project as the reference manifest's empty
+# form; the difference is the code path (an explicit project skips the
+# provider client-config read).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcHost
+metadata:
+  name: planton-oss-e2e-gcpsvph-literal
+  id: planton-oss-e2e-gcpsvph-literal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsharedvpchost
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  deletionPolicy: DELETE

@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccBigQueryExport
+metadata:
+  name: org-findings-history
+spec:
+  scope:
+    organizationId: "123456789012"
+  bigQueryExportId: org-findings-history
+  description: Every finding in the organization for the security data lake
+  dataset:
+    value: projects/security-analytics/datasets/scc_findings
+  deletionPolicy: PREVENT

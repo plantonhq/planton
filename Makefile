@@ -360,8 +360,8 @@ generate-proto-docs:
 generate-provider-schemas:
 	go run ./pkg/providerparity/distiller \
 		--out-dir pkg/providerparity/schemas \
-		--provider 'google=hashicorp/google@~> 7.43' \
-		--provider 'google-beta=hashicorp/google-beta@~> 7.43' \
+		--provider 'google=hashicorp/google@8.3.0' \
+		--provider 'google-beta=hashicorp/google-beta@8.3.0' \
 		--provider 'azurerm=hashicorp/azurerm@5.0.0' \
 		--provider 'aws=hashicorp/aws@~> 6.58' \
 		--provider 'cloudflare=cloudflare/cloudflare@5.23.0' \

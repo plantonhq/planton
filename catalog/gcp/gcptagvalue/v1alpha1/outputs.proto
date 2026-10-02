@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptagvalue.v1alpha1;
+
+// GcpTagValueStackOutputs captures the tag value's identity after
+// provisioning.
+message GcpTagValueStackOutputs {
+  // The value's resource name, `tagValues/{numeric_id}` -- what a
+  // GcpTagBinding's tag_value references, what a GcpFolder's or
+  // GcpProject's create-time `tags` map uses as its value, and what
+  // `resource.matchTagId(..., 'tagValues/...')` tests.
+  string name = 1;
+
+  // The value's namespaced name, `{parent}/{key_short_name}/{short_name}`
+  // -- e.g. `123456789012/environment/prod` -- the human-readable handle
+  // `gcloud` and the console show.
+  string namespaced_name = 2;
+
+  // The numeric ID alone (the part after `tagValues/`).
+  string tag_value_id = 3;
+
+  // When the value was created (RFC 3339 UTC).
+  string create_time = 4;
+}

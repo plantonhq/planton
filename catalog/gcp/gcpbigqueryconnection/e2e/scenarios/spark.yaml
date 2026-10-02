@@ -1,0 +1,22 @@
+# GcpBigQueryConnection scenario: the spark arm in us-central1 with no
+# metastore or history server (both optional), proving the arm with only
+# Google's own service account.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryConnection
+metadata:
+  name: planton-oss-e2e-gcpbqcn-spark
+  id: planton-oss-e2e-gcpbqcn-spark
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigqueryconnection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionId: e2e_bqcn_spark_${E2E_RUN_ID_UNDERSCORE}
+  spark: {}
+  deletionPolicy: DELETE

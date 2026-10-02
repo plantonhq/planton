@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcppubsubtopiciammember
+spec:
+  billing_model: free
+  free_tier: "The IAM billing-questions page states Identity and Access Management is offered at no additional charge for all Google Cloud customers, and Pub/Sub's pricing page meters message throughput, retained storage, and data transfer -- never a topic's IAM policy. This resource is one additive (role, member) entry in a topic's IAM policy, so creating, holding, and evaluating it costs nothing at any grant count."
+  notes: "No field on this spec starts a meter, but the grant's purpose is to unlock one: once a sink's writer identity, a Security Command Center notification config, or a workload holds roles/pubsub.publisher here, every message it publishes counts toward the topic's throughput meter, billed to the project that owns the topic. A broad sink filter routed through this grant is the classic surprise -- size the sink's filter, not the grant. roles/pubsub.subscriber lets the member attach subscriptions whose delivery and retention bill to the subscription's own project. Removing the grant is free and instant; a sink whose publisher grant is removed silently stops exporting."

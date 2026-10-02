@@ -47,6 +47,7 @@ spec:
 | `spec.autoCreateNetwork` | `bool` |  | `false` |  |
 | `spec.enabledApis` | `[]string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.folderId` | `string \| valueFrom` |  |  | GcpFolder (`status.outputs.folder_id`) |
 
 ## Field Details
 
@@ -75,7 +76,8 @@ metadata.name.
 `enum`
 
 The type of parent node the project is created under. Changing the
-parent migrates the project within the hierarchy.
+parent migrates the project within the hierarchy. May be left empty
+when folder_id names the parent.
 
 Allowed values (use exactly as shown):
 
@@ -88,6 +90,8 @@ Allowed values (use exactly as shown):
 `string`
 
 Organization ID or Folder ID (numeric string) matching parent_type.
+For a folder declared in the same chart, prefer folder_id (a
+reference) and leave this empty.
 
 - rule: parent_id must be the numeric organization/folder ID
 
@@ -115,9 +119,11 @@ Keys/values: lowercase letters, digits, underscores, hyphens.
 `map<string, string>`
 
 Resource Manager tags bound to the project at CREATE TIME only
-(tagKeys/{id} -> tagValues/{id}). Tags drive org policies and IAM
-conditions. Changing this after creation recreates the project — for
-tags on an existing project, bind tag values out-of-band instead.
+(tagKeys/{id} -> tagValues/{id}, the `name` outputs of GcpTagKey and
+GcpTagValue). Tags drive org policies and IAM conditions. Changing this
+after creation recreates the project — for tags on an existing project,
+bind tag values with GcpTagBinding instead, which attaches and detaches
+without touching the project.
 
 ### spec.autoCreateNetwork
 
@@ -155,6 +161,26 @@ What destroying this resource does to the project:
 
 - rule: deletion_policy must be DELETE, PREVENT, or ABANDON
 
+### spec.folderId
+
+`string | valueFrom`
+
+The folder the project lives in, by reference: a GcpFolder resource
+(its folder_id output) or the folder's numeric ID as a literal. This is
+how a chart places a project inside a folder it also declares -- the
+project waits for the folder to exist. When set it IS the parent:
+leave parent_id empty and parent_type empty (or `folder`). Changing it
+moves the project into the new folder in place; nothing is recreated,
+but the IAM and organization policies inherited from the old folder
+stop applying and the new folder's start.
+
+- references: GcpFolder (`status.outputs.folder_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpFolder, name: <that resource's name>, fieldPath: status.outputs.folder_id}} -- a bare string does not parse
+
+## Validation Rules
+
+- `folder_id_is_the_parent`: when folder_id is set it IS the parent: leave parent_id empty and parent_type either empty or folder
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: GcpProject, name: <resource-name>, fieldPath: status.outputs.<output>}`.
@@ -164,6 +190,14 @@ Reference an output from another manifest as `valueFrom: {kind: GcpProject, name
 | `status.outputs.name` | `string` | Display name of the project (mirrors spec.name). |
 | `status.outputs.project_id` | `string` | Immutable project ID (mirrors spec.project_id). |
 | `status.outputs.project_number` | `string` | Numeric project number assigned by Google. |
+
+## References
+
+Fields that can point at another resource's outputs:
+
+| Field | Kind | Output |
+|---|---|---|
+| `spec.folderId` | GcpFolder | `status.outputs.folder_id` |
 
 ## Referenced By
 
@@ -179,14 +213,27 @@ Fields on other kinds that can point at this resource:
 | GcpArtifactRegistryRepo | `spec.projectId` | `status.outputs.project_id` |
 | GcpBackendBucket | `spec.projectId` | `status.outputs.project_id` |
 | GcpBackendService | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryCapacityCommitment | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryConnection | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigQueryDataset | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryReservation | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryReservation | `spec.assignments[].assignee.projectId` | `status.outputs.project_id` |
+| GcpBigQueryReservationGroup | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigQueryTable | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableTable | `spec.projectId` | `status.outputs.project_id` |
+| GcpBillingBudget | `spec.budgetFilter.projects` | `status.outputs.project_number` |
+| GcpBinaryAuthorizationAttestor | `spec.projectId` | `status.outputs.project_id` |
+| GcpBinaryAuthorizationPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerCert | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerDnsAuthorization | `spec.projectId` | `status.outputs.project_id` |
+| GcpCertManagerIssuanceConfig | `spec.projectId` | `status.outputs.project_id` |
+| GcpCertManagerTrustConfig | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertificateMap | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudArmorPolicy | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudBuildConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudBuildTrigger | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudBuildWorkerPool | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudComposerEnvironment | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudComposerUserWorkloadsConfigMap | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudComposerUserWorkloadsSecret | `spec.projectId` | `status.outputs.project_id` |
@@ -194,22 +241,39 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRun | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudRunDomainMapping | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudRunJob | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudRunWorkerPool | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSchedulerJob | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSql | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSqlDatabase | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSqlUser | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudTasksQueue | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabRuntime | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabRuntimeTemplate | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabSchedule | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabSchedule | `spec.pipelineJob.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
 | GcpComputeDisk | `spec.projectId` | `status.outputs.project_id` |
+| GcpComputeImage | `spec.projectId` | `status.outputs.project_id` |
 | GcpComputeInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpComputeMig | `spec.projectId` | `status.outputs.project_id` |
 | GcpDataprocAutoscalingPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpDataprocCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamConnectionProfile | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamPrivateConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamStream | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.sourceHierarchyDatasets.projectId` | `status.outputs.project_id` |
+| GcpDeliveryPipeline | `spec.projectId` | `status.outputs.project_id` |
+| GcpDeployCustomTargetType | `spec.projectId` | `status.outputs.project_id` |
+| GcpDeployPolicy | `spec.projectId` | `status.outputs.project_id` |
+| GcpDeployTarget | `spec.projectId` | `status.outputs.project_id` |
+| GcpDialogflowCxAgent | `spec.projectId` | `status.outputs.project_id` |
+| GcpDialogflowCxSecuritySettings | `spec.projectId` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.projectId` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.routingPolicy.wrr[].healthCheckedTargets.internalLoadBalancers[].project` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.routingPolicy.geo[].healthCheckedTargets.internalLoadBalancers[].project` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.primary.internalLoadBalancers[].project` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.backupGeo[].healthCheckedTargets.internalLoadBalancers[].project` | `status.outputs.project_id` |
 | GcpDnsZone | `spec.projectId` | `status.outputs.project_id` |
+| GcpDocumentAiProcessor | `spec.projectId` | `status.outputs.project_id` |
 | GcpEventarcMessageBus | `spec.projectId` | `status.outputs.project_id` |
 | GcpEventarcTrigger | `spec.projectId` | `status.outputs.project_id` |
 | GcpFilestoreInstance | `spec.projectId` | `status.outputs.project_id` |
@@ -221,56 +285,109 @@ Fields on other kinds that can point at this resource:
 | GcpFirewallRule | `spec.projectId` | `status.outputs.project_id` |
 | GcpGcsBucket | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpGkeCluster | `spec.fleetProject` | `status.outputs.project_id` |
+| GcpGkeFleet | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeNodePool | `spec.projectId` | `status.outputs.project_id` |
 | GcpGkeWorkloadIdentityBinding | `spec.projectId` | `status.outputs.project_id` |
 | GcpGlobalAddress | `spec.projectId` | `status.outputs.project_id` |
 | GcpGlobalForwardingRule | `spec.projectId` | `status.outputs.project_id` |
+| GcpHaVpnConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpHaVpnGateway | `spec.projectId` | `status.outputs.project_id` |
 | GcpHealthCheck | `spec.projectId` | `status.outputs.project_id` |
 | GcpIamCustomRole | `spec.projectId` | `status.outputs.project_id` |
 | GcpIamDenyPolicy | `spec.parent.projectId` | `status.outputs.project_id` |
 | GcpIamOauthClient | `spec.projectId` | `status.outputs.project_id` |
 | GcpIdentityPlatformConfig | `spec.projectId` | `status.outputs.project_id` |
 | GcpIdentityPlatformTenant | `spec.projectId` | `status.outputs.project_id` |
+| GcpKmsAutokeyConfig | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpKmsAutokeyConfig | `spec.keyProject` | `status.outputs.project_id` |
+| GcpKmsKeyHandle | `spec.projectId` | `status.outputs.project_id` |
 | GcpKmsKeyRing | `spec.projectId` | `status.outputs.project_id` |
 | GcpLogBucket | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpLogMetric | `spec.projectId` | `status.outputs.project_id` |
 | GcpLoggingSink | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaAcl | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaConnectCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaConnector | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaTopic | `spec.projectId` | `status.outputs.project_id` |
 | GcpManagedSslCertificate | `spec.projectId` | `status.outputs.project_id` |
 | GcpMemorystoreInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpMemorystoreInstance | `spec.pscAutoConnections[].projectId` | `status.outputs.project_id` |
+| GcpModelArmorFloorSetting | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpModelArmorTemplate | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringAlertPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringDashboard | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringNotificationChannel | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringSlo | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringUptimeCheck | `spec.projectId` | `status.outputs.project_id` |
+| GcpNetworkEndpointGroup | `spec.projectId` | `status.outputs.project_id` |
+| GcpNetworkFirewallPolicy | `spec.projectId` | `status.outputs.project_id` |
+| GcpOrgPolicy | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpPlantonRunner | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaCertificate | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaCertificateAuthority | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaCertificateTemplate | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaPool | `spec.projectId` | `status.outputs.project_id` |
 | GcpProjectIamMember | `spec.projectId` | `status.outputs.project_id` |
+| GcpPscServiceAttachment | `spec.projectId` | `status.outputs.project_id` |
+| GcpPscServiceAttachment | `spec.consumerAcceptLists[].projectId` | `status.outputs.project_id` |
+| GcpPscServiceAttachment | `spec.consumerRejectLists` | `status.outputs.project_id` |
 | GcpPubSubSchema | `spec.projectId` | `status.outputs.project_id` |
 | GcpPubSubSubscription | `spec.projectId` | `status.outputs.project_id` |
 | GcpPubSubTopic | `spec.projectId` | `status.outputs.project_id` |
+| GcpRedisCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpRedisClusterEndpointSet | `spec.projectId` | `status.outputs.project_id` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].projectId` | `status.outputs.project_id` |
 | GcpRedisInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpRegionNetworkEndpointGroup | `spec.projectId` | `status.outputs.project_id` |
 | GcpRouterNat | `spec.projectId` | `status.outputs.project_id` |
+| GcpSccBigQueryExport | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpSccMuteConfig | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpSccNotificationConfig | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpSecretManagerSecret | `spec.projectId` | `status.outputs.project_id` |
 | GcpServerlessVpcConnector | `spec.projectId` | `status.outputs.project_id` |
 | GcpServiceAccount | `spec.projectId` | `status.outputs.project_id` |
 | GcpServiceConnectionPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpServiceNetworkingConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpSharedVpcHost | `spec.projectId` | `status.outputs.project_id` |
+| GcpSharedVpcServiceProject | `spec.serviceProjectId` | `status.outputs.project_id` |
 | GcpSpannerBackupSchedule | `spec.projectId` | `status.outputs.project_id` |
 | GcpSpannerDatabase | `spec.projectId` | `status.outputs.project_id` |
 | GcpSpannerInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpSslCertificate | `spec.projectId` | `status.outputs.project_id` |
 | GcpSslPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpSubnetwork | `spec.projectId` | `status.outputs.project_id` |
+| GcpTagBinding | `spec.parent.projectId` | `status.outputs.project_number` |
+| GcpTagKey | `spec.parent.projectId` | `status.outputs.project_id` |
 | GcpTargetHttpProxy | `spec.projectId` | `status.outputs.project_id` |
 | GcpTargetHttpsProxy | `spec.projectId` | `status.outputs.project_id` |
+| GcpTpuQueuedResource | `spec.projectId` | `status.outputs.project_id` |
+| GcpTpuVm | `spec.projectId` | `status.outputs.project_id` |
 | GcpUrlMap | `spec.projectId` | `status.outputs.project_id` |
+| GcpVectorSearchCollection | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiAgentEngine | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
+| GcpVertexAiDataset | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiEndpoint | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].projectId` | `status.outputs.project_id` |
+| GcpVertexAiFeatureGroup | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiFeatureOnlineStore | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiFeatureOnlineStore | `spec.featureViews[].featureRegistrySource.projectNumber` | `status.outputs.project_number` |
 | GcpVertexAiIndex | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiIndexEndpoint | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiIndexEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].projectId` | `status.outputs.project_id` |
+| GcpVertexAiModelGardenDeployment | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.projectAllowlist` | `status.outputs.project_id` |
+| GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.pscAutomationConfig.projectId` | `status.outputs.project_id` |
 | GcpVertexAiNotebook | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiPersistentResource | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiPersistentResource | `spec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
+| GcpVertexAiRagEngineConfig | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiSearchDataConnector | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiSearchDataStore | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiSearchEngine | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiTensorboard | `spec.projectId` | `status.outputs.project_id` |
 | GcpVpcNetwork | `spec.projectId` | `status.outputs.project_id` |
 | GcpWorkflow | `spec.projectId` | `status.outputs.project_id` |
 | GcpWorkloadIdentityPool | `spec.projectId` | `status.outputs.project_id` |

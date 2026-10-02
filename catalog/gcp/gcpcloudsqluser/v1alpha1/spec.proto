@@ -31,6 +31,18 @@ message GcpCloudSqlUserSpec {
     expression: "!has(this.password_policy) || this.type == '' || this.type == 'BUILT_IN'"
   };
 
+  option (buf.validate.message).cel = {
+    id: "user_name_xor_service_account"
+    message: "set exactly one of user_name (a login name or IAM principal) or service_account (a GcpServiceAccount whose IAM database username is derived)"
+    expression: "(this.user_name != '') != (has(this.service_account) && (has(this.service_account.value) || has(this.service_account.value_from)))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "service_account_requires_iam_sa_type"
+    message: "service_account derives an IAM service-account database user -- set type to CLOUD_IAM_SERVICE_ACCOUNT"
+    expression: "!(has(this.service_account) && (has(this.service_account.value) || has(this.service_account.value_from))) || this.type == 'CLOUD_IAM_SERVICE_ACCOUNT'"
+  };
+
   // The GCP project that owns the Cloud SQL instance.
   // Can be a literal project ID or a reference to a GcpProject resource.
   // If omitted, the provider's default project is used.
@@ -48,13 +60,19 @@ message GcpCloudSqlUserSpec {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.instance_name"
   ];
 
-  // The user name. Immutable. For BUILT_IN users this is the login name;
-  // for IAM types it is the IAM principal — the full email for
-  // CLOUD_IAM_USER/CLOUD_IAM_SERVICE_ACCOUNT (on MySQL, GCP stores it
-  // truncated before the "@"), or the group email for CLOUD_IAM_GROUP.
-  // Example: "orders-app", "ci-runner@my-project.iam.gserviceaccount.com"
+  // The user name. Immutable. For BUILT_IN users this is the login name
+  // ("orders-app"). For IAM types it is the IAM principal: the user's
+  // full email for CLOUD_IAM_USER, the group email for CLOUD_IAM_GROUP,
+  // and for CLOUD_IAM_SERVICE_ACCOUNT the service account's email with
+  // the ".gserviceaccount.com" suffix dropped
+  // ("ci-runner@my-project.iam") — the form Cloud SQL stores on
+  // PostgreSQL; MySQL keeps only the part before "@". Both engines apply
+  // that normalization for CLOUD_IAM_SERVICE_ACCOUNT, so a pasted full
+  // email also works. Prefer service_account for the service-account
+  // case: it wires the identity by reference instead of by hand. Exactly
+  // one of user_name or service_account is set.
   string user_name = 3 [
-    (buf.validate.field).required = true,
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
       min_len: 1
       max_len: 128
@@ -114,6 +132,21 @@ message GcpCloudSqlUserSpec {
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
   }];
+
+  // The service account this IAM database user represents, wired by
+  // reference (a GcpServiceAccount's email) or as a literal email. Both
+  // engines derive the database username Cloud SQL expects — the email
+  // with ".gserviceaccount.com" dropped (Cloud SQL stores exactly that on
+  // PostgreSQL, and only the part before "@" on MySQL) — so a chart never
+  // hand-builds the form. Requires type CLOUD_IAM_SERVICE_ACCOUNT and the
+  // instance's "cloudsql.iam_authentication" flag; the account still
+  // needs roles/cloudsql.instanceUser (and roles/cloudsql.client to
+  // connect) on the project, granted separately. Alternative to
+  // user_name: exactly one of the two is set. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 10 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
 }
 
 // GcpCloudSqlUserPasswordPolicy is a per-user login hardening policy.

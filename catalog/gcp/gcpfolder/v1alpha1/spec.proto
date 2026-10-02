@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfolder.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpFolderSpec creates one Resource Manager folder: a node in the Google
+// Cloud resource hierarchy that groups projects (and other folders) so
+// that IAM policy, organization policies, and billing views can be applied
+// to the whole group at once. A folder lives directly under the
+// organization or inside another folder, up to ten levels deep; a project
+// lives inside exactly one folder (or directly under the organization).
+//
+// The hierarchy is the whole point of this kind. A landing zone is folders
+// inside folders -- `environments/production`, `teams/payments` -- each
+// carrying the guardrails (GcpOrgPolicy) and grants (IAM) every project
+// created beneath it inherits. Declare the parent folder as a reference to
+// another GcpFolder and the chart builds the tree in dependency order;
+// place a project inside it with GcpProject's `folder_id` reference.
+//
+// What is deliberately NOT here: IAM grants on the folder (a
+// per-principal concern that belongs on its own additive resource, as
+// GcpProjectIamMember is for projects) and the folder's organization
+// policies (GcpOrgPolicy scoped to this folder by reference).
+message GcpFolderSpec {
+  // Where the folder sits in the hierarchy: directly under the
+  // organization or inside another folder. Exactly one arm. Changing the
+  // parent MOVES the folder in place (Google's folders.move) -- projects and
+  // sub-folders travel with it and nothing is recreated -- but every IAM
+  // grant and organization policy the folder inherited from its old parent
+  // stops applying and the new parent's start applying at once.
+  GcpFolderParent parent = 1 [(buf.validate.field).required = true];
+
+  // The name shown in the console and in `gcloud resource-manager folders
+  // list`. Defaults to metadata.name when empty. Google's rules: 3-30
+  // characters; letters, digits, spaces, hyphens, and underscores; must
+  // start and end with a letter or digit; and UNIQUE among the parent's
+  // direct children (two sibling folders cannot share a display name).
+  // Mutable: a rename is an in-place update.
+  //
+  // A deleted folder keeps its display name reserved for the 30-day
+  // soft-delete window (folders are recoverable via undelete in that
+  // window), so a fresh folder with the same name under the same parent
+  // fails until the window closes or the old one is purged.
+  string display_name = 2 [(buf.validate.field).cel = {
+    id: "valid_display_name"
+    message: "display_name must be 3-30 characters of letters, digits, spaces, hyphens, or underscores, starting and ending with a letter or digit -- e.g. production or team-payments"
+    expression: "this == '' || this.matches('^[A-Za-z0-9][A-Za-z0-9 _-]{1,28}[A-Za-z0-9]$')"
+  }];
+
+  // Client-side destroy guard. While true (Google's provider default), any
+  // destroy -- including the platform's own teardown flows -- FAILS until
+  // this field is set to false AND applied first; only then does a second
+  // destroy delete the folder. Both engines always send the value
+  // explicitly, so the spec is the single source of truth. The guard exists
+  // because deleting a folder is a hierarchy-wide act: Google refuses to
+  // delete a folder that still holds projects or folders, but a folder that
+  // was just emptied is one accidental destroy away from a 30-day recovery
+  // exercise.
+  //
+  // Ordering quirk in the provider: deletion_policy ABANDON is evaluated
+  // BEFORE this guard, so abandoning a protected folder still works;
+  // PREVENT is evaluated before both.
+  optional bool deletion_protection = 3 [(dev.planton.shared.options.default) = "true"];
+
+  // Resource Manager tags bound to the folder at CREATE TIME only, as
+  // `tagKeys/{numeric_id}` -> `tagValues/{numeric_id}` (the `name` outputs
+  // of GcpTagKey and GcpTagValue). Tags are what organization policies
+  // (`resource.matchTag`), IAM conditions, and firewall policies key on.
+  //
+  // Changing this map after creation RECREATES the folder, which for a
+  // folder holding projects is not a move but a failure (Google refuses to
+  // delete a non-empty folder). Use it only when the tag must exist at
+  // create time -- typically so an organization policy conditioned on the
+  // tag governs the folder from its first second. For every other case,
+  // bind tags after creation with GcpTagBinding, which attaches and
+  // detaches without touching the folder.
+  map<string, string> tags = 4 [(buf.validate.field).map = {
+    keys: {
+      string: {pattern: "^tagKeys/[0-9]+$"}
+    }
+    values: {
+      string: {pattern: "^tagValues/[0-9]+$"}
+    }
+  }];
+
+  // What destroying this resource does to the folder in GCP:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the folder is deleted (Google soft-deletes it for 30
+  //                days, during which it can be undeleted and its display
+  //                name stays reserved); fails while deletion_protection is
+  //                true or the folder still holds projects or folders
+  //   "PREVENT" -- destroy FAILS; the guard for the folders a landing zone
+  //                is built on
+  //   "ABANDON" -- the folder is removed from management but keeps existing
+  //                in GCP with everything inside it; bypasses
+  //                deletion_protection
+  string deletion_policy = 5 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// The folder's parent: the organization or another folder. Exactly one
+// arm -- a folder always has a parent, and Google's `parent` argument is
+// one string (`organizations/{id}` or `folders/{id}`) that the module
+// renders from whichever arm is set.
+message GcpFolderParent {
+  option (buf.validate.message).cel = {
+    id: "exactly_one_parent"
+    message: "set exactly one of organization_id or folder_id -- a folder lives directly under the organization or inside one other folder"
+    expression: "[this.organization_id != '', has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from))].filter(x, x).size() == 1"
+  };
+
+  // A top-level folder: the numeric organization ID (from `gcloud
+  // organizations list`), without the `organizations/` prefix.
+  string organization_id = 1 [(buf.validate.field).cel = {
+    id: "organization_id.numeric"
+    message: "organization_id must be the numeric organization ID, without the organizations/ prefix"
+    expression: "this == '' || this.matches('^[0-9]+$')"
+  }];
+
+  // A nested folder: the parent folder's numeric ID -- a literal, or a
+  // reference to another GcpFolder resource (its folder_id output). The
+  // reference is how a chart builds a hierarchy: the child waits for the
+  // parent to exist and nests inside it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+}

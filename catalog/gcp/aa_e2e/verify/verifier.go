@@ -20,10 +20,16 @@ import (
 	artifactregistry "google.golang.org/api/artifactregistry/v1"
 	"google.golang.org/api/bigquery/v2"
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
+	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	certificatemanager "google.golang.org/api/certificatemanager/v1"
+	cloudbuild "google.golang.org/api/cloudbuild/v1"
+	cloudbuildv2 "google.golang.org/api/cloudbuild/v2"
+	clouddeploy "google.golang.org/api/clouddeploy/v1"
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
+	cloudidentity "google.golang.org/api/cloudidentity/v1"
 	cloudkms "google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
+	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
 	cloudscheduler "google.golang.org/api/cloudscheduler/v1"
 	cloudtasks "google.golang.org/api/cloudtasks/v2"
 	composer "google.golang.org/api/composer/v1"
@@ -34,6 +40,7 @@ import (
 	eventarc "google.golang.org/api/eventarc/v1"
 	firebase "google.golang.org/api/firebase/v1beta1"
 	firestore "google.golang.org/api/firestore/v1"
+	gkehub "google.golang.org/api/gkehub/v1"
 	"google.golang.org/api/iam/v1"
 	iamv2 "google.golang.org/api/iam/v2"
 	identitytoolkit "google.golang.org/api/identitytoolkit/v2"
@@ -41,6 +48,7 @@ import (
 	monitoringv1 "google.golang.org/api/monitoring/v1"
 	monitoring "google.golang.org/api/monitoring/v3"
 	"google.golang.org/api/networkconnectivity/v1"
+	orgpolicy "google.golang.org/api/orgpolicy/v2"
 	pubsub "google.golang.org/api/pubsub/v1"
 	"google.golang.org/api/redis/v1"
 	run "google.golang.org/api/run/v2"
@@ -99,6 +107,30 @@ type Services struct {
 	// API Keys API. Both ride the pinned google.golang.org/api line.
 	Firebase *firebase.Service
 	ApiKeys  *apikeys.Service
+	// CrmV3 is the Resource Manager API's v3 surface -- a DIFFERENT API
+	// version from the v1 client above; folders and the tag family (keys,
+	// values, bindings) are served there. OrgPolicy is the Organization
+	// Policy API (policies and custom constraints).
+	CrmV3     *crmv3.Service
+	OrgPolicy *orgpolicy.Service
+	// BillingBudgets is the Cloud Billing Budget API (budgets live on the
+	// billing account, not in a project); CloudIdentity is the Cloud
+	// Identity API (groups and memberships under a customer). Both ride the
+	// pinned google.golang.org/api line.
+	BillingBudgets *billingbudgets.Service
+	CloudIdentity  *cloudidentity.Service
+	// GkeHub is the Fleet API (GKE Hub): fleets, fleet features, scopes
+	// with their namespaces and role bindings, memberships, and membership
+	// bindings.
+	GkeHub *gkehub.Service
+	// CloudBuild is the Cloud Build API v1 (triggers and worker pools);
+	// CloudBuildV2 its v2 surface (repository connections and the
+	// repositories linked through them); CloudDeploy the Cloud Deploy API
+	// (delivery pipelines with their automations, targets, deploy policies,
+	// and custom target types).
+	CloudBuild   *cloudbuild.Service
+	CloudBuildV2 *cloudbuildv2.Service
+	CloudDeploy  *clouddeploy.Service
 
 	// RestClient is an ADC-authenticated HTTP client for GCP services whose
 	// typed Go client is not yet in the pinned google.golang.org/api line
@@ -182,6 +214,54 @@ var verifiers = map[string]Verifier{
 	"gcpcloudfunction":                       &cloudFunctionVerifier{},
 	"gcpserviceconnectionpolicy":             &serviceConnectionPolicyVerifier{},
 	"gcpmemorystoreinstance":                 &memorystoreInstanceVerifier{},
+	"gcprediscluster":                        &redisClusterVerifier{},
+	"gcpredisclusterendpointset":             &redisClusterEndpointSetVerifier{},
+	"gcpcloudrunworkerpool":                  &cloudRunWorkerPoolVerifier{},
+	"gcpvertexairagengineconfig":             &vertexAiRagEngineConfigVerifier{},
+	"gcpvectorsearchcollection":              &vectorSearchCollectionVerifier{},
+	"gcpvertexaisearchdataconnector":         &vertexAiSearchDataConnectorVerifier{},
+	"gcpvertexaisearchdatastore":             &vertexAiSearchDataStoreVerifier{},
+	"gcpvertexaisearchengine":                &vertexAiSearchEngineVerifier{},
+	"gcpvertexaifeaturegroup":                &vertexAiFeatureGroupVerifier{},
+	"gcpvertexaifeatureonlinestore":          &vertexAiFeatureOnlineStoreVerifier{},
+	"gcpvertexaidataset":                     &vertexAiDatasetVerifier{},
+	"gcpvertexaitensorboard":                 &vertexAiTensorboardVerifier{},
+	"gcpvertexaipersistentresource":          &vertexAiPersistentResourceVerifier{},
+	"gcpvertexaimodelgardendeployment":       &vertexAiModelGardenDeploymentVerifier{},
+	"gcpvertexaiagentengine":                 &vertexAiAgentEngineVerifier{},
+	"gcpmodelarmortemplate":                  &modelArmorTemplateVerifier{},
+	"gcpmodelarmorfloorsetting":              &modelArmorFloorSettingVerifier{},
+	"gcpdocumentaiprocessor":                 &documentAiProcessorVerifier{},
+	"gcpcolabruntimetemplate":                &colabRuntimeTemplateVerifier{},
+	"gcpcolabruntime":                        &colabRuntimeVerifier{},
+	"gcpcolabschedule":                       &colabScheduleVerifier{},
+	"gcptpuvm":                               &tpuVmVerifier{},
+	"gcptpuqueuedresource":                   &tpuQueuedResourceVerifier{},
+	"gcpdialogflowcxagent":                   &dialogflowCxAgentVerifier{},
+	"gcpdialogflowcxsecuritysettings":        &dialogflowCxSecuritySettingsVerifier{},
+	"gcpmanagedkafkacluster":                 &managedKafkaClusterVerifier{},
+	"gcpmanagedkafkatopic":                   &managedKafkaTopicVerifier{},
+	"gcpmanagedkafkaacl":                     &managedKafkaAclVerifier{},
+	"gcpmanagedkafkaconnectcluster":          &managedKafkaConnectClusterVerifier{},
+	"gcpmanagedkafkaconnector":               &managedKafkaConnectorVerifier{},
+	"gcpbigqueryconnection":                  &bigQueryConnectionVerifier{},
+	"gcpbigqueryreservation":                 &bigQueryReservationVerifier{},
+	"gcpbigquerycapacitycommitment":          &bigQueryCapacityCommitmentVerifier{},
+	"gcpbigqueryreservationgroup":            &bigQueryReservationGroupVerifier{},
+	"gcpdatastreamprivateconnection":         &datastreamPrivateConnectionVerifier{},
+	"gcpdatastreamconnectionprofile":         &datastreamConnectionProfileVerifier{},
+	"gcpdatastreamstream":                    &datastreamStreamVerifier{},
+	"gcpprivatecapool":                       &privatecaPoolVerifier{},
+	"gcpprivatecacertificateauthority":       &privatecaAuthorityVerifier{},
+	"gcpprivatecacertificatetemplate":        &privatecaTemplateVerifier{},
+	"gcpprivatecacertificate":                &privatecaCertificateVerifier{},
+	"gcpkmsautokeyconfig":                    &kmsAutokeyConfigVerifier{},
+	"gcpkmskeyhandle":                        &kmsKeyHandleVerifier{},
+	"gcpsccnotificationconfig":               &sccNotificationConfigVerifier{},
+	"gcpsccmuteconfig":                       &sccMuteConfigVerifier{},
+	"gcpsccbigqueryexport":                   &sccBigQueryExportVerifier{},
+	"gcpbinaryauthorizationpolicy":           &binaryAuthorizationPolicyVerifier{},
+	"gcpbinaryauthorizationattestor":         &binaryAuthorizationAttestorVerifier{},
 	"gcpfirestoredatabase":                   &firestoreDatabaseVerifier{},
 	"gcpfirestorebackupschedule":             &firestoreBackupScheduleVerifier{},
 	"gcpfirestoreindex":                      &firestoreIndexVerifier{},
@@ -199,6 +279,8 @@ var verifiers = map[string]Verifier{
 	"gcpkmskeyring":                          &kmsKeyRingVerifier{},
 	"gcpkmskey":                              &kmsKeyVerifier{},
 	"gcpkmskeyiammember":                     &kmsKeyIamMemberVerifier{},
+	"gcppubsubtopiciammember":                &pubSubTopicIamMemberVerifier{},
+	"gcpgcsbucketiammember":                  &gcsBucketIamMemberVerifier{},
 	"gcpserviceaccountiammember":             &serviceAccountIamMemberVerifier{},
 	"gcpcloudtasksqueue":                     &cloudTasksQueueVerifier{},
 	"gcpcloudschedulerjob":                   &cloudSchedulerJobVerifier{},
@@ -214,6 +296,8 @@ var verifiers = map[string]Verifier{
 	"gcpgkeworkloadidentitybinding":          &gkeWorkloadIdentityBindingVerifier{},
 	"gcpcloudarmorpolicy":                    &cloudArmorPolicyVerifier{},
 	"gcpcertmanagerdnsauthorization":         &certManagerDnsAuthorizationVerifier{},
+	"gcpcertmanagertrustconfig":              &certManagerTrustConfigVerifier{},
+	"gcpcertmanagerissuanceconfig":           &certManagerIssuanceConfigVerifier{},
 	"gcpcertmanagercert":                     &certManagerCertVerifier{},
 	"gcpproject":                             &projectVerifier{},
 	"gcpmonitoringnotificationchannel":       &monitoringNotificationChannelVerifier{},
@@ -234,10 +318,40 @@ var verifiers = map[string]Verifier{
 	"gcpeventarcmessagebus":                  &eventarcMessageBusVerifier{},
 	"gcpcertificatemap":                      &certificateMapVerifier{},
 	"gcpapikey":                              &apiKeyVerifier{},
+	"gcpfolder":                              &folderVerifier{},
+	"gcporgpolicy":                           &orgPolicyVerifier{},
+	"gcporgpolicycustomconstraint":           &orgPolicyCustomConstraintVerifier{},
+	"gcptagkey":                              &tagKeyVerifier{},
+	"gcptagvalue":                            &tagValueVerifier{},
+	"gcptagbinding":                          &tagBindingVerifier{},
+	"gcpsharedvpchost":                       &sharedVpcHostVerifier{},
+	"gcpsharedvpcserviceproject":             &sharedVpcServiceProjectVerifier{},
+	"gcpvpcpeering":                          &vpcPeeringVerifier{},
+	"gcphavpngateway":                        &haVpnGatewayVerifier{},
+	"gcphavpnconnection":                     &haVpnConnectionVerifier{},
+	"gcphierarchicalfirewallpolicy":          &hierarchicalFirewallPolicyVerifier{},
+	"gcpnetworkfirewallpolicy":               &networkFirewallPolicyVerifier{},
+	"gcppscserviceattachment":                &pscServiceAttachmentVerifier{},
+	"gcpnetworkendpointgroup":                &networkEndpointGroupVerifier{},
+	"gcpbillingbudget":                       &billingBudgetVerifier{},
+	"gcpcloudidentitygroup":                  &cloudIdentityGroupVerifier{},
 	"gcpfirebaseproject":                     &firebaseProjectVerifier{},
 	"gcpfirebaseandroidapp":                  &firebaseAndroidAppVerifier{},
 	"gcpfirebaseappleapp":                    &firebaseAppleAppVerifier{},
 	"gcpfirebasewebapp":                      &firebaseWebAppVerifier{},
+	"gcpgkefleet":                            &gkeFleetVerifier{},
+	"gcpgkefleetfeature":                     &gkeFleetFeatureVerifier{},
+	"gcpgkefleetscope":                       &gkeFleetScopeVerifier{},
+	"gcpgkefleetmembership":                  &gkeFleetMembershipVerifier{},
+	"gcpcloudbuildworkerpool":                &cloudBuildWorkerPoolVerifier{},
+	"gcpcloudbuildconnection":                &cloudBuildConnectionVerifier{},
+	"gcpcloudbuildrepository":                &cloudBuildRepositoryVerifier{},
+	"gcpcloudbuildtrigger":                   &cloudBuildTriggerVerifier{},
+	"gcpdeliverypipeline":                    &cloudDeployDeliveryPipelineVerifier{},
+	"gcpdeploytarget":                        &cloudDeployTargetVerifier{},
+	"gcpdeploypolicy":                        &cloudDeployPolicyVerifier{},
+	"gcpdeploycustomtargettype":              &cloudDeployCustomTargetTypeVerifier{},
+	"gcpcomputeimage":                        &computeImageVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

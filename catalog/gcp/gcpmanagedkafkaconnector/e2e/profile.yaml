@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpmanagedkafkaconnector
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness project
+  # with roles/managedkafka.admin and Pub/Sub admin: the consumer-scoped
+  # chain (VPC, subnet, Kafka cluster, Connect cluster) plus a Kafka topic
+  # and a Pub/Sub topic deploy first, then Google's Pub/Sub sink connector
+  # with a restart policy. Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest, every scenario, and every
+  # fixture are clean on the pinned provider, and the accounting is total.
+  # Live facts the proof lane confirms: (1) the connector creates on the
+  # bare Connect cluster id both modules derive; (2) whether its tasks reach
+  # RUNNING depends on the Connect service agent's Pub/Sub publisher grant,
+  # which the lane records rather than patches (resource creation is what
+  # the kind proves); (3) configs and the restart policy re-plan clean; (4)
+  # destroy deletes the connector, then the chain -- two cluster creations
+  # dominate the timeout.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 180

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfolder.v1alpha1;
+
+// GcpFolderStackOutputs captures the folder's identity after provisioning.
+message GcpFolderStackOutputs {
+  // The folder's numeric ID -- the value every child needs: a nested
+  // GcpFolder's parent.folder_id, a GcpProject's folder_id, a
+  // GcpOrgPolicy's scope.folder_id, a GcpTagBinding's parent.folder_id.
+  string folder_id = 1;
+
+  // The folder's resource name, `folders/{folder_id}` -- the form Google's
+  // APIs and IAM address the folder by.
+  string name = 2;
+
+  // The folder's lifecycle state as Google reports it: ACTIVE for a live
+  // folder, DELETE_REQUESTED during the 30-day soft-delete window.
+  string lifecycle_state = 3;
+
+  // When the folder was created (RFC 3339 UTC).
+  string create_time = 4;
+}

@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpsccmuteconfig.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpSccMuteConfigSpec is a Security Command Center mute rule at a project,
+// folder, or organization (`google_scc_v2_project_mute_config`,
+// `google_scc_v2_folder_mute_config`, `google_scc_v2_organization_mute_config`
+// -- the scope picks one).
+//
+// A mute rule hides findings that match its filter -- accepted risks,
+// known-noisy detectors, test projects -- so triage, notifications that
+// filter on `mute`, and exports see only what needs action. Muted findings
+// are not deleted; they stay queryable.
+//
+// Security Command Center must be activated on the scope.
+message GcpSccMuteConfigSpec {
+  // Whose findings the rule mutes. Omit for the provider's default project.
+  GcpSccMuteConfigScope scope = 1;
+
+  // The rule's ID, unique within its parent: lowercase letters, digits,
+  // and hyphens, starting with a letter and ending with a letter or digit,
+  // at most 63 characters. Immutable.
+  string mute_config_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "mute_config_id.format"
+      message: "mute_config_id must be 1-63 lowercase letters, digits, or hyphens, starting with a letter and ending with a letter or digit"
+      expression: "this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    }
+  ];
+
+  // Which findings are muted. Supported fields: severity, category,
+  // resource.name, resource.project_name, resource.project_display_name,
+  // resource.folders.resource_folder, resource.parent_name,
+  // resource.parent_display_name, resource.type, findingClass,
+  // indicator.ip_addresses, indicator.domains -- each with = or : (substring),
+  // combined with AND and OR. Write it for the scope: a filter naming
+  // project X on a rule scoped to project Y matches nothing. Example:
+  //   category = "PUBLIC_BUCKET_ACL" AND resource.project_display_name = "sandbox"
+  string filter = 3 [(buf.validate.field).required = true];
+
+  // How the rule mutes:
+  //   "DYNAMIC" -- applies to existing and future matching findings, and
+  //                stops applying when the rule changes or is deleted, or a
+  //                finding stops matching (Google's recommendation)
+  //   "STATIC"  -- sets a permanent mute on future matching findings only;
+  //                later rule changes do not unmute them
+  // Google treats the type as immutable after creation.
+  string type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "DYNAMIC",
+        "STATIC"
+      ]
+    }
+  ];
+
+  // Why the rule exists -- the accepted risk or the noise it removes.
+  string description = 5;
+
+  // Where the rule is stored. "global", the default, unless Security
+  // Command Center data residency was set up at activation (then the
+  // residency location, e.g. "eu" or "us").
+  string location = 6 [(buf.validate.field).cel = {
+    id: "location.format"
+    message: "location must be global or a residency location such as eu or us"
+    expression: "this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')"
+  }];
+
+  // What destroying this block does:
+  //   "" / "DELETE" -- the rule is deleted (DYNAMIC mutes are lifted)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the rule leaves management and keeps muting
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// GcpSccMuteConfigScope names the project, folder, or organization whose
+// findings the config covers. At most one arm; all empty means the
+// provider's default project.
+message GcpSccMuteConfigScope {
+  option (buf.validate.message).cel = {
+    id: "at_most_one_scope"
+    message: "set at most one of project_id, folder_id, or organization_id (empty means the provider's default project)"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1"
+  };
+
+  // A project: a literal project ID or a GcpProject reference.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // A folder: the folder's numeric ID -- a literal or a GcpFolder
+  // reference. Covers every project beneath it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+
+  // The organization: the numeric organization ID, without the
+  // organizations/ prefix.
+  string organization_id = 3 [(buf.validate.field).cel = {
+    id: "organization_id.numeric"
+    message: "organization_id must be the numeric organization ID, without the organizations/ prefix"
+    expression: "this == '' || this.matches('^[0-9]+$')"
+  }];
+}

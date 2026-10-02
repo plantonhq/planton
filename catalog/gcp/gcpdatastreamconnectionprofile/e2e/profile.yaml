@@ -1,0 +1,27 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpdatastreamconnectionprofile
+spec:
+  # Awaiting the live proof lane. Three scenarios prove in the harness
+  # project with roles/datastream.admin (the modules enable
+  # datastream.googleapis.com themselves): a BigQuery destination profile
+  # (fixture-free), a Cloud Storage destination over the bucket's published
+  # install profile, and a PostgreSQL source created without validation --
+  # no database needed -- whose password is a Secret Manager version name
+  # read from a consumer-scoped secret. All three bill nothing. Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest, every scenario, every fixture, and throwaway arms for MySQL
+  # with TLS, Oracle, SQL Server, MongoDB SRV and standard, a private
+  # connection, and an SSH tunnel are clean on the pinned provider, and the
+  # accounting is total. Live facts the proof lane confirms: (1) the marker
+  # bool's empty bigquery_profile block and the gcs_profile bucket are
+  # accepted, and every profile RE-PLANS CLEAN on both engines (ports left
+  # to the provider's engine defaults, the password never read back); (2)
+  # an unvalidated profile accepts a secret version the Datastream service
+  # agent has not been granted; (3) the platform attribution labels land;
+  # (4) destroy deletes each profile and the verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

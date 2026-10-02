@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1;
+
+// GcpKmsAutokeyConfigStackOutputs carries the configuration's identity.
+message GcpKmsAutokeyConfigStackOutputs {
+  // Full resource name: folders/{id}/autokeyConfig or
+  // projects/{id}/autokeyConfig.
+  string name = 1;
+
+  // The scope Autokey is configured on: folders/{id} or projects/{id}.
+  string parent = 2;
+}

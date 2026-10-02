@@ -1,0 +1,29 @@
+# GcpModelArmorTemplate scenario: the smallest useful template -- prompt
+# injection and jailbreak detection plus malicious URL detection, in
+# us-central1. project_id is deliberately omitted (the harness exports
+# GOOGLE_PROJECT); the template id defaults to metadata.name. The
+# injection filter is at MEDIUM_AND_ABOVE, stricter than the floor the
+# floor-setting scenario leaves behind, so the two lanes never collide.
+# Templates are free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorTemplate
+metadata:
+  name: planton-oss-e2e-gcpmarm-minimal
+  id: planton-oss-e2e-gcpmarm-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmodelarmortemplate
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: MEDIUM_AND_ABOVE
+    maliciousUriFilterSettings:
+      filterEnforcement: ENABLED

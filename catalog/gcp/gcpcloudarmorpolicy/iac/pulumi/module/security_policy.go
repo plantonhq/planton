@@ -8,6 +8,10 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// securityPolicy builds the GLOBAL security policy (spec.region empty): the
+// WAF in front of a global external Application Load Balancer's backend
+// services and backend buckets. The regional arm lives in
+// region_security_policy.go.
 func securityPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider, projectService pulumi.Resource) error {
 	spec := locals.GcpCloudArmorPolicy.Spec
 
@@ -102,6 +106,10 @@ func securityPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 	ctx.Export(OpPolicyName, createdPolicy.Name)
 	ctx.Export(OpPolicySelfLink, createdPolicy.SelfLink)
 	ctx.Export(OpFingerprint, createdPolicy.Fingerprint)
+	// A global policy has no region and never enrolls an edge service; the
+	// outputs exist on both arms so consumers read one contract.
+	ctx.Export(OpRegion, pulumi.String(""))
+	ctx.Export(OpNetworkEdgeSecurityServiceSelfLink, pulumi.String(""))
 
 	return nil
 }
@@ -113,7 +121,7 @@ func mapRules(rules []*gcpcloudarmorpolicyv1alpha1.GcpCloudArmorRule) compute.Se
 	for _, rule := range rules {
 		ruleArgs := &compute.SecurityPolicyRuleTypeArgs{
 			Action:   pulumi.String(rule.Action),
-			Priority: pulumi.Int(int(rule.Priority)),
+			Priority: pulumi.Int(int(rule.GetPriority())),
 			Match:    mapMatch(rule.Match),
 		}
 
@@ -203,6 +211,8 @@ func mapThresholdConfigs(configs []*gcpcloudarmorpolicyv1alpha1.GcpCloudArmorThr
 }
 
 // mapMatch reconstructs the nested match structure from flattened spec fields.
+// The global arm always carries match (the spec admits network_match only
+// on a regional CLOUD_ARMOR_NETWORK policy).
 func mapMatch(match *gcpcloudarmorpolicyv1alpha1.GcpCloudArmorRuleMatch) compute.SecurityPolicyRuleMatchArgs {
 	args := compute.SecurityPolicyRuleMatchArgs{}
 

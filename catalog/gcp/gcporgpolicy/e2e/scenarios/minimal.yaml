@@ -1,0 +1,25 @@
+# Minimal GcpOrgPolicy scenario: a boolean constraint enforced on the
+# harness project with NO scope named -- the module resolves the provider's
+# default project (exported by the harness as GOOGLE_PROJECT). The one
+# org-policy shape that proves live with only roles/orgpolicy.policyAdmin on
+# the project. The constraint is chosen so enforcing it on an ephemeral test
+# project changes nothing that is running.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: planton-oss-e2e-gcporgp-minimal
+  id: planton-oss-e2e-gcporgp-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcporgpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  constraint: compute.disableSerialPortAccess
+  policy:
+    rules:
+      - enforce: true

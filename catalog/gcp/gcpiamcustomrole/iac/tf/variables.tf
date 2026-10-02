@@ -1,65 +1,70 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP IAM custom role"
+  description = "GcpIamCustomRole specification"
   type = object({
-    # The role identifier, unique within the project. Forms the full role
-    # name projects/<project>/roles/<role_id>. 3-64 chars; letters, digits,
-    # underscores, periods; NO hyphens. Immutable in GCP (ForceNew).
+    # The identifier for the role, unique within the project. Forms the full
+    # role name: projects/<project>/roles/<role_id>.
+    # 3-64 characters; letters, digits, underscores, and periods only —
+    # hyphens are NOT allowed. Convention is camelCase (e.g. "logBucketWriter").
+    # Immutable: changing it destroys and recreates the role, which breaks every
+    # grant referencing the old role name.
     role_id = string
 
-    # The GCP project that owns this custom role. The CLI's tfvars converter
-    # resolves StringValueOrRef fields to their literal string before the
-    # module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # The GCP project that owns this custom role. The role can only be granted
+    # on resources within this project.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Immutable: changing it destroys and recreates the role.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Human-readable title shown in the GCP console (max 100 chars). Mutable.
+    # Human-readable title shown in the GCP console and IAM policy pickers
+    # (max 100 characters). Mutable.
     title = string
 
-    # What this role is for and who should hold it (max 256 bytes). Mutable.
-    description = optional(string)
+    # Human-readable description of what this role is for and who should hold it.
+    # Surfaces in the console next to the title — write it for the operator
+    # auditing IAM policies later. Mutable.
+    description = optional(string, "")
 
-    # The IAM permissions the role grants; at least one required. Mutable —
-    # edits propagate immediately to every grant of the role.
+    # The IAM permissions this role grants, e.g. ["storage.objects.get",
+    # "storage.objects.list"]. At least one is required. Mutable: adding or
+    # removing permissions updates the role in place, and every existing grant
+    # of the role immediately reflects the change — that is the point of
+    # defining the bundle once.
+    # Permission strings follow <service>.<resource>.<verb>; discover valid
+    # values with `gcloud iam list-testable-permissions <resource>`.
     permissions = list(string)
 
-    # Launch stage label: ALPHA, BETA, GA (default), DEPRECATED, DISABLED, EAP.
+    # The launch stage of the role, mirroring GCP's role lifecycle labels.
+    # Purely informational — it does not change what the role can do, but
+    # GA (the default) is right for production roles; use DISABLED to keep the
+    # role defined while rejecting all of its grants (an IAM kill switch).
     stage = optional(string)
 
-    # DELETE (default) soft-deletes the role on destroy; PREVENT fails the
-    # destroy; ABANDON leaves the role active with every binding working.
+    # What destroying this resource does to the role. Custom-role deletion
+    # is a SOFT delete in GCP — the role enters a deleted state (recoverable
+    # by undelete for 7 days, purged after 37), so DELETE and ABANDON differ
+    # less here than on hard-delete resources:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the role is soft-deleted; existing bindings to it stop
+    #                granting access
+    #   "PREVENT" -- destroy FAILS; protects a role that live bindings
+    #                depend on
+    #   "ABANDON" -- the role is removed from management but stays active,
+    #                and every binding to it keeps working
     deletion_policy = optional(string, "")
   })
-
-  validation {
-    condition     = can(regex("^[a-zA-Z0-9_.]{3,64}$", var.spec.role_id))
-    error_message = "role_id must be 3-64 characters of letters, digits, underscores, or periods (hyphens are not allowed)."
-  }
-
-  validation {
-    condition     = length(var.spec.title) > 0 && length(var.spec.title) <= 100
-    error_message = "title is required and must be at most 100 characters."
-  }
-
-  validation {
-    condition     = length(var.spec.permissions) > 0
-    error_message = "at least one permission is required."
-  }
-
-  validation {
-    condition     = var.spec.stage == null || contains(["ALPHA", "BETA", "GA", "DEPRECATED", "DISABLED", "EAP"], coalesce(var.spec.stage, "GA"))
-    error_message = "stage must be one of ALPHA, BETA, GA, DEPRECATED, DISABLED, or EAP."
-  }
 }

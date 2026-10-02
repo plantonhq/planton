@@ -1,0 +1,49 @@
+# GcpPscServiceAttachment scenario: the ACCEPT_MANUAL form -- only the
+# harness project (by project ID literal) may connect, with a connection
+# limit, a reject list, reconciliation of existing connections, the PROXY
+# protocol, a Cloud DNS domain, and an explicit zero propagated-connection
+# limit (the tri-state field's send-if-zero path). Same producer chain as
+# accept-automatic; the harness runs scenarios sequentially so the two
+# never coexist.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPscServiceAttachment
+metadata:
+  name: planton-oss-e2e-gcppsca-manual
+  id: planton-oss-e2e-gcppsca-manual
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcppscserviceattachment
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpsubnetwork-private.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpsubnetwork-psc-nat.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcphealthcheck-regional-tcp.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpbackendservice-internal.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpglobalforwardingrule-internal.yaml"
+  tags:
+    - planton-e2e
+spec:
+  attachmentName: planton-oss-e2e-gcppsca-manual
+  description: Ephemeral manual-acceptance PSC service attachment created by the Planton E2E harness; safe to delete
+  region: us-central1
+  targetService:
+    valueFrom:
+      kind: GcpGlobalForwardingRule
+      name: planton-oss-e2e-gcppsca-ilb
+      fieldPath: status.outputs.self_link
+  natSubnets:
+    - valueFrom:
+        kind: GcpSubnetwork
+        name: planton-oss-e2e-gcppsca-nat
+        fieldPath: status.outputs.subnetwork_self_link
+  connectionPreference: ACCEPT_MANUAL
+  consumerAcceptLists:
+    - projectId:
+        value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+      connectionLimit: 4
+  consumerRejectLists:
+    - value: planton-e2e-rejected-project
+  reconcileConnections: true
+  enableProxyProtocol: true
+  domainNames:
+    - planton-e2e-${E2E_RUN_ID}.internal.
+  propagatedConnectionLimit: 0
+  deletionPolicy: DELETE

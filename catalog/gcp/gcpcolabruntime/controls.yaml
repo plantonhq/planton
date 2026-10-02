@@ -1,0 +1,83 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcolabruntime
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The runtime's disk is encrypted at rest with Google-managed keys, or the template's customer-managed key when it sets one.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: Customer-managed encryption is a template setting (GcpColabRuntimeTemplate.kms_key_name); the runtime inherits it.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Notebook connections through Colab Enterprise and every Vertex AI API call are TLS.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Only the runtime user can connect, through Colab Enterprise under IAM; the runtime has no public inbound address.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: Network posture is a template setting (network_spec, network_tags); the runtime inherits it.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: A runtime serves no edge.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Assigning, starting, and stopping runtimes requires aiplatform.notebookRuntimes.*; connecting is limited to the runtime user.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: End-user credential access is a template setting (euc_disabled); the runtime inherits it.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No legacy authentication path exists on a Colab Enterprise runtime.
+    - control_id: strong-user-auth
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The runtime user reaches it through Colab Enterprise with their Google identity, under the organization's sign-in policy.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Runtime assign, start, stop, upgrade, and delete are Vertex AI admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The runtime reports VM metrics to Cloud Monitoring without configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Google keeps no backup of a runtime disk; notebooks belong in source control or Cloud Storage, as the GUIDE says.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: A runtime is a single interactive VM; high availability does not apply.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the runtime and its disk are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves it in place.
+    - control_id: managed-patching
+      status: configurable
+      field_path: auto_upgrade
+      evidence:
+        type: spec_default
+        reference: Unset leaves the runtime on its image until the user upgrades; auto_upgrade true upgrades it to Google's latest image whenever it starts and Google reports it upgradable.
+      notes: The 02-parked-gpu preset sets it.

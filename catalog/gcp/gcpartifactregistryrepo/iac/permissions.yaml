@@ -30,4 +30,6 @@ spec:
           - artifactregistry.repositories.getIamPolicy
           - artifactregistry.repositories.setIamPolicy
         provenance: derived
-        notes: Covers google_artifact_registry_repository_iam_member (Terraform) / artifactregistry.RepositoryIamMember (Pulumi) -- the provider reads the repository's IAM policy and merges each additive (role, member) grant into it. Needed only when iam_members is non-empty. Verified against Google's IAM roles-and-permissions reference for artifactregistry; the committed action-inventory snapshot carries the artifactregistry service prefix and lists these permissions.
+        condition:
+          spec_field_set: iam_members
+        notes: Covers google_artifact_registry_repository_iam_member (Terraform) / artifactregistry.RepositoryIamMember (Pulumi) -- the provider reads the repository's IAM policy and merges each additive (role, member) grant into it. Verified against Google's IAM roles-and-permissions reference for artifactregistry; the committed action-inventory snapshot carries the artifactregistry service prefix and lists these permissions.

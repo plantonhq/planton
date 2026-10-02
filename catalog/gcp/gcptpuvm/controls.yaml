@@ -1,0 +1,92 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcptpuvm
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The TPU hosts' boot disks are encrypted at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: The TPU VM resource offers no customer-managed key at the pin; attached data disks carry their own encryption (GcpComputeDisk).
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Cloud TPU API call is TLS; traffic between TPU hosts stays on Google's network.
+    - control_id: no-public-access
+      status: configurable
+      field_path: network_config
+      evidence:
+        type: spec_default
+        reference: Workers get no external IP unless network_config.enable_external_ips (or an entry of network_configs) is true.
+      notes: The 02-private-reserved-v6e preset keeps external IPs off.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: tags
+      evidence:
+        type: spec_default
+        reference: The hosts join the chosen subnetwork, where VPC firewall rules apply; tags let rules target them.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: A TPU serves no edge; it is training and serving compute.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Managing and connecting to TPUs requires tpu.nodes.* permissions on the project.
+    - control_id: workload-identity
+      status: configurable
+      field_path: service_account
+      evidence:
+        type: spec_default
+        reference: Unset runs the hosts as the Compute Engine default service account; service_account.email sets a dedicated identity and scopes narrow its token.
+      notes: The 02-private-reserved-v6e preset sets a dedicated account.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No legacy authentication path exists on a TPU VM.
+    - control_id: strong-user-auth
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: SSH to TPU workers goes through gcloud with the user's Google identity (OS Login when the project enables it).
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: TPU create, update, and delete are Admin Activity audit records unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud TPU reports chip utilization and host metrics to Cloud Monitoring without configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A TPU is recreated from the manifest; training state belongs in checkpoints on data disks or Cloud Storage, as the GUIDE says.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: A TPU slice lives in one zone by design; resilience is checkpoint-and-resume.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the TPU is deleted on destroy (data disks detached); PREVENT makes destroy fail; ABANDON leaves it running.
+      notes: The 02-private-reserved-v6e preset sets PREVENT.
+    - control_id: managed-patching
+      status: configurable
+      field_path: runtime_version
+      evidence:
+        type: spec_default
+        reference: runtime_version pins a Google-maintained TPU image; moving to a new image is a replacement the manifest makes deliberately.

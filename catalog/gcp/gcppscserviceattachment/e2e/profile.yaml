@@ -1,0 +1,30 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcppscserviceattachment
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness project
+  # with project-level roles/compute.networkAdmin: the producer chain
+  # (private subnet, PSC NAT subnet, regional TCP health check, INTERNAL
+  # backend service, INTERNAL forwarding rule) deploys as extra-instance
+  # fixtures on the registry's prerequisite network, then the attachment
+  # publishes the forwarding rule -- ACCEPT_AUTOMATIC with the bare
+  # required set, and ACCEPT_MANUAL with the harness project in the accept
+  # list, a reject list, reconciliation, PROXY protocol, a Cloud DNS domain,
+  # and an explicit zero propagated-connection limit. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest
+  # and every scenario are clean on the pinned provider, and the accounting
+  # is total. Live facts the proof lane confirms: (1) nat_subnets and the
+  # accept/reject lists re-plan clean under the apply-idempotency gate on
+  # both engines (the provider stores all three as sets); (2)
+  # reconcile_connections and propagated_connection_limit left unset show
+  # no diff (Optional+Computed, sent only when set), and the explicit 0
+  # reaches the API as 0 through the send-if-zero twin; (3)
+  # connected_endpoints_count is "0" on a freshly published service on both
+  # engines; (4) a consumer endpoint is offline-only -- the consumer half
+  # (a regional GcpGlobalForwardingRule with an empty scheme targeting the
+  # attachment) is a chain this kind's lane does not carry.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecacertificate.v1alpha1;
+
+import "catalog/gcp/gcpprivatecacertificate/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//GcpPrivateCaCertificate stack-input
+message GcpPrivateCaCertificateStackInput {
+  //target cloud-resource
+  GcpPrivateCaCertificate target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

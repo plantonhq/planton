@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1;
+
+// GcpDocumentAiProcessorStackOutputs carries what an application needs to
+// send documents to the processor.
+message GcpDocumentAiProcessorStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/processors/{processor_id}.
+  string name = 1;
+
+  // The id Google assigned the processor (the last segment of name).
+  string processor_id = 2;
+
+  // The location the processor lives in.
+  string location = 3;
+
+  // The REST endpoint documents are posted to:
+  // https://{location}-documentai.googleapis.com/v1/{name}:process.
+  string process_endpoint = 4;
+}

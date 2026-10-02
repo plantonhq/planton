@@ -1,116 +1,266 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the Filestore instance"
+  description = "GcpFilestoreInstance specification"
   type = object({
-    # StringValueOrRef fields arrive from the proto→tfvars converter as
-    # plain strings (already resolved), never as object({value}).
-    # Empty falls back to the provider's default project.
+    # The GCP project where the Filestore instance is created.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Immutable after creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Instance name; empty falls back to metadata.name. Immutable.
+    # Name of the Filestore instance. This becomes the GCP resource name.
+    # Must start with a lowercase letter, contain only lowercase letters, numbers,
+    # and hyphens, and be 2-63 characters long. When omitted, metadata.name
+    # is used. Immutable after creation.
     instance_name = optional(string, "")
 
-    # Zone for zonal tiers, region for ENTERPRISE/REGIONAL. Immutable.
+    # Location where the instance will be deployed.
+    # For BASIC_HDD, BASIC_SSD, STANDARD, PREMIUM, HIGH_SCALE_SSD, and ZONAL
+    # tiers: specify a zone (e.g., "us-central1-a").
+    # For ENTERPRISE and REGIONAL tiers: specify a region (e.g., "us-central1").
+    # Immutable after creation.
     location = string
 
-    # Service tier. Immutable.
+    # Service tier controlling performance, availability, and pricing.
+    # STANDARD / BASIC_HDD: cost-effective HDD-backed (1 TiB minimum).
+    # PREMIUM / BASIC_SSD: mid-tier SSD-backed (2.5 TiB minimum).
+    # HIGH_SCALE_SSD: legacy high-performance SSD (10 TiB minimum).
+    # ZONAL: modern single-zone SSD with IOPS tuning (1 TiB minimum).
+    # REGIONAL: multi-zone SSD with HA (1 TiB minimum).
+    # ENTERPRISE: highest tier, regional HA (1 TiB minimum).
+    # Immutable after creation.
     tier = string
 
+    # Human-readable description of the instance.
     description = optional(string, "")
 
-    # NFS_V3 (default) or NFS_V4_1. Immutable.
+    # NFS protocol version.
+    # NFS_V3 (default): NFSv3. Broad compatibility, no built-in auth.
+    # NFS_V4_1: NFSv4.1. Supports Kerberos security. Available on
+    #   HIGH_SCALE_SSD, ZONAL, REGIONAL, and ENTERPRISE tiers.
+    # Immutable after creation.
     protocol = optional(string, "")
 
-    # Resolved CMEK key id (projects/../cryptoKeys/..). Immutable.
+    # Cloud KMS key for customer-managed encryption at rest (CMEK).
+    # Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}
+    # If not specified, data is encrypted with Google-managed keys.
+    # Immutable after creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kms_key_name = optional(string, "")
 
+    # Whether deletion protection is enabled. When true, the instance cannot
+    # be deleted until this flag is set to false.
     deletion_protection_enabled = optional(bool, false)
-    deletion_protection_reason  = optional(string, "")
 
-    # The single file share on the instance.
+    # Reason for enabling deletion protection. Informational only.
+    deletion_protection_reason = optional(string, "")
+
+    # File share configuration. Each Filestore instance has exactly one file share.
     file_share = object({
-      name        = string
+      # Name of the file share. Becomes the NFS export path.
+      # Must start with a letter, followed by letters, numbers, or underscores.
+      # Maximum 16 characters.
+      # Immutable after creation.
+      name = string
+
+      # Capacity of the file share in GiB.
+      # Minimum 1024 GiB (1 TiB) for most tiers. BASIC_SSD/PREMIUM requires
+      # 2560 GiB minimum. HIGH_SCALE_SSD requires 10240 GiB minimum.
+      # The GCP API enforces tier-specific minimums.
       capacity_gb = number
+
+      # NFS export options controlling client access to the file share.
+      # Maximum 10 export options per file share.
+      # If empty, all clients are allowed with READ_WRITE access and NO_ROOT_SQUASH.
       nfs_export_options = optional(list(object({
-        ip_ranges   = optional(list(string), [])
+        # List of IPv4 addresses or CIDR ranges that are allowed to mount
+        # the file share. If empty, all clients are allowed.
+        # Maximum 64 IP ranges/addresses across all export options per file share.
+        ip_ranges = optional(list(string), [])
+
+        # Access mode for the export.
+        # READ_WRITE (default): clients can read and write.
+        # READ_ONLY: clients can only read.
         access_mode = optional(string, "")
+
+        # Root squash mode for the export.
+        # NO_ROOT_SQUASH (default): root users on clients have root access on the file share.
+        # ROOT_SQUASH: root users on clients are mapped to anon_uid/anon_gid.
         squash_mode = optional(string, "")
-        anon_uid    = optional(number)
-        anon_gid    = optional(number)
-        # Source VPC network (name) for ip_ranges; required by GCP for
-        # PSC instances, optional otherwise.
+
+        # Anonymous user ID used when squash_mode is ROOT_SQUASH.
+        # Defaults to 65534 (nobody) if not specified.
+        # Only valid when squash_mode is ROOT_SQUASH.
+        anon_uid = optional(number)
+
+        # Anonymous group ID used when squash_mode is ROOT_SQUASH.
+        # Defaults to 65534 (nogroup) if not specified.
+        # Only valid when squash_mode is ROOT_SQUASH.
+        anon_gid = optional(number)
+
+        # Source VPC network for ip_ranges, as the network NAME — a
+        # GcpVpcNetwork reference resolves to it. Required by GCP for
+        # instances using Private Service Connect (where client IPs are not
+        # otherwise attributable to a network), optional for other connect
+        # modes.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         network = optional(string, "")
       })), [])
-      # Restore from an existing Filestore backup. Create-time only.
+
+      # Restore this file share from an existing Filestore backup, in the
+      # format projects/{project}/locations/{location}/backups/{backup}.
+      # The share's capacity must be at least the backup's source capacity.
+      # Create-time only.
       source_backup = optional(string, "")
-      # Restore from a Backup and DR Service backup. Create-time only;
-      # mutually exclusive with source_backup (CEL-enforced pre-deploy).
+
+      # Restore this file share from a Backup and DR Service backup, in
+      # the format projects/{project}/locations/{location}/
+      # backupVaults/{vault}/dataSources/{source}/backups/{backup}.
+      # The vault-based alternative to source_backup (which restores from
+      # Filestore's own backups); set at most one restore source.
+      # Create-time only.
       source_backupdr_backup = optional(string, "")
     })
 
-    # The single VPC attachment. Immutable.
+    # VPC network configuration. Each Filestore instance connects to exactly one network.
     network_config = object({
-      # Resolved VPC network (name or self link).
-      network           = string
-      connect_mode      = optional(string, "")
+      # VPC network to which the Filestore instance is connected, as the
+      # network NAME (e.g. "prod-vpc") — the Filestore API rejects self-link
+      # URLs for same-project networks, so the reference resolves the
+      # GcpVpcNetwork's plain name output.
+      # Immutable after creation.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+      network = string
+
+      # Network connection mode.
+      # DIRECT_PEERING (default): VPC peering. Simplest setup.
+      # PRIVATE_SERVICE_ACCESS: uses a private services connection. Required for
+      #   Shared VPC and some enterprise network configurations.
+      # PRIVATE_SERVICE_CONNECT: uses Private Service Connect endpoints.
+      # Immutable after creation.
+      connect_mode = optional(string, "")
+
+      # A /29 CIDR block for internal IP addresses reserved for this instance.
+      # Must be unique and non-overlapping with existing subnets in the VPC.
+      # If not specified, GCP automatically selects an unused range.
+      # Immutable after creation.
       reserved_ip_range = optional(string, "")
-      # IP versions; empty means ["MODE_IPV4"].
+
+      # IP address versions the instance serves. Values: "MODE_IPV4",
+      # "MODE_IPV6". When empty, ["MODE_IPV4"] is used — the standard NFS
+      # posture. Immutable after creation.
       modes = optional(list(string), [])
-      # Consumer project for the PSC endpoint; only meaningful with
-      # connect_mode PRIVATE_SERVICE_CONNECT (CEL-enforced pre-deploy).
+
+      # Consumer project in which the Private Service Connect endpoint is
+      # created — a project ID; a GcpProject reference resolves to it. If
+      # omitted, the endpoint is created in the instance's own project.
+      # Only meaningful when connect_mode is PRIVATE_SERVICE_CONNECT
+      # (enforced pre-deploy). Immutable after creation.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       psc_endpoint_project = optional(string, "")
     })
 
-    # IOPS tuning (ZONAL/REGIONAL/ENTERPRISE tiers).
+    # Performance configuration for IOPS tuning.
+    # Available on ZONAL, REGIONAL, and ENTERPRISE tiers.
+    # If not specified, the instance uses the default performance for its tier.
     performance_config = optional(object({
+      # Fixed IOPS provisioning. IOPS remains constant regardless of capacity.
+      # Mutually exclusive with iops_per_tb.
       fixed_iops = optional(object({
+        # The number of IOPS to provision. Must be a multiple of 1000.
         max_iops = number
-      }), null)
+      }))
+
+      # Dynamic IOPS provisioning. IOPS scales with instance capacity.
+      # Mutually exclusive with fixed_iops.
       iops_per_tb = optional(object({
+        # Maximum IOPS per terabyte of capacity.
         max_iops_per_tb = number
-      }), null)
-    }), null)
+      }))
+    }))
 
-    # Create-time cross-instance replication (this instance's role +
-    # resolved peer instance paths).
+    # Cross-instance replication established at create time: this instance
+    # becomes the STANDBY replica of an existing ACTIVE peer (the common
+    # DR posture). Create-time only.
     initial_replication = optional(object({
-      role           = optional(string, "")
-      peer_instances = list(string)
-    }), null)
+      # Replication role of THIS instance:
+      #   ""        -- same as "STANDBY" (GCP default; this instance receives
+      #                replication from the peer)
+      #   "STANDBY" -- this instance is the read-only replica
+      #   "ACTIVE"  -- this instance is the replication source
+      role = optional(string, "")
 
-    # User labels merged beneath the platform attribution labels.
+      # Peer Filestore instances in the replication relationship, each as a
+      # reference to a GcpFilestoreInstance (or a literal full resource path
+      # projects/{project}/locations/{location}/instances/{instance}).
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+      peer_instances = list(string)
+    }))
+
+    # User labels merged with Planton attribution labels (which win on key
+    # conflicts). Keys and values must match GCP label constraints.
     labels = optional(map(string), {})
 
-    # Resource Manager tags (tagKeys/{id} => tagValues/{id}). Create-time.
+    # Resource Manager tags bound to the instance for org-policy and IAM
+    # conditions. Keys in the form "tagKeys/{id}", values "tagValues/{id}".
+    # Create-time only.
     tags = optional(map(string), {})
 
-    # LDAP directory services for NFSv4.1 identity mapping. Requires
-    # protocol NFS_V4_1 (CEL-enforced pre-deploy).
+    # LDAP directory integration for NFSv4.1 identity mapping. Requires
+    # protocol NFS_V4_1 — with NFSv3, identity is numeric UID/GID
+    # matching and no directory service applies.
     ldap = optional(object({
-      domain    = string
-      servers   = list(string)
+      # LDAP domain name, e.g. "my-domain.com".
+      domain = string
+
+      # LDAP server addresses — either all DNS names (e.g.
+      # "ldap.example.com") or all IP addresses; GCP rejects a mix of the
+      # two formats.
+      servers = list(string)
+
+      # Groups Organizational Unit (OU) — an optional hint that narrows
+      # LDAP lookups to one OU instead of querying the whole namespace
+      # (faster lookups on large directories).
       groups_ou = optional(string, "")
-      users_ou  = optional(string, "")
-    }), null)
 
-    # Replica-relationship state: READY (replicating, the default) or
-    # PAUSED. A virtual lever the provider drives via pause/resume
-    # replica calls; no effect on instances without a replica pair.
-    desired_replica_state = optional(string, "READY")
+      # Users Organizational Unit (OU) — the same lookup-narrowing hint
+      # for user entries.
+      users_ou = optional(string, "")
+    }))
 
-    # Client-side destroy behavior: DELETE (default), PREVENT, ABANDON.
+    # Desired state of THIS instance's replica relationship, when the
+    # instance is the STANDBY side of a replication pair:
+    #   "READY"  (default) -- replication runs; the standby receives
+    #                         changes from the active peer
+    #   "PAUSED"           -- replication is paused (e.g. to freeze the
+    #                         standby at a point in time); resume by
+    #                         setting READY again
+    # Updatable in place; has no effect on an instance without a
+    # replica relationship.
+    desired_replica_state = optional(string)
+
+    # Deletion policy for the instance — what happens when this resource
+    # is destroyed (evaluated only after deletion_protection_enabled
+    # allows the destroy at all):
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the instance and every file on its share are deleted
+    #   "PREVENT" -- destroy FAILS; a second, independent guard for a
+    #                file server whose data exists nowhere else
+    #   "ABANDON" -- the instance is removed from management but left
+    #                running (and billing) in GCP with its data intact
     deletion_policy = optional(string, "")
   })
 }

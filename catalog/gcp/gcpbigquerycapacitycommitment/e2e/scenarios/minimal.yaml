@@ -1,0 +1,27 @@
+# GcpBigQueryCapacityCommitment scenario, offline only: a 100-slot annual
+# Enterprise commitment left to run out its term on destroy (ABANDON). The
+# profile keeps this kind out of the live lane -- a commitment is a multi-
+# year purchase Google will not delete early -- so this manifest is
+# exercised by offline plans.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryCapacityCommitment
+metadata:
+  name: planton-oss-e2e-gcpbqcc-annual
+  id: planton-oss-e2e-gcpbqcc-annual
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigquerycapacitycommitment
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  capacityCommitmentId: e2e-bqcc-${E2E_RUN_ID}
+  slotCount: 100
+  plan: ANNUAL
+  renewalPlan: ANNUAL
+  edition: ENTERPRISE
+  deletionPolicy: ABANDON

@@ -123,7 +123,8 @@ spec:
     insecureKubeletReadonlyPortEnabled: "FALSE"
     loggingVariant: DEFAULT
   userManagedKeys:
-    clusterCa: projects/test-project-123/locations/us-central1/caPools/test-cluster-ca
+    clusterCa:
+      value: projects/test-project-123/locations/us-central1/caPools/test-cluster-ca
     controlPlaneDiskEncryptionKey:
       value: projects/test-project-123/locations/us-central1/keyRings/test-ring/cryptoKeys/cp-disk-key
   addons:
@@ -211,6 +212,17 @@ spec:
 | `spec.maintenancePolicy.recurringWindow.startTime` | `string` | yes |  |  |
 | `spec.maintenancePolicy.recurringWindow.endTime` | `string` | yes |  |  |
 | `spec.maintenancePolicy.recurringWindow.recurrence` | `string` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow` | `GcpGkeClusterRecurringTimeMaintenanceWindow` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime` | `GcpGkeClusterTimeOfDay` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime.hours` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime.minutes` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime.seconds` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowDuration` | `string` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.recurrence` | `string` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil` | `GcpGkeClusterCalendarDate` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil.year` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil.month` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil.day` | `int32` |  |  |  |
 | `spec.maintenancePolicy.exclusions` | `[]GcpGkeClusterMaintenanceExclusion` |  |  |  |
 | `spec.maintenancePolicy.exclusions[].exclusionName` | `string` | yes |  |  |
 | `spec.maintenancePolicy.exclusions[].startTime` | `string` | yes |  |  |
@@ -312,9 +324,11 @@ spec:
 | `spec.addons.agentSandboxEnabled` | `bool` |  |  |  |
 | `spec.addons.sliceControllerEnabled` | `bool` |  |  |  |
 | `spec.addons.slurmOperatorEnabled` | `bool` |  |  |  |
+| `spec.addons.highScaleCheckpointingEnabled` | `bool` |  |  |  |
+| `spec.addons.nodeReadinessControllerEnabled` | `bool` |  |  |  |
 | `spec.enableAutopilot` | `bool` |  |  |  |
 | `spec.allowNetAdmin` | `bool` |  |  |  |
-| `spec.fleetProject` | `string` |  |  |  |
+| `spec.fleetProject` | `string \| valueFrom` |  |  | GcpGkeFleet (`status.outputs.project_id`), GcpProject (`status.outputs.project_id`) |
 | `spec.fleetMembershipType` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
 | `spec.ignoreNodeCountChanges` | `bool` |  |  |  |
@@ -363,10 +377,10 @@ spec:
 | `spec.nodePoolDefaults.containerdConfig.registryHosts[].hosts[].headers` | `map<string, string>` |  |  |  |
 | `spec.nodePoolDefaults.containerdConfig.writableCgroupsEnabled` | `bool` |  |  |  |
 | `spec.userManagedKeys` | `GcpGkeClusterUserManagedKeys` |  |  |  |
-| `spec.userManagedKeys.clusterCa` | `string` |  |  |  |
-| `spec.userManagedKeys.etcdApiCa` | `string` |  |  |  |
-| `spec.userManagedKeys.etcdPeerCa` | `string` |  |  |  |
-| `spec.userManagedKeys.aggregationCa` | `string` |  |  |  |
+| `spec.userManagedKeys.clusterCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
+| `spec.userManagedKeys.etcdApiCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
+| `spec.userManagedKeys.etcdPeerCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
+| `spec.userManagedKeys.aggregationCa` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.userManagedKeys.controlPlaneDiskEncryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
 | `spec.userManagedKeys.gkeopsEtcdBackupEncryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
 | `spec.userManagedKeys.serviceAccountSigningKeys` | `[]string` |  |  |  |
@@ -378,6 +392,9 @@ spec:
 | `spec.secretSync.enabled` | `bool` |  |  |  |
 | `spec.secretSync.rotationEnabled` | `bool` |  |  |  |
 | `spec.secretSync.rotationInterval` | `string` |  |  |  |
+| `spec.rollbackSafeUpgrade` | `GcpGkeClusterRollbackSafeUpgrade` |  |  |  |
+| `spec.rollbackSafeUpgrade.controlPlaneSoakDuration` | `string` |  |  |  |
+| `spec.desiredEmulatedVersion` | `string` |  |  |  |
 
 ## Field Details
 
@@ -957,7 +974,7 @@ the channel drive versions.
 Maintenance windows and exclusions controlling WHEN GKE may perform
 automatic control-plane and node maintenance.
 
-- rule: set exactly one of daily_window or recurring_window
+- rule: set exactly one of daily_window, recurring_window, or recurring_time_window
 
 ### spec.maintenancePolicy.dailyWindow
 
@@ -977,8 +994,9 @@ Start of the daily 4-hour window, "HH:MM" (UTC), e.g. "03:00".
 
 `GcpGkeClusterRecurringMaintenanceWindow`
 
-RRULE-based recurring window (e.g. weekends only) — finer control than
-the daily window.
+RRULE-based recurring window anchored on an absolute first
+occurrence (start_time/end_time as RFC3339 timestamps) — e.g.
+weekends only. Finer control than the daily window.
 
 ### spec.maintenancePolicy.recurringWindow.startTime
 
@@ -1004,6 +1022,96 @@ RFC3339.
 RFC5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=SA,SU" for weekends.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
+
+### spec.maintenancePolicy.recurringTimeWindow
+
+`GcpGkeClusterRecurringTimeMaintenanceWindow`
+
+RRULE-based recurring window expressed as a time of day plus a
+duration, with an optional date the recurrence may first start. The
+same recurrence power as recurring_window without committing to one
+absolute first timestamp — pick this when the policy is authored as
+"every Saturday at 02:00 for 6 hours, starting next quarter".
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime
+
+`GcpGkeClusterTimeOfDay` · required
+
+Time of day (UTC) each window instance begins.
+
+- rule: {"required":true}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime.hours
+
+`int32`
+
+Hour of the day, 0-23.
+
+- rule: {"int32":{"lte":23,"gte":0}}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime.minutes
+
+`int32`
+
+Minute of the hour, 0-59.
+
+- rule: {"int32":{"lte":59,"gte":0}}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime.seconds
+
+`int32`
+
+Second of the minute, 0-59.
+
+- rule: {"int32":{"lte":59,"gte":0}}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowDuration
+
+`string` · required
+
+Length of each window instance as a duration string with a unit
+suffix, e.g. "4h", "6h30m", "21600s". Must be positive.
+
+- rule: {"required":true,"string":{"minLen":"1","pattern":"^([0-9]+(\\.[0-9]+)?(ns|us|ms|s|m|h))+$"}}
+
+### spec.maintenancePolicy.recurringTimeWindow.recurrence
+
+`string` · required
+
+RFC5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=SA,SU" for weekends.
+
+- rule: {"required":true,"string":{"minLen":"1"}}
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil
+
+`GcpGkeClusterCalendarDate`
+
+Earliest calendar date the recurrence may start; window instances
+before it are skipped. Leave unset to start immediately.
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil.year
+
+`int32`
+
+Four-digit year, e.g. 2027.
+
+- rule: {"int32":{"lte":9999,"gte":1}}
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil.month
+
+`int32`
+
+Month of the year, 1-12.
+
+- rule: {"int32":{"lte":12,"gte":1}}
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil.day
+
+`int32`
+
+Day of the month, 1-31.
+
+- rule: {"int32":{"lte":31,"gte":1}}
 
 ### spec.maintenancePolicy.exclusions
 
@@ -1828,6 +1936,24 @@ The slice controller addon (TPU slice management).
 
 The Slurm operator addon (Slurm-on-GKE for HPC scheduling).
 
+### spec.addons.highScaleCheckpointingEnabled
+
+`bool`
+
+High Scale Checkpointing: the addon that lets large AI/ML training
+jobs checkpoint and restore state at scale (multi-tier checkpointing
+onto node-local and Cloud Storage tiers) so a job resumes from its
+last checkpoint after a preemption or failure instead of restarting.
+
+### spec.addons.nodeReadinessControllerEnabled
+
+`bool`
+
+Node Readiness Controller: the addon that holds a node out of
+scheduling until its readiness rules (for example, required daemon
+pods or device drivers) pass, so workloads never land on a node
+whose accelerators or networking are not yet usable.
+
 ### spec.enableAutopilot
 
 `bool`
@@ -1846,11 +1972,21 @@ some networking agents/service meshes on Autopilot).
 
 ### spec.fleetProject
 
-`string`
+`string | valueFrom`
 
-Registers the cluster with a fleet in the given project (the hub for
-multi-cluster features: multi-cluster ingress/services, config
-management, team scopes).
+Registers the cluster with the fleet of the given project (the hub
+for multi-cluster features: multi-cluster ingress/services, config
+management, team scopes) -- the fleet host project's ID. Point it at
+the GcpGkeFleet that declares the fleet (its project_id, the default):
+the reference orders the registration after the fleet exists, and a
+fleet declared after a cluster registers collides with the one the
+registration created. Point it at a GcpProject (its project_id) only
+when no GcpGkeFleet is declared and the registration may create the
+project's fleet itself. A literal project ID also works. The fleet
+project may differ from the cluster's own project.
+
+- references: GcpGkeFleet (`status.outputs.project_id`), GcpProject (`status.outputs.project_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpGkeFleet, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
 ### spec.fleetMembershipType
 
@@ -2231,28 +2367,49 @@ environments that must own the entire trust chain. Immutable.
 
 ### spec.userManagedKeys.clusterCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool issuing the cluster CA
-("projects/{p}/locations/{l}/caPools/{pool}").
+CA Service pool issuing the cluster CA -- a GcpPrivateCaPool
+reference (its full name) or a literal
+projects/{project}/locations/{location}/caPools/{pool}. Each of the
+four CA fields accepts the same forms.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal cluster_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.etcdApiCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool for the etcd API CA.
+CA Service pool for the etcd API CA: a GcpPrivateCaPool reference or
+the pool's full name.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal etcd_api_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.etcdPeerCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool for the etcd peer CA.
+CA Service pool for the etcd peer CA: a GcpPrivateCaPool reference or
+the pool's full name.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal etcd_peer_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.aggregationCa
 
-`string`
+`string | valueFrom`
 
-CA Service CaPool for the aggregation layer CA.
+CA Service pool for the aggregation layer CA: a GcpPrivateCaPool
+reference or the pool's full name.
+
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal aggregation_ca must be projects/{project}/locations/{location}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.userManagedKeys.controlPlaneDiskEncryptionKey
 
@@ -2343,6 +2500,42 @@ Refresh cadence, seconds format (e.g. "120s").
 
 - rule: rotation_interval must be a seconds-format duration like "120s"
 
+### spec.rollbackSafeUpgrade
+
+`GcpGkeClusterRollbackSafeUpgrade`
+
+Two-step (rollback-safe) control-plane minor upgrades: the control
+plane moves to the new version but keeps emulating the old minor for
+a soak period during which the upgrade can be rolled back without
+data loss. Leave unset for standard one-step upgrades.
+
+### spec.rollbackSafeUpgrade.controlPlaneSoakDuration
+
+`string`
+
+How long the cluster stays in the rollbackable state after the
+control plane upgrades, as a seconds-format duration, e.g. "604800s"
+(7 days). Minimum 6 hours ("21600s"), maximum 7 days ("604800s").
+Leave empty to skip the two-step flow and perform a standard
+one-step upgrade.
+The bound is expressed as one pattern (21600 <= seconds <= 604800)
+so every validation engine, including the Java one, evaluates it
+without string slicing.
+
+- rule: control_plane_soak_duration must be a seconds-format duration between "21600s" (6 hours) and "604800s" (7 days)
+
+### spec.desiredEmulatedVersion
+
+`string`
+
+Completes a rollback-safe upgrade declaratively: set to the target
+minor version ("major.minor", e.g. "1.33") once the soak period has
+proven the new control plane, and GKE stops emulating the old minor.
+Removing the field does not trigger completion; only setting it does.
+Only meaningful with rollback_safe_upgrade.
+
+- rule: desired_emulated_version must be in major.minor format, e.g. "1.33"
+
 ## Validation Rules
 
 - `autopilot_conflicts_cluster_autoscaling`: cluster_autoscaling (node auto-provisioning) cannot be configured on an Autopilot cluster — Autopilot manages node provisioning itself
@@ -2370,6 +2563,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpGkeCluster, n
 | `status.outputs.location` | `string` | The cluster's location (region for regional clusters, zone for zonal), exactly as provided in the spec. |
 | `status.outputs.self_link` | `string` | Server-defined URL of the cluster resource. |
 | `status.outputs.master_version` | `string` | The Kubernetes version currently running on the control plane. |
+| `status.outputs.fleet_membership` | `string` | Full name of the fleet membership Google created when the cluster joined a fleet through fleet_project: projects/{fleet_project}/locations/{location}/memberships/{id}. A team scope binds the cluster by referencing it (GcpGkeFleetScope.membership_bindings), and per-cluster fleet feature settings target it (GcpGkeFleetFeature.membership_configs). Empty when the cluster joins no fleet. |
 
 ## References
 
@@ -2389,6 +2583,12 @@ Fields that can point at another resource's outputs:
 | `spec.databaseEncryption.keyName` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.notificationPubsub.topic` | GcpPubSubTopic | `status.outputs.topic_id` |
 | `spec.resourceUsageExport.bigqueryDatasetId` | GcpBigQueryDataset | `status.outputs.dataset_id` |
+| `spec.fleetProject` | GcpGkeFleet | `status.outputs.project_id` |
+| `spec.fleetProject` | GcpProject | `status.outputs.project_id` |
+| `spec.userManagedKeys.clusterCa` | GcpPrivateCaPool | `status.outputs.name` |
+| `spec.userManagedKeys.etcdApiCa` | GcpPrivateCaPool | `status.outputs.name` |
+| `spec.userManagedKeys.etcdPeerCa` | GcpPrivateCaPool | `status.outputs.name` |
+| `spec.userManagedKeys.aggregationCa` | GcpPrivateCaPool | `status.outputs.name` |
 | `spec.userManagedKeys.controlPlaneDiskEncryptionKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.userManagedKeys.gkeopsEtcdBackupEncryptionKey` | GcpKmsKey | `status.outputs.key_id` |
 
@@ -2399,8 +2599,16 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpDataprocCluster | `spec.virtualClusterConfig.kubernetesClusterConfig.gkeClusterConfig.gkeClusterTarget` | `status.outputs.cluster_id` |
+| GcpDeployTarget | `spec.gke.cluster` | `status.outputs.cluster_id` |
+| GcpDeployTarget | `spec.anthosCluster.membership` | `status.outputs.fleet_membership` |
+| GcpDeployTarget | `spec.associatedEntities[].gkeClusters[].cluster` | `status.outputs.cluster_id` |
+| GcpDeployTarget | `spec.associatedEntities[].anthosClusters[].membership` | `status.outputs.fleet_membership` |
 | GcpDnsZone | `spec.privateVisibilityConfig.gkeClusters[].gkeClusterName` | `status.outputs.cluster_id` |
 | GcpEventarcTrigger | `spec.destination.gke.cluster` | `status.outputs.name` |
+| GcpGkeFleetFeature | `spec.multiclusteringress.configMembership` | `status.outputs.fleet_membership` |
+| GcpGkeFleetFeature | `spec.membershipConfigs[].membership` | `status.outputs.fleet_membership` |
+| GcpGkeFleetMembership | `spec.gkeCluster` | `status.outputs.cluster_id` |
+| GcpGkeFleetScope | `spec.membershipBindings[].membership` | `status.outputs.fleet_membership` |
 | GcpGkeNodePool | `spec.clusterName` | `status.outputs.name` |
 | GcpGkeNodePool | `spec.location` | `status.outputs.location` |
 | KubernetesNetworkPolicy | `spec.ingressRules[].from[].ipBlock.cidr` | `spec.ip_allocation.cluster_ipv4_cidr_block` |

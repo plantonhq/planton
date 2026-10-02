@@ -1,0 +1,20 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcptagkey
+spec:
+  # Awaiting the live proof lane on the PROJECT-owned arm, which needs only
+  # roles/resourcemanager.tagAdmin on the harness project. Offline bar met:
+  # both modules build and validate, offline plans for the reference
+  # manifest and both scenarios are clean on the pinned provider, and the
+  # accounting is total. Live facts the proof lane confirms: (1) the
+  # provider's project-number diff suppression on parent keeps a project ID
+  # literal re-planning clean; (2) the derived tag_key_id matches the name
+  # on both engines; (3) the 30-day name reservation is honored by the run
+  # id suffix. The organization-owned arm (and purpose / purpose_data, which
+  # need a VPC and an organization) stays offline-only until the
+  # organization-scoped test identity exists.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

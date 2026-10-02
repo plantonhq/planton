@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamprivateconnection.v1alpha1;
+
+import "catalog/gcp/gcpdatastreamprivateconnection/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-datastream-private-connection stack-input
+message GcpDatastreamPrivateConnectionStackInput {
+  //target cloud-resource
+  GcpDatastreamPrivateConnection target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

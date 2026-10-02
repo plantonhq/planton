@@ -116,7 +116,6 @@ Everything the pinned GA provider can configure on `google_cloud_run_v2_job` is 
 
 | Excluded Feature | Why |
 |---|---|
-| `tags` (resource-manager tags) | GA at the pin but not yet bridged by the pinned Pulumi SDK; modeling it only in Terraform would break cross-engine parity. Re-evaluate at the next pulumi-gcp bump. |
 | `client` / `client_version` | API-client telemetry strings with no user-facing behavior. |
 | Job IAM (`google_cloud_run_v2_job_iam_*`) | Jobs have no public-serving toggle (nothing to invoke over HTTP); fine-grained execution grants to specific identities are IAM-family territory. |
 

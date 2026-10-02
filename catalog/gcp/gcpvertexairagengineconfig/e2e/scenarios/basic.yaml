@@ -1,0 +1,24 @@
+# GcpVertexAiRagEngineConfig scenario: the Basic tier for one location.
+# project_id is deliberately omitted: the configuration rides the
+# provider's default project, which the harness exports as GOOGLE_PROJECT.
+# The destroy at the end of the run PATCHes the location to UNPROVISIONED,
+# which deletes any RAG Engine managed-database data the harness project
+# holds in us-central1 -- acceptable for a project that exists for proof,
+# and the reason the GUIDE tells everyone else to use ABANDON.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiRagEngineConfig
+metadata:
+  name: planton-oss-e2e-gcpragcf-basic
+  id: planton-oss-e2e-gcpragcf-basic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexairagengineconfig
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  tier: BASIC

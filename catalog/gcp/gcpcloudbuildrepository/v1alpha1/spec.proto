@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudbuildrepository.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpCloudBuildRepositorySpec links one code-host repository into Cloud
+// Build through an existing connection (`google_cloudbuildv2_repository`).
+//
+// The repository is what builds consume: a GcpCloudBuildTrigger's
+// repository_event_config, source_to_build, or git_file_source, and a
+// GcpDeployCustomTargetType's Skaffold modules, reference its name output.
+// A connection holds many repositories; each is its own block so the team
+// that owns a repository can link it without touching the connection.
+//
+// The repository lives in its connection's project and region: both
+// modules take the project and location from parent_connection's full
+// name, so they can never disagree with it.
+//
+// Important behavioral notes:
+//
+//   - Every field is a create-time decision: changing any of them
+//     replaces the link (the code on the host is untouched).
+//   - The connection must have finished its installation (its
+//     installation_stage output is COMPLETE) before Google can link a
+//     repository through it.
+//   - Destroy removes the link from Cloud Build, never the repository on
+//     the code host.
+message GcpCloudBuildRepositorySpec {
+  // The connection the repository is linked through, by full name
+  // (projects/{project}/locations/{location}/connections/{connection}): a
+  // GcpCloudBuildConnection reference (its name output) or the literal
+  // name. Google's provider parses the project and location from this full
+  // form, so a short name is refused. Required. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef parent_connection = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudBuildConnection,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "parent_connection.format"
+      message: "parent_connection must be a full connection name: projects/{project}/locations/{location}/connections/{connection}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/connections/[^/]+$')"
+    }
+  ];
+
+  // The repository's ID in Cloud Build, unique in the connection: letters,
+  // digits, and any of -._~%!$&'()*+,;=@ (Google's rule). Usually the
+  // repository's name on the host. Defaults to metadata.name. Immutable.
+  string repository_id = 2 [(buf.validate.field).cel = {
+    id: "repository_id.format"
+    message: "repository_id may contain only letters, digits, and -._~%!$&'()*+,;=@"
+    expression: "this == '' || this.matches(\"^[-a-zA-Z0-9._~%!$&'()*+,;=@]+$\")"
+  }];
+
+  // The repository's HTTPS clone URI on the code host, e.g.
+  // "https://github.com/acme/orders.git". Required. Immutable.
+  string remote_uri = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "remote_uri.https"
+      message: "remote_uri must be the repository's https:// clone URI"
+      expression: "this.startsWith('https://')"
+    }
+  ];
+
+  // Annotations on the repository link (AIP-128 key/value metadata; a
+  // repository has no labels). Immutable: a change replaces the link.
+  map<string, string> annotations = 4;
+
+  // What destroy does:
+  //   "" / "DELETE" -- the link is removed from Cloud Build
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the link leaves management and stays in Cloud Build
+  string deletion_policy = 5 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

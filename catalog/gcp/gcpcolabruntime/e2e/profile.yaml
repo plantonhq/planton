@@ -1,0 +1,22 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpcolabruntime
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness
+  # project with roles/aiplatform.admin plus a runtime user the owner
+  # arranges (PLANTON_E2E_GCP_COLAB_RUNTIME_USER -- the email the runtime
+  # is assigned to; whether a service-account principal may be its own
+  # runtime user is on the watch list). Offline bar met: both modules
+  # build and validate, offline plans for the reference manifest and the
+  # scenario (reference substituted) are clean on the pinned provider, and
+  # the accounting is total. Live facts the proof lane confirms: (1) the
+  # assign creates the runtime from the template fixture and the
+  # client-side desired_state stops it; (2) the runtime RE-PLANS CLEAN on
+  # both engines -- the runtime id is sent and never read back; (3) the
+  # verifier reads the runtime STOPPED with its user; (4) destroy deletes
+  # it and the template fixture, and the verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

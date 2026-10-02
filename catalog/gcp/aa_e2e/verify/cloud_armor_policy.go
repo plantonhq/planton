@@ -4,19 +4,31 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/googleapi"
 )
 
 // cloudArmorPolicyVerifier probes a Cloud Armor security policy via the
-// compute API. Posture assertions confirm the default rule invariant every
-// policy carries (a rule at priority 2147483647) and that the exported
-// self_link matches the live resource — the value every backend-service and
-// backend-bucket FK consumes.
+// compute API, reading the global or regional collection by the region
+// output (empty = global), the same switch the modules make. Posture
+// assertions confirm the default rule invariant every policy carries (a
+// rule at priority 2147483647) and that the exported self_link matches the
+// live resource — the value every backend-service and backend-bucket FK
+// consumes.
 type cloudArmorPolicyVerifier struct{}
 
 const cloudArmorDefaultRulePriority = int64(2147483647)
 
 func (v *cloudArmorPolicyVerifier) IDOutputKey() string { return "policy_name" }
+
+// getCloudArmorPolicy reads the policy from whichever collection the region
+// output selects.
+func getCloudArmorPolicy(ctx context.Context, svc *Services, outputs map[string]string, name string) (*compute.SecurityPolicy, error) {
+	if region := outputs["region"]; region != "" {
+		return svc.Compute.RegionSecurityPolicies.Get(svc.Project, region, name).Context(ctx).Do()
+	}
+	return svc.Compute.SecurityPolicies.Get(svc.Project, name).Context(ctx).Do()
+}
 
 func (v *cloudArmorPolicyVerifier) VerifyExists(ctx context.Context, svc *Services, outputs map[string]string) error {
 	policyName := outputs["policy_name"]
@@ -24,9 +36,9 @@ func (v *cloudArmorPolicyVerifier) VerifyExists(ctx context.Context, svc *Servic
 		return errors.New("policy_name output missing after deploy")
 	}
 
-	policy, err := svc.Compute.SecurityPolicies.Get(svc.Project, policyName).Context(ctx).Do()
+	policy, err := getCloudArmorPolicy(ctx, svc, outputs, policyName)
 	if err != nil {
-		return errors.Wrapf(err, "cloud armor policy %s not found after deploy", policyName)
+		return errors.Wrapf(err, "cloud armor policy %s (region %q) not found after deploy", policyName, outputs["region"])
 	}
 
 	if wantSelfLink := outputs["policy_self_link"]; wantSelfLink != "" && policy.SelfLink != wantSelfLink {
@@ -54,7 +66,7 @@ func (v *cloudArmorPolicyVerifier) VerifyAbsent(ctx context.Context, svc *Servic
 		return nil
 	}
 
-	_, err := svc.Compute.SecurityPolicies.Get(svc.Project, policyName).Context(ctx).Do()
+	_, err := getCloudArmorPolicy(ctx, svc, outputs, policyName)
 	if err != nil {
 		var apiErr *googleapi.Error
 		if errors.As(err, &apiErr) && apiErr.Code == 404 {

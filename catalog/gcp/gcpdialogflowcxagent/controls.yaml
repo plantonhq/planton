@@ -1,0 +1,90 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpdialogflowcxagent
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Dialogflow encrypts every agent, its content, and its conversation data at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: Dialogflow's customer-managed key is a per-project, per-location encryption spec every agent in that location inherits -- a setting outside this block, not a field of an agent.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Dialogflow API call is TLS, and webhooks must be https (the spec refuses any other scheme); allowed_ca_certs pins custom certificate authorities for a webhook's endpoint.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: An agent is reached only through the Dialogflow API and its integrations under IAM; nothing is served anonymously unless an integration you add in the console publishes one.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: An agent has no network listener to restrict; its webhooks can reach private endpoints through Service Directory (webhooks[].service_directory), which governs egress, not ingress.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No edge is served; conversations arrive through Google's Dialogflow endpoints and integrations.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Reading, editing, or querying an agent and its webhooks, tools, versions, and environments requires dialogflow.* permissions, grantable per agent through IAM conditions on the agent's resource name.
+    - control_id: workload-identity
+      status: configurable
+      field_path: webhooks.generic_web_service.service_agent_auth
+      evidence:
+        type: spec_default
+        reference: Unset sends no token; ID_TOKEN or ACCESS_TOKEN has the Dialogflow service agent mint a Google token for each webhook call, and generic_web_service.service_account sends a named service account's token -- keyless in both cases. Secrets (basic auth, header values, OAuth client secrets) can be Secret Manager version names instead of values.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The agent has no authentication paths of its own to disable; webhook authentication is whichever method a webhook declares.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; console access is Google sign-in under IAM, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every agent, webhook, tool, version, and environment create, update, and delete is a Dialogflow admin write recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: advanced_settings.logging_settings
+      evidence:
+        type: spec_default
+        reference: Unset leaves Google's defaults; enable_stackdriver_logging sends conversation queries to Cloud Logging and enable_interaction_logging keeps interaction history for the console's conversation history and answer feedback.
+      notes: Pair logging with GcpDialogflowCxSecuritySettings redaction so logged conversations carry no personal data.
+    - control_id: backup-recovery
+      status: configurable
+      field_path: git_integration_settings.github_settings
+      evidence:
+        type: spec_default
+        reference: Unset keeps no copy of the agent's content outside Dialogflow; a GitHub integration lets the console push the agent's content to a repository and restore it from there, and flow versions (versions) keep restorable snapshots of each flow.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: Retention of exported content follows the GitHub repository's own history; flow versions are kept until deleted.
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: An agent is a Google-managed regional (or global) service with no zonal placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the agent, its console-authored content, and every folded webhook, tool, version, and environment are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves everything when the block leaves management. locked additionally makes Google reject every change to the agent except a restore.
+      notes: The 03-production-release preset sets PREVENT.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Dialogflow is fully Google-operated; there is no software surface the customer patches.

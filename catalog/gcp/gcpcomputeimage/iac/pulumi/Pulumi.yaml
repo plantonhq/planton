@@ -1,0 +1,4 @@
+name: gcpcomputeimage-pulumi-project
+runtime:
+  name: go
+description: Planton GcpComputeImage Pulumi module

@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCertManagerIssuanceConfig
+metadata:
+  name: my-internal-tls-issuance
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: P-256 certificates from the internal pool, renewed at two thirds of life
+  caPool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: "<ca-pool-resource-name>"
+      fieldPath: status.outputs.name
+  keyAlgorithm: ECDSA_P256
+  # 30 days, the maximum Google allows.
+  lifetime: 2592000s
+  # Renew on day 20 -- 10 days before expiry, inside the 24-76 range a
+  # 30-day lifetime permits.
+  rotationWindowPercentage: 66

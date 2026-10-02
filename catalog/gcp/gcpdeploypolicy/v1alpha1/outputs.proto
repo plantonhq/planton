@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdeploypolicy.v1alpha1;
+
+// GcpDeployPolicyStackOutputs carries the deploy policy's identity.
+message GcpDeployPolicyStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/deployPolicies/{deploy_policy_id}.
+  string name = 1;
+  // The policy's ID, the name a deploy policy override (for example
+  // `gcloud deploy releases promote --override-deploy-policies`) takes.
+  string deploy_policy_id = 2;
+  // Google's unique identifier for the policy.
+  string uid = 3;
+}

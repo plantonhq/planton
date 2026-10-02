@@ -84,5 +84,9 @@ spec:
       crashLoopBackOff:
         maxContainerRestartPeriod: "300s"
       imageMinimumGcAge: "120s"
+      # Graceful node shutdown on reclaim (Spot pools only): two minutes in
+      # total, thirty seconds of it reserved for critical pods.
+      shutdownGracePeriodSeconds: 120
+      shutdownGracePeriodCriticalPodsSeconds: 30
     linuxNodeConfig:
       cgroupMode: CGROUP_MODE_V2

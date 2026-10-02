@@ -32,4 +32,6 @@ spec:
           - iam.oauthClientCredentials.update
           - iam.oauthClientCredentials.delete
         provenance: derived
-        notes: Covers google_iam_oauth_client_credential (Pulumi iam.OauthClientCredential), one per spec.credentials entry -- create (GCP generates the secret server-side), read/refresh, update (including the disable-before-delete transition GCP requires), and delete. Required only when credentials are declared, which is the operating norm for a CONFIDENTIAL_CLIENT.
+        condition:
+          spec_field_set: credentials
+        notes: Covers google_iam_oauth_client_credential (Pulumi iam.OauthClientCredential), one per spec.credentials entry -- create (GCP generates the secret server-side), read/refresh, update (including the disable-before-delete transition GCP requires), and delete. Credentials are the operating norm for a CONFIDENTIAL_CLIENT.

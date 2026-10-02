@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpgkefleetscope
+spec:
+  # Awaiting the live proof lane. Every scenario runs on the second test
+  # project's fleet (the consumer-scoped GcpGkeFleet prerequisite); the
+  # binding scenario's cluster chain lives there too. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest
+  # and every scenario are clean on the pinned provider, and the accounting
+  # is total. Live facts the proof lane confirms: (1) the scope, its
+  # namespaces, and its role bindings create and re-plan clean on both
+  # engines; (2) Google accepts role-binding principals that are not real
+  # identities (Kubernetes RBAC subjects are free-form) -- if it refuses,
+  # the scenario takes the harness identity's email; (3) the cluster's
+  # fleet_membership output names the membership Google created, and the
+  # binding accepts it; (4) the namespace appears on the bound cluster;
+  # (5) destroy removes bindings, namespaces, and the scope before the
+  # cluster fixture (the verifier accepts 404 or a delete time).
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 60

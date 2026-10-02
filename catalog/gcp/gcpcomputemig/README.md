@@ -44,10 +44,12 @@ ten provider resources (`google_compute_instance_template` +
 `google_compute_resize_request` + `_region_resize_request`) at total
 accounting — every provider argument matched, mapped, or excluded with a
 recorded reason in `iac/provider-parity.yaml`. Notable recorded
-exclusions: customer-supplied raw encryption keys (CSEK — use CMEK),
-the template's `workload_identity_config` (not bridged by the pinned
-Pulumi SDK; re-evaluated on SDK upgrades), and the template
-`name`/`name_prefix` pair (module-internal rotation machinery).
+exclusions: customer-supplied raw encryption keys (CSEK — use CMEK) and
+the template `name`/`name_prefix` pair (module-internal rotation
+machinery). The template's managed workload identity
+(`workloadIdentityConfig`: a SPIFFE ID per VM, optional X.509
+certificates) and the host-error detection timeout
+(`scheduling.hostErrorTimeoutSeconds`) are modeled on both engines.
 
 ## Docs
 

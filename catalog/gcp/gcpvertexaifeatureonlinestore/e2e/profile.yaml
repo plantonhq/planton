@@ -1,0 +1,28 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexaifeatureonlinestore
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/aiplatform.admin; the module enables
+  # aiplatform.googleapis.com itself: the smallest Optimized store, and a
+  # one-node Bigtable store serving one feature view over a feature group
+  # and BigQuery table fixture chain. Offline bar met: both modules build
+  # and validate, offline plans for the reference manifest, both
+  # scenarios, the fixtures, and the PSC, CMEK, and BigQuery-view arms are
+  # clean on the pinned provider, and the accounting is total. Live facts
+  # the proof lane confirms: (1) both stores reach STABLE and RE-PLAN CLEAN
+  # under the apply-idempotency gate on both engines -- the Optimized
+  # store's computed dedicated endpoint, the Bigtable zone, and the CPU
+  # target left unset (Optional+Computed) show no diff; (2) the Optimized
+  # store's public_endpoint_domain_name populates, the Bigtable store's is
+  # empty; (3) the feature view creates against the group fixture and
+  # re-plans clean with its cron; its first sync reads BigQuery as the
+  # Vertex AI Service Agent, whose success is recorded but not asserted;
+  # (4) destroy removes the view, then the store (Google deletes the
+  # managed Bigtable instance), then the fixtures, and the verifier reads
+  # 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 45

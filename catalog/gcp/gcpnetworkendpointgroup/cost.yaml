@@ -1,0 +1,14 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpnetworkendpointgroup
+spec:
+  billing_model: free
+  free_tier: "A network endpoint group has no charge of its own in Google's load-balancing pricing -- no per-group fee, no per-endpoint fee, and no per-hour meter on either the zonal or the global collection; the group and its endpoint set cost nothing at rest."
+  notes: "No field of this spec buys anything. The meters sit on what consumes the group: the backend service and forwarding rule in front of it (forwarding-rule hours, data processing) and the VMs a zonal group names (their own compute hours). A global internet group's traffic to an origin outside Google Cloud bills as the load balancer's internet egress; a hybrid group's traffic to on-premises addresses bills as VPN or Interconnect egress."
+  estimate_exclusions:
+    - the load balancer that consumes the group bills under GcpBackendService and GcpGlobalForwardingRule; the VMs a zonal group names bill under GcpComputeInstance
+    - egress to internet or hybrid endpoints follows traffic no manifest can know

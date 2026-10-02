@@ -1,0 +1,22 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiTensorboard
+metadata:
+  name: training-metrics
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Training metrics
+  description: Shared TensorBoard the team's training jobs stream into
+  labels:
+    team: ml
+  # Experiments and runs are optional: training jobs and the Vertex AI SDK
+  # create their own. Declare the ones that must exist up front.
+  experiments:
+    - experimentId: churn-model
+      displayName: Churn model
+      source: custom training job
+      runs:
+        - runId: baseline
+          description: The run every candidate is compared against
+  deletionPolicy: DELETE

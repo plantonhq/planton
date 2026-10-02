@@ -1,0 +1,33 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: prod
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  targetId: prod
+  description: Production on Cloud Run
+  requireApproval: true
+  labels:
+    env: prod
+  annotations:
+    owner: platform
+  deployParameters:
+    min-instances: "2"
+  run:
+    location: projects/my-gcp-project/locations/us-central1
+  executionConfigs:
+    - usages:
+        - RENDER
+        - DEPLOY
+      serviceAccount:
+        value: deployer@my-gcp-project.iam.gserviceaccount.com
+      artifactStorage:
+        value: gs://my-gcp-project-deploy-artifacts/prod
+      executionTimeout: 1800s
+    - usages:
+        - VERIFY
+      workerPool:
+        value: projects/my-gcp-project/locations/us-central1/workerPools/private-builds
+      verbose: true

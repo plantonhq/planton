@@ -1,0 +1,48 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaisearchengine
+spec:
+  billing_model: usage_based
+  baseline_charges:
+    - service_name: Vertex AI Search
+      sku_meter: search queries
+      pricing_unit: 1,000 queries
+      description: A search engine bills per thousand queries at its tier's rate -- Standard ($1.50 per 1,000) or Enterprise ($4.00 per 1,000) -- and the LLM add-on bills a further $4.00 per 1,000 queries that request a generated answer (per cloud.google.com/generative-ai-app-builder/pricing, "Search" rows, read 2026-09-23). Creating the engine, its controls, serving config, widget config, and assistants is free; an engine nobody queries owes nothing.
+    - service_name: Vertex AI Search
+      sku_meter: recommendation predictions and training
+      pricing_unit: 1,000 predictions
+      description: A recommendation engine bills per thousand prediction requests and for model training time while training_state is TRAINING (per the same pricing page, "Recommendations" rows). Pausing training holds the model and stops that meter.
+  cost_drivers:
+    - field_path: search_engine_config.search_tier
+      sku_meter: search queries
+      pricing_unit: 1,000 queries
+      impact: SEARCH_TIER_ENTERPRISE bills roughly 2.7 times the Standard rate per query and unlocks extractive answers, website search enrichment, and the LLM add-on; Standard is the default.
+    - field_path: search_engine_config.search_add_ons
+      sku_meter: LLM add-on
+      pricing_unit: 1,000 queries
+      impact: SEARCH_ADD_ON_LLM adds a per-query charge for every query that requests a summary or generated answer; without it, the widget's generative answer is unavailable.
+    - field_path: widget_config.ui_settings.interaction_type
+      sku_meter: LLM add-on
+      pricing_unit: 1,000 queries
+      impact: SEARCH_WITH_ANSWER and SEARCH_WITH_FOLLOW_UPS make every widget query request a generated answer, so each widget search bills the add-on rate on top of the tier rate.
+    - field_path: media_recommendation_engine_config.training_state
+      sku_meter: recommendation training
+      pricing_unit: node-hours
+      impact: TRAINING (Google's default at creation) retrains the model on new events and bills training time; PAUSED holds the current model at no training cost.
+    - field_path: engine_type
+      sku_meter: search queries or recommendation predictions
+      pricing_unit: 1,000 requests
+      impact: SEARCH and CHAT engines bill per search query (a chat engine's Dialogflow CX agent bills Dialogflow's per-request rates as well); RECOMMENDATION engines bill per prediction and for training.
+    - field_path: assistants
+      sku_meter: Gemini Enterprise licenses
+      pricing_unit: seats per month
+      impact: An assistant is a Gemini Enterprise feature; using it needs licensed seats on the project, billed per user per month, not per query.
+  estimate_exclusions:
+    - Dialogflow CX requests on a chat engine's agent bill under Dialogflow
+    - data indexing bills on the data stores the engine reads, not on the engine
+    - Cloud KMS key operations bill under the referenced key when kms_key_name is set
+    - Gemini Enterprise seat licenses for assistants and intranet apps bill per user

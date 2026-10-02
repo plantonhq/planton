@@ -1,0 +1,9 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyHandle
+metadata:
+  name: orders-bucket-key
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  resourceTypeSelector: storage.googleapis.com/Bucket

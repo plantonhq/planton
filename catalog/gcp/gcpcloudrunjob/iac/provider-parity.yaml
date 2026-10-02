@@ -15,6 +15,10 @@ resources:
         arg: name
       - spec: spec.project_id
         arg: project
+      # The provider's bare "tags" is the Resource Manager tag map; the
+      # spec uses the catalog-wide resource_manager_tags vocabulary.
+      - spec: spec.resource_manager_tags
+        arg: tags
       - spec: spec.region
         arg: location
 
@@ -57,16 +61,6 @@ resources:
       - spec: spec.template.containers.resources.memory
         arg: template.template.containers.resources.limits
     exclusions:
-      # Not yet bridged by the pinned Pulumi SDK (pulumi-gcp v9.29.0):
-      # modeling it only in Terraform would break cross-engine parity --
-      # a spec field one engine silently drops. Re-evaluate at the next
-      # SDK bump.
-      - arg: tags
-        reason: >-
-          resource-manager tags, GA at the pin but not yet bridged by the
-          pinned Pulumi SDK; modeling it would break cross-engine parity.
-          Re-evaluate at the next pulumi-gcp bump.
-
       # API-client telemetry strings with no user-facing behavior.
       - arg: client
         reason: >-

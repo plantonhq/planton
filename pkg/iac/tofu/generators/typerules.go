@@ -41,6 +41,15 @@ type TypeRule struct {
 	// orchestrator-only fields that have no meaning in standalone TF modules.
 	Skip bool
 
+	// FlattenNote is one sentence variables.tf prints as a comment under a
+	// flattened field's documentation. A wrapper's proto documentation
+	// describes the wrapper (a value or a reference); the module sees only
+	// the primitive FlattenTo names, and the note is what closes that gap
+	// for whoever wires main.tf from the generated file. Empty means the
+	// primitive needs no explanation (a JSON well-known type passed through
+	// verbatim reads as the value it is).
+	FlattenNote string
+
 	// ExtractValue extracts the flattened primitive from a JSON-unmarshaled
 	// value. Called by the tfvars generator when FlattenTo is set. Receives
 	// the map[string]interface{} (or other JSON value) that protojson produced
@@ -63,6 +72,7 @@ func DefaultRules() map[string]TypeRule {
 		"dev.planton.shared.foreignkey.v1.StringValueOrRef": {
 			FlattenTo:    "string",
 			ExtractValue: extractStringValueOrRef,
+			FlattenNote:  "Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.",
 		},
 
 		// ValueFromRef: Planton-internal reference type. Should never appear in

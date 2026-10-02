@@ -1,0 +1,4 @@
+name: gcptagvalue-pulumi-project
+runtime:
+  name: go
+description: Planton GcpTagValue Pulumi module

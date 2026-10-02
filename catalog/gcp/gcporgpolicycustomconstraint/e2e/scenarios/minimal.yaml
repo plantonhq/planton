@@ -1,0 +1,31 @@
+# Minimal GcpOrgPolicyCustomConstraint scenario: a DENY constraint over GKE
+# node pools, named from metadata (the module adds the custom. prefix).
+# Organization-level: needs roles/orgpolicy.policyAdmin on the organization.
+# The name carries the run id so a re-run after a failed teardown does not
+# collide with a lingering constraint.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicyCustomConstraint
+metadata:
+  name: planton-oss-e2e-gcpocc-minimal
+  id: planton-oss-e2e-gcpocc-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcporgpolicycustomconstraint
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  organizationId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  constraintName: plantonE2eMinimal${E2E_RUN_ID_UNDERSCORE}
+  description: Planton E2E fixture; safe to delete
+  resourceTypes:
+    - container.googleapis.com/NodePool
+  methodTypes:
+    - CREATE
+    - UPDATE
+  condition: resource.management.autoUpgrade == false
+  actionType: DENY

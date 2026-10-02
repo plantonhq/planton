@@ -1,0 +1,18 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_compute_shared_vpc_service_project:
+    mappings:
+      # Both projects are references named for what they are: the host is a
+      # GcpSharedVpcHost (its host_project_id output), which orders a chart
+      # host-enable -> attach; the service project is a GcpProject.
+      - spec: spec.host_project_id
+        arg: host_project
+      - spec: spec.service_project_id
+        arg: service_project

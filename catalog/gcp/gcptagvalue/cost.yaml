@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcptagvalue
+spec:
+  billing_model: free
+  free_tier: "A tag value is Resource Manager metadata; Google's Resource Manager pricing states that all use of the Cloud Resource Manager API is free of charge -- no meter counts tag values."
+  notes: "No field of this spec buys anything. Google's one tag caveat, a per-tag monthly fee for tags attached to Cloud Storage BUCKETS, is a cost of the binding to a bucket (see GcpTagBinding), never of the value itself."

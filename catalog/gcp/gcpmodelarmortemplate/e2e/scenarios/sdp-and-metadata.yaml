@@ -1,0 +1,46 @@
+# GcpModelArmorTemplate scenario: every filter family and the metadata
+# block -- Responsible AI filters on two categories, Google's basic
+# sensitive-data detectors, inspect-only enforcement with sanitize logging,
+# multi-language detection (the lifted wrapper), custom block messages, and
+# the stable filter-version alias. Proves each optional string and the
+# lifted bool re-plan clean on both engines.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorTemplate
+metadata:
+  name: planton-oss-e2e-gcpmarm-full
+  id: planton-oss-e2e-gcpmarm-full
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmodelarmortemplate
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  templateId: pln-e2e-marm-${E2E_RUN_ID}
+  labels:
+    purpose: e2e
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: LOW_AND_ABOVE
+    raiSettings:
+      raiFilters:
+        - filterType: HATE_SPEECH
+          confidenceLevel: MEDIUM_AND_ABOVE
+        - filterType: DANGEROUS
+    sdpSettings:
+      basicConfig:
+        filterEnforcement: ENABLED
+  templateMetadata:
+    enforcementType: INSPECT_ONLY
+    logSanitizeOperations: true
+    enableMultiLanguageDetection: true
+    customPromptSafetyErrorCode: 403
+    customPromptSafetyErrorMessage: This prompt was blocked by policy.
+    filterVersionSelector:
+      alias: FILTER_VERSION_ALIAS_STABLE
+  deletionPolicy: DELETE

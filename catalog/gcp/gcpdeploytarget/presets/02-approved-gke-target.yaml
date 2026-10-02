@@ -1,0 +1,40 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: prod-gke
+spec:
+  projectId:
+    value: acme-delivery
+  location: us-central1
+  description: Production GKE cluster, approval required
+  requireApproval: true
+  labels:
+    env: prod
+  gke:
+    cluster:
+      valueFrom:
+        kind: GcpGkeCluster
+        name: prod-us-central1
+        fieldPath: status.outputs.cluster_id
+    internalIp: true
+  executionConfigs:
+    - usages:
+        - RENDER
+        - DEPLOY
+        - VERIFY
+      workerPool:
+        valueFrom:
+          kind: GcpCloudBuildWorkerPool
+          name: private-builds
+          fieldPath: status.outputs.name
+      serviceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: prod-deployer
+          fieldPath: status.outputs.email
+      artifactStorage:
+        valueFrom:
+          kind: GcpGcsBucket
+          name: deploy-artifacts
+          fieldPath: status.outputs.url
+      executionTimeout: 1800s

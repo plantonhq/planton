@@ -8,7 +8,10 @@ things the spec reference cannot tell you.
 Every `template` change rotates the template and — with `updatePolicy`
 `PROACTIVE` — rolls the fleet. That makes this ONE resource your VM
 deploy pipeline: bake an image, change `sourceImage`, apply, and the
-group replaces instances within the surge/unavailability budget. Two
+group replaces instances within the surge/unavailability budget. With
+the baked image declared as a `GcpComputeImage`, `sourceImage` is a
+`valueFrom` to its `self_link`: pointing it at the next build's block
+is the whole rollout. Two
 consequences worth internalizing: (1) size the budget for your traffic —
 `maxSurgeFixed` above zero buys zero-unavailability rollouts at
 temporary double-capacity cost; (2) `OPPORTUNISTIC` means an applied
@@ -88,13 +91,21 @@ the destroy outright. One provider asymmetry recorded honestly: the
 zonal instance TEMPLATE carries no deletion policy (it is always deleted
 on destroy) — the regional one participates like every other resource.
 
+## Managed workload identity and host-error recovery
+
+`template.workloadIdentityConfig` issues every VM in the group a SPIFFE
+identity (and, with `identityCertificateEnabled`, rotated X.509
+certificates) so services authenticate to each other by identity rather
+than by shared secret or network position. It is part of the template,
+so changing it rotates the template and rolls the group.
+`template.scheduling.hostErrorTimeoutSeconds` (90..330 in steps of 30)
+tightens how quickly Compute Engine declares a hung host failed and
+starts recovery; leave it unset for the default timing.
+
 ## Coverage decisions on record
 
-`workload_identity_config` (managed workload identity for the VMs) is GA
-provider surface but not bridged by the pinned Pulumi SDK — recorded as
-an SDK-gap exclusion in `iac/provider-parity.yaml`; it lands as spec
-surface when the bridge ships it. CSEK raw-key encryption arms are
-deliberately not modeled (raw key material does not belong in manifests
-or state — use CMEK). Legacy preemptible-only VMs are not modeled: set
+CSEK raw-key encryption arms are deliberately not modeled (raw key
+material does not belong in manifests or state — use CMEK). Legacy
+preemptible-only VMs are not modeled: set
 `scheduling.provisioningModel: SPOT` and both engines derive the legacy
 flag the API still requires.

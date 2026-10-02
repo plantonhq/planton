@@ -113,13 +113,13 @@ message GcpCertManagerCertManaged {
   option (buf.validate.message).cel = {
     id: "managed.auth_mode_exclusive"
     message: "dns_authorizations and issuance_config are mutually exclusive (omit both for load-balancer authorization)"
-    expression: "this.dns_authorizations.size() == 0 || this.issuance_config == ''"
+    expression: "this.dns_authorizations.size() == 0 || !has(this.issuance_config)"
   };
 
   option (buf.validate.message).cel = {
     id: "managed.wildcards_need_dns_auth"
     message: "wildcard domains require dns_authorizations (load-balancer authorization cannot validate wildcards)"
-    expression: "!this.domains.exists(d, d.startsWith('*.')) || this.dns_authorizations.size() > 0 || this.issuance_config != ''"
+    expression: "!this.domains.exists(d, d.startsWith('*.')) || this.dns_authorizations.size() > 0 || has(this.issuance_config)"
   };
 
   // The domains this certificate covers (e.g. "example.com",
@@ -146,11 +146,22 @@ message GcpCertManagerCertManaged {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.authorization_id"
   ];
 
-  // Private-PKI issuance: the CertificateIssuanceConfig resource name
-  // (projects/*/locations/*/certificateIssuanceConfigs/*) that signs
-  // certificates from your own CA instead of a public one.
-  // Mutually exclusive with dns_authorizations.
-  string issuance_config = 3;
+  // Private-PKI issuance: the certificate issuance config that has your own
+  // Certificate Authority Service pool sign this certificate instead of a
+  // public CA, by full name
+  // (projects/{project}/locations/{location}/certificateIssuanceConfigs/{name}).
+  // Reference a GcpCertManagerIssuanceConfig -- its `issuance_config_id`
+  // output is exactly this value, and the reference orders the certificate
+  // after the config. Mutually exclusive with dns_authorizations. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef issuance_config = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCertManagerIssuanceConfig,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.issuance_config_id",
+    (buf.validate.field).cel = {
+      id: "issuance_config.format"
+      message: "a literal issuance_config must be projects/{project}/locations/{location}/certificateIssuanceConfigs/{name}"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/certificateIssuanceConfigs/[^/]+$')"
+    }
+  ];
 }
 
 // Configuration for a self-managed (uploaded) certificate.

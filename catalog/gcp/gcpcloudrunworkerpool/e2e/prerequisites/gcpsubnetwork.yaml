@@ -1,0 +1,27 @@
+# Consumer-scoped GcpSubnetwork install profile for the worker pool chain:
+# the subnet direct VPC egress draws instance addresses from. A regular
+# /24 -- no special purpose.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSubnetwork
+metadata:
+  name: planton-oss-e2e-gcpsnw-runwp-prereq
+  id: planton-oss-e2e-gcpsnw-runwp-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsubnetwork
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: e2e-runwp-subnet-${E2E_RUN_ID}
+  region: us-central1
+  ipCidrRange: 10.9.4.0/24
+  description: Ephemeral /24 for the GcpCloudRunWorkerPool E2E chain; safe to delete

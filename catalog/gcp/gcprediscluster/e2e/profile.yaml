@@ -1,0 +1,30 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcprediscluster
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/redis.admin: the registry's prerequisite chain
+  # (network, subnet, and a service connection policy pinned to the
+  # gcp-memorystore-redis class) deploys first, then the cluster -- a
+  # one-shard nano cluster with Google-placed endpoints, and the two-shard
+  # one-replica shape with TLS, IAM auth, AOF, a daily backup, a Redis
+  # config, and a maintenance window. Offline bar met: both modules build
+  # and validate, offline plans for the reference manifest and every
+  # scenario are clean on the pinned provider, and the accounting is
+  # total. Live facts the proof lane confirms: (1) the two immutable
+  # security modes, sent explicitly with Google's defaults when unset,
+  # RE-PLAN CLEAN under the apply-idempotency gate on both engines; (2)
+  # node_type, persistence, zone distribution, and the maintenance window
+  # left unset show no diff (Optional+Computed, sent only when set); (3)
+  # the maintenance window start is accepted by the hour (Google exposes no
+  # minute lever -- a 400 on the window is the finding, not the module);
+  # (4) discovery_endpoint_address is populated and the three
+  # *_service_attachment handles are populated by connection type, with
+  # the reader handle empty on the zero-replica cluster and populated on
+  # the one-replica one; (5) a cluster creates in ten to fifteen minutes --
+  # the timeout below allows two scenarios per lane.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 90

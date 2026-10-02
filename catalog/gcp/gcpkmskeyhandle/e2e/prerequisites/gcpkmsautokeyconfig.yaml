@@ -1,0 +1,19 @@
+# Consumer-scoped GcpKmsAutokeyConfig install profile for the gcpkmsh
+# scenario: same-project key storage on the harness project, so the handle
+# can request a key without any folder or key project.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsAutokeyConfig
+metadata:
+  name: planton-oss-e2e-gcpkmsh-autokey
+  id: planton-oss-e2e-gcpkmsh-autokey
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpkmsautokeyconfig
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  keyProjectResolutionMode: RESOURCE_PROJECT

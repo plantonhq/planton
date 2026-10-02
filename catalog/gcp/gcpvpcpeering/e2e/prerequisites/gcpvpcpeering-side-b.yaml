@@ -1,0 +1,32 @@
+# The OTHER half of the peering: an extra GcpVpcPeering instance on the second
+# network pointing back at the registry's prerequisite network. The scenarios
+# declare it through the e2e-prerequisites annotation so the pair goes ACTIVE
+# and the verifier can assert it -- a peering with one side only is INACTIVE
+# by Google's design. Deployed as a fixture, it is not the instance under test.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: planton-oss-e2e-gcppeer-side-b
+  id: planton-oss-e2e-gcppeer-side-b
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvpcpeering
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  peeringName: planton-oss-e2e-gcppeer-side-b
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcppeer-peer-vpc
+      fieldPath: status.outputs.network_self_link
+  peerNetwork:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  importCustomRoutes: true

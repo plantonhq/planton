@@ -1,0 +1,20 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_cloudbuildv2_repository:
+    mappings:
+      - spec: spec.repository_id
+        arg: name
+      # The repository lives in its connection's project and region: both
+      # are parsed from the connection's full name, so they can never
+      # disagree with it.
+      - spec: spec.parent_connection
+        arg: project
+      - spec: spec.parent_connection
+        arg: location

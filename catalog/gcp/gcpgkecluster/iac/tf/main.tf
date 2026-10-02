@@ -461,6 +461,30 @@ resource "google_container_cluster" "this" {
         }
       }
 
+      # The time-of-day + duration form of the recurring window.
+      dynamic "recurring_maintenance_window" {
+        for_each = maintenance_policy.value.recurring_time_window != null ? [maintenance_policy.value.recurring_time_window] : []
+        content {
+          window_duration = recurring_maintenance_window.value.window_duration
+          recurrence      = recurring_maintenance_window.value.recurrence
+
+          window_start_time {
+            hours   = recurring_maintenance_window.value.window_start_time.hours
+            minutes = recurring_maintenance_window.value.window_start_time.minutes
+            seconds = recurring_maintenance_window.value.window_start_time.seconds
+          }
+
+          dynamic "delay_until" {
+            for_each = recurring_maintenance_window.value.delay_until != null ? [recurring_maintenance_window.value.delay_until] : []
+            content {
+              year  = delay_until.value.year
+              month = delay_until.value.month
+              day   = delay_until.value.day
+            }
+          }
+        }
+      }
+
       dynamic "disruption_budget" {
         for_each = maintenance_policy.value.disruption_budget != null ? [maintenance_policy.value.disruption_budget] : []
         content {
@@ -891,8 +915,32 @@ resource "google_container_cluster" "this" {
           enabled = true
         }
       }
+
+      dynamic "high_scale_checkpointing_config" {
+        for_each = try(var.spec.addons.high_scale_checkpointing_enabled, false) ? [1] : []
+        content {
+          enabled = true
+        }
+      }
+
+      dynamic "node_readiness_config" {
+        for_each = try(var.spec.addons.node_readiness_controller_enabled, false) ? [1] : []
+        content {
+          enabled = true
+        }
+      }
     }
   }
+
+  # Two-step (rollback-safe) control-plane upgrades: the soak period keeps
+  # the upgrade rollbackable; desired_emulated_version completes it.
+  dynamic "rollback_safe_upgrade" {
+    for_each = var.spec.rollback_safe_upgrade != null ? [var.spec.rollback_safe_upgrade] : []
+    content {
+      control_plane_soak_duration = rollback_safe_upgrade.value.control_plane_soak_duration != "" ? rollback_safe_upgrade.value.control_plane_soak_duration : null
+    }
+  }
+  desired_emulated_version = var.spec.desired_emulated_version != "" ? var.spec.desired_emulated_version : null
 
   dynamic "fleet" {
     for_each = (var.spec.fleet_project != "" || var.spec.fleet_membership_type != "") ? [1] : []

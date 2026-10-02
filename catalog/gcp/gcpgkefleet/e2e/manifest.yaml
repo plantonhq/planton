@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleet
+metadata:
+  name: platform-fleet
+spec:
+  projectId:
+    value: my-gcp-project
+  displayName: Platform fleet
+  defaultClusterConfig:
+    binaryAuthorizationConfig:
+      evaluationMode: POLICY_BINDINGS
+      policyBindings:
+        - projects/123456789012/platforms/gke/policies/baseline
+    securityPostureConfig:
+      mode: BASIC
+      vulnerabilityMode: VULNERABILITY_BASIC

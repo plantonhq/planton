@@ -1,0 +1,33 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpbigquerycapacitycommitment
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: BigQuery
+      sku_meter: committed slots
+      pricing_unit: slot-hours
+      description: Every committed slot bills for the whole term at the plan's discounted rate, whether or not queries use it.
+  cost_drivers:
+    - field_path: slot_count
+      sku_meter: committed slots
+      pricing_unit: slot-hours
+      impact: The whole purchase -- every slot bills for the full term.
+    - field_path: plan
+      sku_meter: committed slots
+      pricing_unit: slot-hours
+      impact: The term keys the discount -- a three-year plan is cheaper per slot-hour than an annual one, for a longer commitment.
+    - field_path: edition
+      sku_meter: committed slots
+      pricing_unit: slot-hours
+      impact: The edition keys the slot rate.
+    - field_path: renewal_plan
+      sku_meter: committed slots
+      pricing_unit: slot-hours
+      impact: Decides whether and how the spend continues after the term ends.
+  free_tier: ""
+  notes: "Google's BigQuery pricing (cloud.google.com/bigquery/pricing, read 2026-09-24) prices committed slots per slot-hour below the pay-as-you-go edition rate, for a one- or three-year term that cannot be cancelled."

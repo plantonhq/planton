@@ -122,7 +122,7 @@ spec:
 | `spec.buildConfig.source.repoSource.projectId` | `string` |  |  |  |
 | `spec.buildConfig.buildEnvironmentVariables` | `map<string, string>` |  |  |  |
 | `spec.buildConfig.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.name`) |
-| `spec.buildConfig.workerPool` | `string` |  |  |  |
+| `spec.buildConfig.workerPool` | `string \| valueFrom` |  |  | GcpCloudBuildWorkerPool (`status.outputs.name`) |
 | `spec.buildConfig.dockerRepository` | `string \| valueFrom` |  |  | GcpArtifactRegistryRepo (`status.outputs.repository_path`) |
 | `spec.buildConfig.updatePolicy` | `enum` |  | `AUTOMATIC` |  |
 | `spec.serviceConfig` | `GcpCloudFunctionServiceConfig` |  |  |  |
@@ -131,12 +131,13 @@ spec:
 | `spec.serviceConfig.availableCpu` | `string` |  |  |  |
 | `spec.serviceConfig.timeoutSeconds` | `int32` |  | `60` |  |
 | `spec.serviceConfig.maxInstanceRequestConcurrency` | `int32` |  | `1` |  |
-| `spec.serviceConfig.environmentVariables` | `map<string, string>` |  |  |  |
+| `spec.serviceConfig.environmentVariables` | `map<string, string>` (no secrets: use `secretEnvironmentVariables`) |  |  |  |
 | `spec.serviceConfig.secretEnvironmentVariables` | `[]GcpCloudFunctionSecretEnvVar` |  |  |  |
 | `spec.serviceConfig.secretEnvironmentVariables[].key` | `string` | yes |  |  |
-| `spec.serviceConfig.secretEnvironmentVariables[].secret` | `string` | yes |  |  |
+| `spec.serviceConfig.secretEnvironmentVariables[].secret` | `string` |  |  |  |
 | `spec.serviceConfig.secretEnvironmentVariables[].version` | `string` |  | `latest` |  |
 | `spec.serviceConfig.secretEnvironmentVariables[].projectId` | `string` |  |  |  |
+| `spec.serviceConfig.secretEnvironmentVariables[].value` | `string` (sensitive) |  |  |  |
 | `spec.serviceConfig.secretVolumes` | `[]GcpCloudFunctionSecretVolume` |  |  |  |
 | `spec.serviceConfig.secretVolumes[].mountPath` | `string` | yes |  |  |
 | `spec.serviceConfig.secretVolumes[].secret` | `string` | yes |  |  |
@@ -366,7 +367,12 @@ function's project. Immutable.
 
 Environment variables available at build time (e.g. buildpack knobs
 like GOOGLE_ENTRYPOINT). Not injected into the runtime — use
-service_config.environment_variables for that.
+service_config.environment_variables for that. Values are stored in
+plain text on the function and must never be secrets: Google's build
+API has no Secret Manager path for build-time variables. A build that
+needs a private package index reaches it through the build service
+account's own access (an Artifact Registry repository it can read) or
+a private worker pool (worker_pool), never a token here.
 
 ### spec.buildConfig.serviceAccount
 
@@ -383,11 +389,18 @@ omitted, GCP uses its default build identity.
 
 ### spec.buildConfig.workerPool
 
-`string`
+`string | valueFrom`
 
-Cloud Build Custom Worker Pool that builds the function — for builds
-that must run inside a private network perimeter. Format:
-projects/{project}/locations/{region}/workerPools/{name}.
+The Cloud Build private worker pool the build runs in, as
+projects/{project}/locations/{location}/workerPools/{pool}: a
+GcpCloudBuildWorkerPool reference (its name output), or the literal
+name. Use one when the build must reach a private network (a private
+package index, an internal artifact store). Empty runs the build on
+Google's default pool.
+
+- references: GcpCloudBuildWorkerPool (`status.outputs.name`)
+- rule: worker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpCloudBuildWorkerPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.buildConfig.dockerRepository
 
@@ -487,20 +500,29 @@ at least 1 CPU and thread-safe code.
 
 ### spec.serviceConfig.environmentVariables
 
-`map<string, string>`
+`map<string, string>` · no secrets
 
 Environment variables injected into the runtime as plain-text
-KEY=VALUE pairs. Configuration only — never place credentials here;
-use secret_environment_variables so material stays in Secret Manager.
+KEY=VALUE pairs, written into the function where anyone who can view
+it reads them. Configuration only — a credential goes in
+secret_environment_variables, as a value this component stores in
+Secret Manager or a secret you already own.
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretEnvironmentVariables`, which keeps it in a secret store the workload reads by reference
 ### spec.serviceConfig.secretEnvironmentVariables
 
 `[]GcpCloudFunctionSecretEnvVar`
 
-Secret Manager references injected as environment variables. The
-material never appears in the spec — each entry names a secret and
-version resolved at instance start. The runtime service account needs
-roles/secretmanager.secretAccessor on each secret.
+Environment variables whose value comes from Secret Manager, resolved
+at instance start. Each entry either names a secret you already own
+(secret, version, project_id) or carries a value this component
+stores for you (value). The function holds only the reference, never
+the material. A secret you own needs roles/secretmanager.secretAccessor
+granted to the runtime service account; a stored value gets that grant
+from the component.
+
+- rule: a secret environment variable takes exactly one of secret (a Secret Manager secret you own) or value (a secret value this component stores)
+- rule: version and project_id address a secret you own; they apply only with secret, never with value
 
 ### spec.serviceConfig.secretEnvironmentVariables[].key
 
@@ -512,19 +534,20 @@ Environment variable name, e.g. "DATABASE_PASSWORD".
 
 ### spec.serviceConfig.secretEnvironmentVariables[].secret
 
-`string` · required
+`string`
 
-The secret: a short name for a secret in the function's project
-("my-secret"). Cross-project secrets set project_id.
-
-- rule: {"required":true,"string":{"minLen":"1"}}
+A Secret Manager secret you already own: its short name in the
+function's project ("my-secret"). Cross-project secrets set
+project_id. The runtime service account needs
+roles/secretmanager.secretAccessor on it.
 
 ### spec.serviceConfig.secretEnvironmentVariables[].version
 
 `string`
 
-Secret version to resolve: a version number or "latest" — the common
-choice, at the cost of new instances silently picking up rotations.
+Version of the secret you own to resolve: a version number or
+"latest" — the common choice, at the cost of new instances silently
+picking up rotations. Only with secret.
 
 - default: `latest`
 
@@ -532,7 +555,23 @@ choice, at the cost of new instances silently picking up rotations.
 
 `string`
 
-Project the secret lives in, when it is not the function's project.
+Project the secret you own lives in, when it is not the function's
+project. Only with secret.
+
+### spec.serviceConfig.secretEnvironmentVariables[].value
+
+`string` · sensitive
+
+A secret value this component keeps in Secret Manager for you. It
+creates one secret for this variable, replicated only in the
+function's region, stores the value as a version, grants the
+function's runtime identity (service_account_email, or the project's
+Compute Engine default service account when unset) secretAccessor on
+that secret alone, and points the variable at that exact version —
+the function carries a reference, never the value. A changed value
+adds a version and redeploys the function, so rotation is a deploy;
+destroying the function removes the secret. The secret's id is
+function_<region>_<function name>_<key>.
 
 ### spec.serviceConfig.secretVolumes
 
@@ -910,6 +949,7 @@ Fields that can point at another resource's outputs:
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.buildConfig.source.storageSource.bucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.buildConfig.serviceAccount` | GcpServiceAccount | `status.outputs.name` |
+| `spec.buildConfig.workerPool` | GcpCloudBuildWorkerPool | `status.outputs.name` |
 | `spec.buildConfig.dockerRepository` | GcpArtifactRegistryRepo | `status.outputs.repository_path` |
 | `spec.serviceConfig.serviceAccountEmail` | GcpServiceAccount | `status.outputs.email` |
 | `spec.serviceConfig.vpcConnector` | GcpServerlessVpcConnector | `status.outputs.self_link` |

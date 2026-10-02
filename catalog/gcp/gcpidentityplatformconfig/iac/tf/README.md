@@ -4,7 +4,7 @@ This Terraform module provisions a project's Identity Platform configuration (`g
 
 ## Overview
 
-The config resource is a ONE-WAY project singleton: the first apply permanently initializes Identity Platform on the project (billing required), and destroy abandons the configuration in place — GCP has no de-initialize. Every setting stays freely updatable after initialization. The composed IdP configs carry the spec's `deletion_policy`; the config resource itself is undeletable and carries none (provider truth). The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+The config resource is a ONE-WAY project singleton: the first apply permanently initializes Identity Platform on the project (billing required), and destroy abandons the configuration in place — GCP has no de-initialize. Every setting stays freely updatable after initialization. The composed IdP configs carry the spec's `deletion_policy`; the config resource itself is undeletable and carries none (provider truth). The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

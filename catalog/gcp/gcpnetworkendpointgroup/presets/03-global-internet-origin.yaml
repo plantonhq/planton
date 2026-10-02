@@ -1,0 +1,18 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkEndpointGroup
+metadata:
+  name: origin-neg
+spec:
+  projectId:
+    value: my-gcp-project
+  negName: origin-neg
+  description: External origin behind the global external Application Load Balancer
+  # No zone: a GLOBAL internet group, the only shape a global external
+  # Application Load Balancer accepts for an origin outside Google Cloud.
+  # No network either -- an internet group has no VPC.
+  networkEndpointType: INTERNET_FQDN_PORT
+  defaultPort: 443
+  endpoints:
+    - fqdn: origin.example.com
+      port: 443
+  deletionPolicy: DELETE

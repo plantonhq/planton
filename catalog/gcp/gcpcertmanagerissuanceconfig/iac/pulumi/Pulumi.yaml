@@ -1,0 +1,4 @@
+name: gcpcertmanagerissuanceconfig-pulumi-project
+runtime:
+  name: go
+description: Planton GcpCertManagerIssuanceConfig Pulumi module

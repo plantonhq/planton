@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamPrivateConnection
+metadata:
+  name: data-psc
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  pscInterfaceConfig:
+    networkAttachment: projects/my-gcp-project/regions/us-central1/networkAttachments/datastream

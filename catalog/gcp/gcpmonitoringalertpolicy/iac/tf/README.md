@@ -6,7 +6,7 @@ This Terraform module provisions a Cloud Monitoring alert policy (`google_monito
 
 The module creates one alert policy — the rule that watches metrics or logs (threshold, absence, log match, MQL, PromQL, or SQL conditions, combined by `combiner`) and notifies the referenced channels when incidents open. Each condition carries exactly one condition-type arm, enforced by the spec's validations (the provider leaves the API's oneof unchecked client-side).
 
-`enabled` is sent explicitly on every apply so disabling a policy actually reaches the API. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+`enabled` is sent explicitly on every apply so disabling a policy actually reaches the API. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

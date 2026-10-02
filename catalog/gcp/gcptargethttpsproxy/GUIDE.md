@@ -5,6 +5,22 @@ TLS handshake. The certificate mechanism, the TLS floor, and the rotation
 choreography are all decisions made HERE, not on the certificates
 themselves.
 
+## One kind, two scopes
+
+`region` empty builds the GLOBAL proxy — the TLS front door of the global
+external ALB, the cross-region internal ALB, and Traffic Director. `region`
+set builds the REGIONAL proxy — the TLS front door of the regional external
+ALB and the regional internal ALB. Scope is a chain-wide decision: a
+regional proxy's URL map must be a regional `GcpUrlMap`, its certificates
+regional (`GcpSslCertificate` with `region`, attached with an explicit
+`valueFrom.kind`, or regional Certificate Manager certificates), its
+`sslPolicy` a regional `GcpSslPolicy`, and the forwarding rule in front a
+regional `GcpGlobalForwardingRule`. Four levers exist only on the global
+proxy and are rejected when `region` is set: `certificateMap` (SNI-scale
+maps are a global external ALB feature), `quicOverride` (regional ALBs do
+not negotiate QUIC), `tlsEarlyData`, and `proxyBind`. A proxy never moves
+between scopes — `region` is immutable.
+
 ## Pick the certificate mechanism by scale and scheme
 
 Exactly one of three (GCP rejects combinations):

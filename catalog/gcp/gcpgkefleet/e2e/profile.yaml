@@ -1,0 +1,20 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpgkefleet
+spec:
+  # Awaiting the live proof lane. The scenario owns the second test
+  # project's fleet (PLANTON_E2E_GCP_SECOND_PROJECT_ID), never the harness
+  # project's. Offline bar met: both modules build and validate, offline
+  # plans for the reference manifest and the scenario are clean on the
+  # pinned provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) the create succeeds on a project with no fleet yet -- a
+  # project whose fleet a registration already created answers 409, the
+  # reason the fleet is every child's prerequisite; (2) the cluster
+  # defaults re-plan clean on both engines; (3) the uid output matches the
+  # live fleet; (4) destroy deletes the fleet (the verifier accepts 404 or a
+  # delete time).
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

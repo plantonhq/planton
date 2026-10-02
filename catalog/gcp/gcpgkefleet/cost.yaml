@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpgkefleet
+spec:
+  billing_model: free
+  free_tier: "Fleets and fleet management carry no charge beyond the GKE cluster management fee of the clusters in them (GKE pricing page, read 2026-10-01)."
+  notes: "The cluster defaults change what each cluster runs, not this block's bill: the BASIC security posture and vulnerability scanning are included with GKE, while the ENTERPRISE modes belong to GKE's paid security capabilities -- check Google's GKE security posture pricing before choosing them."

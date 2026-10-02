@@ -1,0 +1,81 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcloudidentitygroup
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A group stores no customer data -- it is a membership list Google holds in the Cloud Identity directory.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The group serves no traffic; the Cloud Identity API is reached over TLS like every Google API, a property of the API rather than of the group.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A group is visible only within its Cloud Identity customer to principals with directory permissions; it has no public surface.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: The group admits no traffic; there is no ingress to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served; there is no edge.
+    - control_id: rbac
+      status: configurable
+      field_path: security
+      evidence:
+        type: spec_default
+        reference: The group IS the access-control unit IAM bindings should name (group:{group_email}) so access changes are membership edits. security true makes it a security group -- an access-control object with stricter membership rules and no mailing-list features, an irreversible label; false (the default) is a plain Google Group that IAM can still bind. Each membership's roles (MEMBER always; MANAGER, OWNER on top) decide who may change the membership, and a MEMBER role may expire.
+      notes: "Creating and changing the group requires the Groups Admin role in the customer, never a project role. The 01 preset is a security group with an owner, a manager, a service-account member, and an expiring contractor."
+    - control_id: workload-identity
+      status: configurable
+      field_path: memberships.member
+      evidence:
+        type: spec_default
+        reference: A GcpServiceAccount reference resolves to the account's email and makes the workload identity a member, so IAM bindings to the group cover workloads and humans alike; a literal email adds a human or another group.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The group authenticates nothing; there is no legacy path to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; how the customer's users authenticate is the Cloud Identity or Workspace tenant's policy, outside this manifest.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Group and membership create, update, and delete land in the Admin console's audit log and, for organizations, in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Membership changes are visible in the Admin console's audit and reports; the membership_count output records the managed count so a live membership that diverges is visible.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A group is a global object of the Cloud Identity directory with no zonal or regional component.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE -- the group and every membership are removed, and every IAM binding that named the group silently grants nothing; PREVENT makes destroy fail outright; ABANDON unmanages the group while it keeps existing. The memberships share the group's policy.
+      notes: PREVENT is the guard for any group production IAM bindings name; removing members is the surgical alternative to deleting the group.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; Google's directory service implements groups.

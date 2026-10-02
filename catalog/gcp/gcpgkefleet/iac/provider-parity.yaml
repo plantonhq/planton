@@ -1,0 +1,35 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_gke_hub_fleet:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The one-leaf policy-binding blocks are lifted to their names.
+      - spec: spec.default_cluster_config.binary_authorization_config.policy_bindings
+        arg: default_cluster_config.binary_authorization_config.policy_bindings.name
+    exclusions:
+      # SDK gaps at the pinned pulumi-gcp v9.37.0 (which bridges provider
+      # 7.46.1): both arrived in provider 8.3. Modeled the day the SDK
+      # carries them.
+      - arg: labels
+        reason: >-
+          SDK gap -- pulumi-gcp v9.37.0's FleetArgs has no labels (the
+          argument arrived in provider 8.3); a one-engine field would break
+          cross-engine parity. Re-evaluate at the trigger "pulumi-gcp v10 GA"
+      - arg: default_cluster_config.compliance_posture_config
+        reason: >-
+          SDK gap -- pulumi-gcp v9.37.0's FleetDefaultClusterConfig has no
+          compliancePostureConfig (the block arrived in provider 8.3); a
+          one-engine field would break cross-engine parity. Re-evaluate at
+          the trigger "pulumi-gcp v10 GA"
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

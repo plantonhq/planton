@@ -6,7 +6,7 @@ This Terraform module enables Firebase on a Google Cloud project (`google_fireba
 
 The enablement is a ONE-WAY project singleton: the provider reads the project first and adopts an already-enabled project, and its destroy detaches state and leaves the project enabled — Google has no de-enable. It carries no `deletion_policy` (provider truth); the spec's `deletion_policy` governs the composed default bucket and App Check configurations.
 
-Two resources ride the `google-beta` provider: Google publishes `google_firebase_project` and `google_firebase_storage_default_bucket` only there. Both attach `provider = google-beta` under a recorded admission in `pkg/providerparity/admissions/google-beta.yaml`; the beta channel is pinned to the same `~> 7.43` line as `google`, and both provider blocks set `user_project_override = true` (the Firebase Management API needs a quota project on user-credential calls). App Check and API enablement stay on the GA provider.
+Two resources ride the `google-beta` provider: Google publishes `google_firebase_project` and `google_firebase_storage_default_bucket` only there. Both attach `provider = google-beta` under a recorded admission in `pkg/providerparity/admissions/google-beta.yaml`; the beta channel is pinned to the same `~> 8.3` line as `google`, and both provider blocks set `user_project_override = true` (the Firebase Management API needs a quota project on user-credential calls). App Check and API enablement stay on the GA provider.
 
 ## Usage with Planton CLI
 

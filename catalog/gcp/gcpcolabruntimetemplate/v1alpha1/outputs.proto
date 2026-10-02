@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1;
+
+// GcpColabRuntimeTemplateStackOutputs carries the identity runtimes and
+// schedules name the template by.
+message GcpColabRuntimeTemplateStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/notebookRuntimeTemplates/{runtime_template_id}
+  // -- what GcpColabRuntime.runtime_template and GcpColabSchedule's
+  // notebook arm take.
+  string name = 1;
+
+  // The template's id (the last segment of name).
+  string runtime_template_id = 2;
+
+  // The region the template lives in.
+  string location = 3;
+}

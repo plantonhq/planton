@@ -1,0 +1,24 @@
+# The security settings the with-security-settings scenario's agent
+# attaches to: redaction and a 7-day window in the agent's own location
+# (settings apply only to agents in the same location). Google requires the
+# display name unique within the location, so it carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxSecuritySettings
+metadata:
+  name: planton-oss-e2e-gcpdfcx-settings
+  id: planton-oss-e2e-gcpdfcx-settings
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdialogflowcxagent
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcx-settings-${E2E_RUN_ID}
+  redactionStrategy: REDACT_WITH_SERVICE
+  redactionScope: REDACT_DISK_STORAGE
+  retentionWindowDays: 7

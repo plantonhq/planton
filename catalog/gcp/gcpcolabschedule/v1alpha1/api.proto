@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcolabschedule.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpcolabschedule/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpcolabschedule/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-colab-schedule
+message GcpColabSchedule {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpColabSchedule'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpColabScheduleSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpColabScheduleStatus status = 5;
+}
+
+//gcp-colab-schedule status
+message GcpColabScheduleStatus {
+  //stack-outputs
+  GcpColabScheduleStackOutputs outputs = 1;
+}

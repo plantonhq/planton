@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-network-firewall-policy
+message GcpNetworkFirewallPolicy {
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+  string kind = 2 [(buf.validate.field).string.const = 'GcpNetworkFirewallPolicy'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  GcpNetworkFirewallPolicySpec spec = 4 [(buf.validate.field).required = true];
+  GcpNetworkFirewallPolicyStatus status = 5;
+}
+
+message GcpNetworkFirewallPolicyStatus {
+  GcpNetworkFirewallPolicyStackOutputs outputs = 1;
+}

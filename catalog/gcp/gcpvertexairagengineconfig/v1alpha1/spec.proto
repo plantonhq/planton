@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiRagEngineConfigSpec sets the tier of Vertex AI RAG Engine's
+// managed vector database (`google_vertex_ai_rag_engine_config`) for one
+// project and location. RAG Engine keeps every RAG corpus that uses the
+// managed database (RagManagedDb) in a per-location store; this
+// configuration is the one switch that decides how that store is
+// provisioned, and it is a singleton -- there is exactly one per project
+// per location, and Google creates it on first use.
+//
+// Because the resource is a singleton Google already owns, "creating" it
+// is an update: applying this manifest over a location that is already
+// configured changes the tier in place rather than failing. The tiers:
+//
+//   BASIC          -- a cost-effective, low-compute tier for experiments,
+//                     small corpora, latency-insensitive workloads, or when
+//                     RAG Engine is used only with external vector databases
+//                     (Vector Search, Vertex AI Feature Store, Pinecone,
+//                     Weaviate).
+//   SCALED         -- production-grade performance with autoscaling, for
+//                     large corpora or latency-sensitive workloads.
+//   UNPROVISIONED  -- disables the managed database in this location and
+//                     DELETES ALL DATA RAG Engine holds for it, halting its
+//                     billing. Moving to UNPROVISIONED is irreversible for
+//                     the data.
+//
+// Destroying this block also PATCHes the location to UNPROVISIONED, which
+// deletes the managed database's data. A team that wants to stop managing
+// the tier from Planton while keeping its corpora sets deletion_policy to
+// ABANDON. Only the location and project are immutable.
+message GcpVertexAiRagEngineConfigSpec {
+  // The GCP project whose RAG Engine is configured: a literal project ID or
+  // a GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) whose RAG Engine is configured, e.g.
+  // "us-central1". One configuration exists per project per location.
+  // Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The managed database tier for this location: BASIC, SCALED, or
+  // UNPROVISIONED (see the message comment; UNPROVISIONED deletes the
+  // managed database's data). Mutable in place -- raising BASIC to SCALED
+  // is a live upgrade.
+  string tier = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "BASIC",
+        "SCALED",
+        "UNPROVISIONED"
+      ]
+    }
+  ];
+
+  // What happens to the configuration when this resource is destroyed:
+  //   "" / "DELETE" -- the location is set to UNPROVISIONED, which deletes
+  //                    the managed database's data (Google's delete
+  //                    semantics for this singleton)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the configuration leaves management and the
+  //                    location keeps its tier and data
+  string deletion_policy = 4 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

@@ -26,7 +26,7 @@ resource "aws_msk_cluster" "this" {
   tags                   = local.aws_tags
 
   broker_node_group_info {
-    instance_type = var.spec.instance_type
+    instance_type  = var.spec.instance_type
     client_subnets = var.spec.subnet_ids
     # Attached directly -- ingress rules live on the referenced first-class
     # security-group nodes, never on a module-managed shadow group.

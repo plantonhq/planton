@@ -1,0 +1,4 @@
+name: gcpredisclusterendpointset-pulumi-project
+runtime:
+  name: go
+description: Planton GcpRedisClusterEndpointSet Pulumi module

@@ -118,9 +118,18 @@ type GcpVertexAiNotebookDataDisk struct {
 	// KMS key for CMEK encryption of the data disk.
 	// Format: projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
 	// If not specified, Google-managed encryption (GMEK) is used.
-	KmsKey        *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	KmsKey *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	// Compute Engine resource policies attached to the data disk — most
+	// usefully a snapshot schedule, so the notebook's working data is
+	// backed up on a cadence without any agent inside the VM. Each entry is
+	// a policy's full resource name or self link
+	// (projects/{project}/regions/{region}/resourcePolicies/{name}); the
+	// policy must live in the instance's region. Leave empty for no
+	// attached policies; sent only when set because the API reports the
+	// attached set itself.
+	ResourcePolicies []string `protobuf:"bytes,4,rep,name=resource_policies,json=resourcePolicies,proto3" json:"resource_policies,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *GcpVertexAiNotebookDataDisk) Reset() {
@@ -170,6 +179,13 @@ func (x *GcpVertexAiNotebookDataDisk) GetDiskSizeGb() int32 {
 func (x *GcpVertexAiNotebookDataDisk) GetKmsKey() *v1.StringValueOrRef {
 	if x != nil {
 		return x.KmsKey
+	}
+	return nil
+}
+
+func (x *GcpVertexAiNotebookDataDisk) GetResourcePolicies() []string {
+	if x != nil {
+		return x.ResourcePolicies
 	}
 	return nil
 }
@@ -834,8 +850,23 @@ type GcpVertexAiNotebookSpec struct {
 	//	"ABANDON" -- the instance is removed from management but left
 	//	             running (and billing) in GCP with its disks intact
 	DeletionPolicy string `protobuf:"bytes,25,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Minimum CPU platform for the VM, e.g. "Intel Cascade Lake" or
+	// "Intel Sapphire Rapids": pins the instance to at least this CPU
+	// generation so notebook code that relies on newer instruction sets
+	// (AVX-512, AMX) is never scheduled on older hardware. The platform
+	// must be offered for the machine type in the instance's zone. Leave
+	// empty to let Compute Engine choose; sent only when set because the
+	// API reports the platform it picked.
+	MinCpuPlatform string `protobuf:"bytes,26,opt,name=min_cpu_platform,json=minCpuPlatform,proto3" json:"min_cpu_platform,omitempty"`
+	// Workbench-side deletion protection: while true, the API refuses to
+	// delete the instance from any client (console, gcloud, either IaC
+	// engine) until the flag is lifted — a guard for a workstation whose
+	// local disks hold work not yet pushed anywhere else. Off unless set;
+	// pair with deletion_policy PREVENT for an engine-side guard too.
+	// Sent only when set because the API reports its current value.
+	EnableDeletionProtection *bool `protobuf:"varint,27,opt,name=enable_deletion_protection,json=enableDeletionProtection,proto3,oneof" json:"enable_deletion_protection,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *GcpVertexAiNotebookSpec) Reset() {
@@ -1043,6 +1074,20 @@ func (x *GcpVertexAiNotebookSpec) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpVertexAiNotebookSpec) GetMinCpuPlatform() string {
+	if x != nil {
+		return x.MinCpuPlatform
+	}
+	return ""
+}
+
+func (x *GcpVertexAiNotebookSpec) GetEnableDeletionProtection() bool {
+	if x != nil && x.EnableDeletionProtection != nil {
+		return *x.EnableDeletionProtection
+	}
+	return false
+}
+
 var File_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
@@ -1054,14 +1099,15 @@ const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
 	"\fdisk_size_gb\x18\x02 \x01(\x05B\x95\x01\xbaH\x91\x01\xba\x01\x8d\x01\n" +
 	"\x14valid_boot_disk_size\x12Idisk_size_gb must be between 10 and 64000 (or omitted for default 150 GB)\x1a*this == 0 || (this >= 10 && this <= 64000)R\n" +
 	"diskSizeGb\x12k\n" +
-	"\akms_key\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\"\x88\x06\n" +
+	"\akms_key\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\"\xc8\x06\n" +
 	"\x1bGcpVertexAiNotebookDataDisk\x12\xc0\x03\n" +
 	"\tdisk_type\x18\x01 \x01(\tB\xa2\x03\xbaH\x9e\x03\xba\x01\x9a\x03\n" +
 	"\x14valid_data_disk_type\x12\xb7\x01disk_type must be one of: PD_STANDARD, PD_SSD, PD_BALANCED, PD_EXTREME, HYPERDISK_BALANCED, HYPERDISK_EXTREME, HYPERDISK_THROUGHPUT, HYPERDISK_BALANCED_HIGH_AVAILABILITY, HYPERDISK_ML\x1a\xc7\x01this == '' || this in ['PD_STANDARD', 'PD_SSD', 'PD_BALANCED', 'PD_EXTREME', 'HYPERDISK_BALANCED', 'HYPERDISK_EXTREME', 'HYPERDISK_THROUGHPUT', 'HYPERDISK_BALANCED_HIGH_AVAILABILITY', 'HYPERDISK_ML']R\bdiskType\x12\xb8\x01\n" +
 	"\fdisk_size_gb\x18\x02 \x01(\x05B\x95\x01\xbaH\x91\x01\xba\x01\x8d\x01\n" +
 	"\x14valid_data_disk_size\x12Idisk_size_gb must be between 10 and 64000 (or omitted for default 100 GB)\x1a*this == 0 || (this >= 10 && this <= 64000)R\n" +
 	"diskSizeGb\x12k\n" +
-	"\akms_key\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\"\xbb\x05\n" +
+	"\akms_key\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\x12>\n" +
+	"\x11resource_policies\x18\x04 \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x10resourcePolicies\"\xbb\x05\n" +
 	"$GcpVertexAiNotebookAcceleratorConfig\x12\x8e\x04\n" +
 	"\x04type\x18\x01 \x01(\tB\xf9\x03\xbaH\xf5\x03\xba\x01\xf1\x03\n" +
 	"\x16valid_accelerator_type\x12\x8d\x01type must be a valid accelerator type (e.g., NVIDIA_TESLA_T4, NVIDIA_L4, NVIDIA_TESLA_A100, NVIDIA_H100_80GB, NVIDIA_H200_141GB, NVIDIA_B200)\x1a\xc6\x02this == '' || this in ['NVIDIA_TESLA_P100', 'NVIDIA_TESLA_V100', 'NVIDIA_TESLA_P4', 'NVIDIA_TESLA_T4', 'NVIDIA_TESLA_A100', 'NVIDIA_A100_80GB', 'NVIDIA_L4', 'NVIDIA_H100_80GB', 'NVIDIA_H100_MEGA_80GB', 'NVIDIA_H200_141GB', 'NVIDIA_B200', 'NVIDIA_RTX6000', 'NVIDIA_TESLA_T4_VWS', 'NVIDIA_TESLA_P100_VWS', 'NVIDIA_TESLA_P4_VWS']R\x04type\x12\x81\x01\n" +
@@ -1103,7 +1149,7 @@ const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1benable_integrity_monitoring\x18\x03 \x01(\bH\x02R\x19enableIntegrityMonitoring\x88\x01\x01B\x15\n" +
 	"\x13_enable_secure_bootB\x0e\n" +
 	"\f_enable_vtpmB\x1e\n" +
-	"\x1c_enable_integrity_monitoring\"\xd9\x18\n" +
+	"\x1c_enable_integrity_monitoring\"\xe5\x19\n" +
 	"\x17GcpVertexAiNotebookSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12A\n" +
@@ -1135,7 +1181,9 @@ const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12enable_managed_euc\x18\x17 \x01(\bR\x10enableManagedEuc\x12=\n" +
 	"\x1benable_third_party_identity\x18\x18 \x01(\bR\x18enableThirdPartyIdentity\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x19 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a;\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12(\n" +
+	"\x10min_cpu_platform\x18\x1a \x01(\tR\x0eminCpuPlatform\x12A\n" +
+	"\x1aenable_deletion_protection\x18\x1b \x01(\bH\x00R\x18enableDeletionProtection\x88\x01\x01\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a9\n" +
@@ -1143,7 +1191,8 @@ const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x85\x03\xbaH\x81\x03\x1a\x9c\x01\n" +
 	")vm_image_container_image_mutual_exclusion\x12<only one of vm_image or container_image can be set, not both\x1a1!has(this.vm_image) || !has(this.container_image)\x1a\xdf\x01\n" +
-	",external_ip_conflicts_with_disable_public_ip\x12Jnetwork_interface.external_ip cannot be set when disable_public_ip is true\x1ac!this.disable_public_ip || !has(this.network_interface) || !has(this.network_interface.external_ip)B\xf5\x02\n" +
+	",external_ip_conflicts_with_disable_public_ip\x12Jnetwork_interface.external_ip cannot be set when disable_public_ip is true\x1ac!this.disable_public_ip || !has(this.network_interface) || !has(this.network_interface.external_ip)B\x1d\n" +
+	"\x1b_enable_deletion_protectionB\xf5\x02\n" +
 	"0com.dev.planton.gcp.gcpvertexainotebook.v1alpha1B\tSpecProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpvertexainotebook/v1alpha1;gcpvertexainotebookv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpvertexainotebook.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpvertexainotebook\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpvertexainotebook\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpvertexainotebook::V1alpha1b\x06proto3"
 
 var (
@@ -1207,6 +1256,7 @@ func file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
+	file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

@@ -251,6 +251,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudFunction | `spec.serviceConfig.vpcConnector` | `status.outputs.self_link` |
 | GcpCloudRun | `spec.vpcAccess.connector` | `status.outputs.self_link` |
 | GcpCloudRunJob | `spec.template.vpcAccess.connector` | `status.outputs.self_link` |
+| GcpCloudRunWorkerPool | `spec.vpcAccess.connector` | `status.outputs.self_link` |
 
 ## See Also
 

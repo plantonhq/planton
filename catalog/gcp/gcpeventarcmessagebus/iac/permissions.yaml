@@ -33,7 +33,9 @@ spec:
           - eventarc.googleApiSources.update
           - eventarc.googleApiSources.delete
         provenance: derived
-        notes: Covers google_eventarc_google_api_source, created once per google_api_sources entry -- required only when the spec declares sources (the 02-audit-fan-out preset does).
+        condition:
+          spec_field_set: google_api_sources
+        notes: Covers google_eventarc_google_api_source, created once per google_api_sources entry (the 02-audit-fan-out preset declares sources).
       - purpose: ManagePipelines
         permissions:
           - eventarc.pipelines.create
@@ -41,6 +43,8 @@ spec:
           - eventarc.pipelines.update
           - eventarc.pipelines.delete
         provenance: derived
+        condition:
+          spec_field_set: pipelines
         notes: Covers google_eventarc_pipeline, created once per pipelines entry. A pipeline's authentication service account needs the EVENTARC SERVICE AGENT (not the deployer) to hold roles/iam.serviceAccountTokenCreator on it -- a prerequisite grant outside this module; Google documents no deployer-side actAs check for pipeline creation, so none is claimed here.
       - purpose: ManageEnrollments
         permissions:
@@ -49,4 +53,6 @@ spec:
           - eventarc.enrollments.update
           - eventarc.enrollments.delete
         provenance: derived
+        condition:
+          spec_field_set: enrollments
         notes: Covers google_eventarc_enrollment, created once per enrollments entry and wired to the sibling bus and pipeline by resource reference.

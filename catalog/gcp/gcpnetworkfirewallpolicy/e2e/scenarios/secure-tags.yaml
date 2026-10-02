@@ -1,0 +1,66 @@
+# GcpNetworkFirewallPolicy scenario exercising secure-tag rules by reference:
+# a GCE_FIREWALL tag key scoped to the harness network and one tag value are
+# deployed as extra fixture instances (path entries), and the rules name the
+# value through valueFrom on both src_secure_tags and target_secure_tags --
+# the micro-segmentation shape that has no IP range in it. The proof lane
+# confirms the tagValues/{id} handle renders on both engines, the rule
+# re-plans clean, and the harness destroys the policy before the tag chain.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcpnfwp-tags
+  id: planton-oss-e2e-gcpnfwp-tags
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpnetworkfirewallpolicy/e2e/prerequisites/gcptagkey-firewall.yaml,catalog/gcp/gcpnetworkfirewallpolicy/e2e/prerequisites/gcptagvalue-tier.yaml"
+  tags:
+    - planton-e2e
+spec:
+  policyName: planton-oss-e2e-gcpnfwp-tags
+  description: Planton E2E secure-tag firewall policy; safe to delete
+  rules:
+    - priority: 1000
+      action: allow
+      direction: INGRESS
+      ruleName: tagged-to-tagged
+      match:
+        srcSecureTags:
+          - valueFrom:
+              kind: GcpTagValue
+              name: planton-oss-e2e-gcpnfwp-tagvalue
+              fieldPath: status.outputs.name
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["8080"]
+      targetSecureTags:
+        - valueFrom:
+            kind: GcpTagValue
+            name: planton-oss-e2e-gcpnfwp-tagvalue
+            fieldPath: status.outputs.name
+    - priority: 2000
+      action: deny
+      direction: INGRESS
+      ruleName: deny-to-tagged
+      enableLogging: true
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: all
+      targetSecureTags:
+        - valueFrom:
+            kind: GcpTagValue
+            name: planton-oss-e2e-gcpnfwp-tagvalue
+            fieldPath: status.outputs.name
+  associations:
+    - name: planton-oss-e2e-gcpnfwp-tags-prereq
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_self_link
+  deletionPolicy: DELETE

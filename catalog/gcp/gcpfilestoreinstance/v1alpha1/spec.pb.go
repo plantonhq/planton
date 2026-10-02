@@ -983,7 +983,7 @@ const file_catalog_gcp_gcpfilestoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"fixed_iops\x18\x01 \x01(\v2L.dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceFixedIopsR\tfixedIops\x12l\n" +
 	"\viops_per_tb\x18\x02 \x01(\v2L.dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceIopsPerTbR\tiopsPerTb:\x9e\x01\xbaH\x9a\x01\x1a\x97\x01\n" +
-	"#performance_config_mutual_exclusion\x12?fixed_iops and iops_per_tb are mutually exclusive; set only one\x1a/!has(this.fixed_iops) || !has(this.iops_per_tb)\"\xd2\x13\n" +
+	"#performance_config_mutual_exclusion\x12?fixed_iops and iops_per_tb are mutually exclusive; set only one\x1a/!has(this.fixed_iops) || !has(this.iops_per_tb)\"\x90\x14\n" +
 	"\x18GcpFilestoreInstanceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x90\x02\n" +
@@ -994,8 +994,8 @@ const file_catalog_gcp_gcpfilestoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"ENTERPRISER\x04tier\x12 \n" +
 	"\vdescription\x18\x05 \x01(\tR\vdescription\x12\x8b\x01\n" +
 	"\bprotocol\x18\x06 \x01(\tBo\xbaHl\xba\x01i\n" +
-	"\x14protocol_valid_value\x12#protocol must be NFS_V3 or NFS_V4_1\x1a,this == '' || this in ['NFS_V3', 'NFS_V4_1']R\bprotocol\x12t\n" +
-	"\fkms_key_name\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
+	"\x14protocol_valid_value\x12#protocol must be NFS_V3 or NFS_V4_1\x1a,this == '' || this in ['NFS_V3', 'NFS_V4_1']R\bprotocol\x12\xb1\x01\n" +
+	"\fkms_key_name\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\n" +
 	"kmsKeyName\x12>\n" +
 	"\x1bdeletion_protection_enabled\x18\b \x01(\bR\x19deletionProtectionEnabled\x12<\n" +
 	"\x1adeletion_protection_reason\x18\t \x01(\tR\x18deletionProtectionReason\x12s\n" +

@@ -245,9 +245,35 @@ type GcpCloudSqlSpec struct {
 	FinalBackup *GcpCloudSqlFinalBackup `protobuf:"bytes,49,opt,name=final_backup,json=finalBackup,proto3" json:"final_backup,omitempty"`
 	// SQL Server only: Microsoft Entra ID (Azure AD) authentication for the
 	// instance.
-	EntraId       *GcpCloudSqlEntraIdConfig `protobuf:"bytes,50,opt,name=entra_id,json=entraId,proto3" json:"entra_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	EntraId *GcpCloudSqlEntraIdConfig `protobuf:"bytes,50,opt,name=entra_id,json=entraId,proto3" json:"entra_id,omitempty"`
+	// Opt-in that lets the instance move point-in-time-recovery transaction
+	// logs from the data disk to Cloud Storage, freeing disk space and
+	// allowing longer transaction-log retention windows. An input-only
+	// instruction: Cloud SQL acts on it but never stores it, so it is sent
+	// exactly as written and never read back.
+	SwitchTransactionLogsToCloudStorageEnabled bool `protobuf:"varint,51,opt,name=switch_transaction_logs_to_cloud_storage_enabled,json=switchTransactionLogsToCloudStorageEnabled,proto3" json:"switch_transaction_logs_to_cloud_storage_enabled,omitempty"`
+	// Opt-in that upgrades this primary's read replicas in place, together
+	// with the primary, when database_version moves to a new major version.
+	// Without it a major-version upgrade leaves replicas on the old version
+	// to be upgraded (or recreated) separately. Input-only: consulted only
+	// during a major-version upgrade and never stored by the API.
+	IncludeReplicasForMajorVersionUpgrade bool `protobuf:"varint,52,opt,name=include_replicas_for_major_version_upgrade,json=includeReplicasForMajorVersionUpgrade,proto3" json:"include_replicas_for_major_version_upgrade,omitempty"`
+	// Irreversible opt-in to Cloud SQL's new network architecture for an
+	// instance created in a project that predates it (projects created after
+	// August 2021 already use it). Required before features such as PSC
+	// and outbound network attachments on those older projects. Once true
+	// it cannot be set back to false. Leave unset to let Cloud SQL report
+	// the instance's current architecture; sent only when set because the
+	// API fills the value itself.
+	EnforceNewSqlNetworkArchitecture *bool `protobuf:"varint,53,opt,name=enforce_new_sql_network_architecture,json=enforceNewSqlNetworkArchitecture,proto3,oneof" json:"enforce_new_sql_network_architecture,omitempty"`
+	// Read replicas only: the replication lag, in seconds, beyond which the
+	// replica recreates itself. The lag must persist for at least five
+	// minutes before recreation triggers. Between 300 (five minutes) and
+	// 31536000 (one year). Leave unset for no automatic recreation; sent
+	// only when set because the API fills the value itself.
+	ReplicationLagMaxSeconds *int32 `protobuf:"varint,54,opt,name=replication_lag_max_seconds,json=replicationLagMaxSeconds,proto3,oneof" json:"replication_lag_max_seconds,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *GcpCloudSqlSpec) Reset() {
@@ -630,6 +656,34 @@ func (x *GcpCloudSqlSpec) GetEntraId() *GcpCloudSqlEntraIdConfig {
 	return nil
 }
 
+func (x *GcpCloudSqlSpec) GetSwitchTransactionLogsToCloudStorageEnabled() bool {
+	if x != nil {
+		return x.SwitchTransactionLogsToCloudStorageEnabled
+	}
+	return false
+}
+
+func (x *GcpCloudSqlSpec) GetIncludeReplicasForMajorVersionUpgrade() bool {
+	if x != nil {
+		return x.IncludeReplicasForMajorVersionUpgrade
+	}
+	return false
+}
+
+func (x *GcpCloudSqlSpec) GetEnforceNewSqlNetworkArchitecture() bool {
+	if x != nil && x.EnforceNewSqlNetworkArchitecture != nil {
+		return *x.EnforceNewSqlNetworkArchitecture
+	}
+	return false
+}
+
+func (x *GcpCloudSqlSpec) GetReplicationLagMaxSeconds() int32 {
+	if x != nil && x.ReplicationLagMaxSeconds != nil {
+		return *x.ReplicationLagMaxSeconds
+	}
+	return 0
+}
+
 // GcpCloudSqlDisk defines the instance's data disk.
 type GcpCloudSqlDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -768,9 +822,12 @@ type GcpCloudSqlNetwork struct {
 	// CUSTOMER_MANAGED_CAS_CA (your own CA pool — set server_ca_pool).
 	// Immutable after creation.
 	ServerCaMode string `protobuf:"bytes,7,opt,name=server_ca_mode,json=serverCaMode,proto3" json:"server_ca_mode,omitempty"`
-	// The CA Service CA pool (full resource path) that signs the server
-	// certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
-	ServerCaPool string `protobuf:"bytes,8,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
+	// The CA Service CA pool that signs the server certificate when
+	// server_ca_mode is CUSTOMER_MANAGED_CAS_CA -- a GcpPrivateCaPool
+	// reference (its full name) or a literal
+	// projects/{project}/locations/{region}/caPools/{pool}. The pool must be
+	// in the instance's region.
+	ServerCaPool *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
 	// Additional DNS names embedded in the server certificate (customer-
 	// managed CA only) — lets clients validate the cert against your own
 	// hostnames instead of the instance IP.
@@ -868,11 +925,11 @@ func (x *GcpCloudSqlNetwork) GetServerCaMode() string {
 	return ""
 }
 
-func (x *GcpCloudSqlNetwork) GetServerCaPool() string {
+func (x *GcpCloudSqlNetwork) GetServerCaPool() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ServerCaPool
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpCloudSqlNetwork) GetCustomSubjectAlternativeNames() []string {
@@ -983,8 +1040,14 @@ type GcpCloudSqlPscConfig struct {
 	// Enterprise Plus only: also create a DNS record for the PSA write
 	// endpoint, so clients follow the primary across switchovers by name.
 	WriteEndpointDnsEnabled bool `protobuf:"varint,6,opt,name=write_endpoint_dns_enabled,json=writeEndpointDnsEnabled,proto3" json:"write_endpoint_dns_enabled,omitempty"`
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	// Whether Cloud SQL also creates a Service Connection Policy for the
+	// auto_connections above, so the consumer networks need no separately
+	// authored policy before the automatic endpoints can be provisioned.
+	// Leave unset to keep the API's own default; sent only when set because
+	// the API fills the value itself.
+	AutoConnectionPolicyEnabled *bool `protobuf:"varint,7,opt,name=auto_connection_policy_enabled,json=autoConnectionPolicyEnabled,proto3,oneof" json:"auto_connection_policy_enabled,omitempty"`
+	unknownFields               protoimpl.UnknownFields
+	sizeCache                   protoimpl.SizeCache
 }
 
 func (x *GcpCloudSqlPscConfig) Reset() {
@@ -1055,6 +1118,13 @@ func (x *GcpCloudSqlPscConfig) GetAutoDnsEnabled() bool {
 func (x *GcpCloudSqlPscConfig) GetWriteEndpointDnsEnabled() bool {
 	if x != nil {
 		return x.WriteEndpointDnsEnabled
+	}
+	return false
+}
+
+func (x *GcpCloudSqlPscConfig) GetAutoConnectionPolicyEnabled() bool {
+	if x != nil && x.AutoConnectionPolicyEnabled != nil {
+		return *x.AutoConnectionPolicyEnabled
 	}
 	return false
 }
@@ -2537,7 +2607,7 @@ var File_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcpcloudsql/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa2J\n" +
+	"+catalog/gcp/gcpcloudsql/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x91N\n" +
 	"\x0fGcpCloudSqlSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12M\n" +
@@ -2576,8 +2646,8 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15connector_enforcement\x18\x1a \x01(\tB\x99\x01\xbaH\x95\x01\xba\x01\x91\x01\n" +
 	"\x1bconnector_enforcement_valid\x12>connector_enforcement must be empty, NOT_REQUIRED, or REQUIRED\x1a2this == '' || this in ['NOT_REQUIRED', 'REQUIRED']R\x14connectorEnforcement\x12?\n" +
 	"\x1cenable_google_ml_integration\x18\x1b \x01(\bR\x19enableGoogleMlIntegration\x12>\n" +
-	"\x1benable_dataplex_integration\x18\x1c \x01(\bR\x19enableDataplexIntegration\x12\x82\x01\n" +
-	"\x13encryption_key_name\x18\x1d \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x11encryptionKeyName\x12/\n" +
+	"\x1benable_dataplex_integration\x18\x1c \x01(\bR\x19enableDataplexIntegration\x12\xbf\x01\n" +
+	"\x13encryption_key_name\x18\x1d \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB[\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_id\xa2\xd4a\x1a\b\x93\x18\x12\x15status.outputs.key_id\xa2\xd4a\x1b\b\x9f\x19\x12\x16status.outputs.kms_keyR\x11encryptionKeyName\x12/\n" +
 	"\x13deletion_protection\x18\x1e \x01(\bR\x12deletionProtection\x12>\n" +
 	"\x1bdeletion_protection_enabled\x18\x1f \x01(\bR\x19deletionProtectionEnabled\x127\n" +
 	"\x18retain_backups_on_delete\x18  \x01(\bR\x15retainBackupsOnDelete\x12\x8f\x01\n" +
@@ -2602,7 +2672,12 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fdata_api_access\x180 \x01(\tB\xa3\x01\xbaH\x9f\x01\xba\x01\x9b\x01\n" +
 	"\x15data_api_access_valid\x12Cdata_api_access must be empty, ALLOW_DATA_API, or DISALLOW_DATA_API\x1a=this == '' || this in ['ALLOW_DATA_API', 'DISALLOW_DATA_API']R\rdataApiAccess\x12_\n" +
 	"\ffinal_backup\x181 \x01(\v2<.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlFinalBackupR\vfinalBackup\x12Y\n" +
-	"\bentra_id\x182 \x01(\v2>.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlEntraIdConfigR\aentraId\x1a@\n" +
+	"\bentra_id\x182 \x01(\v2>.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlEntraIdConfigR\aentraId\x12d\n" +
+	"0switch_transaction_logs_to_cloud_storage_enabled\x183 \x01(\bR*switchTransactionLogsToCloudStorageEnabled\x12Y\n" +
+	"*include_replicas_for_major_version_upgrade\x184 \x01(\bR%includeReplicasForMajorVersionUpgrade\x12S\n" +
+	"$enforce_new_sql_network_architecture\x185 \x01(\bH\x05R enforceNewSqlNetworkArchitecture\x88\x01\x01\x12Q\n" +
+	"\x1breplication_lag_max_seconds\x186 \x01(\x05B\r\xbaH\n" +
+	"\x1a\b\x18\x80\xe7\x84\x0f(\xac\x02H\x06R\x18replicationLagMaxSeconds\x88\x01\x01\x1a@\n" +
 	"\x12DatabaseFlagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xe1 \xbaH\xdd \x1a\x9f\x03\n" +
@@ -2629,7 +2704,9 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12_availability_typeB\x14\n" +
 	"\x12_activation_policyB\x13\n" +
 	"\x11_threads_per_coreB\r\n" +
-	"\v_node_count\"\xd4\a\n" +
+	"\v_node_countB'\n" +
+	"%_enforce_new_sql_network_architectureB\x1e\n" +
+	"\x1c_replication_lag_max_seconds\"\xd4\a\n" +
 	"\x0fGcpCloudSqlDisk\x12\xa9\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\x8f\x01\xbaH\x81\x01\xba\x01~\n" +
 	"\x0fdisk_type_valid\x127disk type must be PD_SSD, PD_HDD, or HYPERDISK_BALANCED\x1a2this in ['PD_SSD', 'PD_HDD', 'HYPERDISK_BALANCED']\x8a\xa6\x1d\x06PD_SSDH\x00R\x04type\x88\x01\x01\x12/\n" +
@@ -2648,7 +2725,7 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\f_auto_resizeB\x14\n" +
 	"\x12_auto_resize_limitB\x13\n" +
 	"\x11_provisioned_iopsB\x19\n" +
-	"\x17_provisioned_throughput\"\xa8\x1b\n" +
+	"\x17_provisioned_throughput\"\xcf\x1d\n" +
 	"\x12GcpCloudSqlNetwork\x12\x83\x01\n" +
 	"\x0fprivate_network\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\xc2\x17\x92\xd4a\x19status.outputs.network_id\x98\xd4a\x01R\x0eprivateNetwork\x12!\n" +
 	"\fipv4_enabled\x18\x02 \x01(\bR\vipv4Enabled\x12s\n" +
@@ -2658,33 +2735,36 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\bssl_mode\x18\x06 \x01(\tB\xfd\x01\xbaH\xf9\x01\xba\x01\xf5\x01\n" +
 	"\x0essl_mode_valid\x12ossl_mode must be empty, ALLOW_UNENCRYPTED_AND_ENCRYPTED, ENCRYPTED_ONLY, or TRUSTED_CLIENT_CERTIFICATE_REQUIRED\x1arthis == '' || this in ['ALLOW_UNENCRYPTED_AND_ENCRYPTED', 'ENCRYPTED_ONLY', 'TRUSTED_CLIENT_CERTIFICATE_REQUIRED']R\asslMode\x12\x9c\x02\n" +
 	"\x0eserver_ca_mode\x18\a \x01(\tB\xf5\x01\xbaH\xf1\x01\xba\x01\xed\x01\n" +
-	"\x14server_ca_mode_valid\x12kserver_ca_mode must be empty, GOOGLE_MANAGED_INTERNAL_CA, GOOGLE_MANAGED_CAS_CA, or CUSTOMER_MANAGED_CAS_CA\x1ahthis == '' || this in ['GOOGLE_MANAGED_INTERNAL_CA', 'GOOGLE_MANAGED_CAS_CA', 'CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12$\n" +
-	"\x0eserver_ca_pool\x18\b \x01(\tR\fserverCaPool\x12Z\n" +
+	"\x14server_ca_mode_valid\x12kserver_ca_mode must be empty, GOOGLE_MANAGED_INTERNAL_CA, GOOGLE_MANAGED_CAS_CA, or CUSTOMER_MANAGED_CAS_CA\x1ahthis == '' || this in ['GOOGLE_MANAGED_INTERNAL_CA', 'GOOGLE_MANAGED_CAS_CA', 'CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12\xcb\x02\n" +
+	"\x0eserver_ca_pool\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf0\x01\xbaH\xcc\x01\xba\x01\xc8\x01\n" +
+	"\x15server_ca_pool_format\x12Ua literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\fserverCaPool\x12Z\n" +
 	" custom_subject_alternative_names\x18\t \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x1dcustomSubjectAlternativeNames\x12L\n" +
 	"\x03psc\x18\n" +
 	" \x01(\v2:.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfigR\x03psc\x12\xb7\x02\n" +
 	" server_certificate_rotation_mode\x18\v \x01(\tB\xed\x01\xbaH\xe9\x01\xba\x01\xe5\x01\n" +
-	"\x18cert_rotation_mode_valid\x12oserver_certificate_rotation_mode must be empty, NO_AUTOMATIC_ROTATION, or AUTOMATIC_ROTATION_DURING_MAINTENANCE\x1aXthis == '' || this in ['NO_AUTOMATIC_ROTATION', 'AUTOMATIC_ROTATION_DURING_MAINTENANCE']R\x1dserverCertificateRotationMode:\xa0\x0f\xbaH\x9c\x0f\x1a\x9d\x02\n" +
+	"\x18cert_rotation_mode_valid\x12oserver_certificate_rotation_mode must be empty, NO_AUTOMATIC_ROTATION, or AUTOMATIC_ROTATION_DURING_MAINTENANCE\x1aXthis == '' || this in ['NO_AUTOMATIC_ROTATION', 'AUTOMATIC_ROTATION_DURING_MAINTENANCE']R\x1dserverCertificateRotationMode:\x9f\x0f\xbaH\x9b\x0f\x1a\x9d\x02\n" +
 	"\x15connectivity_required\x12]at least one connectivity path must be enabled: ipv4_enabled, private_network, or psc.enabled\x1a\xa4\x01this.ipv4_enabled || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from))) || (has(this.psc) && this.psc.enabled)\x1a\xa5\x01\n" +
 	" authorized_networks_require_ipv4\x12Gauthorized_networks apply to the public IP — set ipv4_enabled to true\x1a8size(this.authorized_networks) == 0 || this.ipv4_enabled\x1a\xf8\x01\n" +
 	"(allocated_range_requires_private_network\x12@allocated_ip_range applies to private IP — set private_network\x1a\x89\x01this.allocated_ip_range == '' || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from)))\x1a\xa6\x02\n" +
-	"%private_path_requires_private_network\x12[enable_private_path_for_google_cloud_services applies to private IP — set private_network\x1a\x9f\x01!this.enable_private_path_for_google_cloud_services || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from)))\x1a\xb6\x01\n" +
-	"\x1acustomer_cas_requires_pool\x12Iserver_ca_pool is required when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aMthis.server_ca_mode != 'CUSTOMER_MANAGED_CAS_CA' || this.server_ca_pool != ''\x1a\xb7\x01\n" +
-	"\x1apool_requires_customer_cas\x12Jserver_ca_pool applies only when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aMthis.server_ca_pool == '' || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'\x1a\xe4\x01\n" +
+	"%private_path_requires_private_network\x12[enable_private_path_for_google_cloud_services applies to private IP — set private_network\x1a\x9f\x01!this.enable_private_path_for_google_cloud_services || (has(this.private_network) && (has(this.private_network.value) || has(this.private_network.value_from)))\x1a\xb5\x01\n" +
+	"\x1acustomer_cas_requires_pool\x12Iserver_ca_pool is required when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aLthis.server_ca_mode != 'CUSTOMER_MANAGED_CAS_CA' || has(this.server_ca_pool)\x1a\xb7\x01\n" +
+	"\x1apool_requires_customer_cas\x12Jserver_ca_pool applies only when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1aM!has(this.server_ca_pool) || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'\x1a\xe4\x01\n" +
 	" custom_sans_require_customer_cas\x12Zcustom_subject_alternative_names apply only when server_ca_mode is CUSTOMER_MANAGED_CAS_CA\x1adsize(this.custom_subject_alternative_names) == 0 || this.server_ca_mode == 'CUSTOMER_MANAGED_CAS_CA'\x1a\xd3\x02\n" +
 	"\x1dcert_rotation_requires_cas_ca\x12\x8f\x01server_certificate_rotation_mode AUTOMATIC_ROTATION_DURING_MAINTENANCE requires server_ca_mode GOOGLE_MANAGED_CAS_CA or CUSTOMER_MANAGED_CAS_CA\x1a\x9f\x01this.server_certificate_rotation_mode != 'AUTOMATIC_ROTATION_DURING_MAINTENANCE' || this.server_ca_mode in ['GOOGLE_MANAGED_CAS_CA', 'CUSTOMER_MANAGED_CAS_CA']\"\xa5\x01\n" +
 	"\x1cGcpCloudSqlAuthorizedNetwork\x12H\n" +
 	"\x05value\x18\x01 \x01(\tB2\xbaH/\xc8\x01\x01r*2(^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$R\x05value\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
-	"\x0fexpiration_time\x18\x03 \x01(\tR\x0eexpirationTime\"\xa8\x05\n" +
+	"\x0fexpiration_time\x18\x03 \x01(\tR\x0eexpirationTime\"\xc2\x06\n" +
 	"\x14GcpCloudSqlPscConfig\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12M\n" +
 	"\x19allowed_consumer_projects\x18\x02 \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x17allowedConsumerProjects\x124\n" +
 	"\x16network_attachment_uri\x18\x03 \x01(\tR\x14networkAttachmentUri\x12m\n" +
 	"\x10auto_connections\x18\x04 \x03(\v2B.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscAutoConnectionR\x0fautoConnections\x12(\n" +
 	"\x10auto_dns_enabled\x18\x05 \x01(\bR\x0eautoDnsEnabled\x12;\n" +
-	"\x1awrite_endpoint_dns_enabled\x18\x06 \x01(\bR\x17writeEndpointDnsEnabled:\x9a\x02\xbaH\x96\x02\x1a\x93\x02\n" +
-	"\x1apsc_fields_require_enabled\x120PSC settings apply only when psc.enabled is true\x1a\xc2\x01this.enabled || (size(this.allowed_consumer_projects) == 0 && this.network_attachment_uri == '' && size(this.auto_connections) == 0 && !this.auto_dns_enabled && !this.write_endpoint_dns_enabled)\"\x94\x01\n" +
+	"\x1awrite_endpoint_dns_enabled\x18\x06 \x01(\bR\x17writeEndpointDnsEnabled\x12H\n" +
+	"\x1eauto_connection_policy_enabled\x18\a \x01(\bH\x00R\x1bautoConnectionPolicyEnabled\x88\x01\x01:\xc7\x02\xbaH\xc3\x02\x1a\xc0\x02\n" +
+	"\x1apsc_fields_require_enabled\x120PSC settings apply only when psc.enabled is true\x1a\xef\x01this.enabled || (size(this.allowed_consumer_projects) == 0 && this.network_attachment_uri == '' && size(this.auto_connections) == 0 && !this.auto_dns_enabled && !this.write_endpoint_dns_enabled && !has(this.auto_connection_policy_enabled))B!\n" +
+	"\x1f_auto_connection_policy_enabled\"\x94\x01\n" +
 	"\x1cGcpCloudSqlPscAutoConnection\x125\n" +
 	"\x10consumer_network\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fconsumerNetwork\x12=\n" +
@@ -2904,15 +2984,16 @@ var file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_depIdxs = []int32{
 	16, // 21: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlSpec.entra_id:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlEntraIdConfig
 	25, // 22: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.private_network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	3,  // 23: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.authorized_networks:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlAuthorizedNetwork
-	4,  // 24: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.psc:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig
-	5,  // 25: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig.auto_connections:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscAutoConnection
-	24, // 26: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.flags:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.FlagsEntry
-	19, // 27: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolAutoScale.target_metrics:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolTargetMetric
-	28, // [28:28] is the sub-list for method output_type
-	28, // [28:28] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	25, // 24: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.server_ca_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4,  // 25: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.psc:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig
+	5,  // 26: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscConfig.auto_connections:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscAutoConnection
+	24, // 27: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.flags:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlConnectionPooling.FlagsEntry
+	19, // 28: dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolAutoScale.target_metrics:type_name -> dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlReadPoolTargetMetric
+	29, // [29:29] is the sub-list for method output_type
+	29, // [29:29] is the sub-list for method input_type
+	29, // [29:29] is the sub-list for extension type_name
+	29, // [29:29] is the sub-list for extension extendee
+	0,  // [0:29] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_init() }
@@ -2922,6 +3003,7 @@ func file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}

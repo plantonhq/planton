@@ -1,0 +1,29 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetFeature
+metadata:
+  name: configmanagement
+spec:
+  projectId:
+    value: my-gcp-project
+  feature: configmanagement
+  fleetDefaultMemberConfig:
+    configmanagement:
+      management: MANAGEMENT_AUTOMATIC
+      configSync:
+        enabled: true
+        sourceFormat: unstructured
+        git:
+          secretType: none
+          syncRepo: https://github.com/example/platform-config
+          syncBranch: main
+          policyDir: clusters/all
+  membershipConfigs:
+    - membership:
+        value: projects/my-gcp-project/locations/us-central1/memberships/orders-uc1
+      configmanagement:
+        configSync:
+          git:
+            secretType: none
+            syncRepo: https://github.com/example/platform-config
+            syncBranch: main
+            policyDir: clusters/orders-uc1

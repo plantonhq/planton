@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPubSubTopicIamMember
+metadata:
+  name: my-scc-findings-publisher
+spec:
+  topic:
+    valueFrom:
+      kind: GcpPubSubTopic
+      name: <topic-resource-name>
+      fieldPath: status.outputs.topic_id
+  role:
+    value: roles/pubsub.publisher
+  member:
+    # The identity Security Command Center publishes notifications as,
+    # already in serviceAccount:<email> form.
+    valueFrom:
+      kind: GcpSccNotificationConfig
+      name: <scc-notification-config-resource-name>
+      fieldPath: status.outputs.service_account_member

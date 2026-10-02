@@ -1,0 +1,4 @@
+name: gcpvertexaisearchdatastore-pulumi-project
+runtime:
+  name: go
+description: Planton GcpVertexAiSearchDataStore Pulumi module

@@ -89,6 +89,7 @@ spec:
       evidence:
         type: spec_default
         reference: "Unset means DELETE -- destroy removes the instance and both disks, losing any unsynced notebook work. PREVENT makes the destroy fail until protection is lifted; ABANDON removes the instance from management but leaves it running with its disks intact."
+      notes: enable_deletion_protection adds the API-side guard (Workbench refuses the delete from any client, console and gcloud included, until the flag is lifted); pair it with PREVENT for one guard on the API and one on the engine. Off unless set, and sent only when set.
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

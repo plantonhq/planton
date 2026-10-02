@@ -1,0 +1,71 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpbigqueryreservationgroup
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "The Reservation API is TLS-only."
+    - control_id: no-public-access
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Managing a group requires bigquery.reservationGroups.* permissions on the admin project."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Group administration is recorded in Cloud Audit Logs (Admin Activity) unconditionally."
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: "Unset means DELETE -- the group is deleted on destroy; PREVENT makes destroy fail; ABANDON leaves it in GCP."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: "A reservation group is a grouping of capacity with no data, address, identity, or runtime of its own."

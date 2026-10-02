@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpbinaryauthorizationattestor
+spec:
+  billing_model: free
+  free_tier: "Attestors and their Artifact Analysis notes bill nothing (Binary Authorization and Artifact Analysis pricing pages, read 2026-10-01)."
+  notes: "A Cloud KMS signing key bills its key version and every signing operation on Cloud KMS, attributed to the key's project (GcpKmsKey), and the pipelines' signing calls bill there -- not on this block. Verification at admission is free."

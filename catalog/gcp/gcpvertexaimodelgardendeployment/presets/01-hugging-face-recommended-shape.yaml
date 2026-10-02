@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiModelGardenDeployment
+metadata:
+  name: qwen-small
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  huggingFaceModelId: Qwen/Qwen3-0.6B
+  modelConfig:
+    acceptEula: true
+  endpointConfig:
+    endpointDisplayName: qwen-small
+  deletionPolicy: DELETE

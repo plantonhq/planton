@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagBinding
+metadata:
+  name: project-environment-prod
+spec:
+  # The value to bind: a GcpTagValue reference (its name output,
+  # tagValues/{id}), or that literal, or the namespaced form
+  # {org}/{key}/{value}. Immutable.
+  tagValue:
+    value: tagValues/281476102962987
+
+  # The tagged resource: at most one of projectId (a GcpProject reference,
+  # or a literal ID or NUMBER), folderId, organizationId, resourceName (any
+  # other taggable resource's full resource name). Omit the whole block to
+  # tag the provider's default project. Immutable.
+  parent:
+    projectId:
+      value: "123456789012"
+
+  # For a regional or zonal resourceName only: its region or zone.
+  # location: us-central1
+
+  # DELETE (default; immediate, no recovery window), PREVENT, ABANDON.
+  deletionPolicy: DELETE

@@ -1,0 +1,22 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpmanagedkafkatopic
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: replication_factor
+      sku_meter: storage
+      pricing_unit: GiB-months
+      impact: Every replica stores a full copy of the topic's retained messages, so storage scales with the replication factor.
+    - field_path: configs
+      sku_meter: storage
+      pricing_unit: GiB-months
+      impact: retention.ms and cleanup.policy decide how much data the topic holds; longer retention holds more.
+  free_tier: ""
+  estimate_exclusions:
+    - the bytes a topic retains follow its producers' volume, not any spec field
+  notes: "A topic has no meter of its own; Google's Managed Service for Apache Kafka pricing (read 2026-09-24) bills the storage the cluster holds for retained messages and the data transferred, so a topic's cost is its share of the cluster's storage and traffic. The cluster's vCPU and memory bill under GcpManagedKafkaCluster."

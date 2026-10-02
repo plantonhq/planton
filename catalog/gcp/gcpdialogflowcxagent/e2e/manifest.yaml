@@ -1,0 +1,50 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: support-agent
+spec:
+  projectId:
+    value: my-gcp-project
+  location: global
+  displayName: Support agent
+  description: Answers order and shipping questions
+  defaultLanguageCode: en
+  timeZone: America/New_York
+  enableSpellCorrection: true
+  advancedSettings:
+    loggingSettings:
+      enableInteractionLogging: true
+  # Fulfillment the agent's console-authored flows call by the webhook's
+  # full name (the webhook_names output).
+  webhooks:
+    - displayName: order-lookup
+      timeout: 10s
+      genericWebService:
+        uri: https://orders.example.com/dialogflow
+        serviceAgentAuth: ID_TOKEN
+  # A tool the agent's playbooks can call, frozen once as v1.
+  tools:
+    - displayName: order-status
+      description: Looks up an order's status by order number.
+      functionSpec:
+        inputSchema: '{"type": "object", "properties": {"order_id": {"type": "string"}}}'
+      versions:
+        - displayName: v1
+          tool:
+            displayName: order-status
+            description: Looks up an order's status by order number.
+            functionSpec:
+              inputSchema: '{"type": "object", "properties": {"order_id": {"type": "string"}}}'
+  # Freeze the start flow and serve the frozen copy from production.
+  versions:
+    - displayName: release-1
+  environments:
+    - displayName: production
+      versionConfigs:
+        - version: release-1
+  generativeSettings:
+    - languageCode: en
+      knowledgeConnectorSettings:
+        business: Acme
+        agentIdentity: AI assistant
+  deletionPolicy: DELETE

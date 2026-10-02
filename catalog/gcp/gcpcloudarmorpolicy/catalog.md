@@ -1,18 +1,20 @@
 # GCP Cloud Armor Policy
 
-Deploys a Cloud Armor security policy with configurable rules for IP allowlisting/denylisting, rate limiting, ban escalation, OWASP WAF protection, and Layer 7 DDoS defense. The policy attaches to HTTP(S) load balancers, Cloud CDN backends, or internal Traffic Director services — the attachment itself lives on the consuming backend service or backend bucket, which references this policy's self-link.
+Deploys a Cloud Armor security policy with configurable rules for IP allowlisting/denylisting, rate limiting, ban escalation, OWASP WAF protection, and Layer 7 DDoS defense — global (the default) or, with `region` set, regional, where the same block also builds a `CLOUD_ARMOR_NETWORK` policy that filters packets and enables network DDoS protection for passthrough Network Load Balancers. The policy attaches to HTTP(S) load balancers, Cloud CDN backends, or internal Traffic Director services — the attachment itself lives on the consuming backend service or backend bucket, which references this policy's self-link, and the scopes must match.
 
 ## What Gets Created
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Compute Engine API enablement** (`compute.googleapis.com`) on the target project (never disabled on destroy)
-- **Security Policy** -- a `compute.SecurityPolicy` in the specified GCP project, configured with the chosen policy type, rules, and advanced options
-- **Security Rules** -- one rule per entry in `rules`, each with a priority, action (allow, deny, throttle, rate_based_ban, redirect), match condition (IP ranges or CEL expression), and optional rate limiting, redirect, header injection, or WAF exclusion configuration
+- **Security Policy** -- a `compute.SecurityPolicy` (global, `region` empty) or a `compute.RegionSecurityPolicy` (`region` set) in the specified GCP project, configured with the chosen policy type, rules, and advanced options; exactly one of the two exists
+- **Security Rules** -- one rule per entry in `rules`, each with a priority, action (allow, deny, throttle, rate_based_ban, redirect), match condition (IP ranges or CEL expression, or a packet-level `networkMatch` on a regional `CLOUD_ARMOR_NETWORK` policy), and optional rate limiting, redirect, header injection, or WAF exclusion configuration
+- **Network DDoS protection and user-defined fields** -- on a regional `CLOUD_ARMOR_NETWORK` policy, the `ddosProtectionConfig` level and the custom packet fields its rules match
+- **Network Edge Security Service** -- created only when a regional network policy declares `networkEdgeSecurityService`; enrolls the region in advanced network DDoS protection with this policy attached (one per region per project)
 - **Adaptive Protection** -- created only when `adaptiveProtectionConfig` is present; enables automatic Layer 7 DDoS detection and alerting
 - **Advanced Options** -- created only when `advancedOptionsConfig` is present; configures JSON body parsing (with optional custom content types), logging verbosity, and client IP resolution headers
 - **Default Rule** -- if no rule at priority 2147483647 is provided, the IaC module auto-adds a default "allow all" rule
-- **GCP Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking and governance
+- **GCP Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically to a global policy for tracking and governance (the regional collection carries no labels)
 
 ## Before You Deploy
 
@@ -86,7 +88,9 @@ The InfraPipeline resolves the dependency graph, deploys the project first, then
 
 These are the most important decisions when configuring a Cloud Armor policy. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Policy type** -- Set `type` to CLOUD_ARMOR (default) for backend security policies with full WAF, rate limiting, and header injection. Use CLOUD_ARMOR_EDGE for CDN and backend bucket protection (IP/geo rules only). Use CLOUD_ARMOR_INTERNAL_SERVICE for internal Traffic Director services. Type is immutable after creation.
+**Scope** -- Leave `region` empty for a global policy (global external ALB backends, backend buckets, CDN). Set `region` for a regional policy (regional external and internal ALB backends, or a `CLOUD_ARMOR_NETWORK` policy for passthrough Network Load Balancers). A regional backend service accepts only a regional policy; the global-only levers (labels, Adaptive Protection, reCAPTCHA, `requestBodyInspectionSize`, `redirect`, header injection) are rejected when `region` is set. Immutable.
+
+**Policy type** -- Set `type` to CLOUD_ARMOR (default) for backend security policies with full WAF, rate limiting, and (globally) header injection. Use CLOUD_ARMOR_EDGE for CDN and backend bucket protection (IP/geo rules only). Use CLOUD_ARMOR_INTERNAL_SERVICE (global only) for internal Traffic Director services. Use CLOUD_ARMOR_NETWORK (regional only) for packet-level filtering and network DDoS protection: `ddosProtectionConfig.ddosProtection` STANDARD (free) or ADVANCED / ADVANCED_PREVIEW (Cloud Armor Enterprise, the region enrolled through `networkEdgeSecurityService`), `userDefinedFields`, and rules that match through `networkMatch` instead of `match`. Type is immutable after creation.
 
 **Rule priority and evaluation** -- Rules are evaluated from lowest priority number (highest precedence) to highest. Priority 2147483647 is reserved for the default rule. Plan priority numbering with gaps (e.g., 1000, 2000, 3000) to allow inserting rules later without renumbering.
 
@@ -110,10 +114,12 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
-| `policy_id` | Fully qualified resource ID (`projects/{p}/global/securityPolicies/{name}`) | Backend service security policy references |
+| `policy_id` | Fully qualified resource ID (`projects/{p}/global/securityPolicies/{name}`, or `projects/{p}/regions/{r}/securityPolicies/{name}` for a regional policy) | Backend service security policy references |
 | `policy_name` | Name of the security policy in GCP | Audit logs, monitoring dashboards |
 | `policy_self_link` | Self-link URI of the security policy | Attaching to backend services, load balancers, CDN configurations |
 | `fingerprint` | Server-computed fingerprint for optimistic concurrency | Out-of-band policy updates |
+| `region` | Region of a regional policy; empty for a global one | Telling the scope from the outputs alone |
+| `network_edge_security_service_self_link` | Self-link of the region's network edge security service when declared; empty otherwise | Confirming the region's advanced DDoS enrollment |
 
 ## Common Patterns
 
@@ -125,8 +131,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **WAF OWASP protection** -- OWASP WAF rules blocking SQL injection and XSS attacks, with adaptive Layer 7 DDoS protection, JSON body parsing, and verbose logging. Suitable for internet-facing web applications. Start from the **WAF OWASP Protection** preset.
 
+**Regional WAF for a regional ALB** -- The same allowlist, geo-block, and rate-limit rules on a regional policy a regional backend service attaches. Start from the **Regional WAF for a Regional Load Balancer** preset.
+
+**Network DDoS protection for a passthrough NLB** -- A regional `CLOUD_ARMOR_NETWORK` policy with STANDARD DDoS protection and a packet-level allowlist on a user-defined field. Start from the **Network DDoS Protection for a Passthrough Load Balancer** preset.
+
 ## Works With
 
 - [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the security policy is created
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- consumes `policy_self_link` as its `securityPolicy` (backend WAF) or `edgeSecurityPolicy` (edge filtering)
+- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- consumes `policy_self_link` as its `securityPolicy` (backend WAF) or `edgeSecurityPolicy` (edge filtering); a regional backend service takes a regional policy from the same region
 - [**GCP Backend Bucket**](/cloud-catalog/gcp-backend-bucket) -- consumes a CLOUD_ARMOR_EDGE policy's `policy_self_link` as its `edgeSecurityPolicy`

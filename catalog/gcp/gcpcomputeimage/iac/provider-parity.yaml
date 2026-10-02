@@ -1,0 +1,69 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_compute_image:
+    mappings:
+      - spec: spec.image_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      # One-field blocks flattened: the reference IS the value.
+      - spec: spec.kms_key
+        arg: image_encryption_key.kms_key_self_link
+      - spec: spec.kms_key_service_account
+        arg: image_encryption_key.kms_key_service_account
+      # The provider wraps each feature string in a one-arg block; the
+      # spec models the list of feature names directly.
+      - spec: spec.guest_os_features
+        arg: guest_os_features.type
+      # The provider nests create-time Resource Manager tags in params.
+      - spec: spec.resource_manager_tags
+        arg: params.resource_manager_tags
+      # Source-decryption subtrees: CMEK arms mapped; exact matching
+      # resumes below each mapped prefix.
+      - spec: spec.source_disk_encryption
+        arg: source_disk_encryption_key
+      - spec: spec.source_disk_encryption.kms_key
+        arg: source_disk_encryption_key.kms_key_self_link
+      - spec: spec.source_image_encryption
+        arg: source_image_encryption_key
+      - spec: spec.source_image_encryption.kms_key
+        arg: source_image_encryption_key.kms_key_self_link
+      - spec: spec.source_snapshot_encryption
+        arg: source_snapshot_encryption_key
+      - spec: spec.source_snapshot_encryption.kms_key
+        arg: source_snapshot_encryption_key.kms_key_self_link
+    exclusions:
+      # Customer-supplied encryption keys (CSEK): raw key material does
+      # not belong in declarative manifests or state -- the provider marks
+      # these args sensitive because they are stored in state. CMEK covers
+      # the customer-controlled-encryption need with the key held in Cloud
+      # KMS; the same posture as GcpComputeDisk and GcpComputeInstance.
+      - arg: image_encryption_key.raw_key
+        reason: CSEK raw key material in manifests/state contradicts secure-by-default; use kms_key (CMEK)
+      - arg: image_encryption_key.rsa_encrypted_key
+        reason: CSEK RSA-wrapped key material in manifests/state contradicts secure-by-default; use kms_key (CMEK)
+      - arg: source_disk_encryption_key.raw_key
+        reason: CSEK raw key material in manifests/state contradicts secure-by-default; use source_disk_encryption.kms_key (CMEK)
+      - arg: source_disk_encryption_key.rsa_encrypted_key
+        reason: CSEK RSA-wrapped key material in manifests/state contradicts secure-by-default; use source_disk_encryption.kms_key (CMEK)
+      - arg: source_image_encryption_key.raw_key
+        reason: CSEK raw key material in manifests/state contradicts secure-by-default; use source_image_encryption.kms_key (CMEK)
+      - arg: source_image_encryption_key.rsa_encrypted_key
+        reason: CSEK RSA-wrapped key material in manifests/state contradicts secure-by-default; use source_image_encryption.kms_key (CMEK)
+      - arg: source_snapshot_encryption_key.raw_key
+        reason: CSEK raw key material in manifests/state contradicts secure-by-default; use source_snapshot_encryption.kms_key (CMEK)
+      - arg: source_snapshot_encryption_key.rsa_encrypted_key
+        reason: CSEK RSA-wrapped key material in manifests/state contradicts secure-by-default; use source_snapshot_encryption.kms_key (CMEK)
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables compute.googleapis.com
+      with fixed arguments (disable_on_destroy false so destroying one image
+      never disables the API project-wide); not spec surface.

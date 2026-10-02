@@ -1,0 +1,23 @@
+# The SECOND network of the peering chain: an extra GcpVpcNetwork instance
+# the scenarios declare through the e2e-prerequisites annotation (a path
+# entry deploys an extra instance; the registry's own GcpVpcNetwork
+# prerequisite is the first network). Custom-mode with no subnets, so its
+# ranges can never overlap the first network's. VPC names are project-scoped
+# with no soft-delete reservation, so the name stays fixed.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcNetwork
+metadata:
+  name: planton-oss-e2e-gcppeer-peer-vpc
+  id: planton-oss-e2e-gcppeer-peer-vpc
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvpcpeering
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  networkName: planton-oss-e2e-gcppeer-peer-vpc
+  autoCreateSubnetworks: false

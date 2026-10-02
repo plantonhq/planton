@@ -1,0 +1,26 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpgcsbucketiammember
+spec:
+  # Awaiting the live proof lane. One scenario proves the cycle-free
+  # composition this kind exists for: a consumer-scoped bucket fixture
+  # (uniform bucket-level access, run-scoped global name, force_destroy),
+  # then a project sink exporting to it (a filter matching no real log, so
+  # nothing is written), then roles/storage.objectCreator to the sink's
+  # writer_identity by reference. The bucket's registry prerequisite (a
+  # service account) installs from its published profile. Control-plane
+  # only and free; seconds per phase. Offline bar met: both modules build
+  # and validate, offline plans for the reference manifest, the scenario,
+  # and the presets (including the conditioned prefix arm) are clean on the
+  # pinned provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) the grant appears in the bucket's IAM policy, read at
+  # version 3, with the exact (role, member) pair, and re-plans clean on
+  # both engines; (2) the writer identity Google mints for a project sink is
+  # accepted as a bucket grantee the moment the sink exists; (3) destroy
+  # removes the grant before its fixtures and the verifier no longer finds
+  # the pair. The conditioned arm is proven offline only.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

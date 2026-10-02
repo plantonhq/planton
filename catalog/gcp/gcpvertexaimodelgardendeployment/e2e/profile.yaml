@@ -1,0 +1,29 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexaimodelgardendeployment
+spec:
+  # Awaiting the live proof lane. The minimal scenario proves in the
+  # harness project with roles/aiplatform.admin: a small open Hugging Face
+  # model on Model Garden's recommended shape, which for this model
+  # carries one GPU -- the first proof in the catalog whose meter runs from
+  # the moment the endpoint is ready, so the queue carries its cost line
+  # and a quota watch item (a GPU quota rejection at deploy flips this
+  # profile to deferred on a quota token, never to a CPU shape the model
+  # cannot serve from). The explicit-GPU shapes live in the presets, planned
+  # offline. Offline bar met: both modules build and validate, offline
+  # plans for the reference manifest, the scenario, and the presets are
+  # clean on the pinned
+  # provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) the deployment reaches a ready endpoint and
+  # deployed_model_id names a deployed model on it on both engines; (2)
+  # endpoint_id is rebuilt as projects/{p}/locations/us-central1/endpoints/
+  # {endpoint} and matches the endpoint's live name; (3) with deploy_config
+  # omitted the deployment RE-PLANS CLEAN under the apply-idempotency gate
+  # (Google's computed shape must not surface as a diff); (4) the destroy
+  # undeploys the model and deletes the endpoint and the uploaded model in
+  # that order.
+  tier: 2
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 60

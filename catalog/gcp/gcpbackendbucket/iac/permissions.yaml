@@ -31,16 +31,22 @@ spec:
           - compute.backendBuckets.addSignedUrlKey
           - compute.backendBuckets.deleteSignedUrlKey
         provenance: derived
-        notes: Required only when signed_url_keys is set -- covers google_compute_backend_bucket_signed_url_key. Keys are immutable in GCP (add/delete only), so rotation and key-value changes exercise both permissions; the key material itself never leaves the request. Not needed for backend buckets without signed URLs.
+        condition:
+          spec_field_set: signed_url_keys
+        notes: Covers google_compute_backend_bucket_signed_url_key. Keys are immutable in GCP (add/delete only), so rotation and key-value changes exercise both permissions; the key material itself never leaves the request.
       - purpose: AttachEdgeSecurityPolicy
         permissions:
           - compute.backendBuckets.setSecurityPolicy
           - compute.securityPolicies.use
         provenance: derived
-        notes: Required only when edge_security_policy references a CLOUD_ARMOR_EDGE policy -- the attachment authorizes on both sides, setting the policy on the backend bucket and using the referenced security policy. Not needed for backend buckets without an edge policy.
+        condition:
+          spec_field_set: edge_security_policy
+        notes: Attaching the CLOUD_ARMOR_EDGE policy edge_security_policy names authorizes on both sides -- setting the policy on the backend bucket and using the referenced security policy.
       - purpose: ApplyResourceManagerTags
         permissions:
           - compute.backendBuckets.createTagBinding
           - resourcemanager.tagValueBindings.create
         provenance: derived
-        notes: Required only when resource_manager_tags is set -- attaching a tag at create time authorizes on both sides, the binding on the backend bucket and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). The module sends tags only through the create-only params block; tag changes replace the backend bucket, re-running these checks. Not needed for untagged backend buckets.
+        condition:
+          spec_field_set: resource_manager_tags
+        notes: Attaching a tag at create time authorizes on both sides, the binding on the backend bucket and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). The module sends tags only through the create-only params block; tag changes replace the backend bucket, re-running these checks.

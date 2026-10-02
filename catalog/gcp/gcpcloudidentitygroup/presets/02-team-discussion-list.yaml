@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudIdentityGroup
+metadata:
+  name: data-team
+spec:
+  groupEmail: data-team@example.com
+  customerId: customers/C01abc2de
+  displayName: Data Team
+  description: The data team's mailing list and calendar audience
+  # A plain Google Group (no security label): mailing-list features stay on.
+  security: false
+  # The deploying principal becomes an owner so the list is never orphaned.
+  initialGroupConfig: WITH_INITIAL_OWNER
+  memberships:
+    - member:
+        value: carol@example.com
+      roles:
+        - name: MEMBER
+        - name: MANAGER
+    - member:
+        value: dave@example.com
+    - member:
+        value: erin@example.com
+  deletionPolicy: DELETE

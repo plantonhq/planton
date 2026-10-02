@@ -1,0 +1,27 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_vertex_ai_endpoint_with_model_garden_deployment:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider's block is plural but capped at one (MaxItems 1) and
+      # the pinned Pulumi SDK types it as a single object; the spec names
+      # it for what it is.
+      - spec: spec.endpoint_config.private_service_connect_config.psc_automation_config
+        arg: endpoint_config.private_service_connect_config.psc_automation_configs
+      - spec: spec.endpoint_config.private_service_connect_config.psc_automation_config.project_id
+        arg: endpoint_config.private_service_connect_config.psc_automation_configs.project_id
+      - spec: spec.endpoint_config.private_service_connect_config.psc_automation_config.network
+        arg: endpoint_config.private_service_connect_config.psc_automation_configs.network
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.
+

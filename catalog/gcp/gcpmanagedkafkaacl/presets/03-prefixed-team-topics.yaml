@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaAcl
+metadata:
+  name: payments-team-topics
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  cluster:
+    value: events
+  aclId: topicPrefixed/payments.
+  aclEntries:
+    - principal: User:payments-platform@my-gcp-project.iam.gserviceaccount.com
+      operation: ALL

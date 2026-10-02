@@ -1,0 +1,22 @@
+# GcpVertexAiDataset scenario: the smallest image dataset -- a location and
+# Google's image schema. project_id is deliberately omitted: the dataset
+# rides the provider's default project, which the harness exports as
+# GOOGLE_PROJECT. The display name defaults to metadata.name; Google
+# assigns the numeric id. Creating an empty dataset is free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiDataset
+metadata:
+  name: planton-oss-e2e-gcpvds-minimal
+  id: planton-oss-e2e-gcpvds-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaidataset
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  metadataSchemaUri: gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml

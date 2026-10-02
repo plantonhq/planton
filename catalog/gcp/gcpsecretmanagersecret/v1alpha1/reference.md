@@ -108,14 +108,14 @@ spec:
 | `spec.replication` | `GcpSecretManagerSecretReplication` |  |  |  |
 | `spec.replication.auto` | `GcpSecretManagerSecretReplicationAuto` |  |  |  |
 | `spec.replication.auto.customerManagedEncryption` | `GcpSecretManagerSecretCmek` |  |  |  |
-| `spec.replication.auto.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.replication.auto.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.replication.userManaged` | `GcpSecretManagerSecretReplicationUserManaged` |  |  |  |
 | `spec.replication.userManaged.replicas` | `[]GcpSecretManagerSecretReplica` | yes |  |  |
 | `spec.replication.userManaged.replicas[].location` | `string` | yes |  |  |
 | `spec.replication.userManaged.replicas[].customerManagedEncryption` | `GcpSecretManagerSecretCmek` |  |  |  |
-| `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.customerManagedEncryption` | `GcpSecretManagerSecretCmek` |  |  |  |
-| `spec.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.customerManagedEncryption.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.annotations` | `map<string, string>` |  |  |  |
 | `spec.tags` | `map<string, string>` |  |  |  |
@@ -214,7 +214,7 @@ Full KMS crypto key resource path
 (projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}) — a literal or
 a reference to a GcpKmsKey resource.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
@@ -258,7 +258,7 @@ Full KMS crypto key resource path
 (projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}) — a literal or
 a reference to a GcpKmsKey resource.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
@@ -279,7 +279,7 @@ Full KMS crypto key resource path
 (projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}) — a literal or
 a reference to a GcpKmsKey resource.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
@@ -408,9 +408,12 @@ manifest yields a READABLE secret. Omit to create the container only
 
 The secret payload (at most 64KiB). A secret value: the platform
 stores it as a managed-secret reference and resolves it just-in-time
-at deploy — it never sits in plaintext in the control plane. In
-charts, wire it via valueFrom from a producing resource's sensitive
-output (e.g. a generated credential) instead of a literal.
+at deploy — it never sits in plaintext in the control plane. A
+literal or a reference to ANY kind's output (no default kind, since a
+secret can hold anything): in charts, wire it via valueFrom from a
+producing resource's sensitive output instead of a literal -- e.g. a
+GcpApiKey's status.outputs.key_string or a GcpIamOauthClient's
+status.outputs.client_secret.
 Immutable: changing the payload creates a NEW version through GCP
 tooling or rotation — this field only seeds version 1.
 
@@ -567,10 +570,53 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.replication.auto.customerManagedEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.replication.auto.customerManagedEncryption.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.customerManagedEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.customerManagedEncryption.kmsKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.topics` | GcpPubSubTopic | `status.outputs.topic_id` |
 | `spec.iamMembers[].member` | GcpServiceAccount | `status.outputs.member` |
+
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpCloudBuildConnection | `spec.githubConfig.authorizerCredential.oauthTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.githubEnterpriseConfig.privateKeySecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.githubEnterpriseConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.gitlabConfig.authorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.gitlabConfig.readAuthorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.gitlabConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketCloudConfig.authorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketCloudConfig.readAuthorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketCloudConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketDataCenterConfig.authorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketDataCenterConfig.readAuthorizerCredential.userTokenSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildConnection | `spec.bitbucketDataCenterConfig.webhookSecretSecretVersion` | `status.outputs.latest_version_name` |
+| GcpCloudBuildTrigger | `spec.webhookConfig.secret` | `status.outputs.latest_version_name` |
+| GcpCloudBuildTrigger | `spec.build.availableSecrets.secretManager[].versionName` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.mysqlProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.postgresqlProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.oracleProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.sqlServerProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.mongodbProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.mongodbProfile.sslConfig.secretManagerStoredClientKey` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].genericWebService.secretVersionForUsernamePassword` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].genericWebService.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].serviceDirectory.genericWebService.secretVersionsForRequestHeaders[].secretVersion` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].serviceDirectory.genericWebService.secretVersionForUsernamePassword` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.webhooks[].serviceDirectory.genericWebService.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `status.outputs.latest_version_name` |
+| GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
+| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
 
 ## See Also
 

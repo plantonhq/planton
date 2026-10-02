@@ -52,7 +52,8 @@ spec:
     machineType: e2-micro
     disks:
       - boot: true
-        sourceImage: debian-cloud/debian-12
+        sourceImage:
+          value: debian-cloud/debian-12
     networkInterfaces:
       # Private fleet on the E2E VPC fixture (auto-mode, so the bare
       # network reference is a sufficient attachment point). No
@@ -97,7 +98,7 @@ spec:
 | `spec.template.instanceDescription` | `string` |  |  |  |
 | `spec.template.disks` | `[]GcpComputeMigTemplateDisk` | yes |  |  |
 | `spec.template.disks[].boot` | `bool` |  |  |  |
-| `spec.template.disks[].sourceImage` | `string` |  |  |  |
+| `spec.template.disks[].sourceImage` | `string \| valueFrom` |  |  | GcpComputeImage (`status.outputs.self_link`) |
 | `spec.template.disks[].sourceSnapshot` | `string` |  |  |  |
 | `spec.template.disks[].source` | `string \| valueFrom` |  |  | GcpComputeDisk (`status.outputs.self_link`) |
 | `spec.template.disks[].sizeGb` | `int32` |  |  |  |
@@ -164,6 +165,7 @@ spec:
 | `spec.template.scheduling.nodeAffinities[].operator` | `string` | yes |  |  |
 | `spec.template.scheduling.nodeAffinities[].values` | `[]string` | yes |  |  |
 | `spec.template.scheduling.localSsdRecoveryTimeoutSeconds` | `int64` |  |  |  |
+| `spec.template.scheduling.hostErrorTimeoutSeconds` | `int32` |  |  |  |
 | `spec.template.shieldedInstanceConfig` | `GcpComputeMigShieldedConfig` |  |  |  |
 | `spec.template.shieldedInstanceConfig.enableSecureBoot` | `bool` |  |  |  |
 | `spec.template.shieldedInstanceConfig.enableVtpm` | `bool` |  | `true` |  |
@@ -195,6 +197,9 @@ spec:
 | `spec.template.canIpForward` | `bool` |  |  |  |
 | `spec.template.keyRevocationActionType` | `string` |  |  |  |
 | `spec.template.resourcePolicies` | `[]string` |  |  |  |
+| `spec.template.workloadIdentityConfig` | `GcpComputeMigWorkloadIdentityConfig` |  |  |  |
+| `spec.template.workloadIdentityConfig.identity` | `string` | yes |  |  |
+| `spec.template.workloadIdentityConfig.identityCertificateEnabled` | `bool` |  |  |  |
 | `spec.versions` | `[]GcpComputeMigVersion` |  |  |  |
 | `spec.versions[].versionName` | `string` |  |  |  |
 | `spec.versions[].templateSelfLink` | `string` |  |  |  |
@@ -446,12 +451,18 @@ Exactly one disk in the template must set this.
 
 ### spec.template.disks[].sourceImage
 
-`string`
+`string | valueFrom`
 
-Source image for a fresh disk on each VM. Accepts an image family
-("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64")
-or a specific image self link. Families resolve to the newest image
-at template creation.
+Source image for a fresh disk on each VM: a GcpComputeImage reference
+(its self_link, pinning that exact build fleet-wide) or a literal
+Google accepts -- an image family short form
+("debian-cloud/debian-12", "ubuntu-os-cloud/ubuntu-2404-lts-amd64"), a
+family path ("projects/{project}/global/images/family/{family}"), or a
+specific image's path or self link. Families resolve to the newest
+image at template creation.
+
+- references: GcpComputeImage (`status.outputs.self_link`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpComputeImage, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
 
 ### spec.template.disks[].sourceSnapshot
 
@@ -1061,6 +1072,19 @@ recovery.
 
 - rule: {"int64":{"lte":"604800","gte":"0"}}
 
+### spec.template.scheduling.hostErrorTimeoutSeconds
+
+`int32` · optional (explicit presence)
+
+How long Compute Engine waits, in seconds, before declaring a host
+failed and starting host-error recovery for the VM on it. A lower
+value recovers a hung host faster at the cost of more false
+positives; leave unset for Compute Engine's default recovery timing.
+Must be 90..330 in steps of 30 (90, 120, ..., 330).
+
+- rule: host_error_timeout_seconds must be a multiple of 30 between 90 and 330
+- rule: {"int32":{"lte":330,"gte":90}}
+
 ### spec.template.shieldedInstanceConfig
 
 `GcpComputeMigShieldedConfig`
@@ -1328,6 +1352,34 @@ an instance schedule). GCP currently allows at most one policy per
 instance. Changing it rotates the template.
 
 - rule: {"repeated":{"maxItems":"1"}}
+
+### spec.template.workloadIdentityConfig
+
+`GcpComputeMigWorkloadIdentityConfig`
+
+Managed workload identity for every VM in the group: a SPIFFE
+identity issued to each instance (and, optionally, X.509 identity
+certificates) so workloads authenticate to each other by identity
+instead of shared secrets or network position. Part of the template,
+so changing it rotates the template and rolls the group.
+
+### spec.template.workloadIdentityConfig.identity
+
+`string` · required
+
+The SPIFFE ID Compute Engine issues to each instance, e.g.
+"spiffe://PROJECT.svc.id.goog/ns/NAMESPACE/sa/SERVICE_ACCOUNT" or a
+workload-identity-pool identity of the form
+"spiffe://POOL.global.PROJECT_NUMBER.workload.id.goog/ns/NS/sa/SA".
+
+- rule: {"required":true,"string":{"minLen":"1","prefix":"spiffe://"}}
+
+### spec.template.workloadIdentityConfig.identityCertificateEnabled
+
+`bool`
+
+Whether Compute Engine also issues and rotates X.509 certificates
+bound to the identity, made available on each VM for mutual TLS.
 
 ### spec.versions
 
@@ -2466,6 +2518,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.template.disks[].sourceImage` | GcpComputeImage | `status.outputs.self_link` |
 | `spec.template.disks[].source` | GcpComputeDisk | `status.outputs.self_link` |
 | `spec.template.disks[].diskEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.template.disks[].sourceImageEncryption.kmsKey` | GcpKmsKey | `status.outputs.key_id` |

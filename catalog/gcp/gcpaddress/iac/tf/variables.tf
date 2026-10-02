@@ -1,75 +1,109 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Compute Engine regional address"
+  description = "GcpAddress specification"
   type = object({
-    # The GCP project that owns the reservation. The CLI's tfvars converter
-    # resolves StringValueOrRef fields to their literal string before the
-    # module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # The GCP project in which to create this regional address reservation.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Example: "my-prod-project-123"
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Name of the address in GCP (RFC1035). Immutable (ForceNew).
+    # Name of the regional address resource in GCP.
+    # Must be 1-63 characters, lowercase letters, numbers, or hyphens.
+    # Must start with a lowercase letter and end with a letter or number.
+    # Example: "nat-external-ip", "ilb-vip"
     address_name = string
 
-    # Region for the reservation (e.g. us-central1). Immutable (ForceNew).
+    # The GCP region in which to reserve this address (e.g. "us-central1").
+    # Immutable: a regional address cannot move between regions.
     region = string
 
-    # Specific IP (EXTERNAL) or range start (INTERNAL); empty lets GCP
-    # assign one. Immutable.
+    # The static IP address to reserve. If omitted, GCP assigns an address
+    # automatically. For INTERNAL VPC_PEERING addresses this is the start of
+    # the reserved CIDR range.
     address = optional(string, "")
 
-    # EXTERNAL (public IP, the default via middleware) or INTERNAL
-    # (private IP within a VPC/subnetwork). Immutable.
-    address_type = optional(string, "EXTERNAL")
+    # The type of address to reserve.
+    # EXTERNAL reserves a public IP address (default). INTERNAL reserves a
+    # private IP within a VPC network or subnetwork.
+    address_type = optional(string)
 
+    # Human-readable description of this address reservation.
+    # Example: "Static IP for Cloud NAT in us-central1"
     description = optional(string, "")
 
-    # IPV4 (middleware default) or IPV6. Immutable.
-    ip_version = optional(string, "IPV4")
+    # The IP version for this address. Defaults to IPV4.
+    ip_version = optional(string)
 
-    # VPC network for INTERNAL VPC_PEERING / IPSEC_INTERCONNECT; arrives as
-    # a plain self-link string. Immutable.
+    # The VPC network for internal address reservations with VPC_PEERING or
+    # IPSEC_INTERCONNECT purpose. Accepts a network name or full self-link URL.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     network = optional(string, "")
 
-    # Subnetwork for INTERNAL GCE_ENDPOINT / DNS_RESOLVER; arrives as a
-    # plain self-link string. Immutable.
+    # The subnetwork for internal address reservations with GCE_ENDPOINT or
+    # DNS_RESOLVER purpose. Accepts a subnetwork name or full self-link URL.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     subnetwork = optional(string, "")
 
-    # PREMIUM or STANDARD — EXTERNAL addresses only. Immutable.
+    # The network tier for EXTERNAL addresses only. PREMIUM (default) or
+    # STANDARD. Must not be set for INTERNAL addresses — internal traffic
+    # always uses Premium tier.
     network_tier = optional(string, "")
 
-    # CIDR prefix length for peering/interconnect ranges (8-29). Immutable.
-    prefix_length = optional(number, null)
+    # The prefix length of the IP range to reserve (8-29).
+    # Used for INTERNAL VPC_PEERING or IPSEC_INTERCONNECT ranges.
+    prefix_length = optional(number)
 
-    # GCE_ENDPOINT, SHARED_LOADBALANCER_VIP, VPC_PEERING,
-    # IPSEC_INTERCONNECT, or DNS_RESOLVER (INTERNAL only). Immutable.
+    # The purpose of this INTERNAL address reservation.
+    # GCE_ENDPOINT — VM instances, alias IP ranges, or similar endpoints.
+    # SHARED_LOADBALANCER_VIP — internal load balancer VIP shared across
+    # backends.
+    # VPC_PEERING — reserves a CIDR range for VPC network peering.
+    # IPSEC_INTERCONNECT — reserves a range for HA VPN over Cloud Interconnect.
+    # DNS_RESOLVER — DNS resolver endpoint address.
+    # Leave empty for standard EXTERNAL address reservations.
+    # PRIVATE_SERVICE_CONNECT is global-only — use GcpGlobalAddress instead.
     purpose = optional(string, "")
 
-    # VM or NETLB — external IPv6 endpoint type. Immutable.
+    # The endpoint type for external IPv6 addresses: VM or NETLB.
+    # Determines whether the reserved IPv6 address can be used by a VM
+    # instance or a network load balancer after reservation.
     ipv6_endpoint_type = optional(string, "")
 
-    # User labels merged with the platform labels (platform wins on key
-    # conflicts). The one mutable surface on this resource.
+    # User labels attached to the reserved address, merged with Planton's
+    # platform labels (which win on key conflicts). The one mutable surface on
+    # this resource — every other change destroys and re-reserves the address.
     labels = optional(map(string), {})
 
-    # BYOIP source: a PublicDelegatedPrefix URL for EXTERNAL addresses.
-    # Immutable.
+    # Source of externally provisioned (BYOIP) addresses: a
+    # PublicDelegatedPrefix in full or partial URL form, e.g.
+    # "projects/{project}/regions/{region}/publicDelegatedPrefixes/{pdp-name}".
+    # An IPv4 PDP must support enhanced IPv4 allocations; an IPv6 PDP must be
+    # in EXTERNAL_IPV6_FORWARDING_RULE_CREATION mode. Only meaningful for
+    # EXTERNAL addresses. Create-time only: changing it re-reserves.
     ip_collection = optional(string, "")
 
-    # DELETE (default), PREVENT, or ABANDON — what destroy does to the
-    # reservation.
+    # Deletion policy for the reserved address — what happens on destroy:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the reservation is released; the IP returns to Google's
+    #                pool (an external static IP is gone for good)
+    #   "PREVENT" -- destroy FAILS; protects an IP that DNS records or
+    #                allow-lists outside GCP may still point at
+    #   "ABANDON" -- the reservation is removed from management but stays
+    #                reserved (and billed while unattached) in GCP
     deletion_policy = optional(string, "")
   })
 }

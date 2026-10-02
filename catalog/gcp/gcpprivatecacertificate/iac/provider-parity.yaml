@@ -1,0 +1,31 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_privateca_certificate:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.certificate_id
+        arg: name
+      # The subject key ID's one-leaf wrapper lifted.
+      - spec: spec.config.subject_key_id
+        arg: config.subject_key_id.key_id
+    exclusions:
+      # The provider's two helper flags for Google's presence-based basic
+      # constraints; the spec's optional is_ca and max_issuer_path_length
+      # carry presence directly and the modules derive the flags from them.
+      - arg: config.x509_config.ca_options.non_ca
+        reason: >-
+          derived from the presence-based spec ca_options.is_ca -- both modules
+          send it true exactly when the spec sets is_ca to false, so the provider sends CA:FALSE instead of reading false as unset
+      - arg: config.x509_config.ca_options.zero_max_issuer_path_length
+        reason: >-
+          derived from the presence-based spec ca_options.max_issuer_path_length
+          -- both modules send it true exactly when the spec sets 0, because
+          the provider reads a plain 0 as unset

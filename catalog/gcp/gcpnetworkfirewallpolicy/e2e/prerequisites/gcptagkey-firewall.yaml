@@ -1,0 +1,31 @@
+# A GCE_FIREWALL tag key scoped to the harness network: an extra GcpTagKey
+# instance the secure-tags scenario declares through the e2e-prerequisites
+# annotation (the kind's standard GcpTagKey install profile has no purpose,
+# and a firewall policy rule accepts only GCE_FIREWALL tag values). Owned by
+# the harness PROJECT so the chain proves live with project-level
+# roles/resourcemanager.tagAdmin; purpose_data.network names the registry's
+# prerequisite network as {project_id}/{network_name}. The short name carries
+# ${E2E_RUN_ID} (30-day reservation); metadata.name stays fixed.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: planton-oss-e2e-gcpnfwp-tagkey
+  id: planton-oss-e2e-gcpnfwp-tagkey
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  shortName: planton-e2e-fw-${E2E_RUN_ID}
+  description: Planton E2E secure-tag key for firewall policy rules; safe to delete
+  purpose: GCE_FIREWALL
+  purposeData:
+    network: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}/planton-oss-e2e-vpc-prereq

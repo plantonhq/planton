@@ -21,7 +21,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 
 ## Module Layout
 
-- `provider.tf` — google provider pin (`~> 7.43`; all fields GA on the pinned line)
+- `provider.tf` — google provider pin (`~> 8.3`; all fields GA on the pinned line)
 - `variables.tf` — the converter-contract `metadata`/`spec` variables
 - `locals.tf` — ambient-project fallback, `instance_name` fallback to `metadata.name`, label merge, ssh-keys fold, Spot derivation (`preemptible` + `automatic_restart`)
 - `main.tf` — API enablement + the instance (boot disk, attached/scratch disks, NICs, scheduling, shielded/confidential, GPUs, reservation affinity)

@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGlobalForwardingRule
+metadata:
+  name: internal-passthrough-nlb-vip
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Internal passthrough Network Load Balancer VIP for the orders service in us-central1
+  region: us-central1
+  backendService:
+    value: "<regional-backend-service-self-link>" # replace: a GcpBackendService declared with the same region and scheme INTERNAL
+  loadBalancingScheme: INTERNAL
+  ipProtocol: TCP
+  ports: ["80", "443"]
+  network:
+    value: "<vpc-network-self-link>" # replace: the GcpVpcNetwork the clients live in
+  subnetwork:
+    value: "<subnetwork-self-link>" # replace: the GcpSubnetwork the VIP is drawn from (required on a custom-mode network)
+  allowGlobalAccess: true
+  serviceLabel: orders

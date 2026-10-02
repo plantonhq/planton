@@ -28,7 +28,7 @@ metadata:
 spec:
   projectId: acme-prod-workloads
   parentType: folder
-  parentId: "123456789012"
+  parentId: "123456789012"   # or folderId: {valueFrom: {kind: GcpFolder, name: ...}}
   billingAccountId: 0123AB-4567CD-89EFGH
   deletionPolicy: PREVENT
   enabledApis:

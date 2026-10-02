@@ -1,0 +1,27 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpsccmuteconfig
+spec:
+  gcp:
+    groups:
+      - purpose: EnableSecurityCenterApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+        provenance: derived
+        notes: Covers google_project_service enabling securitycenter.googleapis.com on a project config's project (scope.project_id, or no scope at all); a folder or organization config enables nothing. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageMuteConfig
+        permissions:
+          - securitycenter.muteconfigs.create
+          - securitycenter.muteconfigs.get
+          - securitycenter.muteconfigs.update
+          - securitycenter.muteconfigs.delete
+        provenance: derived
+        notes: Covers the project, folder, and organization mute-config resources (Pulumi securitycenter.V2*MuteConfig) -- create, read on every refresh, PATCH updates of description, filter, and type, delete on destroy. Held at the scope (roles/securitycenter.muteConfigsEditor there). The provider-default project lookup reads provider configuration only and needs no permission.

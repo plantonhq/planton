@@ -1,0 +1,47 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_colab_schedule:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The two request wrappers hold one job each (plus a parent the
+      # provider derives); the spec names the job directly.
+      - spec: spec.notebook_execution_job
+        arg: create_notebook_execution_job_request.notebook_execution_job
+      - spec: spec.pipeline_job
+        arg: create_pipeline_job_request.pipeline_job
+      # One-leaf encryption wrappers lifted to the family's kms_key_name.
+      - spec: spec.notebook_execution_job.kms_key_name
+        arg: create_notebook_execution_job_request.notebook_execution_job.encryption_spec.kms_key_name
+      - spec: spec.pipeline_job.kms_key_name
+        arg: create_pipeline_job_request.pipeline_job.encryption_spec.kms_key_name
+    exclusions:
+      - arg: create_notebook_execution_job_request.parent
+        reason: >-
+          derived -- left unset by both modules so the provider fills
+          projects/{project}/locations/{location} from the schedule's own
+          project and location
+      - arg: create_pipeline_job_request.parent
+        reason: >-
+          derived -- left unset by both modules so the provider fills
+          projects/{project}/locations/{location} from the schedule's own
+          project and location
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.
+
+specExclusions:
+  - field: spec.notebook_execution_job.workbench_runtime
+    reason: >-
+      the provider expresses a Workbench runtime as an EMPTY marker block
+      (workbench_runtime {}) with no settings of its own; the spec carries it
+      as a presence bool and both modules emit the marker block from it (the
+      established marker-block judgment)

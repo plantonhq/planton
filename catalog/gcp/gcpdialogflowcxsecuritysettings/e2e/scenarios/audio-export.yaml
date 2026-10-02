@@ -1,0 +1,37 @@
+# GcpDialogflowCxSecuritySettings scenario: audio export into a bucket
+# fixture referenced by kind (Google grants the Dialogflow service agent
+# object-creator access on it), MP3 with audio redaction, plus Insights
+# export. Proves the bucket reference resolves to a bucket name and that the
+# harness principal can make the grant (storage.buckets.setIamPolicy). The
+# bucket deploys first and tears down last; nothing is recorded because no
+# conversation runs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxSecuritySettings
+metadata:
+  name: planton-oss-e2e-gcpdfcxs-audio
+  id: planton-oss-e2e-gcpdfcxs-audio
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdialogflowcxsecuritysettings
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdialogflowcxsecuritysettings/e2e/prerequisites/gcpgcsbucket-audio.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcxs-audio-${E2E_RUN_ID}
+  redactionStrategy: REDACT_WITH_SERVICE
+  redactionScope: REDACT_DISK_STORAGE
+  audioExportSettings:
+    gcsBucket:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: planton-oss-e2e-gcpdfcxs-bucket
+        fieldPath: status.outputs.bucket_name
+    audioExportPattern: calls
+    audioFormat: MP3
+    enableAudioRedaction: true
+  enableInsightsExport: true

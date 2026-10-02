@@ -1,0 +1,27 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpprivatecacertificateauthority
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/privateca.caManager and
+  # roles/privateca.certificateManager: a self-signed root in a
+  # consumer-scoped DevOps pool, and a two-tier chain -- a root in its own
+  # pool signing, by reference, a subordinate in the scenario's pool. Every
+  # authority is created with deletion protection off, skip_grace_period,
+  # and ignore_active_certificates_on_deletion, so teardown deletes it
+  # immediately and the pools then delete. Each authority bills a monthly
+  # fee at the DevOps rate (see the proof queue for the cost line). Offline
+  # bar met: both modules build and validate, offline plans for the
+  # reference manifest, both scenarios, their fixtures, the presets, and
+  # throwaway arms are clean on the pinned provider, and the accounting is
+  # total. Live facts the proof lane confirms: (1) each authority reaches
+  # ENABLED and RE-PLANS CLEAN on both engines -- the empty key-usage groups,
+  # is_ca true with no non_ca, and a zero path length sent through
+  # zero_max_issuer_path_length must not diff; (2) the subordinate's chain
+  # ends at the root's certificate; (3) destroy leaves the verifier reading
+  # 404 or DELETED.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

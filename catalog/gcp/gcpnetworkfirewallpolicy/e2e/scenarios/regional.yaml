@@ -1,0 +1,63 @@
+# GcpNetworkFirewallPolicy scenario exercising the REGIONAL resource family:
+# the same shape as the reference manifest plus `region`, so the proof lane
+# confirms both families deploy, re-plan clean, and destroy on both engines.
+# policy_type is stated explicitly as VPC_POLICY (the value Google would
+# default to) to prove an explicit type round-trips. Ingress and egress
+# rules, a disabled rule, and a rule_name rename target.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcpnfwp-regional
+  id: planton-oss-e2e-gcpnfwp-regional
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  policyName: planton-oss-e2e-gcpnfwp-regional
+  region: us-central1
+  description: Planton E2E regional network firewall policy; safe to delete
+  policyType: VPC_POLICY
+  rules:
+    - priority: 1000
+      action: allow
+      direction: INGRESS
+      ruleName: allow-health-checks
+      match:
+        srcIpRanges: ["35.191.0.0/16", "130.211.0.0/22"]
+        layer4Configs:
+          - ipProtocol: tcp
+    - priority: 1100
+      action: allow
+      direction: EGRESS
+      ruleName: allow-dns-out
+      match:
+        destIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: udp
+            ports: ["53"]
+          - ipProtocol: tcp
+            ports: ["53"]
+    - priority: 1200
+      action: deny
+      direction: INGRESS
+      ruleName: parked-rule
+      description: Kept but not enforced
+      disabled: true
+      match:
+        srcIpRanges: ["192.0.2.0/24"]
+        layer4Configs:
+          - ipProtocol: icmp
+  associations:
+    - name: planton-oss-e2e-gcpnfwp-regional-prereq
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_self_link
+  deletionPolicy: DELETE

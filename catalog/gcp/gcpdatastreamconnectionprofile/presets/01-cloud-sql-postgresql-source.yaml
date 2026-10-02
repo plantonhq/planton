@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: orders-postgres
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  postgresqlProfile:
+    hostname:
+      valueFrom:
+        kind: GcpCloudSql
+        name: orders-db
+        fieldPath: status.outputs.public_ip
+    username: datastream
+    secretManagerStoredPassword:
+      valueFrom:
+        kind: GcpSecretManagerSecret
+        name: orders-datastream-password
+        fieldPath: status.outputs.latest_version_name
+    database: orders

@@ -1,0 +1,32 @@
+# GcpDatastreamConnectionProfile scenario: a Cloud Storage destination
+# profile over the bucket's published install profile, referenced by its
+# bucket_name output. Google validates that the bucket exists.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: planton-oss-e2e-gcpdscp-gcs
+  id: planton-oss-e2e-gcpdscp-gcs
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdatastreamconnectionprofile
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpGcsBucket"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionProfileId: e2e-gcpdscp-gcs-${E2E_RUN_ID}
+  displayName: E2E Cloud Storage destination
+  gcsProfile:
+    bucket:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: planton-oss-e2e-gcsb-prereq
+        fieldPath: status.outputs.bucket_name
+    rootPath: /datastream
+  labels:
+    e2e-arm: gcs
+  deletionPolicy: DELETE

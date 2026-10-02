@@ -390,9 +390,34 @@ var _ = ginkgo.Describe("GcpCloudSqlSpec", func() {
 			r := minimalPostgres()
 			r.Spec.Network = &GcpCloudSqlNetwork{
 				Ipv4Enabled:  true,
-				ServerCaPool: "projects/p/locations/l/caPools/pool",
+				ServerCaPool: litRef("projects/p/locations/l/caPools/pool"),
 			}
 			expectInvalid(r, "server_ca_pool applies only")
+		})
+
+		ginkgo.It("accepts a GcpPrivateCaPool reference or a full pool name with CUSTOMER_MANAGED_CAS_CA", func() {
+			for _, pool := range []*foreignkeyv1.StringValueOrRef{
+				litRef("projects/p/locations/us-central1/caPools/sql-ca"),
+				fromRef("GcpPrivateCaPool", "sql-ca", "status.outputs.name"),
+			} {
+				r := minimalPostgres()
+				r.Spec.Network = &GcpCloudSqlNetwork{
+					Ipv4Enabled:  true,
+					ServerCaMode: "CUSTOMER_MANAGED_CAS_CA",
+					ServerCaPool: pool,
+				}
+				expectValid(r)
+			}
+		})
+
+		ginkgo.It("rejects a malformed literal server_ca_pool", func() {
+			r := minimalPostgres()
+			r.Spec.Network = &GcpCloudSqlNetwork{
+				Ipv4Enabled:  true,
+				ServerCaMode: "CUSTOMER_MANAGED_CAS_CA",
+				ServerCaPool: litRef("sql-ca"),
+			}
+			expectInvalid(r, "a literal server_ca_pool must be")
 		})
 
 		ginkgo.It("rejects PSC settings when psc is disabled", func() {
@@ -980,6 +1005,60 @@ var _ = ginkgo.Describe("GcpCloudSqlSpec", func() {
 			r := minimalPostgres()
 			r.Spec.DataApiAccess = "OPEN"
 			expectInvalid(r, "data_api_access")
+		})
+	})
+
+	ginkgo.Context("replica lag recreation threshold", func() {
+		ginkgo.It("accepts the documented bounds", func() {
+			for _, v := range []int32{300, 31536000} {
+				r := minimalPostgres()
+				r.Spec.ReplicationLagMaxSeconds = intPtr(v)
+				expectValid(r)
+			}
+		})
+
+		ginkgo.It("rejects a lag below five minutes", func() {
+			r := minimalPostgres()
+			r.Spec.ReplicationLagMaxSeconds = intPtr(299)
+			expectInvalid(r, "replication_lag_max_seconds")
+		})
+
+		ginkgo.It("rejects a lag above one year", func() {
+			r := minimalPostgres()
+			r.Spec.ReplicationLagMaxSeconds = intPtr(31536001)
+			expectInvalid(r, "replication_lag_max_seconds")
+		})
+	})
+
+	ginkgo.Context("input-only opt-ins and the network-architecture switch", func() {
+		ginkgo.It("accepts the opt-ins together", func() {
+			r := minimalPostgres()
+			r.Spec.SwitchTransactionLogsToCloudStorageEnabled = true
+			r.Spec.IncludeReplicasForMajorVersionUpgrade = true
+			enforce := true
+			r.Spec.EnforceNewSqlNetworkArchitecture = &enforce
+			expectValid(r)
+		})
+	})
+
+	ginkgo.Context("PSC auto-connection policy", func() {
+		ginkgo.It("accepts the policy switch with PSC enabled", func() {
+			r := minimalPostgres()
+			policy := true
+			r.Spec.Network = &GcpCloudSqlNetwork{
+				Psc: &GcpCloudSqlPscConfig{Enabled: true, AutoConnectionPolicyEnabled: &policy},
+			}
+			expectValid(r)
+		})
+
+		ginkgo.It("rejects the policy switch without psc.enabled", func() {
+			r := minimalPostgres()
+			policy := false
+			r.Spec.Network = &GcpCloudSqlNetwork{
+				Ipv4Enabled: true,
+				Psc:         &GcpCloudSqlPscConfig{AutoConnectionPolicyEnabled: &policy},
+			}
+			expectInvalid(r, "psc.enabled")
 		})
 	})
 })

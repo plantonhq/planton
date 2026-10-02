@@ -30,9 +30,10 @@ through, at the exact pinned version, and check TOTAL accounting:
              resource is exact-matched to a spec field, mapped by the kind's
              iac/provider-parity.yaml, or excluded there with a reason; and
              every spec field reaches provider surface (reverse drift check).
-  breadth -- every GA resource carries exactly one disposition: modeled and
-             iam-covered are computed; composed/model-planned/deferred/
-             excluded-deprecated are recorded in the dispositions ledger.
+  breadth -- every GA resource carries exactly one disposition: modeled,
+             iam-covered, and iam-uncovered are computed; composed/
+             model-planned/deferred/excluded-deprecated are recorded in the
+             dispositions ledger.
 
 This is PROVIDER parity -- a different axis from the cross-engine parity the
 component audit's --parity focus checks (one kind's two IaC modules

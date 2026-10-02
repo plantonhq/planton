@@ -12,6 +12,12 @@ locals {
   # verbatim and rejected by the API.
   project_id = var.spec.project_id != "" ? var.spec.project_id : null
 
+  # The scope selector. An empty region builds the global target HTTP proxy;
+  # a region name builds the regional one. Exactly one of the two resources
+  # in main.tf exists (count guards), and outputs.tf picks whichever was
+  # created.
+  is_regional = var.spec.region != null && var.spec.region != ""
+
   # The cloud-side name defaults to metadata.name when the spec leaves
   # proxy_name empty — the same naming basis every kind uses.
   proxy_name = (
@@ -31,6 +37,10 @@ locals {
   )
 
   # proxy_bind is a Traffic Director lever; the API default is false, so only
-  # an explicit true is worth sending (null lets the API compute it).
+  # an explicit true is worth sending (null lets the API compute it). The
+  # spec CEL keeps it off the regional arm, whose resource has no such
+  # argument.
   proxy_bind = var.spec.proxy_bind ? true : null
+
+  deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 }

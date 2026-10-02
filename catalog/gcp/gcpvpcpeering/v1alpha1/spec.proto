@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvpcpeering.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpVpcPeeringSpec manages ONE SIDE of a VPC Network Peering: the peering
+// entry on `network` that points at `peer_network`, and the route exchange
+// that side allows. VPC peering connects two VPC networks -- in the same
+// project, different projects, or different organizations -- so their
+// workloads reach each other over internal IPs with no gateway, no
+// bandwidth cap beyond the VMs' own, and no egress through the internet.
+//
+// A peering is two half-entries, one in each network, and goes ACTIVE only
+// when both exist and point at each other. Declare each side as its own
+// GcpVpcPeering: two resources when you own both networks (the `state`
+// output on each side tells you when the pair is up), one when the other
+// side belongs to someone else (it stays INACTIVE until they create theirs).
+// The provider serializes the two sides when one chart creates both, so
+// declaring both at once is safe.
+//
+// Two forms, selected by whether peer_network is set:
+//
+//   CREATE (peer_network set) -- this resource creates the peering entry
+//   and owns its route exchange. Nearly everything is immutable: the name,
+//   both networks, and the two public-IP subnet-route flags recreate the
+//   peering when changed. The custom-route flags, stack_type, and
+//   update_strategy change in place.
+//
+//   ROUTES-CONFIG (peer_network empty) -- the peering ALREADY EXISTS on
+//   `network` under `peering_name` and this resource manages only its route
+//   exchange. This is the shape for peerings Google creates on your behalf:
+//   `servicenetworking-googleapis-com` for Cloud SQL private IP, Memorystore,
+//   and other private-services-access products. Exporting custom routes to
+//   that peering is how an on-premises network reached over VPN or
+//   Interconnect learns the path to a Cloud SQL instance. Destroying this
+//   form is a no-op in GCP: the peering and its current route flags stay as
+//   they are.
+//
+// Routing rules Google enforces, taught here because the API reports them
+// only at apply time: the two networks' subnet ranges must not overlap;
+// peering is NOT transitive (A-B and B-C do not connect A to C); a network
+// can have at most 25 active peerings (raiseable by quota); and dynamic
+// routes learned over VPN/Interconnect cross a peering only when the
+// exporting side sets export_custom_routes AND the importing side sets
+// import_custom_routes.
+message GcpVpcPeeringSpec {
+  option (buf.validate.message).cel = {
+    id: "stack_type_needs_create_form"
+    message: "stack_type applies only when this resource creates the peering (peer_network set); the routes-config form leaves it empty"
+    expression: "this.stack_type == '' || (has(this.peer_network) && (this.peer_network.value != '' || has(this.peer_network.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "update_strategy_needs_create_form"
+    message: "update_strategy applies only when this resource creates the peering (peer_network set); the routes-config form leaves it empty"
+    expression: "this.update_strategy == '' || (has(this.peer_network) && (this.peer_network.value != '' || has(this.peer_network.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "deletion_policy_needs_create_form"
+    message: "deletion_policy applies only when this resource creates the peering (peer_network set); destroying the routes-config form is a no-op in GCP"
+    expression: "this.deletion_policy == '' || (has(this.peer_network) && (this.peer_network.value != '' || has(this.peer_network.value_from)))"
+  };
+
+  // The name of the peering entry on `network`: what `gcloud compute
+  // networks peerings list` shows, and the name the other side does NOT
+  // need to match (each side names its own entry). Defaults to
+  // metadata.name when empty. 1-63 characters, lowercase letters, digits,
+  // and hyphens, starting with a letter. Immutable in the CREATE form.
+  //
+  // In the ROUTES-CONFIG form this is the name of the EXISTING peering
+  // whose routes are managed -- for Google-managed private services access
+  // it is `servicenetworking-googleapis-com`.
+  string peering_name = 1 [(buf.validate.field).cel = {
+    id: "valid_peering_name"
+    message: "peering_name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
+  }];
+
+  // The VPC network this side of the peering lives in: a reference to a
+  // GcpVpcNetwork (its network_self_link output) or the network's self link
+  // as a literal. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // The OTHER network -- the one this side peers with: a reference to a
+  // GcpVpcNetwork or its self link as a literal
+  // (`projects/{project}/global/networks/{name}` or the full
+  // `https://www.googleapis.com/compute/v1/...` form). May live in another
+  // project or another organization. Immutable.
+  //
+  // Set it and this resource CREATES the peering. Leave it EMPTY and this
+  // resource manages the route exchange of a peering that already exists
+  // on `network` under `peering_name` (the routes-config form above).
+  //
+  // The peer network is where the traffic goes, not where this resource
+  // lives, so it is an access edge on diagrams, not a containment edge.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef peer_network = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link",
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
+
+  // Export this network's CUSTOM routes (static routes and dynamic routes
+  // learned over Cloud VPN / Interconnect / Router Appliance) to the peer.
+  // Default false: only subnet routes cross a peering unless both sides opt
+  // in -- this side exports, the other side imports. The one flag that
+  // makes an on-premises network reachable from the peer (or, on a
+  // service-networking peering, makes Cloud SQL reachable from
+  // on-premises). Mutable. Always sent; in the routes-config form the
+  // provider requires it.
+  bool export_custom_routes = 4;
+
+  // Import the peer network's custom routes into this network. Default
+  // false. Takes effect only when the peer's side exports them. Mutable.
+  // Always sent; in the routes-config form the provider requires it.
+  bool import_custom_routes = 5;
+
+  // Export subnet routes whose ranges are PUBLIC IPs (privately used public
+  // IP ranges) to the peer. Default TRUE -- Google exports them unless told
+  // not to. Always sent on both forms (the default when unset, so the
+  // manifest states the exchange in full). Immutable in the CREATE form
+  // (changing it recreates the peering); changes in place in the
+  // routes-config form.
+  optional bool export_subnet_routes_with_public_ip = 6 [(dev.planton.shared.options.default) = "true"];
+
+  // Import the peer's public-IP subnet routes into this network. Default
+  // FALSE -- a network does not learn a peer's privately-used public ranges
+  // unless it asks to. Always sent on both forms (the default when unset).
+  // Immutable in the CREATE form; changes in place in the routes-config
+  // form.
+  optional bool import_subnet_routes_with_public_ip = 7 [(dev.planton.shared.options.default) = "false"];
+
+  // Which IP versions the peering carries:
+  //   ""          -- same as IPV4_ONLY (provider default)
+  //   "IPV4_ONLY" -- only IPv4 subnet ranges are exchanged
+  //   "IPV4_IPV6" -- IPv4 and IPv6 ranges; both networks must be dual-stack
+  //                  (an internal IPv6 range on each GcpVpcNetwork)
+  // CREATE form only. Mutable.
+  string stack_type = 8 [(buf.validate.field).cel = {
+    id: "valid_stack_type"
+    message: "stack_type must be IPV4_ONLY or IPV4_IPV6"
+    expression: "this == '' || this in ['IPV4_ONLY', 'IPV4_IPV6']"
+  }];
+
+  // How a change to this peering's settings is applied:
+  //   ""            -- same as INDEPENDENT (provider default)
+  //   "INDEPENDENT" -- this side's route-exchange flags take effect on
+  //                    their own, as soon as applied
+  //   "CONSENSUS"   -- a changed setting takes effect only once BOTH sides
+  //                    agree on it; until then the peering keeps the old
+  //                    behavior. Use it when the two sides are owned by
+  //                    different teams and a one-sided flip must never
+  //                    change what traffic flows.
+  // CREATE form only. Mutable.
+  string update_strategy = 9 [(buf.validate.field).cel = {
+    id: "valid_update_strategy"
+    message: "update_strategy must be INDEPENDENT or CONSENSUS"
+    expression: "this == '' || this in ['INDEPENDENT', 'CONSENSUS']"
+  }];
+
+  // What destroying this resource does to the peering in GCP (CREATE form
+  // only -- destroying the routes-config form never touches the peering):
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- this side's peering entry is removed; the pair goes
+  //                INACTIVE and traffic stops. The other side's entry stays
+  //                until it is removed too.
+  //   "PREVENT" -- destroy FAILS; the guard for the peering production
+  //                traffic depends on
+  //   "ABANDON" -- the resource leaves management but the peering entry
+  //                stays live
+  string deletion_policy = 10 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}

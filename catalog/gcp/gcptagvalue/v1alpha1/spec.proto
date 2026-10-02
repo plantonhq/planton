@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptagvalue.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpTagValueSpec creates one Resource Manager tag value: the VALUE half
+// of a tag -- `prod` under the `environment` key, `pci` under
+// `data-classification`. A value belongs to exactly one tag key
+// (GcpTagKey) and is what gets bound to resources (GcpTagBinding) and what
+// organization policies, IAM conditions, and firewall rules test for.
+//
+// Declare one GcpTagValue per allowed value of a key: `environment/prod`,
+// `environment/staging`, `environment/dev`. A key's vocabulary is the set
+// of values declared under it (unless the key has an allowed_values_regex,
+// in which case bindings may also carry undeclared matching values).
+//
+// A value's key and short name are IMMUTABLE; only the description changes
+// in place. A value cannot be deleted while any binding uses it -- a chart
+// that declares the bindings by reference destroys them first.
+message GcpTagValueSpec {
+  // The key this value belongs to: a reference to a GcpTagKey resource
+  // (its `name` output, `tagKeys/{id}`) or that name as a literal.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef tag_key = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpTagKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "tag_key_resource_name"
+      message: "tag_key must be the key's resource name in the form tagKeys/{numeric_id} (a GcpTagKey's name output) or a reference to a GcpTagKey"
+      expression: "!has(this.value) || this.value == '' || this.value.matches('^tagKeys/[0-9]+$')"
+    }
+  ];
+
+  // The value as written in tag conditions and shown in the console:
+  // `prod`, `pci`. Defaults to metadata.name when empty. Unique among the
+  // key's values; 1-256 characters of any UTF-8 except the four Google
+  // forbids -- `/`, `\`, `'`, `"`. Must match the key's
+  // allowed_values_regex when the key has one. Immutable: a rename is a
+  // delete and a create.
+  //
+  // A deleted value's short name stays reserved for the 30-day soft-delete
+  // window; a fresh value cannot reuse it under the same key until then.
+  string short_name = 2 [(buf.validate.field).cel = {
+    id: "valid_short_name"
+    message: "short_name must be 1-256 characters and must not contain a slash, backslash, or quote -- e.g. prod or pci"
+    expression: "this == '' || (this.size() <= 256 && !this.contains('/') && !this.contains('\\\\') && !this.contains('\\'') && !this.contains('\"'))"
+  }];
+
+  // What the value means, shown in the console. At most 256 characters.
+  // Mutable.
+  string description = 3 [(buf.validate.field).string.max_len = 256];
+
+  // What destroying this resource does to the value in GCP:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the value is deleted; fails while any binding still
+  //                uses it (destroy the bindings first -- a chart's
+  //                dependency order does this when they reference the value)
+  //   "PREVENT" -- destroy FAILS; the guard for a value every policy tests
+  //   "ABANDON" -- the value is removed from management but stays live in
+  //                GCP with its bindings
+  string deletion_policy = 4 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}

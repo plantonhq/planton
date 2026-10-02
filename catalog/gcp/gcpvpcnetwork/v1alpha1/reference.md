@@ -248,14 +248,22 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | GcpAddress | `spec.network` | `status.outputs.network_self_link` |
 | GcpAlloydbCluster | `spec.network` | `status.outputs.network_id` |
+| GcpBackendService | `spec.network` | `status.outputs.network_self_link` |
+| GcpCloudBuildWorkerPool | `spec.networkConfig.peeredNetwork` | `status.outputs.network_self_link` |
 | GcpCloudComposerEnvironment | `spec.nodeConfig.network` | `status.outputs.network_self_link` |
 | GcpCloudFunction | `spec.serviceConfig.directVpcNetworkInterface.network` | `status.outputs.network_name` |
 | GcpCloudRun | `spec.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | GcpCloudRunJob | `spec.template.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
+| GcpCloudRunWorkerPool | `spec.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | GcpCloudSql | `spec.network.privateNetwork` | `status.outputs.network_id` |
+| GcpColabRuntimeTemplate | `spec.networkSpec.network` | `status.outputs.network_id` |
+| GcpColabSchedule | `spec.notebookExecutionJob.customEnvironmentSpec.networkSpec.network` | `status.outputs.network_id` |
+| GcpColabSchedule | `spec.pipelineJob.network` | `status.outputs.network_self_link` |
+| GcpColabSchedule | `spec.pipelineJob.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | GcpComputeInstance | `spec.networkInterfaces[].network` | `status.outputs.network_self_link` |
 | GcpComputeMig | `spec.template.networkInterfaces[].network` | `status.outputs.network_self_link` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.network` | `status.outputs.network_self_link` |
+| GcpDatastreamPrivateConnection | `spec.vpcPeeringConfig.vpc` | `status.outputs.network_id` |
 | GcpDnsRecord | `spec.routingPolicy.wrr[].healthCheckedTargets.internalLoadBalancers[].networkUrl` | `status.outputs.network_self_link` |
 | GcpDnsRecord | `spec.routingPolicy.geo[].healthCheckedTargets.internalLoadBalancers[].networkUrl` | `status.outputs.network_self_link` |
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.primary.internalLoadBalancers[].networkUrl` | `status.outputs.network_self_link` |
@@ -270,8 +278,17 @@ Fields on other kinds that can point at this resource:
 | GcpGkeNodePool | `spec.networkConfig.additionalNodeNetworks[].network` | `status.outputs.network_self_link` |
 | GcpGlobalAddress | `spec.network` | `status.outputs.network_self_link` |
 | GcpGlobalForwardingRule | `spec.network` | `status.outputs.network_self_link` |
+| GcpHaVpnGateway | `spec.network` | `status.outputs.network_self_link` |
+| GcpHierarchicalFirewallPolicy | `spec.rules[].match.srcNetworks` | `status.outputs.network_self_link` |
+| GcpHierarchicalFirewallPolicy | `spec.rules[].targetResources` | `status.outputs.network_self_link` |
 | GcpMemorystoreInstance | `spec.pscAutoConnections[].network` | `status.outputs.network_id` |
+| GcpNetworkEndpointGroup | `spec.network` | `status.outputs.network_self_link` |
+| GcpNetworkFirewallPolicy | `spec.rules[].match.srcNetworks` | `status.outputs.network_self_link` |
+| GcpNetworkFirewallPolicy | `spec.associations[].network` | `status.outputs.network_self_link` |
 | GcpPlantonRunner | `spec.vpcAccess.network` | `status.outputs.network_name` |
+| GcpPscServiceAttachment | `spec.consumerAcceptLists[].network` | `status.outputs.network_self_link` |
+| GcpRedisCluster | `spec.pscConfigs[].network` | `status.outputs.network_id` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].network` | `status.outputs.network_id` |
 | GcpRedisInstance | `spec.authorizedNetwork` | `status.outputs.network_self_link` |
 | GcpRegionNetworkEndpointGroup | `spec.network` | `status.outputs.network_self_link` |
 | GcpRouterNat | `spec.vpcSelfLink` | `status.outputs.network_self_link` |
@@ -279,11 +296,20 @@ Fields on other kinds that can point at this resource:
 | GcpServiceConnectionPolicy | `spec.network` | `status.outputs.network_id` |
 | GcpServiceNetworkingConnection | `spec.network` | `status.outputs.network_self_link` |
 | GcpSubnetwork | `spec.vpcSelfLink` | `status.outputs.network_self_link` |
+| GcpTpuQueuedResource | `spec.nodeSpecs[].node.networkConfig.network` | `status.outputs.network_id` |
+| GcpTpuVm | `spec.networkConfig.network` | `status.outputs.network_id` |
+| GcpTpuVm | `spec.networkConfigs[].network` | `status.outputs.network_id` |
+| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | GcpVertexAiEndpoint | `spec.network` | `status.outputs.network_self_link` |
 | GcpVertexAiEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
 | GcpVertexAiIndexEndpoint | `spec.network` | `status.outputs.network_self_link` |
 | GcpVertexAiIndexEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
+| GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.pscAutomationConfig.network` | `status.outputs.network_id` |
 | GcpVertexAiNotebook | `spec.networkInterface.network` | `status.outputs.network_self_link` |
+| GcpVertexAiPersistentResource | `spec.network` | `status.outputs.network_self_link` |
+| GcpVertexAiPersistentResource | `spec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
+| GcpVpcPeering | `spec.network` | `status.outputs.network_self_link` |
+| GcpVpcPeering | `spec.peerNetwork` | `status.outputs.network_self_link` |
 
 ## See Also
 

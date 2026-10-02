@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1;
+
+// GcpDatastreamConnectionProfileStackOutputs captures the profile's
+// identity -- what streams reference as their source or destination.
+message GcpDatastreamConnectionProfileStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/connectionProfiles/{connection_profile_id}.
+  // The value a GcpDatastreamStream's source_connection_profile or
+  // destination_connection_profile takes.
+  string name = 1;
+
+  // The profile's ID.
+  string connection_profile_id = 2;
+}

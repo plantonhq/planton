@@ -1,0 +1,32 @@
+# The BigQuery table behind the bigtable-registry-view scenario's feature
+# group fixture: an extra GcpBigQueryTable instance on the BigQuery dataset
+# install profile (the table kind's registry prerequisite, deployed
+# first). The schema carries what Google requires of a feature group
+# source -- an entity ID column and a TIMESTAMP column named
+# feature_timestamp -- plus the two feature columns the view serves. The
+# table id carries the run id because the dataset is shared by every
+# scenario that installs it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryTable
+metadata:
+  name: planton-oss-e2e-gcpvfos-source
+  id: planton-oss-e2e-gcpvfos-source
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaifeatureonlinestore
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  datasetId:
+    valueFrom:
+      kind: GcpBigQueryDataset
+      name: planton-oss-e2e-gcpbqds-prereq
+      fieldPath: status.outputs.dataset_id
+  tableId: e2e_vfos_source_${E2E_RUN_ID_UNDERSCORE}
+  schema: '[{"name":"entity_id","type":"STRING","mode":"REQUIRED"},{"name":"feature_timestamp","type":"TIMESTAMP","mode":"REQUIRED"},{"name":"age","type":"INT64"},{"name":"lifetime_value","type":"FLOAT64"}]'
+  deletionProtection: false
+  deletionPolicy: DELETE

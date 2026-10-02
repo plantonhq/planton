@@ -1,0 +1,47 @@
+# GcpCloudBuildTrigger scenario: the canonical shape -- a global Pub/Sub
+# trigger with a one-step inline build, running as the service-account
+# fixture with logs in Cloud Logging only (what a user-specified build
+# account requires). Nothing publishes to the topic fixture, so no build
+# runs. Free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildTrigger
+metadata:
+  name: planton-oss-e2e-gcpcbtrg-pubsub
+  id: planton-oss-e2e-gcpcbtrg-pubsub
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudbuildtrigger
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcloudbuildtrigger/e2e/prerequisites/serviceaccount.yaml,catalog/gcp/gcpcloudbuildtrigger/e2e/prerequisites/topic.yaml"
+  tags:
+    - planton-e2e
+spec:
+  triggerName: planton-e2e-pubsub-${E2E_RUN_ID}
+  description: Planton E2E Pub/Sub trigger; safe to delete
+  tags:
+    - planton-e2e
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-oss-e2e-gcpcbtrg-sa
+      fieldPath: status.outputs.name
+  pubsubConfig:
+    topic:
+      valueFrom:
+        kind: GcpPubSubTopic
+        name: planton-oss-e2e-gcpcbtrg-topic
+        fieldPath: status.outputs.topic_id
+  substitutions:
+    _GREETING: hello
+  build:
+    steps:
+      - name: ubuntu
+        args:
+          - echo
+          - $_GREETING
+    timeout: 300s
+    options:
+      logging: CLOUD_LOGGING_ONLY

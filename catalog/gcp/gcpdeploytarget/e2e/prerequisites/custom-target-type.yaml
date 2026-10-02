@@ -1,0 +1,24 @@
+# Custom target type for the custom-target scenario: one deploy task in a
+# public sample container. The image never runs (no release is created).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployCustomTargetType
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-ctt
+  id: planton-oss-e2e-gcpcdtgt-ctt
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeploycustomtargettype
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  customTargetTypeId: e2e-ctt-${E2E_RUN_ID}
+  description: Ephemeral custom target type for a deploy-target E2E scenario; safe to delete
+  tasks:
+    deploy:
+      container:
+        image: us-docker.pkg.dev/cloudrun/container/hello

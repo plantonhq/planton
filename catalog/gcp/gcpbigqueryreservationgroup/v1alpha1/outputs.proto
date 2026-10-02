@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1;
+
+// GcpBigQueryReservationGroupStackOutputs captures the group's identity.
+message GcpBigQueryReservationGroupStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/reservationGroups/{name}. What
+  // a reservation's reservation_group field references.
+  string name = 1;
+
+  // The group's name (the last segment of name).
+  string reservation_group_name = 2;
+
+  // The group's location.
+  string location = 3;
+}

@@ -10,6 +10,5 @@ spec:
     value: "<app-url-map-self-link>" # replace: the URL map routing to real backends
   sslCertificates:
     - value: "<managed-cert-self-link>" # replace: the server-side certificate
-  serverTlsPolicy:
-    value: "projects/<gcp-project-id>/locations/global/serverTlsPolicies/<policy-name>" # replace: an mTLS ServerTlsPolicy
+  serverTlsPolicy: "projects/<gcp-project-id>/locations/global/serverTlsPolicies/<policy-name>" # replace: an mTLS ServerTlsPolicy
   tlsEarlyData: DISABLED

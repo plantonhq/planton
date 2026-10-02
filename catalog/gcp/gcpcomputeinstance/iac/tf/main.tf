@@ -252,6 +252,21 @@ resource "google_compute_instance" "this" {
           seconds = local_ssd_recovery_timeout.value
         }
       }
+
+      # Host-error detection timeout (90..330 s, steps of 30). Sent only
+      # when set so an unset spec keeps Compute Engine's default recovery.
+      host_error_timeout_seconds = var.spec.scheduling != null ? var.spec.scheduling.host_error_timeout_seconds : null
+    }
+  }
+
+  # Managed workload identity: a SPIFFE ID issued to the VM, optionally
+  # with X.509 identity certificates for mutual TLS. Immutable (replaces
+  # the VM on change).
+  dynamic "workload_identity_config" {
+    for_each = var.spec.workload_identity_config != null ? [var.spec.workload_identity_config] : []
+    content {
+      identity                     = workload_identity_config.value.identity
+      identity_certificate_enabled = workload_identity_config.value.identity_certificate_enabled
     }
   }
 

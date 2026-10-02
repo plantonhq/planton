@@ -1,0 +1,27 @@
+# GcpTpuQueuedResource scenario: a request for one v2-8 node in
+# us-central1-f. The request exists the moment Google accepts it; the node
+# follows when capacity allows, and the verifier accepts a request still
+# WAITING_FOR_RESOURCES. Destroy deletes the request and any node it
+# provisioned. The node id carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTpuQueuedResource
+metadata:
+  name: planton-oss-e2e-gcptpuq-v2
+  id: planton-oss-e2e-gcptpuq-v2
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptpuqueuedresource
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  zone: us-central1-f
+  nodeSpecs:
+    - nodeId: pln-e2e-tpuq-${E2E_RUN_ID}
+      node:
+        runtimeVersion: tpu-ubuntu2204-base
+        acceleratorType: v2-8
+  deletionPolicy: DELETE

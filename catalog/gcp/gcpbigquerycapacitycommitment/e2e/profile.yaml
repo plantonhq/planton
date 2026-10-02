@@ -1,0 +1,19 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpbigquerycapacitycommitment
+spec:
+  # A capacity commitment is a purchase: creating one starts a billed one-
+  # or three-year term (Google's editions offer annual and three-year
+  # plans), and Google refuses to delete it before the term ends, so a
+  # create-verify-destroy lane cannot run it without committing that spend.
+  # Offline bar met: both modules build and validate, offline plans for the
+  # reference manifest, every scenario, and every fixture are clean on the
+  # pinned provider, and the accounting is total. The minimal scenario plans
+  # an ABANDON commitment so its destroy would leave the term to run out.
+  # Live proof, if ever wanted, needs the owner to approve the purchase.
+  tier: 2
+  status: deferred
+  deferred_reason: a capacity commitment is a multi-year slot purchase Google will not delete before its term ends; offline plans only unless the owner approves the spend
+  validated_provisioners: []
+  timeout_minutes: 15

@@ -19,24 +19,37 @@ import "shared/options/options.proto";
 //
 // THE post-create step every sink needs: GCP mints a `writer_identity`
 // service account for the sink, and that identity must be GRANTED write
-// access on the destination (e.g. roles/storage.objectCreator on the
-// bucket) or the sink silently exports nothing. The writer_identity stack
-// output exists exactly for that wiring — grant it through the destination
-// kind's iam_members in the same chart.
+// access on the destination or the sink silently exports nothing. The
+// writer_identity stack output (already in IAM member form,
+// serviceAccount:{email}) exists exactly for that wiring. Grant it with a
+// standalone grant that depends on both the sink and the destination,
+// its member referencing this sink's writer_identity output:
+//   GCS bucket       -- a GcpGcsBucketIamMember, role
+//                       roles/storage.objectCreator
+//   Pub/Sub topic    -- a GcpPubSubTopicIamMember, role
+//                       roles/pubsub.publisher
+//   BigQuery dataset -- roles/bigquery.dataEditor, granted outside the
+//                       catalog or as a literal entry in the
+//                       GcpBigQueryDataset's access list once the identity
+//                       is known (the dataset's access list is
+//                       authoritative, so there is no separate grant kind)
+// Never grant it through the destination kind's own IAM fields: the sink
+// references its destination, so a destination that references the
+// sink's identity back is a dependency cycle.
 message GcpLoggingSinkSpec {
   // include_children/intercept_children are folder/org capabilities — the
   // project and billing-account sink resources do not carry the arguments.
   option (buf.validate.message).cel = {
     id: "children_flags_need_folder_or_org_scope"
     message: "include_children and intercept_children apply only to folder or organization scoped sinks"
-    expression: "(!this.include_children && !this.intercept_children) || (has(this.scope) && (this.scope.folder_id != '' || this.scope.organization_id != ''))"
+    expression: "(!this.include_children && !this.intercept_children) || (has(this.scope) && ((has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from))) || this.scope.organization_id != ''))"
   };
   // Only the project sink resource models writer-identity control; folder,
   // organization, and billing-account sinks ALWAYS get a unique writer.
   option (buf.validate.message).cel = {
     id: "writer_identity_controls_are_project_scope_only"
     message: "unique_writer_identity=false and custom_writer_identity apply only to project-scoped sinks — other scopes always create a unique writer identity"
-    expression: "((!has(this.unique_writer_identity) || this.unique_writer_identity) && this.custom_writer_identity == '') || !has(this.scope) || (this.scope.folder_id == '' && this.scope.organization_id == '' && this.scope.billing_account == '')"
+    expression: "((!has(this.unique_writer_identity) || this.unique_writer_identity) && this.custom_writer_identity == '') || !has(this.scope) || (!(has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from))) && this.scope.organization_id == '' && this.scope.billing_account == '')"
   };
   // The provider enforces this on the project sink: BigQuery destinations
   // demand a unique writer.
@@ -127,7 +140,7 @@ message GcpLoggingSinkScope {
   option (buf.validate.message).cel = {
     id: "at_most_one_scope"
     message: "set at most one of project_id, folder_id, organization_id, or billing_account (empty means the provider's default project)"
-    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), this.folder_id != '', this.organization_id != '', this.billing_account != ''].filter(x, x).size() <= 1"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != '', this.billing_account != ''].filter(x, x).size() <= 1"
   };
 
   // Project sink: the owning project — a literal project ID or a reference
@@ -137,9 +150,14 @@ message GcpLoggingSinkScope {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
   ];
 
-  // Folder sink: the folder ID (numeric, with or without the "folders/"
-  // prefix).
-  string folder_id = 2;
+  // Folder sink: the folder's numeric ID (with or without the "folders/"
+  // prefix) -- a literal, or a reference to a GcpFolder resource (its
+  // folder_id output). The sink lives in the folder and, with
+  // include_children, sees every project and folder beneath it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
 
   // Organization sink: the numeric organization ID.
   string organization_id = 3;
@@ -168,7 +186,9 @@ message GcpLoggingSinkDestination {
   // Export to a Cloud Storage bucket (hourly batches of JSON files). The
   // bucket NAME — a literal or a reference to a GcpGcsBucket resource.
   // Rendered as storage.googleapis.com/{bucket}. Grant the sink's
-  // writer_identity roles/storage.objectCreator on the bucket.
+  // writer_identity roles/storage.objectCreator on the bucket with a
+  // GcpGcsBucketIamMember whose member references the writer_identity
+  // output.
   dev.planton.shared.foreignkey.v1.StringValueOrRef gcs_bucket = 1 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
@@ -179,7 +199,10 @@ message GcpLoggingSinkDestination {
   // {p}/datasets/{d} — the GcpBigQueryDataset self_link output) or a bare
   // projects/{p}/datasets/{d} path; the module normalizes either into the
   // bigquery.googleapis.com/... destination URI. Grant the writer_identity
-  // roles/bigquery.dataEditor on the dataset. The reference is
+  // roles/bigquery.dataEditor on the dataset -- outside the catalog, or as
+  // a literal entry in the GcpBigQueryDataset's access list once the
+  // identity is known (a reference there would make the dataset depend on
+  // the sink that depends on it). The reference is
   // containment-exempt: the sink EXPORTS INTO the dataset, it does not live
   // inside it (the sink's home is its scope).
   dev.planton.shared.foreignkey.v1.StringValueOrRef bigquery_dataset = 2 [
@@ -198,7 +221,9 @@ message GcpLoggingSinkDestination {
   // log pipelines). The full topic path projects/{p}/topics/{t} — a literal
   // or a reference to a GcpPubSubTopic resource (its topic_id output).
   // Rendered as pubsub.googleapis.com/projects/{p}/topics/{t}. Grant the
-  // writer_identity roles/pubsub.publisher on the topic.
+  // writer_identity roles/pubsub.publisher on the topic with a
+  // GcpPubSubTopicIamMember whose member references the writer_identity
+  // output.
   dev.planton.shared.foreignkey.v1.StringValueOrRef pubsub_topic = 4 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpPubSubTopic,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.topic_id"

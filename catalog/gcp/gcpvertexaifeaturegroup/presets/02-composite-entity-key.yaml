@@ -1,0 +1,27 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureGroup
+metadata:
+  name: merchant-product-features
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  featureGroupId: merchant_product_features
+  description: Per merchant and product features for ranking
+  labels:
+    team: ranking
+  bigQuery:
+    inputUri:
+      value: my-gcp-project.features.merchant_product_daily
+    # Two columns together identify an entity.
+    entityIdColumns:
+      - merchant_id
+      - product_id
+  features:
+    - featureId: click_rate
+      description: Click-through rate over the last 7 days
+    - featureId: revenue
+      description: Revenue over the last 7 days, in USD
+      # The column carries its unit; the feature does not.
+      versionColumnName: revenue_usd
+  deletionPolicy: PREVENT

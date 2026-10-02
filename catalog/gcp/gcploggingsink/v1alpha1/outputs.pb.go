@@ -27,11 +27,16 @@ type GcpLoggingSinkStackOutputs struct {
 	// The sink name as it exists in GCP.
 	SinkName string `protobuf:"bytes,1,opt,name=sink_name,json=sinkName,proto3" json:"sink_name,omitempty"`
 	// The service-account identity GCP minted (or adopted) for this sink —
-	// format "serviceAccount:{email}". THE chart output: grant this identity
-	// write access on the destination (roles/storage.objectCreator on a
-	// bucket, roles/bigquery.dataEditor on a dataset,
-	// roles/pubsub.publisher on a topic) via the destination kind's
-	// iam_members, or the sink silently exports nothing.
+	// format "serviceAccount:{email}", exactly the value an IAM member field
+	// takes. THE chart output: grant this identity write access on the
+	// destination, or the sink silently exports nothing -- through a
+	// standalone grant whose member references this output: a
+	// GcpGcsBucketIamMember with roles/storage.objectCreator on a bucket, a
+	// GcpPubSubTopicIamMember with roles/pubsub.publisher on a topic. A
+	// BigQuery dataset takes roles/bigquery.dataEditor outside the catalog
+	// or as a literal entry in its access list once the identity is known.
+	// Never through the destination kind's own IAM fields: the sink already
+	// depends on the destination, so that grant would be a cycle.
 	WriterIdentity string `protobuf:"bytes,2,opt,name=writer_identity,json=writerIdentity,proto3" json:"writer_identity,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache

@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: disable-sa-keys-with-sandbox-exemption
+spec:
+  scope:
+    organizationId: "123456789012"
+  constraint: iam.disableServiceAccountKeyCreation
+  policy:
+    rules:
+      - enforce: true
+      - enforce: false
+        condition:
+          title: sandbox exemption
+          description: Sandbox projects may still create service account keys
+          expression: resource.matchTag('123456789012/environment', 'sandbox')
+  dryRunPolicy:
+    rules:
+      - enforce: true

@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntime
+metadata:
+  name: alice-notebooks
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  runtimeTemplate:
+    valueFrom:
+      kind: GcpColabRuntimeTemplate
+      name: standard-cpu
+      fieldPath: status.outputs.name
+  runtimeUser: alice@example.com
+  displayName: Alice's notebooks

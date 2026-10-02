@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudBuildConnection
+metadata:
+  name: acme-github
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  connectionId: acme-github
+  annotations:
+    owner: platform
+  githubConfig:
+    appInstallationId: 12345678
+    authorizerCredential:
+      oauthTokenSecretVersion:
+        value: projects/my-gcp-project/secrets/github-oauth-token/versions/latest

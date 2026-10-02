@@ -1,0 +1,39 @@
+# GcpVertexAiSearchEngine scenario: a CHAT engine that has Google create its
+# Dialogflow CX agent, over a data store enrolled in SOLUTION_TYPE_CHAT --
+# Google's own provider test shape. The chat store is an extra-instance
+# fixture declared by path (the registry prerequisite installs a SEARCH
+# store, which a chat engine cannot use). The module enables the Dialogflow
+# API on this arm; creating the agent is free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: planton-oss-e2e-gcpvseng-chat
+  id: planton-oss-e2e-gcpvseng-chat
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchengine
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaisearchengine/e2e/prerequisites/gcpvsds-chat.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  engineType: CHAT
+  engineId: planton-oss-e2e-vseng-chat-${E2E_RUN_ID}
+  displayName: Planton OSS E2E chat engine
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Planton
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: planton-oss-e2e-gcpvseng-chat-store
+        fieldPath: status.outputs.data_store_id
+  chatEngineConfig:
+    agentCreationConfig:
+      business: Planton
+      defaultLanguageCode: en
+      timeZone: America/Los_Angeles

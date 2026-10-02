@@ -1,0 +1,81 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpsccbigqueryexport
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Security Command Center stores the export configuration encrypted at rest with Google-managed keys; the exported rows are encrypted at rest by BigQuery.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: Security Command Center offers customer-managed keys only at organization activation (data encryption), not per configuration; the destination dataset can carry its own default key (GcpBigQueryDataset.kms_key_name).
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Security Command Center call, and every delivery it makes to Google services, is TLS over Google's network.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The configuration has no address of its own; it is read and changed only through the Security Command Center API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The configuration serves no traffic.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Changing the export needs securitycenter.BigQueryExports.* at the scope (roles/securitycenter.bigQueryExportsEditor); writing needs the export's own principal to hold roles/bigquery.dataEditor on the dataset, and reading the findings is governed by the dataset's own IAM.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The configuration authenticates nothing itself; Security Command Center acts through its own Google-managed service account.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every configuration change is a Security Command Center admin write recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The export is itself a monitoring integration -- it keeps the findings history queryable in BigQuery for dashboards and reports.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A configuration is declarative; the manifest is its recovery path.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Security Command Center configurations are Google-managed global (or residency-location) settings; there is no placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE (the export is deleted; the dataset and its rows stay); PREVENT makes destroy fail; ABANDON leaves it exporting in Google.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Security Command Center is fully Google-operated.

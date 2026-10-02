@@ -131,44 +131,33 @@ func TestFixtureIntegrity_KindNotInChain(t *testing.T) {
 
 // A bare polymorphic reference (a field with no default_kind) that omits the
 // explicit `kind:` can never resolve -- the documented trap no other offline
-// gate catches (e2e/README.md, "Bare polymorphic references").
+// gate catches (e2e/README.md, "Bare polymorphic references"). A DNS record's
+// values are the catalog's plainest such field: an entry can be any
+// resource's output, so the field names no kind.
 func TestFixtureIntegrity_BareRefWithoutKind(t *testing.T) {
 	repoRoot := t.TempDir()
-	writeKindManifest(t, repoRoot, "catalog/gcp/gcphealthcheck/e2e/prerequisite.yaml",
+	writeKindManifest(t, repoRoot, "catalog/gcp/gcpvpcnetwork/e2e/prerequisite.yaml", fakeVpcPrereq)
+	writeKindManifest(t, repoRoot, "catalog/gcp/gcpdnszone/e2e/prerequisite.yaml",
 		`apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpHealthCheck
+kind: GcpDnsZone
 metadata:
-  name: fake-hc-prereq
+  name: fake-zone-prereq
 spec: {}
 `)
-	writeKindManifest(t, repoRoot, "catalog/gcp/gcpregionnetworkendpointgroup/e2e/prerequisite.yaml",
+	scenario := writeKindManifest(t, repoRoot, "catalog/gcp/gcpdnsrecord/e2e/scenarios/minimal.yaml",
 		`apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpRegionNetworkEndpointGroup
+kind: GcpDnsRecord
 metadata:
-  name: fake-neg-prereq
-spec: {}
-`)
-	writeKindManifest(t, repoRoot, "catalog/gcp/gcpbackendservice/e2e/prerequisite.yaml",
-		`apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpBackendService
-metadata:
-  name: fake-bs-prereq
-spec: {}
-`)
-	scenario := writeKindManifest(t, repoRoot, "catalog/gcp/gcpurlmap/e2e/scenarios/minimal.yaml",
-		`apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpUrlMap
-metadata:
-  name: fake-urlmap-scenario
+  name: fake-record-scenario
 spec:
-  urlMapName: fake-urlmap
-  defaultService:
-    valueFrom:
-      name: fake-bs-prereq
-      fieldPath: status.outputs.self_link
+  type: TXT
+  values:
+    - valueFrom:
+        name: fake-dns-authorization
+        fieldPath: status.outputs.dns_record_data
 `)
 
-	findings, err := CheckScenarioFixtureIntegrity(repoRoot, "gcp", "gcpurlmap", scenario)
+	findings, err := CheckScenarioFixtureIntegrity(repoRoot, "gcp", "gcpdnsrecord", scenario)
 	if err != nil {
 		t.Fatalf("CheckScenarioFixtureIntegrity: %v", err)
 	}

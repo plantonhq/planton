@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecacertificate.v1alpha1;
+
+// GcpPrivateCaCertificateStackOutputs captures the issued certificate -- what the workload
+// installs beside its private key.
+message GcpPrivateCaCertificateStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/caPools/{pool}/certificates/{certificate_id}.
+  string name = 1;
+
+  // The certificate's ID (the last segment of name).
+  string certificate_id = 2;
+
+  // The signed certificate, PEM.
+  string pem_certificate = 3;
+
+  // The chain that verifies it, PEM, issuer first and root last.
+  repeated string pem_certificate_chain = 4;
+
+  // The full name of the authority that signed it.
+  string issuer_certificate_authority = 5;
+}

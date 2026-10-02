@@ -460,17 +460,17 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	// the control plane's disks and ServiceAccount JWT signing.
 	if keys := spec.UserManagedKeys; keys != nil {
 		keysArgs := &container.ClusterUserManagedKeysConfigArgs{}
-		if keys.ClusterCa != "" {
-			keysArgs.ClusterCa = pulumi.StringPtr(keys.ClusterCa)
+		if keys.ClusterCa.GetValue() != "" {
+			keysArgs.ClusterCa = pulumi.StringPtr(keys.ClusterCa.GetValue())
 		}
-		if keys.EtcdApiCa != "" {
-			keysArgs.EtcdApiCa = pulumi.StringPtr(keys.EtcdApiCa)
+		if keys.EtcdApiCa.GetValue() != "" {
+			keysArgs.EtcdApiCa = pulumi.StringPtr(keys.EtcdApiCa.GetValue())
 		}
-		if keys.EtcdPeerCa != "" {
-			keysArgs.EtcdPeerCa = pulumi.StringPtr(keys.EtcdPeerCa)
+		if keys.EtcdPeerCa.GetValue() != "" {
+			keysArgs.EtcdPeerCa = pulumi.StringPtr(keys.EtcdPeerCa.GetValue())
 		}
-		if keys.AggregationCa != "" {
-			keysArgs.AggregationCa = pulumi.StringPtr(keys.AggregationCa)
+		if keys.AggregationCa.GetValue() != "" {
+			keysArgs.AggregationCa = pulumi.StringPtr(keys.AggregationCa.GetValue())
 		}
 		if keys.ControlPlaneDiskEncryptionKey.GetValue() != "" {
 			keysArgs.ControlPlaneDiskEncryptionKey = pulumi.StringPtr(keys.ControlPlaneDiskEncryptionKey.GetValue())
@@ -504,6 +504,26 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 				EndTime:    pulumi.String(spec.MaintenancePolicy.RecurringWindow.EndTime),
 				Recurrence: pulumi.String(spec.MaintenancePolicy.RecurringWindow.Recurrence),
 			}
+		}
+		// The time-of-day + duration form of the recurring window.
+		if rtw := spec.MaintenancePolicy.RecurringTimeWindow; rtw != nil {
+			rtwArgs := &container.ClusterMaintenancePolicyRecurringMaintenanceWindowArgs{
+				WindowDuration: pulumi.String(rtw.WindowDuration),
+				Recurrence:     pulumi.String(rtw.Recurrence),
+				WindowStartTime: &container.ClusterMaintenancePolicyRecurringMaintenanceWindowWindowStartTimeArgs{
+					Hours:   pulumi.Int(int(rtw.GetWindowStartTime().GetHours())),
+					Minutes: pulumi.Int(int(rtw.GetWindowStartTime().GetMinutes())),
+					Seconds: pulumi.Int(int(rtw.GetWindowStartTime().GetSeconds())),
+				},
+			}
+			if rtw.DelayUntil != nil {
+				rtwArgs.DelayUntil = &container.ClusterMaintenancePolicyRecurringMaintenanceWindowDelayUntilArgs{
+					Year:  pulumi.Int(int(rtw.DelayUntil.Year)),
+					Month: pulumi.Int(int(rtw.DelayUntil.Month)),
+					Day:   pulumi.Int(int(rtw.DelayUntil.Day)),
+				}
+			}
+			maintenanceArgs.RecurringMaintenanceWindow = rtwArgs
 		}
 		if len(spec.MaintenancePolicy.Exclusions) > 0 {
 			exclusions := container.ClusterMaintenancePolicyMaintenanceExclusionArray{}
@@ -954,14 +974,37 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 					Enabled: pulumi.Bool(true),
 				}
 			}
+			if spec.Addons.HighScaleCheckpointingEnabled {
+				addonsArgs.HighScaleCheckpointingConfig = &container.ClusterAddonsConfigHighScaleCheckpointingConfigArgs{
+					Enabled: pulumi.Bool(true),
+				}
+			}
+			if spec.Addons.NodeReadinessControllerEnabled {
+				addonsArgs.NodeReadinessConfig = &container.ClusterAddonsConfigNodeReadinessConfigArgs{
+					Enabled: pulumi.Bool(true),
+				}
+			}
 		}
 		args.AddonsConfig = addonsArgs
 	}
 
-	if spec.FleetProject != "" || spec.FleetMembershipType != "" {
+	// Two-step (rollback-safe) control-plane upgrades: the soak period
+	// keeps the upgrade rollbackable; desired_emulated_version completes it.
+	if rsu := spec.RollbackSafeUpgrade; rsu != nil {
+		rsuArgs := &container.ClusterRollbackSafeUpgradeArgs{}
+		if rsu.ControlPlaneSoakDuration != "" {
+			rsuArgs.ControlPlaneSoakDuration = pulumi.StringPtr(rsu.ControlPlaneSoakDuration)
+		}
+		args.RollbackSafeUpgrade = rsuArgs
+	}
+	if spec.DesiredEmulatedVersion != "" {
+		args.DesiredEmulatedVersion = pulumi.StringPtr(spec.DesiredEmulatedVersion)
+	}
+
+	if spec.FleetProject.GetValue() != "" || spec.FleetMembershipType != "" {
 		fleetArgs := &container.ClusterFleetArgs{}
-		if spec.FleetProject != "" {
-			fleetArgs.Project = pulumi.StringPtr(spec.FleetProject)
+		if spec.FleetProject.GetValue() != "" {
+			fleetArgs.Project = pulumi.StringPtr(spec.FleetProject.GetValue())
 		}
 		if spec.FleetMembershipType != "" {
 			fleetArgs.MembershipType = pulumi.StringPtr(spec.FleetMembershipType)
@@ -991,6 +1034,15 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	ctx.Export(OpLocation, pulumi.String(spec.Location))
 	ctx.Export(OpSelfLink, createdCluster.SelfLink)
 	ctx.Export(OpMasterVersion, createdCluster.MasterVersion)
+	// Google creates the membership when the cluster joins a fleet through
+	// fleet_project; empty when it joins none -- the Terraform module's
+	// try() twin.
+	ctx.Export(OpFleetMembership, createdCluster.Fleet.Membership().ApplyT(func(membership *string) string {
+		if membership == nil {
+			return ""
+		}
+		return *membership
+	}).(pulumi.StringOutput))
 
 	return nil
 }

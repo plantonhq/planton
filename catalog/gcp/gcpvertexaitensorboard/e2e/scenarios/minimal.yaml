@@ -1,0 +1,21 @@
+# GcpVertexAiTensorboard scenario: the TensorBoard alone. project_id is
+# deliberately omitted: the TensorBoard rides the provider's default
+# project, which the harness exports as GOOGLE_PROJECT. Google assigns the
+# numeric id; the display name defaults to metadata.name. An empty
+# TensorBoard stores nothing and bills nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiTensorboard
+metadata:
+  name: planton-oss-e2e-gcpvtb-minimal
+  id: planton-oss-e2e-gcpvtb-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaitensorboard
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1

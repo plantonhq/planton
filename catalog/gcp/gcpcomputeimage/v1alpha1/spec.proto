@@ -1,0 +1,269 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcomputeimage.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpComputeImageSpec defines a Compute Engine custom image
+// (`google_compute_image`): the golden boot image VMs, instance templates,
+// managed instance groups, and disks start from -- an OS hardened and
+// pre-loaded with an organization's agents, built once and reused.
+//
+// An image is built from exactly one source: a GcpComputeDisk (the
+// classic golden-image path: configure a VM's boot disk, stop the VM,
+// image the disk), another image (copying or re-keying one), a snapshot,
+// or a raw disk tarball in Cloud Storage (an imported or Packer-built
+// image).
+//
+// Important behavioral notes:
+//
+//   - Everything except labels is a create-time decision: changing a
+//     source, the name, the family, a key, or a guest OS feature replaces
+//     the image. Images are therefore versioned, not edited: give each
+//     build its own image_name (e.g. "web-base-20261001") and the same
+//     family ("web-base"), and consumers that boot from
+//     "projects/{project}/global/images/family/web-base" always get the
+//     newest image of the family without changing.
+//   - Destroy deletes the image; VMs and disks already created from it are
+//     unaffected, but new ones can no longer use it.
+//   - Customer-supplied raw keys (CSEK) are deliberately not modeled: raw
+//     key material does not belong in declarative manifests or state --
+//     use Cloud KMS keys, where the key stays in Cloud KMS.
+message GcpComputeImageSpec {
+  option (buf.validate.message).cel = {
+    id: "image_exactly_one_source"
+    expression: "((has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from))) ? 1 : 0) + ((has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from))) ? 1 : 0) + (this.source_snapshot != '' ? 1 : 0) + (has(this.raw_disk) ? 1 : 0) == 1"
+    message: "an image is built from exactly one source: source_disk, source_image, source_snapshot, or raw_disk"
+  };
+  option (buf.validate.message).cel = {
+    id: "source_disk_encryption_requires_source_disk"
+    expression: "!has(this.source_disk_encryption) || (has(this.source_disk) && (has(this.source_disk.value) || has(this.source_disk.value_from)))"
+    message: "source_disk_encryption is only valid together with source_disk"
+  };
+  option (buf.validate.message).cel = {
+    id: "source_image_encryption_requires_source_image"
+    expression: "!has(this.source_image_encryption) || (has(this.source_image) && (has(this.source_image.value) || has(this.source_image.value_from)))"
+    message: "source_image_encryption is only valid together with source_image"
+  };
+  option (buf.validate.message).cel = {
+    id: "source_snapshot_encryption_requires_source_snapshot"
+    expression: "!has(this.source_snapshot_encryption) || this.source_snapshot != ''"
+    message: "source_snapshot_encryption is only valid together with source_snapshot"
+  };
+  option (buf.validate.message).cel = {
+    id: "kms_key_service_account_requires_kms_key"
+    expression: "this.kms_key_service_account == '' || (has(this.kms_key) && (has(this.kms_key.value) || has(this.kms_key.value_from)))"
+    message: "kms_key_service_account is only meaningful together with kms_key"
+  };
+
+  // The GCP project that owns the image: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the image, unique in the project: 1-63 lowercase letters,
+  // digits, and hyphens, starting with a letter and not ending with a
+  // hyphen. Version it ("web-base-20261001") and let family carry the
+  // stable name. Defaults to metadata.name. Immutable.
+  string image_name = 2 [(buf.validate.field).cel = {
+    id: "image_name_format"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
+    message: "image_name must be 1-63 characters of lowercase letters, numbers, and hyphens, starting with a letter and not ending with a hyphen"
+  }];
+
+  // A human-readable description of the image. Immutable.
+  string description = 3;
+
+  // The image family: the stable name consumers boot from
+  // ("projects/{project}/global/images/family/{family}" resolves to the
+  // newest non-deprecated image in it). Same naming rules as image_name.
+  // Immutable.
+  string family = 4 [(buf.validate.field).cel = {
+    id: "family_format"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
+    message: "family must be 1-63 characters of lowercase letters, numbers, and hyphens, starting with a letter and not ending with a hyphen"
+  }];
+
+  // Source: a disk to image, referenced as a GcpComputeDisk (its
+  // self_link) or a literal disk self link. Stop or detach the VM using
+  // the disk first so the image is consistent. Exactly one source.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef source_disk = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeDisk,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
+
+  // Source: an image to copy, referenced as another GcpComputeImage (its
+  // self_link) or a literal image self link (e.g.
+  // "projects/debian-cloud/global/images/family/debian-12" for a public
+  // image). Exactly one source. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef source_image = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeImage,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
+
+  // Source: a snapshot to image (name or self link). Exactly one source.
+  // Immutable.
+  string source_snapshot = 7;
+
+  // Source: a raw disk tarball in Cloud Storage. Exactly one source.
+  // Immutable.
+  GcpComputeImageRawDisk raw_disk = 8;
+
+  // Customer-managed encryption key (CMEK) for the image, referenced as a
+  // GcpKmsKey or a GcpKmsKeyHandle (Autokey serves images). The Compute
+  // Engine service agent
+  // (service-<project-number>@compute-system.iam.gserviceaccount.com)
+  // must hold roles/cloudkms.cryptoKeyEncrypterDecrypter on the key. When
+  // omitted, Google-managed encryption is used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKey
+      field_path: "status.outputs.key_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpKmsKeyHandle
+      field_path: "status.outputs.kms_key"
+    }
+  ];
+
+  // Service account used for the encryption request of kms_key. When
+  // omitted, the Compute Engine service agent is used. Only meaningful
+  // together with kms_key. Immutable.
+  string kms_key_service_account = 10;
+
+  // Decrypts the source disk when it is itself CMEK-encrypted. Only valid
+  // together with source_disk.
+  GcpComputeImageSourceEncryption source_disk_encryption = 11;
+
+  // Decrypts the source image when it is itself CMEK-encrypted. Only valid
+  // together with source_image.
+  GcpComputeImageSourceEncryption source_image_encryption = 12;
+
+  // Decrypts the source snapshot when it is itself CMEK-encrypted. Only
+  // valid together with source_snapshot.
+  GcpComputeImageSourceEncryption source_snapshot_encryption = 13;
+
+  // The image's size in GB, at least the source's size. Unset takes the
+  // source's size. Immutable.
+  optional int64 disk_size_gb = 14 [(buf.validate.field).int64.gt = 0];
+
+  // Guest OS features VMs booted from this image may use, e.g.
+  // ["UEFI_COMPATIBLE", "SECURE_BOOT", "GVNIC", "VIRTIO_SCSI_MULTIQUEUE",
+  // "SEV_CAPABLE", "SEV_SNP_CAPABLE", "TDX_CAPABLE", "IDPF",
+  // "MULTI_IP_SUBNET", "SUSPEND_RESUME_COMPATIBLE", "WINDOWS"]. The
+  // accepted set evolves with GCP -- see "Enabling guest operating system
+  // features" in the Compute Engine docs. Unset inherits the source's
+  // features. Immutable.
+  repeated string guest_os_features = 15;
+
+  // License URIs the image carries, e.g. a Windows Server or SQL Server
+  // license. Unset inherits the source's licenses; set explicitly when
+  // importing a raw disk that needs bring-your-own-license attribution.
+  // Immutable.
+  repeated string licenses = 16;
+
+  // Where the image's data is stored: one multi-region ("us", "eu",
+  // "asia") or one region. Unset takes the multi-region nearest the
+  // source. Immutable.
+  repeated string storage_locations = 17;
+
+  // The UEFI Secure Boot keys VMs booted from this image start with. Unset
+  // takes Google's default certificates. Immutable.
+  GcpComputeImageShieldedInstanceInitialState shielded_instance_initial_state = 18;
+
+  // Resource Manager tags bound to the image for org-policy and IAM
+  // conditions. Keys in the form "tagKeys/{id}", values "tagValues/{id}".
+  // Immutable.
+  map<string, string> resource_manager_tags = 19;
+
+  // User labels merged with Planton attribution labels (which win on key
+  // conflicts). The one setting that updates in place.
+  map<string, string> labels = 20;
+
+  // Deletion policy -- what happens when this resource is destroyed:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the image is deleted
+  //   "PREVENT" -- destroy FAILS; a guard for an image fleets boot from
+  //   "ABANDON" -- the image is removed from management but kept in GCP
+  string deletion_policy = 21 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// A raw disk tarball in Cloud Storage.
+message GcpComputeImageRawDisk {
+  // The tarball's full Cloud Storage URL, e.g.
+  // "https://storage.googleapis.com/my-bucket/images/web-base.tar.gz".
+  // The archive holds one file named disk.raw. Required.
+  string source = 1 [(buf.validate.field).required = true];
+
+  // The archive's SHA-1 checksum, base64-encoded; Google verifies it when
+  // set.
+  string sha1 = 2;
+
+  // The archive format. "TAR" is the only format Google accepts and the
+  // default.
+  string container_type = 3 [(buf.validate.field).cel = {
+    id: "container_type.valid"
+    expression: "this == '' || this == 'TAR'"
+    message: "container_type must be TAR"
+  }];
+}
+
+// CMEK decryption parameters for an encrypted image source (disk, image,
+// or snapshot). Customer-supplied raw keys (CSEK) are deliberately not
+// modeled: raw key material does not belong in declarative manifests or
+// state -- use CMEK, where the key stays in Cloud KMS.
+message GcpComputeImageSourceEncryption {
+  // The KMS key the source was encrypted with, referenced as a GcpKmsKey
+  // or a literal self link. The service agent performing the read needs
+  // roles/cloudkms.cryptoKeyEncrypterDecrypter on it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Service account used for the decryption request. When omitted, the
+  // Compute Engine service agent is used.
+  string kms_key_service_account = 2;
+}
+
+// The UEFI Secure Boot key databases.
+message GcpComputeImageShieldedInstanceInitialState {
+  // The Platform Key, which authorizes changes to the key exchange keys.
+  GcpComputeImageFileContentBuffer pk = 1;
+
+  // Key Exchange Keys, which authorize changes to db and dbx.
+  repeated GcpComputeImageFileContentBuffer keks = 2;
+
+  // The allowed signature database: certificates of boot loaders and
+  // drivers allowed to run.
+  repeated GcpComputeImageFileContentBuffer dbs = 3;
+
+  // The forbidden signature database: revoked certificates and hashes.
+  repeated GcpComputeImageFileContentBuffer dbxs = 4;
+}
+
+// One Secure Boot key or certificate.
+message GcpComputeImageFileContentBuffer {
+  // The raw content, base64-encoded. Public certificates, not secrets.
+  // Required.
+  string content = 1 [(buf.validate.field).required = true];
+
+  // "X509" (a certificate) or "BIN" (raw bytes). Empty lets Google infer.
+  string file_type = 2 [(buf.validate.field).cel = {
+    id: "file_type.valid"
+    expression: "this == '' || this in ['X509', 'BIN']"
+    message: "file_type must be X509 or BIN"
+  }];
+}

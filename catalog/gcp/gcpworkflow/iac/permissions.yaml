@@ -31,9 +31,69 @@ spec:
           - workflows.workflows.createTagBinding
           - workflows.workflows.deleteTagBinding
         provenance: derived
+        condition:
+          spec_field_set: resource_manager_tags
         notes: Required only when resource_manager_tags is set -- tags bind at workflow creation (the field is ForceNew, so a tag change replaces the workflow, deleting the old bindings with it). Both permission names are published in the same Workflows roles documentation cited above.
       - purpose: ActAsWorkflowServiceAccount
         permissions:
           - iam.serviceAccounts.actAs
         provenance: derived
+        condition:
+          spec_field_set: service_account
         notes: Required when service_account names the identity the workflow's executions run as (both presets do) -- the Workflows API demands actAs on that account at deploy time. Migrated from the component READMEs, which stated the deployer needs "iam.serviceAccounts.actAs on the workflow's service account when one is set".
+      - purpose: ManageEnvSecrets
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+          - secretmanager.secrets.create
+          - secretmanager.secrets.get
+          - secretmanager.secrets.update
+          - secretmanager.secrets.delete
+          - secretmanager.secrets.getIamPolicy
+          - secretmanager.secrets.setIamPolicy
+          - secretmanager.versions.add
+          - secretmanager.versions.get
+          - secretmanager.versions.access
+          - secretmanager.versions.enable
+          - secretmanager.versions.disable
+          - secretmanager.versions.destroy
+        provenance: derived
+        condition:
+          spec_field_set: secret_env_vars
+        notes: Covers the secret the modules keep per secret_env_vars entry -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the workflow's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the workflow's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+      - purpose: ResolveDefaultRuntimeIdentity
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        condition:
+          spec_field_set: secret_env_vars
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_account is unset -- google_project reads the project to learn its number. Not exercised when service_account names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).
+      - purpose: ManageEnvSecrets
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - serviceusage.services.list
+          - secretmanager.secrets.create
+          - secretmanager.secrets.get
+          - secretmanager.secrets.update
+          - secretmanager.secrets.delete
+          - secretmanager.secrets.getIamPolicy
+          - secretmanager.secrets.setIamPolicy
+          - secretmanager.versions.add
+          - secretmanager.versions.get
+          - secretmanager.versions.access
+          - secretmanager.versions.enable
+          - secretmanager.versions.disable
+          - secretmanager.versions.destroy
+        provenance: derived
+        condition:
+          spec_field_set: secret_env_vars
+        notes: Covers the secret the modules keep per secret_env_vars entry -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the workflow's region, attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the workflow's runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+      - purpose: ResolveDefaultRuntimeIdentity
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        condition:
+          spec_field_set: secret_env_vars
+        notes: The data source the modules use to name the project's Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when service_account is unset -- google_project reads the project to learn its number. Not exercised when service_account names the identity (the condition cannot express "unset", so the entry rides the stored-value condition).

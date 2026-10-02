@@ -24,6 +24,12 @@ type Locals struct {
 	// PolicyName falls back to metadata.name — explicit conditional, so both
 	// engines derive the identical cloud-side name.
 	PolicyName string
+
+	// IsRegional is the scope selector: an empty spec.region builds the
+	// global security policy, a region name builds the regional one. The
+	// regional collection carries no labels, so GcpLabels applies to the
+	// global arm only.
+	IsRegional bool
 }
 
 func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudarmorpolicyv1alpha1.GcpCloudArmorPolicyStackInput) *Locals {
@@ -37,6 +43,8 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudarmorpolicyv1alpha1
 	if locals.PolicyName == "" {
 		locals.PolicyName = locals.GcpCloudArmorPolicy.Metadata.Name
 	}
+
+	locals.IsRegional = locals.GcpCloudArmorPolicy.Spec.Region != ""
 
 	// User labels first so platform attribution labels win on key
 	// conflicts — identical merge order to the Terraform module.

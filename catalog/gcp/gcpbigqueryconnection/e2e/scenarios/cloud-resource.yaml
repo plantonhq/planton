@@ -1,0 +1,25 @@
+# GcpBigQueryConnection scenario: the cloud_resource arm in the US multi-
+# region -- Google creates a service account for the connection, which the
+# verifier matches against the exported cloud_resource_service_account_id.
+# Free: a connection bills nothing on its own.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryConnection
+metadata:
+  name: planton-oss-e2e-gcpbqcn-lake
+  id: planton-oss-e2e-gcpbqcn-lake
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigqueryconnection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  connectionId: e2e_bqcn_lake_${E2E_RUN_ID_UNDERSCORE}
+  friendlyName: E2E BigLake connection
+  description: Ephemeral cloud-resource connection; safe to delete
+  cloudResource: true
+  deletionPolicy: DELETE

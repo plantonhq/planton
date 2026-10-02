@@ -2,19 +2,19 @@ package module
 
 import (
 	gcpcloudrunjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunjob/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 )
 
 // secretVariables lists the env entries whose value the module keeps in
 // Secret Manager (the secret_value arm), addressed by container position.
-func secretVariables(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate) []cloudrunenv.Variable {
-	var variables []cloudrunenv.Variable
+func secretVariables(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate) []envsecrets.Variable {
+	var variables []envsecrets.Variable
 	for containerIndex, container := range tmpl.GetContainers() {
 		for _, envVar := range container.Env {
 			if envVar.SecretValue == "" {
 				continue
 			}
-			variables = append(variables, cloudrunenv.Variable{
+			variables = append(variables, envsecrets.Variable{
 				ContainerIndex: containerIndex,
 				Container:      container.Name,
 				Name:           envVar.Name,
@@ -27,12 +27,12 @@ func secretVariables(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate) []clou
 
 // secretPlacement puts the secrets where the job is: its project, its one
 // region, and its runtime identity as the only reader.
-func secretPlacement(locals *Locals) cloudrunenv.Placement {
+func secretPlacement(locals *Locals) envsecrets.Placement {
 	spec := locals.GcpCloudRunJob.Spec
-	return cloudrunenv.Placement{
-		Kind:                  cloudrunenv.KindJob,
+	return envsecrets.Placement{
+		Kind:                  envsecrets.KindJob,
 		Resource:              locals.JobName,
-		Region:                spec.Region,
+		Location:              spec.Region,
 		ReplicaRegions:        []string{spec.Region},
 		Project:               spec.ProjectId.GetValue(),
 		RuntimeServiceAccount: spec.GetTemplate().GetServiceAccount().GetValue(),

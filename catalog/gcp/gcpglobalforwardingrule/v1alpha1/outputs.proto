@@ -28,4 +28,16 @@ message GcpGlobalForwardingRuleStackOutputs {
   // REJECTED, or CLOSED), populated only for PSC frontends. ACCEPTED means
   // the producer side admitted this consumer connection.
   string psc_connection_status = 6;
+
+  // Region of a regional forwarding rule; empty for a global one. Downstream blocks
+  // read it to confirm scope compatibility (a regional link must point at a
+  // regional target in the same region), and the E2E verifier picks the
+  // regional or global API by it.
+  string region = 7;
+
+  // The internal DNS name of an internal passthrough Network Load Balancer
+  // that set service_label, in the form
+  // <service_label>.<name>.il4.<region>.lb.<project>.internal — the stable
+  // name VPC clients resolve instead of the VIP. Empty otherwise.
+  string service_name = 8;
 }

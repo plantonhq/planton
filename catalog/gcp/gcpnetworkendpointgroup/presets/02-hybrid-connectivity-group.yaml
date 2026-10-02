@@ -1,0 +1,28 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkEndpointGroup
+metadata:
+  name: onprem-api-neg
+spec:
+  projectId:
+    value: my-gcp-project
+  negName: onprem-api-neg
+  description: On-premises API servers reached over Cloud Interconnect as load-balancer backends
+  # Hybrid groups are zonal: pick a zone in the region whose VPN or
+  # Interconnect attachment reaches the addresses.
+  zone: us-central1-b
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: hybrid-vpc
+      fieldPath: status.outputs.network_self_link
+  # Addresses outside Google Cloud, reached over VPN or Interconnect. Only
+  # backend services with the EXTERNAL, EXTERNAL_MANAGED, INTERNAL_MANAGED,
+  # or INTERNAL_SELF_MANAGED scheme in RATE or CONNECTION mode accept them.
+  networkEndpointType: NON_GCP_PRIVATE_IP_PORT
+  defaultPort: 443
+  endpoints:
+    - ipAddress: 192.168.10.11
+    - ipAddress: 192.168.10.12
+    - ipAddress: 192.168.10.13
+      port: 8443
+  deletionPolicy: DELETE

@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: environment
+spec:
+  parent:
+    organizationId: "123456789012"
+  shortName: environment
+  description: The environment a resource belongs to (prod, staging, dev)
+  deletionPolicy: PREVENT

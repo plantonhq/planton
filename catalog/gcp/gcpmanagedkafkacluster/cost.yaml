@@ -1,0 +1,36 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpmanagedkafkacluster
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Managed Service for Apache Kafka
+      sku_meter: cluster vCPU
+      pricing_unit: vCPU-hours
+      description: The cluster's vCPUs bill every hour from creation, whether or not messages flow.
+    - service_name: Managed Service for Apache Kafka
+      sku_meter: cluster memory
+      pricing_unit: GiB-hours
+      description: The cluster's memory bills every hour from creation alongside the vCPUs.
+  cost_drivers:
+    - field_path: capacity_config.vcpu_count
+      sku_meter: cluster vCPU
+      pricing_unit: vCPU-hours
+      impact: The dominant line -- every vCPU (at least 3) bills around the clock.
+    - field_path: capacity_config.memory_bytes
+      sku_meter: cluster memory
+      pricing_unit: GiB-hours
+      impact: Memory (1-8 GiB per vCPU) bills around the clock on top of the vCPUs.
+    - field_path: broker_disk_size_gib
+      sku_meter: local storage
+      pricing_unit: GiB-months
+      impact: Each broker's local disk bills per GiB provisioned, multiplied by the number of brokers Google runs.
+  free_tier: ""
+  estimate_exclusions:
+    - storage of retained messages bills per GiB held, which follows topic retention and replication rather than any cluster field
+    - inter-zone and egress data transfer follow client placement and message volume
+  notes: "Google's Managed Service for Apache Kafka pricing (cloud.google.com/managed-service-for-apache-kafka/pricing, read 2026-09-24) bills a cluster by its vCPUs and memory per hour, plus storage and data transfer. The capacity is committed spend from creation, so the smallest shape (3 vCPU, 3 GiB) is the development floor."

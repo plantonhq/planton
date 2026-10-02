@@ -1,0 +1,21 @@
+# Artifact bucket for the execution-configs scenario, referenced through
+# its gs:// url output. force_destroy lets the lane tear it down.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucket
+metadata:
+  name: planton-oss-e2e-gcpcdtgt-artifacts
+  id: planton-oss-e2e-gcpcdtgt-artifacts
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgcsbucket
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  bucketName: pln-e2e-cdtgt-${E2E_RUN_ID}
+  location: US-CENTRAL1
+  uniformBucketLevelAccessEnabled: true
+  forceDestroy: true

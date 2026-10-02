@@ -182,7 +182,7 @@ spec:
 | `spec.template.volumes[].nfs.readOnly` | `bool` |  |  |  |
 | `spec.template.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 | `spec.template.executionEnvironment` | `enum` |  | `EXECUTION_ENVIRONMENT_GEN2` |  |
-| `spec.template.encryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.template.encryptionKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.template.timeoutSeconds` | `int32` |  |  |  |
 | `spec.template.maxRetries` | `int32` |  |  |  |
 | `spec.template.vpcAccess` | `GcpCloudRunJobVpcAccess` |  |  |  |
@@ -208,6 +208,7 @@ spec:
 | `spec.startExecutionToken` | `string` |  |  |  |
 | `spec.runExecutionToken` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.resourceManagerTags` | `map<string, string>` |  |  |  |
 
 ## Field Details
 
@@ -791,7 +792,7 @@ Customer-managed encryption key (CMEK) encrypting deployed container
 images. Accepts a full crypto key ID or a reference to a GcpKmsKey
 resource. The key must be in the same region as the job.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.template.timeoutSeconds
@@ -1020,6 +1021,18 @@ What happens to the Cloud Run job when this resource is destroyed:
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
+### spec.resourceManagerTags
+
+`map<string, string>`
+
+Resource Manager tags bound to the job at creation, as a map of
+tagKeys/{tag_key_id} to tagValues/{tag_value_id} — the tag bindings
+that organization policies, IAM conditions, and cost reports key on.
+Immutable: changing the map replaces the job (Cloud Run applies tags
+only at create), so plan tag changes as a recreate.
+
+- rule: {"map":{"keys":{"string":{"pattern":"^tagKeys/[0-9]+$"}},"values":{"string":{"pattern":"^tagValues/[0-9]+$"}}}}
+
 ## Validation Rules
 
 - `gpu.redundancy_requires_accelerator`: gpu_zonal_redundancy_disabled only applies to GPU jobs — set template.node_selector.accelerator
@@ -1048,6 +1061,7 @@ Fields that can point at another resource's outputs:
 | `spec.template.volumes[].gcs.bucket` | GcpGcsBucket | `status.outputs.bucket_id` |
 | `spec.template.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 | `spec.template.encryptionKey` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.template.encryptionKey` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.template.vpcAccess.connector` | GcpServerlessVpcConnector | `status.outputs.self_link` |
 | `spec.template.vpcAccess.networkInterfaces[].network` | GcpVpcNetwork | `status.outputs.network_name` |
 | `spec.template.vpcAccess.networkInterfaces[].subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_name` |

@@ -1822,14 +1822,35 @@ const (
 	CloudResourceKind_GcpDataprocCluster            CloudResourceKind = 3051
 	CloudResourceKind_GcpDataprocAutoscalingPolicy  CloudResourceKind = 3052
 	CloudResourceKind_GcpBigQueryTable              CloudResourceKind = 3053
-	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 3060
-	CloudResourceKind_GcpPubSubSubscription         CloudResourceKind = 3061
-	CloudResourceKind_GcpCloudTasksQueue            CloudResourceKind = 3062
-	CloudResourceKind_GcpCloudSchedulerJob          CloudResourceKind = 3063
-	CloudResourceKind_GcpPubSubSchema               CloudResourceKind = 3064
-	CloudResourceKind_GcpVertexAiNotebook           CloudResourceKind = 3070
-	CloudResourceKind_GcpVertexAiEndpoint           CloudResourceKind = 3071
-	CloudResourceKind_GcpVertexAiIndex              CloudResourceKind = 3072
+	// A BigQuery capacity commitment: slots bought for a fixed term in an
+	// administration project and location, pooled across every reservation
+	// there. A purchase Google will not delete before its term ends.
+	CloudResourceKind_GcpBigQueryCapacityCommitment CloudResourceKind = 3054
+	// A BigQuery reservation group: reservations that share idle slots with
+	// each other first. Reservations reference it.
+	CloudResourceKind_GcpBigQueryReservationGroup CloudResourceKind = 3055
+	// A Datastream connection profile: where one source database or
+	// destination is and how Datastream signs in. Streams reference a source
+	// and a destination profile; one profile serves many streams.
+	CloudResourceKind_GcpDatastreamConnectionProfile CloudResourceKind = 3056
+	// A Datastream private connection: the VPC peering or Private Service
+	// Connect interface through which Datastream reaches private databases,
+	// shared by every profile that reaches that network.
+	CloudResourceKind_GcpDatastreamPrivateConnection CloudResourceKind = 3057
+	CloudResourceKind_GcpPubSubTopic                 CloudResourceKind = 3060
+	CloudResourceKind_GcpPubSubSubscription          CloudResourceKind = 3061
+	CloudResourceKind_GcpCloudTasksQueue             CloudResourceKind = 3062
+	CloudResourceKind_GcpCloudSchedulerJob           CloudResourceKind = 3063
+	CloudResourceKind_GcpPubSubSchema                CloudResourceKind = 3064
+	// One additive grant on a topic. Its own kind, not a field on the topic,
+	// because the identities that most need it (a logging sink's writer, a
+	// Security Command Center export's publisher) belong to resources that
+	// name the topic themselves; a grant on the topic that referenced them
+	// back would be a dependency cycle.
+	CloudResourceKind_GcpPubSubTopicIamMember CloudResourceKind = 3065
+	CloudResourceKind_GcpVertexAiNotebook     CloudResourceKind = 3070
+	CloudResourceKind_GcpVertexAiEndpoint     CloudResourceKind = 3071
+	CloudResourceKind_GcpVertexAiIndex        CloudResourceKind = 3072
 	// Vector Search IndexEndpoint — distinct from the online-prediction
 	// GcpVertexAiEndpoint (671); different GCP resources, different kinds.
 	CloudResourceKind_GcpVertexAiIndexEndpoint               CloudResourceKind = 3073
@@ -1846,6 +1867,10 @@ const (
 	CloudResourceKind_GcpWorkloadIdentityPool         CloudResourceKind = 3101
 	CloudResourceKind_GcpWorkloadIdentityPoolProvider CloudResourceKind = 3102
 	CloudResourceKind_GcpServiceAccountIamMember      CloudResourceKind = 3103
+	// One additive grant on a bucket, for a grantee that depends on the
+	// bucket itself (a logging sink writing into it): the bucket's own
+	// iam_members cannot reference such an identity without a cycle.
+	CloudResourceKind_GcpGcsBucketIamMember CloudResourceKind = 3104
 	// 3110–3119: networking/load-balancer family (overflow block; the 3023–3029
 	// LB sub-band is fully allocated)
 	CloudResourceKind_GcpGlobalForwardingRule        CloudResourceKind = 3110
@@ -1859,9 +1884,21 @@ const (
 	// hostnames to EXISTING certificates — the canonical map references a
 	// certificate fixture's resource name.
 	CloudResourceKind_GcpCertificateMap CloudResourceKind = 3117
+	// The CA certificates a load balancer validates client certificates
+	// against (mutual TLS). Its own kind: TLS policies reference it, never a
+	// certificate.
+	CloudResourceKind_GcpCertManagerTrustConfig CloudResourceKind = 3118
+	// How Google-managed certificates are issued from a private CA pool. Its
+	// own kind: many certificates share one config by name.
+	CloudResourceKind_GcpCertManagerIssuanceConfig CloudResourceKind = 3119
 	// 3120–3129: GCP serverless overflow
 	CloudResourceKind_GcpCloudRunJob            CloudResourceKind = 3120
 	CloudResourceKind_GcpServerlessVpcConnector CloudResourceKind = 3121
+	// Cloud Run's no-ingress shape: a pool of always-running container
+	// instances (queue consumers, schedulers, background workers) that
+	// scales manually or by the owner's own signal instead of by requests.
+	// The proof deploys direct-VPC egress onto the prerequisite network.
+	CloudResourceKind_GcpCloudRunWorkerPool CloudResourceKind = 3122
 	// 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that
 	// holds GcpComputeInstance is fully allocated)
 	CloudResourceKind_GcpComputeDisk CloudResourceKind = 3130
@@ -1911,8 +1948,270 @@ const (
 	CloudResourceKind_GcpEventarcMessageBus CloudResourceKind = 3163
 	CloudResourceKind_GcpPlantonRunner      CloudResourceKind = 3164
 	// 3170–3179: GCP organization & governance (folders, org policies, tags,
-	// budgets, identity groups, API keys)
-	CloudResourceKind_GcpApiKey CloudResourceKind = 3177
+	// budgets, identity groups, API keys, KMS Autokey)
+	// GcpFolder is a container: the hierarchy node projects, sub-folders,
+	// policies, and tag bindings are placed inside.
+	CloudResourceKind_GcpFolder     CloudResourceKind = 3170
+	CloudResourceKind_GcpOrgPolicy  CloudResourceKind = 3171
+	CloudResourceKind_GcpTagKey     CloudResourceKind = 3172
+	CloudResourceKind_GcpTagValue   CloudResourceKind = 3173
+	CloudResourceKind_GcpTagBinding CloudResourceKind = 3174
+	// A spending guardrail on a Cloud Billing account: amount, period,
+	// filters, thresholds, and where the alerts go. Lives on the billing
+	// account, so no project prerequisite; the proof lane needs a billing
+	// account the harness identity can administer.
+	CloudResourceKind_GcpBillingBudget CloudResourceKind = 3175
+	// A Google Group in Cloud Identity or Workspace with its memberships
+	// folded in -- the unit IAM bindings should name. Lives under a Cloud
+	// Identity customer, beside the service accounts and workload identity
+	// pools in the identity service group.
+	CloudResourceKind_GcpCloudIdentityGroup CloudResourceKind = 3176
+	CloudResourceKind_GcpApiKey             CloudResourceKind = 3177
+	// Cloud KMS Autokey switched on for a folder or a project: where the
+	// customer-managed keys GcpKmsKeyHandle requests are created. A security
+	// control, so it groups with the KMS kinds rather than the hierarchy.
+	CloudResourceKind_GcpKmsAutokeyConfig CloudResourceKind = 3178
+	// A custom constraint is a DEFINITION the organization owns; the
+	// GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
+	// bindings reference a custom role.
+	CloudResourceKind_GcpOrgPolicyCustomConstraint CloudResourceKind = 3179
+	// 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN,
+	// firewall policies, PSC, network endpoint groups).
+	// HA VPN is two kinds: the gateway (with its Cloud Router) is declared
+	// once per VPC and region and referenced by every site connection, so
+	// two Google Cloud VPCs can point their connections at each other's
+	// gateway without a dependency cycle.
+	// Firewall policies are two kinds by scope: the hierarchical policy lives
+	// on the organization or a folder and is inherited by every network
+	// beneath its association; the network policy lives in a project and is
+	// attached to that project's VPC networks (globally or per region). Each
+	// folds its rules and associations -- a rule is keyed by priority inside
+	// its policy and an association is the edge that makes the policy act.
+	CloudResourceKind_GcpSharedVpcHost              CloudResourceKind = 3180
+	CloudResourceKind_GcpSharedVpcServiceProject    CloudResourceKind = 3181
+	CloudResourceKind_GcpVpcPeering                 CloudResourceKind = 3182
+	CloudResourceKind_GcpHaVpnGateway               CloudResourceKind = 3183
+	CloudResourceKind_GcpHierarchicalFirewallPolicy CloudResourceKind = 3184
+	CloudResourceKind_GcpNetworkFirewallPolicy      CloudResourceKind = 3185
+	CloudResourceKind_GcpHaVpnConnection            CloudResourceKind = 3188
+	// The producer half of Private Service Connect: publishes an internal
+	// load balancer's regional forwarding rule through NAT subnets so
+	// consumers in other VPCs reach it over a PSC endpoint (a regional
+	// GcpGlobalForwardingRule with an empty scheme targeting this
+	// attachment). The proof chain deploys the internal passthrough load
+	// balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+	CloudResourceKind_GcpPscServiceAttachment CloudResourceKind = 3186
+	// Zonal (VM, hybrid, internet) and global (internet) network endpoint
+	// groups behind a `zone` selector; serverless, PSC, and regional
+	// internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof
+	// attaches a GcpComputeInstance fixture as an endpoint on the
+	// prerequisite network.
+	CloudResourceKind_GcpNetworkEndpointGroup CloudResourceKind = 3187
+	// 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka,
+	// BigQuery connections and reservations, Datastream)
+	// Memorystore for Redis Cluster: the sharded, horizontally scaled Redis.
+	// Connectivity is Private Service Connect, placed by service connectivity
+	// automation through a GcpServiceConnectionPolicy for the
+	// gcp-memorystore-redis class on the network in the cluster's region --
+	// the prerequisite; its proof pin carries that class beside the network
+	// and subnet pins.
+	CloudResourceKind_GcpRedisCluster CloudResourceKind = 3190
+	// Managed Service for Apache Kafka: a Google-operated broker fleet in one
+	// region, reachable from the VPC subnets it is attached to -- the
+	// prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so
+	// the teams that own them declare them without editing the cluster.
+	CloudResourceKind_GcpManagedKafkaCluster CloudResourceKind = 3191
+	CloudResourceKind_GcpManagedKafkaTopic   CloudResourceKind = 3192
+	// Kafka Connect workers attached to a Kafka cluster: a separate
+	// project-and-location root that names the cluster it serves.
+	CloudResourceKind_GcpManagedKafkaConnectCluster CloudResourceKind = 3193
+	// BigQuery's link to data outside its own storage (Cloud SQL, Spanner,
+	// AWS and Azure through Omni, Google resources through a managed service
+	// account, the Connector framework, Spark procedures).
+	CloudResourceKind_GcpBigQueryConnection CloudResourceKind = 3194
+	// A BigQuery slot reservation with the assignments that route projects,
+	// folders, or an organization onto it.
+	CloudResourceKind_GcpBigQueryReservation CloudResourceKind = 3195
+	// A Datastream stream: continuous change data capture from one source
+	// database into BigQuery or Cloud Storage, through a source and a
+	// destination connection profile.
+	CloudResourceKind_GcpDatastreamStream CloudResourceKind = 3196
+	// The Private Service Connect connections a consumer builds by hand
+	// (forwarding rules in other VPCs or projects) registered on a Redis
+	// Cluster, as one set: Google's resource replaces the cluster's whole
+	// user-created endpoint list in one write, so exactly one set per
+	// cluster is the honest grain. Its own kind because every connection
+	// names a forwarding rule that targets one of the cluster's service
+	// attachments -- a fold would depend on its own output.
+	CloudResourceKind_GcpRedisClusterEndpointSet CloudResourceKind = 3197
+	// The access rules for one resource pattern (a topic, a consumer group,
+	// a prefix, the cluster) on a Kafka cluster.
+	CloudResourceKind_GcpManagedKafkaAcl CloudResourceKind = 3198
+	// One data pipeline running on a Kafka Connect cluster.
+	CloudResourceKind_GcpManagedKafkaConnector CloudResourceKind = 3199
+	// 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine,
+	// Vector Search, and the rest of the Vertex AI and generative-AI
+	// building blocks). The pre-existing Vertex AI kinds -- endpoint, index,
+	// index endpoint, deployed index, notebook -- live in the 3070s.
+	//
+	// Vertex AI Agent Engine: the managed runtime an AI agent runs in --
+	// built from source or a container, hosted with its own identity and
+	// autoscaling, with an optional Memory Bank of long-term memories.
+	CloudResourceKind_GcpVertexAiAgentEngine CloudResourceKind = 3200
+	// A Model Garden or Hugging Face model deployed to a Vertex AI endpoint
+	// in one step; every argument is immutable, so a change redeploys.
+	CloudResourceKind_GcpVertexAiModelGardenDeployment CloudResourceKind = 3201
+	// The per-project, per-location tier of Vertex AI RAG Engine's managed
+	// vector database: a singleton Google owns, updated in place.
+	CloudResourceKind_GcpVertexAiRagEngineConfig CloudResourceKind = 3202
+	// 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp
+	// bridges provider 8.x (the resource has no SDK type today).
+	// A Vector Search collection -- a schema'd store of data objects with
+	// vector fields -- together with the approximate-nearest-neighbor indexes
+	// built over those fields (folded: one collection owns them).
+	CloudResourceKind_GcpVectorSearchCollection CloudResourceKind = 3204
+	// Vertex AI Search (the Discovery Engine API behind the console's AI
+	// Applications / Gemini Enterprise): a data store is the corpus --
+	// structured records, unstructured documents, or a public website --
+	// with its schema, crawl patterns, and sitemaps folded in.
+	CloudResourceKind_GcpVertexAiSearchDataStore CloudResourceKind = 3205
+	// The app over one or more data stores -- a search, chat, or
+	// recommendation engine -- with its serving controls, serving config,
+	// search widget, and assistants folded in. Its data stores are
+	// prerequisites: an engine cannot exist without one.
+	CloudResourceKind_GcpVertexAiSearchEngine CloudResourceKind = 3206
+	// Vertex AI Feature Store: a feature group registers the features of
+	// some entities that live in a BigQuery table or view -- the features
+	// themselves folded in. Online stores serve them through feature views.
+	CloudResourceKind_GcpVertexAiFeatureGroup CloudResourceKind = 3207
+	// The low-latency serving layer of Vertex AI Feature Store (Bigtable or
+	// Optimized storage), with the feature views it serves folded in.
+	CloudResourceKind_GcpVertexAiFeatureOnlineStore CloudResourceKind = 3208
+	// A Vertex AI managed dataset: the registered container training,
+	// AutoML, labeling, and evaluation read their examples from.
+	CloudResourceKind_GcpVertexAiDataset CloudResourceKind = 3209
+	// A managed Vertex AI TensorBoard training jobs stream metrics into, with
+	// the experiments and runs declared in it folded in.
+	CloudResourceKind_GcpVertexAiTensorboard CloudResourceKind = 3210
+	// A long-running cluster Vertex AI keeps provisioned so training jobs and
+	// Ray on Vertex AI start in seconds and scarce accelerators stay held
+	// between jobs.
+	CloudResourceKind_GcpVertexAiPersistentResource CloudResourceKind = 3211
+	// A Model Armor template: the named safety filters (prompt injection and
+	// jailbreak, Responsible AI content, sensitive data, malicious URLs) an
+	// AI application screens prompts and responses through.
+	CloudResourceKind_GcpModelArmorTemplate CloudResourceKind = 3212
+	// A Document AI processor: a managed model that turns documents into
+	// structured data (OCR, forms, invoices, IDs), with its default version.
+	CloudResourceKind_GcpDocumentAiProcessor CloudResourceKind = 3213
+	// A Colab Enterprise runtime template: the machine, network, image, and
+	// security settings every notebook runtime created from it gets.
+	CloudResourceKind_GcpColabRuntimeTemplate CloudResourceKind = 3214
+	// A Colab Enterprise runtime: a notebook VM assigned to one user, built
+	// from a runtime template and started or stopped on purpose.
+	CloudResourceKind_GcpColabRuntime CloudResourceKind = 3215
+	// A Vertex AI schedule: a cron that launches a Colab Enterprise notebook
+	// run or a Vertex AI Pipelines run.
+	CloudResourceKind_GcpColabSchedule CloudResourceKind = 3216
+	// A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs.
+	// Beta-only in Google's provider (a recorded google-beta admission).
+	CloudResourceKind_GcpTpuVm CloudResourceKind = 3217
+	// A Dialogflow CX conversational agent with the infrastructure its
+	// console-authored content uses folded in: webhooks, tools and their
+	// frozen versions, flow versions, the environments that pin them, and
+	// generative settings per language.
+	CloudResourceKind_GcpDialogflowCxAgent CloudResourceKind = 3218
+	// A data connector is a COLLECTION of data stores Google syncs from a
+	// source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
+	// Drive, ...) on a schedule -- a different root from a data store, which
+	// is why it is its own kind. Engines search its stores by naming the
+	// collection.
+	CloudResourceKind_GcpVertexAiSearchDataConnector CloudResourceKind = 3219
+	// A Model Armor floor setting: the minimum safety screening a project,
+	// folder, or organization enforces on its templates and directly on
+	// Vertex AI and Google MCP server traffic. A different parent from a
+	// template (and a singleton Google never deletes), which is why it is
+	// its own kind.
+	CloudResourceKind_GcpModelArmorFloorSetting CloudResourceKind = 3220
+	// A Cloud TPU queued resource: a request that waits for TPU capacity and
+	// then provisions the nodes it describes. A different root from a TPU VM
+	// that owns many nodes, which is why it is its own kind. Beta-only in
+	// Google's provider (a recorded google-beta admission).
+	CloudResourceKind_GcpTpuQueuedResource CloudResourceKind = 3221
+	// Dialogflow CX security settings: the redaction, retention, audio-export,
+	// and Insights-export policy agents in one project and location apply to
+	// their conversations. A different root from an agent, referenced by
+	// agents and shared among them, which is why it is its own kind.
+	CloudResourceKind_GcpDialogflowCxSecuritySettings CloudResourceKind = 3222
+	// 3230–3239: GCP security (Certificate Authority Service, Cloud KMS
+	// Autokey handles, Security Command Center, Binary Authorization)
+	// A Certificate Authority Service CA pool: the trust anchor and issuance
+	// policy its certificate authorities and certificates live inside.
+	CloudResourceKind_GcpPrivateCaPool CloudResourceKind = 3230
+	// An Autokey key handle: asks Autokey for a customer-managed key for one
+	// resource type in one project and location; the resource it protects
+	// names the key the handle returns.
+	CloudResourceKind_GcpKmsKeyHandle CloudResourceKind = 3231
+	// Security Command Center streaming notifications to Pub/Sub at a
+	// project, folder, or organization.
+	CloudResourceKind_GcpSccNotificationConfig CloudResourceKind = 3232
+	// A Security Command Center mute rule at a project, folder, or
+	// organization.
+	CloudResourceKind_GcpSccMuteConfig CloudResourceKind = 3233
+	// A continuous Security Command Center findings export to a BigQuery
+	// dataset at a project, folder, or organization.
+	CloudResourceKind_GcpSccBigQueryExport CloudResourceKind = 3234
+	// A project's Binary Authorization policy: which container images GKE
+	// admits, per cluster. A project singleton.
+	CloudResourceKind_GcpBinaryAuthorizationPolicy CloudResourceKind = 3235
+	// A Binary Authorization attestor with its Artifact Analysis note: the
+	// public keys that verify image attestations a policy requires.
+	CloudResourceKind_GcpBinaryAuthorizationAttestor CloudResourceKind = 3236
+	// A certificate authority in a CA pool: a self-signed root, or a
+	// subordinate signed by another authority or an outside CA. Its own kind
+	// because a pool rotates through several and a subordinate references
+	// its parent.
+	CloudResourceKind_GcpPrivateCaCertificateAuthority CloudResourceKind = 3237
+	// A certificate template: a reusable certificate shape in a project and
+	// location that certificates in any pool there reference.
+	CloudResourceKind_GcpPrivateCaCertificateTemplate CloudResourceKind = 3238
+	// A certificate issued from a CA pool for a key its owner holds; destroy
+	// revokes it.
+	CloudResourceKind_GcpPrivateCaCertificate CloudResourceKind = 3239
+	// 3240–3249: GCP platform engineering (GKE fleets, images, Cloud Build,
+	// Cloud Deploy)
+	// GcpGkeFleet is the container a fleet's scopes, namespaces, memberships,
+	// and features live in: the project's one fleet is the room, and a team
+	// scope or a fleet-wide feature is what is placed inside it.
+	CloudResourceKind_GcpGkeFleet CloudResourceKind = 3240
+	// The three fleet children name GcpGkeFleet as their prerequisite: Google
+	// requires the fleet before a scope, a fleet declared after a cluster
+	// registers collides with the fleet that registration created implicitly,
+	// and a feature configures the fleet it lives in. A chart that references
+	// the fleet's project_id output orders each child after it.
+	CloudResourceKind_GcpGkeFleetFeature    CloudResourceKind = 3241
+	CloudResourceKind_GcpGkeFleetScope      CloudResourceKind = 3242
+	CloudResourceKind_GcpGkeFleetMembership CloudResourceKind = 3243
+	// A Compute Engine custom image: the golden boot image VMs, instance
+	// templates, and disks start from, rolled forward through image families.
+	CloudResourceKind_GcpComputeImage CloudResourceKind = 3244
+	// GcpCloudBuildConnection is the container a code host's repositories
+	// live in: the connection to GitHub, GitLab, or Bitbucket is the room,
+	// and each linked repository is what is placed inside it.
+	CloudResourceKind_GcpCloudBuildConnection CloudResourceKind = 3245
+	// A repository is created under its connection and cannot exist without
+	// it.
+	CloudResourceKind_GcpCloudBuildRepository CloudResourceKind = 3246
+	// A Cloud Build trigger: what starts a build (a code event, a Pub/Sub
+	// message, a webhook, or a manual run) and what the build does.
+	CloudResourceKind_GcpCloudBuildTrigger CloudResourceKind = 3247
+	// A Cloud Deploy delivery pipeline: the ordered stages a release is
+	// promoted through, with the automations that drive it.
+	CloudResourceKind_GcpDeliveryPipeline CloudResourceKind = 3248
+	// A Cloud Deploy target: where a pipeline stage deploys (a GKE cluster,
+	// a Cloud Run location, a fleet cluster, several targets at once, or a
+	// custom target).
+	CloudResourceKind_GcpDeployTarget CloudResourceKind = 3249
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -1926,6 +2225,17 @@ const (
 	CloudResourceKind_GcpFirebaseAndroidApp CloudResourceKind = 3251
 	CloudResourceKind_GcpFirebaseAppleApp   CloudResourceKind = 3252
 	CloudResourceKind_GcpFirebaseWebApp     CloudResourceKind = 3253
+	// 3260–3269: GCP platform engineering, continued (Cloud Build and Cloud
+	// Deploy resources many pipelines share)
+	// A private Cloud Build worker pool: build machines many triggers and
+	// Cloud Deploy targets share, optionally on a private network.
+	CloudResourceKind_GcpCloudBuildWorkerPool CloudResourceKind = 3260
+	// A Cloud Deploy deploy policy: rollout restrictions (freeze windows)
+	// that apply to every pipeline and target its selectors match.
+	CloudResourceKind_GcpDeployPolicy CloudResourceKind = 3261
+	// A Cloud Deploy custom target type: how to render and deploy to a
+	// target Google does not deploy natively; many targets share one.
+	CloudResourceKind_GcpDeployCustomTargetType CloudResourceKind = 3262
 	// 4000–4999: Kubernetes resources, organized in family sub-bands
 	// (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
 	// analytics & ML; 4190–4199 reserved for growth)
@@ -2950,11 +3260,16 @@ var (
 		3051:  "GcpDataprocCluster",
 		3052:  "GcpDataprocAutoscalingPolicy",
 		3053:  "GcpBigQueryTable",
+		3054:  "GcpBigQueryCapacityCommitment",
+		3055:  "GcpBigQueryReservationGroup",
+		3056:  "GcpDatastreamConnectionProfile",
+		3057:  "GcpDatastreamPrivateConnection",
 		3060:  "GcpPubSubTopic",
 		3061:  "GcpPubSubSubscription",
 		3062:  "GcpCloudTasksQueue",
 		3063:  "GcpCloudSchedulerJob",
 		3064:  "GcpPubSubSchema",
+		3065:  "GcpPubSubTopicIamMember",
 		3070:  "GcpVertexAiNotebook",
 		3071:  "GcpVertexAiEndpoint",
 		3072:  "GcpVertexAiIndex",
@@ -2970,6 +3285,7 @@ var (
 		3101:  "GcpWorkloadIdentityPool",
 		3102:  "GcpWorkloadIdentityPoolProvider",
 		3103:  "GcpServiceAccountIamMember",
+		3104:  "GcpGcsBucketIamMember",
 		3110:  "GcpGlobalForwardingRule",
 		3111:  "GcpSslPolicy",
 		3112:  "GcpSslCertificate",
@@ -2978,8 +3294,11 @@ var (
 		3115:  "GcpServiceConnectionPolicy",
 		3116:  "GcpCertManagerDnsAuthorization",
 		3117:  "GcpCertificateMap",
+		3118:  "GcpCertManagerTrustConfig",
+		3119:  "GcpCertManagerIssuanceConfig",
 		3120:  "GcpCloudRunJob",
 		3121:  "GcpServerlessVpcConnector",
+		3122:  "GcpCloudRunWorkerPool",
 		3130:  "GcpComputeDisk",
 		3131:  "GcpComputeMig",
 		3140:  "GcpMonitoringNotificationChannel",
@@ -3000,11 +3319,84 @@ var (
 		3162:  "GcpEventarcTrigger",
 		3163:  "GcpEventarcMessageBus",
 		3164:  "GcpPlantonRunner",
+		3170:  "GcpFolder",
+		3171:  "GcpOrgPolicy",
+		3172:  "GcpTagKey",
+		3173:  "GcpTagValue",
+		3174:  "GcpTagBinding",
+		3175:  "GcpBillingBudget",
+		3176:  "GcpCloudIdentityGroup",
 		3177:  "GcpApiKey",
+		3178:  "GcpKmsAutokeyConfig",
+		3179:  "GcpOrgPolicyCustomConstraint",
+		3180:  "GcpSharedVpcHost",
+		3181:  "GcpSharedVpcServiceProject",
+		3182:  "GcpVpcPeering",
+		3183:  "GcpHaVpnGateway",
+		3184:  "GcpHierarchicalFirewallPolicy",
+		3185:  "GcpNetworkFirewallPolicy",
+		3188:  "GcpHaVpnConnection",
+		3186:  "GcpPscServiceAttachment",
+		3187:  "GcpNetworkEndpointGroup",
+		3190:  "GcpRedisCluster",
+		3191:  "GcpManagedKafkaCluster",
+		3192:  "GcpManagedKafkaTopic",
+		3193:  "GcpManagedKafkaConnectCluster",
+		3194:  "GcpBigQueryConnection",
+		3195:  "GcpBigQueryReservation",
+		3196:  "GcpDatastreamStream",
+		3197:  "GcpRedisClusterEndpointSet",
+		3198:  "GcpManagedKafkaAcl",
+		3199:  "GcpManagedKafkaConnector",
+		3200:  "GcpVertexAiAgentEngine",
+		3201:  "GcpVertexAiModelGardenDeployment",
+		3202:  "GcpVertexAiRagEngineConfig",
+		3204:  "GcpVectorSearchCollection",
+		3205:  "GcpVertexAiSearchDataStore",
+		3206:  "GcpVertexAiSearchEngine",
+		3207:  "GcpVertexAiFeatureGroup",
+		3208:  "GcpVertexAiFeatureOnlineStore",
+		3209:  "GcpVertexAiDataset",
+		3210:  "GcpVertexAiTensorboard",
+		3211:  "GcpVertexAiPersistentResource",
+		3212:  "GcpModelArmorTemplate",
+		3213:  "GcpDocumentAiProcessor",
+		3214:  "GcpColabRuntimeTemplate",
+		3215:  "GcpColabRuntime",
+		3216:  "GcpColabSchedule",
+		3217:  "GcpTpuVm",
+		3218:  "GcpDialogflowCxAgent",
+		3219:  "GcpVertexAiSearchDataConnector",
+		3220:  "GcpModelArmorFloorSetting",
+		3221:  "GcpTpuQueuedResource",
+		3222:  "GcpDialogflowCxSecuritySettings",
+		3230:  "GcpPrivateCaPool",
+		3231:  "GcpKmsKeyHandle",
+		3232:  "GcpSccNotificationConfig",
+		3233:  "GcpSccMuteConfig",
+		3234:  "GcpSccBigQueryExport",
+		3235:  "GcpBinaryAuthorizationPolicy",
+		3236:  "GcpBinaryAuthorizationAttestor",
+		3237:  "GcpPrivateCaCertificateAuthority",
+		3238:  "GcpPrivateCaCertificateTemplate",
+		3239:  "GcpPrivateCaCertificate",
+		3240:  "GcpGkeFleet",
+		3241:  "GcpGkeFleetFeature",
+		3242:  "GcpGkeFleetScope",
+		3243:  "GcpGkeFleetMembership",
+		3244:  "GcpComputeImage",
+		3245:  "GcpCloudBuildConnection",
+		3246:  "GcpCloudBuildRepository",
+		3247:  "GcpCloudBuildTrigger",
+		3248:  "GcpDeliveryPipeline",
+		3249:  "GcpDeployTarget",
 		3250:  "GcpFirebaseProject",
 		3251:  "GcpFirebaseAndroidApp",
 		3252:  "GcpFirebaseAppleApp",
 		3253:  "GcpFirebaseWebApp",
+		3260:  "GcpCloudBuildWorkerPool",
+		3261:  "GcpDeployPolicy",
+		3262:  "GcpDeployCustomTargetType",
 		4000:  "KubernetesNamespace",
 		4001:  "KubernetesDeployment",
 		4002:  "KubernetesStatefulSet",
@@ -3706,11 +4098,16 @@ var (
 		"GcpDataprocCluster":                             3051,
 		"GcpDataprocAutoscalingPolicy":                   3052,
 		"GcpBigQueryTable":                               3053,
+		"GcpBigQueryCapacityCommitment":                  3054,
+		"GcpBigQueryReservationGroup":                    3055,
+		"GcpDatastreamConnectionProfile":                 3056,
+		"GcpDatastreamPrivateConnection":                 3057,
 		"GcpPubSubTopic":                                 3060,
 		"GcpPubSubSubscription":                          3061,
 		"GcpCloudTasksQueue":                             3062,
 		"GcpCloudSchedulerJob":                           3063,
 		"GcpPubSubSchema":                                3064,
+		"GcpPubSubTopicIamMember":                        3065,
 		"GcpVertexAiNotebook":                            3070,
 		"GcpVertexAiEndpoint":                            3071,
 		"GcpVertexAiIndex":                               3072,
@@ -3726,6 +4123,7 @@ var (
 		"GcpWorkloadIdentityPool":                        3101,
 		"GcpWorkloadIdentityPoolProvider":                3102,
 		"GcpServiceAccountIamMember":                     3103,
+		"GcpGcsBucketIamMember":                          3104,
 		"GcpGlobalForwardingRule":                        3110,
 		"GcpSslPolicy":                                   3111,
 		"GcpSslCertificate":                              3112,
@@ -3734,8 +4132,11 @@ var (
 		"GcpServiceConnectionPolicy":                     3115,
 		"GcpCertManagerDnsAuthorization":                 3116,
 		"GcpCertificateMap":                              3117,
+		"GcpCertManagerTrustConfig":                      3118,
+		"GcpCertManagerIssuanceConfig":                   3119,
 		"GcpCloudRunJob":                                 3120,
 		"GcpServerlessVpcConnector":                      3121,
+		"GcpCloudRunWorkerPool":                          3122,
 		"GcpComputeDisk":                                 3130,
 		"GcpComputeMig":                                  3131,
 		"GcpMonitoringNotificationChannel":               3140,
@@ -3756,11 +4157,84 @@ var (
 		"GcpEventarcTrigger":                             3162,
 		"GcpEventarcMessageBus":                          3163,
 		"GcpPlantonRunner":                               3164,
+		"GcpFolder":                                      3170,
+		"GcpOrgPolicy":                                   3171,
+		"GcpTagKey":                                      3172,
+		"GcpTagValue":                                    3173,
+		"GcpTagBinding":                                  3174,
+		"GcpBillingBudget":                               3175,
+		"GcpCloudIdentityGroup":                          3176,
 		"GcpApiKey":                                      3177,
+		"GcpKmsAutokeyConfig":                            3178,
+		"GcpOrgPolicyCustomConstraint":                   3179,
+		"GcpSharedVpcHost":                               3180,
+		"GcpSharedVpcServiceProject":                     3181,
+		"GcpVpcPeering":                                  3182,
+		"GcpHaVpnGateway":                                3183,
+		"GcpHierarchicalFirewallPolicy":                  3184,
+		"GcpNetworkFirewallPolicy":                       3185,
+		"GcpHaVpnConnection":                             3188,
+		"GcpPscServiceAttachment":                        3186,
+		"GcpNetworkEndpointGroup":                        3187,
+		"GcpRedisCluster":                                3190,
+		"GcpManagedKafkaCluster":                         3191,
+		"GcpManagedKafkaTopic":                           3192,
+		"GcpManagedKafkaConnectCluster":                  3193,
+		"GcpBigQueryConnection":                          3194,
+		"GcpBigQueryReservation":                         3195,
+		"GcpDatastreamStream":                            3196,
+		"GcpRedisClusterEndpointSet":                     3197,
+		"GcpManagedKafkaAcl":                             3198,
+		"GcpManagedKafkaConnector":                       3199,
+		"GcpVertexAiAgentEngine":                         3200,
+		"GcpVertexAiModelGardenDeployment":               3201,
+		"GcpVertexAiRagEngineConfig":                     3202,
+		"GcpVectorSearchCollection":                      3204,
+		"GcpVertexAiSearchDataStore":                     3205,
+		"GcpVertexAiSearchEngine":                        3206,
+		"GcpVertexAiFeatureGroup":                        3207,
+		"GcpVertexAiFeatureOnlineStore":                  3208,
+		"GcpVertexAiDataset":                             3209,
+		"GcpVertexAiTensorboard":                         3210,
+		"GcpVertexAiPersistentResource":                  3211,
+		"GcpModelArmorTemplate":                          3212,
+		"GcpDocumentAiProcessor":                         3213,
+		"GcpColabRuntimeTemplate":                        3214,
+		"GcpColabRuntime":                                3215,
+		"GcpColabSchedule":                               3216,
+		"GcpTpuVm":                                       3217,
+		"GcpDialogflowCxAgent":                           3218,
+		"GcpVertexAiSearchDataConnector":                 3219,
+		"GcpModelArmorFloorSetting":                      3220,
+		"GcpTpuQueuedResource":                           3221,
+		"GcpDialogflowCxSecuritySettings":                3222,
+		"GcpPrivateCaPool":                               3230,
+		"GcpKmsKeyHandle":                                3231,
+		"GcpSccNotificationConfig":                       3232,
+		"GcpSccMuteConfig":                               3233,
+		"GcpSccBigQueryExport":                           3234,
+		"GcpBinaryAuthorizationPolicy":                   3235,
+		"GcpBinaryAuthorizationAttestor":                 3236,
+		"GcpPrivateCaCertificateAuthority":               3237,
+		"GcpPrivateCaCertificateTemplate":                3238,
+		"GcpPrivateCaCertificate":                        3239,
+		"GcpGkeFleet":                                    3240,
+		"GcpGkeFleetFeature":                             3241,
+		"GcpGkeFleetScope":                               3242,
+		"GcpGkeFleetMembership":                          3243,
+		"GcpComputeImage":                                3244,
+		"GcpCloudBuildConnection":                        3245,
+		"GcpCloudBuildRepository":                        3246,
+		"GcpCloudBuildTrigger":                           3247,
+		"GcpDeliveryPipeline":                            3248,
+		"GcpDeployTarget":                                3249,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
 		"GcpFirebaseWebApp":                              3253,
+		"GcpCloudBuildWorkerPool":                        3260,
+		"GcpDeployPolicy":                                3261,
+		"GcpDeployCustomTargetType":                      3262,
 		"KubernetesNamespace":                            4000,
 		"KubernetesDeployment":                           4001,
 		"KubernetesStatefulSet":                          4002,
@@ -4465,7 +4939,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xe7\xea\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xac\x91\x03\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4919,7 +5393,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\rGcpGkeCluster\x10\xbf\x17\x1a%\xa2\xf7\x04!\b\x12\x12\bv1alpha1\"\x06gcpgke0\x01:\x04\xc2\x17\xc3\x17P\xad\x02X\x01\x123\n" +
 	"\x10GcpIamCustomRole\x10\xc0\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcproleP\xb4\x02\x12.\n" +
 	"\n" +
-	"GcpProject\x10\xc1\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpprj0\x01P\xb4\x02\x121\n" +
+	"GcpProject\x10\xc1\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpprj0\x01P\xba\x02\x121\n" +
 	"\rGcpVpcNetwork\x10\xc2\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpvpc0\x01P\xb0\x02\x125\n" +
 	"\rGcpSubnetwork\x10\xc3\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpsnw0\x01:\x02\xc2\x17P\xb0\x02\x124\n" +
 	"\fGcpRouterNat\x10\xc4\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpnat:\x04\xc2\x17\xaa\x18P\xb0\x02\x126\n" +
@@ -4947,8 +5421,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x12GcpSpannerDatabase\x10\xda\x17\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpspdb0\x01:\x02\xd9\x17P\xaf\x02\x126\n" +
 	"\x13GcpBigtableInstance\x10\xdb\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\x05gcpbt0\x01P\xaf\x02\x12<\n" +
 	"\x16GcpMemorystoreInstance\x10\xdc\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpmsi:\x02\xab\x18P\xaf\x02\x12;\n" +
-	"\x13GcpCloudSqlDatabase\x10\xdd\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpsqldb:\x02\xbc\x17P\xaf\x02\x126\n" +
-	"\x0fGcpCloudSqlUser\x10\xde\x17\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsqlu:\x02\xbc\x17P\xaf\x02\x129\n" +
+	"\x13GcpCloudSqlDatabase\x10\xdd\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpsqldb:\x02\xbc\x17P\xaf\x02\x128\n" +
+	"\x0fGcpCloudSqlUser\x10\xde\x17\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpsqlu:\x04\xbc\x17\xc6\x17P\xaf\x02\x129\n" +
 	"\x12GcpAlloydbInstance\x10\xdf\x17\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpadbi:\x02\xd6\x17P\xaf\x02\x125\n" +
 	"\x0eGcpAlloydbUser\x10\xe0\x17\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpadbu:\x02\xd6\x17P\xaf\x02\x12@\n" +
 	"\x18GcpSpannerBackupSchedule\x10\xe1\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpsbs:\x04\xd9\x17\xda\x17P\xaf\x02\x128\n" +
@@ -4959,12 +5433,17 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x12GcpDataprocCluster\x10\xeb\x17\x1a'\xa2\xf7\x04#\b\x12\x12\bv1alpha1\"\x06gcpdpc:\n" +
 	"\xc2\x17\xc3\x17\xcc\x17\xc6\x17\xec\x17P\xb1\x02\x12@\n" +
 	"\x1cGcpDataprocAutoscalingPolicy\x10\xec\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdpaspP\xb1\x02\x128\n" +
-	"\x10GcpBigQueryTable\x10\xed\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpbqtbl:\x02\xea\x17P\xb1\x02\x124\n" +
+	"\x10GcpBigQueryTable\x10\xed\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpbqtbl:\x02\xea\x17P\xb1\x02\x12@\n" +
+	"\x1dGcpBigQueryCapacityCommitment\x10\xee\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqccP\xb1\x02\x12>\n" +
+	"\x1bGcpBigQueryReservationGroup\x10\xef\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrgP\xb1\x02\x12A\n" +
+	"\x1eGcpDatastreamConnectionProfile\x10\xf0\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpdscpP\xb1\x02\x12E\n" +
+	"\x1eGcpDatastreamPrivateConnection\x10\xf1\x17\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpdspc:\x02\xc2\x17P\xb1\x02\x124\n" +
 	"\x0eGcpPubSubTopic\x10\xf4\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcppst:\x02\xf8\x17P\xb1\x02\x12;\n" +
 	"\x15GcpPubSubSubscription\x10\xf5\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcppss:\x02\xf4\x17P\xb1\x02\x127\n" +
 	"\x12GcpCloudTasksQueue\x10\xf6\x17\x1a\x1e\xa2\xf7\x04\x1a\b\x12\x12\bv1alpha1\"\x05gcptq:\x02\xc6\x17P\xb7\x02\x12<\n" +
 	"\x14GcpCloudSchedulerJob\x10\xf7\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpcsj:\x04\xf4\x17\xc6\x17P\xb7\x02\x122\n" +
-	"\x0fGcpPubSubSchema\x10\xf8\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcppschP\xb1\x02\x12=\n" +
+	"\x0fGcpPubSubSchema\x10\xf8\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcppschP\xb1\x02\x12;\n" +
+	"\x17GcpPubSubTopicIamMember\x10\xf9\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcppstimP\xb1\x02\x12=\n" +
 	"\x13GcpVertexAiNotebook\x10\xfe\x17\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\x06gcpvnb:\x06\xc2\x17\xc3\x17\xc6\x17P\xb2\x02\x125\n" +
 	"\x13GcpVertexAiEndpoint\x10\xff\x17\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvepP\xb2\x02\x124\n" +
 	"\x10GcpVertexAiIndex\x10\x80\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpvaidxP\xb2\x02\x12>\n" +
@@ -4979,7 +5458,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x14GcpFilestoreInstance\x10\x9c\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpnfs:\x02\xc2\x17P\xae\x02\x12;\n" +
 	"\x17GcpWorkloadIdentityPool\x10\x9d\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpwip0\x01P\xb4\x02\x12F\n" +
 	"\x1fGcpWorkloadIdentityPoolProvider\x10\x9e\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpwipp:\x02\x9d\x18P\xb4\x02\x12A\n" +
-	"\x1aGcpServiceAccountIamMember\x10\x9f\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsaim:\x02\xc6\x17P\xb4\x02\x12?\n" +
+	"\x1aGcpServiceAccountIamMember\x10\x9f\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsaim:\x02\xc6\x17P\xb4\x02\x129\n" +
+	"\x15GcpGcsBucketIamMember\x10\xa0\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpgcsimP\xae\x02\x12?\n" +
 	"\x17GcpGlobalForwardingRule\x10\xa6\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpgfr:\x04\xb9\x17\xcd\x17P\xb0\x02\x12/\n" +
 	"\fGcpSslPolicy\x10\xa7\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsslpP\xb0\x02\x124\n" +
 	"\x11GcpSslCertificate\x10\xa8\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsslcP\xb0\x02\x12F\n" +
@@ -4988,9 +5468,12 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"GcpAddress\x10\xaa\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpaddr:\x04\xc2\x17\xc3\x17P\xb0\x02\x12B\n" +
 	"\x1aGcpServiceConnectionPolicy\x10\xab\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpscp:\x04\xc2\x17\xc3\x17P\xb0\x02\x12A\n" +
 	"\x1eGcpCertManagerDnsAuthorization\x10\xac\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcmdaP\xb3\x02\x128\n" +
-	"\x11GcpCertificateMap\x10\xad\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpcmap:\x02\xc8\x17P\xb3\x02\x121\n" +
+	"\x11GcpCertificateMap\x10\xad\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpcmap:\x02\xc8\x17P\xb3\x02\x12<\n" +
+	"\x19GcpCertManagerTrustConfig\x10\xae\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcmtcP\xb3\x02\x12?\n" +
+	"\x1cGcpCertManagerIssuanceConfig\x10\xaf\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcmicP\xb3\x02\x121\n" +
 	"\x0eGcpCloudRunJob\x10\xb0\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunjP\xb8\x02\x12B\n" +
-	"\x19GcpServerlessVpcConnector\x10\xb1\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpvpcc:\x04\xc2\x17\xc3\x17P\xb8\x02\x121\n" +
+	"\x19GcpServerlessVpcConnector\x10\xb1\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpvpcc:\x04\xc2\x17\xc3\x17P\xb8\x02\x12?\n" +
+	"\x15GcpCloudRunWorkerPool\x10\xb2\x18\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\bgcprunwp:\x04\xc2\x17\xc3\x17P\xb8\x02\x121\n" +
 	"\x0eGcpComputeDisk\x10\xba\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpdiskP\xac\x02\x123\n" +
 	"\rGcpComputeMig\x10\xbb\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpmig:\x02\xc2\x17P\xac\x02\x12D\n" +
 	" GcpMonitoringNotificationChannel\x10\xc4\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpntfchP\xb5\x02\x12?\n" +
@@ -5010,12 +5493,85 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\vGcpWorkflow\x10\xd9\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpwflowP\xb7\x02\x12:\n" +
 	"\x12GcpEventarcTrigger\x10\xda\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpevtrg:\x02\xbb\x17P\xb7\x02\x129\n" +
 	"\x15GcpEventarcMessageBus\x10\xdb\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpevbusP\xb7\x02\x123\n" +
-	"\x10GcpPlantonRunner\x10\xdc\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunrP\xb6\x02\x12,\n" +
-	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x128\n" +
+	"\x10GcpPlantonRunner\x10\xdc\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunrP\xb6\x02\x12.\n" +
+	"\tGcpFolder\x10\xe2\x18\x1a\x1e\xa2\xf7\x04\x1a\b\x12\x12\bv1alpha1\"\agcpfldr0\x01P\xba\x02\x12/\n" +
+	"\fGcpOrgPolicy\x10\xe3\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcporgpP\xba\x02\x12,\n" +
+	"\tGcpTagKey\x10\xe4\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptagkP\xba\x02\x122\n" +
+	"\vGcpTagValue\x10\xe5\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagv:\x02\xe4\x18P\xba\x02\x124\n" +
+	"\rGcpTagBinding\x10\xe6\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagb:\x02\xe5\x18P\xba\x02\x123\n" +
+	"\x10GcpBillingBudget\x10\xe7\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbdgtP\xba\x02\x129\n" +
+	"\x15GcpCloudIdentityGroup\x10\xe8\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcigrpP\xb4\x02\x12,\n" +
+	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x127\n" +
+	"\x13GcpKmsAutokeyConfig\x10\xea\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpakcfgP\xb3\x02\x12>\n" +
+	"\x1cGcpOrgPolicyCustomConstraint\x10\xeb\x18\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpoccP\xba\x02\x123\n" +
+	"\x10GcpSharedVpcHost\x10\xec\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsvphP\xb0\x02\x12A\n" +
+	"\x1aGcpSharedVpcServiceProject\x10\xed\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsvps:\x02\xec\x18P\xb0\x02\x124\n" +
+	"\rGcpVpcPeering\x10\xee\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppeer:\x02\xc2\x17P\xb0\x02\x127\n" +
+	"\x0fGcpHaVpnGateway\x10\xef\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpngw:\x02\xc2\x17P\xb0\x02\x12@\n" +
+	"\x1dGcpHierarchicalFirewallPolicy\x10\xf0\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcphfwpP\xb0\x02\x12?\n" +
+	"\x18GcpNetworkFirewallPolicy\x10\xf1\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpnfwp:\x02\xc2\x17P\xb0\x02\x12:\n" +
+	"\x12GcpHaVpnConnection\x10\xf4\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpncn:\x02\xef\x18P\xb0\x02\x12>\n" +
+	"\x17GcpPscServiceAttachment\x10\xf2\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppsca:\x02\xc2\x17P\xb0\x02\x12=\n" +
+	"\x17GcpNetworkEndpointGroup\x10\xf3\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpneg:\x02\xc2\x17P\xb0\x02\x125\n" +
+	"\x0fGcpRedisCluster\x10\xf6\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcprcl:\x02\xab\x18P\xaf\x02\x12@\n" +
+	"\x16GcpManagedKafkaCluster\x10\xf7\x18\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\bgcpkafka0\x01:\x02\xc3\x17P\xb1\x02\x12;\n" +
+	"\x14GcpManagedKafkaTopic\x10\xf8\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpktpc:\x02\xf7\x18P\xb1\x02\x12F\n" +
+	"\x1dGcpManagedKafkaConnectCluster\x10\xf9\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpkcon0\x01:\x02\xf7\x18P\xb1\x02\x128\n" +
+	"\x15GcpBigQueryConnection\x10\xfa\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqcnP\xb1\x02\x129\n" +
+	"\x16GcpBigQueryReservation\x10\xfb\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrsP\xb1\x02\x12;\n" +
+	"\x13GcpDatastreamStream\x10\xfc\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpdstrm:\x02\xf0\x17P\xb1\x02\x12B\n" +
+	"\x1aGcpRedisClusterEndpointSet\x10\xfd\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcprclep:\x02\xf6\x18P\xaf\x02\x129\n" +
+	"\x12GcpManagedKafkaAcl\x10\xfe\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkacl:\x02\xf7\x18P\xb1\x02\x12?\n" +
+	"\x18GcpManagedKafkaConnector\x10\xff\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkcnr:\x02\xf9\x18P\xb1\x02\x12:\n" +
+	"\x16GcpVertexAiAgentEngine\x10\x80\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpagentP\xb2\x02\x12D\n" +
+	" GcpVertexAiModelGardenDeployment\x10\x81\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpmgdepP\xb2\x02\x12>\n" +
+	"\x1aGcpVertexAiRagEngineConfig\x10\x82\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpragcfP\xb2\x02\x12;\n" +
+	"\x19GcpVectorSearchCollection\x10\x84\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvscP\xb2\x02\x12=\n" +
+	"\x1aGcpVertexAiSearchDataStore\x10\x85\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvsdsP\xb2\x02\x12?\n" +
+	"\x17GcpVertexAiSearchEngine\x10\x86\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvseng:\x02\x85\x19P\xb2\x02\x129\n" +
+	"\x17GcpVertexAiFeatureGroup\x10\x87\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvfgP\xb2\x02\x12@\n" +
+	"\x1dGcpVertexAiFeatureOnlineStore\x10\x88\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvfosP\xb2\x02\x124\n" +
+	"\x12GcpVertexAiDataset\x10\x89\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvdsP\xb2\x02\x128\n" +
+	"\x16GcpVertexAiTensorboard\x10\x8a\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvtbP\xb2\x02\x12?\n" +
+	"\x1dGcpVertexAiPersistentResource\x10\x8b\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvprP\xb2\x02\x128\n" +
+	"\x15GcpModelArmorTemplate\x10\x8c\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpmarmP\xb2\x02\x12:\n" +
+	"\x16GcpDocumentAiProcessor\x10\x8d\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdocaiP\xb2\x02\x12:\n" +
+	"\x17GcpColabRuntimeTemplate\x10\x8e\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcoltP\xb2\x02\x122\n" +
+	"\x0fGcpColabRuntime\x10\x8f\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcolrP\xb2\x02\x123\n" +
+	"\x10GcpColabSchedule\x10\x90\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcolsP\xb2\x02\x12*\n" +
+	"\bGcpTpuVm\x10\x91\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcptpuP\xb2\x02\x127\n" +
+	"\x14GcpDialogflowCxAgent\x10\x92\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpdfcxP\xb2\x02\x12A\n" +
+	"\x1eGcpVertexAiSearchDataConnector\x10\x93\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvsdcP\xb2\x02\x12<\n" +
+	"\x19GcpModelArmorFloorSetting\x10\x94\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpmafsP\xb2\x02\x127\n" +
+	"\x14GcpTpuQueuedResource\x10\x95\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptpuqP\xb2\x02\x12C\n" +
+	"\x1fGcpDialogflowCxSecuritySettings\x10\x96\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdfcxsP\xb2\x02\x124\n" +
+	"\x10GcpPrivateCaPool\x10\x9e\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcppca0\x01P\xb3\x02\x126\n" +
+	"\x0fGcpKmsKeyHandle\x10\x9f\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkmsh:\x02\xea\x18P\xb3\x02\x12;\n" +
+	"\x18GcpSccNotificationConfig\x10\xa0\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsccnP\xb3\x02\x123\n" +
+	"\x10GcpSccMuteConfig\x10\xa1\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsccmP\xb3\x02\x127\n" +
+	"\x14GcpSccBigQueryExport\x10\xa2\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsccxP\xb3\x02\x12@\n" +
+	"\x1cGcpBinaryAuthorizationPolicy\x10\xa3\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpbapolP\xb3\x02\x12B\n" +
+	"\x1eGcpBinaryAuthorizationAttestor\x10\xa4\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpbaattP\xb3\x02\x12G\n" +
+	" GcpPrivateCaCertificateAuthority\x10\xa5\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppcaa:\x02\x9e\x19P\xb3\x02\x12B\n" +
+	"\x1fGcpPrivateCaCertificateTemplate\x10\xa6\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcppcatP\xb3\x02\x12>\n" +
+	"\x17GcpPrivateCaCertificate\x10\xa7\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppcac:\x02\xa5\x19P\xb3\x02\x121\n" +
+	"\vGcpGkeFleet\x10\xa8\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfleet0\x01P\xad\x02\x129\n" +
+	"\x12GcpGkeFleetFeature\x10\xa9\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflft:\x02\xa8\x19P\xad\x02\x127\n" +
+	"\x10GcpGkeFleetScope\x10\xaa\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflsc:\x02\xa8\x19P\xad\x02\x12<\n" +
+	"\x15GcpGkeFleetMembership\x10\xab\x19\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpflmb:\x02\xa8\x19P\xad\x02\x121\n" +
+	"\x0fGcpComputeImage\x10\xac\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpimgP\xac\x02\x12=\n" +
+	"\x17GcpCloudBuildConnection\x10\xad\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpcbcon0\x01P\xb6\x02\x12?\n" +
+	"\x17GcpCloudBuildRepository\x10\xae\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpcbrep:\x02\xad\x19P\xb6\x02\x128\n" +
+	"\x14GcpCloudBuildTrigger\x10\xaf\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcbtrgP\xb6\x02\x127\n" +
+	"\x13GcpDeliveryPipeline\x10\xb0\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdpipP\xb6\x02\x123\n" +
+	"\x0fGcpDeployTarget\x10\xb1\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdtgtP\xb6\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +
-	"\x11GcpFirebaseWebApp\x10\xb5\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbweb:\x02\xb2\x19P\xb9\x02\x126\n" +
+	"\x11GcpFirebaseWebApp\x10\xb5\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbweb:\x02\xb2\x19P\xb9\x02\x12:\n" +
+	"\x17GcpCloudBuildWorkerPool\x10\xbc\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcbwpP\xb6\x02\x123\n" +
+	"\x0fGcpDeployPolicy\x10\xbd\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdpolP\xb6\x02\x12=\n" +
+	"\x19GcpDeployCustomTargetType\x10\xbe\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcdcttP\xb6\x02\x126\n" +
 	"\x13KubernetesNamespace\x10\xa0\x1f\x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\x05k8sns0\x01P\x90\x03\x128\n" +
 	"\x14KubernetesDeployment\x10\xa1\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8sdpl(\x01P\x90\x03\x129\n" +
 	"\x15KubernetesStatefulSet\x10\xa2\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8ssts(\x01P\x90\x03\x124\n" +

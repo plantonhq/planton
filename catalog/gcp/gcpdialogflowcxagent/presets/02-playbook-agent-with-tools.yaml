@@ -1,0 +1,61 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: concierge-agent
+spec:
+  location: global
+  displayName: Concierge
+  defaultLanguageCode: en
+  timeZone: Europe/London
+  # A generative agent: conversations begin in the default playbook, whose
+  # instructions (written in the console) call the tools below.
+  startWithDefaultPlaybook: true
+  tools:
+    - displayName: order-status
+      description: Looks up the status of an order by its order number. Use it whenever the customer asks where an order is.
+      openApiSpec:
+        textSchema: |
+          openapi: 3.0.0
+          info:
+            title: Orders
+            version: "1.0"
+          servers:
+            - url: https://orders.example.com
+          paths:
+            /orders/{id}:
+              get:
+                operationId: getOrder
+                parameters:
+                  - name: id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                responses:
+                  "200":
+                    description: The order
+        authentication:
+          serviceAgentAuthConfig:
+            serviceAgentAuth: ID_TOKEN
+    - displayName: policy-search
+      description: Searches the returns and shipping policy handbook. Use it for any policy question.
+      dataStoreSpec:
+        dataStoreConnections:
+          - dataStore:
+              valueFrom:
+                kind: GcpVertexAiSearchDataStore
+                name: policy-handbook
+                fieldPath: status.outputs.name
+            dataStoreType: UNSTRUCTURED
+  generativeSettings:
+    - languageCode: en
+      knowledgeConnectorSettings:
+        business: Acme
+        businessDescription: an online store for outdoor gear
+        agentIdentity: AI assistant
+        agentScope: Acme's customer support website
+      generativeSafetySettings:
+        defaultBannedPhraseMatchStrategy: PARTIAL_MATCH
+        bannedPhrases:
+          - languageCode: en
+            text: internal only

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptpuvm.v1alpha1;
+
+import "catalog/gcp/gcptpuvm/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-tpu-vm stack-input
+message GcpTpuVmStackInput {
+  //target cloud-resource
+  GcpTpuVm target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

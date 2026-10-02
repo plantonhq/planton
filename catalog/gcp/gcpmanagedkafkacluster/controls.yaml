@@ -1,0 +1,93 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpmanagedkafkacluster
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google encrypts brokers' disks and retained messages at rest with Google-managed keys without configuration."
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key
+      evidence:
+        type: spec_default
+        reference: "Unset uses Google-managed keys; kms_key encrypts the cluster with a customer-managed Cloud KMS key in its region (immutable)."
+      notes: "The 02-production-cmek preset sets it."
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Clients connect over SASL_SSL (TLS) on port 9092 or mutual TLS on 9192; plaintext listeners are not offered."
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "The spec offers no public access: brokers get addresses only in the VPC subnets listed in network_configs."
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: network_configs
+      evidence:
+        type: spec_default
+        reference: "Reachability is exactly the VPC networks whose subnets network_configs lists; VPC firewall rules further restrict which clients reach the brokers."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "No internet edge is served; the brokers are private to attached VPCs."
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Connecting requires roles/managedkafka.client under Google IAM, and Kafka ACLs (GcpManagedKafkaAcl) authorize each operation on topics and consumer groups."
+    - control_id: workload-identity
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Clients authenticate as Google service accounts through OAUTHBEARER tokens; no static Kafka passwords exist."
+    - control_id: no-legacy-auth
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Only Google IAM (SASL OAUTHBEARER) and, when configured, mutual TLS are accepted; SASL/PLAIN with static users is not offered."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "The cluster enforces no end-user sign-in; clients are workloads authenticating through IAM, whose posture rbac carries."
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Cluster, topic, and ACL administration is recorded in Cloud Audit Logs (Admin Activity) unconditionally."
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google publishes cluster, broker, and topic metrics to Cloud Monitoring without configuration."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "Managed Kafka offers no snapshot or backup of a cluster; durability comes from three-zone replication, and cross-cluster copies are a MirrorMaker 2 connector (GcpManagedKafkaConnector)."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "There are no backups; message retention is a per-topic setting on GcpManagedKafkaTopic (retention.ms)."
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google places the brokers across three zones of the region; a zone outage does not take the cluster down."
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: "Unset means DELETE -- the cluster and every message are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves the cluster running in GCP."
+      notes: "The 02-production-cmek preset sets PREVENT."
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Google operates and patches the Kafka brokers and their hosts; there is no software surface the customer patches."

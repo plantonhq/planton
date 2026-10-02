@@ -1,0 +1,9 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyHandle
+metadata:
+  name: analytics-dataset-key
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us
+  resourceTypeSelector: bigquery.googleapis.com/Dataset

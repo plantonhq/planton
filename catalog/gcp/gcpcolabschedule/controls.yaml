@@ -1,0 +1,91 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcolabschedule
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Run resources and their outputs are encrypted at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: notebook_execution_job.kms_key_name
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; notebook_execution_job.kms_key_name and pipeline_job.kms_key_name encrypt the runs under a customer-managed key.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Vertex AI API call is TLS.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A schedule has no address; it is managed only through the Vertex AI API under IAM.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: notebook_execution_job.custom_environment_spec
+      evidence:
+        type: spec_default
+        reference: Runs use the template's or Google's default network unless custom_environment_spec.network_spec (notebooks) or pipeline_job.network / psc_interface_config (pipelines) places them on a private network.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: A schedule serves no edge.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Managing schedules requires aiplatform.schedules.*; naming a run identity requires iam.serviceAccounts.actAs on it.
+    - control_id: workload-identity
+      status: configurable
+      field_path: notebook_execution_job.service_account
+      evidence:
+        type: spec_default
+        reference: Notebook runs execute as exactly one of a user (execution_user) or a service account (service_account); pipeline runs as pipeline_job.service_account or the Compute Engine default. The GUIDE recommends a dedicated service account for unattended runs.
+      notes: Both presets set a service account.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Schedule create, update, pause, resume, and delete are Vertex AI admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every launched run is a Vertex AI job with its own state, logs, and metrics in Cloud Logging and Cloud Monitoring.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A schedule is declarative configuration; the manifest is its recovery path.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Schedules are regional Google-managed resources; there is no zonal placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the schedule is deleted on destroy (launched runs and outputs stay); PREVENT makes destroy fail; ABANDON leaves it launching runs outside management.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The Schedules API and the run environments are Google-operated.

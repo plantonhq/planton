@@ -1,0 +1,37 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataConnector
+metadata:
+  name: servicenow-knowledge
+spec:
+  location: us
+  collectionDisplayName: ServiceNow knowledge
+  dataSource: servicenow
+  params:
+    auth_type: OAUTH_PASSWORD_GRANT
+    instance_uri: https://example.service-now.com/
+    client_id: projects/my-gcp-project/secrets/servicenow-client-id
+    client_secret: projects/my-gcp-project/secrets/servicenow-client-secret
+    user_account: connector@example.com
+    password: projects/my-gcp-project/secrets/servicenow-password
+  # Index ServiceNow into the stores: a daily full sync, incremental syncs
+  # every six hours.
+  refreshInterval: 86400s
+  incrementalRefreshInterval: 21600s
+  syncMode: PERIODIC
+  connectorModes:
+    - DATA_INGESTION
+  entities:
+    - entityName: knowledge_base
+    - entityName: catalog
+    - entityName: incident
+      params: '{"inclusion_filters":{"knowledgeBaseSysId":["123"]}}'
+      keyPropertyMappings:
+        short_description: title
+        description: description
+  # Every store the connector creates is encrypted under this key.
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: search-us-key
+      fieldPath: status.outputs.key_id
+  deletionPolicy: PREVENT

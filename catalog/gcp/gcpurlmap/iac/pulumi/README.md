@@ -2,9 +2,9 @@
 
 ## Overview
 
-This directory contains the Pulumi implementation for deploying GCP Compute Engine global URL maps using Planton's `GcpUrlMap` API. The module is written in Go and creates `compute.URLMap`.
+This directory contains the Pulumi implementation for deploying GCP Compute Engine URL maps using Planton's `GcpUrlMap` API. The module is written in Go and creates exactly one of `compute.URLMap` (global; `spec.region` empty) or `compute.RegionUrlMap` (regional; `spec.region` set), the same switch the Terraform module makes with its count guards; the regional builders (`region_url_map.go`) mirror the global ones minus the surfaces the regional API lacks.
 
-A URL map is the routing brain of a global external Application Load Balancer — it matches each request's host and path and decides whether to forward, split, rewrite, redirect, or return a custom error page.
+A URL map is the routing brain of an Application Load Balancer — it matches each request's host and path and decides whether to forward, split, rewrite, redirect, or return a custom error page.
 
 ## Prerequisites
 
@@ -85,10 +85,11 @@ The module consumes `GcpUrlMapStackInput`:
 
 | Output Key | Type | Description |
 |------------|------|-------------|
-| `self_link` | string | Self-link URI — the value target proxies reference |
+| `self_link` | string | Self-link URI — the value target proxies reference (`regions/{region}` in place of `global` for a regional map) |
 | `url_map_name` | string | Name of the URL map in GCP |
 | `map_id` | string | Server-assigned numeric ID |
 | `fingerprint` | string | Server-computed fingerprint |
+| `region` | string | Region of a regional URL map; empty for global |
 
 ## Behavior Notes
 

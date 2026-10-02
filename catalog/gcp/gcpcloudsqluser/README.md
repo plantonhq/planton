@@ -14,6 +14,7 @@ No API enablement is needed: the instance the user lives on cannot exist without
 
 - **An existing Cloud SQL instance** — referenced via `instance` (a [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) resource or a literal instance name)
 - **For IAM users on PostgreSQL** — the instance must set the database flag `cloudsql.iam_authentication = "on"`
+- **For service-account users** — the account needs `roles/cloudsql.instanceUser` (and `roles/cloudsql.client` to connect) on the project, granted through [GcpProjectIamMember](/docs/catalog/gcp/gcpprojectiammember)
 - **GCP credentials** — [`iac/permissions.yaml`](iac/permissions.yaml) lists the exact least-privilege permissions
 
 ## Quick Start
@@ -35,6 +36,27 @@ spec:
   password: a-strong-generated-password
 ```
 
+A passwordless service-account user, wired by reference (the instance must have `cloudsql.iam_authentication = "on"`):
+
+```yaml
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudSqlUser
+metadata:
+  name: orders-runner-user
+spec:
+  instance:
+    valueFrom:
+      kind: GcpCloudSql
+      name: my-postgres
+      fieldPath: status.outputs.instance_name
+  type: CLOUD_IAM_SERVICE_ACCOUNT
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: orders-runner
+      fieldPath: status.outputs.email
+```
+
 Deploy:
 
 ```shell
@@ -48,7 +70,8 @@ planton apply -f user.yaml
 | Field | Type | Description | Validation |
 |-------|------|-------------|------------|
 | `instance` | `StringValueOrRef` | The hosting Cloud SQL instance. Immutable. | Ref → GcpCloudSql `instance_name` |
-| `userName` | `string` | Login name (BUILT_IN) or IAM principal email (IAM types). Immutable. | 1–128 chars |
+| `userName` | `string` | Login name (BUILT_IN) or IAM principal (IAM types; for a service account, the email with `.gserviceaccount.com` dropped — both engines normalize a pasted full email). Immutable. Exactly one of `userName` or `serviceAccount`. | 1–128 chars |
+| `serviceAccount` | `StringValueOrRef` | For `CLOUD_IAM_SERVICE_ACCOUNT` users: the service account wired by reference (a GcpServiceAccount's `email` output) or as a literal email; both engines derive the database username. Immutable. Exactly one of `userName` or `serviceAccount`. | Ref → GcpServiceAccount `email`; requires `type: CLOUD_IAM_SERVICE_ACCOUNT` |
 
 ### Optional Fields
 
@@ -63,6 +86,7 @@ planton apply -f user.yaml
 ### Validation Rules (enforced pre-deploy)
 
 - IAM-authenticated types must not set a `password`.
+- Exactly one of `userName` or `serviceAccount` is set; `serviceAccount` requires `type: CLOUD_IAM_SERVICE_ACCOUNT`.
 - `passwordPolicy` applies to `BUILT_IN` users only.
 - `passwordExpirationDuration` must be a seconds duration string (e.g. `2592000s`).
 

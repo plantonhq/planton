@@ -1,0 +1,4 @@
+name: gcporgpolicycustomconstraint-pulumi-project
+runtime:
+  name: go
+description: Planton GcpOrgPolicyCustomConstraint Pulumi module

@@ -1,0 +1,47 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBillingBudget
+metadata:
+  name: platform-prod-monthly
+spec:
+  # The billing account the budget belongs to; the module accepts the bare
+  # ID or billingAccounts/{id}.
+  billingAccount: 012345-6789AB-CDEF01
+  displayName: Platform production -- monthly
+  # A fixed monthly budget of USD 5,000.
+  amount:
+    specifiedAmount:
+      currencyCode: USD
+      units: 5000
+  # Only this project's spend counts, reset every month, net of all
+  # credits.
+  budgetFilter:
+    projects:
+      - valueFrom:
+          kind: GcpProject
+          name: platform-prod
+          fieldPath: status.outputs.project_number
+    calendarPeriod: MONTH
+    creditTypesTreatment: INCLUDE_ALL_CREDITS
+  # Alert at half, at 90% of actual spend, and when the forecast says the
+  # month will overshoot.
+  thresholdRules:
+    - thresholdPercent: 0.5
+    - thresholdPercent: 0.9
+    - thresholdPercent: 1.0
+      spendBasis: FORECASTED_SPEND
+  # Alerts go to a Pub/Sub topic (for automation) and an on-call channel
+  # (for people), and not to every billing administrator.
+  notifications:
+    pubsubTopic:
+      valueFrom:
+        kind: GcpPubSubTopic
+        name: budget-alerts
+        fieldPath: status.outputs.topic_id
+    monitoringNotificationChannels:
+      - valueFrom:
+          kind: GcpMonitoringNotificationChannel
+          name: platform-oncall-email
+          fieldPath: status.outputs.channel_name
+    disableDefaultIamRecipients: true
+  ownershipScope: ALL_USERS
+  deletionPolicy: PREVENT

@@ -14,10 +14,15 @@ type Locals struct {
 	// forwarding_rule_name empty — the same naming basis every kind uses.
 	ForwardingRuleName string
 
+	// The scope selector: a set spec.region builds the regional forwarding
+	// rule, an empty one the global rule — the same switch the Terraform
+	// module's count guards make.
+	IsRegional bool
+
 	// The scheme sent to GCP. The spec's NONE sentinel (Private Service
 	// Connect) maps to the API's empty scheme; an unset spec value stays
-	// empty here and the field is omitted so GCP applies its default
-	// (EXTERNAL).
+	// empty here and the resource builder sends EXTERNAL explicitly (see the
+	// scheme comment in the builders), on both scopes.
 	LoadBalancingScheme string
 
 	// Whether the spec explicitly chose the PSC form (scheme NONE) — the
@@ -42,6 +47,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *gcpglobalforwardingrulev1
 	return &Locals{
 		GcpGlobalForwardingRule: target,
 		ForwardingRuleName:      ruleName,
+		IsRegional:              target.Spec.Region != "",
 		LoadBalancingScheme:     scheme,
 		IsPrivateServiceConnect: isPsc,
 	}

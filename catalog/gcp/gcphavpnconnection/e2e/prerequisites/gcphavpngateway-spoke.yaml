@@ -1,0 +1,29 @@
+# The SPOKE gateway of the Google-to-Google VPN chain: an extra
+# GcpHaVpnGateway instance on the spoke network, speaking ASN 64515 (the hub
+# prerequisite gateway speaks 64514). The connection under test names this
+# gateway as its peer.gcpGateway; the reverse-connection fixture rides it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: planton-oss-e2e-gcpvpncn-spoke-gw
+  id: planton-oss-e2e-gcpvpncn-spoke-gw
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpnconnection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-central1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpncn-spoke-vpc
+      fieldPath: status.outputs.network_self_link
+  description: Planton E2E fixture HA VPN gateway (spoke side); safe to delete
+  router:
+    bgp:
+      asn: 64515

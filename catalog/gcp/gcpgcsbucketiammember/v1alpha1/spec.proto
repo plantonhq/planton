@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpgcsbucketiammember.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpGcsBucketIamMemberSpec defines a single ADDITIVE IAM grant ON a Cloud
+// Storage bucket: one role, to one member, on one bucket.
+//
+// Use this kind for a grantee that DEPENDS ON the bucket. The canonical case
+// is a GcpLoggingSink exporting into the bucket: the sink names the bucket as
+// its destination, and its writer identity needs roles/storage.objectCreator
+// on that same bucket. Declared in the bucket's own iam_members, that grant
+// would make the bucket depend on the sink while the sink depends on the
+// bucket -- a cycle no chart can deploy. This grant depends on both, so the
+// order is always bucket, then sink, then grant.
+//
+// For every other grantee (a workload's service account, a group, a service
+// agent known in advance), GcpGcsBucket's own iam_members field is the
+// simpler home: the grants travel with the bucket. Both are additive and
+// never fight; do not declare the same (role, member) pair in both places,
+// because removing either one removes the grant.
+//
+// Common roles:
+//   roles/storage.objectCreator -- write objects (a sink's writer, an
+//     uploader that must never read)
+//   roles/storage.objectViewer  -- read objects
+//   roles/storage.objectUser    -- read, write, and delete objects
+//   roles/storage.legacyBucketReader -- list the bucket and read its metadata
+//
+// Additive semantics: the grant merges into the bucket's IAM policy without
+// touching any other member's bindings on the same role, and removal
+// subtracts only this exact (role, member, condition) entry. (Authoritative
+// binding and policy management, which clobbers everything not listed, is
+// deliberately not modeled.)
+//
+// Every field is immutable, mirroring the API: an IAM grant has no update --
+// changing the bucket, role, member, or condition replaces the grant.
+message GcpGcsBucketIamMemberSpec {
+  // The bucket whose IAM policy receives this grant, by its globally unique
+  // name (bucket names are not project-scoped, so there is no project
+  // field). Reference a GcpGcsBucket -- its `bucket_id` output is exactly
+  // this value.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id",
+    (buf.validate.field).cel = {
+      id: "bucket.format"
+      message: "a literal bucket must be a bucket name: 3-222 lowercase letters, digits, dots, hyphens, or underscores, starting and ending with a letter or digit (not a gs:// URL)"
+      expression: "!has(this.value) || this.value.matches('^[a-z0-9][a-z0-9._-]{1,220}[a-z0-9]$')"
+    }
+  ];
+
+  // The role to grant on the bucket. A predefined role
+  // ("roles/storage.objectCreator", "roles/storage.objectViewer",
+  // "roles/storage.objectUser", "roles/storage.objectAdmin",
+  // "roles/storage.legacyBucketReader", ...) or a custom role's full name
+  // ("projects/<project>/roles/<role_id>" or
+  // "organizations/<org>/roles/<role_id>"). Reference a GcpIamCustomRole to
+  // grant a custom role -- its `name` output is exactly this value.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef role = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpIamCustomRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "role.format"
+      message: "a literal role must be roles/<name>, projects/<project>/roles/<id>, or organizations/<org>/roles/<id>"
+      expression: "!has(this.value) || this.value.matches('^(roles/[A-Za-z0-9_.]+|projects/[^/]+/roles/[A-Za-z0-9_.]+|organizations/[0-9]+/roles/[A-Za-z0-9_.]+)$')"
+    }
+  ];
+
+  // The identity receiving the grant, in IAM member format:
+  //   serviceAccount:<email>  -- a service account or Google service agent.
+  //                              Reference GcpServiceAccount (`member`) or a
+  //                              GcpLoggingSink (`writer_identity`, the
+  //                              sink's writer, already in this format).
+  //   user:<email>, group:<email>, domain:<domain>
+  //   principal://... / principalSet://... -- workload identity federation
+  //   allUsers / allAuthenticatedUsers     -- PUBLIC access to the objects
+  //                                           the role covers; refused by
+  //                                           buckets with public access
+  //                                           prevention enforced
+  // Grants to deleted principals ("deleted:...") are not supported.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef member = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.member",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpServiceAccount
+      field_path: "status.outputs.member"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpLoggingSink
+      field_path: "status.outputs.writer_identity"
+    },
+    (buf.validate.field).cel = {
+      id: "member.format"
+      message: "a literal member must be <type>:<value> (serviceAccount:, user:, group:, domain:, principal://, principalSet://) or allUsers / allAuthenticatedUsers, and never a deleted: principal"
+      expression: "!has(this.value) || (this.value.matches('^(.+:.+|allUsers|allAuthenticatedUsers)$') && !this.value.startsWith('deleted:'))"
+    }
+  ];
+
+  // Optional IAM Condition restricting when this grant applies (an expiry,
+  // or an object-name prefix such as
+  // resource.name.startsWith("projects/_/buckets/<bucket>/objects/logs/")).
+  // Conditions require the bucket to use uniform bucket-level access. The
+  // condition is part of the grant's identity: the same role with and
+  // without a condition are two independent grants.
+  GcpGcsBucketIamMemberCondition condition = 4;
+}
+
+// An IAM Condition: a CEL expression that must evaluate true for the grant
+// to apply. Attribute reference and expression language:
+// https://cloud.google.com/iam/docs/conditions-overview
+message GcpGcsBucketIamMemberCondition {
+  // Short human-readable title naming the condition's intent, e.g.
+  // "logs-prefix-only".
+  string title = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.max_len = 100
+  ];
+
+  // The CEL condition expression.
+  string expression = 2 [(buf.validate.field).required = true];
+
+  // Optional longer explanation of what the condition does and why.
+  string description = 3 [(buf.validate.field).string.max_len = 256];
+}

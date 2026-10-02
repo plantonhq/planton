@@ -1,0 +1,27 @@
+# GcpSccMuteConfig scenario: a dynamic project mute rule on the project
+# where Security Command Center is activated (owner-arranged:
+# PLANTON_E2E_GCP_SCC_PROJECT_ID). The filter matches a category no
+# detector emits, so nothing real is muted. Rules are free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSccMuteConfig
+metadata:
+  name: planton-oss-e2e-gcpsccm-project
+  id: planton-oss-e2e-gcpsccm-project
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsccmuteconfig
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SCC_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  scope:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_SCC_PROJECT_ID}
+  muteConfigId: e2e-gcpsccm-${E2E_RUN_ID}
+  description: Planton E2E mute rule
+  filter: category = "PLANTON_E2E_NO_SUCH_CATEGORY"
+  type: DYNAMIC

@@ -15,8 +15,8 @@ func Resources(ctx *pulumi.Context, stackInput *gcpglobalforwardingrulev1alpha1.
 		return errors.Wrap(err, "failed to setup google provider")
 	}
 
-	if err := globalForwardingRule(ctx, locals, gcpProvider); err != nil {
-		return errors.Wrap(err, "failed to create global forwarding rule")
+	if err := forwardingRule(ctx, locals, gcpProvider); err != nil {
+		return errors.Wrap(err, "failed to create forwarding rule")
 	}
 
 	return nil

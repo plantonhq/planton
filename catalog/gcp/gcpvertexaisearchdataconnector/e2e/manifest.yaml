@@ -1,0 +1,36 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataConnector
+metadata:
+  name: jira-federated
+spec:
+  projectId:
+    value: my-gcp-project
+  # Discovery Engine multi-regions: global, us, or eu. Engines over the
+  # connector's stores must match.
+  location: global
+  collectionDisplayName: Jira Federated
+  dataSource: jira
+  dataSourceVersion: 3
+  # Connection parameters: the secrets are Secret Manager resource names,
+  # never the secret material. The Discovery Engine service agent needs
+  # accessor rights on them.
+  params:
+    instance_uri: https://example.atlassian.net
+    instance_id: projects/my-gcp-project/secrets/jira-instance-id
+    client_id: projects/my-gcp-project/secrets/jira-client-id
+    client_secret: projects/my-gcp-project/secrets/jira-client-secret
+    refresh_token: projects/my-gcp-project/secrets/jira-refresh-token
+    auth_type: OAUTH
+  # Daily full syncs, incremental syncs every six hours.
+  refreshInterval: 86400s
+  incrementalRefreshInterval: 21600s
+  syncMode: PERIODIC
+  connectorModes:
+    - DATA_INGESTION
+  # One data store per entity; issues filtered to one project key.
+  entities:
+    - entityName: project
+    - entityName: issue
+      params: '{"inclusion_filters":{"projectKey":["OPS"]}}'
+    - entityName: comment
+  deletionPolicy: DELETE

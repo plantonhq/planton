@@ -1,0 +1,22 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetFeature
+metadata:
+  name: config-sync
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: platform-fleet
+      fieldPath: status.outputs.project_id
+  feature: configmanagement
+  fleetDefaultMemberConfig:
+    configmanagement:
+      management: MANAGEMENT_AUTOMATIC
+      configSync:
+        enabled: true
+        sourceFormat: unstructured
+        git:
+          secretType: none
+          syncRepo: https://github.com/example/platform-config
+          syncBranch: main
+          policyDir: clusters/all

@@ -2105,9 +2105,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"backend_service_name": "web-backend",
 				"generated_id":         "1234567890123456789",
 				"fingerprint":          "BwYn2FQlJeM=",
+				"region":               "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "backend_service_name", "generated_id", "fingerprint",
+				"self_link", "backend_service_name", "generated_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2135,9 +2136,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"url_map_name": "my-map",
 				"map_id":       "1234567890123456789",
 				"fingerprint":  "BwYn2FQlJeM=",
+				"region":       "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "url_map_name", "map_id", "fingerprint",
+				"self_link", "url_map_name", "map_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2165,9 +2167,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"proxy_name":  "my-proxy",
 				"proxy_id":    "1234567890123456789",
 				"fingerprint": "BwYn2FQlJeM=",
+				"region":      "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "proxy_name", "proxy_id", "fingerprint",
+				"self_link", "proxy_name", "proxy_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2180,9 +2183,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"proxy_name":  "my-proxy",
 				"proxy_id":    "1234567890123456789",
 				"fingerprint": "BwYn2FQlJeM=",
+				"region":      "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "proxy_name", "proxy_id", "fingerprint",
+				"self_link", "proxy_name", "proxy_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2198,10 +2202,13 @@ func TestStackOutputsConformance(t *testing.T) {
 				"forwarding_rule_id":    "1234567890123456789",
 				"psc_connection_id":     "1111222233334444",
 				"psc_connection_status": "ACCEPTED",
+				"region":                "us-central1",
+				"service_name":          "orders.ilb-frontend.il4.us-central1.lb.my-project.internal",
 			},
 			mustPopulate: []string{
 				"ip_address", "self_link", "forwarding_rule_name",
 				"forwarding_rule_id", "psc_connection_id", "psc_connection_status",
+				"region", "service_name",
 			},
 		},
 		{
@@ -2627,10 +2634,12 @@ func TestStackOutputsConformance(t *testing.T) {
 				"location":               "us-central1",
 				"self_link":              "https://container.googleapis.com/v1/projects/my-project/locations/us-central1/clusters/prod-primary",
 				"master_version":         "1.31.4-gke.1256000",
+				"fleet_membership":       "projects/my-project/locations/us-central1/memberships/prod-primary",
 			},
 			mustPopulate: []string{
 				"endpoint", "cluster_ca_certificate", "workload_identity_pool",
 				"cluster_id", "name", "location", "self_link", "master_version",
+				"fleet_membership",
 			},
 		},
 		{
@@ -2912,16 +2921,19 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpCloudArmorPolicy: policy id/name/self-link/fingerprint — the
-			// self-link is the frozen composition key for backend attachments.
+			// self-link is the frozen composition key for backend attachments;
+			// region and the edge-service link tell a regional policy apart.
 			name: "GcpCloudArmorPolicy",
 			kind: cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy,
 			rawOutputs: map[string]interface{}{
-				"policy_id":        "projects/my-project/global/securityPolicies/corp-allowlist",
-				"policy_name":      "corp-allowlist",
-				"policy_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/global/securityPolicies/corp-allowlist",
+				"policy_id":        "projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
+				"policy_name":      "nlb-shield",
+				"policy_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
 				"fingerprint":      "abc123==",
+				"region":           "us-central1",
+				"network_edge_security_service_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/networkEdgeSecurityServices/nlb-shield",
 			},
-			mustPopulate: []string{"policy_id", "policy_name", "policy_self_link", "fingerprint"},
+			mustPopulate: []string{"policy_id", "policy_name", "policy_self_link", "fingerprint", "region", "network_edge_security_service_self_link"},
 		},
 		{
 			// GcpCertManagerDnsAuthorization: authorization id/name/domain and
@@ -3134,8 +3146,9 @@ func TestStackOutputsConformance(t *testing.T) {
 				"key_name":             "cmek-data-key",
 				"primary_version_name": "projects/prod-project/locations/us-central1/keyRings/prod-encryption/cryptoKeys/cmek-data-key/cryptoKeyVersions/1",
 				"primary_state":        "ENABLED",
+				"initial_version_name": "projects/prod-project/locations/us-central1/keyRings/prod-encryption/cryptoKeys/cmek-data-key/cryptoKeyVersions/1",
 			},
-			mustPopulate: []string{"key_id", "key_name", "primary_version_name", "primary_state"},
+			mustPopulate: []string{"key_id", "key_name", "primary_version_name", "primary_state", "initial_version_name"},
 		},
 		{
 			// GcpServerlessVpcConnector: the short connector name, the fully
@@ -3628,6 +3641,1172 @@ func TestStackOutputsConformance(t *testing.T) {
 				"key_string": "AIzaSyExampleKeyStringValue",
 			},
 			mustPopulate: []string{"name", "uid", "key_string"},
+		},
+		{
+			// GcpFolder: flat scalar outputs from both engines -- the numeric
+			// folder id every child references (the E2E verifier keys on it),
+			// the folders/{id} resource name, the lifecycle state, and the
+			// creation time -- must each land on the StackOutputs proto.
+			name: "GcpFolder",
+			kind: cloudresourcekind.CloudResourceKind_GcpFolder,
+			rawOutputs: map[string]interface{}{
+				"folder_id":       "987654321098",
+				"name":            "folders/987654321098",
+				"lifecycle_state": "ACTIVE",
+				"create_time":     "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"folder_id", "name", "lifecycle_state", "create_time"},
+		},
+		{
+			// GcpOrgPolicy: flat scalar outputs from both engines -- the
+			// policy's full name (the E2E verifier keys on it) and its etag --
+			// must each land on the StackOutputs proto.
+			name: "GcpOrgPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpOrgPolicy,
+			rawOutputs: map[string]interface{}{
+				"name": "projects/123456789012/policies/compute.disableSerialPortAccess",
+				"etag": "BwXeTbBV0Mg=",
+			},
+			mustPopulate: []string{"name", "etag"},
+		},
+		{
+			// GcpOrgPolicyCustomConstraint: flat scalar outputs from both
+			// engines -- the constraint's full resource name (the E2E verifier
+			// keys on it), the custom.{name} handle a policy references, and
+			// the update time -- must each land on the StackOutputs proto.
+			name: "GcpOrgPolicyCustomConstraint",
+			kind: cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint,
+			rawOutputs: map[string]interface{}{
+				"name":        "organizations/123456789012/customConstraints/custom.disableGkeAutoUpgrade",
+				"constraint":  "custom.disableGkeAutoUpgrade",
+				"update_time": "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"name", "constraint", "update_time"},
+		},
+		{
+			// GcpTagKey: flat scalar outputs from both engines -- the
+			// tagKeys/{id} name (the E2E verifier keys on it), the namespaced
+			// name, the bare numeric id, and the creation time -- must each
+			// land on the StackOutputs proto.
+			name: "GcpTagKey",
+			kind: cloudresourcekind.CloudResourceKind_GcpTagKey,
+			rawOutputs: map[string]interface{}{
+				"name":            "tagKeys/281475647562788",
+				"namespaced_name": "123456789012/environment",
+				"tag_key_id":      "281475647562788",
+				"create_time":     "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"name", "namespaced_name", "tag_key_id", "create_time"},
+		},
+		{
+			// GcpTagValue: flat scalar outputs from both engines -- the
+			// tagValues/{id} name (the E2E verifier keys on it), the namespaced
+			// name, the bare numeric id, and the creation time -- must each
+			// land on the StackOutputs proto.
+			name: "GcpTagValue",
+			kind: cloudresourcekind.CloudResourceKind_GcpTagValue,
+			rawOutputs: map[string]interface{}{
+				"name":            "tagValues/281476102962987",
+				"namespaced_name": "123456789012/environment/prod",
+				"tag_value_id":    "281476102962987",
+				"create_time":     "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"name", "namespaced_name", "tag_value_id", "create_time"},
+		},
+		{
+			// GcpTagBinding: flat scalar outputs from both engines -- the
+			// binding's name (the E2E verifier keys on it), the full resource
+			// name it is bound to, and the bound value -- must each land on the
+			// StackOutputs proto.
+			name: "GcpTagBinding",
+			kind: cloudresourcekind.CloudResourceKind_GcpTagBinding,
+			rawOutputs: map[string]interface{}{
+				"name":      "tagBindings/%2F%2Fcloudresourcemanager.googleapis.com%2Fprojects%2F123456789012/tagValues/281476102962987",
+				"parent":    "//cloudresourcemanager.googleapis.com/projects/123456789012",
+				"tag_value": "tagValues/281476102962987",
+			},
+			mustPopulate: []string{"name", "parent", "tag_value"},
+		},
+		{
+			// GcpSharedVpcHost: the one resolved output -- the host project id
+			// (the E2E verifier keys on it) -- must land on the StackOutputs
+			// proto even when the spec named no project.
+			name: "GcpSharedVpcHost",
+			kind: cloudresourcekind.CloudResourceKind_GcpSharedVpcHost,
+			rawOutputs: map[string]interface{}{
+				"host_project_id": "acme-network-host",
+			},
+			mustPopulate: []string{"host_project_id"},
+		},
+		{
+			// GcpSharedVpcServiceProject: the attachment's two ends, flat
+			// scalars from both engines.
+			name: "GcpSharedVpcServiceProject",
+			kind: cloudresourcekind.CloudResourceKind_GcpSharedVpcServiceProject,
+			rawOutputs: map[string]interface{}{
+				"service_project_id": "acme-payments-prod",
+				"host_project_id":    "acme-network-host",
+			},
+			mustPopulate: []string{"service_project_id", "host_project_id"},
+		},
+		{
+			// GcpVpcPeering: the peering name (the E2E verifier keys on it), this
+			// side's network, and the ACTIVE/INACTIVE state with its detail --
+			// flat scalars from both engines, empty state on the routes-config
+			// form.
+			name: "GcpVpcPeering",
+			kind: cloudresourcekind.CloudResourceKind_GcpVpcPeering,
+			rawOutputs: map[string]interface{}{
+				"peering_name":  "hub-to-spoke",
+				"network":       "https://www.googleapis.com/compute/v1/projects/my-project/global/networks/hub",
+				"state":         "ACTIVE",
+				"state_details": "[2026-09-19T10:00:00.000-07:00]: Connected.",
+			},
+			mustPopulate: []string{"peering_name", "network", "state", "state_details"},
+		},
+		{
+			// GcpHaVpnGateway: the gateway and router handles a GcpHaVpnConnection
+			// references (self link, router name, region), the two public
+			// interface addresses, and the router's ASN -- the one numeric
+			// output, which arrives as a JSON number from both engines.
+			name: "GcpHaVpnGateway",
+			kind: cloudresourcekind.CloudResourceKind_GcpHaVpnGateway,
+			rawOutputs: map[string]interface{}{
+				"gateway_self_link":      "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnGateways/hub-vpn",
+				"gateway_name":           "hub-vpn",
+				"region":                 "us-central1",
+				"interface_0_ip_address": "35.242.0.10",
+				"interface_1_ip_address": "35.220.0.11",
+				"router_name":            "hub-vpn",
+				"router_self_link":       "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/routers/hub-vpn",
+				"router_asn":             float64(64514),
+			},
+			mustPopulate: []string{
+				"gateway_self_link", "gateway_name", "region",
+				"interface_0_ip_address", "interface_1_ip_address",
+				"router_name", "router_self_link", "router_asn",
+			},
+		},
+		{
+			// GcpHaVpnConnection: four index-aligned repeated string outputs
+			// (tunnels, interfaces, peers) plus the external gateway's self link
+			// (empty for a Google-to-Google connection) and the resolved gateway
+			// trio -- the E2E verifier keys on the first tunnel name.
+			name: "GcpHaVpnConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpHaVpnConnection,
+			rawOutputs: map[string]interface{}{
+				"tunnel_self_links": []interface{}{
+					"https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnTunnels/hq-tunnel-0",
+					"https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnTunnels/hq-tunnel-1",
+				},
+				"tunnel_names":               []interface{}{"hq-tunnel-0", "hq-tunnel-1"},
+				"router_interface_names":     []interface{}{"hq-tunnel-0", "hq-tunnel-1"},
+				"bgp_peer_names":             []interface{}{"hq-tunnel-0", "hq-tunnel-1"},
+				"external_gateway_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/global/externalVpnGateways/hq",
+				"gateway_self_link":          "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnGateways/hub-vpn",
+				"router_name":                "hub-vpn",
+				"shared_secret":              "Q7mK2pX9rL4tV8wB3yH6zJ1nC5dF0gS2",
+				"md5_authentication_key":     "Xk9mQ2pL7nR4tV8wB3yH6zJ1",
+			},
+			mustPopulate: []string{
+				"tunnel_self_links", "tunnel_names", "router_interface_names", "bgp_peer_names",
+				"external_gateway_self_link", "gateway_self_link", "router_name",
+				"shared_secret", "md5_authentication_key",
+			},
+		},
+		{
+			// GcpHierarchicalFirewallPolicy: the server-assigned numeric policy
+			// ID (a string on the wire, Google's `name`), the short name, self
+			// link, parent, the rule tuple count as a JSON number, and the
+			// declaration-order association names -- the E2E verifier keys on
+			// policy_id.
+			name: "GcpHierarchicalFirewallPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpHierarchicalFirewallPolicy,
+			rawOutputs: map[string]interface{}{
+				"policy_id":         "1234567890123456789",
+				"short_name":        "org-baseline",
+				"self_link":         "https://www.googleapis.com/compute/v1/locations/global/firewallPolicies/1234567890123456789",
+				"parent":            "organizations/123456789012",
+				"rule_tuple_count":  float64(12),
+				"association_names": []interface{}{"org-baseline-org", "org-baseline-prod"},
+			},
+			mustPopulate: []string{
+				"policy_id", "short_name", "self_link", "parent", "rule_tuple_count", "association_names",
+			},
+		},
+		{
+			// GcpNetworkFirewallPolicy: the user-facing policy name (the E2E
+			// verifier's key), the numeric ID, self link, the region (empty
+			// for the global family), the rule tuple count as a JSON number,
+			// and the association names.
+			name: "GcpNetworkFirewallPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpNetworkFirewallPolicy,
+			rawOutputs: map[string]interface{}{
+				"policy_name":       "baseline",
+				"policy_id":         "9876543210987654321",
+				"self_link":         "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/firewallPolicies/baseline",
+				"region":            "us-central1",
+				"rule_tuple_count":  float64(4),
+				"association_names": []interface{}{"baseline-main"},
+			},
+			mustPopulate: []string{
+				"policy_name", "policy_id", "self_link", "region", "rule_tuple_count", "association_names",
+			},
+		},
+		{
+			// GcpPscServiceAttachment: the self link a consumer forwarding rule
+			// targets (the verifier's key is the name), the region, the
+			// fingerprint, and the connected-endpoint count as a string.
+			name: "GcpPscServiceAttachment",
+			kind: cloudresourcekind.CloudResourceKind_GcpPscServiceAttachment,
+			rawOutputs: map[string]interface{}{
+				"self_link":                 "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/serviceAttachments/orders-db-psc",
+				"attachment_name":           "orders-db-psc",
+				"region":                    "us-central1",
+				"fingerprint":               "abc123==",
+				"connected_endpoints_count": "0",
+			},
+			mustPopulate: []string{"self_link", "attachment_name", "region", "fingerprint", "connected_endpoints_count"},
+		},
+		{
+			// GcpNetworkEndpointGroup: the self link a backend service names
+			// as its group (zonal here; a global link says global), the
+			// name (the verifier's key), the numeric id, the zone (empty for
+			// a global group), and the declared size.
+			name: "GcpNetworkEndpointGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpNetworkEndpointGroup,
+			rawOutputs: map[string]interface{}{
+				"self_link": "https://www.googleapis.com/compute/v1/projects/my-project/zones/us-central1-a/networkEndpointGroups/web-neg",
+				"neg_name":  "web-neg",
+				"neg_id":    "1234567890123456789",
+				"zone":      "us-central1-a",
+				"size":      "2",
+			},
+			mustPopulate: []string{"self_link", "neg_name", "neg_id", "zone", "size"},
+		},
+		{
+			// GcpBillingBudget: the budget's resource name (the verifier's key),
+			// the server-assigned id, and the owning billing account.
+			name: "GcpBillingBudget",
+			kind: cloudresourcekind.CloudResourceKind_GcpBillingBudget,
+			rawOutputs: map[string]interface{}{
+				"name":            "billingAccounts/012345-6789AB-CDEF01/budgets/9f8e7d6c-0000-1111-2222-333344445555",
+				"budget_id":       "9f8e7d6c-0000-1111-2222-333344445555",
+				"billing_account": "billingAccounts/012345-6789AB-CDEF01",
+			},
+			mustPopulate: []string{"name", "budget_id", "billing_account"},
+		},
+		{
+			// GcpCloudIdentityGroup: the group's resource name (the verifier's
+			// key), its email (the IAM identity), and the managed membership
+			// count as a string.
+			name: "GcpCloudIdentityGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudIdentityGroup,
+			rawOutputs: map[string]interface{}{
+				"name":             "groups/01abc2de3f4g5h6",
+				"group_email":      "platform-admins@example.com",
+				"membership_count": "4",
+			},
+			mustPopulate: []string{"name", "group_email", "membership_count"},
+		},
+		{
+			// GcpRedisCluster: the full resource path (the verifier's key and
+			// the composition key), the lifecycle state, the Google-placed
+			// discovery endpoint, the three per-connection-type service
+			// attachment handles a consumer forwarding rule targets (reader
+			// empty without replicas), and the sizes as strings.
+			name: "GcpRedisCluster",
+			kind: cloudresourcekind.CloudResourceKind_GcpRedisCluster,
+			rawOutputs: map[string]interface{}{
+				"name":                         "projects/my-project/locations/us-central1/clusters/orders-cache",
+				"uid":                          "0123456789abcdef",
+				"state":                        "READY",
+				"discovery_endpoint_address":   "10.0.0.5",
+				"discovery_endpoint_port":      "6379",
+				"discovery_service_attachment": "projects/p/regions/us-central1/serviceAttachments/gcp-memorystore-auto-disc",
+				"primary_service_attachment":   "projects/p/regions/us-central1/serviceAttachments/gcp-memorystore-auto-prim",
+				"reader_service_attachment":    "",
+				"size_gb":                      "1",
+				"shard_count":                  "1",
+				"replica_count":                "0",
+				"backup_collection":            "projects/my-project/locations/us-central1/backupCollections/abcd",
+			},
+			mustPopulate: []string{"name", "uid", "state", "discovery_endpoint_address", "discovery_endpoint_port", "discovery_service_attachment", "primary_service_attachment", "size_gb", "shard_count", "backup_collection"},
+		},
+		{
+			// GcpRedisClusterEndpointSet: the bare cluster name the set is
+			// keyed by (the verifier's key) and the two declared counts.
+			name: "GcpRedisClusterEndpointSet",
+			kind: cloudresourcekind.CloudResourceKind_GcpRedisClusterEndpointSet,
+			rawOutputs: map[string]interface{}{
+				"cluster_name":     "orders-cache",
+				"endpoint_count":   "1",
+				"connection_count": "2",
+				"region":           "us-central1",
+			},
+			mustPopulate: []string{"cluster_name", "endpoint_count", "connection_count", "region"},
+		},
+		{
+			// GcpCloudRunWorkerPool: the full resource name (the verifier's
+			// key), the bare name, the identity fields, and the two revision
+			// pointers a rollout is read from.
+			name: "GcpCloudRunWorkerPool",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudRunWorkerPool,
+			rawOutputs: map[string]interface{}{
+				"name":                    "projects/my-project/locations/us-central1/workerPools/orders-worker",
+				"worker_pool_name":        "orders-worker",
+				"uid":                     "0123456789abcdef",
+				"location":                "us-central1",
+				"project_id":              "my-project",
+				"latest_created_revision": "orders-worker-00001-abc",
+				"latest_ready_revision":   "orders-worker-00001-abc",
+				"observed_generation":     "1",
+				"etag":                    "\"abc123\"",
+			},
+			mustPopulate: []string{"name", "worker_pool_name", "uid", "location", "project_id", "latest_created_revision", "latest_ready_revision", "observed_generation", "etag"},
+		},
+		{
+			// GcpVertexAiRagEngineConfig: the singleton's full resource name
+			// (the verifier's key) and the location it governs.
+			name: "GcpVertexAiRagEngineConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiRagEngineConfig,
+			rawOutputs: map[string]interface{}{
+				"name":     "projects/my-project/locations/us-central1/ragEngineConfig",
+				"location": "us-central1",
+			},
+			mustPopulate: []string{"name", "location"},
+		},
+		{
+			// GcpVectorSearchCollection: the collection's full name (the
+			// verifier's key), its id and location, the folded indexes' names
+			// in manifest order (a list output, as the DNS zone's nameservers
+			// are), and the declared index count.
+			name: "GcpVectorSearchCollection",
+			kind: cloudresourcekind.CloudResourceKind_GcpVectorSearchCollection,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/my-project/locations/us-central1/collections/product-docs",
+				"collection_id": "product-docs",
+				"location":      "us-central1",
+				"index_names": []interface{}{
+					"projects/my-project/locations/us-central1/collections/product-docs/indexes/docs-ann",
+				},
+				"index_count": "1",
+			},
+			mustPopulate: []string{"name", "collection_id", "location", "index_names", "index_count"},
+		},
+		{
+			// GcpVertexAiSearchDataStore: the store's full name (the verifier's
+			// key), its id and location, the default schema Google created, the
+			// declared schema's name, and the folded target sites' and sitemaps'
+			// names in manifest order (list outputs).
+			name: "GcpVertexAiSearchDataStore",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataStore,
+			rawOutputs: map[string]interface{}{
+				"name":              "projects/my-project/locations/global/collections/default_collection/dataStores/product-docs",
+				"data_store_id":     "product-docs",
+				"location":          "global",
+				"default_schema_id": "default_schema",
+				"schema_name":       "",
+				"target_site_names": []interface{}{
+					"projects/my-project/locations/global/collections/default_collection/dataStores/product-docs/siteSearchEngine/targetSites/1234",
+				},
+				"sitemap_names": []interface{}{},
+			},
+			mustPopulate: []string{"name", "data_store_id", "location", "default_schema_id", "target_site_names"},
+		},
+		{
+			// GcpVertexAiSearchEngine: the engine's full name (the verifier's
+			// key), its id, location, collection, and arm, the default serving
+			// and widget configs' names when configured, a chat engine's
+			// Dialogflow agent, and the folded controls' and assistants' names
+			// in manifest order (list outputs).
+			name: "GcpVertexAiSearchEngine",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchEngine,
+			rawOutputs: map[string]interface{}{
+				"name":                "projects/my-project/locations/global/collections/default_collection/engines/product-search",
+				"engine_id":           "product-search",
+				"location":            "global",
+				"collection_id":       "default_collection",
+				"engine_type":         "SEARCH",
+				"serving_config_name": "projects/my-project/locations/global/collections/default_collection/engines/product-search/servingConfigs/default_search",
+				"widget_config_name":  "projects/my-project/locations/global/collections/default_collection/engines/product-search/widgetConfigs/default_search_widget_config",
+				"dialogflow_agent":    "",
+				"control_names": []interface{}{
+					"projects/my-project/locations/global/collections/default_collection/engines/product-search/controls/synonyms-laptop",
+				},
+				"assistant_names": []interface{}{},
+			},
+			mustPopulate: []string{"name", "engine_id", "location", "collection_id", "engine_type", "serving_config_name", "widget_config_name", "control_names"},
+		},
+		{
+			// GcpVertexAiSearchDataConnector: the connector's full name (the
+			// verifier's key), the collection it created and its location, the
+			// connector's state, the data stores Google created per entity in
+			// manifest order (a list output), the static egress addresses, and
+			// the private connectivity tenant project.
+			name: "GcpVertexAiSearchDataConnector",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataConnector,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/my-project/locations/global/collections/jira-federated/dataConnector",
+				"collection_id": "jira-federated",
+				"location":      "global",
+				"state":         "ACTIVE",
+				"entity_data_stores": []interface{}{
+					"projects/my-project/locations/global/collections/jira-federated/dataStores/jira-federated-project",
+					"projects/my-project/locations/global/collections/jira-federated/dataStores/jira-federated-issue",
+				},
+				"static_ip_addresses":             []interface{}{"34.1.2.3"},
+				"private_connectivity_project_id": "",
+			},
+			mustPopulate: []string{"name", "collection_id", "location", "state", "entity_data_stores", "static_ip_addresses"},
+		},
+		{
+			// GcpVertexAiFeatureGroup: the group's full name (the verifier's
+			// key), its id and location, and the registered features' names
+			// in manifest order (a list output).
+			name: "GcpVertexAiFeatureGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureGroup,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/my-project/locations/us-central1/featureGroups/customer_features",
+				"feature_group_id": "customer_features",
+				"location":         "us-central1",
+				"feature_names": []interface{}{
+					"projects/my-project/locations/us-central1/featureGroups/customer_features/features/age",
+				},
+			},
+			mustPopulate: []string{"name", "feature_group_id", "location", "feature_names"},
+		},
+		{
+			// GcpVertexAiFeatureOnlineStore: the store's full name (the
+			// verifier's key), its id and location, the dedicated endpoint's
+			// domain and PSC attachment (empty on a Bigtable store), and the
+			// feature views' names in manifest order (a list output).
+			name: "GcpVertexAiFeatureOnlineStore",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureOnlineStore,
+			rawOutputs: map[string]interface{}{
+				"name":                        "projects/my-project/locations/us-central1/featureOnlineStores/serving_store",
+				"feature_online_store_id":     "serving_store",
+				"location":                    "us-central1",
+				"public_endpoint_domain_name": "1234567890.us-central1-123456789012.featurestore.vertexai.goog",
+				"service_attachment":          "",
+				"feature_view_names": []interface{}{
+					"projects/my-project/locations/us-central1/featureOnlineStores/serving_store/featureViews/customer_view",
+				},
+			},
+			mustPopulate: []string{"name", "feature_online_store_id", "location", "public_endpoint_domain_name", "feature_view_names"},
+		},
+		{
+			// GcpVertexAiDataset: the dataset's full name (the verifier's
+			// key), the numeric id Google assigned, and the location.
+			name: "GcpVertexAiDataset",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiDataset,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/123456789012/locations/us-central1/datasets/1234567890123456789",
+				"dataset_id": "1234567890123456789",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "dataset_id", "location"},
+		},
+		{
+			// GcpVertexAiTensorboard: the TensorBoard's full name (the
+			// verifier's key and what a training job names), its numeric id,
+			// location, blob storage prefix, and the declared experiments'
+			// and runs' names in manifest order (list outputs).
+			name: "GcpVertexAiTensorboard",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiTensorboard,
+			rawOutputs: map[string]interface{}{
+				"name":                     "projects/123456789012/locations/us-central1/tensorboards/1234567890123456789",
+				"tensorboard_id":           "1234567890123456789",
+				"location":                 "us-central1",
+				"blob_storage_path_prefix": "cloud-ai-platform-00000000-0000-0000-0000-000000000000",
+				"experiment_names": []interface{}{
+					"projects/my-project/locations/us-central1/tensorboards/1234567890123456789/experiments/churn-model",
+				},
+				"run_names": []interface{}{
+					"projects/my-project/locations/us-central1/tensorboards/1234567890123456789/experiments/churn-model/runs/baseline",
+				},
+			},
+			mustPopulate: []string{"name", "tensorboard_id", "location", "blob_storage_path_prefix", "experiment_names", "run_names"},
+		},
+		{
+			// GcpVertexAiPersistentResource: the resource's full name (the
+			// verifier's key), the id a training job's persistent_resource_id
+			// takes, the location, and the state.
+			name: "GcpVertexAiPersistentResource",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiPersistentResource,
+			rawOutputs: map[string]interface{}{
+				"name":                   "projects/my-project/locations/us-central1/persistentResources/training-pool",
+				"persistent_resource_id": "training-pool",
+				"location":               "us-central1",
+				"state":                  "RUNNING",
+			},
+			mustPopulate: []string{"name", "persistent_resource_id", "location", "state"},
+		},
+		{
+			// GcpModelArmorTemplate: the template's full name (the verifier's
+			// key and what sanitize calls and search assistants take), its id,
+			// and its location.
+			name: "GcpModelArmorTemplate",
+			kind: cloudresourcekind.CloudResourceKind_GcpModelArmorTemplate,
+			rawOutputs: map[string]interface{}{
+				"name":        "projects/my-project/locations/us-central1/templates/prompt-guard",
+				"template_id": "prompt-guard",
+				"location":    "us-central1",
+			},
+			mustPopulate: []string{"name", "template_id", "location"},
+		},
+		{
+			// GcpModelArmorFloorSetting: the floor's full name (the
+			// verifier's key) and the parent it governs.
+			name: "GcpModelArmorFloorSetting",
+			kind: cloudresourcekind.CloudResourceKind_GcpModelArmorFloorSetting,
+			rawOutputs: map[string]interface{}{
+				"name":   "projects/my-project/locations/global/floorSetting",
+				"parent": "projects/my-project",
+			},
+			mustPopulate: []string{"name", "parent"},
+		},
+		{
+			// GcpDocumentAiProcessor: the processor's full name (the
+			// verifier's key), the id Google assigned, its location, and the
+			// endpoint documents are posted to.
+			name: "GcpDocumentAiProcessor",
+			kind: cloudresourcekind.CloudResourceKind_GcpDocumentAiProcessor,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/my-project/locations/us/processors/a1b2c3d4e5f6a7b8",
+				"processor_id":     "a1b2c3d4e5f6a7b8",
+				"location":         "us",
+				"process_endpoint": "https://us-documentai.googleapis.com/v1/projects/my-project/locations/us/processors/a1b2c3d4e5f6a7b8:process",
+			},
+			mustPopulate: []string{"name", "processor_id", "location", "process_endpoint"},
+		},
+		{
+			// GcpColabRuntimeTemplate: the template's full name (the
+			// verifier's key and what runtimes and schedules take), its id,
+			// and its region.
+			name: "GcpColabRuntimeTemplate",
+			kind: cloudresourcekind.CloudResourceKind_GcpColabRuntimeTemplate,
+			rawOutputs: map[string]interface{}{
+				"name":                "projects/my-project/locations/us-central1/notebookRuntimeTemplates/standard-cpu",
+				"runtime_template_id": "standard-cpu",
+				"location":            "us-central1",
+			},
+			mustPopulate: []string{"name", "runtime_template_id", "location"},
+		},
+		{
+			// GcpColabRuntime: the runtime's full name (the verifier's key),
+			// its id, and its region.
+			name: "GcpColabRuntime",
+			kind: cloudresourcekind.CloudResourceKind_GcpColabRuntime,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/my-project/locations/us-central1/notebookRuntimes/alice-notebooks",
+				"runtime_id": "alice-notebooks",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "runtime_id", "location"},
+		},
+		{
+			// GcpColabSchedule: the schedule's full name (the verifier's key),
+			// the id Google assigned, and its region.
+			name: "GcpColabSchedule",
+			kind: cloudresourcekind.CloudResourceKind_GcpColabSchedule,
+			rawOutputs: map[string]interface{}{
+				"name":        "projects/my-project/locations/us-central1/schedules/1234567890",
+				"schedule_id": "1234567890",
+				"location":    "us-central1",
+			},
+			mustPopulate: []string{"name", "schedule_id", "location"},
+		},
+		{
+			// GcpTpuVm: the TPU's full name (the verifier's key), its id, and
+			// its zone.
+			name: "GcpTpuVm",
+			kind: cloudresourcekind.CloudResourceKind_GcpTpuVm,
+			rawOutputs: map[string]interface{}{
+				"name":    "projects/my-project/locations/us-central1-f/nodes/train-v2",
+				"node_id": "train-v2",
+				"zone":    "us-central1-f",
+			},
+			mustPopulate: []string{"name", "node_id", "zone"},
+		},
+		{
+			// GcpTpuQueuedResource: the request's full name (the verifier's
+			// key), its id, and its zone.
+			name: "GcpTpuQueuedResource",
+			kind: cloudresourcekind.CloudResourceKind_GcpTpuQueuedResource,
+			rawOutputs: map[string]interface{}{
+				"name":               "projects/my-project/locations/us-central1-f/queuedResources/train-request",
+				"queued_resource_id": "train-request",
+				"zone":               "us-central1-f",
+			},
+			mustPopulate: []string{"name", "queued_resource_id", "zone"},
+		},
+		{
+			// GcpDialogflowCxAgent: the agent's full name (the verifier's key
+			// and what a chat engine links), its id, location, start flow, and
+			// the declared children's names in manifest order (list outputs).
+			name: "GcpDialogflowCxAgent",
+			kind: cloudresourcekind.CloudResourceKind_GcpDialogflowCxAgent,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001",
+				"agent_id":   "1b2c3d4e-0000-4000-8000-000000000001",
+				"location":   "global",
+				"start_flow": "projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/flows/00000000-0000-0000-0000-000000000000",
+				"webhook_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/webhooks/5a6b7c8d-0000-4000-8000-000000000002",
+				},
+				"tool_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/tools/6b7c8d9e-0000-4000-8000-000000000003",
+				},
+				"tool_version_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/tools/6b7c8d9e-0000-4000-8000-000000000003/versions/7c8d9e0f-0000-4000-8000-000000000004",
+				},
+				"version_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/flows/00000000-0000-0000-0000-000000000000/versions/1",
+				},
+				"environment_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/environments/8d9e0f1a-0000-4000-8000-000000000005",
+				},
+				"generative_settings_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/generativeSettings?languageCode=en",
+				},
+			},
+			mustPopulate: []string{"name", "agent_id", "location", "start_flow", "webhook_names", "tool_names", "tool_version_names", "version_names", "environment_names", "generative_settings_names"},
+		},
+		{
+			// GcpDialogflowCxSecuritySettings: the settings' full name (the
+			// verifier's key and what an agent's security_settings takes), id,
+			// and location.
+			name: "GcpDialogflowCxSecuritySettings",
+			kind: cloudresourcekind.CloudResourceKind_GcpDialogflowCxSecuritySettings,
+			rawOutputs: map[string]interface{}{
+				"name":                 "projects/my-project/locations/global/securitySettings/1234567890123456789",
+				"security_settings_id": "1234567890123456789",
+				"location":             "global",
+			},
+			mustPopulate: []string{"name", "security_settings_id", "location"},
+		},
+		{
+			// GcpManagedKafkaCluster: the cluster's full name (what topics,
+			// ACLs, and Connect clusters reference), id, and region.
+			name: "GcpManagedKafkaCluster",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaCluster,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/my-project/locations/us-central1/clusters/events",
+				"cluster_id": "events",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "cluster_id", "location"},
+		},
+		{
+			// GcpManagedKafkaTopic: the topic's full name and the Kafka topic
+			// name clients use.
+			name: "GcpManagedKafkaTopic",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaTopic,
+			rawOutputs: map[string]interface{}{
+				"name":     "projects/my-project/locations/us-central1/clusters/events/topics/orders",
+				"topic_id": "orders",
+			},
+			mustPopulate: []string{"name", "topic_id"},
+		},
+		{
+			// GcpManagedKafkaAcl: the ACL's full name and the resource pattern
+			// Google derived from its id.
+			name: "GcpManagedKafkaAcl",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaAcl,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/my-project/locations/us-central1/clusters/events/acls/topic/orders",
+				"resource_type": "TOPIC",
+				"resource_name": "orders",
+				"pattern_type":  "LITERAL",
+			},
+			mustPopulate: []string{"name", "resource_type", "resource_name", "pattern_type"},
+		},
+		{
+			// GcpManagedKafkaConnectCluster: the Connect cluster's full name
+			// (what connectors reference), id, and region.
+			name: "GcpManagedKafkaConnectCluster",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnectCluster,
+			rawOutputs: map[string]interface{}{
+				"name":               "projects/my-project/locations/us-central1/connectClusters/events-connect",
+				"connect_cluster_id": "events-connect",
+				"location":           "us-central1",
+			},
+			mustPopulate: []string{"name", "connect_cluster_id", "location"},
+		},
+		{
+			// GcpManagedKafkaConnector: the connector's full name and id.
+			name: "GcpManagedKafkaConnector",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnector,
+			rawOutputs: map[string]interface{}{
+				"name":         "projects/my-project/locations/us-central1/connectClusters/events-connect/connectors/orders-to-pubsub",
+				"connector_id": "orders-to-pubsub",
+			},
+			mustPopulate: []string{"name", "connector_id"},
+		},
+		{
+			// GcpBigQueryConnection: the connection's name, id, and location
+			// plus the cloud_resource arm's service account (the principal a
+			// user grants bucket access to); the other arms' identities are
+			// empty when their arm is not declared.
+			name: "GcpBigQueryConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryConnection,
+			rawOutputs: map[string]interface{}{
+				"name":                              "projects/my-project/locations/us/connections/lake",
+				"connection_id":                     "lake",
+				"location":                          "us",
+				"cloud_resource_service_account_id": "bqcx-123456789012-abcd@gcp-sa-bigquery-condel.iam.gserviceaccount.com",
+				"spark_service_account_id":          "",
+				"cloud_sql_service_account_id":      "",
+				"connector_service_account":         "",
+				"aws_identity":                      "",
+				"azure_identity":                    "",
+				"azure_application":                 "",
+				"azure_client_id":                   "",
+				"azure_object_id":                   "",
+				"azure_redirect_uri":                "",
+			},
+			mustPopulate: []string{"name", "connection_id", "location", "cloud_resource_service_account_id"},
+		},
+		{
+			// GcpBigQueryReservation: the reservation's name, short name,
+			// location, and its assignments' names in declared order.
+			name: "GcpBigQueryReservation",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryReservation,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/bq-admin/locations/US/reservations/analytics",
+				"reservation_name": "analytics",
+				"location":         "US",
+				"assignment_names": []interface{}{
+					"projects/bq-admin/locations/US/reservations/analytics/assignments/1234567890123456789",
+				},
+			},
+			mustPopulate: []string{"name", "reservation_name", "location", "assignment_names"},
+		},
+		{
+			// GcpBigQueryCapacityCommitment: the commitment's name, state, and
+			// term.
+			name: "GcpBigQueryCapacityCommitment",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryCapacityCommitment,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/bq-admin/locations/US/capacityCommitments/annual-100",
+				"state":                 "ACTIVE",
+				"commitment_start_time": "2026-09-24T00:00:00Z",
+				"commitment_end_time":   "2027-09-24T00:00:00Z",
+			},
+			mustPopulate: []string{"name", "state", "commitment_start_time", "commitment_end_time"},
+		},
+		{
+			// GcpBigQueryReservationGroup: the group's full name (what a
+			// reservation's reservation_group takes), short name, and location.
+			name: "GcpBigQueryReservationGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryReservationGroup,
+			rawOutputs: map[string]interface{}{
+				"name":                   "projects/bq-admin/locations/US/reservationGroups/tier-1",
+				"reservation_group_name": "tier-1",
+				"location":               "US",
+			},
+			mustPopulate: []string{"name", "reservation_group_name", "location"},
+		},
+		{
+			// GcpDatastreamPrivateConnection: the full name (what a
+			// connection profile's private_connection takes) and the id.
+			name: "GcpDatastreamPrivateConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamPrivateConnection,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/p/locations/us-central1/privateConnections/data-vpc",
+				"private_connection_id": "data-vpc",
+			},
+			mustPopulate: []string{"name", "private_connection_id"},
+		},
+		{
+			// GcpDatastreamConnectionProfile: the full name (what a stream's
+			// source and destination profiles take) and the id.
+			name: "GcpDatastreamConnectionProfile",
+			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamConnectionProfile,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/p/locations/us-central1/connectionProfiles/orders-postgres",
+				"connection_profile_id": "orders-postgres",
+			},
+			mustPopulate: []string{"name", "connection_profile_id"},
+		},
+		{
+			// GcpDatastreamStream: the stream's full name and id.
+			name: "GcpDatastreamStream",
+			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamStream,
+			rawOutputs: map[string]interface{}{
+				"name":      "projects/p/locations/us-central1/streams/orders-cdc",
+				"stream_id": "orders-cdc",
+			},
+			mustPopulate: []string{"name", "stream_id"},
+		},
+		{
+			// GcpPrivateCaPool: the full name (what authorities, certificates,
+			// and TLS consumers reference), the id, and the region.
+			name: "GcpPrivateCaPool",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaPool,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/p/locations/us-central1/caPools/internal-tls",
+				"ca_pool_id": "internal-tls",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "ca_pool_id", "location"},
+		},
+		{
+			// GcpPrivateCaCertificateAuthority: the full name (what
+			// subordinates and certificates reference), the id, the state, the
+			// CA certificate and its chain, and the published URLs.
+			name: "GcpPrivateCaCertificateAuthority",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateAuthority,
+			rawOutputs: map[string]interface{}{
+				"name":                      "projects/p/locations/us-central1/caPools/root-pool/certificateAuthorities/root-ca",
+				"certificate_authority_id":  "root-ca",
+				"state":                     "ENABLED",
+				"pem_ca_certificate":        "-----BEGIN CERTIFICATE-----\nroot\n-----END CERTIFICATE-----",
+				"pem_ca_certificates":       []interface{}{"-----BEGIN CERTIFICATE-----\nroot\n-----END CERTIFICATE-----"},
+				"ca_certificate_access_url": "https://storage.googleapis.com/privateca-content/ca.crt",
+				"crl_access_urls":           []interface{}{"https://storage.googleapis.com/privateca-content/crl.crl"},
+			},
+			mustPopulate: []string{"name", "certificate_authority_id", "state", "pem_ca_certificate", "pem_ca_certificates", "ca_certificate_access_url", "crl_access_urls"},
+		},
+		{
+			// GcpPrivateCaCertificateTemplate: the full name (what
+			// certificates reference) and the id.
+			name: "GcpPrivateCaCertificateTemplate",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateTemplate,
+			rawOutputs: map[string]interface{}{
+				"name":        "projects/p/locations/us-central1/certificateTemplates/tls-server",
+				"template_id": "tls-server",
+			},
+			mustPopulate: []string{"name", "template_id"},
+		},
+		{
+			// GcpPrivateCaCertificate: the full name, the id, the signed
+			// certificate and its chain, and the signing authority.
+			name: "GcpPrivateCaCertificate",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificate,
+			rawOutputs: map[string]interface{}{
+				"name":                         "projects/p/locations/us-central1/caPools/internal-tls/certificates/api-server",
+				"certificate_id":               "api-server",
+				"pem_certificate":              "-----BEGIN CERTIFICATE-----\nleaf\n-----END CERTIFICATE-----",
+				"pem_certificate_chain":        []interface{}{"-----BEGIN CERTIFICATE-----\nroot\n-----END CERTIFICATE-----"},
+				"issuer_certificate_authority": "projects/p/locations/us-central1/caPools/internal-tls/certificateAuthorities/root-ca",
+			},
+			mustPopulate: []string{"name", "certificate_id", "pem_certificate", "pem_certificate_chain", "issuer_certificate_authority"},
+		},
+		{
+			// GcpKmsAutokeyConfig: the configuration's name and the scope it
+			// governs.
+			name: "GcpKmsAutokeyConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpKmsAutokeyConfig,
+			rawOutputs: map[string]interface{}{
+				"name":   "folders/123456789012/autokeyConfig",
+				"parent": "folders/123456789012",
+			},
+			mustPopulate: []string{"name", "parent"},
+		},
+		{
+			// GcpKmsKeyHandle: the handle and the key Autokey assigned (what
+			// the protected resource references).
+			name: "GcpKmsKeyHandle",
+			kind: cloudresourcekind.CloudResourceKind_GcpKmsKeyHandle,
+			rawOutputs: map[string]interface{}{
+				"name":    "projects/orders-prod/locations/us-central1/keyHandles/orders-bucket-key",
+				"kms_key": "projects/orders-prod/locations/us-central1/keyRings/autokey/cryptoKeys/123-storage-bucket-0a1b2c",
+			},
+			mustPopulate: []string{"name", "kms_key"},
+		},
+		{
+			// GcpSccNotificationConfig: the config and the publisher it
+			// needs on its topic.
+			name: "GcpSccNotificationConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpSccNotificationConfig,
+			rawOutputs: map[string]interface{}{
+				"name":                   "projects/sec/locations/global/notificationConfigs/high-findings",
+				"service_account":        "service-project-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
+				"service_account_member": "serviceAccount:service-project-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
+			},
+			mustPopulate: []string{"name", "service_account", "service_account_member"},
+		},
+		{
+			// GcpSccMuteConfig: the rule's name.
+			name: "GcpSccMuteConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpSccMuteConfig,
+			rawOutputs: map[string]interface{}{
+				"name": "folders/456/locations/global/muteConfigs/sandbox-public-buckets",
+			},
+			mustPopulate: []string{"name"},
+		},
+		{
+			// GcpSccBigQueryExport: the export and the writer it needs on
+			// its dataset.
+			name: "GcpSccBigQueryExport",
+			kind: cloudresourcekind.CloudResourceKind_GcpSccBigQueryExport,
+			rawOutputs: map[string]interface{}{
+				"name":      "organizations/123/locations/global/bigQueryExports/findings-history",
+				"principal": "service-org-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
+			},
+			mustPopulate: []string{"name", "principal"},
+		},
+		{
+			// GcpBinaryAuthorizationPolicy: the policy's name and project.
+			name: "GcpBinaryAuthorizationPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationPolicy,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/prod/policy",
+				"project_id": "prod",
+			},
+			mustPopulate: []string{"name", "project_id"},
+		},
+		{
+			// GcpBinaryAuthorizationAttestor: the full name (what policies
+			// require), the id, the note, and the reading identity.
+			name: "GcpBinaryAuthorizationAttestor",
+			kind: cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationAttestor,
+			rawOutputs: map[string]interface{}{
+				"attestor_id":                      "projects/sec/attestors/built-by-ci",
+				"attestor_name":                    "built-by-ci",
+				"note_reference":                   "projects/sec/notes/built-by-ci-note",
+				"delegation_service_account_email": "service-123@gcp-sa-binaryauthorization.iam.gserviceaccount.com",
+			},
+			mustPopulate: []string{"attestor_id", "attestor_name", "note_reference", "delegation_service_account_email"},
+		},
+		{
+			// GcpGkeFleet: the host project every fleet child references,
+			// the fleet's name, and its uid.
+			name: "GcpGkeFleet",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleet,
+			rawOutputs: map[string]interface{}{
+				"project_id": "platform-host",
+				"name":       "projects/platform-host/locations/global/fleets/default",
+				"uid":        "5c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f",
+			},
+			mustPopulate: []string{"project_id", "name", "uid"},
+		},
+		{
+			// GcpGkeFleetFeature: the feature's full name.
+			name: "GcpGkeFleetFeature",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetFeature,
+			rawOutputs: map[string]interface{}{
+				"name": "projects/platform-host/locations/global/features/configmanagement",
+			},
+			mustPopulate: []string{"name"},
+		},
+		{
+			// GcpGkeFleetScope: the scope's name, ID, and uid.
+			name: "GcpGkeFleetScope",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetScope,
+			rawOutputs: map[string]interface{}{
+				"name":     "projects/platform-host/locations/global/scopes/orders",
+				"scope_id": "orders",
+				"uid":      "9f8e7d6c-5b4a-3c2d-1e0f-a9b8c7d6e5f4",
+			},
+			mustPopulate: []string{"name", "scope_id", "uid"},
+		},
+		{
+			// GcpGkeFleetMembership: the membership name scopes and
+			// per-cluster feature settings reference.
+			name: "GcpGkeFleetMembership",
+			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/platform-host/locations/global/memberships/orders-uc1",
+				"membership_id": "orders-uc1",
+				"location":      "global",
+			},
+			mustPopulate: []string{"name", "membership_id", "location"},
+		},
+		{
+			// GcpComputeImage: the self link consumers boot from, the
+			// family, and the size.
+			name: "GcpComputeImage",
+			kind: cloudresourcekind.CloudResourceKind_GcpComputeImage,
+			rawOutputs: map[string]interface{}{
+				"name":         "web-base-20261001",
+				"self_link":    "https://www.googleapis.com/compute/v1/projects/images-prod/global/images/web-base-20261001",
+				"family":       "web-base",
+				"disk_size_gb": 20,
+				"image_id":     "projects/images-prod/global/images/web-base-20261001",
+			},
+			mustPopulate: []string{"name", "self_link", "family", "disk_size_gb", "image_id"},
+		},
+		{
+			// GcpCloudBuildWorkerPool: the pool name triggers and Cloud
+			// Deploy targets run their builds on.
+			name: "GcpCloudBuildWorkerPool",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildWorkerPool,
+			rawOutputs: map[string]interface{}{
+				"name":           "projects/acme-ci/locations/us-central1/workerPools/private-builds",
+				"worker_pool_id": "private-builds",
+				"state":          "RUNNING",
+				"uid":            "4f3e2d1c-0b9a-8f7e-6d5c-4b3a2f1e0d9c",
+			},
+			mustPopulate: []string{"name", "worker_pool_id", "state", "uid"},
+		},
+		{
+			// GcpCloudBuildConnection: the connection name repositories
+			// link through, and how far its installation has come.
+			name: "GcpCloudBuildConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildConnection,
+			rawOutputs: map[string]interface{}{
+				"name":                    "projects/acme-ci/locations/us-central1/connections/acme-github",
+				"connection_id":           "acme-github",
+				"installation_stage":      "COMPLETE",
+				"installation_action_uri": "",
+			},
+			mustPopulate: []string{"name", "connection_id", "installation_stage"},
+		},
+		{
+			// GcpCloudBuildRepository: the repository name triggers and
+			// custom target types build from.
+			name: "GcpCloudBuildRepository",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/acme-ci/locations/us-central1/connections/acme-github/repositories/orders",
+				"repository_id": "orders",
+				"remote_uri":    "https://github.com/acme/orders.git",
+			},
+			mustPopulate: []string{"name", "repository_id", "remote_uri"},
+		},
+		{
+			// GcpCloudBuildTrigger: Google's generated trigger ID, the
+			// trigger's name, and its full resource ID (global triggers
+			// carry no locations segment).
+			name: "GcpCloudBuildTrigger",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildTrigger,
+			rawOutputs: map[string]interface{}{
+				"id":         "projects/acme-ci/locations/us-central1/triggers/0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b",
+				"trigger_id": "0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b",
+				"name":       "orders-main",
+			},
+			mustPopulate: []string{"id", "trigger_id", "name"},
+		},
+		{
+			// GcpDeployTarget: the bare target ID pipeline stages and
+			// policies select by, and the full name.
+			name: "GcpDeployTarget",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeployTarget,
+			rawOutputs: map[string]interface{}{
+				"name":      "projects/acme-delivery/locations/us-central1/targets/prod",
+				"target_id": "prod",
+				"uid":       "a1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
+			},
+			mustPopulate: []string{"name", "target_id", "uid"},
+		},
+		{
+			// GcpDeliveryPipeline: the pipeline ID deploy policies select
+			// by, and the full name.
+			name: "GcpDeliveryPipeline",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeliveryPipeline,
+			rawOutputs: map[string]interface{}{
+				"name":                 "projects/acme-delivery/locations/us-central1/deliveryPipelines/orders",
+				"delivery_pipeline_id": "orders",
+				"uid":                  "d4e5f6a7-b8c9-4d0e-9f1a-3b4c5d6e7f80",
+			},
+			mustPopulate: []string{"name", "delivery_pipeline_id", "uid"},
+		},
+		{
+			// GcpDeployPolicy: the policy's full name, ID, and uid.
+			name: "GcpDeployPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeployPolicy,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/acme-delivery/locations/us-central1/deployPolicies/weekend-freeze",
+				"deploy_policy_id": "weekend-freeze",
+				"uid":              "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+			},
+			mustPopulate: []string{"name", "deploy_policy_id", "uid"},
+		},
+		{
+			// GcpDeployCustomTargetType: the full name custom targets
+			// reference.
+			name: "GcpDeployCustomTargetType",
+			kind: cloudresourcekind.CloudResourceKind_GcpDeployCustomTargetType,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/acme-delivery/locations/us-central1/customTargetTypes/vertex-endpoint",
+				"custom_target_type_id": "vertex-endpoint",
+				"uid":                   "c3d4e5f6-a7b8-4c9d-8e0f-2a3b4c5d6e7f",
+			},
+			mustPopulate: []string{"name", "custom_target_type_id", "uid"},
+		},
+		{
+			// GcpPubSubTopicIamMember: the resolved grant (the topic's full
+			// name, role, member) and the policy etag.
+			name: "GcpPubSubTopicIamMember",
+			kind: cloudresourcekind.CloudResourceKind_GcpPubSubTopicIamMember,
+			rawOutputs: map[string]interface{}{
+				"topic":  "projects/acme-logging/topics/audit-logs",
+				"role":   "roles/pubsub.publisher",
+				"member": "serviceAccount:service-123456789@gcp-sa-logging.iam.gserviceaccount.com",
+				"etag":   "BwYn2FQlJeM=",
+			},
+			mustPopulate: []string{"topic", "role", "member", "etag"},
+		},
+		{
+			// GcpGcsBucketIamMember: the resolved grant (the bucket name,
+			// role, member) and the policy etag.
+			name: "GcpGcsBucketIamMember",
+			kind: cloudresourcekind.CloudResourceKind_GcpGcsBucketIamMember,
+			rawOutputs: map[string]interface{}{
+				"bucket": "acme-audit-logs",
+				"role":   "roles/storage.objectCreator",
+				"member": "serviceAccount:service-123456789@gcp-sa-logging.iam.gserviceaccount.com",
+				"etag":   "CAE=",
+			},
+			mustPopulate: []string{"bucket", "role", "member", "etag"},
+		},
+		{
+			// GcpCertManagerTrustConfig: the full name TLS policies take, the
+			// bare name, and the location.
+			name: "GcpCertManagerTrustConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerTrustConfig,
+			rawOutputs: map[string]interface{}{
+				"trust_config_id":   "projects/acme-edge/locations/global/trustConfigs/partner-mtls",
+				"trust_config_name": "partner-mtls",
+				"location":          "global",
+			},
+			mustPopulate: []string{"trust_config_id", "trust_config_name", "location"},
+		},
+		{
+			// GcpCertManagerIssuanceConfig: the full name a certificate's
+			// managed.issuance_config takes, the bare name, and the location.
+			name: "GcpCertManagerIssuanceConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerIssuanceConfig,
+			rawOutputs: map[string]interface{}{
+				"issuance_config_id":   "projects/acme-edge/locations/global/certificateIssuanceConfigs/internal-tls",
+				"issuance_config_name": "internal-tls",
+				"location":             "global",
+			},
+			mustPopulate: []string{"issuance_config_id", "issuance_config_name", "location"},
+		},
+		{
+			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
+			// name in GcpVertexAiEndpoint's shape (the verifier keys on
+			// endpoint_id), the deployed model's id and display name, and the
+			// location.
+			name: "GcpVertexAiModelGardenDeployment",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiModelGardenDeployment,
+			rawOutputs: map[string]interface{}{
+				"endpoint_id":                 "projects/my-project/locations/us-central1/endpoints/1234567890123456789",
+				"endpoint_name":               "1234567890123456789",
+				"deployed_model_id":           "9876543210987654321",
+				"deployed_model_display_name": "qwen-small",
+				"location":                    "us-central1",
+			},
+			mustPopulate: []string{"endpoint_id", "endpoint_name", "deployed_model_id", "deployed_model_display_name", "location"},
+		},
+		{
+			// GcpVertexAiAgentEngine: the agent's full resource name (the
+			// verifier's key), its numeric id, location, and the two
+			// timestamps.
+			name: "GcpVertexAiAgentEngine",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiAgentEngine,
+			rawOutputs: map[string]interface{}{
+				"name":                "projects/my-project/locations/us-central1/reasoningEngines/1234567890123456789",
+				"reasoning_engine_id": "1234567890123456789",
+				"location":            "us-central1",
+				"create_time":         "2026-09-22T10:00:00Z",
+				"update_time":         "2026-09-22T10:05:00Z",
+			},
+			mustPopulate: []string{"name", "reasoning_engine_id", "location", "create_time", "update_time"},
 		},
 		{
 			// GcpFirebaseProject: flat scalar outputs from both engines -- the

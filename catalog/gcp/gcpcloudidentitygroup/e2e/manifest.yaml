@@ -1,0 +1,40 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudIdentityGroup
+metadata:
+  name: platform-admins
+spec:
+  # The group's email in a domain the Cloud Identity customer owns -- its
+  # identity in IAM bindings (group:platform-admins@example.com).
+  groupEmail: platform-admins@example.com
+  # The customer the group is created under (Admin console > Account).
+  customerId: customers/C01abc2de
+  displayName: Platform Admins
+  description: Owners of the platform projects; bind IAM roles to this group, never to people
+  # A security group: access control only, no mailing-list features; the
+  # label cannot be removed once added.
+  security: true
+  initialGroupConfig: EMPTY
+  # The managed membership: people by email, a deployer service account by
+  # reference, a contractor whose membership expires.
+  memberships:
+    - member:
+        value: alice@example.com
+      roles:
+        - name: MEMBER
+        - name: OWNER
+    - member:
+        value: bob@example.com
+      roles:
+        - name: MEMBER
+        - name: MANAGER
+    - member:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: platform-deployer
+          fieldPath: status.outputs.email
+    - member:
+        value: contractor@example.com
+      roles:
+        - name: MEMBER
+          expireTime: "2027-03-31T00:00:00Z"
+  deletionPolicy: PREVENT

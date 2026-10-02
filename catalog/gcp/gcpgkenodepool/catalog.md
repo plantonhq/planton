@@ -133,6 +133,7 @@ These are the most important decisions when configuring a node pool. Explore the
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpServiceAccount** | `nodeConfig.serviceAccount` | `status.outputs.email` |
 | **GcpKmsKey** | `nodeConfig.bootDiskKmsKey` | `status.outputs.key_id` |
+| **GcpComputeImage** (optional) | `nodeConfig.secondaryBootDisks[].diskImage` | `status.outputs.image_id` |
 
 ### What This Component Provides
 

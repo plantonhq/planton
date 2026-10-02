@@ -1,0 +1,87 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcphierarchicalfirewallpolicy
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A firewall policy stores no customer data -- it is a rule set Google evaluates in the VPC data plane; nothing exists to encrypt at rest.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The policy decides whether packets pass; it carries no traffic of its own and cannot add or require encryption on the traffic it filters (a tls_inspect rule decrypts for inspection through a Cloud NGFW security profile group, which is inspection, not transport protection).
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The policy has no endpoint to expose -- it is the INSTRUMENT that closes public reachability for every VM beneath its association; that stance is assessed under restricted-ingress.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: rules
+      evidence:
+        type: spec_validation
+        reference: Every rule states its direction, its action, and a match with at least one layer4_configs entry (repeated.min_items = 1), so what an INGRESS rule admits or denies -- by CIDR, country, threat-intelligence list, address group, secure tag, or source network -- is always an explicit, reviewable choice; an organization-level deny cannot be undone by any project beneath it.
+      notes: "This component IS the organization's restricted-ingress control: rules enforced above every project, before network policies and legacy VPC rules. How restrictive is the rule set's choice -- preset 01 denies SSH from 0.0.0.0/0 and logs it; preset 02 allows only intra-VPC traffic and Google's health-check ranges before delegating; preset 03 denies known-malicious sources, Tor exit nodes, and listed countries. Two caveats a reviewer should hear: disabled=true leaves a rule in place but unenforced, and a rule whose target secure tags are all INEFFECTIVE is silently ignored."
+    - control_id: edge-protection
+      status: configurable
+      field_path: rules.security_profile_group
+      evidence:
+        type: spec_validation
+        reference: A rule with action apply_security_profile_group must name a Cloud NGFW security profile group (CEL security_profile_group_matches_action), which applies layer-7 threat prevention (intrusion detection and prevention signatures) to the matched traffic, with tls_inspect decrypting TLS for inspection; every other action is L3/L4 filtering only.
+      notes: Layer-7 inspection is Cloud NGFW Enterprise, billed and configured through a firewall endpoint and security profile group outside this kind; without such a rule the policy is not a WAF -- HTTP request-level protection for load-balanced services lives in Cloud Armor policies.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Hierarchical firewall policies are organization-level resources governed by Resource Manager IAM on the organization or folder they live under (roles/compute.orgFirewallPolicyAdmin to author and associate, roles/compute.orgFirewallPolicyUser to associate only); no project-level principal can edit or detach them, which is the point of enforcing rules above the projects.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The policy runs no workloads and holds no credentials; target_service_accounts selects which workloads a rule applies to by their identity, which is scoping, not credential issuance.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist on a firewall policy.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; administrative access posture is rbac.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Policy, rule, and association create, update, and delete land in Cloud Audit Logs (Admin Activity) on the organization or folder unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+      notes: Per-connection logging of what a rule decided is the separate, opt-in monitoring-integration lever (enable_logging).
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: rules.enable_logging
+      evidence:
+        type: spec_default
+        reference: enable_logging (default false) writes a firewall-rules log entry to Cloud Logging for every connection the rule decides -- the rule, the policy, both endpoints, and the verdict -- in the project whose VM was involved, from where a GcpLoggingSink routes it to BigQuery or Pub/Sub; the spec forbids it on goto_next rules (CEL no_logging_on_goto_next) because Google logs only the rule that decides.
+      notes: Turn it on for every deny rule in a baseline so a blocked connection is explainable; leave it off for high-volume allows unless the ingestion cost is budgeted.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The policy is declarative configuration, re-creatable from the manifest; nothing stateful exists to back up. A recreated policy has a new numeric ID.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Firewall policies are global control-plane configuration distributed by Google to every region and zone where a governed VM runs; enforcement happens in the VPC data plane with no single point of failure and no customer-visible replication choice.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE for the policy, every rule, and every association; PREVENT makes destroy fail outright; ABANDON unmanages everything while it stays live and enforcing.
+      notes: PREVENT is the guard for an organization's baseline -- deleting it silently reopens whatever the denies closed for every project beneath.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Fully managed service -- Google operates the firewall control and data planes; no customer-visible patch surface exists.

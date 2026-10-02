@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployCustomTargetType
+metadata:
+  name: terraform-deployer
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: Renders and applies Terraform through shared Skaffold custom actions
+  customActions:
+    renderAction: terraform-plan
+    deployAction: terraform-apply
+    includeSkaffoldModules:
+      - configs:
+          - terraform-actions
+        git:
+          repo: https://github.com/my-org/deploy-actions.git
+          path: terraform/skaffold.yaml
+          ref: v1

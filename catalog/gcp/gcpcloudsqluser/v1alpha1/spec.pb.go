@@ -46,11 +46,17 @@ type GcpCloudSqlUserSpec struct {
 	// a reference to a GcpCloudSql resource. Immutable — a user cannot move
 	// between instances.
 	Instance *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=instance,proto3" json:"instance,omitempty"`
-	// The user name. Immutable. For BUILT_IN users this is the login name;
-	// for IAM types it is the IAM principal — the full email for
-	// CLOUD_IAM_USER/CLOUD_IAM_SERVICE_ACCOUNT (on MySQL, GCP stores it
-	// truncated before the "@"), or the group email for CLOUD_IAM_GROUP.
-	// Example: "orders-app", "ci-runner@my-project.iam.gserviceaccount.com"
+	// The user name. Immutable. For BUILT_IN users this is the login name
+	// ("orders-app"). For IAM types it is the IAM principal: the user's
+	// full email for CLOUD_IAM_USER, the group email for CLOUD_IAM_GROUP,
+	// and for CLOUD_IAM_SERVICE_ACCOUNT the service account's email with
+	// the ".gserviceaccount.com" suffix dropped
+	// ("ci-runner@my-project.iam") — the form Cloud SQL stores on
+	// PostgreSQL; MySQL keeps only the part before "@". Both engines apply
+	// that normalization for CLOUD_IAM_SERVICE_ACCOUNT, so a pasted full
+	// email also works. Prefer service_account for the service-account
+	// case: it wires the identity by reference instead of by hand. Exactly
+	// one of user_name or service_account is set.
 	UserName string `protobuf:"bytes,3,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
 	// Login password for a BUILT_IN user. Mutable — updating it rotates the
 	// credential in place. Subject to the instance's password validation
@@ -77,6 +83,17 @@ type GcpCloudSqlUserSpec struct {
 	// documented answer for PostgreSQL users that cannot be dropped while
 	// they still own database objects.
 	DeletionPolicy string `protobuf:"bytes,9,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
+	// The service account this IAM database user represents, wired by
+	// reference (a GcpServiceAccount's email) or as a literal email. Both
+	// engines derive the database username Cloud SQL expects — the email
+	// with ".gserviceaccount.com" dropped (Cloud SQL stores exactly that on
+	// PostgreSQL, and only the part before "@" on MySQL) — so a chart never
+	// hand-builds the form. Requires type CLOUD_IAM_SERVICE_ACCOUNT and the
+	// instance's "cloudsql.iam_authentication" flag; the account still
+	// needs roles/cloudsql.instanceUser (and roles/cloudsql.client to
+	// connect) on the project, granted separately. Alternative to
+	// user_name: exactly one of the two is set. Immutable.
+	ServiceAccount *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=service_account,json=serviceAccount,proto3" json:"service_account,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -174,6 +191,13 @@ func (x *GcpCloudSqlUserSpec) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpCloudSqlUserSpec) GetServiceAccount() *v1.StringValueOrRef {
+	if x != nil {
+		return x.ServiceAccount
+	}
+	return nil
+}
+
 // GcpCloudSqlUserPasswordPolicy is a per-user login hardening policy.
 type GcpCloudSqlUserPasswordPolicy struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -254,13 +278,13 @@ var File_catalog_gcp_gcpcloudsqluser_v1alpha1_spec_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcpcloudsqluser_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcpcloudsqluser/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcloudsqluser.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9b\v\n" +
+	"/catalog/gcp/gcpcloudsqluser/v1alpha1/spec.proto\x12(dev.planton.gcp.gcpcloudsqluser.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf5\x10\n" +
 	"\x13GcpCloudSqlUserSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12{\n" +
 	"\binstance\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB+\xbaH\x03\xc8\x01\x01\x88\xd4a\xbc\x17\x92\xd4a\x1cstatus.outputs.instance_nameR\binstance\x12*\n" +
 	"\tuser_name\x18\x03 \x01(\tB\r\xbaH\n" +
-	"\xc8\x01\x01r\x05\x10\x01\x18\x80\x01R\buserName\x12*\n" +
+	"\xd8\x01\x01r\x05\x10\x01\x18\x80\x01R\buserName\x12*\n" +
 	"\bpassword\x18\x04 \x01(\tB\x0e\xbaH\a\xd8\x01\x01r\x02\x10\x01\xa0\xa6\x1d\x01R\bpassword\x12\xe8\x01\n" +
 	"\x04type\x18\x05 \x01(\tB\xce\x01\xbaH\xbe\x01\xba\x01\xba\x01\n" +
 	"\n" +
@@ -269,9 +293,13 @@ const file_catalog_gcp_gcpcloudsqluser_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fpassword_policy\x18\a \x01(\v2G.dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserPasswordPolicyR\x0epasswordPolicy\x128\n" +
 	"\x0edatabase_roles\x18\b \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\rdatabaseRoles\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\t \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xc5\x03\xbaH\xc1\x03\x1a\x9e\x02\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12z\n" +
+	"\x0fservice_account\x18\n" +
+	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x0eserviceAccount:\xa3\b\xbaH\x9f\b\x1a\x9e\x02\n" +
 	"\x1eiam_user_must_not_set_password\x12\x90\x01IAM-authenticated users (CLOUD_IAM_USER, CLOUD_IAM_SERVICE_ACCOUNT, CLOUD_IAM_GROUP) must not set a password — authentication goes through IAM\x1ai!(this.type in ['CLOUD_IAM_USER', 'CLOUD_IAM_SERVICE_ACCOUNT', 'CLOUD_IAM_GROUP']) || this.password == ''\x1a\x9d\x01\n" +
-	"!password_policy_requires_built_in\x12.password_policy applies to BUILT_IN users only\x1aH!has(this.password_policy) || this.type == '' || this.type == 'BUILT_IN'B\a\n" +
+	"!password_policy_requires_built_in\x12.password_policy applies to BUILT_IN users only\x1aH!has(this.password_policy) || this.type == '' || this.type == 'BUILT_IN'\x1a\xb3\x02\n" +
+	"\x1duser_name_xor_service_account\x12\x8c\x01set exactly one of user_name (a login name or IAM principal) or service_account (a GcpServiceAccount whose IAM database username is derived)\x1a\x82\x01(this.user_name != '') != (has(this.service_account) && (has(this.service_account.value) || has(this.service_account.value_from)))\x1a\xa5\x02\n" +
+	"$service_account_requires_iam_sa_type\x12eservice_account derives an IAM service-account database user -- set type to CLOUD_IAM_SERVICE_ACCOUNT\x1a\x95\x01!(has(this.service_account) && (has(this.service_account.value) || has(this.service_account.value_from))) || this.type == 'CLOUD_IAM_SERVICE_ACCOUNT'B\a\n" +
 	"\x05_type\"\x97\x04\n" +
 	"\x1dGcpCloudSqlUserPasswordPolicy\x12D\n" +
 	"\x17allowed_failed_attempts\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\x15allowedFailedAttempts\x88\x01\x01\x12\x90\x02\n" +
@@ -304,11 +332,12 @@ var file_catalog_gcp_gcpcloudsqluser_v1alpha1_spec_proto_depIdxs = []int32{
 	2, // 0: dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	2, // 1: dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserSpec.instance:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1, // 2: dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserSpec.password_policy:type_name -> dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserPasswordPolicy
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 3: dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserSpec.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudsqluser_v1alpha1_spec_proto_init() }

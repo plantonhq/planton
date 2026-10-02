@@ -1,0 +1,87 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpdocumentaiprocessor
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Document AI encrypts everything a processor stores at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key_name
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; a Cloud KMS key (a GcpKmsKey reference or a literal path) encrypts what the processor stores under the customer-managed key. Fixed at creation.
+      notes: The 02-encrypted-invoice-parser preset sets it.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Document AI call is TLS over Google's location-prefixed endpoint.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The process endpoint is reached only through the Document AI API under IAM; there is no anonymous access.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: The processor exposes no network listener of its own; access is API-level and governed by IAM (and VPC Service Controls at the organization).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No edge is served; the processor is reached through the Document AI API.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Processing documents requires documentai.processors.processOnline or processBatch on the processor; managing it requires documentai.processors.*.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The processor authenticates nothing; callers use their own identities.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Processor create, delete, and version changes are Admin Activity audit records unconditionally; Data Access logs for document processing are enabled at the project.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Document AI reports request counts and latencies to Cloud Monitoring without configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A pretrained processor is recreated from the manifest; custom-trained versions have no backup, which is why the GUIDE recommends PREVENT for them.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Document AI serves processors from Google-managed multi-regional infrastructure in the chosen location.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the processor and its trained versions are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves it in place.
+      notes: The 02-encrypted-invoice-parser preset sets PREVENT.
+    - control_id: managed-patching
+      status: configurable
+      field_path: default_version
+      evidence:
+        type: spec_default
+        reference: The service is Google-operated; default_version pins which model version answers, so Google's new releases are adopted deliberately rather than silently.

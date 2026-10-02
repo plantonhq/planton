@@ -1,0 +1,34 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeliveryPipeline
+metadata:
+  name: web
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  description: Web service from dev to prod on Cloud Run
+  serialPipeline:
+    stages:
+      - targetId:
+          value: dev
+        strategy:
+          standard:
+            verify: false
+      - targetId:
+          value: prod
+        strategy:
+          standard:
+            verify: false
+  automations:
+    - automationId: promote-to-prod
+      description: Promote every release that succeeds on dev to prod
+      serviceAccount:
+        value: deploy-automation@my-gcp-project.iam.gserviceaccount.com
+      selector:
+        targets:
+          - id:
+              value: dev
+      rules:
+        - promoteReleaseRule:
+            id: promote-to-prod
+            wait: 600s

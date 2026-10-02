@@ -1,12 +1,12 @@
 # GCP Target HTTPS Proxy
 
-Deploys a global Compute Engine target HTTPS proxy — the TLS-termination node of a global external Application Load Balancer. It binds a global forwarding rule (the VIP) to a URL map (the routing brain) and owns the client-facing handshake: which certificates are presented, which TLS policy constrains ciphers and versions, whether QUIC (HTTP/3) is negotiated, and whether TLS 1.3 0-RTT early data is accepted. Certificates attach through exactly one of three mechanisms — the classic compute-certificate list, Certificate Manager certificates (cross-region internal ALB), or an SNI-scale certificate map.
+Deploys a Compute Engine target HTTPS proxy — the TLS-termination node of an Application Load Balancer, global (the default) or regional when `region` is set. It binds a forwarding rule (the VIP) to a URL map (the routing brain) and owns the client-facing handshake: which certificates are presented, which TLS policy constrains ciphers and versions, whether QUIC (HTTP/3) is negotiated, and whether TLS 1.3 0-RTT early data is accepted. Certificates attach through exactly one of three mechanisms — the classic compute-certificate list, Certificate Manager certificates (cross-region internal ALB), or an SNI-scale certificate map.
 
 ## What Gets Created
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
-- **Compute Engine Target HTTPS Proxy (global)** -- bound to the configured URL map, certificate mechanism, SSL policy, and QUIC/early-data posture
+- **Compute Engine Target HTTPS Proxy** -- global, or regional when `region` is set; bound to the configured URL map, certificate mechanism, SSL policy, and (global only) QUIC/early-data posture
 - **Compute Engine API enablement** -- `compute.googleapis.com` is enabled in the target project; tearing down the proxy never disables the API
 
 ## Before You Deploy
@@ -77,6 +77,8 @@ The InfraPipeline resolves the dependency graph — certificate and URL map firs
 
 These are the most important decisions when configuring a target HTTPS proxy. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
+**Scope** -- `region` empty builds the global proxy (global external ALB, cross-region internal ALB, Traffic Director); a region name builds the regional proxy (regional external and internal ALBs), whose URL map, certificates, and SSL policy must be regional in the same region. Immutable.
+
 **Certificate mechanism** -- Exactly one of three (GCP rejects combinations): `sslCertificates` (up to 15 — Google-managed and self-managed compute certificates share one collection), `certificateManagerCertificates` (only the cross-region INTERNAL_MANAGED ALB honors them), or `certificateMap` (SNI-scale selection for many domains — SaaS custom domains). All mutable: rotation is attach-before-detach, in place.
 
 **URL map** -- Required; mutable in place (setUrlMap) — repointing a live frontend at a new routing table causes zero downtime.
@@ -107,7 +109,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `self_link` | Self-link URI of the proxy | GcpGlobalForwardingRule `target` (the default target kind) |
 | `proxy_name` | Name as it exists in GCP | Audit, fleet inventory |
 | `proxy_id` | Server-assigned numeric ID | Diagnostics |
-| `fingerprint` | Optimistic-concurrency token | Out-of-band gcloud updates |
+| `fingerprint` | Optimistic-concurrency token (empty for a regional proxy) | Out-of-band gcloud updates |
+| `region` | Region of a regional proxy; empty for global | Scope checks on downstream blocks |
 
 ## Common Patterns
 
@@ -118,6 +121,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 **Certificate map SaaS** -- SNI-scale certificate selection for many customer domains, lifting the 15-certificate list limit. Start from the **Certificate-Map SaaS Frontend** preset.
 
 **mTLS frontend** -- A ServerTlsPolicy demanding and validating client certificates on top of the server certificate; early data stays disabled since replayable 0-RTT and client-certificate auth do not mix. Start from the **Mutual-TLS Frontend** preset.
+
+**Regional HTTPS frontend** -- The regional proxy of a regional external Application Load Balancer, with a regional self-managed certificate and a regional URL map. Start from the **Regional HTTPS Frontend** preset.
 
 ## Works With
 

@@ -1,0 +1,4 @@
+name: gcpdocumentaiprocessor-pulumi-project
+runtime:
+  name: go
+description: Planton GcpDocumentAiProcessor Pulumi module

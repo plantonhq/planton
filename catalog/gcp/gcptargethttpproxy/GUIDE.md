@@ -5,6 +5,19 @@ its production role is almost always the redirect half of a frontend
 pair, and its one mutable field is the mechanism behind zero-downtime
 routing changes.
 
+## One kind, two scopes
+
+`region` empty builds the GLOBAL proxy — the frontend adapter of the
+global external ALB, the cross-region internal ALB, and Traffic Director.
+`region` set builds the REGIONAL proxy — the frontend adapter of the
+regional external ALB and the regional internal ALB. Scope is a chain-wide
+decision: a regional proxy's URL map must be a regional `GcpUrlMap` in the
+same region, and the forwarding rule in front of it a regional
+`GcpGlobalForwardingRule` (set its `region` too). The regional proxy has no
+`proxyBind` (Traffic Director has no regional proxy); the spec rejects it
+when `region` is set. A proxy never moves between scopes — `region` is
+immutable.
+
 ## The standard pattern is a pair
 
 A production frontend runs TWO proxies sharing one story: this HTTP proxy
@@ -23,7 +36,7 @@ the new URL map beside the old one, then flip the reference.
 
 ## Everything else recreates the proxy
 
-Name, description, keep-alive, and `proxyBind` are ForceNew — and a proxy
+Name, description, region, keep-alive, and `proxyBind` are ForceNew — and a proxy
 recreation briefly breaks every forwarding rule referencing the old
 self_link. GCP also refuses to delete a proxy a forwarding rule still
 references (`resourceInUseByAnotherResource`), so replacements must be

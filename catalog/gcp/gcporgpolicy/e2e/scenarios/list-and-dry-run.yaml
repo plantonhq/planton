@@ -1,0 +1,36 @@
+# List-constraint GcpOrgPolicy scenario on the harness project: a values
+# rule with a value group, a conditional rule by tag, inherit_from_parent,
+# and a dry-run policy beside the enforced one -- the depth of the rule
+# shape, round-tripped through Google's set-comparison of rules and the
+# "TRUE"/"FALSE" string normalization (the re-plan must be clean). Project
+# scope by the ambient project; needs only roles/orgpolicy.policyAdmin on it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: planton-oss-e2e-gcporgp-list
+  id: planton-oss-e2e-gcporgp-list
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcporgpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  constraint: gcp.resourceLocations
+  policy:
+    inheritFromParent: true
+    rules:
+      - values:
+          allowedValues:
+            - in:us-locations
+          deniedValues:
+            - us-west4
+  dryRunPolicy:
+    rules:
+      - values:
+          allowedValues:
+            - in:us-locations
+  deletionPolicy: DELETE

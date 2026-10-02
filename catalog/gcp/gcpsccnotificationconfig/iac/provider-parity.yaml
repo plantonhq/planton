@@ -1,0 +1,42 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# One kind, three notification-config resources -- the spec's scope
+# selects which one the module creates; each entry records the same
+# judgment: the scope arm that names the parent, and the one-leaf
+# streaming_config lifted to filter.
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_scc_v2_project_notification_config:
+    mappings:
+      - spec: spec.scope.project_id
+        arg: project
+      # Google's one-leaf streaming_config, lifted; always sent.
+      - spec: spec.filter
+        arg: streaming_config.filter
+
+  google_scc_v2_folder_notification_config:
+    mappings:
+      - spec: spec.scope.folder_id
+        arg: folder
+      # Google's one-leaf streaming_config, lifted; always sent.
+      - spec: spec.filter
+        arg: streaming_config.filter
+
+  google_scc_v2_organization_notification_config:
+    mappings:
+      - spec: spec.scope.organization_id
+        arg: organization
+      # Google's one-leaf streaming_config, lifted; always sent.
+      - spec: spec.filter
+        arg: streaming_config.filter
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

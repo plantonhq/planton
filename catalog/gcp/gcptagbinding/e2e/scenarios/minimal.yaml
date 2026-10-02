@@ -1,0 +1,26 @@
+# Minimal GcpTagBinding scenario: the prerequisite value bound to the harness
+# project with NO parent named -- the module resolves the provider's default
+# project and its NUMBER (one guarded read of the project on each engine).
+# The whole chain (key -> value -> binding) lives in the harness project and
+# proves live with roles/resourcemanager.tagAdmin plus
+# roles/resourcemanager.tagUser on it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagBinding
+metadata:
+  name: planton-oss-e2e-gcptagb-minimal
+  id: planton-oss-e2e-gcptagb-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptagbinding
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  tagValue:
+    valueFrom:
+      kind: GcpTagValue
+      name: planton-oss-e2e-gcptagv-prereq
+      fieldPath: status.outputs.name

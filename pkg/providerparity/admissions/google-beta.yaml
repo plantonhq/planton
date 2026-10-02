@@ -89,3 +89,27 @@ resources:
       google/services/firebase/resource_firebase_web_app.go (the GA
       promotion of the firebase service); until then
       google-beta/services/firebase/ is the only home.
+  - resource: google_tpu_v2_vm
+    kind: GcpTpuVm
+    reason: >-
+      The Cloud TPU VM (projects.locations.nodes on the Cloud TPU API) is
+      published only in the beta provider at the pin -- the GA provider has
+      no code under services/tpuv2, and the GA google_tpu_node it once had
+      was removed in 7.0.0; the kind cannot exist without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/tpuv2/resource_tpu_v2_vm.go (the GA promotion of the
+      tpuv2 service); until then google-beta/services/tpuv2/ is the only
+      home.
+  - resource: google_tpu_v2_queued_resource
+    kind: GcpTpuQueuedResource
+    reason: >-
+      The Cloud TPU queued resource (projects.locations.queuedResources on
+      the Cloud TPU API) -- Google's way to wait for scarce TPU capacity --
+      is published only in the beta provider at the pin; the GA provider
+      has no code under services/tpuv2.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/tpuv2/resource_tpu_v2_queued_resource.go (the GA
+      promotion of the tpuv2 service); until then
+      google-beta/services/tpuv2/ is the only home.

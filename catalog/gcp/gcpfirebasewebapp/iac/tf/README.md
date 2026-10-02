@@ -6,7 +6,7 @@ This Terraform module registers a web app in a Firebase-enabled Google Cloud pro
 
 A web app has no identity beyond its display name, so nothing on the registration forces replacement. `deletion_policy` DELETE posts `:remove` with `immediate=true` — the app is gone PERMANENTLY at once, skipping Firebase's 30-day recoverable window. The spec's `deletion_policy` governs the app and every debug token; the two reCAPTCHA configurations have no delete on Google's side (per-app singletons the provider only forgets), so they carry none. Both reCAPTCHA configurations may be set at once — that is how a site migrates from v3 to Enterprise without a gap.
 
-Two blocks ride the `google-beta` provider: Google publishes `google_firebase_web_app` and its `google_firebase_web_app_config` lookup only there. The resource attaches `provider = google-beta` under a recorded admission in `pkg/providerparity/admissions/google-beta.yaml`; the beta channel is pinned to the same `~> 7.43` line as `google`, and both provider blocks set `user_project_override = true` (the Firebase Management API needs a quota project on user-credential calls). App Check and API enablement stay on the GA provider.
+Two blocks ride the `google-beta` provider: Google publishes `google_firebase_web_app` and its `google_firebase_web_app_config` lookup only there. The resource attaches `provider = google-beta` under a recorded admission in `pkg/providerparity/admissions/google-beta.yaml`; the beta channel is pinned to the same `~> 8.3` line as `google`, and both provider blocks set `user_project_override = true` (the Firebase Management API needs a quota project on user-credential calls). App Check and API enablement stay on the GA provider.
 
 ## Usage with Planton CLI
 

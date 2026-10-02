@@ -43,6 +43,18 @@ trusts a CA unique to this instance; `GOOGLE_MANAGED_SHARED_CA` lets a
 fleet trust one CA; `CUSTOMER_MANAGED_CAS_CA` + `serverCaPool` puts the
 chain under your Certificate Authority Service pool — the regulated-
 environment answer, and the pool must live in the instance's region.
+Point `serverCaPool` at a `GcpPrivateCaPool` with `valueFrom` (its
+`status.outputs.name`) or write the pool's full name as `{value: ...}`.
+
+## ACLs are a shared policy, not per-instance rules
+
+`aclPolicy` attaches a Memorystore ACL policy — Valkey users, key
+patterns, and allowed commands authored once and shared by every
+instance in the region — by its full resource name. Leave it empty for
+the built-in default ACL (one user, full access, gated by
+`authEnabled`). Attaching or swapping a policy is an in-place update,
+and the instance's `isAclPolicyInSync` status says when the new rules
+have reached every node.
 
 ## Maintenance and self-service patching
 

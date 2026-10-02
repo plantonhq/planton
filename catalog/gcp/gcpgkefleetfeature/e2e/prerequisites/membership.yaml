@@ -1,0 +1,24 @@
+# Extra fixture for the policycontroller scenario: a membership with no
+# cluster behind it, in the second project's fleet, so the per-cluster
+# settings have a membership to target without a GKE cluster's cost.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeFleetMembership
+metadata:
+  name: planton-oss-e2e-gcpflft-membership
+  id: planton-oss-e2e-gcpflft-membership
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpgkefleetmembership
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpGkeFleet
+      name: planton-oss-e2e-gcpflft-fleet
+      fieldPath: status.outputs.project_id
+  membershipId: e2e-gcpflft-${E2E_RUN_ID}

@@ -59,6 +59,7 @@ spec:
 | `spec.passwordPolicy.enablePasswordVerification` | `bool` |  |  |  |
 | `spec.databaseRoles` | `[]string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 
 ## Field Details
 
@@ -89,13 +90,19 @@ between instances.
 
 `string` · required
 
-The user name. Immutable. For BUILT_IN users this is the login name;
-for IAM types it is the IAM principal — the full email for
-CLOUD_IAM_USER/CLOUD_IAM_SERVICE_ACCOUNT (on MySQL, GCP stores it
-truncated before the "@"), or the group email for CLOUD_IAM_GROUP.
-Example: "orders-app", "ci-runner@my-project.iam.gserviceaccount.com"
+The user name. Immutable. For BUILT_IN users this is the login name
+("orders-app"). For IAM types it is the IAM principal: the user's
+full email for CLOUD_IAM_USER, the group email for CLOUD_IAM_GROUP,
+and for CLOUD_IAM_SERVICE_ACCOUNT the service account's email with
+the ".gserviceaccount.com" suffix dropped
+("ci-runner@my-project.iam") — the form Cloud SQL stores on
+PostgreSQL; MySQL keeps only the part before "@". Both engines apply
+that normalization for CLOUD_IAM_SERVICE_ACCOUNT, so a pasted full
+email also works. Prefer service_account for the service-account
+case: it wires the identity by reference instead of by hand. Exactly
+one of user_name or service_account is set.
 
-- rule: {"required":true,"string":{"minLen":"1","maxLen":"128"}}
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"minLen":"1","maxLen":"128"}}
 
 ### spec.password
 
@@ -186,10 +193,30 @@ they still own database objects.
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
+### spec.serviceAccount
+
+`string | valueFrom`
+
+The service account this IAM database user represents, wired by
+reference (a GcpServiceAccount's email) or as a literal email. Both
+engines derive the database username Cloud SQL expects — the email
+with ".gserviceaccount.com" dropped (Cloud SQL stores exactly that on
+PostgreSQL, and only the part before "@" on MySQL) — so a chart never
+hand-builds the form. Requires type CLOUD_IAM_SERVICE_ACCOUNT and the
+instance's "cloudsql.iam_authentication" flag; the account still
+needs roles/cloudsql.instanceUser (and roles/cloudsql.client to
+connect) on the project, granted separately. Alternative to
+user_name: exactly one of the two is set. Immutable.
+
+- references: GcpServiceAccount (`status.outputs.email`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpServiceAccount, name: <that resource's name>, fieldPath: status.outputs.email}} -- a bare string does not parse
+
 ## Validation Rules
 
 - `iam_user_must_not_set_password`: IAM-authenticated users (CLOUD_IAM_USER, CLOUD_IAM_SERVICE_ACCOUNT, CLOUD_IAM_GROUP) must not set a password — authentication goes through IAM
 - `password_policy_requires_built_in`: password_policy applies to BUILT_IN users only
+- `user_name_xor_service_account`: set exactly one of user_name (a login name or IAM principal) or service_account (a GcpServiceAccount whose IAM database username is derived)
+- `service_account_requires_iam_sa_type`: service_account derives an IAM service-account database user -- set type to CLOUD_IAM_SERVICE_ACCOUNT
 
 ## Outputs
 
@@ -208,6 +235,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.instance` | GcpCloudSql | `status.outputs.instance_name` |
+| `spec.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
 
 ## See Also
 

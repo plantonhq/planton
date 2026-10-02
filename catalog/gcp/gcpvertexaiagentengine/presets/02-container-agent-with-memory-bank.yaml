@@ -1,0 +1,66 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiAgentEngine
+metadata:
+  name: concierge-agent
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Concierge agent
+  description: A container-based agent that remembers each user across sessions
+  labels:
+    team: concierge
+  spec:
+    agentFramework: custom
+    identityType: SERVICE_ACCOUNT
+    serviceAccount:
+      valueFrom:
+        kind: GcpServiceAccount
+        name: concierge-agent-sa
+    containerSpec:
+      imageUri: us-central1-docker.pkg.dev/my-gcp-project/agents/concierge:1.4.0
+      port: 8080
+    deploymentSpec:
+      minInstances: 1
+      maxInstances: 20
+      containerConcurrency: 9
+      resourceLimits:
+        cpu: "4"
+        memory: 8Gi
+      env:
+        - name: LOG_LEVEL
+          value: info
+      secretEnv:
+        - name: PARTNER_API_KEY
+          secretRef:
+            secret:
+              valueFrom:
+                kind: GcpSecretManagerSecret
+                name: partner-api-key
+            version: latest
+  contextSpec:
+    memoryBankConfig:
+      generationConfig:
+        model: projects/my-gcp-project/locations/us-central1/publishers/google/models/gemini-2.5-flash
+        generationTriggerConfig:
+          generationRule:
+            eventCount: 5
+            overlapEventCount: 1
+      similaritySearchConfig:
+        embeddingModel: projects/my-gcp-project/locations/us-central1/publishers/google/models/text-embedding-005
+      ttlConfig:
+        defaultTtl: 7776000s
+        memoryRevisionDefaultTtl: 604800s
+      customizationConfigs:
+        - scopeKeys:
+            - user_id
+          memoryTopics:
+            - managedMemoryTopic:
+                managedTopicEnum: USER_PREFERENCES
+            - managedMemoryTopic:
+                managedTopicEnum: EXPLICIT_INSTRUCTIONS
+            - customMemoryTopic:
+                label: travel
+                description: Destinations, dates, loyalty programs, and seat or room preferences
+          enableThirdPersonMemories: true
+  deletionPolicy: PREVENT

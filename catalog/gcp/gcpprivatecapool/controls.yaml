@@ -1,0 +1,85 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpprivatecapool
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "CA Service encrypts stored certificates and CA material at rest with Google-managed keys."
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key_name
+      evidence:
+        type: spec_default
+        reference: "kms_key_name encrypts the subject, SANs, and PEM of stored certificates with a customer-managed Cloud KMS key; unset keeps Google-managed encryption."
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "The CA Service API is served over TLS only."
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Issuing from the pool requires privateca.certificates.create on it; nothing is anonymous. Published CA certificates and CRLs are public by design, as relying parties must read them."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "The pool is an API resource with no network listener; access is IAM-governed."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "No edge is served."
+    - control_id: rbac
+      status: configurable
+      field_path: issuance_policy
+      evidence:
+        type: spec_default
+        reference: "Who may request certificates is IAM on the pool (privateca.certificateRequester); what they may request is the issuance policy -- key types, lifetimes, request forms, and a CEL expression over identities."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: "The pool holds no credential; it issues the certificates workloads use as identity."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "No authentication happens at the pool."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "No end-user sign-in exists."
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Pool administration and every certificate issuance are recorded in Cloud Audit Logs."
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "CA Service reports issuance and CA health metrics to Cloud Monitoring."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "The pool is redeclared from the spec; its authorities carry the key material and have their own 30-day soft delete."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "No backups exist."
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "CA Service is a regional service; a pool has no zonal dependency."
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: "PREVENT makes destroy fail and ABANDON leaves the pool in GCP; Google also refuses to delete a pool that still holds an authority."
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "CA Service is fully Google-operated."

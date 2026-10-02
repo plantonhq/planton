@@ -22,7 +22,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying a Cl
 | `locals.tf` | Project fallback derivation |
 | `main.tf` | API enablement + the dashboard resource |
 | `outputs.tf` | Stack outputs |
-| `provider.tf` | google provider pin (`~> 7.43`) |
+| `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 
 ## How the module maps the spec

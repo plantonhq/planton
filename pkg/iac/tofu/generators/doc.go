@@ -64,11 +64,36 @@
 //     optional), independent of the constraint-free envelope proto.
 //
 // Output is deterministic and offline -- it depends only on the compiled proto
-// descriptor, never on a network call -- so the committed variables.tf can be
-// regenerated and diffed. TestVariablesTFDrift guards this: for every migrated
-// kind, the committed variables.tf must equal the generator output, making the
-// generator the single source of truth and preventing any regression to a
-// hand-edited or legacy (all-required) schema.
+// descriptor and the committed proto documentation index, never on a network
+// call -- so the committed variables.tf can be regenerated and diffed.
+// TestVariablesTFDrift guards this: for every enrolled kind, the committed
+// variables.tf must equal the generator output, making the generator the
+// single source of truth and preventing any regression to a hand-edited or
+// legacy (all-required) schema. Enrollment has two shapes: a whole provider
+// (every registered kind, so a new kind is guarded the day it is registered)
+// or an individual kind, with named exceptions for a module the generator
+// cannot yet express -- see the drift test.
+//
+// # The generated file is formatted and documented
+//
+// The text is passed through hclwrite.Format before it is returned, so it is
+// byte-identical to what `tofu fmt` writes: the repository's formatting gate
+// runs on every changed module, and a generator whose output that gate
+// rewrites could not own the committed file.
+//
+// Each nested attribute carries its proto field's documentation as `#`
+// comment lines directly above it. Nested object attributes have no
+// `description` in Terraform's type language, so the comment is the only place
+// the module can say what an input means, and it is what whoever wires main.tf
+// reads first. The protobuf runtime strips comments from descriptors, so the
+// text is read from the embedded pkg/protodocs index (distilled from the same
+// .proto sources by `make generate-proto-docs`); a field with no entry gets no
+// comment. The two inputs move together: regenerate the index before
+// regenerating variables, or the comments lag the protos until the next
+// regeneration. A field a type rule collapses from a wrapper message to a
+// primitive additionally carries that rule's FlattenNote -- the proto
+// documentation describes the wrapper, the attribute is the primitive, and the
+// note bridges the two.
 //
 // # Free-form JSON maps must be `any`, not map(any)
 //

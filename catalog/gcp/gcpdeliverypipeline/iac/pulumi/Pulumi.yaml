@@ -1,0 +1,4 @@
+name: gcpdeliverypipeline-pulumi-project
+runtime:
+  name: go
+description: Planton GcpDeliveryPipeline Pulumi module

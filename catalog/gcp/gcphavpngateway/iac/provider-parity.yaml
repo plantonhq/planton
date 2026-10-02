@@ -1,0 +1,79 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# Two resources provisioned as one node: the HA VPN gateway and the Cloud
+# Router its tunnels terminate BGP on. Every GcpHaVpnConnection on this
+# gateway creates its own interfaces and BGP peers on this router.
+
+resources:
+  google_compute_ha_vpn_gateway:
+    mappings:
+      # Renames: the spec says what each field IS where two resources in one
+      # kind would otherwise share the terser API name.
+      - spec: spec.gateway_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      # The provider nests create-time tags under a params block; the spec
+      # uses the catalog-wide resource_manager_tags vocabulary.
+      - spec: spec.resource_manager_tags
+        arg: params.resource_manager_tags
+
+  google_compute_router:
+    # Instantiated by the spec's router message (required: an HA VPN router
+    # exists to run BGP).
+    specRoot: spec.router
+    mappings:
+      # The router shares the gateway's project and its own name defaults to
+      # the gateway's; both are spec-level or router-level fields mapped
+      # onto the router's arguments.
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.router.name
+        arg: name
+      # The whole bgp block mirrors the spec's router.bgp message (asn,
+      # advertise_mode, advertised_groups, advertised_ip_ranges,
+      # keepalive_interval, identifier_range map name-for-name).
+      - spec: spec.router.bgp
+        arg: bgp
+      - spec: spec.router.resource_manager_tags
+        arg: params.resource_manager_tags
+      # The router lives where the gateway lives: same network, same region,
+      # same destroy posture -- the pair is one node.
+      - spec: spec.network
+        arg: network
+      - spec: spec.region
+        arg: region
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: md5_authentication_keys.name
+        reason: >-
+          the BGP MD5 key table is written by the peer resource, not the
+          router -- google_compute_router_peer.md5_authentication_key
+          inserts its {name, key} into this table and Google requires each
+          key to be used by exactly one peer; a GcpHaVpnConnection session
+          declares its own key, and managing the table here as well would
+          have the router overwrite what the peers wrote
+      - arg: md5_authentication_keys.key
+        reason: >-
+          raw BGP MD5 material rides the peer that uses it (see
+          md5_authentication_keys.name); keeping it off the router also
+          keeps a second copy of the secret out of this spec
+      - arg: ncc_gateway
+        reason: >-
+          an NCC-Gateway-spoke router conflicts with network in the provider
+          (ConflictsWith), so modeling it would relax this kind's required
+          VPC attachment -- every VPN gateway lives in a network -- for a
+          cross-site-interconnect arm that belongs to the deferred Network
+          Connectivity Center family
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables compute.googleapis.com
+      so a fresh project works on the first deploy; not user surface

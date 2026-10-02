@@ -31,12 +31,49 @@ spec:
           - compute.globalOperations.get
         provenance: derived
         notes: Covers google_compute_target_https_proxy -- create, read/refresh, destroy, and polling the global operation every mutation returns. The provider mutates each in-place field through its dedicated RPC (setUrlMap, setSslCertificates, setSslPolicy, setQuicOverride, setCertificateMap), while server_tls_policy and certificate_manager_certificates changes PATCH the proxy, which authorizes as update.
-      - purpose: UseReferencedFrontendResources
+      - purpose: ManageRegionalTargetHttpsProxy
+        permissions:
+          - compute.regionTargetHttpsProxies.create
+          - compute.regionTargetHttpsProxies.get
+          - compute.regionTargetHttpsProxies.delete
+          - compute.regionTargetHttpsProxies.update
+          - compute.regionTargetHttpsProxies.setUrlMap
+          - compute.regionTargetHttpsProxies.setSslCertificates
+          - compute.regionOperations.get
+        provenance: derived
+        condition:
+          spec_field_set: region
+        notes: Covers google_compute_region_target_https_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpsProxies family (no certificate-map or QUIC RPCs exist there) and return region operations the provider polls. Referenced regional certificates and SSL policies authorize with compute.regionSslCertificates.get and compute.regionSslPolicies.use on the referenced resources.
+      - purpose: UseReferencedUrlMap
         permissions:
           - compute.urlMaps.use
+        provenance: derived
+        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced urlMap -- always needed, since url_map is required.
+      - purpose: UseReferencedSslCertificates
+        permissions:
           - compute.sslCertificates.get
+        provenance: derived
+        condition:
+          spec_field_set: ssl_certificates
+        notes: Service-side check on each attached certificate. GCP defines NO compute.sslCertificates.use -- attaching authorizes with GET, verified against the testable-permissions inventory.
+      - purpose: UseReferencedSslPolicy
+        permissions:
           - compute.sslPolicies.use
+        provenance: derived
+        condition:
+          spec_field_set: ssl_policy
+        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced SSL policy.
+      - purpose: UseReferencedCertificateMap
+        permissions:
           - certificatemanager.certmaps.use
+        provenance: derived
+        condition:
+          spec_field_set: certificate_map
+        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced Certificate Manager map.
+      - purpose: UseReferencedServerTlsPolicy
+        permissions:
           - networksecurity.serverTlsPolicies.use
         provenance: derived
-        notes: "Service-side checks, not module API calls -- GCP's targetHttpsProxies.insert reference documents each: compute.urlMaps.use on the referenced urlMap (always, since url_map is required), compute.sslCertificates.get on each attached certificate (GCP defines NO compute.sslCertificates.use -- attaching authorizes with GET, verified against the testable-permissions inventory), compute.sslPolicies.use when ssl_policy is set, certificatemanager.certmaps.use when certificate_map is set, and networksecurity.serverTlsPolicies.use when server_tls_policy is set. Only urlMaps.use is unconditional; grant the others per the certificate/TLS mechanism the spec actually uses."
+        condition:
+          spec_field_set: server_tls_policy
+        notes: Service-side check GCP's targetHttpsProxies.insert reference documents on the referenced server TLS policy (the mTLS lever).

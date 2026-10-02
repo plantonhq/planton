@@ -29,7 +29,8 @@ spec:
   zone: us-east1-b
   machineType: e2-small
   bootDisk:
-    image: debian-cloud/debian-12
+    image:
+      value: debian-cloud/debian-12
     sizeGb: 10
     type: pd-balanced
     # The image's COMPLETE feature set in the API's echo order — a
@@ -68,6 +69,9 @@ spec:
     provisioningModel: SPOT
     onHostMaintenance: TERMINATE
     instanceTerminationAction: DELETE
+    # Host-error detection tightened to two minutes (the 30-second grid);
+    # proves the dial round-trips and re-plans clean.
+    hostErrorTimeoutSeconds: 120
   shieldedInstanceConfig:
     enableSecureBoot: true
   deletionPolicy: DELETE

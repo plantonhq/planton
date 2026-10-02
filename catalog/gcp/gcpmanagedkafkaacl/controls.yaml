@@ -1,0 +1,73 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpmanagedkafkaacl
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: "An ACL is an authorization rule, not data at rest; the cluster's encryption covers what it protects."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "Customer-managed encryption is the cluster's (kms_key)."
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: "The ACL carries no traffic; the cluster's listeners are TLS-only."
+    - control_id: no-public-access
+      status: not_applicable
+      notes: "An ACL has no address; the cluster has no public access."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "Network reachability is the cluster's; ACLs govern operations after connection."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "No edge is served."
+    - control_id: rbac
+      status: configurable
+      field_path: acl_entries
+      evidence:
+        type: spec_default
+        reference: "The entries decide, per principal and operation, what connected clients may do on the pattern; nothing is granted beyond what acl_entries lists."
+      notes: "Every preset grants the narrowest operations its use case needs."
+    - control_id: workload-identity
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Principals are Google identities (User: plus a service account) authenticated by the cluster through IAM tokens, or mTLS certificate principals -- no shared secrets."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "Authentication is the cluster's; an ACL only authorizes."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "No end-user sign-in exists."
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Creating, changing, and deleting an ACL is recorded in Cloud Audit Logs (Admin Activity) unconditionally."
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: "An ACL emits no metrics of its own."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "The ACL is redeclared from the spec; there is no data to back up."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "No backups exist."
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: "Availability is the cluster's."
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: "Unset means DELETE -- the ACL is deleted on destroy and its access ends; PREVENT makes destroy fail; ABANDON leaves it on the cluster."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: "An ACL has no software surface; the cluster is Google-operated."

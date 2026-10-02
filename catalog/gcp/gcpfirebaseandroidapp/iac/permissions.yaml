@@ -25,11 +25,17 @@ spec:
           - serviceusage.services.list
         provenance: derived
         notes: Required only when app_check composes at least one resource. Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
-      - purpose: ManageAppCheckAttestation
+      - purpose: ManagePlayIntegrityConfig
         permissions:
           - firebaseappcheck.playIntegrityConfig.get
           - firebaseappcheck.playIntegrityConfig.update
+        provenance: derived
+        notes: Required only when app_check composes a Play Integrity configuration (app_check.play_integrity declared and not disabled with enabled false). google_firebase_app_check_play_integrity_config / firebase.AppCheckPlayIntegrityConfig is a per-app singleton -- the provider's create and update are both a PATCH (Google authorizes as playIntegrityConfig.update), get covers refresh, and its destroy calls no API (the configuration is never deleted on Google's side). roles/firebaseappcheck.admin contains both.
+      - purpose: ManageAppCheckDebugTokens
+        permissions:
           - firebaseappcheck.debugTokens.get
           - firebaseappcheck.debugTokens.update
         provenance: derived
-        notes: Required only when app_check composes a Play Integrity configuration or debug tokens. google_firebase_app_check_play_integrity_config / firebase.AppCheckPlayIntegrityConfig is a per-app singleton -- the provider's create and update are both a PATCH (Google authorizes as playIntegrityConfig.update), get covers refresh, and its destroy calls no API (the configuration is never deleted on Google's side). google_firebase_app_check_debug_token / firebase.AppCheckDebugToken has real create, patch, and delete methods, but IAM's inventory carries only debugTokens.get and debugTokens.update for the class -- Google authorizes creating and deleting a token as an UPDATE of the app's token set (the same shape as App Check resource policies), so those two cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains all four.
+        condition:
+          spec_field_set: app_check.debug_tokens
+        notes: google_firebase_app_check_debug_token / firebase.AppCheckDebugToken, one per app_check.debug_tokens entry, has real create, patch, and delete methods, but IAM's inventory carries only debugTokens.get and debugTokens.update for the class -- Google authorizes creating and deleting a token as an UPDATE of the app's token set, so those two cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains both.

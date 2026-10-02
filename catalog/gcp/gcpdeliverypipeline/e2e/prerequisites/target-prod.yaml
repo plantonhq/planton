@@ -1,0 +1,24 @@
+# Extra-instance GcpDeployTarget fixture: the pipeline's last stage, a
+# Cloud Run target in the harness project. Free: no release is created, so
+# nothing deploys to it. The cloud-side target id carries ${E2E_RUN_ID};
+# metadata.name stays fixed for FK resolution.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDeployTarget
+metadata:
+  name: planton-oss-e2e-gcpcdpip-target-prod
+  id: planton-oss-e2e-gcpcdpip-target-prod
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdeliverypipeline
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  targetId: planton-e2e-cdpip-prod-${E2E_RUN_ID}
+  description: Ephemeral Cloud Run target for the delivery pipeline E2E; safe to delete
+  run:
+    location: projects/${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}/locations/us-central1

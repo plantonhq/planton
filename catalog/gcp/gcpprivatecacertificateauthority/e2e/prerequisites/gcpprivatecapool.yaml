@@ -1,0 +1,21 @@
+# Consumer-scoped GcpPrivateCaPool install profile for the gcppcaa chain: a
+# DevOps pool the scenario's authority lives in. The cloud-side ID carries
+# the run id; metadata.name stays fixed for reference resolution.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaPool
+metadata:
+  name: planton-oss-e2e-gcppcaa-pool
+  id: planton-oss-e2e-gcppcaa-pool
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecapool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  caPoolId: e2e-gcppcaa-pool-${E2E_RUN_ID}
+  tier: DEVOPS

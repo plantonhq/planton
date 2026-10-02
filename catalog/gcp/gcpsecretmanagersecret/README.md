@@ -59,7 +59,7 @@ planton apply -f secret.yaml
 | `region` | `string` | global | Set for a REGIONAL secret (data residency); payloads never leave the region. ForceNew. |
 | `replication` | `message` | automatic | GLOBAL only: omit for automatic placement; `auto` (with CMEK) or `userManaged` replicas. ForceNew. |
 | `customerManagedEncryption` | `message` | Google-managed | REGIONAL only: CMEK key reference (same region as the secret). |
-| `initialVersion` | `message` | none | Seeds version 1: `data` (managed secret; valueFrom-able), `enabled`, `isBase64`, version-level `deletionPolicy` (DELETE/DISABLE/ABANDON). |
+| `initialVersion` | `message` | none | Seeds version 1: `data` (managed secret; a literal or a valueFrom to any kind's output), `enabled`, `isBase64`, version-level `deletionPolicy` (DELETE/DISABLE/ABANDON). |
 | `iamMembers` | `list` | `[]` | Additive secret-scoped grants: role + member (reference a GcpServiceAccount's `member` output) + optional IAM condition. |
 | `expireTime` / `ttl` | `string` | none | Auto-delete the whole secret (RFC3339 timestamp XOR seconds duration). |
 | `versionDestroyTtl` | `string` | immediate | Delayed version destruction (≥86400s): destroy first disables, restore window applies. |

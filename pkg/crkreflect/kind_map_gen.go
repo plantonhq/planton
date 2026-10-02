@@ -523,33 +523,62 @@ import (
 	gcpartifactregistryrepov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpartifactregistryrepo/v1alpha1"
 	gcpbackendbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbackendbucket/v1alpha1"
 	gcpbackendservicev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbackendservice/v1alpha1"
+	gcpbigquerycapacitycommitmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1"
+	gcpbigqueryconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigqueryconnection/v1alpha1"
 	gcpbigquerydatasetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerydataset/v1alpha1"
+	gcpbigqueryreservationv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigqueryreservation/v1alpha1"
+	gcpbigqueryreservationgroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigqueryreservationgroup/v1alpha1"
 	gcpbigquerytablev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerytable/v1alpha1"
 	gcpbigtableinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtableinstance/v1alpha1"
 	gcpbigtabletablev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtabletable/v1alpha1"
+	gcpbillingbudgetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbillingbudget/v1alpha1"
+	gcpbinaryauthorizationattestorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbinaryauthorizationattestor/v1alpha1"
+	gcpbinaryauthorizationpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1"
 	gcpcertificatemapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertificatemap/v1alpha1"
 	gcpcertmanagercertv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagercert/v1alpha1"
 	gcpcertmanagerdnsauthorizationv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1"
+	gcpcertmanagerissuanceconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagerissuanceconfig/v1alpha1"
+	gcpcertmanagertrustconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagertrustconfig/v1alpha1"
 	gcpcloudarmorpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/v1alpha1"
+	gcpcloudbuildconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildconnection/v1alpha1"
+	gcpcloudbuildrepositoryv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildrepository/v1alpha1"
+	gcpcloudbuildtriggerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildtrigger/v1alpha1"
+	gcpcloudbuildworkerpoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudbuildworkerpool/v1alpha1"
 	gcpcloudcomposerenvironmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposerenvironment/v1alpha1"
 	gcpcloudcomposeruserworkloadsconfigmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadsconfigmap/v1alpha1"
 	gcpcloudcomposeruserworkloadssecretv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1"
 	gcpcloudfunctionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudfunction/v1alpha1"
+	gcpcloudidentitygroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudidentitygroup/v1alpha1"
 	gcpcloudrunv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrun/v1alpha1"
 	gcpcloudrundomainmappingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrundomainmapping/v1alpha1"
 	gcpcloudrunjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunjob/v1alpha1"
+	gcpcloudrunworkerpoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunworkerpool/v1alpha1"
 	gcpcloudschedulerjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudschedulerjob/v1alpha1"
 	gcpcloudsqlv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsql/v1alpha1"
 	gcpcloudsqldatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqldatabase/v1alpha1"
 	gcpcloudsqluserv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqluser/v1alpha1"
 	gcpcloudtasksqueuev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudtasksqueue/v1alpha1"
+	gcpcolabruntimev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabruntime/v1alpha1"
+	gcpcolabruntimetemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabruntimetemplate/v1alpha1"
+	gcpcolabschedulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabschedule/v1alpha1"
 	gcpcomputediskv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputedisk/v1alpha1"
+	gcpcomputeimagev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputeimage/v1alpha1"
 	gcpcomputeinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputeinstance/v1alpha1"
 	gcpcomputemigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputemig/v1alpha1"
 	gcpdataprocautoscalingpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1"
 	gcpdataprocclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdataproccluster/v1alpha1"
+	gcpdatastreamconnectionprofilev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdatastreamconnectionprofile/v1alpha1"
+	gcpdatastreamprivateconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdatastreamprivateconnection/v1alpha1"
+	gcpdatastreamstreamv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdatastreamstream/v1alpha1"
+	gcpdeliverypipelinev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeliverypipeline/v1alpha1"
+	gcpdeploycustomtargettypev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeploycustomtargettype/v1alpha1"
+	gcpdeploypolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeploypolicy/v1alpha1"
+	gcpdeploytargetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeploytarget/v1alpha1"
+	gcpdialogflowcxagentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdialogflowcxagent/v1alpha1"
+	gcpdialogflowcxsecuritysettingsv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1"
 	gcpdnsrecordv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnsrecord/v1alpha1"
 	gcpdnszonev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnszone/v1alpha1"
+	gcpdocumentaiprocessorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdocumentaiprocessor/v1alpha1"
 	gcpeventarcmessagebusv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarcmessagebus/v1alpha1"
 	gcpeventarctriggerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarctrigger/v1alpha1"
 	gcpfilestoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfilestoreinstance/v1alpha1"
@@ -561,61 +590,114 @@ import (
 	gcpfirestoredatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoredatabase/v1alpha1"
 	gcpfirestoreindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoreindex/v1alpha1"
 	gcpfirewallrulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirewallrule/v1alpha1"
+	gcpfolderv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfolder/v1alpha1"
 	gcpgcsbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucket/v1alpha1"
+	gcpgcsbucketiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucketiammember/v1alpha1"
 	gcpgkeclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkecluster/v1alpha1"
+	gcpgkefleetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleet/v1alpha1"
+	gcpgkefleetfeaturev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetfeature/v1alpha1"
+	gcpgkefleetmembershipv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetmembership/v1alpha1"
+	gcpgkefleetscopev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetscope/v1alpha1"
 	gcpgkenodepoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkenodepool/v1alpha1"
 	gcpgkeworkloadidentitybindingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1"
 	gcpglobaladdressv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpglobaladdress/v1alpha1"
 	gcpglobalforwardingrulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpglobalforwardingrule/v1alpha1"
+	gcphavpnconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpnconnection/v1alpha1"
+	gcphavpngatewayv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpngateway/v1alpha1"
 	gcphealthcheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphealthcheck/v1alpha1"
+	gcphierarchicalfirewallpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphierarchicalfirewallpolicy/v1alpha1"
 	gcpiamcustomrolev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamcustomrole/v1alpha1"
 	gcpiamdenypolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamdenypolicy/v1alpha1"
 	gcpiamoauthclientv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamoauthclient/v1alpha1"
 	gcpidentityplatformconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpidentityplatformconfig/v1alpha1"
 	gcpidentityplatformtenantv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpidentityplatformtenant/v1alpha1"
+	gcpkmsautokeyconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmsautokeyconfig/v1alpha1"
 	gcpkmskeyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskey/v1alpha1"
+	gcpkmskeyhandlev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskeyhandle/v1alpha1"
 	gcpkmskeyiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskeyiammember/v1alpha1"
 	gcpkmskeyringv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpkmskeyring/v1alpha1"
 	gcplogbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcplogbucket/v1alpha1"
 	gcploggingsinkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcploggingsink/v1alpha1"
 	gcplogmetricv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcplogmetric/v1alpha1"
+	gcpmanagedkafkaaclv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaacl/v1alpha1"
+	gcpmanagedkafkaclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkacluster/v1alpha1"
+	gcpmanagedkafkaconnectclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1"
+	gcpmanagedkafkaconnectorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaconnector/v1alpha1"
+	gcpmanagedkafkatopicv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkatopic/v1alpha1"
 	gcpmanagedsslcertificatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedsslcertificate/v1alpha1"
 	gcpmemorystoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmemorystoreinstance/v1alpha1"
+	gcpmodelarmorfloorsettingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1"
+	gcpmodelarmortemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmodelarmortemplate/v1alpha1"
 	gcpmonitoringalertpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringalertpolicy/v1alpha1"
 	gcpmonitoringdashboardv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringdashboard/v1alpha1"
 	gcpmonitoringnotificationchannelv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1"
 	gcpmonitoringslov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringslo/v1alpha1"
 	gcpmonitoringuptimecheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringuptimecheck/v1alpha1"
+	gcpnetworkendpointgroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpnetworkendpointgroup/v1alpha1"
+	gcpnetworkfirewallpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1"
+	gcporgpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicy/v1alpha1"
+	gcporgpolicycustomconstraintv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicycustomconstraint/v1alpha1"
 	gcpplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpplantonrunner/v1alpha1"
+	gcpprivatecacertificatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificate/v1alpha1"
+	gcpprivatecacertificateauthorityv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificateauthority/v1alpha1"
+	gcpprivatecacertificatetemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificatetemplate/v1alpha1"
+	gcpprivatecapoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecapool/v1alpha1"
 	gcpprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpproject/v1alpha1"
 	gcpprojectiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprojectiammember/v1alpha1"
+	gcppscserviceattachmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppscserviceattachment/v1alpha1"
 	gcppubsubschemav1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubschema/v1alpha1"
 	gcppubsubsubscriptionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubsubscription/v1alpha1"
 	gcppubsubtopicv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubtopic/v1alpha1"
+	gcppubsubtopiciammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubtopiciammember/v1alpha1"
+	gcpredisclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcprediscluster/v1alpha1"
+	gcpredisclusterendpointsetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpredisclusterendpointset/v1alpha1"
 	gcpredisinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpredisinstance/v1alpha1"
 	gcpregionnetworkendpointgroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpregionnetworkendpointgroup/v1alpha1"
 	gcprouternatv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcprouternat/v1alpha1"
+	gcpsccbigqueryexportv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsccbigqueryexport/v1alpha1"
+	gcpsccmuteconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsccmuteconfig/v1alpha1"
+	gcpsccnotificationconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsccnotificationconfig/v1alpha1"
 	gcpsecretmanagersecretv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsecretmanagersecret/v1alpha1"
 	gcpserverlessvpcconnectorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserverlessvpcconnector/v1alpha1"
 	gcpserviceaccountv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserviceaccount/v1alpha1"
 	gcpserviceaccountiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserviceaccountiammember/v1alpha1"
 	gcpserviceconnectionpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserviceconnectionpolicy/v1alpha1"
 	gcpservicenetworkingconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpservicenetworkingconnection/v1alpha1"
+	gcpsharedvpchostv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsharedvpchost/v1alpha1"
+	gcpsharedvpcserviceprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsharedvpcserviceproject/v1alpha1"
 	gcpspannerbackupschedulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpspannerbackupschedule/v1alpha1"
 	gcpspannerdatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpspannerdatabase/v1alpha1"
 	gcpspannerinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpspannerinstance/v1alpha1"
 	gcpsslcertificatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsslcertificate/v1alpha1"
 	gcpsslpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsslpolicy/v1alpha1"
 	gcpsubnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsubnetwork/v1alpha1"
+	gcptagbindingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptagbinding/v1alpha1"
+	gcptagkeyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptagkey/v1alpha1"
+	gcptagvaluev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptagvalue/v1alpha1"
 	gcptargethttpproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpproxy/v1alpha1"
 	gcptargethttpsproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpsproxy/v1alpha1"
+	gcptpuqueuedresourcev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptpuqueuedresource/v1alpha1"
+	gcptpuvmv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptpuvm/v1alpha1"
 	gcpurlmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpurlmap/v1alpha1"
+	gcpvectorsearchcollectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvectorsearchcollection/v1alpha1"
+	gcpvertexaiagentenginev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiagentengine/v1alpha1"
+	gcpvertexaidatasetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaidataset/v1alpha1"
 	gcpvertexaideployedindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaideployedindex/v1alpha1"
 	gcpvertexaiendpointv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiendpoint/v1alpha1"
+	gcpvertexaifeaturegroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaifeaturegroup/v1alpha1"
+	gcpvertexaifeatureonlinestorev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1"
 	gcpvertexaiindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindex/v1alpha1"
 	gcpvertexaiindexendpointv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindexendpoint/v1alpha1"
+	gcpvertexaimodelgardendeploymentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1"
 	gcpvertexainotebookv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexainotebook/v1alpha1"
+	gcpvertexaipersistentresourcev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaipersistentresource/v1alpha1"
+	gcpvertexairagengineconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexairagengineconfig/v1alpha1"
+	gcpvertexaisearchdataconnectorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchdataconnector/v1alpha1"
+	gcpvertexaisearchdatastorev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchdatastore/v1alpha1"
+	gcpvertexaisearchenginev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchengine/v1alpha1"
+	gcpvertexaitensorboardv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaitensorboard/v1alpha1"
 	gcpvpcnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcnetwork/v1alpha1"
+	gcpvpcpeeringv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcpeering/v1alpha1"
 	gcpworkflowv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkflow/v1alpha1"
 	gcpworkloadidentitypoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkloadidentitypool/v1alpha1"
 	gcpworkloadidentitypoolproviderv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1"
@@ -1309,33 +1391,62 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo:                &gcpartifactregistryrepov1alpha1.GcpArtifactRegistryRepo{},
 	cloudresourcekind.CloudResourceKind_GcpBackendBucket:                       &gcpbackendbucketv1alpha1.GcpBackendBucket{},
 	cloudresourcekind.CloudResourceKind_GcpBackendService:                      &gcpbackendservicev1alpha1.GcpBackendService{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryCapacityCommitment:          &gcpbigquerycapacitycommitmentv1alpha1.GcpBigQueryCapacityCommitment{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryConnection:                  &gcpbigqueryconnectionv1alpha1.GcpBigQueryConnection{},
 	cloudresourcekind.CloudResourceKind_GcpBigQueryDataset:                     &gcpbigquerydatasetv1alpha1.GcpBigQueryDataset{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryReservation:                 &gcpbigqueryreservationv1alpha1.GcpBigQueryReservation{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryReservationGroup:            &gcpbigqueryreservationgroupv1alpha1.GcpBigQueryReservationGroup{},
 	cloudresourcekind.CloudResourceKind_GcpBigQueryTable:                       &gcpbigquerytablev1alpha1.GcpBigQueryTable{},
 	cloudresourcekind.CloudResourceKind_GcpBigtableInstance:                    &gcpbigtableinstancev1alpha1.GcpBigtableInstance{},
 	cloudresourcekind.CloudResourceKind_GcpBigtableTable:                       &gcpbigtabletablev1alpha1.GcpBigtableTable{},
+	cloudresourcekind.CloudResourceKind_GcpBillingBudget:                       &gcpbillingbudgetv1alpha1.GcpBillingBudget{},
+	cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationAttestor:         &gcpbinaryauthorizationattestorv1alpha1.GcpBinaryAuthorizationAttestor{},
+	cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationPolicy:           &gcpbinaryauthorizationpolicyv1alpha1.GcpBinaryAuthorizationPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerCert:                     &gcpcertmanagercertv1alpha1.GcpCertManagerCert{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerDnsAuthorization:         &gcpcertmanagerdnsauthorizationv1alpha1.GcpCertManagerDnsAuthorization{},
+	cloudresourcekind.CloudResourceKind_GcpCertManagerIssuanceConfig:           &gcpcertmanagerissuanceconfigv1alpha1.GcpCertManagerIssuanceConfig{},
+	cloudresourcekind.CloudResourceKind_GcpCertManagerTrustConfig:              &gcpcertmanagertrustconfigv1alpha1.GcpCertManagerTrustConfig{},
 	cloudresourcekind.CloudResourceKind_GcpCertificateMap:                      &gcpcertificatemapv1alpha1.GcpCertificateMap{},
 	cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy:                    &gcpcloudarmorpolicyv1alpha1.GcpCloudArmorPolicy{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildConnection:                &gcpcloudbuildconnectionv1alpha1.GcpCloudBuildConnection{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository:                &gcpcloudbuildrepositoryv1alpha1.GcpCloudBuildRepository{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildTrigger:                   &gcpcloudbuildtriggerv1alpha1.GcpCloudBuildTrigger{},
+	cloudresourcekind.CloudResourceKind_GcpCloudBuildWorkerPool:                &gcpcloudbuildworkerpoolv1alpha1.GcpCloudBuildWorkerPool{},
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerEnvironment:            &gcpcloudcomposerenvironmentv1alpha1.GcpCloudComposerEnvironment{},
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsConfigMap: &gcpcloudcomposeruserworkloadsconfigmapv1alpha1.GcpCloudComposerUserWorkloadsConfigMap{},
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsSecret:    &gcpcloudcomposeruserworkloadssecretv1alpha1.GcpCloudComposerUserWorkloadsSecret{},
 	cloudresourcekind.CloudResourceKind_GcpCloudFunction:                       &gcpcloudfunctionv1alpha1.GcpCloudFunction{},
+	cloudresourcekind.CloudResourceKind_GcpCloudIdentityGroup:                  &gcpcloudidentitygroupv1alpha1.GcpCloudIdentityGroup{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRun:                            &gcpcloudrunv1alpha1.GcpCloudRun{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRunDomainMapping:               &gcpcloudrundomainmappingv1alpha1.GcpCloudRunDomainMapping{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRunJob:                         &gcpcloudrunjobv1alpha1.GcpCloudRunJob{},
+	cloudresourcekind.CloudResourceKind_GcpCloudRunWorkerPool:                  &gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPool{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSchedulerJob:                   &gcpcloudschedulerjobv1alpha1.GcpCloudSchedulerJob{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSql:                            &gcpcloudsqlv1alpha1.GcpCloudSql{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSqlDatabase:                    &gcpcloudsqldatabasev1alpha1.GcpCloudSqlDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSqlUser:                        &gcpcloudsqluserv1alpha1.GcpCloudSqlUser{},
 	cloudresourcekind.CloudResourceKind_GcpCloudTasksQueue:                     &gcpcloudtasksqueuev1alpha1.GcpCloudTasksQueue{},
+	cloudresourcekind.CloudResourceKind_GcpColabRuntime:                        &gcpcolabruntimev1alpha1.GcpColabRuntime{},
+	cloudresourcekind.CloudResourceKind_GcpColabRuntimeTemplate:                &gcpcolabruntimetemplatev1alpha1.GcpColabRuntimeTemplate{},
+	cloudresourcekind.CloudResourceKind_GcpColabSchedule:                       &gcpcolabschedulev1alpha1.GcpColabSchedule{},
 	cloudresourcekind.CloudResourceKind_GcpComputeDisk:                         &gcpcomputediskv1alpha1.GcpComputeDisk{},
+	cloudresourcekind.CloudResourceKind_GcpComputeImage:                        &gcpcomputeimagev1alpha1.GcpComputeImage{},
 	cloudresourcekind.CloudResourceKind_GcpComputeInstance:                     &gcpcomputeinstancev1alpha1.GcpComputeInstance{},
 	cloudresourcekind.CloudResourceKind_GcpComputeMig:                          &gcpcomputemigv1alpha1.GcpComputeMig{},
 	cloudresourcekind.CloudResourceKind_GcpDataprocAutoscalingPolicy:           &gcpdataprocautoscalingpolicyv1alpha1.GcpDataprocAutoscalingPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpDataprocCluster:                     &gcpdataprocclusterv1alpha1.GcpDataprocCluster{},
+	cloudresourcekind.CloudResourceKind_GcpDatastreamConnectionProfile:         &gcpdatastreamconnectionprofilev1alpha1.GcpDatastreamConnectionProfile{},
+	cloudresourcekind.CloudResourceKind_GcpDatastreamPrivateConnection:         &gcpdatastreamprivateconnectionv1alpha1.GcpDatastreamPrivateConnection{},
+	cloudresourcekind.CloudResourceKind_GcpDatastreamStream:                    &gcpdatastreamstreamv1alpha1.GcpDatastreamStream{},
+	cloudresourcekind.CloudResourceKind_GcpDeliveryPipeline:                    &gcpdeliverypipelinev1alpha1.GcpDeliveryPipeline{},
+	cloudresourcekind.CloudResourceKind_GcpDeployCustomTargetType:              &gcpdeploycustomtargettypev1alpha1.GcpDeployCustomTargetType{},
+	cloudresourcekind.CloudResourceKind_GcpDeployPolicy:                        &gcpdeploypolicyv1alpha1.GcpDeployPolicy{},
+	cloudresourcekind.CloudResourceKind_GcpDeployTarget:                        &gcpdeploytargetv1alpha1.GcpDeployTarget{},
+	cloudresourcekind.CloudResourceKind_GcpDialogflowCxAgent:                   &gcpdialogflowcxagentv1alpha1.GcpDialogflowCxAgent{},
+	cloudresourcekind.CloudResourceKind_GcpDialogflowCxSecuritySettings:        &gcpdialogflowcxsecuritysettingsv1alpha1.GcpDialogflowCxSecuritySettings{},
 	cloudresourcekind.CloudResourceKind_GcpDnsRecord:                           &gcpdnsrecordv1alpha1.GcpDnsRecord{},
 	cloudresourcekind.CloudResourceKind_GcpDnsZone:                             &gcpdnszonev1alpha1.GcpDnsZone{},
+	cloudresourcekind.CloudResourceKind_GcpDocumentAiProcessor:                 &gcpdocumentaiprocessorv1alpha1.GcpDocumentAiProcessor{},
 	cloudresourcekind.CloudResourceKind_GcpEventarcMessageBus:                  &gcpeventarcmessagebusv1alpha1.GcpEventarcMessageBus{},
 	cloudresourcekind.CloudResourceKind_GcpEventarcTrigger:                     &gcpeventarctriggerv1alpha1.GcpEventarcTrigger{},
 	cloudresourcekind.CloudResourceKind_GcpFilestoreInstance:                   &gcpfilestoreinstancev1alpha1.GcpFilestoreInstance{},
@@ -1347,61 +1458,114 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpFirestoreDatabase:                   &gcpfirestoredatabasev1alpha1.GcpFirestoreDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreIndex:                      &gcpfirestoreindexv1alpha1.GcpFirestoreIndex{},
 	cloudresourcekind.CloudResourceKind_GcpFirewallRule:                        &gcpfirewallrulev1alpha1.GcpFirewallRule{},
+	cloudresourcekind.CloudResourceKind_GcpFolder:                              &gcpfolderv1alpha1.GcpFolder{},
 	cloudresourcekind.CloudResourceKind_GcpGcsBucket:                           &gcpgcsbucketv1alpha1.GcpGcsBucket{},
+	cloudresourcekind.CloudResourceKind_GcpGcsBucketIamMember:                  &gcpgcsbucketiammemberv1alpha1.GcpGcsBucketIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpGkeCluster:                          &gcpgkeclusterv1alpha1.GcpGkeCluster{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleet:                            &gcpgkefleetv1alpha1.GcpGkeFleet{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleetFeature:                     &gcpgkefleetfeaturev1alpha1.GcpGkeFleetFeature{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership:                  &gcpgkefleetmembershipv1alpha1.GcpGkeFleetMembership{},
+	cloudresourcekind.CloudResourceKind_GcpGkeFleetScope:                       &gcpgkefleetscopev1alpha1.GcpGkeFleetScope{},
 	cloudresourcekind.CloudResourceKind_GcpGkeNodePool:                         &gcpgkenodepoolv1alpha1.GcpGkeNodePool{},
 	cloudresourcekind.CloudResourceKind_GcpGkeWorkloadIdentityBinding:          &gcpgkeworkloadidentitybindingv1alpha1.GcpGkeWorkloadIdentityBinding{},
 	cloudresourcekind.CloudResourceKind_GcpGlobalAddress:                       &gcpglobaladdressv1alpha1.GcpGlobalAddress{},
 	cloudresourcekind.CloudResourceKind_GcpGlobalForwardingRule:                &gcpglobalforwardingrulev1alpha1.GcpGlobalForwardingRule{},
+	cloudresourcekind.CloudResourceKind_GcpHaVpnConnection:                     &gcphavpnconnectionv1alpha1.GcpHaVpnConnection{},
+	cloudresourcekind.CloudResourceKind_GcpHaVpnGateway:                        &gcphavpngatewayv1alpha1.GcpHaVpnGateway{},
 	cloudresourcekind.CloudResourceKind_GcpHealthCheck:                         &gcphealthcheckv1alpha1.GcpHealthCheck{},
+	cloudresourcekind.CloudResourceKind_GcpHierarchicalFirewallPolicy:          &gcphierarchicalfirewallpolicyv1alpha1.GcpHierarchicalFirewallPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpIamCustomRole:                       &gcpiamcustomrolev1alpha1.GcpIamCustomRole{},
 	cloudresourcekind.CloudResourceKind_GcpIamDenyPolicy:                       &gcpiamdenypolicyv1alpha1.GcpIamDenyPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpIamOauthClient:                      &gcpiamoauthclientv1alpha1.GcpIamOauthClient{},
 	cloudresourcekind.CloudResourceKind_GcpIdentityPlatformConfig:              &gcpidentityplatformconfigv1alpha1.GcpIdentityPlatformConfig{},
 	cloudresourcekind.CloudResourceKind_GcpIdentityPlatformTenant:              &gcpidentityplatformtenantv1alpha1.GcpIdentityPlatformTenant{},
+	cloudresourcekind.CloudResourceKind_GcpKmsAutokeyConfig:                    &gcpkmsautokeyconfigv1alpha1.GcpKmsAutokeyConfig{},
 	cloudresourcekind.CloudResourceKind_GcpKmsKey:                              &gcpkmskeyv1alpha1.GcpKmsKey{},
+	cloudresourcekind.CloudResourceKind_GcpKmsKeyHandle:                        &gcpkmskeyhandlev1alpha1.GcpKmsKeyHandle{},
 	cloudresourcekind.CloudResourceKind_GcpKmsKeyIamMember:                     &gcpkmskeyiammemberv1alpha1.GcpKmsKeyIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpKmsKeyRing:                          &gcpkmskeyringv1alpha1.GcpKmsKeyRing{},
 	cloudresourcekind.CloudResourceKind_GcpLogBucket:                           &gcplogbucketv1alpha1.GcpLogBucket{},
 	cloudresourcekind.CloudResourceKind_GcpLogMetric:                           &gcplogmetricv1alpha1.GcpLogMetric{},
 	cloudresourcekind.CloudResourceKind_GcpLoggingSink:                         &gcploggingsinkv1alpha1.GcpLoggingSink{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaAcl:                     &gcpmanagedkafkaaclv1alpha1.GcpManagedKafkaAcl{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaCluster:                 &gcpmanagedkafkaclusterv1alpha1.GcpManagedKafkaCluster{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnectCluster:          &gcpmanagedkafkaconnectclusterv1alpha1.GcpManagedKafkaConnectCluster{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnector:               &gcpmanagedkafkaconnectorv1alpha1.GcpManagedKafkaConnector{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaTopic:                   &gcpmanagedkafkatopicv1alpha1.GcpManagedKafkaTopic{},
 	cloudresourcekind.CloudResourceKind_GcpManagedSslCertificate:               &gcpmanagedsslcertificatev1alpha1.GcpManagedSslCertificate{},
 	cloudresourcekind.CloudResourceKind_GcpMemorystoreInstance:                 &gcpmemorystoreinstancev1alpha1.GcpMemorystoreInstance{},
+	cloudresourcekind.CloudResourceKind_GcpModelArmorFloorSetting:              &gcpmodelarmorfloorsettingv1alpha1.GcpModelArmorFloorSetting{},
+	cloudresourcekind.CloudResourceKind_GcpModelArmorTemplate:                  &gcpmodelarmortemplatev1alpha1.GcpModelArmorTemplate{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringAlertPolicy:               &gcpmonitoringalertpolicyv1alpha1.GcpMonitoringAlertPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringDashboard:                 &gcpmonitoringdashboardv1alpha1.GcpMonitoringDashboard{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringNotificationChannel:       &gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannel{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringSlo:                       &gcpmonitoringslov1alpha1.GcpMonitoringSlo{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringUptimeCheck:               &gcpmonitoringuptimecheckv1alpha1.GcpMonitoringUptimeCheck{},
+	cloudresourcekind.CloudResourceKind_GcpNetworkEndpointGroup:                &gcpnetworkendpointgroupv1alpha1.GcpNetworkEndpointGroup{},
+	cloudresourcekind.CloudResourceKind_GcpNetworkFirewallPolicy:               &gcpnetworkfirewallpolicyv1alpha1.GcpNetworkFirewallPolicy{},
+	cloudresourcekind.CloudResourceKind_GcpOrgPolicy:                           &gcporgpolicyv1alpha1.GcpOrgPolicy{},
+	cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint:           &gcporgpolicycustomconstraintv1alpha1.GcpOrgPolicyCustomConstraint{},
 	cloudresourcekind.CloudResourceKind_GcpPlantonRunner:                       &gcpplantonrunnerv1alpha1.GcpPlantonRunner{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificate:                &gcpprivatecacertificatev1alpha1.GcpPrivateCaCertificate{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateAuthority:       &gcpprivatecacertificateauthorityv1alpha1.GcpPrivateCaCertificateAuthority{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateTemplate:        &gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificateTemplate{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaPool:                       &gcpprivatecapoolv1alpha1.GcpPrivateCaPool{},
 	cloudresourcekind.CloudResourceKind_GcpProject:                             &gcpprojectv1alpha1.GcpProject{},
 	cloudresourcekind.CloudResourceKind_GcpProjectIamMember:                    &gcpprojectiammemberv1alpha1.GcpProjectIamMember{},
+	cloudresourcekind.CloudResourceKind_GcpPscServiceAttachment:                &gcppscserviceattachmentv1alpha1.GcpPscServiceAttachment{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubSchema:                        &gcppubsubschemav1alpha1.GcpPubSubSchema{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubSubscription:                  &gcppubsubsubscriptionv1alpha1.GcpPubSubSubscription{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubTopic:                         &gcppubsubtopicv1alpha1.GcpPubSubTopic{},
+	cloudresourcekind.CloudResourceKind_GcpPubSubTopicIamMember:                &gcppubsubtopiciammemberv1alpha1.GcpPubSubTopicIamMember{},
+	cloudresourcekind.CloudResourceKind_GcpRedisCluster:                        &gcpredisclusterv1alpha1.GcpRedisCluster{},
+	cloudresourcekind.CloudResourceKind_GcpRedisClusterEndpointSet:             &gcpredisclusterendpointsetv1alpha1.GcpRedisClusterEndpointSet{},
 	cloudresourcekind.CloudResourceKind_GcpRedisInstance:                       &gcpredisinstancev1alpha1.GcpRedisInstance{},
 	cloudresourcekind.CloudResourceKind_GcpRegionNetworkEndpointGroup:          &gcpregionnetworkendpointgroupv1alpha1.GcpRegionNetworkEndpointGroup{},
 	cloudresourcekind.CloudResourceKind_GcpRouterNat:                           &gcprouternatv1alpha1.GcpRouterNat{},
+	cloudresourcekind.CloudResourceKind_GcpSccBigQueryExport:                   &gcpsccbigqueryexportv1alpha1.GcpSccBigQueryExport{},
+	cloudresourcekind.CloudResourceKind_GcpSccMuteConfig:                       &gcpsccmuteconfigv1alpha1.GcpSccMuteConfig{},
+	cloudresourcekind.CloudResourceKind_GcpSccNotificationConfig:               &gcpsccnotificationconfigv1alpha1.GcpSccNotificationConfig{},
 	cloudresourcekind.CloudResourceKind_GcpSecretManagerSecret:                 &gcpsecretmanagersecretv1alpha1.GcpSecretManagerSecret{},
 	cloudresourcekind.CloudResourceKind_GcpServerlessVpcConnector:              &gcpserverlessvpcconnectorv1alpha1.GcpServerlessVpcConnector{},
 	cloudresourcekind.CloudResourceKind_GcpServiceAccount:                      &gcpserviceaccountv1alpha1.GcpServiceAccount{},
 	cloudresourcekind.CloudResourceKind_GcpServiceAccountIamMember:             &gcpserviceaccountiammemberv1alpha1.GcpServiceAccountIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpServiceConnectionPolicy:             &gcpserviceconnectionpolicyv1alpha1.GcpServiceConnectionPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpServiceNetworkingConnection:         &gcpservicenetworkingconnectionv1alpha1.GcpServiceNetworkingConnection{},
+	cloudresourcekind.CloudResourceKind_GcpSharedVpcHost:                       &gcpsharedvpchostv1alpha1.GcpSharedVpcHost{},
+	cloudresourcekind.CloudResourceKind_GcpSharedVpcServiceProject:             &gcpsharedvpcserviceprojectv1alpha1.GcpSharedVpcServiceProject{},
 	cloudresourcekind.CloudResourceKind_GcpSpannerBackupSchedule:               &gcpspannerbackupschedulev1alpha1.GcpSpannerBackupSchedule{},
 	cloudresourcekind.CloudResourceKind_GcpSpannerDatabase:                     &gcpspannerdatabasev1alpha1.GcpSpannerDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpSpannerInstance:                     &gcpspannerinstancev1alpha1.GcpSpannerInstance{},
 	cloudresourcekind.CloudResourceKind_GcpSslCertificate:                      &gcpsslcertificatev1alpha1.GcpSslCertificate{},
 	cloudresourcekind.CloudResourceKind_GcpSslPolicy:                           &gcpsslpolicyv1alpha1.GcpSslPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpSubnetwork:                          &gcpsubnetworkv1alpha1.GcpSubnetwork{},
+	cloudresourcekind.CloudResourceKind_GcpTagBinding:                          &gcptagbindingv1alpha1.GcpTagBinding{},
+	cloudresourcekind.CloudResourceKind_GcpTagKey:                              &gcptagkeyv1alpha1.GcpTagKey{},
+	cloudresourcekind.CloudResourceKind_GcpTagValue:                            &gcptagvaluev1alpha1.GcpTagValue{},
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpProxy:                     &gcptargethttpproxyv1alpha1.GcpTargetHttpProxy{},
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpsProxy:                    &gcptargethttpsproxyv1alpha1.GcpTargetHttpsProxy{},
+	cloudresourcekind.CloudResourceKind_GcpTpuQueuedResource:                   &gcptpuqueuedresourcev1alpha1.GcpTpuQueuedResource{},
+	cloudresourcekind.CloudResourceKind_GcpTpuVm:                               &gcptpuvmv1alpha1.GcpTpuVm{},
 	cloudresourcekind.CloudResourceKind_GcpUrlMap:                              &gcpurlmapv1alpha1.GcpUrlMap{},
+	cloudresourcekind.CloudResourceKind_GcpVectorSearchCollection:              &gcpvectorsearchcollectionv1alpha1.GcpVectorSearchCollection{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiAgentEngine:                 &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngine{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiDataset:                     &gcpvertexaidatasetv1alpha1.GcpVertexAiDataset{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiDeployedIndex:               &gcpvertexaideployedindexv1alpha1.GcpVertexAiDeployedIndex{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiEndpoint:                    &gcpvertexaiendpointv1alpha1.GcpVertexAiEndpoint{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureGroup:                &gcpvertexaifeaturegroupv1alpha1.GcpVertexAiFeatureGroup{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureOnlineStore:          &gcpvertexaifeatureonlinestorev1alpha1.GcpVertexAiFeatureOnlineStore{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiIndex:                       &gcpvertexaiindexv1alpha1.GcpVertexAiIndex{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiIndexEndpoint:               &gcpvertexaiindexendpointv1alpha1.GcpVertexAiIndexEndpoint{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiModelGardenDeployment:       &gcpvertexaimodelgardendeploymentv1alpha1.GcpVertexAiModelGardenDeployment{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiNotebook:                    &gcpvertexainotebookv1alpha1.GcpVertexAiNotebook{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiPersistentResource:          &gcpvertexaipersistentresourcev1alpha1.GcpVertexAiPersistentResource{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiRagEngineConfig:             &gcpvertexairagengineconfigv1alpha1.GcpVertexAiRagEngineConfig{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataConnector:         &gcpvertexaisearchdataconnectorv1alpha1.GcpVertexAiSearchDataConnector{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataStore:             &gcpvertexaisearchdatastorev1alpha1.GcpVertexAiSearchDataStore{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiSearchEngine:                &gcpvertexaisearchenginev1alpha1.GcpVertexAiSearchEngine{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiTensorboard:                 &gcpvertexaitensorboardv1alpha1.GcpVertexAiTensorboard{},
 	cloudresourcekind.CloudResourceKind_GcpVpcNetwork:                          &gcpvpcnetworkv1alpha1.GcpVpcNetwork{},
+	cloudresourcekind.CloudResourceKind_GcpVpcPeering:                          &gcpvpcpeeringv1alpha1.GcpVpcPeering{},
 	cloudresourcekind.CloudResourceKind_GcpWorkflow:                            &gcpworkflowv1alpha1.GcpWorkflow{},
 	cloudresourcekind.CloudResourceKind_GcpWorkloadIdentityPool:                &gcpworkloadidentitypoolv1alpha1.GcpWorkloadIdentityPool{},
 	cloudresourcekind.CloudResourceKind_GcpWorkloadIdentityPoolProvider:        &gcpworkloadidentitypoolproviderv1alpha1.GcpWorkloadIdentityPoolProvider{},

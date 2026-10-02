@@ -32,10 +32,16 @@ import (
 	artifactregistry "google.golang.org/api/artifactregistry/v1"
 	"google.golang.org/api/bigquery/v2"
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
+	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	certificatemanager "google.golang.org/api/certificatemanager/v1"
+	cloudbuild "google.golang.org/api/cloudbuild/v1"
+	cloudbuildv2 "google.golang.org/api/cloudbuild/v2"
+	clouddeploy "google.golang.org/api/clouddeploy/v1"
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
+	cloudidentity "google.golang.org/api/cloudidentity/v1"
 	cloudkms "google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
+	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
 	cloudscheduler "google.golang.org/api/cloudscheduler/v1"
 	cloudtasks "google.golang.org/api/cloudtasks/v2"
 	composer "google.golang.org/api/composer/v1"
@@ -46,6 +52,7 @@ import (
 	eventarc "google.golang.org/api/eventarc/v1"
 	firebase "google.golang.org/api/firebase/v1beta1"
 	firestore "google.golang.org/api/firestore/v1"
+	gkehub "google.golang.org/api/gkehub/v1"
 	"google.golang.org/api/iam/v1"
 	iamv2 "google.golang.org/api/iam/v2"
 	identitytoolkit "google.golang.org/api/identitytoolkit/v2"
@@ -54,6 +61,7 @@ import (
 	monitoring "google.golang.org/api/monitoring/v3"
 	"google.golang.org/api/networkconnectivity/v1"
 	"google.golang.org/api/option"
+	orgpolicy "google.golang.org/api/orgpolicy/v2"
 	pubsub "google.golang.org/api/pubsub/v1"
 	"google.golang.org/api/redis/v1"
 	run "google.golang.org/api/run/v2"
@@ -104,6 +112,15 @@ func (h *Harness) Setup(ctx context.Context) error {
 	// export is what lets scenario manifests omit spec.project_id.
 	if err := os.Setenv("GOOGLE_PROJECT", project); err != nil {
 		return errors.Wrap(err, "failed to export GOOGLE_PROJECT")
+	}
+	// A few kinds must NAME the project in the spec rather than inherit it
+	// from the provider -- a tag key's owner is "exactly one of organization
+	// or project", so a project-owned key cannot leave the arm empty. Those
+	// fixtures reference the resolved project through the
+	// ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID} token (the env-token prefix the
+	// scenario loader admits), the same mechanism as the GCS agent below.
+	if err := os.Setenv("PLANTON_E2E_GCP_PROJECT_ID", project); err != nil {
+		return errors.Wrap(err, "failed to export PLANTON_E2E_GCP_PROJECT_ID")
 	}
 
 	// Every verifier probe names the test project as its quota project --
@@ -284,11 +301,57 @@ func (h *Harness) Setup(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create api keys client")
 	}
+	// Resource Manager v3 serves folders and the tag family (keys, values,
+	// bindings), which the v1 client above predates; Organization Policy v2
+	// serves policies and custom constraints.
+	crmV3Service, err := crmv3.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudresourcemanager v3 client")
+	}
+	orgPolicyService, err := orgpolicy.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create orgpolicy client")
+	}
+	// Cloud Billing budgets live on the billing account; Cloud Identity
+	// groups live under a customer -- neither is project-scoped, and the
+	// kinds that use them stay deferred until the harness identity holds
+	// the account- and customer-level roles.
+	billingBudgetsService, err := billingbudgets.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create billingbudgets client")
+	}
+	cloudIdentityService, err := cloudidentity.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudidentity client")
+	}
+	// The Fleet API (GKE Hub) serves fleets, features, scopes and their
+	// namespaces and role bindings, memberships, and membership bindings.
+	gkeHubService, err := gkehub.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create gkehub client")
+	}
+	// Cloud Build serves triggers and worker pools on v1 and repository
+	// connections and their repositories on v2; Cloud Deploy serves
+	// pipelines, automations, targets, deploy policies, and custom target
+	// types.
+	cloudBuildService, err := cloudbuild.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudbuild client")
+	}
+	cloudBuildV2Service, err := cloudbuildv2.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudbuild v2 client")
+	}
+	cloudDeployService, err := clouddeploy.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create clouddeploy client")
+	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
-	// client is not in the pinned google.golang.org/api line (Memorystore
-	// for Valkey) — verifiers use it for REST GET probes only. Built through
-	// the same transport the typed clients use so it carries the same quota
-	// project header.
+	// client is not in the pinned google.golang.org/api line (Vertex AI,
+	// Discovery Engine, Model Armor, Document AI, Cloud TPU, Memorystore for
+	// Valkey, ...) -- verifiers reach it only through googleRestGet, for
+	// GET probes. Built through the same transport the typed clients use so
+	// it carries the same quota project header.
 	restClient, _, err := htransport.NewClient(ctx,
 		append([]option.ClientOption{option.WithScopes(cloudresourcemanager.CloudPlatformScope)}, clientOpts...)...)
 	if err != nil {
@@ -340,6 +403,14 @@ func (h *Harness) Setup(ctx context.Context) error {
 		Eventarc:             eventarcService,
 		Firebase:             firebaseService,
 		ApiKeys:              apiKeysService,
+		CrmV3:                crmV3Service,
+		OrgPolicy:            orgPolicyService,
+		BillingBudgets:       billingBudgetsService,
+		CloudIdentity:        cloudIdentityService,
+		GkeHub:               gkeHubService,
+		CloudBuild:           cloudBuildService,
+		CloudBuildV2:         cloudBuildV2Service,
+		CloudDeploy:          cloudDeployService,
 		RestClient:           restClient,
 	}
 	return nil

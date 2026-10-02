@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecapool.v1alpha1;
+
+// GcpPrivateCaPoolStackOutputs captures the pool's identity -- what authorities,
+// certificates, and TLS consumers (Kafka and Redis clusters) reference.
+message GcpPrivateCaPoolStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/caPools/{ca_pool_id}.
+  string name = 1;
+
+  // The pool's ID (the last segment of name).
+  string ca_pool_id = 2;
+
+  // The region the pool lives in.
+  string location = 3;
+}

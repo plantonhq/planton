@@ -1,0 +1,111 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# Two resource families, one shape: Google models global and regional
+# network firewall policies as separate resources whose rules and
+# associations share every argument but `region`. Exactly one family is
+# instantiated per instance, selected by spec.region (empty = global). Each
+# family is the policy, one rule per spec.rules entry, and one association
+# per spec.associations entry. The all-in-one `_with_rules` variants are
+# deliberately not consumed (dispositions ledger): two shapes for one policy
+# would give the catalog two truths.
+
+resources:
+  # --- Global family -------------------------------------------------------
+
+  google_compute_network_firewall_policy:
+    mappings:
+      # Renames: the spec says what the field IS where the API name would
+      # collide with the catalog's metadata.name.
+      - spec: spec.policy_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+
+  google_compute_network_firewall_policy_rule:
+    # Instantiated per entry of spec.rules.
+    specRoot: spec.rules
+    mappings:
+      # The provider's secure-tag blocks carry {name, state}; state is
+      # read-only, so each spec reference resolves to the one input, name.
+      - spec: spec.rules.target_secure_tags
+        arg: target_secure_tags.name
+      - spec: spec.rules.match.src_secure_tags
+        arg: match.src_secure_tags.name
+      # Spec-level fields every rule inherits.
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: firewall_policy
+        reason: wired by the module to the policy it creates -- the rules are the policy's own
+
+  google_compute_network_firewall_policy_association:
+    # Instantiated per entry of spec.associations.
+    specRoot: spec.associations
+    mappings:
+      # The network the policy is attached to: a GcpVpcNetwork reference or
+      # a network self-link.
+      - spec: spec.associations.network
+        arg: attachment_target
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: firewall_policy
+        reason: wired by the module to the policy it creates -- an association attaches this policy and no other
+
+  # --- Regional family -----------------------------------------------------
+  # The global family plus `region`, which is the spec's own `region` on
+  # every resource.
+
+  google_compute_region_network_firewall_policy:
+    mappings:
+      - spec: spec.policy_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+
+  google_compute_region_network_firewall_policy_rule:
+    specRoot: spec.rules
+    mappings:
+      - spec: spec.rules.target_secure_tags
+        arg: target_secure_tags.name
+      - spec: spec.rules.match.src_secure_tags
+        arg: match.src_secure_tags.name
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.region
+        arg: region
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: firewall_policy
+        reason: wired by the module to the policy it creates -- the rules are the policy's own
+
+  google_compute_region_network_firewall_policy_association:
+    specRoot: spec.associations
+    mappings:
+      - spec: spec.associations.network
+        arg: attachment_target
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.region
+        arg: region
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: firewall_policy
+        reason: wired by the module to the policy it creates -- an association attaches this policy and no other
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables compute.googleapis.com
+      so a fresh project works on the first deploy; not user surface

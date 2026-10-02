@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	gcpcloudrunjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunjob/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/envsecrets"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -40,7 +40,7 @@ func job(
 
 	// Secret values the env carries are stored in Secret Manager before the
 	// job exists, and each task reads them by reference.
-	storedSecrets, err := cloudrunenv.Store(ctx, secretPlacement(locals), secretVariables(tmpl), gcpProvider)
+	storedSecrets, err := envsecrets.Store(ctx, secretPlacement(locals), secretVariables(tmpl), gcpProvider)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to store the environment's secret values")
 	}
@@ -95,6 +95,12 @@ func job(
 		args.DeletionPolicy = pulumi.String(spec.DeletionPolicy)
 	}
 
+	// Resource Manager tags, bound at creation only (ForceNew): omitted
+	// when empty so a job without tags carries no tag surface.
+	if len(spec.ResourceManagerTags) > 0 {
+		args.Tags = pulumi.ToStringMap(spec.ResourceManagerTags)
+	}
+
 	// Declarative run-on-deploy tokens (mutually exclusive —
 	// proto-enforced): start_* counts the job ready when the triggered
 	// execution STARTS; run_* when it COMPLETES.
@@ -137,7 +143,7 @@ func job(
 func buildTaskTemplate(
 	spec *gcpcloudrunjobv1alpha1.GcpCloudRunJobSpec,
 	tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate,
-	secretRefs map[cloudrunenv.Key]cloudrunenv.Ref,
+	secretRefs map[envsecrets.Key]envsecrets.Ref,
 ) *cloudrunv2.JobTemplateTemplateArgs {
 	taskTemplate := &cloudrunv2.JobTemplateTemplateArgs{
 		Containers: buildContainers(tmpl, secretRefs),
@@ -273,7 +279,7 @@ func buildTaskTemplate(
 	return taskTemplate
 }
 
-func buildContainers(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) cloudrunv2.JobTemplateTemplateContainerArray {
+func buildContainers(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate, secretRefs map[envsecrets.Key]envsecrets.Ref) cloudrunv2.JobTemplateTemplateContainerArray {
 	containers := cloudrunv2.JobTemplateTemplateContainerArray{}
 
 	for containerIndex, container := range tmpl.Containers {
@@ -305,7 +311,7 @@ func buildContainers(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate, secret
 				}
 				// A literal, a Secret Manager secret the author owns, or a
 				// secret value this module stored (one of the three).
-				if ref, stored := secretRefs[cloudrunenv.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
+				if ref, stored := secretRefs[envsecrets.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
 					envArgs.ValueSource = &cloudrunv2.JobTemplateTemplateContainerEnvValueSourceArgs{
 						SecretKeyRef: &cloudrunv2.JobTemplateTemplateContainerEnvValueSourceSecretKeyRefArgs{
 							Secret:  ref.Secret,

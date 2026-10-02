@@ -29,7 +29,9 @@ spec:
           - resourcemanager.projects.deleteBillingAssignment
           - billing.resourceAssociations.create
         provenance: derived
-        notes: Required only when billing_account_id is set. The link is authorized on BOTH sides -- the project-side assignments, and billing.resourceAssociations.create on the billing account itself (it lives in IAM's billing-account-scoped inventory and is the heart of roles/billing.user), so grant that one to the deploying principal ON the billing account, not the project. deleteBillingAssignment covers unlinking or switching accounts on update.
+        condition:
+          spec_field_set: billing_account_id
+        notes: The link is authorized on BOTH sides -- the project-side assignments, and billing.resourceAssociations.create on the billing account itself (it lives in IAM's billing-account-scoped inventory and is the heart of roles/billing.user), so grant that one to the deploying principal ON the billing account, not the project. deleteBillingAssignment covers unlinking or switching accounts on update.
       - purpose: EnableApis
         permissions:
           - serviceusage.services.enable

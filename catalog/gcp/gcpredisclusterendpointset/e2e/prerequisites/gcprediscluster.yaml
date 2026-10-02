@@ -1,0 +1,28 @@
+# Consumer-scoped GcpRedisCluster install profile for the endpoint-set
+# chain: a one-shard, zero-replica cluster WITHOUT psc_configs, so Google
+# places no endpoints and the cluster publishes its discovery and primary
+# service attachments for the consumer-built forwarding rules to target.
+# Deletion protection is off so the ephemeral chain tears down in one step.
+# The cloud-side name carries ${E2E_RUN_ID}; metadata.name stays fixed.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisCluster
+metadata:
+  name: planton-oss-e2e-gcprcl-prereq
+  id: planton-oss-e2e-gcprcl-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcprediscluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  clusterName: e2e-rcl-ep-${E2E_RUN_ID}
+  region: us-central1
+  shardCount: 1
+  replicaCount: 0
+  nodeType: REDIS_SHARED_CORE_NANO
+  deletionProtectionEnabled: false
+  deletionPolicy: DELETE

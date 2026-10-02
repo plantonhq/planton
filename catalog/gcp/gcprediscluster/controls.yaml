@@ -1,0 +1,111 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcprediscluster
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Memorystore for Redis Cluster encrypts persisted data (RDB snapshots, AOF logs, backups) at rest with Google-managed keys on every cluster without configuration.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; naming a Cloud KMS key encrypts the cluster's data at rest with the customer-managed key. Updates in place.
+      notes: The 02-production-cache preset leaves it to the operator; the Memorystore service agent needs encrypt/decrypt on the key as a prerequisite.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: transit_encryption_mode
+      evidence:
+        type: spec_default
+        reference: Unset means TRANSIT_ENCRYPTION_MODE_DISABLED -- client traffic is cleartext inside the VPC; TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION enables TLS with server identity verification. Immutable after creation; both engines send the value explicitly.
+      notes: Presets 02 and 03 enable TLS; server_ca_mode / server_ca_pool choose which CA signs the server certificate.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The cluster is reachable only through Private Service Connect endpoints in consumer VPCs -- Google-placed (psc_configs) or consumer-built and registered through GcpRedisClusterEndpointSet; no public endpoint exists and the spec offers no public-IP surface.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: psc_configs
+      evidence:
+        type: spec_default
+        reference: psc_configs names the one consumer VPC Google places endpoints in -- the network IS the ingress allowlist. Empty publishes service attachments only, and then every consumer connection is one the owner registered by hand through GcpRedisClusterEndpointSet.
+      notes: A GcpServiceConnectionPolicy for the gcp-memorystore-redis class must exist on the network first. Presets 01 and 02 place one endpoint in their own VPC.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: A managed in-memory data store on private PSC endpoints is protected by network scoping, TLS, and IAM rather than a WAF; no request-filtering attachment point exists.
+    - control_id: rbac
+      status: configurable
+      field_path: authorization_mode
+      evidence:
+        type: spec_default
+        reference: Management-plane access is always governed by Cloud IAM roles; the data plane defaults to AUTH_MODE_DISABLED (any client reaching an endpoint may issue commands), and AUTH_MODE_IAM_AUTH puts data-plane access under IAM as well. Immutable after creation; both engines send the value explicitly.
+      notes: The 02-production-cache preset sets AUTH_MODE_IAM_AUTH; preset 01 relies on network scoping alone. acl_policy adds per-user command and key rules on top.
+    - control_id: workload-identity
+      status: configurable
+      field_path: authorization_mode
+      evidence:
+        type: spec_default
+        reference: AUTH_MODE_IAM_AUTH lets workloads authenticate to the data plane with short-lived IAM access tokens instead of shared secrets; the unset default (AUTH_MODE_DISABLED) uses no credentials at all.
+      notes: Preset 02 enables it. There is no password-based mode -- the choice is IAM identities or open-inside-the-network.
+    - control_id: no-legacy-auth
+      status: configurable
+      field_path: authorization_mode
+      evidence:
+        type: spec_default
+        reference: The weak path is AUTH_MODE_DISABLED (the unset default) -- unauthenticated command access for anything reaching an endpoint; AUTH_MODE_IAM_AUTH retires it. Immutable after creation.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Administrative operations on the cluster land in Cloud Audit Logs (Admin Activity) unconditionally.
+      notes: Data-plane commands are not audit-logged -- a caveat for reviewers weighing AUTH_MODE_DISABLED deployments.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Memorystore publishes cluster metrics (memory usage, connections, operations, replication lag, per-shard health) to Cloud Monitoring for every cluster without configuration.
+    - control_id: backup-recovery
+      status: configurable
+      field_path: automated_backup_config
+      evidence:
+        type: spec_default
+        reference: Absent means no scheduled backups; configuring it takes daily backups at start_hour with the declared retention, and persistence_config (RDB or AOF) separately makes data survive restarts and failovers.
+      notes: Preset 02 enables daily backups (35-day retention) plus AOF persistence. managed_backup_source and gcs_source are the restore paths at creation.
+    - control_id: backup-retention-policy
+      status: configurable
+      field_path: automated_backup_config.retention
+      evidence:
+        type: spec_default
+        reference: Sets how long each backup is kept, from 1 to 365 days (preset 02 keeps 35 days as "3024000s").
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: zone_distribution_config.mode
+      evidence:
+        type: spec_default
+        reference: MULTI_ZONE (Google's default when the block is absent) spreads nodes across zones; SINGLE_ZONE is the explicit single-zone opt-down. Immutable after creation.
+      notes: Preset 02 pins MULTI_ZONE and adds replica_count 1 for per-shard failover; zone spreading without replicas narrows the blast radius but does not fail over.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_protection_enabled
+      evidence:
+        type: spec_default
+        reference: Defaults to true -- destroying the cluster fails until the flag is explicitly set false; both engines send the value explicitly so the spec is the single source of truth.
+      notes: The dev preset opts out; presets 02 and 03 keep it on. deletion_policy PREVENT is a second, independent guard.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Memorystore applies engine and security patches through Google's managed maintenance rollout; maintenance_policy only steers when, and maintenance_version can pull a patch forward -- neither opts out.

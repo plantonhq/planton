@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpdeploypolicy
+spec:
+  billing_model: free
+  free_tier: "Deploy policies carry no charge of their own; Cloud Deploy bills per active delivery pipeline, not per policy (Cloud Deploy pricing page, read 2026-10-01)."
+  notes: "The pipelines and targets a policy governs bill through their own GcpDeliveryPipeline and GcpDeployTarget blocks; a policy only blocks actions on them."

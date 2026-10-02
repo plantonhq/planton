@@ -65,7 +65,7 @@ spec:
 | `spec.versionTemplate.protectionLevel` | `string` |  |  |  |
 | `spec.skipInitialVersionCreation` | `bool` |  |  |  |
 | `spec.importOnly` | `bool` |  |  |  |
-| `spec.cryptoKeyBackend` | `string \| valueFrom` |  |  |  |
+| `spec.cryptoKeyBackend` | `string` |  |  |  |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
 
@@ -226,16 +226,14 @@ violate the import-only guarantee.
 
 ### spec.cryptoKeyBackend
 
-`string | valueFrom`
+`string`
 
 The EKM connection through which an external key manager backs this
 key's versions. Applies only when version_template.protection_level is
-EXTERNAL_VPC (enforced pre-deploy). Accepts the fully qualified
-connection path
+EXTERNAL_VPC (enforced pre-deploy). The EKM connection is made outside
+the catalog (no catalog kind produces it), so write its full name:
   projects/{project}/locations/{location}/ekmConnections/{name}
 Immutable after creation.
-
-- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.labels
 
@@ -282,6 +280,7 @@ Reference an output from another manifest as `valueFrom: {kind: GcpKmsKey, name:
 | `status.outputs.key_name` | `string` | The short name of the key (the last segment of key_id). Useful for display, logging, and consumers that take the bare key name alongside a separately supplied project and location. |
 | `status.outputs.primary_version_name` | `string` | Fully qualified resource name of the key's current primary CryptoKeyVersion — the version GCP uses to encrypt new data. Format: projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}/cryptoKeyVersions/{n} Populated by GCP only for ENCRYPT_DECRYPT keys; empty for asymmetric, raw, and MAC keys (which have no primary-version concept) and for keys created with skip_initial_version_creation. |
 | `status.outputs.primary_state` | `string` | Lifecycle state of the primary CryptoKeyVersion (e.g. "ENABLED"). Same population rules as primary_version_name — the quick health probe that a CMEK key is actually able to encrypt. |
+| `status.outputs.initial_version_name` | `string` | Fully qualified resource name of the version Google creates with the key (version 1), for every purpose — the version an asymmetric-sign key's consumers name (a CA Service authority's signing key, a Binary Authorization attestor's public key), since such keys have no primary. Format: projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}/cryptoKeyVersions/1 Empty for keys created with skip_initial_version_creation (and so for import_only keys). Later versions are added by rotation or by hand and are named explicitly by their consumers. |
 
 ## References
 
@@ -301,17 +300,28 @@ Fields on other kinds that can point at this resource:
 | GcpAlloydbCluster | `spec.continuousBackupConfig.encryptionKmsKeyName` | `status.outputs.key_id` |
 | GcpAlloydbCluster | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpArtifactRegistryRepo | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpBigQueryConnection | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigQueryDataset | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigQueryTable | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigtableInstance | `spec.clusters[].kmsKeyName` | `status.outputs.key_id` |
+| GcpBinaryAuthorizationAttestor | `spec.attestationAuthorityNote.publicKeys[].pkixPublicKey.kmsKeyVersion` | `status.outputs.initial_version_name` |
+| GcpCloudBuildTrigger | `spec.build.secrets[].kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudComposerEnvironment | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudFunction | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudRun | `spec.encryptionKey` | `status.outputs.key_id` |
 | GcpCloudRunJob | `spec.template.encryptionKey` | `status.outputs.key_id` |
+| GcpCloudRunWorkerPool | `spec.encryptionKey` | `status.outputs.key_id` |
 | GcpCloudSql | `spec.encryptionKeyName` | `status.outputs.key_id` |
+| GcpColabRuntimeTemplate | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpColabSchedule | `spec.notebookExecutionJob.kmsKeyName` | `status.outputs.key_id` |
+| GcpColabSchedule | `spec.pipelineJob.kmsKeyName` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.sourceDiskEncryption.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
+| GcpComputeImage | `spec.sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpComputeInstance | `spec.bootDisk.kmsKey` | `status.outputs.key_id` |
 | GcpComputeInstance | `spec.bootDisk.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpComputeInstance | `spec.bootDisk.sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
@@ -322,6 +332,9 @@ Fields on other kinds that can point at this resource:
 | GcpComputeMig | `spec.template.disks[].sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpDataprocCluster | `spec.clusterConfig.encryptionKmsKeyName` | `status.outputs.key_id` |
 | GcpDataprocCluster | `spec.clusterConfig.securityConfig.kerberosConfig.kmsKeyUri` | `status.outputs.key_id` |
+| GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.sourceHierarchyDatasets.datasetTemplate.kmsKeyName` | `status.outputs.key_id` |
+| GcpDatastreamStream | `spec.customerManagedEncryptionKey` | `status.outputs.key_id` |
+| GcpDocumentAiProcessor | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.cryptoKey` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.googleApiSources[].cryptoKey` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.pipelines[].cryptoKey` | `status.outputs.key_id` |
@@ -338,8 +351,12 @@ Fields on other kinds that can point at this resource:
 | GcpKmsKeyIamMember | `spec.cryptoKeyId` | `status.outputs.key_id` |
 | GcpLogBucket | `spec.cmekKmsKey` | `status.outputs.key_id` |
 | GcpLogBucket | `spec.scopeSettings.kmsKey` | `status.outputs.key_id` |
+| GcpManagedKafkaCluster | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpMemorystoreInstance | `spec.kmsKey` | `status.outputs.key_id` |
+| GcpPrivateCaCertificateAuthority | `spec.keySpec.cloudKmsKeyVersion` | `status.outputs.initial_version_name` |
+| GcpPrivateCaPool | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpPubSubTopic | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpRedisCluster | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpRedisInstance | `spec.customerManagedKey` | `status.outputs.key_id` |
 | GcpSecretManagerSecret | `spec.replication.auto.customerManagedEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpSecretManagerSecret | `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | `status.outputs.key_id` |
@@ -348,11 +365,20 @@ Fields on other kinds that can point at this resource:
 | GcpSpannerBackupSchedule | `spec.encryptionConfig.kmsKeyNames` | `status.outputs.key_id` |
 | GcpSpannerDatabase | `spec.encryptionConfig.kmsKeyName` | `status.outputs.key_id` |
 | GcpSpannerDatabase | `spec.encryptionConfig.kmsKeyNames` | `status.outputs.key_id` |
+| GcpVectorSearchCollection | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiAgentEngine | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiDataset | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpVertexAiEndpoint | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiFeatureOnlineStore | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpVertexAiIndex | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpVertexAiIndexEndpoint | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpVertexAiNotebook | `spec.bootDisk.kmsKey` | `status.outputs.key_id` |
 | GcpVertexAiNotebook | `spec.dataDisk.kmsKey` | `status.outputs.key_id` |
+| GcpVertexAiPersistentResource | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiSearchDataConnector | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiSearchDataStore | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiSearchEngine | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiTensorboard | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpWorkflow | `spec.cryptoKey` | `status.outputs.key_id` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |
 | KubernetesPlantonPlatform | `spec.vault.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |

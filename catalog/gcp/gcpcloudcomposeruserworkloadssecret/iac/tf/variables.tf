@@ -1,61 +1,55 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the Cloud Composer user workloads Secret"
+  description = "GcpCloudComposerUserWorkloadsSecret specification"
   type = object({
-    # The GCP project of the Composer environment. The CLI's tfvars
-    # converter resolves StringValueOrRef fields to their literal string
-    # before the module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # GCP project of the Composer environment.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Region of the Composer environment. Immutable (ForceNew).
+    # Region of the Composer environment (e.g., "us-central1").
+    # Immutable after creation.
     region = string
 
-    # The Composer environment name (resolved ref). Immutable (ForceNew).
+    # The Composer environment the Secret is delivered into. Resolves to
+    # the environment's name. Immutable after creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     environment = string
 
-    # Kubernetes Secret name. Immutable (ForceNew).
+    # Name of the Kubernetes Secret. Must be lowercase letters, numbers,
+    # and hyphens; start with a letter; end with a letter or number.
+    # Immutable after creation.
     secret_name = string
 
-    # Key-value entries; values are base64-encoded secret material (the
-    # API's Kubernetes Secret contract). The provider schema marks this
-    # attribute sensitive, so plans redact it; it still lands in IaC
-    # state, which is the engine's secret boundary.
-    data = map(string)
+    # The Secret's key-value entries. Values MUST be base64-encoded
+    # (Kubernetes Secret semantics — e.g. `echo -n 'postgresql://...' |
+    # base64`); the API rejects raw values. The decoded material (Airflow
+    # connection URIs, passwords, tokens) is never placed in stack
+    # outputs, and the entries are held as secrets in IaC state.
+    data = optional(map(string), {})
 
-    # Client-side destroy behavior: DELETE (default), PREVENT, ABANDON.
+    # Deletion policy for the Secret — what happens when this resource is
+    # destroyed:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the Kubernetes Secret is removed from the
+    #                environment; DAGs consuming it start failing
+    #   "PREVENT" -- destroy FAILS; protects credentials live pipelines
+    #                depend on from riding along with a stack teardown
+    #   "ABANDON" -- the Secret is removed from management but stays in
+    #                the environment's cluster
     deletion_policy = optional(string, "")
   })
-
-  validation {
-    condition     = var.spec.region != ""
-    error_message = "region is required."
-  }
-
-  validation {
-    condition     = var.spec.environment != ""
-    error_message = "environment is required."
-  }
-
-  validation {
-    condition     = var.spec.secret_name != ""
-    error_message = "secret_name is required."
-  }
-
-  validation {
-    condition     = length(var.spec.data) > 0
-    error_message = "data must have at least one entry."
-  }
 }

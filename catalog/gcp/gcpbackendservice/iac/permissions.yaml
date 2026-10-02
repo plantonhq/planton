@@ -26,28 +26,71 @@ spec:
           - compute.globalOperations.get
         provenance: derived
         notes: Covers google_compute_backend_service -- create, read/refresh, in-place updates (backends, health check, affinity, CDN, IAP, logging, headers are all mutable; name and project changes replace), and destroy. Global backend services return global operations the provider polls. service_lb_policy attaches a Network Services ServiceLbPolicy by URL through this same compute mutation -- Google's networkservices role reference defines no serviceLbPolicies.use permission (only create/get/list/update/delete, verified live), so no extra grant is listed here; reading the referenced policy in its own project requires networkservices.serviceLbPolicies.get there.
-      - purpose: UseReferencedBackendsAndHealthCheck
+      - purpose: ManageRegionalBackendService
+        permissions:
+          - compute.regionBackendServices.create
+          - compute.regionBackendServices.get
+          - compute.regionBackendServices.update
+          - compute.regionBackendServices.delete
+          - compute.regionBackendServices.setSecurityPolicy
+          - compute.regionOperations.get
+          - compute.regionHealthChecks.useReadOnly
+          - compute.regionSecurityPolicies.use
+        provenance: derived
+        condition:
+          spec_field_set: region
+        notes: Covers google_compute_region_backend_service, built instead of the global service when region is set. Regional services authorize against their own compute.regionBackendServices family and return region operations the provider polls; a referenced regional health check authorizes with compute.regionHealthChecks.useReadOnly and a regional Cloud Armor policy with compute.regionSecurityPolicies.use (listed with the regional family because a condition names one field; each is exercised only when the service references one). Signed-URL keys exist on the global service alone.
+      - purpose: UsePassthroughNetwork
+        permissions:
+          - compute.networks.use
+        provenance: derived
+        condition:
+          spec_field_set: network
+        notes: The VPC network a regional passthrough Network Load Balancer's backend service names authorizes with compute.networks.use on that network.
+      - purpose: UseReferencedHealthCheck
         permissions:
           - compute.healthChecks.useReadOnly
+        provenance: derived
+        condition:
+          spec_field_set: health_check
+        notes: A service-side check, not a module API call -- attaching a health check authorizes with compute.healthChecks.useReadOnly on the referenced check. Grant it on the project that owns the check, which differs from the backend service's project in cross-project setups.
+      - purpose: UseReferencedBackendGroups
+        permissions:
           - compute.instanceGroups.use
           - compute.networkEndpointGroups.use
         provenance: derived
-        notes: Service-side checks, not module API calls -- attaching a health check authorizes with compute.healthChecks.useReadOnly on the referenced check, and each backend group authorizes with compute.instanceGroups.use or compute.networkEndpointGroups.use on the referenced group. Grant the one(s) matching what the spec actually references, on the projects that own those resources (which differ from the backend service's project in cross-project setups); a backend service with no health check and no backends (a valid creation order) needs none of these.
+        condition:
+          spec_field_set: backends
+        notes: Service-side checks, not module API calls -- each backend group authorizes with compute.instanceGroups.use or compute.networkEndpointGroups.use on the referenced group. Grant the one(s) matching what the backends actually reference, on the projects that own those groups (which differ from the backend service's project in cross-project setups).
       - purpose: ManageSignedUrlKeys
         permissions:
           - compute.backendServices.addSignedUrlKey
           - compute.backendServices.deleteSignedUrlKey
         provenance: derived
-        notes: Required only when signed_url_keys is set -- covers google_compute_backend_service_signed_url_key. Keys are immutable in GCP (add/delete only), so rotation and key-value changes exercise both permissions; the key material itself never leaves the request. Not needed for backend services without signed URLs.
-      - purpose: AttachSecurityPolicies
+        condition:
+          spec_field_set: signed_url_keys
+        notes: Covers google_compute_backend_service_signed_url_key. Keys are immutable in GCP (add/delete only), so rotation and key-value changes exercise both permissions; the key material itself never leaves the request.
+      - purpose: AttachSecurityPolicy
         permissions:
           - compute.backendServices.setSecurityPolicy
           - compute.securityPolicies.use
         provenance: derived
-        notes: Required only when security_policy or edge_security_policy references a Cloud Armor policy -- both attachments authorize on both sides, setting the policy on the backend service and using the referenced security policy. Not needed for backend services without Cloud Armor.
+        condition:
+          spec_field_set: security_policy
+        notes: Attaching the Cloud Armor policy security_policy names authorizes on both sides -- setting the policy on the backend service and using the referenced security policy.
+      - purpose: AttachEdgeSecurityPolicy
+        permissions:
+          - compute.backendServices.setSecurityPolicy
+          - compute.securityPolicies.use
+        provenance: derived
+        condition:
+          spec_field_set: edge_security_policy
+        notes: Attaching the Cloud Armor edge policy edge_security_policy names authorizes on both sides -- setting the policy on the backend service and using the referenced security policy.
       - purpose: ApplyResourceManagerTags
         permissions:
           - compute.backendServices.createTagBinding
           - resourcemanager.tagValueBindings.create
         provenance: derived
-        notes: Required only when resource_manager_tags is set -- attaching a tag at create time authorizes on both sides, the binding on the backend service and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). The module sends tags only through the create-only params block; tag changes replace the backend service, re-running these checks. Not needed for untagged backend services.
+        condition:
+          spec_field_set: resource_manager_tags
+        notes: Attaching a tag at create time authorizes on both sides, the binding on the backend service and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there). The module sends tags only through the create-only params block; tag changes replace the backend service, re-running these checks.

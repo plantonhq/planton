@@ -1,0 +1,25 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpcertmanagerissuanceconfig
+spec:
+  # Awaiting the live proof lane. One leaf scenario: a global issuance
+  # config naming a consumer-scoped DevOps pool that holds a self-signed
+  # root authority. The config itself is free; the authority bills Certificate
+  # Authority Service for as long as the run holds it, and the scenario issues
+  # no certificate. Offline bar met: both modules build and validate, offline
+  # plans for the reference manifest, the scenario, its prerequisites, and the
+  # presets are clean on the pinned provider, and the accounting is total.
+  # Live facts the proof lane confirms: (1) Certificate Manager accepts a
+  # DevOps-tier pool -- the provider's own acceptance test uses an Enterprise
+  # pool; (2) create succeeds without the Certificate Manager service agent
+  # holding roles/privateca.certificateRequester on the pool, which the
+  # scenario does not grant (no catalog kind grants on a pool, and nothing is
+  # issued); (3) the config reads back with the platform attribution labels
+  # and RE-PLANS CLEAN on both engines -- the provider-defaulted "global"
+  # location must not diff; (4) destroy leaves the verifier reading 404
+  # before the authority and pool go.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

@@ -1,0 +1,26 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvpcpeering
+spec:
+  gcp:
+    groups:
+      - purpose: ManageNetworkPeering
+        permissions:
+          - compute.networks.addPeering
+          - compute.networks.updatePeering
+          - compute.networks.removePeering
+          - compute.networks.get
+        provenance: derived
+        notes: "Covers google_compute_network_peering (Pulumi compute.NetworkPeering), the CREATE form. addPeering on first apply -- on THIS network's project AND on the peer network's project (Google authorizes both); networks.get on every refresh and import (the peering is read from the network object); updatePeering when a mutable flag changes (export/import_custom_routes, stack_type, update_strategy); removePeering on destroy under deletion_policy DELETE (ABANDON and PREVENT call no remove API). roles/compute.networkAdmin contains all four."
+      - purpose: ManagePeeringRoutesConfig
+        permissions:
+          - compute.networks.updatePeering
+          - compute.networks.get
+        provenance: derived
+        notes: "Covers google_compute_network_peering_routes_config (Pulumi compute.NetworkPeeringRoutesConfig), the ROUTES-CONFIG form. updatePeering on create and on every change (the resource patches the route-exchange flags of an existing peering); networks.get on refresh. Destroy calls no API -- the peering keeps its last flags."

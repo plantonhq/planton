@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpComputeImage
+metadata:
+  name: debian-12-pinned-20261001
+spec:
+  family: debian-12-pinned
+  sourceImage:
+    value: projects/debian-cloud/global/images/family/debian-12
+  storageLocations:
+    - us

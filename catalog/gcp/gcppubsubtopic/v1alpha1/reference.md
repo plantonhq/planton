@@ -51,7 +51,7 @@ spec:
 |---|---|---|---|---|
 | `spec.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.topicName` | `string` | yes |  |  |
-| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
+| `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`) |
 | `spec.messageRetentionDuration` | `string` |  |  |  |
 | `spec.messageStoragePolicy` | `GcpPubSubTopicMessageStoragePolicy` |  |  |  |
 | `spec.messageStoragePolicy.allowedPersistenceRegions` | `[]string` | yes |  |  |
@@ -145,7 +145,7 @@ Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{k
 The Pub/Sub service account must have roles/cloudkms.cryptoKeyEncrypterDecrypter
 on this key. If not set, messages are encrypted with Google-managed keys.
 
-- references: GcpKmsKey (`status.outputs.key_id`)
+- references: GcpKmsKey (`status.outputs.key_id`), GcpKmsKeyHandle (`status.outputs.kms_key`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
 ### spec.messageRetentionDuration
@@ -655,6 +655,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.kmsKeyName` | GcpKmsKeyHandle | `status.outputs.kms_key` |
 | `spec.schemaSettings.schema` | GcpPubSubSchema | `status.outputs.schema_id` |
 | `spec.schemaSettings.firstRevisionId` | GcpPubSubSchema | `status.outputs.revision_id` |
 | `spec.schemaSettings.lastRevisionId` | GcpPubSubSchema | `status.outputs.revision_id` |
@@ -672,6 +673,8 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpBillingBudget | `spec.notifications.pubsubTopic` | `status.outputs.topic_id` |
+| GcpCloudBuildTrigger | `spec.pubsubConfig.topic` | `status.outputs.topic_id` |
 | GcpCloudFunction | `spec.trigger.eventTrigger.pubsubTopic` | `status.outputs.topic_id` |
 | GcpCloudSchedulerJob | `spec.pubsubTarget.topicName` | `status.outputs.topic_id` |
 | GcpEventarcMessageBus | `spec.pipelines[].destination.topic` | `status.outputs.topic_id` |
@@ -681,6 +684,8 @@ Fields on other kinds that can point at this resource:
 | GcpLoggingSink | `spec.destination.pubsubTopic` | `status.outputs.topic_id` |
 | GcpPubSubSubscription | `spec.topic` | `status.outputs.topic_id` |
 | GcpPubSubSubscription | `spec.deadLetterPolicy.deadLetterTopic` | `status.outputs.topic_id` |
+| GcpPubSubTopicIamMember | `spec.topic` | `status.outputs.topic_id` |
+| GcpSccNotificationConfig | `spec.pubsubTopic` | `status.outputs.topic_id` |
 | GcpSecretManagerSecret | `spec.topics` | `status.outputs.topic_id` |
 
 ## See Also

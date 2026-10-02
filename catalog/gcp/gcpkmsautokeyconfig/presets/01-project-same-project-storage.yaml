@@ -1,0 +1,9 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsAutokeyConfig
+metadata:
+  name: project-autokey
+spec:
+  scope:
+    projectId:
+      value: my-gcp-project
+  keyProjectResolutionMode: RESOURCE_PROJECT
