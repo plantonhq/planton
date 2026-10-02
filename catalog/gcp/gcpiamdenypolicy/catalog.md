@@ -93,6 +93,7 @@ These are the most important decisions when configuring a deny policy. Explore t
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `parent.projectId` | `status.outputs.project_id` |
+| **GcpFolder** (optional) | `parent.folderId` | `status.outputs.folder_id` |
 
 ### What This Component Provides
 

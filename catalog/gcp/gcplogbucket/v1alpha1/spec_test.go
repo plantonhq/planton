@@ -7,12 +7,18 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 func TestSuite(t *testing.T) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
 	ginkgo.RunSpecs(t, "GcpLogBucketSpec Suite")
+}
+
+// folderRef is a literal folder ID in the reference field's literal arm.
+func folderRef(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
 }
 
 var _ = ginkgo.Describe("GcpLogBucketSpec", func() {
@@ -39,7 +45,7 @@ var _ = ginkgo.Describe("GcpLogBucketSpec", func() {
 
 	folderScoped := func() *GcpLogBucket {
 		b := minimal()
-		b.Spec.Scope = &GcpLogBucketScope{FolderId: "123456789"}
+		b.Spec.Scope = &GcpLogBucketScope{FolderId: folderRef("123456789")}
 		return b
 	}
 
@@ -60,7 +66,7 @@ var _ = ginkgo.Describe("GcpLogBucketSpec", func() {
 	ginkgo.Context("scope", func() {
 		ginkgo.It("accepts each single arm", func() {
 			for _, scope := range []*GcpLogBucketScope{
-				{FolderId: "123456789"},
+				{FolderId: folderRef("123456789")},
 				{OrganizationId: "987654321"},
 				{BillingAccount: "012345-6789AB-CDEF01"},
 			} {
@@ -73,7 +79,7 @@ var _ = ginkgo.Describe("GcpLogBucketSpec", func() {
 		ginkgo.It("rejects two arms at once", func() {
 			b := minimal()
 			b.Spec.Scope = &GcpLogBucketScope{
-				FolderId:       "123456789",
+				FolderId:       folderRef("123456789"),
 				OrganizationId: "987654321",
 			}
 			gomega.Expect(validator.Validate(b)).ToNot(gomega.Succeed())

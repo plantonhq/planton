@@ -117,7 +117,7 @@ func logBucket(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) e
 
 	case locals.IsFolderBucket:
 		args := &logging.FolderBucketConfigArgs{
-			Folder:        pulumi.String(spec.Scope.FolderId),
+			Folder:        pulumi.String(spec.Scope.FolderId.GetValue()),
 			BucketId:      pulumi.String(spec.BucketId),
 			Location:      pulumi.String(locals.Location),
 			RetentionDays: pulumi.IntPtr(locals.RetentionDays),
@@ -273,7 +273,7 @@ func logBucket(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) e
 	if settings := spec.ScopeSettings; settings != nil {
 		if locals.IsFolderBucket {
 			settingsArgs := &logging.FolderSettingsArgs{
-				Folder: pulumi.String(spec.Scope.FolderId),
+				Folder: pulumi.String(spec.Scope.FolderId.GetValue()),
 				// The block's reason to exist — sent explicitly.
 				DisableDefaultSink: pulumi.Bool(settings.DisableDefaultSink),
 			}

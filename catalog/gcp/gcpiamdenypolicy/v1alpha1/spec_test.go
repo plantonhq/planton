@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("GcpIamDenyPolicySpec", func() {
 		target.Spec.Parent = &GcpIamDenyPolicyParent{ProjectId: litRef("my-gcp-project-123")}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 
-		target.Spec.Parent = &GcpIamDenyPolicyParent{FolderId: "123456789"}
+		target.Spec.Parent = &GcpIamDenyPolicyParent{FolderId: litRef("123456789")}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 
 		target.Spec.Parent = &GcpIamDenyPolicyParent{OrganizationId: "987654321"}
@@ -126,7 +126,7 @@ var _ = ginkgo.Describe("GcpIamDenyPolicySpec", func() {
 		target := minimal()
 		target.Spec.Parent = &GcpIamDenyPolicyParent{
 			ProjectId: litRef("my-gcp-project-123"),
-			FolderId:  "123456789",
+			FolderId:  litRef("123456789"),
 		}
 		err := validator.Validate(target)
 		gomega.Expect(err).To(gomega.HaveOccurred())

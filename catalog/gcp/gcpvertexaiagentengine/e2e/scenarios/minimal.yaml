@@ -21,7 +21,7 @@ metadata:
     - planton-e2e
 spec:
   location: us-central1
-  spec:
+  agent:
     agentFramework: google-adk
     sourceCodeSpec:
       inlineSource:

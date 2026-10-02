@@ -32,13 +32,13 @@ message GcpLogBucketSpec {
   option (buf.validate.message).cel = {
     id: "locked_is_project_scope_only"
     message: "locked applies only to project-scoped buckets — the folder/organization/billing bucket resources do not carry the argument"
-    expression: "!this.locked || !has(this.scope) || (this.scope.folder_id == '' && this.scope.organization_id == '' && this.scope.billing_account == '')"
+    expression: "!this.locked || !has(this.scope) || (!(has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from))) && this.scope.organization_id == '' && this.scope.billing_account == '')"
   };
   // enable_analytics likewise exists only on the project-scope resource.
   option (buf.validate.message).cel = {
     id: "analytics_is_project_scope_only"
     message: "enable_analytics applies only to project-scoped buckets — the folder/organization/billing bucket resources do not carry the argument"
-    expression: "!has(this.enable_analytics) || !has(this.scope) || (this.scope.folder_id == '' && this.scope.organization_id == '' && this.scope.billing_account == '')"
+    expression: "!has(this.enable_analytics) || !has(this.scope) || (!(has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from))) && this.scope.organization_id == '' && this.scope.billing_account == '')"
   };
   // A linked BigQuery dataset requires Log Analytics on the bucket (the
   // Logging API's own pairing).
@@ -51,7 +51,7 @@ message GcpLogBucketSpec {
   option (buf.validate.message).cel = {
     id: "scope_settings_need_folder_or_org_scope"
     message: "scope_settings applies only to folder or organization scoped buckets (google_logging_{folder|organization}_settings)"
-    expression: "!has(this.scope_settings) || (has(this.scope) && (this.scope.folder_id != '' || this.scope.organization_id != ''))"
+    expression: "!has(this.scope_settings) || (has(this.scope) && ((has(this.scope.folder_id) && (this.scope.folder_id.value != '' || has(this.scope.folder_id.value_from))) || this.scope.organization_id != ''))"
   };
 
   // Where the bucket lives. Omit entirely for a project bucket in the
@@ -161,7 +161,7 @@ message GcpLogBucketScope {
   option (buf.validate.message).cel = {
     id: "at_most_one_scope"
     message: "set at most one of project_id, folder_id, organization_id, or billing_account (empty means the provider's default project)"
-    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), this.folder_id != '', this.organization_id != '', this.billing_account != ''].filter(x, x).size() <= 1"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != '', this.billing_account != ''].filter(x, x).size() <= 1"
   };
 
   // Project bucket: the owning project — a literal project ID or a
@@ -171,10 +171,15 @@ message GcpLogBucketScope {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
   ];
 
-  // Folder bucket: the folder ID (numeric, with or without the "folders/"
-  // prefix). ADOPT-only: the Logging API creates new custom buckets only
-  // under projects.
-  string folder_id = 2;
+  // Folder bucket: the folder's numeric ID (with or without the
+  // "folders/" prefix) -- a literal, or a reference to a GcpFolder resource
+  // (its folder_id output). ADOPT-only: the Logging API creates new custom
+  // buckets only under projects, so a folder bucket adopts one the folder
+  // already has (its _Default or _Required bucket).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
 
   // Organization bucket: the numeric organization ID. ADOPT-only.
   string organization_id = 3;

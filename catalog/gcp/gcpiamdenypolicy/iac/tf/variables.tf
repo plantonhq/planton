@@ -22,8 +22,11 @@ variable "spec" {
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       project_id = optional(string, "")
 
-      # Attach to a folder: the folder ID (numeric, with or without the
-      # "folders/" prefix).
+      # Attach to a folder: the folder's numeric ID (with or without the
+      # "folders/" prefix) -- a literal, or a reference to a GcpFolder resource
+      # (its folder_id output), so a chart that creates a folder can guard it
+      # with a deny policy in the same deploy.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       folder_id = optional(string, "")
 
       # Attach to an organization: the numeric organization ID.

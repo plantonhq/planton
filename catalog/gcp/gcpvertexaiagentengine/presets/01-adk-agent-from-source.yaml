@@ -8,7 +8,7 @@ spec:
   location: us-central1
   displayName: Support agent
   description: Answers support questions from the docs
-  spec:
+  agent:
     agentFramework: google-adk
     sourceCodeSpec:
       # A base64 .tar.gz of the agent's source root (agent.py defining

@@ -299,7 +299,7 @@ Fields on other kinds that can point at this resource:
 | GcpTpuQueuedResource | `spec.nodeSpecs[].node.networkConfig.network` | `status.outputs.network_id` |
 | GcpTpuVm | `spec.networkConfig.network` | `status.outputs.network_id` |
 | GcpTpuVm | `spec.networkConfigs[].network` | `status.outputs.network_id` |
-| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
+| GcpVertexAiAgentEngine | `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | GcpVertexAiEndpoint | `spec.network` | `status.outputs.network_self_link` |
 | GcpVertexAiEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
 | GcpVertexAiIndexEndpoint | `spec.network` | `status.outputs.network_self_link` |

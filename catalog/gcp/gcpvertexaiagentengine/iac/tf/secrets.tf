@@ -16,7 +16,7 @@
 
 locals {
   env_secrets = {
-    for env in try(var.spec.spec.deployment_spec.secret_env, []) : env.name => {
+    for env in try(var.spec.agent.deployment_spec.secret_env, []) : env.name => {
       secret_id = join("_", ["agentengine", var.spec.location, var.metadata.name, replace(env.name, ".", "-")])
       value     = env.value
     } if env.value != null
@@ -24,7 +24,7 @@ locals {
 
   env_secret_ids = [for key, secret in local.env_secrets : secret.secret_id]
 
-  env_secret_service_account = try(var.spec.spec.service_account, "") != "" ? var.spec.spec.service_account : null
+  env_secret_service_account = try(var.spec.agent.service_account, "") != "" ? var.spec.agent.service_account : null
 
   env_secret_member = local.env_secret_service_account != null ? "serviceAccount:${local.env_secret_service_account}" : (
     length(data.google_project.env_secrets) > 0

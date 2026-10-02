@@ -59,7 +59,7 @@ planton apply -f deny-policy.yaml
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `parent` | `object` | provider default project | Attach point: exactly one of `projectId` (StringValueOrRef, can reference a GcpProject), `folderId`, or `organizationId`. Empty means the provider's default project. The module renders the URL-ENCODED full resource name GCP's API expects, so manifests never hand-assemble it. |
+| `parent` | `object` | provider default project | Attach point: exactly one of `projectId` (StringValueOrRef, can reference a GcpProject), `folderId` (StringValueOrRef, can reference a GcpFolder), or `organizationId`. Empty means the provider's default project. The module renders the URL-ENCODED full resource name GCP's API expects, so manifests never hand-assemble it. |
 | `policyName` | `string` | `metadata.name` | The policy's resource ID. Immutable: changing it destroys and recreates the policy. |
 | `displayName` | `string` | `""` | Human-readable name shown in consoles. |
 | `deletionPolicy` | `string` | `DELETE` | What destroy does: `DELETE`, `PREVENT` (refuse — protects a guardrail whose silent removal re-opens the surface it guards), or `ABANDON` (keep denying, drop from management). |

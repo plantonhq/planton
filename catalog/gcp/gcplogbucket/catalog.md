@@ -101,6 +101,7 @@ These are the most important decisions when configuring a log bucket. Explore th
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `scope.projectId` | `status.outputs.project_id` |
+| **GcpFolder** (optional) | `scope.folderId` | `status.outputs.folder_id` |
 | **GcpKmsKey** (optional) | `cmekKmsKey`, `scopeSettings.kmsKey` | `status.outputs.key_id` |
 
 ### What This Component Provides

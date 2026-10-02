@@ -9,6 +9,10 @@
 resources:
   google_vertex_ai_reasoning_engine:
     mappings:
+      # The provider's `spec` block is the agent itself; the catalog names
+      # it for what it holds, so a manifest never reads `spec.spec`.
+      - spec: spec.agent
+        arg: spec
       - spec: spec.project_id
         arg: project
       # The provider names the axis region; every Vertex kind in the
@@ -56,24 +60,24 @@ resources:
       API enablement plumbing -- the module enables the owning API so a
       fresh project works on the first deploy; not a knob of the kind.
 
-  # One secret per spec.deployment_spec.secret_env[].value: the module creates it, stores the value as a
+  # One secret per agent.deployment_spec.secret_env[].value: the module creates it, stores the value as a
   # version, and grants the runtime identity read access to that secret
   # alone. Only the value itself is spec surface.
   google_secret_manager_secret:
     internal: >-
-      created by the module per spec.deployment_spec.secret_env[].value -- its id
+      created by the module per agent.deployment_spec.secret_env[].value -- its id
       (agentengine, location, metadata.name, variable), user-managed replication in the agent's
       region, and attribution labels are all derived from the agent,
       never authored.
   google_secret_manager_secret_iam_member:
     internal: >-
       the roles/secretmanager.secretAccessor grant on each stored secret
-      for the agent's runtime identity (spec.service_account, else the project's Reasoning Engine service agent) -- derived,
+      for the agent's runtime identity (agent.service_account, else the project's Reasoning Engine service agent) -- derived,
       never authored.
   google_secret_manager_secret_version:
-    specRoot: spec.spec.deployment_spec.secret_env
+    specRoot: spec.agent.deployment_spec.secret_env
     mappings:
-      - spec: spec.spec.deployment_spec.secret_env.value
+      - spec: spec.agent.deployment_spec.secret_env.value
         arg: secret_data
     exclusions:
       - arg: secret

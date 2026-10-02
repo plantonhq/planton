@@ -40,8 +40,10 @@ variable "spec" {
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kms_key_name = optional(string, "")
 
-    # The agent: its code, identity, and deployment shape.
-    spec = optional(object({
+    # The agent: its code, identity, and deployment shape. Google's API
+    # calls this block `spec`; the catalog names it for what it holds, so a
+    # manifest never reads `spec.spec`.
+    agent = optional(object({
       # The open-source framework the agent is built with (e.g. "google-adk",
       # "langchain", "langgraph", "llama-index", "ag2"); tells Agent Engine
       # which framework integration to load.
@@ -216,7 +218,7 @@ variable "spec" {
           # Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
           # without the platform, the literal. The component creates one secret
           # for this variable, replicated only in the agent's location, stores
-          # the value as a version, grants the agent's identity (spec.service_account,
+          # the value as a version, grants the agent's identity (agent.service_account,
           # or the project's Vertex AI Reasoning Engine service agent
           # service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
           # when unset) secretAccessor on that secret alone, and points the
@@ -226,7 +228,7 @@ variable "spec" {
           # secret. The secret's id is
           # agentengine_<location>_<metadata.name>_<variable> ('.' in the name
           # becomes '-'). Not available with identity_type AGENT_IDENTITY (see
-          # the rule on GcpVertexAiAgentEngineSpecConfig).
+          # the rule on GcpVertexAiAgentEngineAgent).
           value = optional(string)
         })), [])
 

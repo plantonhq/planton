@@ -11,7 +11,8 @@ spec:
   parent:
     projectId:
       value: my-gcp-project-123
-    # folderId: "987654321098"          # attach to a folder instead
+    # folderId:                         # attach to a folder instead
+    #   value: "987654321098"
     # organizationId: "123456789012"    # attach to the organization instead
 
   # The policy's resource ID (the last segment of its name). Defaults to

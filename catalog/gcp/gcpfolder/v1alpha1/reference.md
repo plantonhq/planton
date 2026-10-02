@@ -213,7 +213,9 @@ Fields on other kinds that can point at this resource:
 | GcpFolder | `spec.parent.folderId` | `status.outputs.folder_id` |
 | GcpHierarchicalFirewallPolicy | `spec.parent.folderId` | `status.outputs.folder_id` |
 | GcpHierarchicalFirewallPolicy | `spec.associations[].target.folderId` | `status.outputs.folder_id` |
+| GcpIamDenyPolicy | `spec.parent.folderId` | `status.outputs.folder_id` |
 | GcpKmsAutokeyConfig | `spec.scope.folderId` | `status.outputs.folder_id` |
+| GcpLogBucket | `spec.scope.folderId` | `status.outputs.folder_id` |
 | GcpLoggingSink | `spec.scope.folderId` | `status.outputs.folder_id` |
 | GcpModelArmorFloorSetting | `spec.scope.folderId` | `status.outputs.folder_id` |
 | GcpOrgPolicy | `spec.scope.folderId` | `status.outputs.folder_id` |

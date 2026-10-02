@@ -9,7 +9,7 @@ import (
 // the module keeps in Secret Manager (the value arm), addressed by name.
 func secretVariables(spec *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpec) []envsecrets.Variable {
 	var variables []envsecrets.Variable
-	for _, envVar := range spec.GetSpec().GetDeploymentSpec().GetSecretEnv() {
+	for _, envVar := range spec.GetAgent().GetDeploymentSpec().GetSecretEnv() {
 		value, stored := envVar.Source.(*gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSecretEnvVar_Value)
 		if !stored {
 			continue
@@ -32,7 +32,7 @@ func secretPlacement(locals *Locals) envsecrets.Placement {
 		NoContainers:          true,
 		ReplicaRegions:        []string{spec.Location},
 		Project:               spec.ProjectId.GetValue(),
-		RuntimeServiceAccount: spec.GetSpec().GetServiceAccount().GetValue(),
+		RuntimeServiceAccount: spec.GetAgent().GetServiceAccount().GetValue(),
 		DefaultAccount:        envsecrets.ReasoningEngineServiceAgent,
 		Labels:                locals.GcpLabels,
 	}

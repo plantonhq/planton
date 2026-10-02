@@ -912,7 +912,7 @@ type GcpVertexAiAgentEngineSecretEnvVar_Value struct {
 	// Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
 	// without the platform, the literal. The component creates one secret
 	// for this variable, replicated only in the agent's location, stores
-	// the value as a version, grants the agent's identity (spec.service_account,
+	// the value as a version, grants the agent's identity (agent.service_account,
 	// or the project's Vertex AI Reasoning Engine service agent
 	// service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
 	// when unset) secretAccessor on that secret alone, and points the
@@ -922,7 +922,7 @@ type GcpVertexAiAgentEngineSecretEnvVar_Value struct {
 	// secret. The secret's id is
 	// agentengine_<location>_<metadata.name>_<variable> ('.' in the name
 	// becomes '-'). Not available with identity_type AGENT_IDENTITY (see
-	// the rule on GcpVertexAiAgentEngineSpecConfig).
+	// the rule on GcpVertexAiAgentEngineAgent).
 	Value string `protobuf:"bytes,3,opt,name=value,proto3,oneof"`
 }
 
@@ -1285,10 +1285,10 @@ func (x *GcpVertexAiAgentEngineDeploymentSpec) GetAgentGatewayConfig() *GcpVerte
 	return nil
 }
 
-// GcpVertexAiAgentEngineSpecConfig is the agent itself: where its code
+// GcpVertexAiAgentEngineAgent is the agent itself: where its code
 // comes from (a container XOR a source build XOR a pickled package),
 // which identity it runs as, and how it is deployed.
-type GcpVertexAiAgentEngineSpecConfig struct {
+type GcpVertexAiAgentEngineAgent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The open-source framework the agent is built with (e.g. "google-adk",
 	// "langchain", "langgraph", "llama-index", "ag2"); tells Agent Engine
@@ -1323,20 +1323,20 @@ type GcpVertexAiAgentEngineSpecConfig struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) Reset() {
-	*x = GcpVertexAiAgentEngineSpecConfig{}
+func (x *GcpVertexAiAgentEngineAgent) Reset() {
+	*x = GcpVertexAiAgentEngineAgent{}
 	mi := &file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) String() string {
+func (x *GcpVertexAiAgentEngineAgent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiAgentEngineSpecConfig) ProtoMessage() {}
+func (*GcpVertexAiAgentEngineAgent) ProtoMessage() {}
 
-func (x *GcpVertexAiAgentEngineSpecConfig) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiAgentEngineAgent) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1348,68 +1348,68 @@ func (x *GcpVertexAiAgentEngineSpecConfig) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiAgentEngineSpecConfig.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiAgentEngineSpecConfig) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiAgentEngineAgent.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiAgentEngineAgent) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetAgentFramework() string {
+func (x *GcpVertexAiAgentEngineAgent) GetAgentFramework() string {
 	if x != nil {
 		return x.AgentFramework
 	}
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetClassMethods() string {
+func (x *GcpVertexAiAgentEngineAgent) GetClassMethods() string {
 	if x != nil {
 		return x.ClassMethods
 	}
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetIdentityType() string {
+func (x *GcpVertexAiAgentEngineAgent) GetIdentityType() string {
 	if x != nil {
 		return x.IdentityType
 	}
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetServiceAccount() *v1.StringValueOrRef {
+func (x *GcpVertexAiAgentEngineAgent) GetServiceAccount() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ServiceAccount
 	}
 	return nil
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetContainerSpec() *GcpVertexAiAgentEngineContainerSpec {
+func (x *GcpVertexAiAgentEngineAgent) GetContainerSpec() *GcpVertexAiAgentEngineContainerSpec {
 	if x != nil {
 		return x.ContainerSpec
 	}
 	return nil
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetSourceCodeSpec() *GcpVertexAiAgentEngineSourceCodeSpec {
+func (x *GcpVertexAiAgentEngineAgent) GetSourceCodeSpec() *GcpVertexAiAgentEngineSourceCodeSpec {
 	if x != nil {
 		return x.SourceCodeSpec
 	}
 	return nil
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetPackageSpec() *GcpVertexAiAgentEnginePackageSpec {
+func (x *GcpVertexAiAgentEngineAgent) GetPackageSpec() *GcpVertexAiAgentEnginePackageSpec {
 	if x != nil {
 		return x.PackageSpec
 	}
 	return nil
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetBuildSpec() *GcpVertexAiAgentEngineBuildSpec {
+func (x *GcpVertexAiAgentEngineAgent) GetBuildSpec() *GcpVertexAiAgentEngineBuildSpec {
 	if x != nil {
 		return x.BuildSpec
 	}
 	return nil
 }
 
-func (x *GcpVertexAiAgentEngineSpecConfig) GetDeploymentSpec() *GcpVertexAiAgentEngineDeploymentSpec {
+func (x *GcpVertexAiAgentEngineAgent) GetDeploymentSpec() *GcpVertexAiAgentEngineDeploymentSpec {
 	if x != nil {
 		return x.DeploymentSpec
 	}
@@ -3198,9 +3198,9 @@ func (x *GcpVertexAiAgentEngineContextSpec) GetMemoryBankConfig() *GcpVertexAiAg
 // you bring), hosts it as an autoscaled service with its own identity, and
 // optionally gives it a Memory Bank of long-term memories.
 //
-// The shape a manifest usually takes: `spec.source_code_spec` with an
+// The shape a manifest usually takes: `agent.source_code_spec` with an
 // inline source archive and a `python_spec` naming the ADK root agent;
-// `spec.deployment_spec` for environment, secrets, and instance bounds;
+// `agent.deployment_spec` for environment, secrets, and instance bounds;
 // `context_spec.memory_bank_config` when the agent should remember across
 // sessions. Deployments from source run a Cloud Build in the project.
 //
@@ -3227,8 +3227,10 @@ type GcpVertexAiAgentEngineSpec struct {
 	// projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
 	// Omit to use Google-managed encryption. Immutable.
 	KmsKeyName *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=kms_key_name,json=kmsKeyName,proto3" json:"kms_key_name,omitempty"`
-	// The agent: its code, identity, and deployment shape.
-	Spec *GcpVertexAiAgentEngineSpecConfig `protobuf:"bytes,7,opt,name=spec,proto3" json:"spec,omitempty"`
+	// The agent: its code, identity, and deployment shape. Google's API
+	// calls this block `spec`; the catalog names it for what it holds, so a
+	// manifest never reads `spec.spec`.
+	Agent *GcpVertexAiAgentEngineAgent `protobuf:"bytes,7,opt,name=agent,proto3" json:"agent,omitempty"`
 	// Context services -- the Memory Bank.
 	ContextSpec *GcpVertexAiAgentEngineContextSpec `protobuf:"bytes,8,opt,name=context_spec,json=contextSpec,proto3" json:"context_spec,omitempty"`
 	// What happens to the agent when this resource is destroyed:
@@ -3313,9 +3315,9 @@ func (x *GcpVertexAiAgentEngineSpec) GetKmsKeyName() *v1.StringValueOrRef {
 	return nil
 }
 
-func (x *GcpVertexAiAgentEngineSpec) GetSpec() *GcpVertexAiAgentEngineSpecConfig {
+func (x *GcpVertexAiAgentEngineSpec) GetAgent() *GcpVertexAiAgentEngineAgent {
 	if x != nil {
-		return x.Spec
+		return x.Agent
 	}
 	return nil
 }
@@ -3441,8 +3443,8 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"$deployment_spec.resource_limits_keys\x124resource_limits accepts only the keys cpu and memory\x1a3this.resource_limits.all(k, k in ['cpu', 'memory'])B\x10\n" +
 	"\x0e_min_instancesB\x10\n" +
 	"\x0e_max_instancesB\x18\n" +
-	"\x16_container_concurrency\"\x85\x0e\n" +
-	" GcpVertexAiAgentEngineSpecConfig\x12'\n" +
+	"\x16_container_concurrency\"\x83\x0e\n" +
+	"\x1bGcpVertexAiAgentEngineAgent\x12'\n" +
 	"\x0fagent_framework\x18\x01 \x01(\tR\x0eagentFramework\x12#\n" +
 	"\rclass_methods\x18\x02 \x01(\tR\fclassMethods\x12N\n" +
 	"\ridentity_type\x18\x03 \x01(\tB)\xbaH&\xd8\x01\x01r!R\x0fSERVICE_ACCOUNTR\x0eAGENT_IDENTITYR\fidentityType\x12z\n" +
@@ -3452,10 +3454,10 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\fpackage_spec\x18\a \x01(\v2R.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePackageSpecR\vpackageSpec\x12o\n" +
 	"\n" +
 	"build_spec\x18\b \x01(\v2P.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpecR\tbuildSpec\x12~\n" +
-	"\x0fdeployment_spec\x18\t \x01(\v2U.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpecR\x0edeploymentSpec:\xe0\x06\xbaH\xdc\x06\x1a\x8e\x01\n" +
-	"\x19spec.container_xor_source\x126container_spec and source_code_spec cannot both be set\x1a9!(has(this.container_spec) && has(this.source_code_spec))\x1a\xb9\x01\n" +
-	"+spec.agent_identity_forbids_service_account\x12Dservice_account must not be set when identity_type is AGENT_IDENTITY\x1aDthis.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)\x1a\x8c\x04\n" +
-	"0spec.agent_identity_forbids_stored_secret_values\x12\xd4\x02secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account\x1a\x80\x01this.identity_type != 'AGENT_IDENTITY' || !has(this.deployment_spec) || !this.deployment_spec.secret_env.exists(e, has(e.value))\"\x9f\x04\n" +
+	"\x0fdeployment_spec\x18\t \x01(\v2U.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpecR\x0edeploymentSpec:\xe3\x06\xbaH\xdf\x06\x1a\x8f\x01\n" +
+	"\x1aagent.container_xor_source\x126container_spec and source_code_spec cannot both be set\x1a9!(has(this.container_spec) && has(this.source_code_spec))\x1a\xba\x01\n" +
+	",agent.agent_identity_forbids_service_account\x12Dservice_account must not be set when identity_type is AGENT_IDENTITY\x1aDthis.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)\x1a\x8d\x04\n" +
+	"1agent.agent_identity_forbids_stored_secret_values\x12\xd4\x02secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account\x1a\x80\x01this.identity_type != 'AGENT_IDENTITY' || !has(this.deployment_spec) || !this.deployment_spec.secret_env.exists(e, has(e.value))\"\x9f\x04\n" +
 	"$GcpVertexAiAgentEngineGenerationRule\x12-\n" +
 	"\vevent_count\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x00R\n" +
 	"eventCount\x88\x01\x01\x12E\n" +
@@ -3584,7 +3586,7 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\x19structured_memory_configs\x18\x05 \x03(\v2].dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineStructuredMemoryConfigR\x17structuredMemoryConfigs\x12\x8f\x01\n" +
 	"\x15customization_configs\x18\x06 \x03(\v2Z.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineCustomizationConfigR\x14customizationConfigs\"\xab\x01\n" +
 	"!GcpVertexAiAgentEngineContextSpec\x12\x85\x01\n" +
-	"\x12memory_bank_config\x18\x01 \x01(\v2W.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfigR\x10memoryBankConfig\"\xd3\a\n" +
+	"\x12memory_bank_config\x18\x01 \x01(\v2W.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineMemoryBankConfigR\x10memoryBankConfig\"\xd0\a\n" +
 	"\x1aGcpVertexAiAgentEngineSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12;\n" +
@@ -3593,8 +3595,8 @@ const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_rawDesc = "" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12o\n" +
 	"\x06labels\x18\x05 \x03(\v2W.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.LabelsEntryR\x06labels\x12t\n" +
 	"\fkms_key_name\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\n" +
-	"kmsKeyName\x12e\n" +
-	"\x04spec\x18\a \x01(\v2Q.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfigR\x04spec\x12u\n" +
+	"kmsKeyName\x12b\n" +
+	"\x05agent\x18\a \x01(\v2L.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentR\x05agent\x12u\n" +
 	"\fcontext_spec\x18\b \x01(\v2R.dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpecR\vcontextSpec\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\t \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
@@ -3636,7 +3638,7 @@ var file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpVertexAiAgentEngineGatewayTarget)(nil),                // 16: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGatewayTarget
 	(*GcpVertexAiAgentEngineAgentGatewayConfig)(nil),           // 17: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig
 	(*GcpVertexAiAgentEngineDeploymentSpec)(nil),               // 18: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec
-	(*GcpVertexAiAgentEngineSpecConfig)(nil),                   // 19: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig
+	(*GcpVertexAiAgentEngineAgent)(nil),                        // 19: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent
 	(*GcpVertexAiAgentEngineGenerationRule)(nil),               // 20: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationRule
 	(*GcpVertexAiAgentEngineGenerationTriggerConfig)(nil),      // 21: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationTriggerConfig
 	(*GcpVertexAiAgentEngineGenerationConfig)(nil),             // 22: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationConfig
@@ -3695,12 +3697,12 @@ var file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_depIdxs = []int3
 	51, // 19: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.resource_limits:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.ResourceLimitsEntry
 	15, // 20: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.psc_interface_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePscInterfaceConfig
 	17, // 21: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec.agent_gateway_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgentGatewayConfig
-	53, // 22: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 23: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.container_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContainerSpec
-	8,  // 24: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.source_code_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSourceCodeSpec
-	9,  // 25: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.package_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePackageSpec
-	10, // 26: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.build_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpec
-	18, // 27: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig.deployment_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec
+	53, // 22: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 23: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent.container_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContainerSpec
+	8,  // 24: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent.source_code_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSourceCodeSpec
+	9,  // 25: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent.package_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEnginePackageSpec
+	10, // 26: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent.build_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineBuildSpec
+	18, // 27: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent.deployment_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineDeploymentSpec
 	20, // 28: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationTriggerConfig.generation_rule:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationRule
 	21, // 29: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationConfig.generation_trigger_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGenerationTriggerConfig
 	24, // 30: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineTtlConfig.granular_ttl_config:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineGranularTtlConfig
@@ -3732,7 +3734,7 @@ var file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_spec_proto_depIdxs = []int3
 	53, // 56: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	52, // 57: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.labels:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.LabelsEntry
 	53, // 58: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	19, // 59: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpecConfig
+	19, // 59: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.agent:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineAgent
 	48, // 60: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.context_spec:type_name -> dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineContextSpec
 	61, // [61:61] is the sub-list for method output_type
 	61, // [61:61] is the sub-list for method input_type

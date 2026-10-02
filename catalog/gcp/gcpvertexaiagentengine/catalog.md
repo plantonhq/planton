@@ -41,7 +41,7 @@ metadata:
   env: prod
 spec:
   location: us-central1
-  spec:
+  agent:
     agentFramework: google-adk
     sourceCodeSpec:
       inlineSource:
@@ -81,11 +81,12 @@ These are the most important decisions when configuring an agent. Explore the fu
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
-| **GcpProject** | `projectId`, `spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
-| **GcpServiceAccount** | `spec.serviceAccount` | `status.outputs.email` |
-| **GcpSecretManagerSecret** | `spec.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
+| **GcpProject** | `projectId`, `agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
+| **GcpServiceAccount** | `agent.serviceAccount` | `status.outputs.email` |
+| **GcpSecretManagerSecret** | `agent.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
-| **GcpVpcNetwork** | `spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
+| **GcpCloudBuildWorkerPool** | `agent.buildSpec.workerPool` | `status.outputs.name` |
+| **GcpVpcNetwork** | `agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 
 ### What This Component Provides
 

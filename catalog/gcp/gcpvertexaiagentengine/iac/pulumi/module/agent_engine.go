@@ -69,8 +69,8 @@ func agentEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 			KmsKeyName: pulumi.String(spec.KmsKeyName.GetValue()),
 		}
 	}
-	if spec.Spec != nil {
-		args.Spec = buildSpec(spec.Spec, storedSecrets.Refs)
+	if spec.Agent != nil {
+		args.Spec = buildSpec(spec.Agent, storedSecrets.Refs)
 	}
 	if spec.ContextSpec != nil && spec.ContextSpec.MemoryBankConfig != nil {
 		args.ContextSpec = &vertex.AiReasoningEngineContextSpecArgs{
@@ -107,7 +107,7 @@ func agentEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 // build_spec.service_account is not mapped: the pinned SDK lacks it, and
 // an argument one engine cannot send is never a one-engine field.
 func buildSpec(
-	s *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpecConfig,
+	s *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineAgent,
 	secretRefs map[envsecrets.Key]envsecrets.Ref,
 ) *vertex.AiReasoningEngineSpecArgs {
 	args := &vertex.AiReasoningEngineSpecArgs{}

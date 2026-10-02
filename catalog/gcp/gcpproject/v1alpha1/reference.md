@@ -367,7 +367,7 @@ Fields on other kinds that can point at this resource:
 | GcpUrlMap | `spec.projectId` | `status.outputs.project_id` |
 | GcpVectorSearchCollection | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiAgentEngine | `spec.projectId` | `status.outputs.project_id` |
-| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
+| GcpVertexAiAgentEngine | `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
 | GcpVertexAiDataset | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiEndpoint | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].projectId` | `status.outputs.project_id` |

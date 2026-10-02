@@ -17,15 +17,15 @@ spec:
       pricing_unit: GiB-hours
       description: The same instances bill their allocated memory per GiB-hour (4 GiB in the default shape).
   cost_drivers:
-    - field_path: spec.deployment_spec.min_instances
+    - field_path: agent.deployment_spec.min_instances
       sku_meter: Agent Engine vCPU
       pricing_unit: vCPU-hours
       impact: The committed spend -- this many instances run around the clock; 0 scales the agent to nothing between requests at the cost of cold starts. The ceiling is max_instances.
-    - field_path: spec.deployment_spec.resource_limits
+    - field_path: agent.deployment_spec.resource_limits
       sku_meter: Agent Engine vCPU
       pricing_unit: vCPU-hours
       impact: The cpu and memory keys size every instance-hour; Google's default is 4 CPU and 4Gi.
-    - field_path: spec.deployment_spec.container_concurrency
+    - field_path: agent.deployment_spec.container_concurrency
       sku_meter: Agent Engine vCPU
       pricing_unit: vCPU-hours
       impact: Requests one instance handles at once; lower concurrency means more instances for the same traffic.

@@ -375,7 +375,7 @@ Fields on other kinds that can point at this resource:
 | GcpServiceAccountIamMember | `spec.serviceAccountId` | `status.outputs.name` |
 | GcpServiceAccountIamMember | `spec.member` | `status.outputs.member` |
 | GcpTpuVm | `spec.serviceAccount.email` | `status.outputs.email` |
-| GcpVertexAiAgentEngine | `spec.spec.serviceAccount` | `status.outputs.email` |
+| GcpVertexAiAgentEngine | `spec.agent.serviceAccount` | `status.outputs.email` |
 | GcpVertexAiDeployedIndex | `spec.authConfig.allowedIssuers` | `status.outputs.email` |
 | GcpVertexAiNotebook | `spec.serviceAccount` | `status.outputs.email` |
 | GcpWorkflow | `spec.serviceAccount` | `status.outputs.email` |

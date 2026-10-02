@@ -55,7 +55,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 			Metadata:   &shared.CloudResourceMetadata{Name: "support-agent"},
 			Spec: &GcpVertexAiAgentEngineSpec{
 				Location: "us-central1",
-				Spec: &GcpVertexAiAgentEngineSpecConfig{
+				Agent: &GcpVertexAiAgentEngineAgent{
 					AgentFramework: "google-adk",
 					SourceCodeSpec: inlinePython(),
 				},
@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 
 	ginkgo.It("should accept a bare agent with no spec block", func() {
 		msg := minimal()
-		msg.Spec.Spec = nil
+		msg.Spec.Agent = nil
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
@@ -84,7 +84,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		msg.Spec.Description = "Answers support tickets"
 		msg.Spec.Labels = map[string]string{"team": "support"}
 		msg.Spec.KmsKeyName = litRef("projects/ai-project/locations/us-central1/keyRings/ai/cryptoKeys/agents")
-		msg.Spec.Spec = &GcpVertexAiAgentEngineSpecConfig{
+		msg.Spec.Agent = &GcpVertexAiAgentEngineAgent{
 			AgentFramework: "custom",
 			ClassMethods:   `[{"name":"query","api_mode":"","parameters":{"type":"object","properties":{"input":{"type":"string"}}}}]`,
 			IdentityType:   "SERVICE_ACCOUNT",
@@ -177,7 +177,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 
 	ginkgo.It("should accept the legacy pickled package and an ADK config source", func() {
 		msg := minimal()
-		msg.Spec.Spec = &GcpVertexAiAgentEngineSpecConfig{
+		msg.Spec.Agent = &GcpVertexAiAgentEngineAgent{
 			PackageSpec: &GcpVertexAiAgentEnginePackageSpec{
 				PickleObjectGcsUri:    "gs://agents/support.pkl",
 				DependencyFilesGcsUri: "gs://agents/deps.tar.gz",
@@ -186,14 +186,14 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 			},
 		}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
-		msg.Spec.Spec = &GcpVertexAiAgentEngineSpecConfig{
+		msg.Spec.Agent = &GcpVertexAiAgentEngineAgent{
 			SourceCodeSpec: &GcpVertexAiAgentEngineSourceCodeSpec{
 				AgentConfigSource: &GcpVertexAiAgentEngineAgentConfigSource{AdkConfig: &GcpVertexAiAgentEngineAdkConfig{JsonConfig: `{"name":"root_agent","model":"gemini-2.5-flash"}`}},
 				ImageSpec:         &GcpVertexAiAgentEngineImageSpec{BuildArgs: map[string]string{"PY": "3.12"}},
 			},
 		}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
-		msg.Spec.Spec.SourceCodeSpec = &GcpVertexAiAgentEngineSourceCodeSpec{
+		msg.Spec.Agent.SourceCodeSpec = &GcpVertexAiAgentEngineSourceCodeSpec{
 			DeveloperConnectSource: &GcpVertexAiAgentEngineDeveloperConnectSource{Config: &GcpVertexAiAgentEngineDeveloperConnectSourceConfig{
 				GitRepositoryLink: "projects/ai-project/locations/us-central1/connections/github/gitRepositoryLinks/agents",
 				Dir:               "support",
@@ -212,63 +212,63 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 
 	ginkgo.It("should reject a container spec beside a source spec", func() {
 		msg := minimal()
-		msg.Spec.Spec.ContainerSpec = &GcpVertexAiAgentEngineContainerSpec{ImageUri: "gcr.io/x/y"}
+		msg.Spec.Agent.ContainerSpec = &GcpVertexAiAgentEngineContainerSpec{ImageUri: "gcr.io/x/y"}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should require exactly one source and exactly one build recipe", func() {
 		msg := minimal()
-		msg.Spec.Spec.SourceCodeSpec.AgentConfigSource = &GcpVertexAiAgentEngineAgentConfigSource{AdkConfig: &GcpVertexAiAgentEngineAdkConfig{JsonConfig: "{}"}}
+		msg.Spec.Agent.SourceCodeSpec.AgentConfigSource = &GcpVertexAiAgentEngineAgentConfigSource{AdkConfig: &GcpVertexAiAgentEngineAdkConfig{JsonConfig: "{}"}}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = minimal()
-		msg.Spec.Spec.SourceCodeSpec.InlineSource = nil
+		msg.Spec.Agent.SourceCodeSpec.InlineSource = nil
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = minimal()
-		msg.Spec.Spec.SourceCodeSpec.ImageSpec = &GcpVertexAiAgentEngineImageSpec{}
+		msg.Spec.Agent.SourceCodeSpec.ImageSpec = &GcpVertexAiAgentEngineImageSpec{}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = minimal()
-		msg.Spec.Spec.SourceCodeSpec.PythonSpec = nil
+		msg.Spec.Agent.SourceCodeSpec.PythonSpec = nil
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should forbid a service account under AGENT_IDENTITY and reject an unknown identity type", func() {
 		msg := minimal()
-		msg.Spec.Spec.IdentityType = "AGENT_IDENTITY"
-		msg.Spec.Spec.ServiceAccount = nameRef("sa")
+		msg.Spec.Agent.IdentityType = "AGENT_IDENTITY"
+		msg.Spec.Agent.ServiceAccount = nameRef("sa")
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
-		msg.Spec.Spec.ServiceAccount = nil
+		msg.Spec.Agent.ServiceAccount = nil
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
-		msg.Spec.Spec.IdentityType = "WORKLOAD"
+		msg.Spec.Agent.IdentityType = "WORKLOAD"
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should take the build worker pool as a reference or a full literal name", func() {
 		msg := minimal()
-		msg.Spec.Spec.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: nameRef("private-builds")}
+		msg.Spec.Agent.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: nameRef("private-builds")}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
-		msg.Spec.Spec.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("projects/ai-project/locations/us-central1/workerPools/private")}
+		msg.Spec.Agent.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("projects/ai-project/locations/us-central1/workerPools/private")}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
-		msg.Spec.Spec.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("private")}
+		msg.Spec.Agent.BuildSpec = &GcpVertexAiAgentEngineBuildSpec{WorkerPool: litRef("private")}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should bound instances and restrict resource_limits keys", func() {
 		msg := minimal()
-		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(5), MaxInstances: proto.Int32(2)}
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(5), MaxInstances: proto.Int32(2)}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
-		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(11)}
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{MinInstances: proto.Int32(11)}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
-		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{ResourceLimits: map[string]string{"gpu": "1"}}
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{ResourceLimits: map[string]string{"gpu": "1"}}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
 	ginkgo.It("should require a secret on every secret env var and a dot-terminated DNS domain", func() {
 		msg := minimal()
-		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{
 			SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{{Name: "KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_SecretRef{SecretRef: &GcpVertexAiAgentEngineSecretRef{}}}},
 		}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
-		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{
 			PscInterfaceConfig: &GcpVertexAiAgentEnginePscInterfaceConfig{DnsPeeringConfigs: []*GcpVertexAiAgentEngineDnsPeeringConfig{{
 				Domain: "internal.corp", TargetProject: litRef("p"), TargetNetwork: litRef("n"),
 			}}},
@@ -279,7 +279,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 	ginkgo.It("should take each secret env var from exactly one of a secret you own or a stored value", func() {
 		withSecretEnv := func(entry *GcpVertexAiAgentEngineSecretEnvVar) *GcpVertexAiAgentEngine {
 			msg := minimal()
-			msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{entry}}
+			msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{entry}}
 			return msg
 		}
 		gomega.Expect(validator.Validate(withSecretEnv(&GcpVertexAiAgentEngineSecretEnvVar{
@@ -298,18 +298,18 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 
 	ginkgo.It("should refuse stored secret values under AGENT_IDENTITY, whose identity exists only after create", func() {
 		msg := minimal()
-		msg.Spec.Spec.IdentityType = "AGENT_IDENTITY"
-		msg.Spec.Spec.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{
+		msg.Spec.Agent.IdentityType = "AGENT_IDENTITY"
+		msg.Spec.Agent.DeploymentSpec = &GcpVertexAiAgentEngineDeploymentSpec{SecretEnv: []*GcpVertexAiAgentEngineSecretEnvVar{
 			{Name: "DB_PASSWORD", Source: &GcpVertexAiAgentEngineSecretEnvVar_SecretRef{SecretRef: &GcpVertexAiAgentEngineSecretRef{Secret: litRef("db-password")}}},
 		}}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
-		msg.Spec.Spec.DeploymentSpec.SecretEnv = append(msg.Spec.Spec.DeploymentSpec.SecretEnv, &GcpVertexAiAgentEngineSecretEnvVar{
+		msg.Spec.Agent.DeploymentSpec.SecretEnv = append(msg.Spec.Agent.DeploymentSpec.SecretEnv, &GcpVertexAiAgentEngineSecretEnvVar{
 			Name: "OPENAI_KEY", Source: &GcpVertexAiAgentEngineSecretEnvVar_Value{Value: "sk-stored"},
 		})
 		err := validator.Validate(msg)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 		gomega.Expect(err.Error()).To(gomega.ContainSubstring("cannot carry a value when identity_type is AGENT_IDENTITY"))
-		msg.Spec.Spec.IdentityType = "SERVICE_ACCOUNT"
+		msg.Spec.Agent.IdentityType = "SERVICE_ACCOUNT"
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
