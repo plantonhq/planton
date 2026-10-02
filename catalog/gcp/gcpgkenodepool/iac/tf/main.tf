@@ -364,13 +364,13 @@ resource "google_container_node_pool" "this" {
       }
     }
 
-    dynamic "host_maintenance_policy" {
-      for_each = try(local.nc.host_maintenance_interval, "") != "" ? [1] : []
-      content {
-        maintenance_interval = local.nc.host_maintenance_interval
-      }
-    }
-
+    # PARITY-EXCEPTION: hashicorp/google 8.4 dropped
+    # node_config.host_maintenance_policy from the GA node pool. Declaring
+    # the block fails terraform validate on the floating ~> 8.3 pin
+    # (8.4.0 and 8.5.0 both refuse it, empty or not). Pulumi still
+    # applies spec.node_config.host_maintenance_interval. This engine
+    # refuses a set value rather than silently ignore it; see the
+    # lifecycle precondition.
     dynamic "taint_config" {
       for_each = try(local.nc.architecture_taint_behavior, "") != "" ? [1] : []
       content {
@@ -659,6 +659,15 @@ resource "google_container_node_pool" "this" {
     ignore_changes = [
       node_count
     ]
+
+    # PARITY-EXCEPTION: see node_config above. An empty value is GKE's
+    # default (AS_NEEDED) and is what every ordinary pool, including
+    # Planton's build pool, sends. PERIODIC is Pulumi-only until the
+    # GA provider restores the block.
+    precondition {
+      condition     = try(local.nc.host_maintenance_interval, "") == ""
+      error_message = "host_maintenance_interval cannot be applied through OpenTofu: the Google provider removed node_config.host_maintenance_policy in 8.4. Leave it empty, or deploy this pool with Pulumi."
+    }
   }
 
   depends_on = [google_project_service.container_api]

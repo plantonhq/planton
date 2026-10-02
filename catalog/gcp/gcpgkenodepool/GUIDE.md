@@ -63,6 +63,13 @@ change what new nodes run) or Secret Manager (for scripts that embed
 credentials) before the node joins the cluster — host-level setup no
 DaemonSet can do.
 
+`hostMaintenanceInterval` (`AS_NEEDED` or `PERIODIC`) is the cadence of
+maintenance on the physical hosts, required as `PERIODIC` by some GPU
+and TPU shapes. Pulumi applies it. OpenTofu cannot: the Google provider
+dropped `node_config.host_maintenance_policy` in 8.4, and declaring the
+block fails every node-pool apply, so the OpenTofu module refuses a set
+value. Leave it empty unless you are deploying with Pulumi.
+
 ## Kubelet tuning: set only what you can defend
 
 Every kubelet field unset means GKE's default — which is right for

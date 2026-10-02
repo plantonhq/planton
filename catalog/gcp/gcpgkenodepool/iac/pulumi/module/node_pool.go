@@ -887,6 +887,11 @@ func buildNodeConfig(nodeConfig *gcpgkenodepoolv1alpha1.GcpGkeNodePoolNodeConfig
 		}
 	}
 
+	// PARITY-EXCEPTION: OpenTofu cannot send this. hashicorp/google
+	// 8.4 dropped node_config.host_maintenance_policy from the GA
+	// node pool, so the Terraform module refuses a set value rather
+	// than declare a block that fails to load. Pulumi-gcp still
+	// exposes the field and this module applies it.
 	if nodeConfig.HostMaintenanceInterval != "" {
 		nodeConfigArgs.HostMaintenancePolicy = &container.NodePoolNodeConfigHostMaintenancePolicyArgs{
 			MaintenanceInterval: pulumi.String(nodeConfig.HostMaintenanceInterval),

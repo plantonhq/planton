@@ -72,8 +72,6 @@ resources:
         arg: node_config.sandbox_config.type
       - spec: spec.node_config.windows_os_version
         arg: node_config.windows_node_config.osversion
-      - spec: spec.node_config.host_maintenance_interval
-        arg: node_config.host_maintenance_policy.maintenance_interval
       - spec: spec.node_config.architecture_taint_behavior
         arg: node_config.taint_config.architecture_taint_behavior
 
@@ -119,8 +117,21 @@ resources:
       # and end_time are computed-only: GKE derives the window).
       - spec: spec.exclude_upgrades_until_end_of_support
         arg: maintenance_policy.exclusion_until_end_of_support.enabled
+    exclusions:
+      - arg: node_config.host_maintenance_policy.maintenance_interval
+        reason: >-
+          hashicorp/google 8.4 dropped node_config.host_maintenance_policy
+          from the GA node pool; declaring the block fails terraform
+          validate on the floating ~> 8.3 pin. The Terraform module
+          refuses a set spec.node_config.host_maintenance_interval
+          (Pulumi still applies it).
   google_project_service:
     internal: >-
       API enablement plumbing — the module enables
       container.googleapis.com with fixed arguments so a fresh project
       works on the first deploy; not spec surface.
+specExclusions:
+  - field: spec.node_config.host_maintenance_interval
+    reason: >-
+      the GA provider dropped node_config.host_maintenance_policy in 8.4;
+      OpenTofu refuses a set value. Pulumi still applies the field.

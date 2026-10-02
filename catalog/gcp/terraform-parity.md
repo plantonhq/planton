@@ -166,7 +166,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpGkeFleetFeature | 126 | 91 | 24 | 11 | 0 | ✅ | — |
 | GcpGkeFleetMembership | 7 | 4 | 3 | 0 | 0 | ✅ | — |
 | GcpGkeFleetScope | 28 | 15 | 11 | 2 | 0 | ✅ | — |
-| GcpGkeNodePool | 184 | 129 | 55 | 0 | 0 | ✅ | — |
+| GcpGkeNodePool | 184 | 129 | 54 | 1 | 0 | ✅ | — |
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalForwardingRule | 51 | 43 | 8 | 0 | 0 | ✅ | — |
