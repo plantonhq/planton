@@ -24,9 +24,12 @@ variable "spec" {
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       project_id = optional(string, "")
 
-      # Folder bucket: the folder ID (numeric, with or without the "folders/"
-      # prefix). ADOPT-only: the Logging API creates new custom buckets only
-      # under projects.
+      # Folder bucket: the folder's numeric ID (with or without the
+      # "folders/" prefix) -- a literal, or a reference to a GcpFolder resource
+      # (its folder_id output). ADOPT-only: the Logging API creates new custom
+      # buckets only under projects, so a folder bucket adopts one the folder
+      # already has (its _Default or _Required bucket).
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       folder_id = optional(string, "")
 
       # Organization bucket: the numeric organization ID. ADOPT-only.

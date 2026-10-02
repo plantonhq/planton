@@ -27,7 +27,7 @@ The readable source of the sample agent the scenarios deploy lives under
 ## Who the agent is
 
 By default the agent runs as the project's Vertex AI Reasoning Engine
-service agent. Name a `GcpServiceAccount` in `spec.serviceAccount` to run
+service agent. Name a `GcpServiceAccount` in `agent.serviceAccount` to run
 as a custom identity you grant roles to (the deploying principal needs
 `iam.serviceAccounts.actAs` on it). `identityType: AGENT_IDENTITY` gives
 the agent its own Agent Identity instead; `serviceAccount` must then be

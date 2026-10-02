@@ -36,7 +36,8 @@ spec:
   parent:
     projectId:
       value: my-gcp-project-123
-    # folderId: "987654321098"          # attach to a folder instead
+    # folderId:                         # attach to a folder instead
+    #   value: "987654321098"
     # organizationId: "123456789012"    # attach to the organization instead
 
   # The policy's resource ID (the last segment of its name). Defaults to
@@ -90,7 +91,7 @@ spec:
 |---|---|---|---|---|
 | `spec.parent` | `GcpIamDenyPolicyParent` |  |  |  |
 | `spec.parent.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
-| `spec.parent.folderId` | `string` |  |  |  |
+| `spec.parent.folderId` | `string \| valueFrom` |  |  | GcpFolder (`status.outputs.folder_id`) |
 | `spec.parent.organizationId` | `string` |  |  |  |
 | `spec.policyName` | `string` |  |  |  |
 | `spec.displayName` | `string` |  |  |  |
@@ -131,10 +132,15 @@ GcpProject resource.
 
 ### spec.parent.folderId
 
-`string`
+`string | valueFrom`
 
-Attach to a folder: the folder ID (numeric, with or without the
-"folders/" prefix).
+Attach to a folder: the folder's numeric ID (with or without the
+"folders/" prefix) -- a literal, or a reference to a GcpFolder resource
+(its folder_id output), so a chart that creates a folder can guard it
+with a deny policy in the same deploy.
+
+- references: GcpFolder (`status.outputs.folder_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpFolder, name: <that resource's name>, fieldPath: status.outputs.folder_id}} -- a bare string does not parse
 
 ### spec.parent.organizationId
 
@@ -287,6 +293,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.parent.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.parent.folderId` | GcpFolder | `status.outputs.folder_id` |
 
 ## See Also
 

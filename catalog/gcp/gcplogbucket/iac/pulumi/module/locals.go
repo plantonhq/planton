@@ -54,7 +54,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcplogbucketv1alpha1.GcpLog
 	}
 
 	switch {
-	case scope != nil && scope.FolderId != "":
+	case scope != nil && scope.FolderId.GetValue() != "":
 		locals.IsFolderBucket = true
 	case scope != nil && scope.OrganizationId != "":
 		locals.IsOrgBucket = true

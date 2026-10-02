@@ -19,7 +19,7 @@ import (
 func agentSpec() *gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpec {
 	return &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpec{
 		Location: "us-central1",
-		Spec: &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSpecConfig{
+		Agent: &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineAgent{
 			DeploymentSpec: &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineDeploymentSpec{
 				SecretEnv: []*gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSecretEnvVar{
 					{Name: "OPENAI_API_KEY", Source: &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngineSecretEnvVar_Value{Value: "sk-do-not-leak"}},
@@ -47,7 +47,7 @@ func TestAStoredValueBecomesASecretManagerReference_neverAPlainValue(t *testing.
 	}
 	refs := map[envsecrets.Key]envsecrets.Ref{{Name: "OPENAI_API_KEY"}: stored}
 
-	secrets := buildDeploymentSpec(spec.Spec.DeploymentSpec, refs).SecretEnvs.(vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvArray)
+	secrets := buildDeploymentSpec(spec.Agent.DeploymentSpec, refs).SecretEnvs.(vertex.AiReasoningEngineSpecDeploymentSpecSecretEnvArray)
 	if len(secrets) != 2 {
 		t.Fatalf("both entries reach the agent; got %d", len(secrets))
 	}
@@ -71,7 +71,7 @@ func TestThePlacementGrantsTheAgentsIdentity(t *testing.T) {
 	if got := envsecrets.RuntimeMember(placement, "42"); got != "serviceAccount:service-42@gcp-sa-aiplatform-re.iam.gserviceaccount.com" {
 		t.Errorf("an agent without a service account grants %q", got)
 	}
-	spec.Spec.ServiceAccount = &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "agent@acme.iam.gserviceaccount.com"}}
+	spec.Agent.ServiceAccount = &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "agent@acme.iam.gserviceaccount.com"}}
 	if got := envsecrets.RuntimeMember(secretPlacement(&Locals{GcpVertexAiAgentEngine: resource}), "42"); got != "serviceAccount:agent@acme.iam.gserviceaccount.com" {
 		t.Errorf("an agent with a service account grants %q", got)
 	}

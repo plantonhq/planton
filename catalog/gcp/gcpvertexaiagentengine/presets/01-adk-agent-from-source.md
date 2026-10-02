@@ -20,11 +20,11 @@ Deploy an Agent Development Kit agent from its source code: Vertex AI builds the
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `spec.sourceCodeSpec.inlineSource.sourceArchive` | the sample agent | Your archive: `tar czf - -C <source-root> . \| base64`. |
-| `spec.sourceCodeSpec.pythonSpec.entrypointModule` / `entrypointObject` | `agent` / `root_agent` | Where your agent object lives. |
-| `spec.agentFramework` | `google-adk` | `langchain`, `langgraph`, `llama-index`, `ag2`, or your own. |
-| `spec.deploymentSpec.minInstances` | `1` | `0` to scale to nothing between requests, at the cost of cold starts. |
-| `spec.serviceAccount` | none | A `GcpServiceAccount` reference to run as a custom identity. |
+| `agent.sourceCodeSpec.inlineSource.sourceArchive` | the sample agent | Your archive: `tar czf - -C <source-root> . \| base64`. |
+| `agent.sourceCodeSpec.pythonSpec.entrypointModule` / `entrypointObject` | `agent` / `root_agent` | Where your agent object lives. |
+| `agent.agentFramework` | `google-adk` | `langchain`, `langgraph`, `llama-index`, `ag2`, or your own. |
+| `agent.deploymentSpec.minInstances` | `1` | `0` to scale to nothing between requests, at the cost of cold starts. |
+| `agent.serviceAccount` | none | A `GcpServiceAccount` reference to run as a custom identity. |
 | `deletionPolicy` | `DELETE` | `PREVENT` for an agent in production. |
 
 A new archive redeploys the agent's code in place; the location and the encryption key are the only immutable fields. Builds run as Cloud Build in the project.

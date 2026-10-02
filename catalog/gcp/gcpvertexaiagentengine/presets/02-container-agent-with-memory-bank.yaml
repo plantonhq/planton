@@ -10,7 +10,7 @@ spec:
   description: A container-based agent that remembers each user across sessions
   labels:
     team: concierge
-  spec:
+  agent:
     agentFramework: custom
     identityType: SERVICE_ACCOUNT
     serviceAccount:

@@ -86,7 +86,7 @@ spec:
 |---|---|---|---|---|
 | `spec.scope` | `GcpLogBucketScope` |  |  |  |
 | `spec.scope.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
-| `spec.scope.folderId` | `string` |  |  |  |
+| `spec.scope.folderId` | `string \| valueFrom` |  |  | GcpFolder (`status.outputs.folder_id`) |
 | `spec.scope.organizationId` | `string` |  |  |  |
 | `spec.scope.billingAccount` | `string` |  |  |  |
 | `spec.bucketId` | `string` | yes |  |  |
@@ -137,11 +137,16 @@ reference to a GcpProject resource.
 
 ### spec.scope.folderId
 
-`string`
+`string | valueFrom`
 
-Folder bucket: the folder ID (numeric, with or without the "folders/"
-prefix). ADOPT-only: the Logging API creates new custom buckets only
-under projects.
+Folder bucket: the folder's numeric ID (with or without the
+"folders/" prefix) -- a literal, or a reference to a GcpFolder resource
+(its folder_id output). ADOPT-only: the Logging API creates new custom
+buckets only under projects, so a folder bucket adopts one the folder
+already has (its _Default or _Required bucket).
+
+- references: GcpFolder (`status.outputs.folder_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpFolder, name: <that resource's name>, fieldPath: status.outputs.folder_id}} -- a bare string does not parse
 
 ### spec.scope.organizationId
 
@@ -402,6 +407,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.scope.projectId` | GcpProject | `status.outputs.project_id` |
+| `spec.scope.folderId` | GcpFolder | `status.outputs.folder_id` |
 | `spec.cmekKmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.scopeSettings.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 

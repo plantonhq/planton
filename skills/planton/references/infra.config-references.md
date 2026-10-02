@@ -111,7 +111,7 @@ than memorizing this table — it shows the shape, not the full list:
 | `KubernetesDeployment` (any Kubernetes workload) | `env.variables[].value` | `env.secrets[].value` — kept in a Kubernetes Secret the workload owns |
 | `GcpCloudRun`, `GcpCloudRunJob` | `env[].value` | `env[].secretValue` — a Secret Manager secret the service owns |
 | `GcpCloudFunction` | `serviceConfig.environmentVariables` | `serviceConfig.secretEnvironmentVariables[].value` — a Secret Manager secret the function owns, read natively |
-| `GcpVertexAiAgentEngine` | `spec.deploymentSpec.env[].value` | `spec.deploymentSpec.secretEnv[].value` — a Secret Manager secret the engine owns, read natively (not with `identityType: AGENT_IDENTITY`, whose identity exists only after create) |
+| `GcpVertexAiAgentEngine` | `spec.agent.deploymentSpec.env[].value` | `spec.agent.deploymentSpec.secretEnv[].value` — a Secret Manager secret the engine owns, read natively (not with `identityType: AGENT_IDENTITY`, whose identity exists only after create) |
 | `GcpWorkflow` | `userEnvVars` | `secretEnvVars` — a Secret Manager secret the workflow owns; the variable holds the version's resource name |
 | `GcpCloudComposerEnvironment` | `softwareConfig.envVariables` | `softwareConfig.secretEnvVariables` — a Secret Manager secret the environment owns; the variable holds the version's resource name |
 | `AwsEcsTaskDefinition` | `environment` | `secretEnvironment` — a Secrets Manager secret only the execution role reads |

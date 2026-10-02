@@ -101,9 +101,9 @@ func denyPolicy(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 func resolveParent(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) (string, error) {
 	parent := locals.GcpIamDenyPolicy.Spec.Parent
 
-	if parent != nil && parent.FolderId != "" {
+	if parent != nil && parent.FolderId.GetValue() != "" {
 		return encodeParent("cloudresourcemanager.googleapis.com/folders/" +
-			strings.TrimPrefix(parent.FolderId, "folders/")), nil
+			strings.TrimPrefix(parent.FolderId.GetValue(), "folders/")), nil
 	}
 	if parent != nil && parent.OrganizationId != "" {
 		return encodeParent("cloudresourcemanager.googleapis.com/organizations/" +

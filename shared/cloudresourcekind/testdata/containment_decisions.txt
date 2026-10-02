@@ -513,6 +513,7 @@ contained dev.planton.gcp.gcphavpngateway.v1alpha1.GcpHaVpnGatewaySpec.project_i
 contained dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyParent.folder_id -> GcpFolder
 contained dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent.folder_id -> GcpFolder
 contained dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent.project_id -> GcpProject
 contained dev.planton.gcp.gcpiamoauthclient.v1alpha1.GcpIamOauthClientSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigSpec.project_id -> GcpProject
@@ -522,6 +523,7 @@ contained dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1.GcpKmsAutokeyConfigScope.
 contained dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeySpec.key_ring_id -> GcpKmsKeyRing
 contained dev.planton.gcp.gcpkmskeyhandle.v1alpha1.GcpKmsKeyHandleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcplogbucket.v1alpha1.GcpLogBucketScope.folder_id -> GcpFolder
 contained dev.planton.gcp.gcplogbucket.v1alpha1.GcpLogBucketScope.project_id -> GcpProject
 contained dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkScope.folder_id -> GcpFolder
 contained dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkScope.project_id -> GcpProject

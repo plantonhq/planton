@@ -248,7 +248,7 @@ gaps. **Proven** means live end-to-end runs passed on every IaC engine the kind 
 | GcpTpuVm | 31 | 27 | 4 | 0 | 0 | ✅ | — |
 | GcpUrlMap | 554 | 124 | 430 | 0 | 0 | ✅ | — |
 | GcpVectorSearchCollection | 30 | 18 | 12 | 0 | 0 | ✅ | — |
-| GcpVertexAiAgentEngine | 104 | 87 | 4 | 13 | 0 | ✅ | — |
+| GcpVertexAiAgentEngine | 104 | 50 | 41 | 13 | 0 | ✅ | — |
 | GcpVertexAiDataset | 7 | 4 | 3 | 0 | 0 | ✅ | — |
 | GcpVertexAiDeployedIndex | 16 | 12 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiEndpoint | 19 | 8 | 9 | 2 | 0 | ✅ | ✅ pulumi, terraform |

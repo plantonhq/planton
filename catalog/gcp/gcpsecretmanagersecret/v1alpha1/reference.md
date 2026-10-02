@@ -616,7 +616,7 @@ Fields on other kinds that can point at this resource:
 | GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.apiKeyConfig.secretVersionForApiKey` | `status.outputs.latest_version_name` |
 | GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.bearerTokenConfig.secretVersionForToken` | `status.outputs.latest_version_name` |
 | GcpDialogflowCxAgent | `spec.tools[].versions[].tool.openApiSpec.authentication.oauthConfig.secretVersionForClientSecret` | `status.outputs.latest_version_name` |
-| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
+| GcpVertexAiAgentEngine | `spec.agent.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
 
 ## See Also
 

@@ -21,9 +21,9 @@ A production agent you build and ship as a container, running as its own service
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `spec.containerSpec.imageUri` | `concierge:1.4.0` | Your image; it must implement the Agent Engine serving contract. |
-| `spec.serviceAccount` | `concierge-agent-sa` | The identity that needs `roles/secretmanager.secretAccessor` on the secret and access to your APIs. |
-| `spec.deploymentSpec.resourceLimits` | 4 CPU / 8 GiB | `cpu` in 1, 2, 4, 6, 8 and `memory` up to 32Gi. |
+| `agent.containerSpec.imageUri` | `concierge:1.4.0` | Your image; it must implement the Agent Engine serving contract. |
+| `agent.serviceAccount` | `concierge-agent-sa` | The identity that needs `roles/secretmanager.secretAccessor` on the secret and access to your APIs. |
+| `agent.deploymentSpec.resourceLimits` | 4 CPU / 8 GiB | `cpu` in 1, 2, 4, 6, 8 and `memory` up to 32Gi. |
 | `contextSpec.memoryBankConfig.ttlConfig.defaultTtl` | `7776000s` (90 days) | How long memories live; `granularTtlConfig` sets lifetimes by origin. |
 | `contextSpec.memoryBankConfig.customizationConfigs[].memoryTopics` | two managed + `travel` | The topics memories are organized under. |
 | `deletionPolicy` | `PREVENT` | `DELETE` for a disposable environment (memories go with the agent). |

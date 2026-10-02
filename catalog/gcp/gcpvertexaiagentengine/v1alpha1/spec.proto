@@ -290,7 +290,7 @@ message GcpVertexAiAgentEngineSecretEnvVar {
     // Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
     // without the platform, the literal. The component creates one secret
     // for this variable, replicated only in the agent's location, stores
-    // the value as a version, grants the agent's identity (spec.service_account,
+    // the value as a version, grants the agent's identity (agent.service_account,
     // or the project's Vertex AI Reasoning Engine service agent
     // service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
     // when unset) secretAccessor on that secret alone, and points the
@@ -300,7 +300,7 @@ message GcpVertexAiAgentEngineSecretEnvVar {
     // secret. The secret's id is
     // agentengine_<location>_<metadata.name>_<variable> ('.' in the name
     // becomes '-'). Not available with identity_type AGENT_IDENTITY (see
-    // the rule on GcpVertexAiAgentEngineSpecConfig).
+    // the rule on GcpVertexAiAgentEngineAgent).
     string value = 3 [
       (buf.validate.field).string.min_len = 1,
       (dev.planton.shared.options.sensitive) = true
@@ -433,17 +433,17 @@ message GcpVertexAiAgentEngineDeploymentSpec {
   GcpVertexAiAgentEngineAgentGatewayConfig agent_gateway_config = 8;
 }
 
-// GcpVertexAiAgentEngineSpecConfig is the agent itself: where its code
+// GcpVertexAiAgentEngineAgent is the agent itself: where its code
 // comes from (a container XOR a source build XOR a pickled package),
 // which identity it runs as, and how it is deployed.
-message GcpVertexAiAgentEngineSpecConfig {
+message GcpVertexAiAgentEngineAgent {
   option (buf.validate.message).cel = {
-    id: "spec.container_xor_source"
+    id: "agent.container_xor_source"
     message: "container_spec and source_code_spec cannot both be set"
     expression: "!(has(this.container_spec) && has(this.source_code_spec))"
   };
   option (buf.validate.message).cel = {
-    id: "spec.agent_identity_forbids_service_account"
+    id: "agent.agent_identity_forbids_service_account"
     message: "service_account must not be set when identity_type is AGENT_IDENTITY"
     expression: "this.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)"
   };
@@ -453,7 +453,7 @@ message GcpVertexAiAgentEngineSpecConfig {
   // be granted to an identity that already exists, so under
   // AGENT_IDENTITY the grant could never precede the read.
   option (buf.validate.message).cel = {
-    id: "spec.agent_identity_forbids_stored_secret_values"
+    id: "agent.agent_identity_forbids_stored_secret_values"
     message: "secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account"
     expression: "this.identity_type != 'AGENT_IDENTITY' || !has(this.deployment_spec) || !this.deployment_spec.secret_env.exists(e, has(e.value))"
   };
@@ -1000,9 +1000,9 @@ message GcpVertexAiAgentEngineContextSpec {
 // you bring), hosts it as an autoscaled service with its own identity, and
 // optionally gives it a Memory Bank of long-term memories.
 //
-// The shape a manifest usually takes: `spec.source_code_spec` with an
+// The shape a manifest usually takes: `agent.source_code_spec` with an
 // inline source archive and a `python_spec` naming the ADK root agent;
-// `spec.deployment_spec` for environment, secrets, and instance bounds;
+// `agent.deployment_spec` for environment, secrets, and instance bounds;
 // `context_spec.memory_bank_config` when the agent should remember across
 // sessions. Deployments from source run a Cloud Build in the project.
 //
@@ -1043,8 +1043,10 @@ message GcpVertexAiAgentEngineSpec {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
   ];
 
-  // The agent: its code, identity, and deployment shape.
-  GcpVertexAiAgentEngineSpecConfig spec = 7;
+  // The agent: its code, identity, and deployment shape. Google's API
+  // calls this block `spec`; the catalog names it for what it holds, so a
+  // manifest never reads `spec.spec`.
+  GcpVertexAiAgentEngineAgent agent = 7;
 
   // Context services -- the Memory Bank.
   GcpVertexAiAgentEngineContextSpec context_spec = 8;

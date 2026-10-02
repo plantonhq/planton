@@ -14,9 +14,9 @@ runs in. Agent Engine builds the agent from source (or runs a container
 you bring), hosts it as an autoscaled service with its own identity, and
 optionally gives it a Memory Bank of long-term memories.
 
-The shape a manifest usually takes: `spec.source_code_spec` with an
+The shape a manifest usually takes: `agent.source_code_spec` with an
 inline source archive and a `python_spec` naming the ADK root agent;
-`spec.deployment_spec` for environment, secrets, and instance bounds;
+`agent.deployment_spec` for environment, secrets, and instance bounds;
 `context_spec.memory_bank_config` when the agent should remember across
 sessions. Deployments from source run a Cloud Build in the project.
 
@@ -37,7 +37,7 @@ spec:
   location: us-central1
   displayName: Support agent
   description: Answers support questions from the docs
-  spec:
+  agent:
     agentFramework: google-adk
     # Build from source: a base64 .tar.gz of the agent's root (agent.py and
     # requirements.txt -- the readable copy is e2e/fixtures/agent-source/),
@@ -68,66 +68,66 @@ spec:
 | `spec.description` | `string` |  |  |  |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.kmsKeyName` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
-| `spec.spec` | `GcpVertexAiAgentEngineSpecConfig` |  |  |  |
-| `spec.spec.agentFramework` | `string` |  |  |  |
-| `spec.spec.classMethods` | `string` |  |  |  |
-| `spec.spec.identityType` | `string` |  |  |  |
-| `spec.spec.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
-| `spec.spec.containerSpec` | `GcpVertexAiAgentEngineContainerSpec` |  |  |  |
-| `spec.spec.containerSpec.imageUri` | `string` | yes |  |  |
-| `spec.spec.containerSpec.port` | `int32` |  |  |  |
-| `spec.spec.sourceCodeSpec` | `GcpVertexAiAgentEngineSourceCodeSpec` |  |  |  |
-| `spec.spec.sourceCodeSpec.inlineSource` | `GcpVertexAiAgentEngineInlineSource` |  |  |  |
-| `spec.spec.sourceCodeSpec.inlineSource.sourceArchive` | `string` | yes |  |  |
-| `spec.spec.sourceCodeSpec.developerConnectSource` | `GcpVertexAiAgentEngineDeveloperConnectSource` |  |  |  |
-| `spec.spec.sourceCodeSpec.developerConnectSource.config` | `GcpVertexAiAgentEngineDeveloperConnectSourceConfig` | yes |  |  |
-| `spec.spec.sourceCodeSpec.developerConnectSource.config.gitRepositoryLink` | `string` | yes |  |  |
-| `spec.spec.sourceCodeSpec.developerConnectSource.config.dir` | `string` | yes |  |  |
-| `spec.spec.sourceCodeSpec.developerConnectSource.config.revision` | `string` | yes |  |  |
-| `spec.spec.sourceCodeSpec.agentConfigSource` | `GcpVertexAiAgentEngineAgentConfigSource` |  |  |  |
-| `spec.spec.sourceCodeSpec.agentConfigSource.adkConfig` | `GcpVertexAiAgentEngineAdkConfig` | yes |  |  |
-| `spec.spec.sourceCodeSpec.agentConfigSource.adkConfig.jsonConfig` | `string` | yes |  |  |
-| `spec.spec.sourceCodeSpec.agentConfigSource.inlineSource` | `GcpVertexAiAgentEngineInlineSource` |  |  |  |
-| `spec.spec.sourceCodeSpec.agentConfigSource.inlineSource.sourceArchive` | `string` | yes |  |  |
-| `spec.spec.sourceCodeSpec.pythonSpec` | `GcpVertexAiAgentEnginePythonSpec` |  |  |  |
-| `spec.spec.sourceCodeSpec.pythonSpec.version` | `string` |  |  |  |
-| `spec.spec.sourceCodeSpec.pythonSpec.entrypointModule` | `string` |  |  |  |
-| `spec.spec.sourceCodeSpec.pythonSpec.entrypointObject` | `string` |  |  |  |
-| `spec.spec.sourceCodeSpec.pythonSpec.requirementsFile` | `string` |  |  |  |
-| `spec.spec.sourceCodeSpec.imageSpec` | `GcpVertexAiAgentEngineImageSpec` |  |  |  |
-| `spec.spec.sourceCodeSpec.imageSpec.buildArgs` | `map<string, string>` |  |  |  |
-| `spec.spec.packageSpec` | `GcpVertexAiAgentEnginePackageSpec` |  |  |  |
-| `spec.spec.packageSpec.pickleObjectGcsUri` | `string` |  |  |  |
-| `spec.spec.packageSpec.dependencyFilesGcsUri` | `string` |  |  |  |
-| `spec.spec.packageSpec.requirementsGcsUri` | `string` |  |  |  |
-| `spec.spec.packageSpec.pythonVersion` | `string` |  |  |  |
-| `spec.spec.buildSpec` | `GcpVertexAiAgentEngineBuildSpec` |  |  |  |
-| `spec.spec.buildSpec.workerPool` | `string \| valueFrom` |  |  | GcpCloudBuildWorkerPool (`status.outputs.name`) |
-| `spec.spec.deploymentSpec` | `GcpVertexAiAgentEngineDeploymentSpec` |  |  |  |
-| `spec.spec.deploymentSpec.env` | `[]GcpVertexAiAgentEngineEnvVar` (no secrets: use `secretEnv`) |  |  |  |
-| `spec.spec.deploymentSpec.env[].name` | `string` | yes |  |  |
-| `spec.spec.deploymentSpec.env[].value` | `string` | yes |  |  |
-| `spec.spec.deploymentSpec.secretEnv` | `[]GcpVertexAiAgentEngineSecretEnvVar` |  |  |  |
-| `spec.spec.deploymentSpec.secretEnv[].name` | `string` | yes |  |  |
-| `spec.spec.deploymentSpec.secretEnv[].secretRef` | `GcpVertexAiAgentEngineSecretRef` |  |  |  |
-| `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | `string \| valueFrom` | yes |  | GcpSecretManagerSecret (`status.outputs.secret_id`) |
-| `spec.spec.deploymentSpec.secretEnv[].secretRef.version` | `string` |  |  |  |
-| `spec.spec.deploymentSpec.secretEnv[].value` | `string` (sensitive) | yes |  |  |
-| `spec.spec.deploymentSpec.minInstances` | `int32` |  |  |  |
-| `spec.spec.deploymentSpec.maxInstances` | `int32` |  |  |  |
-| `spec.spec.deploymentSpec.containerConcurrency` | `int32` |  |  |  |
-| `spec.spec.deploymentSpec.resourceLimits` | `map<string, string>` |  |  |  |
-| `spec.spec.deploymentSpec.pscInterfaceConfig` | `GcpVertexAiAgentEnginePscInterfaceConfig` |  |  |  |
-| `spec.spec.deploymentSpec.pscInterfaceConfig.networkAttachment` | `string` |  |  |  |
-| `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs` | `[]GcpVertexAiAgentEngineDnsPeeringConfig` |  |  |  |
-| `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].domain` | `string` | yes |  |  |
-| `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `string \| valueFrom` | yes |  | GcpProject (`status.outputs.project_id`) |
-| `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `string \| valueFrom` | yes |  | GcpVpcNetwork (`status.outputs.network_name`) |
-| `spec.spec.deploymentSpec.agentGatewayConfig` | `GcpVertexAiAgentEngineAgentGatewayConfig` |  |  |  |
-| `spec.spec.deploymentSpec.agentGatewayConfig.clientToAgentConfig` | `GcpVertexAiAgentEngineGatewayTarget` |  |  |  |
-| `spec.spec.deploymentSpec.agentGatewayConfig.clientToAgentConfig.agentGateway` | `string` | yes |  |  |
-| `spec.spec.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig` | `GcpVertexAiAgentEngineGatewayTarget` |  |  |  |
-| `spec.spec.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig.agentGateway` | `string` | yes |  |  |
+| `spec.agent` | `GcpVertexAiAgentEngineAgent` |  |  |  |
+| `spec.agent.agentFramework` | `string` |  |  |  |
+| `spec.agent.classMethods` | `string` |  |  |  |
+| `spec.agent.identityType` | `string` |  |  |  |
+| `spec.agent.serviceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
+| `spec.agent.containerSpec` | `GcpVertexAiAgentEngineContainerSpec` |  |  |  |
+| `spec.agent.containerSpec.imageUri` | `string` | yes |  |  |
+| `spec.agent.containerSpec.port` | `int32` |  |  |  |
+| `spec.agent.sourceCodeSpec` | `GcpVertexAiAgentEngineSourceCodeSpec` |  |  |  |
+| `spec.agent.sourceCodeSpec.inlineSource` | `GcpVertexAiAgentEngineInlineSource` |  |  |  |
+| `spec.agent.sourceCodeSpec.inlineSource.sourceArchive` | `string` | yes |  |  |
+| `spec.agent.sourceCodeSpec.developerConnectSource` | `GcpVertexAiAgentEngineDeveloperConnectSource` |  |  |  |
+| `spec.agent.sourceCodeSpec.developerConnectSource.config` | `GcpVertexAiAgentEngineDeveloperConnectSourceConfig` | yes |  |  |
+| `spec.agent.sourceCodeSpec.developerConnectSource.config.gitRepositoryLink` | `string` | yes |  |  |
+| `spec.agent.sourceCodeSpec.developerConnectSource.config.dir` | `string` | yes |  |  |
+| `spec.agent.sourceCodeSpec.developerConnectSource.config.revision` | `string` | yes |  |  |
+| `spec.agent.sourceCodeSpec.agentConfigSource` | `GcpVertexAiAgentEngineAgentConfigSource` |  |  |  |
+| `spec.agent.sourceCodeSpec.agentConfigSource.adkConfig` | `GcpVertexAiAgentEngineAdkConfig` | yes |  |  |
+| `spec.agent.sourceCodeSpec.agentConfigSource.adkConfig.jsonConfig` | `string` | yes |  |  |
+| `spec.agent.sourceCodeSpec.agentConfigSource.inlineSource` | `GcpVertexAiAgentEngineInlineSource` |  |  |  |
+| `spec.agent.sourceCodeSpec.agentConfigSource.inlineSource.sourceArchive` | `string` | yes |  |  |
+| `spec.agent.sourceCodeSpec.pythonSpec` | `GcpVertexAiAgentEnginePythonSpec` |  |  |  |
+| `spec.agent.sourceCodeSpec.pythonSpec.version` | `string` |  |  |  |
+| `spec.agent.sourceCodeSpec.pythonSpec.entrypointModule` | `string` |  |  |  |
+| `spec.agent.sourceCodeSpec.pythonSpec.entrypointObject` | `string` |  |  |  |
+| `spec.agent.sourceCodeSpec.pythonSpec.requirementsFile` | `string` |  |  |  |
+| `spec.agent.sourceCodeSpec.imageSpec` | `GcpVertexAiAgentEngineImageSpec` |  |  |  |
+| `spec.agent.sourceCodeSpec.imageSpec.buildArgs` | `map<string, string>` |  |  |  |
+| `spec.agent.packageSpec` | `GcpVertexAiAgentEnginePackageSpec` |  |  |  |
+| `spec.agent.packageSpec.pickleObjectGcsUri` | `string` |  |  |  |
+| `spec.agent.packageSpec.dependencyFilesGcsUri` | `string` |  |  |  |
+| `spec.agent.packageSpec.requirementsGcsUri` | `string` |  |  |  |
+| `spec.agent.packageSpec.pythonVersion` | `string` |  |  |  |
+| `spec.agent.buildSpec` | `GcpVertexAiAgentEngineBuildSpec` |  |  |  |
+| `spec.agent.buildSpec.workerPool` | `string \| valueFrom` |  |  | GcpCloudBuildWorkerPool (`status.outputs.name`) |
+| `spec.agent.deploymentSpec` | `GcpVertexAiAgentEngineDeploymentSpec` |  |  |  |
+| `spec.agent.deploymentSpec.env` | `[]GcpVertexAiAgentEngineEnvVar` (no secrets: use `secretEnv`) |  |  |  |
+| `spec.agent.deploymentSpec.env[].name` | `string` | yes |  |  |
+| `spec.agent.deploymentSpec.env[].value` | `string` | yes |  |  |
+| `spec.agent.deploymentSpec.secretEnv` | `[]GcpVertexAiAgentEngineSecretEnvVar` |  |  |  |
+| `spec.agent.deploymentSpec.secretEnv[].name` | `string` | yes |  |  |
+| `spec.agent.deploymentSpec.secretEnv[].secretRef` | `GcpVertexAiAgentEngineSecretRef` |  |  |  |
+| `spec.agent.deploymentSpec.secretEnv[].secretRef.secret` | `string \| valueFrom` | yes |  | GcpSecretManagerSecret (`status.outputs.secret_id`) |
+| `spec.agent.deploymentSpec.secretEnv[].secretRef.version` | `string` |  |  |  |
+| `spec.agent.deploymentSpec.secretEnv[].value` | `string` (sensitive) | yes |  |  |
+| `spec.agent.deploymentSpec.minInstances` | `int32` |  |  |  |
+| `spec.agent.deploymentSpec.maxInstances` | `int32` |  |  |  |
+| `spec.agent.deploymentSpec.containerConcurrency` | `int32` |  |  |  |
+| `spec.agent.deploymentSpec.resourceLimits` | `map<string, string>` |  |  |  |
+| `spec.agent.deploymentSpec.pscInterfaceConfig` | `GcpVertexAiAgentEnginePscInterfaceConfig` |  |  |  |
+| `spec.agent.deploymentSpec.pscInterfaceConfig.networkAttachment` | `string` |  |  |  |
+| `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs` | `[]GcpVertexAiAgentEngineDnsPeeringConfig` |  |  |  |
+| `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].domain` | `string` | yes |  |  |
+| `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `string \| valueFrom` | yes |  | GcpProject (`status.outputs.project_id`) |
+| `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `string \| valueFrom` | yes |  | GcpVpcNetwork (`status.outputs.network_name`) |
+| `spec.agent.deploymentSpec.agentGatewayConfig` | `GcpVertexAiAgentEngineAgentGatewayConfig` |  |  |  |
+| `spec.agent.deploymentSpec.agentGatewayConfig.clientToAgentConfig` | `GcpVertexAiAgentEngineGatewayTarget` |  |  |  |
+| `spec.agent.deploymentSpec.agentGatewayConfig.clientToAgentConfig.agentGateway` | `string` | yes |  |  |
+| `spec.agent.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig` | `GcpVertexAiAgentEngineGatewayTarget` |  |  |  |
+| `spec.agent.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig.agentGateway` | `string` | yes |  |  |
 | `spec.contextSpec` | `GcpVertexAiAgentEngineContextSpec` |  |  |  |
 | `spec.contextSpec.memoryBankConfig` | `GcpVertexAiAgentEngineMemoryBankConfig` |  |  |  |
 | `spec.contextSpec.memoryBankConfig.generationConfig` | `GcpVertexAiAgentEngineGenerationConfig` |  |  |  |
@@ -257,17 +257,19 @@ Omit to use Google-managed encryption. Immutable.
 - references: GcpKmsKey (`status.outputs.key_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_id}} -- a bare string does not parse
 
-### spec.spec
+### spec.agent
 
-`GcpVertexAiAgentEngineSpecConfig`
+`GcpVertexAiAgentEngineAgent`
 
-The agent: its code, identity, and deployment shape.
+The agent: its code, identity, and deployment shape. Google's API
+calls this block `spec`; the catalog names it for what it holds, so a
+manifest never reads `spec.spec`.
 
 - rule: container_spec and source_code_spec cannot both be set
 - rule: service_account must not be set when identity_type is AGENT_IDENTITY
 - rule: secret_env entries cannot carry a value when identity_type is AGENT_IDENTITY: the agent's identity exists only after Google creates the agent, and the agent reads its secrets during that create, so the stored secret could never be granted in time -- use secret_ref to a secret readable by the agents' identities, or run as a service account
 
-### spec.spec.agentFramework
+### spec.agent.agentFramework
 
 `string`
 
@@ -275,7 +277,7 @@ The open-source framework the agent is built with (e.g. "google-adk",
 "langchain", "langgraph", "llama-index", "ag2"); tells Agent Engine
 which framework integration to load.
 
-### spec.spec.classMethods
+### spec.agent.classMethods
 
 `string`
 
@@ -284,7 +286,7 @@ string (write it compact; Google normalizes it). Required by Google
 when deploying through infrastructure-as-code rather than the SDK,
 which infers them from the object.
 
-### spec.spec.identityType
+### spec.agent.identityType
 
 `string`
 
@@ -295,7 +297,7 @@ Agent Identity (service_account must then be unset).
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["SERVICE_ACCOUNT","AGENT_IDENTITY"]}}
 
-### spec.spec.serviceAccount
+### spec.agent.serviceAccount
 
 `string | valueFrom`
 
@@ -306,14 +308,14 @@ the project's Vertex AI Reasoning Engine service agent.
 - references: GcpServiceAccount (`status.outputs.email`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpServiceAccount, name: <that resource's name>, fieldPath: status.outputs.email}} -- a bare string does not parse
 
-### spec.spec.containerSpec
+### spec.agent.containerSpec
 
 `GcpVertexAiAgentEngineContainerSpec`
 
 Run a prebuilt container image. Mutually exclusive with
 source_code_spec.
 
-### spec.spec.containerSpec.imageUri
+### spec.agent.containerSpec.imageUri
 
 `string` · required
 
@@ -323,7 +325,7 @@ must implement the Agent Engine serving contract.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 
-### spec.spec.containerSpec.port
+### spec.agent.containerSpec.port
 
 `int32` · optional (explicit presence)
 
@@ -332,7 +334,7 @@ set.
 
 - rule: {"int32":{"lte":65535,"gte":1}}
 
-### spec.spec.sourceCodeSpec
+### spec.agent.sourceCodeSpec
 
 `GcpVertexAiAgentEngineSourceCodeSpec`
 
@@ -341,13 +343,13 @@ Build the agent from source. Mutually exclusive with container_spec.
 - rule: set exactly one of inline_source, developer_connect_source, or agent_config_source
 - rule: set exactly one of python_spec or image_spec
 
-### spec.spec.sourceCodeSpec.inlineSource
+### spec.agent.sourceCodeSpec.inlineSource
 
 `GcpVertexAiAgentEngineInlineSource`
 
 Source uploaded inline as a base64 .tar.gz.
 
-### spec.spec.sourceCodeSpec.inlineSource.sourceArchive
+### spec.agent.sourceCodeSpec.inlineSource.sourceArchive
 
 `string` · required
 
@@ -356,13 +358,13 @@ base64-encoded (`tar czf - -C agent-source . | base64`).
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 
-### spec.spec.sourceCodeSpec.developerConnectSource
+### spec.agent.sourceCodeSpec.developerConnectSource
 
 `GcpVertexAiAgentEngineDeveloperConnectSource`
 
 Source pulled from a Developer Connect repository.
 
-### spec.spec.sourceCodeSpec.developerConnectSource.config
+### spec.agent.sourceCodeSpec.developerConnectSource.config
 
 `GcpVertexAiAgentEngineDeveloperConnectSourceConfig` · required
 
@@ -370,7 +372,7 @@ The repository, directory, and ref.
 
 - rule: {"required":true}
 
-### spec.spec.sourceCodeSpec.developerConnectSource.config.gitRepositoryLink
+### spec.agent.sourceCodeSpec.developerConnectSource.config.gitRepositoryLink
 
 `string` · required
 
@@ -380,7 +382,7 @@ today: no catalog block produces one yet.
 
 - rule: {"required":true,"string":{"pattern":"^projects/[^/]+/locations/[^/]+/connections/[^/]+/gitRepositoryLinks/[^/]+$"}}
 
-### spec.spec.sourceCodeSpec.developerConnectSource.config.dir
+### spec.agent.sourceCodeSpec.developerConnectSource.config.dir
 
 `string` · required
 
@@ -388,7 +390,7 @@ Directory, relative to the repository root, that is the source root.
 
 - rule: {"required":true}
 
-### spec.spec.sourceCodeSpec.developerConnectSource.config.revision
+### spec.agent.sourceCodeSpec.developerConnectSource.config.revision
 
 `string` · required
 
@@ -396,13 +398,13 @@ The Git ref to fetch: a branch, a tag, a commit SHA, or any ref.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 
-### spec.spec.sourceCodeSpec.agentConfigSource
+### spec.agent.sourceCodeSpec.agentConfigSource
 
 `GcpVertexAiAgentEngineAgentConfigSource`
 
 An ADK agent described by configuration.
 
-### spec.spec.sourceCodeSpec.agentConfigSource.adkConfig
+### spec.agent.sourceCodeSpec.agentConfigSource.adkConfig
 
 `GcpVertexAiAgentEngineAdkConfig` · required
 
@@ -410,7 +412,7 @@ The ADK agent config.
 
 - rule: {"required":true}
 
-### spec.spec.sourceCodeSpec.agentConfigSource.adkConfig.jsonConfig
+### spec.agent.sourceCodeSpec.agentConfigSource.adkConfig.jsonConfig
 
 `string` · required
 
@@ -419,14 +421,14 @@ normalizes it).
 
 - rule: {"required":true,"string":{"minLen":"2"}}
 
-### spec.spec.sourceCodeSpec.agentConfigSource.inlineSource
+### spec.agent.sourceCodeSpec.agentConfigSource.inlineSource
 
 `GcpVertexAiAgentEngineInlineSource`
 
 Supporting source files (tools, callbacks) the config refers to, as an
 inline archive.
 
-### spec.spec.sourceCodeSpec.agentConfigSource.inlineSource.sourceArchive
+### spec.agent.sourceCodeSpec.agentConfigSource.inlineSource.sourceArchive
 
 `string` · required
 
@@ -435,13 +437,13 @@ base64-encoded (`tar czf - -C agent-source . | base64`).
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 
-### spec.spec.sourceCodeSpec.pythonSpec
+### spec.agent.sourceCodeSpec.pythonSpec
 
 `GcpVertexAiAgentEnginePythonSpec`
 
 Build with Vertex AI's Python build (requirements + entrypoint).
 
-### spec.spec.sourceCodeSpec.pythonSpec.version
+### spec.agent.sourceCodeSpec.pythonSpec.version
 
 `string`
 
@@ -449,7 +451,7 @@ Python version: 3.9, 3.10 (Google's default), 3.11, 3.12, or 3.13.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["3.9","3.10","3.11","3.12","3.13"]}}
 
-### spec.spec.sourceCodeSpec.pythonSpec.entrypointModule
+### spec.agent.sourceCodeSpec.pythonSpec.entrypointModule
 
 `string`
 
@@ -457,39 +459,39 @@ Fully qualified module that defines the agent, relative to the source
 root (which is on sys.path), e.g. "path.to.agent". Google's default
 "agent".
 
-### spec.spec.sourceCodeSpec.pythonSpec.entrypointObject
+### spec.agent.sourceCodeSpec.pythonSpec.entrypointObject
 
 `string`
 
 The callable in entrypoint_module that IS the agent. Google's default
 "root_agent" (the ADK convention).
 
-### spec.spec.sourceCodeSpec.pythonSpec.requirementsFile
+### spec.agent.sourceCodeSpec.pythonSpec.requirementsFile
 
 `string`
 
 Path of the requirements file relative to the source root. Google's
 default "requirements.txt".
 
-### spec.spec.sourceCodeSpec.imageSpec
+### spec.agent.sourceCodeSpec.imageSpec
 
 `GcpVertexAiAgentEngineImageSpec`
 
 Build from the Dockerfile at the source root.
 
-### spec.spec.sourceCodeSpec.imageSpec.buildArgs
+### spec.agent.sourceCodeSpec.imageSpec.buildArgs
 
 `map<string, string>`
 
 Build arguments passed as --build-arg flags.
 
-### spec.spec.packageSpec
+### spec.agent.packageSpec
 
 `GcpVertexAiAgentEnginePackageSpec`
 
 The legacy pickled-object package.
 
-### spec.spec.packageSpec.pickleObjectGcsUri
+### spec.agent.packageSpec.pickleObjectGcsUri
 
 `string`
 
@@ -497,7 +499,7 @@ Cloud Storage URI (gs://...) of the pickled Python object.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^gs://.+"}}
 
-### spec.spec.packageSpec.dependencyFilesGcsUri
+### spec.agent.packageSpec.dependencyFilesGcsUri
 
 `string`
 
@@ -505,7 +507,7 @@ Cloud Storage URI of the dependency files, as a .tar.gz.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^gs://.+"}}
 
-### spec.spec.packageSpec.requirementsGcsUri
+### spec.agent.packageSpec.requirementsGcsUri
 
 `string`
 
@@ -513,7 +515,7 @@ Cloud Storage URI of the requirements.txt.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^gs://.+"}}
 
-### spec.spec.packageSpec.pythonVersion
+### spec.agent.packageSpec.pythonVersion
 
 `string`
 
@@ -521,13 +523,13 @@ Python version: 3.8 through 3.13 (Google's default 3.10).
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["3.8","3.9","3.10","3.11","3.12","3.13"]}}
 
-### spec.spec.buildSpec
+### spec.agent.buildSpec
 
 `GcpVertexAiAgentEngineBuildSpec`
 
 Cloud Build settings for the source build.
 
-### spec.spec.buildSpec.workerPool
+### spec.agent.buildSpec.workerPool
 
 `string | valueFrom`
 
@@ -542,7 +544,7 @@ Google's default pool.
 - rule: worker_pool must be a full worker pool name: projects/{project}/locations/{location}/workerPools/{pool}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpCloudBuildWorkerPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
-### spec.spec.deploymentSpec
+### spec.agent.deploymentSpec
 
 `GcpVertexAiAgentEngineDeploymentSpec`
 
@@ -551,7 +553,7 @@ Instances, resources, environment, secrets, networking, gateway.
 - rule: max_instances must be at least min_instances
 - rule: resource_limits accepts only the keys cpu and memory
 
-### spec.spec.deploymentSpec.env
+### spec.agent.deploymentSpec.env
 
 `[]GcpVertexAiAgentEngineEnvVar` · no secrets
 
@@ -561,7 +563,7 @@ secret_env, as a value this component stores in Secret Manager or a
 secret you already own.
 
 - secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretEnv`, which keeps it in a secret store the workload reads by reference
-### spec.spec.deploymentSpec.env[].name
+### spec.agent.deploymentSpec.env[].name
 
 `string` · required
 
@@ -569,7 +571,7 @@ Variable name.
 
 - rule: {"required":true,"string":{"pattern":"^[A-Za-z_][A-Za-z0-9_.-]*$"}}
 
-### spec.spec.deploymentSpec.env[].value
+### spec.agent.deploymentSpec.env[].value
 
 `string` · required
 
@@ -579,7 +581,7 @@ goes in deployment_spec.secret_env.
 
 - rule: {"required":true}
 
-### spec.spec.deploymentSpec.secretEnv
+### spec.agent.deploymentSpec.secretEnv
 
 `[]GcpVertexAiAgentEngineSecretEnvVar`
 
@@ -587,7 +589,7 @@ Environment variables filled from Secret Manager at instance start:
 each from a secret you own (secret_ref) or from a value this
 component stores for you (value).
 
-### spec.spec.deploymentSpec.secretEnv[].name
+### spec.agent.deploymentSpec.secretEnv[].name
 
 `string` · required
 
@@ -595,14 +597,14 @@ Variable name.
 
 - rule: {"required":true,"string":{"pattern":"^[A-Za-z_][A-Za-z0-9_.-]*$"}}
 
-### spec.spec.deploymentSpec.secretEnv[].secretRef
+### spec.agent.deploymentSpec.secretEnv[].secretRef
 
 `GcpVertexAiAgentEngineSecretRef`
 
 A Secret Manager secret version you already own. The agent's
 identity needs roles/secretmanager.secretAccessor on the secret.
 
-### spec.spec.deploymentSpec.secretEnv[].secretRef.secret
+### spec.agent.deploymentSpec.secretEnv[].secretRef.secret
 
 `string | valueFrom` · required
 
@@ -614,14 +616,14 @@ The agent's identity needs roles/secretmanager.secretAccessor on it.
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpSecretManagerSecret, name: <that resource's name>, fieldPath: status.outputs.secret_id}} -- a bare string does not parse
 
-### spec.spec.deploymentSpec.secretEnv[].secretRef.version
+### spec.agent.deploymentSpec.secretEnv[].secretRef.version
 
 `string`
 
 The version to resolve: a version number or "latest" (Google's
 default when empty).
 
-### spec.spec.deploymentSpec.secretEnv[].value
+### spec.agent.deploymentSpec.secretEnv[].value
 
 `string` · required · sensitive
 
@@ -629,7 +631,7 @@ A secret value this component keeps in Secret Manager for you: on
 Planton a `$secret/<slug>` reference, resolved at deploy; on a deploy
 without the platform, the literal. The component creates one secret
 for this variable, replicated only in the agent's location, stores
-the value as a version, grants the agent's identity (spec.service_account,
+the value as a version, grants the agent's identity (agent.service_account,
 or the project's Vertex AI Reasoning Engine service agent
 service-<project number>@gcp-sa-aiplatform-re.iam.gserviceaccount.com
 when unset) secretAccessor on that secret alone, and points the
@@ -639,11 +641,11 @@ agent, so rotation is a deploy; destroying the agent removes the
 secret. The secret's id is
 agentengine_<location>_<metadata.name>_<variable> ('.' in the name
 becomes '-'). Not available with identity_type AGENT_IDENTITY (see
-the rule on GcpVertexAiAgentEngineSpecConfig).
+the rule on GcpVertexAiAgentEngineAgent).
 
 - rule: {"string":{"minLen":"1"}}
 
-### spec.spec.deploymentSpec.minInstances
+### spec.agent.deploymentSpec.minInstances
 
 `int32` · optional (explicit presence)
 
@@ -653,7 +655,7 @@ starts. Sent only when set.
 
 - rule: {"int32":{"lte":10,"gte":0}}
 
-### spec.spec.deploymentSpec.maxInstances
+### spec.agent.deploymentSpec.maxInstances
 
 `int32` · optional (explicit presence)
 
@@ -663,7 +665,7 @@ when set.
 
 - rule: {"int32":{"lte":1000,"gte":1}}
 
-### spec.spec.deploymentSpec.containerConcurrency
+### spec.agent.deploymentSpec.containerConcurrency
 
 `int32` · optional (explicit presence)
 
@@ -672,7 +674,7 @@ recommended 2 x cpu + 1). Sent only when set.
 
 - rule: {"int32":{"gte":1}}
 
-### spec.spec.deploymentSpec.resourceLimits
+### spec.agent.deploymentSpec.resourceLimits
 
 `map<string, string>`
 
@@ -680,13 +682,13 @@ Per-container limits, keys "cpu" (1, 2, 4, 6, 8) and "memory" (1Gi
 ... 32Gi); Google's default {cpu: "4", memory: "4Gi"}. Sent only when
 set.
 
-### spec.spec.deploymentSpec.pscInterfaceConfig
+### spec.agent.deploymentSpec.pscInterfaceConfig
 
 `GcpVertexAiAgentEnginePscInterfaceConfig`
 
 Private Service Connect interface into a VPC.
 
-### spec.spec.deploymentSpec.pscInterfaceConfig.networkAttachment
+### spec.agent.deploymentSpec.pscInterfaceConfig.networkAttachment
 
 `string`
 
@@ -695,13 +697,13 @@ and project, created beforehand.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^[a-z]([-a-z0-9]*[a-z0-9])?$"}}
 
-### spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs
+### spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs
 
 `[]GcpVertexAiAgentEngineDnsPeeringConfig`
 
 Private DNS zones of other projects the agent may resolve.
 
-### spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].domain
+### spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].domain
 
 `string` · required
 
@@ -710,7 +712,7 @@ DNS suffix of the peered zone, ending with a dot, e.g.
 
 - rule: {"required":true,"string":{"pattern":"^([a-z0-9-]+\\.)+$"}}
 
-### spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject
+### spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject
 
 `string | valueFrom` · required
 
@@ -722,7 +724,7 @@ there.
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
-### spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork
+### spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork
 
 `string | valueFrom` · required
 
@@ -734,19 +736,19 @@ or a literal.
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpVpcNetwork, name: <that resource's name>, fieldPath: status.outputs.network_name}} -- a bare string does not parse
 
-### spec.spec.deploymentSpec.agentGatewayConfig
+### spec.agent.deploymentSpec.agentGatewayConfig
 
 `GcpVertexAiAgentEngineAgentGatewayConfig`
 
 Route traffic through Agent Gateway.
 
-### spec.spec.deploymentSpec.agentGatewayConfig.clientToAgentConfig
+### spec.agent.deploymentSpec.agentGatewayConfig.clientToAgentConfig
 
 `GcpVertexAiAgentEngineGatewayTarget`
 
 Gateway for traffic targeting the agent.
 
-### spec.spec.deploymentSpec.agentGatewayConfig.clientToAgentConfig.agentGateway
+### spec.agent.deploymentSpec.agentGatewayConfig.clientToAgentConfig.agentGateway
 
 `string` · required
 
@@ -754,13 +756,13 @@ The Agent Gateway resource name.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 
-### spec.spec.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig
+### spec.agent.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig
 
 `GcpVertexAiAgentEngineGatewayTarget`
 
 Gateway for traffic originating from the agent.
 
-### spec.spec.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig.agentGateway
+### spec.agent.deploymentSpec.agentGatewayConfig.agentToAnywhereConfig.agentGateway
 
 `string` · required
 
@@ -1329,11 +1331,11 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
-| `spec.spec.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
-| `spec.spec.buildSpec.workerPool` | GcpCloudBuildWorkerPool | `status.outputs.name` |
-| `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | GcpSecretManagerSecret | `status.outputs.secret_id` |
-| `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | GcpProject | `status.outputs.project_id` |
-| `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | GcpVpcNetwork | `status.outputs.network_name` |
+| `spec.agent.serviceAccount` | GcpServiceAccount | `status.outputs.email` |
+| `spec.agent.buildSpec.workerPool` | GcpCloudBuildWorkerPool | `status.outputs.name` |
+| `spec.agent.deploymentSpec.secretEnv[].secretRef.secret` | GcpSecretManagerSecret | `status.outputs.secret_id` |
+| `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | GcpProject | `status.outputs.project_id` |
+| `spec.agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | GcpVpcNetwork | `status.outputs.network_name` |
 
 ## See Also
 

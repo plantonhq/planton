@@ -18,8 +18,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Optional Dependencies
 
-- **`GcpServiceAccount`** -- a custom identity for the agent (`spec.serviceAccount`).
-- **`GcpSecretManagerSecret`** -- secrets injected as environment variables (`spec.deploymentSpec.secretEnv[].secretRef`). A `secretEnv` entry can carry a `value` instead, and the module stores it in a Secret Manager secret of its own.
+- **`GcpServiceAccount`** -- a custom identity for the agent (`agent.serviceAccount`).
+- **`GcpSecretManagerSecret`** -- secrets injected as environment variables (`agent.deploymentSpec.secretEnv[].secretRef`). A `secretEnv` entry can carry a `value` instead, and the module stores it in a Secret Manager secret of its own.
 - **`GcpKmsKey`** -- customer-managed encryption (`kmsKeyName`). Immutable.
 - **`GcpProject`, `GcpVpcNetwork`** -- the DNS peering targets of a Private Service Connect interface.
 
@@ -34,7 +34,7 @@ metadata:
   name: support-agent
 spec:
   location: us-central1
-  spec:
+  agent:
     agentFramework: google-adk
     sourceCodeSpec:
       inlineSource:
@@ -65,15 +65,15 @@ planton apply -f agent-engine.yaml
 | `displayName` | `string` | `metadata.name` | Human-readable name. |
 | `description`, `labels` | | | Descriptive metadata. |
 | `kmsKeyName` | `StringValueOrRef` | Google-managed | A `GcpKmsKey` reference or literal key path. Immutable. |
-| `spec.agentFramework` | `string` | none | `google-adk`, `langchain`, `langgraph`, `llama-index`, `ag2`, or your own. |
-| `spec.classMethods` | `string` | none | The agent object's class methods as one OpenAPI JSON string. |
-| `spec.identityType` | `string` | service agent | `SERVICE_ACCOUNT` (uses `serviceAccount` when set) or `AGENT_IDENTITY` (the agent's own identity; `serviceAccount` must be unset). |
-| `spec.serviceAccount` | `StringValueOrRef` | Vertex AI service agent | A `GcpServiceAccount` reference or literal email. |
-| `spec.containerSpec` | `object` | none | `imageUri`, `port`. Mutually exclusive with `sourceCodeSpec`. |
-| `spec.sourceCodeSpec` | `object` | none | Exactly one source (`inlineSource.sourceArchive`, `developerConnectSource.config`, `agentConfigSource.adkConfig`) and exactly one build (`pythonSpec { version, entrypointModule, entrypointObject, requirementsFile }` or `imageSpec { buildArgs }`). |
-| `spec.packageSpec` | `object` | none | The legacy pickled-object package: `pickleObjectGcsUri`, `dependencyFilesGcsUri`, `requirementsGcsUri`, `pythonVersion`. |
-| `spec.buildSpec.workerPool` | `StringValueOrRef` | none | A Cloud Build private worker pool for the source build: a `GcpCloudBuildWorkerPool` reference (its `name` output) or the full `projects/{p}/locations/{l}/workerPools/{pool}` name. |
-| `spec.deploymentSpec` | `object` | Google's defaults | `env[]` (plain text), `secretEnv[]` (each entry either a `secretRef` to a `GcpSecretManagerSecret` or a `value` the module stores in its own secret, granting the runtime identity access to it alone; a `value` is refused with `identityType: AGENT_IDENTITY`), `minInstances` (0-10), `maxInstances` (1-1000), `containerConcurrency`, `resourceLimits { cpu, memory }`, `pscInterfaceConfig { networkAttachment, dnsPeeringConfigs[] }`, `agentGatewayConfig { clientToAgentConfig, agentToAnywhereConfig }`. |
+| `agent.agentFramework` | `string` | none | `google-adk`, `langchain`, `langgraph`, `llama-index`, `ag2`, or your own. |
+| `agent.classMethods` | `string` | none | The agent object's class methods as one OpenAPI JSON string. |
+| `agent.identityType` | `string` | service agent | `SERVICE_ACCOUNT` (uses `serviceAccount` when set) or `AGENT_IDENTITY` (the agent's own identity; `serviceAccount` must be unset). |
+| `agent.serviceAccount` | `StringValueOrRef` | Vertex AI service agent | A `GcpServiceAccount` reference or literal email. |
+| `agent.containerSpec` | `object` | none | `imageUri`, `port`. Mutually exclusive with `sourceCodeSpec`. |
+| `agent.sourceCodeSpec` | `object` | none | Exactly one source (`inlineSource.sourceArchive`, `developerConnectSource.config`, `agentConfigSource.adkConfig`) and exactly one build (`pythonSpec { version, entrypointModule, entrypointObject, requirementsFile }` or `imageSpec { buildArgs }`). |
+| `agent.packageSpec` | `object` | none | The legacy pickled-object package: `pickleObjectGcsUri`, `dependencyFilesGcsUri`, `requirementsGcsUri`, `pythonVersion`. |
+| `agent.buildSpec.workerPool` | `StringValueOrRef` | none | A Cloud Build private worker pool for the source build: a `GcpCloudBuildWorkerPool` reference (its `name` output) or the full `projects/{p}/locations/{l}/workerPools/{pool}` name. |
+| `agent.deploymentSpec` | `object` | Google's defaults | `env[]` (plain text), `secretEnv[]` (each entry either a `secretRef` to a `GcpSecretManagerSecret` or a `value` the module stores in its own secret, granting the runtime identity access to it alone; a `value` is refused with `identityType: AGENT_IDENTITY`), `minInstances` (0-10), `maxInstances` (1-1000), `containerConcurrency`, `resourceLimits { cpu, memory }`, `pscInterfaceConfig { networkAttachment, dnsPeeringConfigs[] }`, `agentGatewayConfig { clientToAgentConfig, agentToAnywhereConfig }`. |
 | `contextSpec.memoryBankConfig` | `object` | none | `generationConfig { model, generationTriggerConfig.generationRule }`, `similaritySearchConfig.embeddingModel`, `ttlConfig`, `disableMemoryRevisions`, `structuredMemoryConfigs[]`, `customizationConfigs[]` (scope keys, topics, worked examples, consolidation, generation flags). |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 

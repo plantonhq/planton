@@ -57,7 +57,7 @@ message GcpIamDenyPolicyParent {
   option (buf.validate.message).cel = {
     id: "at_most_one_parent"
     message: "set at most one of project_id, folder_id, or organization_id (empty means the provider's default project)"
-    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), this.folder_id != '', this.organization_id != ''].filter(x, x).size() <= 1"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1"
   };
 
   // Attach to a project — a literal project ID or a reference to a
@@ -67,9 +67,14 @@ message GcpIamDenyPolicyParent {
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
   ];
 
-  // Attach to a folder: the folder ID (numeric, with or without the
-  // "folders/" prefix).
-  string folder_id = 2;
+  // Attach to a folder: the folder's numeric ID (with or without the
+  // "folders/" prefix) -- a literal, or a reference to a GcpFolder resource
+  // (its folder_id output), so a chart that creates a folder can guard it
+  // with a deny policy in the same deploy.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
 
   // Attach to an organization: the numeric organization ID.
   string organization_id = 3;

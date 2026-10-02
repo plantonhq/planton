@@ -17,9 +17,9 @@ locals {
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 
   # The agent block and its parts, each emitted only when declared.
-  agent       = var.spec.spec
-  source_code = var.spec.spec != null ? var.spec.spec.source_code_spec : null
-  deployment  = var.spec.spec != null ? var.spec.spec.deployment_spec : null
+  agent       = var.spec.agent
+  source_code = var.spec.agent != null ? var.spec.agent.source_code_spec : null
+  deployment  = var.spec.agent != null ? var.spec.agent.deployment_spec : null
   memory_bank = var.spec.context_spec != null ? var.spec.context_spec.memory_bank_config : null
 
   # The same planton-ai_* label set the Pulumi module applies, so an agent

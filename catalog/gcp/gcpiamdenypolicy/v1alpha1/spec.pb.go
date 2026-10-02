@@ -137,9 +137,11 @@ type GcpIamDenyPolicyParent struct {
 	// Attach to a project — a literal project ID or a reference to a
 	// GcpProject resource.
 	ProjectId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	// Attach to a folder: the folder ID (numeric, with or without the
-	// "folders/" prefix).
-	FolderId string `protobuf:"bytes,2,opt,name=folder_id,json=folderId,proto3" json:"folder_id,omitempty"`
+	// Attach to a folder: the folder's numeric ID (with or without the
+	// "folders/" prefix) -- a literal, or a reference to a GcpFolder resource
+	// (its folder_id output), so a chart that creates a folder can guard it
+	// with a deny policy in the same deploy.
+	FolderId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=folder_id,json=folderId,proto3" json:"folder_id,omitempty"`
 	// Attach to an organization: the numeric organization ID.
 	OrganizationId string `protobuf:"bytes,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
@@ -183,11 +185,11 @@ func (x *GcpIamDenyPolicyParent) GetProjectId() *v1.StringValueOrRef {
 	return nil
 }
 
-func (x *GcpIamDenyPolicyParent) GetFolderId() string {
+func (x *GcpIamDenyPolicyParent) GetFolderId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.FolderId
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpIamDenyPolicyParent) GetOrganizationId() string {
@@ -442,13 +444,13 @@ const file_catalog_gcp_gcpiamdenypolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName\x12_\n" +
 	"\x05rules\x18\x04 \x03(\v2?.dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyRuleB\b\xbaH\x05\x92\x01\x02\b\x01R\x05rules\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x05 \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\"\x86\x04\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\"\x9e\x05\n" +
 	"\x16GcpIamDenyPolicyParent\x12u\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x1b\n" +
-	"\tfolder_id\x18\x02 \x01(\tR\bfolderId\x12'\n" +
-	"\x0forganization_id\x18\x03 \x01(\tR\x0eorganizationId:\xae\x02\xbaH\xaa\x02\x1a\xa7\x02\n" +
-	"\x12at_most_one_parent\x12iset at most one of project_id, folder_id, or organization_id (empty means the provider's default project)\x1a\xa5\x01[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), this.folder_id != '', this.organization_id != ''].filter(x, x).size() <= 1\"\xa2\x01\n" +
+	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12r\n" +
+	"\tfolder_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x18\x92\xd4a\x18status.outputs.folder_idR\bfolderId\x12'\n" +
+	"\x0forganization_id\x18\x03 \x01(\tR\x0eorganizationId:\xef\x02\xbaH\xeb\x02\x1a\xe8\x02\n" +
+	"\x12at_most_one_parent\x12iset at most one of project_id, folder_id, or organization_id (empty means the provider's default project)\x1a\xe6\x01[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1\"\xa2\x01\n" +
 	"\x14GcpIamDenyPolicyRule\x12 \n" +
 	"\vdescription\x18\x01 \x01(\tR\vdescription\x12h\n" +
 	"\tdeny_rule\x18\x02 \x01(\v2C.dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyDenyRuleB\x06\xbaH\x03\xc8\x01\x01R\bdenyRule\"\xcf\x02\n" +
@@ -492,13 +494,14 @@ var file_catalog_gcp_gcpiamdenypolicy_v1alpha1_spec_proto_depIdxs = []int32{
 	1, // 0: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicySpec.parent:type_name -> dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent
 	2, // 1: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicySpec.rules:type_name -> dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyRule
 	5, // 2: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3, // 3: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyRule.deny_rule:type_name -> dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyDenyRule
-	4, // 4: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyDenyRule.denial_condition:type_name -> dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyCondition
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	5, // 3: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent.folder_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3, // 4: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyRule.deny_rule:type_name -> dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyDenyRule
+	4, // 5: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyDenyRule.denial_condition:type_name -> dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyCondition
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpiamdenypolicy_v1alpha1_spec_proto_init() }

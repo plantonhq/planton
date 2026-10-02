@@ -280,7 +280,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRun | `spec.buildConfig.workerPool` | `status.outputs.name` |
 | GcpDeployTarget | `spec.executionConfigs[].workerPool` | `status.outputs.name` |
 | GcpDeployTarget | `spec.executionConfigs[].privatePool.workerPool` | `status.outputs.name` |
-| GcpVertexAiAgentEngine | `spec.spec.buildSpec.workerPool` | `status.outputs.name` |
+| GcpVertexAiAgentEngine | `spec.agent.buildSpec.workerPool` | `status.outputs.name` |
 
 ## See Also
 

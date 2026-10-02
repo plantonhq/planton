@@ -8,7 +8,7 @@ spec:
   location: us-central1
   displayName: Support agent
   description: Answers support questions from the docs
-  spec:
+  agent:
     agentFramework: google-adk
     # Build from source: a base64 .tar.gz of the agent's root (agent.py and
     # requirements.txt -- the readable copy is e2e/fixtures/agent-source/),
