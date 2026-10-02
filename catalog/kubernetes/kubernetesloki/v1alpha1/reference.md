@@ -145,6 +145,7 @@ spec:
     alertmanagerUrl:
       value: http://monitoring-kube-prometheus-alertmanager.observability.svc.cluster.local:9093
   serviceMonitorEnabled: true
+  canaryEnabled: false
   imageRegistry: mirror.example.com
   imagePullSecrets:
     - mirror-pull
@@ -1055,7 +1056,9 @@ chart default (1024).
 
 The Loki canary — a DaemonSet that continuously writes and reads
 test log lines through the full pipeline, turning silent log loss
-into a visible metric. On by default (the chart's grain).
+into a visible metric. On by default (the chart's grain). Turning it
+off also turns off the chart's Helm test, which reads the canary's
+metrics and would otherwise refuse the install.
 
 - default: `true`
 

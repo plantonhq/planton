@@ -28,6 +28,7 @@ spec:
     - ingress
     - gateway-httproute
     - crd
+  gatewayListenerSets: true
   policy: sync
   registry: txt
   txtOwnerId: hack-cluster

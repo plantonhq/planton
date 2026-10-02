@@ -70,6 +70,12 @@ var _ = ginkgo.Describe("KubernetesExternalDns Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.Succeed())
 		})
 
+		ginkgo.It("accepts listener sets beside a Gateway API route source", func() {
+			input.Spec.Sources = []string{"gateway-httproute", "gateway-tlsroute"}
+			input.Spec.GatewayListenerSets = true
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.Succeed())
+		})
+
 		ginkgo.It("accepts Google Cloud DNS with a static key", func() {
 			input.Spec.DnsProvider = &KubernetesExternalDnsSpec_GoogleCloudDns{
 				GoogleCloudDns: &KubernetesExternalDnsGoogleCloudDns{
@@ -142,6 +148,14 @@ var _ = ginkgo.Describe("KubernetesExternalDns Validation Tests", func() {
 			input.Spec.TxtPrefix = "a-"
 			input.Spec.TxtSuffix = "-b"
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.Succeed())
+		})
+
+		ginkgo.It("rejects listener sets without a Gateway API route source", func() {
+			input.Spec.Sources = []string{"service", "ingress"}
+			input.Spec.GatewayListenerSets = true
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("needs a Gateway API route source"))
 		})
 
 		ginkgo.It("rejects dynamodb table settings without the dynamodb registry", func() {

@@ -26,6 +26,8 @@ import (
 type LokiVerifier struct {
 	Namespace string
 	Name      string
+	// CanaryOff marks a spec with canary_enabled false.
+	CanaryOff bool
 	// GatewayEnabled marks whether the nginx gateway front door is
 	// deployed (the exported endpoints and this proof route through it).
 	GatewayEnabled bool
@@ -55,6 +57,15 @@ func (v *LokiVerifier) VerifyExists(ctx context.Context, kubeconfig string) erro
 	// (fullnameOverride). Wait for it before touching the gateway.
 	if err := waitStatefulSetReady(ctx, kubeconfig, v.Name, v.Namespace, 10*time.Minute); err != nil {
 		return errors.Wrap(err, "the loki statefulset never became ready")
+	}
+	// An install with the canary off is the proof by itself (the chart
+	// refuses to render it while its Helm test is on); the canary's
+	// DaemonSet must then be absent.
+	if v.CanaryOff {
+		if err := KubectlResourceAbsent(ctx, kubeconfig, "daemonset", v.Name+"-canary", v.Namespace); err != nil {
+			return errors.Wrap(err, "the canary is off in the spec but its DaemonSet exists")
+		}
+		fmt.Printf("  [verify] CANARY OFF: installed, and no canary DaemonSet\n")
 	}
 	if !v.GatewayEnabled {
 		return errors.New("the log round-trip requires the gateway (disabled in this scenario) — enable it or address the internal services directly")

@@ -190,12 +190,12 @@ locals {
   # on the spec field). Rendered per key, null-pruned.
   pod_security_context = try(var.spec.pod_security_context, null) == null ? null : {
     for pk, pv in {
-      runAsUser          = try(var.spec.pod_security_context.run_as_user, null)
-      runAsGroup         = try(var.spec.pod_security_context.run_as_group, null)
-      runAsNonRoot       = try(var.spec.pod_security_context.run_as_non_root, null)
-      fsGroup            = try(var.spec.pod_security_context.fs_group, null)
+      runAsUser           = try(var.spec.pod_security_context.run_as_user, null)
+      runAsGroup          = try(var.spec.pod_security_context.run_as_group, null)
+      runAsNonRoot        = try(var.spec.pod_security_context.run_as_non_root, null)
+      fsGroup             = try(var.spec.pod_security_context.fs_group, null)
       fsGroupChangePolicy = try(var.spec.pod_security_context.fs_group_change_policy, "") != "" ? var.spec.pod_security_context.fs_group_change_policy : null
-      supplementalGroups = length(try(var.spec.pod_security_context.supplemental_groups, [])) > 0 ? var.spec.pod_security_context.supplemental_groups : null
+      supplementalGroups  = length(try(var.spec.pod_security_context.supplemental_groups, [])) > 0 ? var.spec.pod_security_context.supplemental_groups : null
       sysctls = length(try(var.spec.pod_security_context.sysctls, [])) > 0 ? [
         for s in var.spec.pod_security_context.sysctls : { name = s.name, value = s.value }
       ] : null
@@ -264,6 +264,10 @@ locals {
       priorityClassName = try(var.spec.scheduling.priority_class_name, "") != "" ? var.spec.scheduling.priority_class_name : null
 
       podSecurityContext = local.pod_security_context != null && length(local.pod_security_context) > 0 ? local.pod_security_context : null
+
+      # The operator then creates the monitor itself (a ServiceMonitor, or a PodMonitor in sidecar
+      # mode); absent, it creates none.
+      observability = try(var.spec.service_monitor_enabled, false) ? { metrics = { enableMetrics = true } } : null
     } : k => v if v != null
   }
 }

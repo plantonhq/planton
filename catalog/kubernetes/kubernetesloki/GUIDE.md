@@ -25,10 +25,25 @@ clusters ship to one Loki, stamp each line with OpenTelemetry's own
 environment keeps it): both are in Loki's default index-label list, so
 `{k8s_cluster_name="..."}` and `{deployment_environment_name="..."}` work
 with no Loki setting. A custom attribute such as `cluster` would land as
-structured metadata instead, filterable but not a stream label. Leave
-`canary_enabled` at its default: switching the canary off fails the
-install today, because the chart's Helm test needs it. The `scheduling`
-block reaches Loki itself and its gateway, not the caches or the canary.
+structured metadata instead, filterable but not a stream label. The
+canary is worth keeping wherever a person relies on the logs: it proves
+the write and read paths end to end. Switching it off also switches off
+the chart's Helm test, which reads the canary's metrics. The
+`scheduling` block reaches Loki itself and its gateway, not the caches
+or the canary.
+
+One Loki taking several clusters' logs needs `limits` sized for the
+moment they all catch up at once, after a Loki outage, not for the
+steady rate. At the defaults (4 MB/s, a 6 MB burst) that catch-up is
+refused in bursts and retried, which delays every line and fills the
+senders' queues. Two rules: set `ingestion_rate_mb` above the summed
+catch-up rate, and keep `ingestion_burst_size_mb` above every sender's
+largest batch, because Loki refuses a push larger than its burst every
+time, and a collector retrying without a deadline then stalls for good.
+A hub for a few clusters at 12 and 24 took 8 MB/s for three minutes
+through its door with nothing refused and Loki under 450 MiB. A single
+hot stream does not hit the 3 MB/s per-stream limit: Loki shards hot
+streams by default (`shard_streams`).
 
 ## The mode choice is a storage commitment
 

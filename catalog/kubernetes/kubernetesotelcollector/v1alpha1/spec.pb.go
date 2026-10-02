@@ -217,8 +217,21 @@ type KubernetesOtelCollectorSpec struct {
 	// open them (the filelog receiver then reports permission errors
 	// instead of shipping logs).
 	PodSecurityContext *kubernetes.WorkloadPodSecurityContext `protobuf:"bytes,15,opt,name=pod_security_context,json=podSecurityContext,proto3" json:"pod_security_context,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// *
+	// When true, the operator creates a monitor for the collector's own
+	// metrics, so Prometheus sees what the collector is doing: records
+	// accepted and sent, sends that failed, and how full its sending queue
+	// is (the first sign that a backend is refusing or away). A
+	// ServiceMonitor on the collector's monitoring Service (port 8888) in
+	// deployment, daemonset and statefulset modes; a PodMonitor in sidecar
+	// mode. The collector serves these metrics either way; this only tells
+	// Prometheus to read them. Needs the Prometheus operator's CRDs on the
+	// cluster when the OTel operator starts: it looks for them once, at
+	// start, so install the monitoring stack first (KubernetesOtelOperator
+	// `depends_on` the KubernetesKubePrometheusStack). Default false.
+	ServiceMonitorEnabled bool `protobuf:"varint,16,opt,name=service_monitor_enabled,json=serviceMonitorEnabled,proto3" json:"service_monitor_enabled,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
 func (x *KubernetesOtelCollectorSpec) Reset() {
@@ -354,6 +367,13 @@ func (x *KubernetesOtelCollectorSpec) GetPodSecurityContext() *kubernetes.Worklo
 		return x.PodSecurityContext
 	}
 	return nil
+}
+
+func (x *KubernetesOtelCollectorSpec) GetServiceMonitorEnabled() bool {
+	if x != nil {
+		return x.ServiceMonitorEnabled
+	}
+	return false
 }
 
 // *
@@ -576,7 +596,7 @@ var File_catalog_kubernetes_kubernetesotelcollector_v1alpha1_spec_proto protoref
 
 const file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesotelcollector/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesotelcollector.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/volume_mount.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe5\x11\n" +
+	">catalog/kubernetes/kubernetesotelcollector/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesotelcollector.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/volume_mount.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9d\x12\n" +
 	"\x1bKubernetesOtelCollectorSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12\x85\x01\n" +
@@ -599,7 +619,8 @@ const file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_spec_proto_rawDes
 	"\n" +
 	"scheduling\x18\x0e \x01(\v2Z.dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorSchedulingR\n" +
 	"scheduling\x12d\n" +
-	"\x14pod_security_context\x18\x0f \x01(\v22.dev.planton.kubernetes.WorkloadPodSecurityContextR\x12podSecurityContext\x1a6\n" +
+	"\x14pod_security_context\x18\x0f \x01(\v22.dev.planton.kubernetes.WorkloadPodSecurityContextR\x12podSecurityContext\x126\n" +
+	"\x17service_monitor_enabled\x18\x10 \x01(\bR\x15serviceMonitorEnabled\x1a6\n" +
 	"\bEnvEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xfd\x06\xbaH\xf9\x06\x1a\xe4\x02\n" +

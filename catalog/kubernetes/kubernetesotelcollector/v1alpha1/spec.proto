@@ -175,6 +175,21 @@ message KubernetesOtelCollectorSpec {
    */
   dev.planton.kubernetes.WorkloadPodSecurityContext pod_security_context = 15;
 
+  /**
+   * When true, the operator creates a monitor for the collector's own
+   * metrics, so Prometheus sees what the collector is doing: records
+   * accepted and sent, sends that failed, and how full its sending queue
+   * is (the first sign that a backend is refusing or away). A
+   * ServiceMonitor on the collector's monitoring Service (port 8888) in
+   * deployment, daemonset and statefulset modes; a PodMonitor in sidecar
+   * mode. The collector serves these metrics either way; this only tells
+   * Prometheus to read them. Needs the Prometheus operator's CRDs on the
+   * cluster when the OTel operator starts: it looks for them once, at
+   * start, so install the monitoring stack first (KubernetesOtelOperator
+   * `depends_on` the KubernetesKubePrometheusStack). Default false.
+   */
+  bool service_monitor_enabled = 16;
+
   option (buf.validate.message).cel = {
     id: "spec.mode.sidecar.excludes_scheduling"
     message: "sidecar mode injects the collector into target pods — tolerations and priority_class_name have no standalone pod to apply to (the CRD rejects them at admission)"

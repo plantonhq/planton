@@ -1,0 +1,17 @@
+# The canary off: the upstream chart refuses to render while its Helm test
+# is on and the canary is off (the test reads the canary's metrics), so the
+# install succeeding is most of the proof. The verifier adds that no canary
+# DaemonSet exists and that a log line still round-trips through the
+# gateway. Kind-honest cache sizing, as in the minimal scenario.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesLoki
+metadata:
+  name: e2e-loki-nocanary
+spec:
+  namespace:
+    value: e2e-loki-nocanary
+  create_namespace: true
+  canary_enabled: false
+  caching:
+    chunks_cache_memory_mb: 128
+    results_cache_memory_mb: 128

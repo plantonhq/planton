@@ -11,7 +11,7 @@ spec:
       file_storage:
         directory: /var/lib/otelcol-checkpoints
     receivers:
-      filelog:
+      file_log:
         include:
           - /var/log/pods/*/*/*.log
         # The collector's own pods (<name>-collector-<hash>); reading them would echo every export
@@ -32,30 +32,46 @@ spec:
           http:
             endpoint: 0.0.0.0:4318
     processors:
-      k8sattributes: {}
+      k8s_attributes: {}
       memory_limiter:
         check_interval: 1s
         limit_mib: 400
         spike_limit_mib: 100
-      batch: {}
     exporters:
-      otlphttp:
+      otlp_http:
         # Replace the host with your KubernetesLoki gateway service —
         # Loki ingests OTLP at the gateway's /otlp route.
         endpoint: http://loki-gateway.observability.svc.cluster.local:80/otlp
-        # Lines read while Loki is away wait on the node's disk and are retried without a deadline.
+        # A line leaves the reader only into this queue on the node's disk, so a restart loses
+        # nothing, and lines read while Loki is away are retried without a deadline. Batching lives
+        # here, never in a batch processor: a processor holds lines in memory after the reader has
+        # moved its checkpoint past them.
         sending_queue:
           storage: file_storage
+          sizer: bytes
+          queue_size: 268435456 # 256 MiB of the node's disk
+          block_on_overflow: true # a full queue makes the reader wait; dropping is the default
+          batch:
+            flush_timeout: 1s
+            min_size: 1048576 # 1 MiB
+            # 4 MiB, below Loki's ingestion burst (ingestion_burst_size_mb, 6 by default): Loki
+            # refuses a push larger than its burst every time, and a refused batch retried
+            # without a deadline would stop this node's logs for good.
+            max_size: 4194304
         retry_on_failure:
           max_elapsed_time: 0
     service:
       extensions: [file_storage]
       pipelines:
         logs:
-          receivers: [filelog, otlp]
-          processors: [memory_limiter, k8sattributes, batch]
-          exporters: [otlphttp]
+          receivers: [file_log, otlp]
+          processors: [memory_limiter, k8s_attributes]
+          exporters: [otlp_http]
   serviceAccount: otel-logs-collector
+  # Prometheus reads the collector's own metrics: lines accepted and sent, failed sends and how full
+  # the queue is, the first sign that Loki is refusing or away. Needs the Prometheus operator's CRDs
+  # when the OTel operator starts.
+  serviceMonitorEnabled: true
   volumes:
     - name: varlogpods
       mountPath: /var/log/pods
@@ -74,7 +90,7 @@ spec:
         operator: Exists
         effect: NoSchedule
   # Container runtimes write pod log files readable only by root — the
-  # default collector image runs non-root and the filelog receiver
+  # default collector image runs non-root and the file_log receiver
   # would report permission errors instead of shipping logs.
   podSecurityContext:
     runAsUser: 0

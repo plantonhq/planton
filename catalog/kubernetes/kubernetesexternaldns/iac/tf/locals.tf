@@ -331,22 +331,23 @@ locals {
       } : null
 
       # ---- watching / sync behavior ------------------------------------
-      sources            = length(var.spec.sources) > 0 ? var.spec.sources : null
-      policy             = try(var.spec.policy, null)
-      registry           = try(var.spec.registry, null)
-      txtOwnerId         = var.spec.txt_owner_id != "" ? var.spec.txt_owner_id : null
-      txtPrefix          = var.spec.txt_prefix != "" ? var.spec.txt_prefix : null
-      txtSuffix          = var.spec.txt_suffix != "" ? var.spec.txt_suffix : null
-      domainFilters      = length(var.spec.domain_filters) > 0 ? var.spec.domain_filters : null
-      excludeDomains     = length(var.spec.exclude_domains) > 0 ? var.spec.exclude_domains : null
-      annotationFilter   = var.spec.annotation_filter != "" ? var.spec.annotation_filter : null
-      labelFilter        = var.spec.label_filter != "" ? var.spec.label_filter : null
-      managedRecordTypes = length(var.spec.managed_record_types) > 0 ? var.spec.managed_record_types : null
-      interval           = try(var.spec.interval, null)
-      triggerLoopOnEvent = var.spec.trigger_loop_on_event ? true : null
-      namespaced         = var.spec.namespaced ? true : null
-      logLevel           = try(var.spec.log_level, null)
-      logFormat          = try(var.spec.log_format, null)
+      sources                   = length(var.spec.sources) > 0 ? var.spec.sources : null
+      enableGatewayListenerSets = var.spec.gateway_listener_sets ? true : null
+      policy                    = try(var.spec.policy, null)
+      registry                  = try(var.spec.registry, null)
+      txtOwnerId                = var.spec.txt_owner_id != "" ? var.spec.txt_owner_id : null
+      txtPrefix                 = var.spec.txt_prefix != "" ? var.spec.txt_prefix : null
+      txtSuffix                 = var.spec.txt_suffix != "" ? var.spec.txt_suffix : null
+      domainFilters             = length(var.spec.domain_filters) > 0 ? var.spec.domain_filters : null
+      excludeDomains            = length(var.spec.exclude_domains) > 0 ? var.spec.exclude_domains : null
+      annotationFilter          = var.spec.annotation_filter != "" ? var.spec.annotation_filter : null
+      labelFilter               = var.spec.label_filter != "" ? var.spec.label_filter : null
+      managedRecordTypes        = length(var.spec.managed_record_types) > 0 ? var.spec.managed_record_types : null
+      interval                  = try(var.spec.interval, null)
+      triggerLoopOnEvent        = var.spec.trigger_loop_on_event ? true : null
+      namespaced                = var.spec.namespaced ? true : null
+      logLevel                  = try(var.spec.log_level, null)
+      logFormat                 = try(var.spec.log_format, null)
 
       # ---- pod placement / sizing ----------------------------------------
       resources    = local.controller_resources

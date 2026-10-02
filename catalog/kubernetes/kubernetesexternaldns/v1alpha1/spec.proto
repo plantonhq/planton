@@ -164,6 +164,21 @@ message KubernetesExternalDnsSpec {
   }];
 
   /**
+   * When true, the controller also follows Gateway API ListenerSets: a route
+   * attached to a listener that a KubernetesListenerSet adds to a shared
+   * Gateway gets its record, not only a route on the Gateway's own
+   * listeners. Turn it on wherever components bring their own hostname and
+   * certificate as a listener set (a monitoring hub beside a platform on one
+   * Gateway is the common case); the Gateway must also admit listener sets
+   * (`allowed_listeners` on KubernetesGateway). Renders the chart's
+   * `enableGatewayListenerSets`, which adds the `--gateway-listener-sets`
+   * flag and the permission to read ListenerSets. The chart grants that
+   * permission only alongside a Gateway API route source, so at least one
+   * `gateway-*` entry in `sources` is required. Default false.
+   */
+  bool gateway_listener_sets = 37;
+
+  /**
    * How aggressively cluster state is pushed to the DNS zone.
    * "upsert-only" (default): create and update records, never delete —
    * the safe default for zones shared with records managed elsewhere.
@@ -394,6 +409,12 @@ message KubernetesExternalDnsSpec {
     id: "externaldns.dynamodb_requires_registry"
     message: "dynamodb_table and dynamodb_region configure the \"dynamodb\" registry — set registry to \"dynamodb\" or clear these fields"
     expression: "(this.dynamodb_table == '' && this.dynamodb_region == '') || (has(this.registry) && this.registry == 'dynamodb')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "externaldns.listener_sets_require_gateway_source"
+    message: "gateway_listener_sets follows routes on listener sets, so it needs a Gateway API route source — add a gateway-* entry (e.g. \"gateway-httproute\") to sources"
+    expression: "!this.gateway_listener_sets || this.sources.exists(s, s.startsWith('gateway-'))"
   };
 }
 

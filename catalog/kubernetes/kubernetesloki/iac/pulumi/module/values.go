@@ -369,9 +369,12 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 
 	// ---- canary ----------------------------------------------------------------
 	// The chart default is ON (a DaemonSet continuously proving the
-	// write→read pipeline); rendered only when disabled.
+	// write→read pipeline); rendered only when disabled. The chart's Helm
+	// test reads the canary's metrics and refuses to render without it, so
+	// it goes off with the canary.
 	if !boolOrDefault(spec.CanaryEnabled, true) {
 		values["lokiCanary"] = map[string]interface{}{"enabled": false}
+		values["test"] = map[string]interface{}{"enabled": false}
 	}
 
 	// ---- observability ------------------------------------------------------------

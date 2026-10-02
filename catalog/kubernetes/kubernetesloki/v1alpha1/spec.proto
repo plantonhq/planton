@@ -192,7 +192,9 @@ message KubernetesLokiSpec {
   /**
    * The Loki canary — a DaemonSet that continuously writes and reads
    * test log lines through the full pipeline, turning silent log loss
-   * into a visible metric. On by default (the chart's grain).
+   * into a visible metric. On by default (the chart's grain). Turning it
+   * off also turns off the chart's Helm test, which reads the canary's
+   * metrics and would otherwise refuse the install.
    */
   optional bool canary_enabled = 13 [(dev.planton.shared.options.default) = "true"];
 

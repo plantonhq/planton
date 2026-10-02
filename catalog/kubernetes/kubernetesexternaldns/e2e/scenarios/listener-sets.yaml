@@ -1,0 +1,24 @@
+# Listener sets: the controller follows routes on listeners that a
+# KubernetesListenerSet adds to a shared Gateway. The Gateway API CRDs
+# (standard channel, which carries ListenerSet) are the prerequisite, so the
+# controller's ListenerSet informer has a type to watch. The verifier asserts
+# what the switch renders on a live install: the --gateway-listener-sets flag
+# on the controller and the ClusterRole's permission to read ListenerSets,
+# with the controller Available (an unreadable ListenerSet would stop it).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesExternalDns
+metadata:
+  name: e2e-edns-lsets
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesGatewayApiCrds"
+spec:
+  namespace:
+    value: e2e-edns-lsets
+  createNamespace: true
+  inMemory:
+    zones:
+      - example.org
+  sources:
+    - gateway-httproute
+  gatewayListenerSets: true
+  txtOwnerId: e2e-lsets

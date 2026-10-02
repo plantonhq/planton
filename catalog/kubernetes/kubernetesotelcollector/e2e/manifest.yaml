@@ -97,3 +97,4 @@ spec:
     fsGroupChangePolicy: OnRootMismatch
     seccompProfile:
       type: RuntimeDefault
+  serviceMonitorEnabled: true

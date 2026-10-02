@@ -47,6 +47,9 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	if len(spec.GetSources()) > 0 {
 		values["sources"] = toInterfaceSlice(spec.GetSources())
 	}
+	if spec.GetGatewayListenerSets() {
+		values["enableGatewayListenerSets"] = true
+	}
 	if spec.Policy != nil {
 		values["policy"] = spec.GetPolicy()
 	}
