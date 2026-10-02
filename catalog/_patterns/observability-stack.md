@@ -610,6 +610,25 @@ spec:
   node or build volume minutes old predicts hundreds of gigabytes below
   zero; show fullness now for cattle, and trends over the dashboard's
   range.
+- **Once several clusters write into one Prometheus, every join and
+  grouping carries `cluster`.** Node addresses, namespaces and pod names
+  repeat across clusters, so `on(instance)` or `on(namespace, pod)` alone
+  matches two clusters' series and the query fails, and an "All" view
+  sums clusters that should be compared. Lead with one row per cluster
+  (reserved, used, the busiest node's worst minute over the range) rather
+  than a blended number.
+- **Count sparse events with a rate over several of their periods.**
+  `increase(x[$__interval])` over a window of one or two scrapes sees only
+  increments between its own samples; a sender on a steady rhythm (an
+  Alertmanager heartbeat every two minutes) lands every increment between
+  windows and reads zero all hour while Prometheus holds dozens. A rate
+  over ten minutes reads them; filter to the integrations in use so a
+  silent pager shows as zero, not as absent.
+- **Roll pods up to the workload that owns them** from
+  `kube_pod_owner`: a ReplicaSet's name less its last segment is its
+  Deployment, other owners are named as they are, and a pod owned by
+  nothing or by its node is its own workload. Operators act on the
+  workload, not on a pod hash.
 - **Provisioned dashboards are read-only**, even for an Admin, and the
   rest of the rules (delimiters in an infra chart, `schemaVersion`,
   catching a hand-made copy) are in the `KubernetesGrafana` guide,

@@ -65,6 +65,24 @@ install teaches:
   "All" is `.*` also matches a series with no `cluster` label. Grafana's
   query API does not fill dashboard variables (it fills `$__range` and
   `$__rate_interval`), so a checker substitutes them itself.
+- **A checker asks the way the browser asks.** The browser spreads the
+  range over about a thousand points and rounds the step to a standard
+  interval (15 s, 1 m, 10 m ...); send a raw step such as 604.8 s and
+  Grafana renders a duration Prometheus refuses. Check each panel at its
+  default range and at the last hour, the zoom of an incident, which is
+  where a per-interval count comes back empty.
+- **Charts carry identity, stats and table cells carry attention.** A
+  threshold colouring a line competes with the series' own colours and
+  paints a healthy zero line red. Give each group of series one hue and
+  each member a shade with a `byRegexp` override and
+  `color: {mode: shades, fixedColor: ...}` (a cluster's nodes as shades
+  of the cluster's hue), and put thresholds on stats and on the table
+  columns that can need attention.
+- **Tables that fit narrow and fill wide.** Fix the widths of short
+  number columns and leave the name column flexible; `custom.minWidth`
+  alone does not stop a table overflowing. `wrapHeaderText` keeps long
+  headings readable, and `cellOptions.wrapText` on one column lets a long
+  identity (a volume claim) wrap instead of clipping.
 - **Removing a dashboard is a purge.** An infra chart re-install never
   deletes a ConfigMap the chart stopped declaring; purge it by name, or
   the drift comparison above names it as shipped by a chart.

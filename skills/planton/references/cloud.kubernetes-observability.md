@@ -139,6 +139,16 @@ Ask these before composing, in the person's words, not the chart's:
   only through the files. In an infra chart, keep double braces out of
   the dashboard JSON (the chart engine renders it): pretty-print it and
   name series with `${__field.labels.<label>}` display names.
+- **When several clusters report to one hub, answer per cluster.** Join
+  and group by `cluster` everywhere (node addresses and pod names repeat
+  across clusters, and a join on them alone fails), name clusters by a
+  short label, and lead a capacity screen with one row per cluster:
+  reserved, used and the busiest node's worst minute for memory and CPU,
+  the fullest disk, OOM kills.
+- **Count alert notifications with a rate over ten minutes,** never
+  `increase()` over the chart's interval: a heartbeat on a two-minute
+  rhythm reads zero all hour in one-minute windows. Show every channel
+  the estate uses, so a pager that sent nothing reads zero.
 - **Read "how full is the node" from the node exporter,** not the
   containers' working set: the kubelet stops reporting container memory
   first when a node starves. Put it beside what pods reserve, because
