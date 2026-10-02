@@ -119,3 +119,7 @@ The registry prerequisite orders the rule after the KubernetesKubePrometheusStac
 
 - **KubernetesKubePrometheusStack**: installs the CRDs and the Prometheus that evaluates the rules.
 - **KubernetesNamespace**: where the object lives.
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).
