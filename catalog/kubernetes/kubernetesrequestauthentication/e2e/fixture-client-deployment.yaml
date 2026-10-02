@@ -1,0 +1,26 @@
+# Extra-instance fixture for the behavioral-jwt scenario: the meshed client
+# that sends requests with no token, a stranger's token and the trusted
+# token.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesDeployment
+metadata:
+  name: e2e-jwt-client
+spec:
+  namespace:
+    value: e2e-jwt-mesh
+  version: main
+  container:
+    app:
+      image:
+        repo: curlimages/curl
+        tag: "8.11.1"
+      command:
+        - sleep
+        - infinity
+      resources:
+        requests:
+          cpu: "10m"
+          memory: "16Mi"
+        limits:
+          cpu: "100m"
+          memory: "64Mi"

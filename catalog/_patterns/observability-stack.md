@@ -358,9 +358,9 @@ reach a person"). Split the work by lifecycle, not by component:
   elsewhere). The hub holds Loki, Tempo and Grafana in its own
   namespace, so rebuilding one never removes the other.
 - **Grafana reads the cluster's own Prometheus** (the datasource's
-  default kind is the stack) until other clusters send metrics; a
-  second stack on one cluster needs `skip_crds`, so add a receiving
-  store only when there is something to receive.
+  default kind is the stack) until other clusters send metrics; then
+  the hub gets a receiving Prometheus of its own ("Several clusters,
+  one hub" below), and only then.
 - **The hub brings its own front door.** Instead of editing the
   cluster's Gateway for every hostname, the Gateway admits listener sets
   (`allowed_listeners`) and the hub attaches a `KubernetesListenerSet`
@@ -438,6 +438,125 @@ The certificate's Secret lives in the listener set's own namespace.
 Install order on a fresh cluster: the Gateway's and external-dns's
 switches, then the agent (its collector holds lines on the node's disk
 until Loki answers), then the hub.
+
+## Several clusters, one hub
+
+When other clusters report to the hub, three pieces join it, and every
+cluster keeps its own agent and Alertmanager (rules run next to complete
+data, so a broken link never changes what alerts):
+
+- **A receiving Prometheus in the hub, never the agent's.** If the hub
+  cluster's agent received the others' samples, its standard rules would
+  run over them too and every remote alert would post twice. The
+  receiver is a second `KubernetesKubePrometheusStack` that brings
+  nothing the agent already runs: `skip_crds`, `discovery:
+  release_managed_only`, Alertmanager, Grafana, both exporters, every
+  `control_plane_scrapers` entry and `default_rules` off, and
+  `enable_remote_write_receiver`. Two settings still ride `helm_values`
+  (no typed field yet): `prometheusOperator.enabled: false`, because the
+  agent's operator (it watches every namespace) runs this Prometheus and
+  a second operator would fight it, and
+  `prometheus.prometheusSpec.tsdb.outOfOrderTimeWindow` sized to what a
+  sender can resend. Without that window Prometheus accepts a sample
+  only up to about an hour older than its newest, while a sender keeps
+  about two hours to resend after an outage of the door or the link. Any
+  scraper left on in the receiver's release is scraped twice, because
+  the agent discovers monitors cluster-wide. Its own release's
+  self-monitor is the exception worth keeping: the agent reads it too and
+  alerts on the hub.
+- **Every agent writes to it, the hub's own cluster included,** so one
+  query covers the estate. Each agent's `external_labels` (`cluster`,
+  `environment`) ride the remote write onto every series, added only
+  where a series lacks the label, so a per-pod environment wins. The
+  address is a literal in the agent, never a reference: the hub depends
+  on the agent (its priority, its operator), so a reference back loops.
+  Log lines need the same stamp from the collector: a `resource`
+  processor inserting `k8s.cluster.name` and
+  `deployment.environment.name`, which Loki indexes as labels by default
+  (`k8s_cluster_name`, `deployment_environment_name`).
+- **A telemetry door: its own Gateway, so its own load balancer.** A JWT
+  check on a Gateway refuses every bearer token that is not one of its
+  JWTs, which would break whatever else that Gateway serves, and a flood
+  of telemetry must never slow the platform's door. The door lives in
+  the hub's namespace beside its routes and backends (an Istio policy's
+  `target_refs` cannot cross namespaces), with exactly three exact-path
+  rules: `/api/v1/write` to the receiver's 9090, `/otlp/v1/logs` to
+  Loki's gateway on 80, `/v1/traces` to Tempo's 4318. Istio creates the
+  door's pods itself; point the Gateway's `infrastructure.parametersRef`
+  at a `KubernetesConfigMap` whose `deployment` key overlays the pod
+  spec, so the door runs at the monitoring priority and yields like the
+  rest of monitoring.
+- **One issuer, one key per cluster.** A `KubernetesRequestAuthentication`
+  with one rule: the door's hostname as issuer and audience, and an
+  inline key set holding one key per cluster (key id = the cluster's
+  name; an inline key set requires the issuer). Each cluster's token
+  names itself as subject, so its principal reads `<issuer>/<cluster>`,
+  and an ALLOW `KubernetesAuthorizationPolicy` lists those principals for
+  POST on the three paths. The check alone lets a request with no token
+  through; the ALLOW policy is what refuses it (403), while a token the
+  key set cannot verify gets 401. The check strips the token before the
+  stores see it (`forward_original_token` stays off). Revoking a cluster
+  is deleting its key and principal; nothing needs to keep the signing
+  key once its one token is signed.
+- **The token reaches a sender through types the catalog has:** a
+  `KubernetesSecret` from the managed secret, read by remote write's
+  `bearer_token_secret` and by the collector's `env_from_secrets` as an
+  `Authorization: Bearer ${env:...}` header. Both name the Secret as a
+  plain string, so each needs an explicit `depends_on`.
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesRequestAuthentication
+metadata:
+  name: telemetry-jwt
+spec:
+  namespace:
+    value: observability-hub
+  target_refs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name:
+        valueFrom:
+          name: telemetry-gateway
+  jwt_rules:
+    - issuer: telemetry.example.com
+      audiences:
+        - telemetry.example.com
+      jwks: '{"keys":[{"kty":"RSA","kid":"cluster-a","use":"sig","alg":"RS256","n":"<modulus>","e":"AQAB"}]}'
+---
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAuthorizationPolicy
+metadata:
+  name: telemetry-allow
+spec:
+  namespace:
+    value: observability-hub
+  target_refs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name:
+        valueFrom:
+          name: telemetry-gateway
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            request_principals:
+              - telemetry.example.com/cluster-a
+      to:
+        - operation:
+            methods:
+              - POST
+            paths:
+              - /api/v1/write
+              - /otlp/v1/logs
+              - /v1/traces
+```
+
+Proving the door takes four requests: no token (403), a token signed by
+a key the door never saw, with identical claims (401), the real token
+with an empty body (the store's own 400 or 422, so the door let it
+through), and the real token on any other path or method (403).
 
 ## Dashboards as code
 

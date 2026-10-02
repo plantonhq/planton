@@ -26,6 +26,28 @@ the [namespace-ownership pattern](../../_patterns/namespace-ownership.md)'s
 sole-tenant case). Note the reference page's 26-character name budget —
 the chart silently truncates longer fullnames.
 
+The one second stack worth running is a monitoring hub's receiver,
+where other clusters remote-write. It must bring nothing the first
+stack runs: `skip_crds`, `discovery: release_managed_only`,
+`enable_remote_write_receiver`, Alertmanager, Grafana, both `exporters`,
+every `control_plane_scrapers` entry and `default_rules` off, plus
+`helm_values` `prometheusOperator.enabled: false` (no typed switch yet).
+The first stack's operator watches every namespace and runs the
+receiver's Prometheus; a second operator would fight it, and any scraper
+left on is scraped twice, because the first stack discovers monitors
+cluster-wide. Never make the first stack the receiver: its rules would
+run over every remote cluster's samples and post each of their alerts
+again. Size the receiver's
+`prometheus.prometheusSpec.tsdb.outOfOrderTimeWindow` (also
+`helm_values` today) to what a sender can resend, about two hours of
+write-ahead log; without it the receiver refuses samples more than about
+an hour older than its newest, so a longer outage leaves a gap. On the
+sending side, `external_labels` ride every remote-written series, added
+only where the series lacks the label. The whole composition, with the
+door senders write through:
+[observability-stack pattern](../../_patterns/observability-stack.md),
+"Several clusters, one hub".
+
 ## Scrape only what the cluster can show you
 
 The defaults scrape a control plane you own. On a managed one (GKE, EKS,

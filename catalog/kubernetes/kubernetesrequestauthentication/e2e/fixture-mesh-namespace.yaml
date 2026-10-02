@@ -1,0 +1,11 @@
+# Extra-instance fixture for the behavioral-jwt scenario: the namespace the
+# meshed workloads run in, labeled for sidecar injection BEFORE any pod
+# starts (injection is admission-time).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-jwt-mesh
+spec:
+  name: e2e-jwt-mesh
+  labels:
+    istio-injection: enabled

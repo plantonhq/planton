@@ -145,6 +145,41 @@ Ask these before composing, in the person's words, not the chart's:
   the autoscaler sees only reservations: a node at 99% with 45%
   reserved is a build or a workload with no honest memory request.
 
+## When a second cluster reports to the hub
+
+Each cluster keeps its own agent and Alertmanager; only copies travel.
+The pattern's "Several clusters, one hub" has the exact switches. What
+to decide with the person, and what to watch for:
+
+- **The hub gets its own receiving Prometheus,** a second stack with
+  everything the agent already runs turned off. Never make the hub
+  cluster's agent the receiver: its rules would run over the other
+  clusters' samples and every one of their alerts would post twice.
+- **The other clusters write through a door of their own: a dedicated
+  Gateway, so a second load balancer.** Tell the person it costs about
+  one forwarding rule a month, and why it can't share the platform's
+  front door: a JWT check there would refuse every other bearer token
+  that Gateway serves. Put the door's pods at the monitoring priority
+  through the Gateway's `parameters_ref` ConfigMap.
+- **Mint one token per cluster yourself,** RS256 with a fresh key: the
+  token into the person's vault, never onto a screen, and only the public
+  key into the door's inline key set, with the cluster's name as key id
+  and subject. Destroy the signing key; revocation is deleting the key
+  from the door. Ask the person to name the issuer (the door's hostname
+  reads best) before the first token, because every token carries it.
+- **Label every signal with where it came from.** Metrics already carry
+  each agent's `external_labels` (`cluster`, `environment`) on the
+  remote write. Logs need the collector to insert `k8s.cluster.name` and
+  `deployment.environment.name`, which Loki indexes by default. Where
+  several environments share one cluster, the namespace tells them apart
+  until each pod states its own environment; say so.
+- **Give the receiver an out-of-order window** about as long as a sender
+  can resend (two hours), or an outage of the door longer than about an
+  hour leaves a gap at the hub, while each cluster still keeps its own.
+- **Expect real alerts in the first hour** of a cluster that never had
+  in-cluster alerting. Read them with the person and list their causes;
+  never silence one by hand.
+
 ## Proving it
 
 Do these with the person, and report what arrived and when:
@@ -197,6 +232,14 @@ Do these with the person, and report what arrived and when:
    empty frame is no data; fill `$cluster`-style variables yourself, the
    API fills only `$__range` and `$__rate_interval`); and
    `/api/search?type=dash-db` lists nothing the files do not declare.
+8. For a telemetry door, four requests: no token is refused (403), a
+   token with the right claims signed by a key the door never saw is
+   refused (401), the real token with an empty body gets the store's own
+   error (Prometheus's 400, Loki's 422), which proves the door let it
+   pass, and the real token on any other path or method is refused (403).
+   Then confirm the sending cluster's series and log lines at the hub by
+   their cluster label, and with the person's go stop the receiver for ten
+   minutes and confirm no gap in the sender's series after it returns.
 
 A rotated alerting secret is picked up on the next notification without a
 restart, so rotation needs no drill of its own; the hub's secrets roll the

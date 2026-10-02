@@ -18,7 +18,14 @@ someone searches for logs that were never shipped.
 OTLP-ingested lines are indexed by Loki's default resource labels, so a
 cluster's pod logs are searched as `{k8s_namespace_name="<ns>"}` (also
 `k8s_pod_name`, `k8s_container_name`, `service_name`), and a record's
-`trace_id` is kept as structured metadata, not a label. Leave
+`trace_id` is kept as structured metadata, not a label. When several
+clusters ship to one Loki, stamp each line with OpenTelemetry's own
+`k8s.cluster.name` and `deployment.environment.name` (a collector
+`resource` processor with `action: insert`, so a pod that states its own
+environment keeps it): both are in Loki's default index-label list, so
+`{k8s_cluster_name="..."}` and `{deployment_environment_name="..."}` work
+with no Loki setting. A custom attribute such as `cluster` would land as
+structured metadata instead, filterable but not a stream label. Leave
 `canary_enabled` at its default: switching the canary off fails the
 install today, because the chart's Helm test needs it. The `scheduling`
 block reaches Loki itself and its gateway, not the caches or the canary.

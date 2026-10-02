@@ -1,0 +1,27 @@
+# The behavioral proof: with a real mesh installed (KubernetesIstio), a meshed
+# backend, a meshed client and an ALLOW policy that admits only one named
+# sender, this token check must refuse a stranger's token with 401, leave a
+# request with no token to the ALLOW policy's 403, and let the trusted token
+# through with 200. Once it is destroyed, the stranger's token is no longer
+# refused as a bad token (403 from the policy instead of 401), so the 401 came
+# from this object. The key set is inline, the way a door holds its senders'
+# public keys without fetching them; the issuer is required beside an inline
+# key set. The matching tokens are test-only, signed once and committed in the
+# verifier (aa_e2e/verify/jwtbehavior.go).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesRequestAuthentication
+metadata:
+  name: e2e-jwt-check
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesIstio, catalog/kubernetes/kubernetesrequestauthentication/e2e/fixture-mesh-namespace.yaml, catalog/kubernetes/kubernetesrequestauthentication/e2e/fixture-backend-deployment.yaml, catalog/kubernetes/kubernetesrequestauthentication/e2e/fixture-client-deployment.yaml, catalog/kubernetes/kubernetesrequestauthentication/e2e/fixture-require-principal.yaml"
+spec:
+  namespace:
+    value: e2e-jwt-mesh
+  selector:
+    match_labels:
+      app: e2e-jwt-backend
+  jwt_rules:
+    - issuer: e2e-jwt.planton.dev
+      audiences:
+        - e2e-jwt.planton.dev
+      jwks: '{"keys":[{"kty":"RSA","kid":"e2e-jwt-sender","use":"sig","alg":"RS256","n":"z9Q04gaUhb5QLN0UPubgFf8y4CrWCZ1_6vx5btdgPObcbvsLHF30A54b05D5K0r_kyigTuDviH8RMGZ77GQpid2RWf3RWIDA1kBRRnJ5V7iSJk1Rr45GlImJbunNhyOk7bEI-wVE_3B9gJljEuvJOr6zWMDAbaxO1i1usnPcOo_CghpzWZ6qsIV7KsRc2P--Xql00Pkilr4782vVEDvIW37WGe5IhX3QDoEyGsIW6wcRM4qozJitmnEsbi_StpftHk2gXTDYem0A0RARRJHaeERC64ZnGSZjZYnQpdzcmVXCBH6shsndvMgjbqXcfl_XpPRtOi4jd8kmjvvNhzkQvw","e":"AQAB"}]}'

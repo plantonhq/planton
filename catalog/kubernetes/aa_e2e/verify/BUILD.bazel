@@ -35,6 +35,7 @@ go_library(
         "istioinstall.go",
         "job.go",
         "jupyterhub.go",
+        "jwtbehavior.go",
         "kafkaui.go",
         "karapace.go",
         "karpenterprovision.go",

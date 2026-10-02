@@ -1,0 +1,30 @@
+# Extra-instance fixture for the behavioral-jwt scenario: the meshed HTTP
+# backend the token check protects (pod label app=e2e-jwt-backend is the
+# auto-created Service's selector and the policies' workload selector). The
+# workload kind auto-creates a ClusterIP Service named e2e-jwt-backend on
+# port 80, which the client curls.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesDeployment
+metadata:
+  name: e2e-jwt-backend
+spec:
+  namespace:
+    value: e2e-jwt-mesh
+  version: main
+  container:
+    app:
+      image:
+        repo: nginxinc/nginx-unprivileged
+        tag: "1.27"
+      ports:
+        - name: http
+          container_port: 8080
+          service_port: 80
+          network_protocol: TCP
+      resources:
+        requests:
+          cpu: "25m"
+          memory: "32Mi"
+        limits:
+          cpu: "200m"
+          memory: "128Mi"

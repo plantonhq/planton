@@ -81,6 +81,8 @@ These are the most important decisions when configuring a RequestAuthentication 
 
 **One JWT rule per issuer, keys must be reachable** -- each rule names the issuer (matched against the token's `iss` claim), optional audiences, and the JWKS source: OIDC discovery from the issuer URL, a pinned JWKS URL, or inline keys. istiod fetches the keys -- an unreachable JWKS endpoint means tokens from that issuer can never validate, failing requests that carry them.
 
+**Inline keys for a door you own** -- when you mint the tokens yourself (each cluster or service sending into a gateway you run), hold the public keys inline in `jwks` so istiod fetches nothing. An inline key set requires `issuer`. Put one key per sender in the one set, each with its sender's name as key id, and let each token name its sender as subject: the principal reads `<issuer>/<sender>`, the paired ALLOW policy lists principals, and revoking one sender is deleting its key. A token the keys cannot verify is refused with 401, a request with no token reaches the AuthorizationPolicy, which answers 403, and the token is removed before the backend sees it unless `forward_original_token` is set. A token needs no `exp` to validate.
+
 **Namespace is fixed at creation** -- the policy's scope is defined relative to the namespace it is created in; moving it means creating a new policy.
 
 ## Outputs and Dependencies

@@ -1651,6 +1651,18 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 				BackendURL:       "http://e2e-authz-backend." + info.Namespace + ".svc.cluster.local/",
 			}, nil
 		}
+		// RequestAuthentication: the same, with a paired ALLOW policy among
+		// the fixtures — a stranger's token must be refused (401), a request
+		// with no token left to the policy (403) and the trusted token let
+		// through (200), and the 401 must stop once the check is destroyed.
+		if component == "kubernetesrequestauthentication" && manifestHasPrerequisite(manifestPath, "KubernetesIstio") {
+			return &JwtBehavioralVerifier{
+				Namespace:        info.Namespace,
+				CheckName:        info.Name,
+				ClientDeployment: "e2e-jwt-client",
+				BackendURL:       "http://e2e-jwt-backend." + info.Namespace + ".svc.cluster.local/",
+			}, nil
+		}
 		if resource, ok := istioApiKinds[component]; ok {
 			return &ResourceExistenceVerifier{
 				Namespace: info.Namespace,

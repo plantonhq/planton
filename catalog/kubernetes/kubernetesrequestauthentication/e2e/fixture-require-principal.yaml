@@ -1,0 +1,20 @@
+# Extra-instance fixture for the behavioral-jwt scenario: the ALLOW policy a
+# token check must be paired with. A RequestAuthentication refuses a bad token
+# but lets a request with NO token through; this policy is what refuses that
+# one, by admitting only a request whose token named the trusted sender.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesAuthorizationPolicy
+metadata:
+  name: e2e-jwt-require-principal
+spec:
+  namespace:
+    value: e2e-jwt-mesh
+  selector:
+    match_labels:
+      app: e2e-jwt-backend
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            request_principals:
+              - e2e-jwt.planton.dev/e2e-jwt-sender

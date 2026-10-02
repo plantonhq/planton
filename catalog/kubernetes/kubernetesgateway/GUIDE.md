@@ -40,6 +40,17 @@ The catalog's two grounded answers:
   creates the "cilium" GatewayClass — and requires `kubeProxyReplacement`
   plus the CRDs (its reference page carries both constraints).
 
+On Istio, each Gateway gets its own Deployment and LoadBalancer Service,
+named `<gateway>-istio`, which is how a second front door gets its own
+load balancer. Those pods are Istio's to create, so their priority and
+resources come from `infrastructure.parameters_ref`: a
+`KubernetesConfigMap` in the Gateway's namespace whose `deployment` key is
+a strategic-merge overlay on the generated Deployment (for example
+`spec.template.spec.priorityClassName`, or the `istio-proxy` container's
+resources). Name it as a plain string and keep an explicit `depends_on`
+on the ConfigMap, since no reference carries the edge. An Istio policy
+attached through `target_refs` must live in the Gateway's own namespace.
+
 On a cluster with neither — for example, one whose entry point is
 ingress-nginx — Gateway declarations sit unclaimed forever. That cluster
 wants the Ingress lane instead: the comparison lives in the
