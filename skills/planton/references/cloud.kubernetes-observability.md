@@ -128,6 +128,22 @@ Ask these before composing, in the person's words, not the chart's:
   are each the difference between logs arriving and silence.
 - **A `$var/` reference works in a plain-string field** (a Grafana
   `client_id`, for one): it resolves at deploy like any other.
+- **Dashboards are files, not clicks.** Ship each as a
+  `KubernetesConfigMap` labeled `grafana_dashboard` (the kind's preset
+  `04-grafana-dashboard`), in its own composition beside the hub so a
+  panel change never re-plans Grafana. Ask the person which questions
+  they ask mid-incident and give each its own dashboard, titled by the
+  question, with each panel's description the question it answers;
+  offer that before any generic community dashboard. Grafana refuses to
+  save over a provisioned dashboard, so tell the person screens change
+  only through the files. In an infra chart, keep double braces out of
+  the dashboard JSON (the chart engine renders it): pretty-print it and
+  name series with `${__field.labels.<label>}` display names.
+- **Read "how full is the node" from the node exporter,** not the
+  containers' working set: the kubelet stops reporting container memory
+  first when a node starves. Put it beside what pods reserve, because
+  the autoscaler sees only reservations: a node at 99% with 45%
+  reserved is a build or a workload with no honest memory request.
 
 ## Proving it
 
@@ -174,6 +190,13 @@ Do these with the person, and report what arrived and when:
    appear in the buckets once Loki and Tempo flush (minutes for Tempo,
    longer for Loki's chunks); an index file in the logs bucket proves the
    key writes.
+7. Prove every dashboard from the server: `/api/dashboards/uid/<uid>`
+   reads `meta.provisioned: true` and matches the committed JSON except
+   `id` and `version`; every panel query returns at least one frame over
+   the dashboard's default range through `/api/ds/query` (a 200 with an
+   empty frame is no data; fill `$cluster`-style variables yourself, the
+   API fills only `$__range` and `$__rate_interval`); and
+   `/api/search?type=dash-db` lists nothing the files do not declare.
 
 A rotated alerting secret is picked up on the next notification without a
 restart, so rotation needs no drill of its own; the hub's secrets roll the

@@ -1,0 +1,54 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesConfigMap
+metadata:
+  name: capacity-dashboard
+spec:
+  name: dashboard-capacity
+  namespace:
+    value: "<your-grafana-namespace>"
+  labels:
+    grafana_dashboard: "1"
+  data:
+    capacity.json: |
+      {
+        "editable": false,
+        "panels": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "description": "How many nodes are ready to run work?",
+            "gridPos": {
+              "h": 4,
+              "w": 6,
+              "x": 0,
+              "y": 0
+            },
+            "id": 1,
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "prometheus"
+                },
+                "expr": "sum(kube_node_status_condition{condition=\"Ready\", status=\"true\"})",
+                "instant": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Ready Nodes",
+            "type": "stat"
+          }
+        ],
+        "schemaVersion": 42,
+        "tags": [
+          "platform"
+        ],
+        "time": {
+          "from": "now-7d",
+          "to": "now"
+        },
+        "title": "Will a cluster run out of room this week?",
+        "uid": "capacity"
+      }

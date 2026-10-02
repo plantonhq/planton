@@ -28,6 +28,47 @@ dashboards as code: ship them as ConfigMaps labeled
 `community_dashboards`, present from first boot, immune to restarts. For anything
 beyond a scratch environment, one of the two is part of the proposal.
 
+## Dashboards as code
+
+The dashboard sidecar (on by default) loads every ConfigMap labeled
+`grafana_dashboard` from every namespace within a minute, so a dashboard
+ships as a typed `KubernetesConfigMap` (its preset `04-grafana-dashboard`)
+beside whatever it watches, never by editing this resource. What a live
+install teaches:
+
+- **Provisioned means read-only.** Grafana refuses to save over a
+  dashboard loaded from a file ("Cannot save provisioned dashboard"),
+  even for an Admin. An Editor can still save a copy, which is drift:
+  compare `/api/search?type=dash-db` with the committed uids.
+  `meta.provisioned` and `meta.provisionedExternalId` (the ConfigMap's
+  data key) on `/api/dashboards/uid/<uid>` tell a hand-made copy from
+  one another chart shipped.
+- **Pin datasource uids, and name them in every panel.** A dashboard
+  that reads `{"uid": "prometheus"}` survives the datasource's URL moving
+  to another Prometheus; one that reads a name does not.
+- **In an infra chart, keep the chart engine's delimiters out.** Every
+  template is rendered, and the engine keeps a raw block's tags in its
+  output, so a Prometheus legend format with double braces breaks the
+  render. Write the JSON pretty-printed (closing braces then never sit
+  side by side) and name series with a field override,
+  `displayName: "${__field.labels.<label>}"`. Generating the JSON from
+  short sources makes both rules a refusal rather than a review comment.
+- **Match the running Grafana's `schemaVersion`** (42 on Grafana 13.1),
+  so it is not migrated in the browser on every load. The stored copy
+  then differs from the file only by `id` and `version`, which makes
+  "identical to the committed file" a check.
+- **A blank panel must mean broken.** Grafana answers a query with no
+  data as status 200 with an empty frame, so a checker reads frames, not
+  status, and a panel is written to return data on a healthy system:
+  counts end in `or vector(0)`, lists are sorted rather than filtered.
+- **One file for one cluster and many.** A `$cluster` variable whose
+  "All" is `.*` also matches a series with no `cluster` label. Grafana's
+  query API does not fill dashboard variables (it fills `$__range` and
+  `$__rate_interval`), so a checker substitutes them itself.
+- **Removing a dashboard is a purge.** An infra chart re-install never
+  deletes a ConfigMap the chart stopped declaring; purge it by name, or
+  the drift comparison above names it as shipped by a chart.
+
 ## Credentials
 
 The chart generates the admin password once, into the `<name>` Secret —
@@ -65,19 +106,12 @@ the question "who can sign in" belongs in the proposal, not after it.
   (`viewers_can_edit`) is deprecated, and the finer "data sources
   explorer" role is assigned only in Grafana Enterprise. Staff who must
   investigate are Editors; keep dashboards in committed files and treat a
-  saved hand-made one as drift.
+  saved hand-made one as drift (see "Dashboards as code"). Agents querying
+  through the API need no more than Viewer.
 - **With `hosted_domain`, Google's sign-in screen fixes the domain.** The
   email box carries `@<domain>` and an outside account cannot be typed
   in, so a browser test of the outside-account refusal stops at Google;
   `allowed_domains` remains Grafana's own gate behind it.
-- **Reading logs and traces needs Editor.** In open-source Grafana only
-  Editors and Admins can open Explore, which is the one place to read logs
-  and traces until dashboards exist. The Viewer workaround
-  (`viewers_can_edit`) is deprecated, and the finer-grained data-sources
-  explorer role is an Enterprise feature. So a team that must investigate
-  maps its staff to Editor and catches stray hand-made dashboards by
-  comparing Grafana's dashboards with the committed ones. Agents querying
-  through the API need no more than Viewer.
 - **The manifest owns sign-in.** Once either provider is declared,
   Grafana's Administration > Authentication screen can no longer edit
   any OAuth provider: settings saved there would otherwise live in
@@ -129,22 +163,8 @@ datasources:
 Prove it with one synthetic span and one log record carrying the same
 `traceId` (OTLP HTTP to Tempo's `otlp_http_endpoint` and to Loki's
 `otlp_push_endpoint`): Tempo returns the trace by id, and the query above
-returns the line. Once it has,
-  turning both on sends people straight to the provider; the admin
-  password still works against the API through a port-forward.
-
-## Trace to logs, and back
-
-There is no typed field for the links between a Tempo and a Loki
-datasource; each datasource's `json_data` carries them, and each names
-the other by `uid`, so pin `uid` on both. On Loki, a `derivedFields`
-entry with `matcherType: label` and `matcherRegex: trace_id` turns the
-`trace_id` that OTLP logs carry as structured metadata into a link to
-the trace. On Tempo, `tracesToLogsV2` with `customQuery: true` and a
-query such as `{service_name=~".+"} | trace_id="${__trace.traceId}"`
-opens the span's log lines (Loki indexes OTLP's `service.name` as
-`service_name`). Prove it with one synthetic span and one log line
-sharing a trace id.
+returns the line. Loki indexes OTLP's `service.name` as `service_name`,
+which is what the query above matches on.
 
 ## On the diagram
 

@@ -439,6 +439,63 @@ Install order on a fresh cluster: the Gateway's and external-dns's
 switches, then the agent (its collector holds lines on the node's disk
 until Loki answers), then the hub.
 
+## Dashboards as code
+
+A Grafana nobody provisioned fills with hand-made screens no one can
+review. Ship each dashboard as a `KubernetesConfigMap` labeled
+`grafana_dashboard` (the Grafana sidecar loads it from any namespace)
+and keep the screens in their own composition beside the hub, so a
+panel change never re-plans Grafana, Loki or Tempo:
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesConfigMap
+metadata:
+  name: capacity-dashboard
+spec:
+  name: dashboard-capacity
+  namespace:
+    valueFrom:
+      name: observability-hub-ns
+  labels:
+    grafana_dashboard: "1"
+  data:
+    capacity.json: |
+      {
+        "title": "Will a cluster run out of room this week?",
+        "uid": "capacity",
+        "schemaVersion": 42,
+        "panels": []
+      }
+```
+
+- **One question per dashboard, one per panel.** The title is the
+  question an operator asks mid-incident, and each panel's description
+  is the question it answers. That is also what an agent reading the
+  dashboard through Grafana's API gets.
+- **Every panel returns data on a healthy cluster** (`or vector(0)` on
+  counts, sorted lists rather than filtered ones), so a blank panel
+  means broken and a checker can say so. Grafana answers "no data" as a
+  200 with an empty frame.
+- **Datasources by pinned uid** in every panel, and a `$cluster`
+  variable whose "All" is `.*`: the same files serve one cluster's
+  Prometheus and a hub Prometheus that several clusters write into.
+- **"How full is the node" comes from the node exporter**
+  (`node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes`), not
+  the containers' working set. The kubelet that reports container memory
+  is the first thing a starving node stops serving: on a night nodes sat
+  at 99%, the container sum read 58% and then went silent. Compare that
+  against what pods reserve, because the autoscaler sees only
+  reservations.
+- **Forecast only what has history.** A week's linear forecast from a
+  node or build volume minutes old predicts hundreds of gigabytes below
+  zero; show fullness now for cattle, and trends over the dashboard's
+  range.
+- **Provisioned dashboards are read-only**, even for an Admin, and the
+  rest of the rules (delimiters in an infra chart, `schemaVersion`,
+  catching a hand-made copy) are in the `KubernetesGrafana` guide,
+  "Dashboards as code".
+
 ## On the diagram
 
 The assembled shape renders as a hub: Grafana with three datasource edges
