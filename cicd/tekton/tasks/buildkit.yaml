@@ -135,6 +135,19 @@ spec:
       workingDir: "$(workspaces.source.path)/$(params.contextDir)"
       securityContext:
         privileged: true          # required even for rootless image
+      # The build declares what a real image build uses, so the scheduler
+      # places it only where it fits and the cluster autoscaler adds a node
+      # when none does, instead of packing builds onto one node until it runs
+      # out of memory. Sized from measured builds: heavy ones held 3.4 to
+      # 3.7 GiB (peak 5.5) and about 1 to 2 cores. No limit: a build that
+      # needs more than it asked for is slow on a busy node, never killed for
+      # being big. This is the only step that asks: Tekton keeps every step's
+      # container alive for the whole task, so the pod's request is the sum of
+      # its steps', and the light steps would only inflate it.
+      computeResources:
+        requests:
+          memory: 4Gi
+          cpu: "1"
       # BuildKit's layer store lives on a pod volume, not inside the step's own
       # root filesystem. A container's root filesystem is already an overlay
       # mount, and the kernel refuses an overlay whose upper directory sits on

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 )
 
@@ -389,6 +390,38 @@ func TestRunnerDeployment_BuildOptOut(t *testing.T) {
 	}
 	if len(container.Ports) != 1 || container.Ports[0].Name != "grpc" {
 		t.Errorf("ports = %+v, want only grpc with builds off", container.Ports)
+	}
+}
+
+// Build scheduling reaches the runner in Kubernetes' own JSON shapes, and is
+// absent, not empty, when the platform names none: the runner then leaves
+// builds wherever the scheduler puts them.
+func TestRunnerDeployment_BuildScheduling(t *testing.T) {
+	envMap := envVarMap(RunnerDeployment(testRunnerConfig()).Spec.Template.Spec.Containers[0].Env)
+	for _, absent := range []string{"BUILD_NODE_SELECTOR", "BUILD_TOLERATIONS"} {
+		if _, ok := envMap[absent]; ok {
+			t.Errorf("%s must be absent when the platform names no build scheduling", absent)
+		}
+	}
+
+	cfg := testRunnerConfig()
+	cfg.BuildNodeSelector = map[string]string{"planton.ai/workload": "build"}
+	cfg.BuildTolerations = []corev1.Toleration{{
+		Key: "planton.ai/workload", Operator: corev1.TolerationOpEqual, Value: "build", Effect: corev1.TaintEffectNoSchedule,
+	}}
+	envMap = envVarMap(RunnerDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
+	if got, want := envMap["BUILD_NODE_SELECTOR"], `{"planton.ai/workload":"build"}`; got != want {
+		t.Errorf("BUILD_NODE_SELECTOR = %q, want %q", got, want)
+	}
+	if got, want := envMap["BUILD_TOLERATIONS"], `[{"key":"planton.ai/workload","operator":"Equal","value":"build","effect":"NoSchedule"}]`; got != want {
+		t.Errorf("BUILD_TOLERATIONS = %q, want %q", got, want)
+	}
+
+	off := testRunnerConfigBuildsOff()
+	off.BuildNodeSelector = cfg.BuildNodeSelector
+	envMap = envVarMap(RunnerDeployment(off).Spec.Template.Spec.Containers[0].Env)
+	if _, ok := envMap["BUILD_NODE_SELECTOR"]; ok {
+		t.Error("BUILD_NODE_SELECTOR must be absent when builds are off: there is no build to place")
 	}
 }
 

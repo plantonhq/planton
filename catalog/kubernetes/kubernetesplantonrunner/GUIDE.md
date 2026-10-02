@@ -55,6 +55,25 @@ Pipelines must already be installed -- this module does not install it,
 and `build.tektonNamespace` only picks where the pipelines run
 (defaulting to the runner's own namespace).
 
+## Keep builds on their own nodes
+
+A build is the heaviest thing most clusters run, and a burst of them can starve everything else on the nodes they share. On any cluster that also runs workloads you care about, give builds a node pool of their own -- tainted so nothing else lands there, scaling from zero -- and point `build.scheduling` at it:
+
+```yaml
+build:
+  enabled: true
+  scheduling:
+    nodeSelector:
+      planton.ai/workload: build
+    tolerations:
+      - key: planton.ai/workload
+        operator: Equal
+        value: build
+        effect: NoSchedule
+```
+
+The runner puts both on every PipelineRun's pod template, so every task pod, and the helper pod Tekton uses to keep a run's pods together, lands only on that pool. Each image build step also declares what it uses, so the pool adds nodes as builds arrive and queues builds beyond its ceiling. Leave `build.scheduling` unset on a single-node cluster, where there is nowhere else to go.
+
 ## In-cluster runner vs the hosted fleet
 
 Deploy this kind when the targets are reachable only from inside the

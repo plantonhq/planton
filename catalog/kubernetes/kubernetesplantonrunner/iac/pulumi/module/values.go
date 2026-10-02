@@ -2,6 +2,7 @@ package module
 
 import (
 	"github.com/pkg/errors"
+	kubernetesplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonrunner/v1alpha1"
 	"sigs.k8s.io/yaml"
 )
 
@@ -62,6 +63,9 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 		if build.GetTektonNamespace() != "" {
 			buildBlock["tektonNamespace"] = build.GetTektonNamespace()
 		}
+		if scheduling := buildSchedulingBlock(build.GetScheduling()); len(scheduling) > 0 {
+			buildBlock["scheduling"] = scheduling
+		}
 		values["build"] = buildBlock
 	}
 
@@ -97,6 +101,48 @@ func enrollmentBlock(locals *Locals) map[string]interface{} {
 	}
 	if endpoint := locals.Spec.GetControlPlaneEndpoint(); endpoint != "" {
 		block["endpoint"] = endpoint
+	}
+	return block
+}
+
+// buildSchedulingBlock renders the nodes build pods may use into the chart's
+// build.scheduling values, which the chart hands the runner in Kubernetes'
+// own shapes. Empty parts are left out, so an unset block leaves builds
+// wherever the scheduler puts them.
+func buildSchedulingBlock(scheduling *kubernetesplantonrunnerv1alpha1.KubernetesPlantonRunnerBuildScheduling) map[string]interface{} {
+	block := map[string]interface{}{}
+	if scheduling == nil {
+		return block
+	}
+	if selector := scheduling.GetNodeSelector(); len(selector) > 0 {
+		nodeSelector := make(map[string]interface{}, len(selector))
+		for k, v := range selector {
+			nodeSelector[k] = v
+		}
+		block["nodeSelector"] = nodeSelector
+	}
+	if tolerations := scheduling.GetTolerations(); len(tolerations) > 0 {
+		out := make([]interface{}, 0, len(tolerations))
+		for _, t := range tolerations {
+			tol := map[string]interface{}{}
+			if t.GetKey() != "" {
+				tol["key"] = t.GetKey()
+			}
+			if t.GetOperator() != "" {
+				tol["operator"] = t.GetOperator()
+			}
+			if t.GetValue() != "" {
+				tol["value"] = t.GetValue()
+			}
+			if t.GetEffect() != "" {
+				tol["effect"] = t.GetEffect()
+			}
+			if t.TolerationSeconds != nil {
+				tol["tolerationSeconds"] = t.GetTolerationSeconds()
+			}
+			out = append(out, tol)
+		}
+		block["tolerations"] = out
 	}
 	return block
 }

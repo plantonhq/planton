@@ -369,9 +369,28 @@ locals {
       resources                  = length(local.sizing.runner) > 0 ? local.sizing.runner : null
     } : k => v if v != null
   }
+  # The nodes build pods may use, in the CR's vocabulary (Pulumi twin:
+  # buildSchedulingMap); empty parts are left out.
+  build_scheduling = {
+    for k, v in {
+      nodeSelector = length(try(var.spec.build.scheduling.node_selector, {})) > 0 ? var.spec.build.scheduling.node_selector : null
+      tolerations = length(try(var.spec.build.scheduling.tolerations, [])) > 0 ? [
+        for t in var.spec.build.scheduling.tolerations : {
+          for tk, tv in {
+            key               = t.key != "" ? t.key : null
+            operator          = t.operator != "" ? t.operator : null
+            value             = t.value != "" ? t.value : null
+            effect            = t.effect != "" ? t.effect : null
+            tolerationSeconds = try(t.toleration_seconds, null)
+          } : tk => tv if tv != null
+        }
+      ] : null
+    } : k => v if v != null
+  }
   build_body = {
     for k, v in {
-      enabled = try(var.spec.build.enabled, null)
+      enabled    = try(var.spec.build.enabled, null)
+      scheduling = length(local.build_scheduling) > 0 ? local.build_scheduling : null
     } : k => v if v != null
   }
   remote_runners_body = {

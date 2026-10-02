@@ -35,7 +35,7 @@ import (
 // Version names the embedded content state. Bump it with ANY change to the
 // embedded YAML, however small: the pin on every run record derives from
 // it, and two different content states must never share a pin.
-const Version = "v9"
+const Version = "v10"
 
 // Pin is the platform-release source pin stamped on run records compiled
 // from this content.

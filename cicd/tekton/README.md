@@ -54,4 +54,5 @@ The compiler inlines the task's definition from this catalog when the pipeline i
 
 - Outputs that the deploy stage consumes are written to ConfigMaps in the run's own namespace (`$(context.pipelineRun.namespace)`), never a hardcoded one, so compiled pipelines are target-neutral.
 - Owner-identifier labels are stamped on created resources from parameters the platform passes.
+- The image-building step of each image task, and no other step, declares what a build uses (4 GiB of memory and one CPU, from measured builds), with no limit. The scheduler then places a build only where it fits and the cluster autoscaler adds a node when none does; a large build slows down on a busy node and is never killed for its size. Which nodes a build may use is the runner's to say, never the catalog's: see `build.scheduling` on the Planton runner and platform kinds.
 - Secrets are runtime references (secret names, workspace mounts), never values in a definition.

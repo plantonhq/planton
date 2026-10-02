@@ -96,6 +96,19 @@ build:
   # Tekton namespace (the log streamer is a singleton per namespace).
   tektonNamespace: ""
 
+  # -- Which nodes build pods may use: the runner puts these on every
+  # PipelineRun's pod template, so every task pod and the helper pod that keeps
+  # a run's pods together land only there. The usual shape is a dedicated,
+  # tainted build node pool, so a storm of builds can never starve the
+  # cluster's other workloads. These place BUILD pods; the top-level
+  # nodeSelector and tolerations place the runner itself.
+  scheduling:
+    # -- Every label must match the node (e.g. {"planton.ai/workload": "build"}).
+    nodeSelector: {}
+    # -- Kubernetes tolerations, in Kubernetes' own shape (key, operator,
+    # value, effect, tolerationSeconds), letting build pods onto tainted nodes.
+    tolerations: []
+
   # -- Port the Tekton CloudEvents webhook listens on inside the container.
   webhookPort: 8086
 

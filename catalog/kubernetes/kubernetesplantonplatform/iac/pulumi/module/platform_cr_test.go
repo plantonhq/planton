@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/plantonhq/planton/catalog/kubernetes"
 	kubernetesplantonplatformv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonplatform/v1alpha1"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
@@ -551,5 +552,37 @@ func TestPlatformSpecBody_GithubRendersTheDeclarationAsDeclared(t *testing.T) {
 	}
 	if got := spec["github"]; !reflect.DeepEqual(got, want) {
 		t.Errorf("github = %#v, want %#v", got, want)
+	}
+}
+
+// Build scheduling reaches the CR in the operator's vocabulary, and a
+// manifest that never names build renders no build block at all, so the
+// operator's defaults (builds on, scheduled anywhere) stay authoritative.
+func TestPlatformSpecBody_BuildScheduling(t *testing.T) {
+	spec := platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{}))
+	if _, present := spec["build"]; present {
+		t.Errorf("build rendered when the manifest never set it: %#v", spec["build"])
+	}
+
+	spec = platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Build: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformBuild{
+			Scheduling: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformBuildScheduling{
+				NodeSelector: map[string]string{"planton.ai/workload": "build"},
+				Tolerations: []*kubernetes.WorkloadToleration{{
+					Key: "planton.ai/workload", Operator: "Equal", Value: "build", Effect: "NoSchedule",
+				}},
+			},
+		},
+	}))
+	want := map[string]interface{}{
+		"scheduling": map[string]interface{}{
+			"nodeSelector": map[string]interface{}{"planton.ai/workload": "build"},
+			"tolerations": []interface{}{
+				map[string]interface{}{"key": "planton.ai/workload", "operator": "Equal", "value": "build", "effect": "NoSchedule"},
+			},
+		},
+	}
+	if got := spec["build"]; !reflect.DeepEqual(got, want) {
+		t.Errorf("build = %#v, want %#v", got, want)
 	}
 }

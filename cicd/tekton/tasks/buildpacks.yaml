@@ -193,6 +193,15 @@ spec:
     - name: create
       image: $(params.BUILDER_IMAGE)
       imagePullPolicy: Always
+      # The build declares what a real image build uses, so the scheduler
+      # places it only where it fits and the cluster autoscaler adds a node
+      # when none does. The same size as the Dockerfile track's build step,
+      # and for the same reasons: no limit, and the only step in the task
+      # that asks, because the pod's request is the sum of its steps'.
+      computeResources:
+        requests:
+          memory: 4Gi
+          cpu: "1"
       env:
         - name: DOCKER_CONFIG
           value: $(workspaces.dockerconfig.path)

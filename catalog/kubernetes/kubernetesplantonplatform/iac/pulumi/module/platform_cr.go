@@ -312,9 +312,18 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 	}
 
 	// ---- build -----------------------------------------------------------------
-	if b := spec.GetBuild(); b != nil && b.Enabled != nil {
-		out["build"] = map[string]interface{}{
-			"enabled": b.GetEnabled(),
+	// Renders on presence: a manifest that names neither field produces the
+	// operator's defaults (builds on, scheduled anywhere).
+	if b := spec.GetBuild(); b != nil {
+		build := map[string]interface{}{}
+		if b.Enabled != nil {
+			build["enabled"] = b.GetEnabled()
+		}
+		if scheduling := buildSchedulingMap(b.GetScheduling()); len(scheduling) > 0 {
+			build["scheduling"] = scheduling
+		}
+		if len(build) > 0 {
+			out["build"] = build
 		}
 	}
 
@@ -586,6 +595,47 @@ func resourcesMap(r *kubernetes.ContainerResources) map[string]interface{} {
 	}
 	if len(out) == 0 {
 		return nil
+	}
+	return out
+}
+
+// buildSchedulingMap renders the nodes build pods may use in the CR's
+// vocabulary: a node selector and Kubernetes tolerations, each left out when
+// empty.
+func buildSchedulingMap(s *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformBuildScheduling) map[string]interface{} {
+	out := map[string]interface{}{}
+	if s == nil {
+		return out
+	}
+	if selector := s.GetNodeSelector(); len(selector) > 0 {
+		nodeSelector := make(map[string]interface{}, len(selector))
+		for k, v := range selector {
+			nodeSelector[k] = v
+		}
+		out["nodeSelector"] = nodeSelector
+	}
+	if tolerations := s.GetTolerations(); len(tolerations) > 0 {
+		list := make([]interface{}, 0, len(tolerations))
+		for _, t := range tolerations {
+			tol := map[string]interface{}{}
+			if t.GetKey() != "" {
+				tol["key"] = t.GetKey()
+			}
+			if t.GetOperator() != "" {
+				tol["operator"] = t.GetOperator()
+			}
+			if t.GetValue() != "" {
+				tol["value"] = t.GetValue()
+			}
+			if t.GetEffect() != "" {
+				tol["effect"] = t.GetEffect()
+			}
+			if t.TolerationSeconds != nil {
+				tol["tolerationSeconds"] = t.GetTolerationSeconds()
+			}
+			list = append(list, tol)
+		}
+		out["tolerations"] = list
 	}
 	return out
 }

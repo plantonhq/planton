@@ -96,6 +96,20 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept build pods kept on a tainted build pool", func() {
+			input := minimalValidPlatform()
+			input.Spec.Build = &KubernetesPlantonPlatformBuild{
+				Scheduling: &KubernetesPlantonPlatformBuildScheduling{
+					NodeSelector: map[string]string{"planton.ai/workload": "build"},
+					Tolerations: []*kubernetes.WorkloadToleration{{
+						Key: "planton.ai/workload", Operator: "Equal", Value: "build", Effect: "NoSchedule",
+					}},
+				},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept a registry root and a runner image override", func() {
 			input := minimalValidPlatform()
 			input.Spec.ImageRegistry = "asia-south1-docker.pkg.dev/plantonhq/planton"
@@ -653,6 +667,19 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).NotTo(gomega.BeNil())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("max_memory is a Valkey size"))
+		})
+
+		ginkgo.It("should reject build scheduling on a platform that turned builds off", func() {
+			input := minimalValidPlatform()
+			input.Spec.Build = &KubernetesPlantonPlatformBuild{
+				Enabled: proto.Bool(false),
+				Scheduling: &KubernetesPlantonPlatformBuildScheduling{
+					NodeSelector: map[string]string{"planton.ai/workload": "build"},
+				},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("cannot be set with build.enabled: false"))
 		})
 
 		ginkgo.It("should fail on a registry root with a scheme or a trailing slash", func() {

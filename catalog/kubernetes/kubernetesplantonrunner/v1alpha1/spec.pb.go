@@ -271,8 +271,17 @@ type KubernetesPlantonRunnerBuild struct {
 	// The namespace Tekton build pipelines run in. Defaults to the
 	// runner's own namespace.
 	TektonNamespace string `protobuf:"bytes,2,opt,name=tekton_namespace,json=tektonNamespace,proto3" json:"tekton_namespace,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// *
+	// Which nodes build pods may use. The runner puts this on every
+	// PipelineRun's pod template, so every task pod, and the helper pod Tekton
+	// uses to keep a run's pods together, lands only there. The usual shape is a
+	// dedicated, tainted build node pool, so a burst of builds can never starve
+	// the cluster's other workloads. Unset keeps builds wherever the scheduler
+	// puts them, which is right for a single-node cluster. This places BUILD
+	// pods; `helm_values` still places the runner itself.
+	Scheduling    *KubernetesPlantonRunnerBuildScheduling `protobuf:"bytes,3,opt,name=scheduling,proto3" json:"scheduling,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonRunnerBuild) Reset() {
@@ -319,11 +328,80 @@ func (x *KubernetesPlantonRunnerBuild) GetTektonNamespace() string {
 	return ""
 }
 
+func (x *KubernetesPlantonRunnerBuild) GetScheduling() *KubernetesPlantonRunnerBuildScheduling {
+	if x != nil {
+		return x.Scheduling
+	}
+	return nil
+}
+
+// *
+// **KubernetesPlantonRunnerBuildScheduling** names the nodes build pods may
+// use: a node selector to choose them and tolerations to be allowed onto
+// them when they are tainted.
+type KubernetesPlantonRunnerBuildScheduling struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Every listed label must match the node (e.g.
+	// `planton.ai/workload: build`).
+	NodeSelector map[string]string `protobuf:"bytes,1,rep,name=node_selector,json=nodeSelector,proto3" json:"node_selector,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// *
+	// Tolerations that let build pods onto tainted nodes. A toleration only
+	// permits; pair it with `node_selector` so builds go nowhere else.
+	Tolerations   []*kubernetes.WorkloadToleration `protobuf:"bytes,2,rep,name=tolerations,proto3" json:"tolerations,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesPlantonRunnerBuildScheduling) Reset() {
+	*x = KubernetesPlantonRunnerBuildScheduling{}
+	mi := &file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesPlantonRunnerBuildScheduling) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesPlantonRunnerBuildScheduling) ProtoMessage() {}
+
+func (x *KubernetesPlantonRunnerBuildScheduling) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesPlantonRunnerBuildScheduling.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonRunnerBuildScheduling) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *KubernetesPlantonRunnerBuildScheduling) GetNodeSelector() map[string]string {
+	if x != nil {
+		return x.NodeSelector
+	}
+	return nil
+}
+
+func (x *KubernetesPlantonRunnerBuildScheduling) GetTolerations() []*kubernetes.WorkloadToleration {
+	if x != nil {
+		return x.Tolerations
+	}
+	return nil
+}
+
 var File_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesplantonrunner/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdc\f\n" +
+	">catalog/kubernetes/kubernetesplantonrunner/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdc\f\n" +
 	"\x1bKubernetesPlantonRunnerSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12 \n" +
@@ -348,11 +426,21 @@ const file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDes
 	"\x17chart_repository_format\x12\x82\x01chart repository must be an OCI path such as \"oci://asia-south1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash\x1a0this.startsWith('oci://') && !this.endsWith('/')\x8a\xa6\x1d\x1eoci://ghcr.io/plantonhq/chartsH\x02R\x0fchartRepository\x88\x01\x01B\x11\n" +
 	"\x0f_runner_versionB\x13\n" +
 	"\x11_image_repositoryB\x13\n" +
-	"\x11_chart_repository\"\xbc\x02\n" +
+	"\x11_chart_repository\"\xfa\x04\n" +
 	"\x1cKubernetesPlantonRunnerBuild\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x81\x02\n" +
 	"\x10tekton_namespace\x18\x02 \x01(\tB\xd5\x01\xbaH\xd1\x01\xba\x01\xca\x01\n" +
-	"\x17tekton_namespace_format\x12ytekton namespace must be a valid Kubernetes namespace name: lowercase letters, digits, and hyphens, at most 63 characters\x1a4this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')\xd8\x01\x01R\x0ftektonNamespaceB\xbb\x03\n" +
+	"\x17tekton_namespace_format\x12ytekton namespace must be a valid Kubernetes namespace name: lowercase letters, digits, and hyphens, at most 63 characters\x1a4this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')\xd8\x01\x01R\x0ftektonNamespace\x12\x7f\n" +
+	"\n" +
+	"scheduling\x18\x03 \x01(\v2_.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildSchedulingR\n" +
+	"scheduling:\xba\x01\xbaH\xb6\x01\x1a\xb3\x01\n" +
+	"!build.scheduling_requires_enabled\x12gbuild.scheduling places build pods, so it needs build.enabled: true; without builds it would do nothing\x1a%!has(this.scheduling) || this.enabled\"\xd0\x02\n" +
+	"&KubernetesPlantonRunnerBuildScheduling\x12\x96\x01\n" +
+	"\rnode_selector\x18\x01 \x03(\v2q.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildScheduling.NodeSelectorEntryR\fnodeSelector\x12L\n" +
+	"\vtolerations\x18\x02 \x03(\v2*.dev.planton.kubernetes.WorkloadTolerationR\vtolerations\x1a?\n" +
+	"\x11NodeSelectorEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xbb\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1B\tSpecProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonrunner/v1alpha1;kubernetesplantonrunnerv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesplantonrunner.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesplantonrunner\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesplantonrunner\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesplantonrunner::V1alpha1b\x06proto3"
 
 var (
@@ -367,22 +455,28 @@ func file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDesc
 	return file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_goTypes = []any{
-	(*KubernetesPlantonRunnerSpec)(nil),   // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec
-	(*KubernetesPlantonRunnerBuild)(nil),  // 1: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuild
-	(*v1.StringValueOrRef)(nil),           // 2: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil), // 3: dev.planton.kubernetes.ContainerResources
+	(*KubernetesPlantonRunnerSpec)(nil),            // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec
+	(*KubernetesPlantonRunnerBuild)(nil),           // 1: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuild
+	(*KubernetesPlantonRunnerBuildScheduling)(nil), // 2: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildScheduling
+	nil,                                   // 3: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildScheduling.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),           // 4: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil), // 5: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil), // 6: dev.planton.kubernetes.WorkloadToleration
 }
 var file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3, // 1: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	4, // 0: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5, // 1: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec.resources:type_name -> dev.planton.kubernetes.ContainerResources
 	1, // 2: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec.build:type_name -> dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuild
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 3: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuild.scheduling:type_name -> dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildScheduling
+	3, // 4: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildScheduling.NodeSelectorEntry
+	6, // 5: dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_init() }
@@ -397,7 +491,7 @@ func file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_init() 
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

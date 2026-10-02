@@ -100,6 +100,21 @@ var _ = ginkgo.Describe("KubernetesPlantonRunnerSpec Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
+			ginkgo.It("should accept build pods kept on a tainted build pool", func() {
+				input := minimalValidRunner()
+				input.Spec.Build = &KubernetesPlantonRunnerBuild{
+					Enabled: true,
+					Scheduling: &KubernetesPlantonRunnerBuildScheduling{
+						NodeSelector: map[string]string{"planton.ai/workload": "build"},
+						Tolerations: []*kubernetes.WorkloadToleration{{
+							Key: "planton.ai/workload", Operator: "Equal", Value: "build", Effect: "NoSchedule",
+						}},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
 			ginkgo.It("should accept a pinned runner version and a mirrored repository", func() {
 				input := minimalValidRunner()
 				input.Spec.RunnerVersion = stringPtr("v0.3.5")
@@ -154,6 +169,30 @@ var _ = ginkgo.Describe("KubernetesPlantonRunnerSpec Validation Tests", func() {
 				input.Spec.Build = &KubernetesPlantonRunnerBuild{
 					Enabled:         true,
 					TektonNamespace: "Tekton_Pipelines",
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("should reject build scheduling on a runner without builds", func() {
+				input := minimalValidRunner()
+				input.Spec.Build = &KubernetesPlantonRunnerBuild{
+					Scheduling: &KubernetesPlantonRunnerBuildScheduling{
+						NodeSelector: map[string]string{"planton.ai/workload": "build"},
+					},
+				}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("needs build.enabled: true"))
+			})
+
+			ginkgo.It("should reject a build toleration with an unknown effect", func() {
+				input := minimalValidRunner()
+				input.Spec.Build = &KubernetesPlantonRunnerBuild{
+					Enabled: true,
+					Scheduling: &KubernetesPlantonRunnerBuildScheduling{
+						Tolerations: []*kubernetes.WorkloadToleration{{Key: "planton.ai/workload", Effect: "NoSchedul"}},
+					},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())

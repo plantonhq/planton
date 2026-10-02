@@ -257,6 +257,10 @@ func runnerConfig(planton *v1.PlantonPlatform, ownerRef *metav1.OwnerReference) 
 		// definition -- but the shared predicate keeps every reader honest.
 		BuildEnabled: isBuildEffective(planton),
 	}
+	if build := planton.Spec.Build; build != nil && build.Scheduling != nil {
+		cfg.BuildNodeSelector = build.Scheduling.NodeSelector
+		cfg.BuildTolerations = build.Scheduling.Tolerations
+	}
 	var componentSize resource.Quantity
 	var componentClass string
 	if spec := planton.Spec.Runner; spec != nil {

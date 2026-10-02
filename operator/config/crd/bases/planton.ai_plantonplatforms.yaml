@@ -209,6 +209,65 @@ spec:
                       only manages infrastructure). Builds also require the runner: with
                       spec.runner disabled, builds follow it off.
                     type: boolean
+                  scheduling:
+                    description: |-
+                      scheduling names the nodes build pods may use. The runner puts it on
+                      every PipelineRun's pod template, so every task pod, and the helper pod
+                      Tekton uses to keep a run's pods together, lands only there. The usual
+                      shape is a dedicated, tainted build node pool, so a burst of builds can
+                      never starve the control plane, console and database on the nodes they
+                      share. Unset keeps builds wherever the scheduler puts them, which is
+                      right for a single-node cluster.
+                    properties:
+                      nodeSelector:
+                        additionalProperties:
+                          type: string
+                        description: 'nodeSelector: every listed label must match
+                          the node.'
+                        type: object
+                      tolerations:
+                        description: |-
+                          tolerations let build pods onto tainted nodes. A toleration only
+                          permits; pair it with nodeSelector so builds go nowhere else.
+                        items:
+                          description: |-
+                            The pod this Toleration is attached to tolerates any taint that matches
+                            the triple <key,value,effect> using the matching operator <operator>.
+                          properties:
+                            effect:
+                              description: |-
+                                Effect indicates the taint effect to match. Empty means match all taint effects.
+                                When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+                              type: string
+                            key:
+                              description: |-
+                                Key is the taint key that the toleration applies to. Empty means match all taint keys.
+                                If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+                              type: string
+                            operator:
+                              description: |-
+                                Operator represents a key's relationship to the value.
+                                Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
+                                Exists is equivalent to wildcard for value, so that a pod can
+                                tolerate all taints of a particular category.
+                                Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
+                              type: string
+                            tolerationSeconds:
+                              description: |-
+                                TolerationSeconds represents the period of time the toleration (which must be
+                                of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+                                it is not set, which means tolerate the taint forever (do not evict). Zero and
+                                negative values will be treated as 0 (evict immediately) by the system.
+                              format: int64
+                              type: integer
+                            value:
+                              description: |-
+                                Value is the taint value the toleration matches to.
+                                If the operator is Exists, the value should be empty, otherwise just a regular string.
+                              type: string
+                          type: object
+                        type: array
+                    type: object
                 type: object
               components:
                 description: |-

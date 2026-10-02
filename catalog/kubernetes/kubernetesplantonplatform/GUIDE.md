@@ -119,6 +119,22 @@ sink, so keep `build.enabled` on for at most one platform per cluster;
 and the cluster has one PlantonPlatform CRD schema (the operator's
 version), while each platform still pins its own `spec.version`.
 
+## Builds belong on their own nodes
+
+On any cluster bigger than one node, put builds on a pool of their own. A burst of builds sharing nodes with the control plane, console and database can take the whole platform down; on a tainted pool that scales from zero, the same burst only makes builds wait. Name the pool in `build.scheduling`:
+
+```yaml
+build:
+  scheduling:
+    nodeSelector:
+      planton.ai/workload: build
+    tolerations:
+      - key: planton.ai/workload
+        operator: Equal
+        value: build
+        effect: NoSchedule
+```
+
 ## The runner is where cloud credentials DON'T live
 
 `runner.serviceAccountAnnotations` (workload identity — IRSA, GKE

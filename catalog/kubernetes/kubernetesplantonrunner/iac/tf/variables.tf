@@ -36,6 +36,16 @@ variable "spec" {
     build = optional(object({
       enabled          = optional(bool, false)
       tekton_namespace = optional(string, "")
+      scheduling = optional(object({
+        node_selector = optional(map(string), {})
+        tolerations = optional(list(object({
+          key                = optional(string, "")
+          operator           = optional(string, "")
+          value              = optional(string, "")
+          effect             = optional(string, "")
+          toleration_seconds = optional(number)
+        })), [])
+      }))
     }))
     helm_values = optional(string, "")
   })

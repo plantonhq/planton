@@ -445,6 +445,29 @@ type BuildSpec struct {
 	// +kubebuilder:default=true
 	// +optional
 	Enabled *bool `json:"enabled,omitempty"`
+
+	// scheduling names the nodes build pods may use. The runner puts it on
+	// every PipelineRun's pod template, so every task pod, and the helper pod
+	// Tekton uses to keep a run's pods together, lands only there. The usual
+	// shape is a dedicated, tainted build node pool, so a burst of builds can
+	// never starve the control plane, console and database on the nodes they
+	// share. Unset keeps builds wherever the scheduler puts them, which is
+	// right for a single-node cluster.
+	// +optional
+	Scheduling *BuildSchedulingSpec `json:"scheduling,omitempty"`
+}
+
+// BuildSchedulingSpec is the node selector and tolerations every build pod
+// carries, in Kubernetes' own shapes.
+type BuildSchedulingSpec struct {
+	// nodeSelector: every listed label must match the node.
+	// +optional
+	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
+
+	// tolerations let build pods onto tainted nodes. A toleration only
+	// permits; pair it with nodeSelector so builds go nowhere else.
+	// +optional
+	Tolerations []corev1.Toleration `json:"tolerations,omitempty"`
 }
 
 // RemoteRunnersSpec configures the remote-runners capability: runners in other

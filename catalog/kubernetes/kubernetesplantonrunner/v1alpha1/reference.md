@@ -79,6 +79,14 @@ spec:
 | `spec.build` | `KubernetesPlantonRunnerBuild` |  |  |  |
 | `spec.build.enabled` | `bool` |  |  |  |
 | `spec.build.tektonNamespace` | `string` |  |  |  |
+| `spec.build.scheduling` | `KubernetesPlantonRunnerBuildScheduling` |  |  |  |
+| `spec.build.scheduling.nodeSelector` | `map<string, string>` |  |  |  |
+| `spec.build.scheduling.tolerations` | `[]WorkloadToleration` |  |  |  |
+| `spec.build.scheduling.tolerations[].key` | `string` |  |  |  |
+| `spec.build.scheduling.tolerations[].operator` | `string` |  |  |  |
+| `spec.build.scheduling.tolerations[].value` | `string` |  |  |  |
+| `spec.build.scheduling.tolerations[].effect` | `string` |  |  |  |
+| `spec.build.scheduling.tolerations[].tolerationSeconds` | `int64` |  |  |  |
 | `spec.helmValues` | `string` |  |  |  |
 | `spec.chartRepository` | `string` |  | `oci://ghcr.io/plantonhq/charts` |  |
 
@@ -232,6 +240,8 @@ Enables the runner's build worker: the runner then also executes
 container-image build pipelines through Tekton on this cluster.
 Requires Tekton Pipelines to be installed.
 
+- rule: build.scheduling places build pods, so it needs build.enabled: true; without builds it would do nothing
+
 ### spec.build.enabled
 
 `bool`
@@ -248,6 +258,69 @@ runner's own namespace.
 
 - rule: tekton namespace must be a valid Kubernetes namespace name: lowercase letters, digits, and hyphens, at most 63 characters
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
+
+### spec.build.scheduling
+
+`KubernetesPlantonRunnerBuildScheduling`
+
+Which nodes build pods may use. The runner puts this on every
+PipelineRun's pod template, so every task pod, and the helper pod Tekton
+uses to keep a run's pods together, lands only there. The usual shape is a
+dedicated, tainted build node pool, so a burst of builds can never starve
+the cluster's other workloads. Unset keeps builds wherever the scheduler
+puts them, which is right for a single-node cluster. This places BUILD
+pods; `helm_values` still places the runner itself.
+
+### spec.build.scheduling.nodeSelector
+
+`map<string, string>`
+
+Every listed label must match the node (e.g.
+`planton.ai/workload: build`).
+
+### spec.build.scheduling.tolerations
+
+`[]WorkloadToleration`
+
+Tolerations that let build pods onto tainted nodes. A toleration only
+permits; pair it with `node_selector` so builds go nowhere else.
+
+### spec.build.scheduling.tolerations[].key
+
+`string`
+
+Taint key to tolerate. Empty key with operator "Exists" tolerates every taint.
+
+### spec.build.scheduling.tolerations[].operator
+
+`string`
+
+How key/value match: "Equal" (default — value must match too) or "Exists"
+(key presence alone matches).
+
+- rule: Toleration operator must be either "Equal" or "Exists"
+
+### spec.build.scheduling.tolerations[].value
+
+`string`
+
+Taint value to match when operator is "Equal".
+
+### spec.build.scheduling.tolerations[].effect
+
+`string`
+
+Which taint effect is tolerated: "NoSchedule", "PreferNoSchedule", or
+"NoExecute". Empty tolerates all effects for the key.
+
+- rule: Toleration effect must be one of "NoSchedule", "PreferNoSchedule", or "NoExecute"
+
+### spec.build.scheduling.tolerations[].tolerationSeconds
+
+`int64` · optional (explicit presence)
+
+For "NoExecute" taints only: how many seconds already-running pods stay bound
+after the taint appears. Unset means tolerate forever.
 
 ### spec.helmValues
 

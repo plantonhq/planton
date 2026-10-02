@@ -225,6 +225,16 @@ variable "spec" {
     }))
     build = optional(object({
       enabled = optional(bool)
+      scheduling = optional(object({
+        node_selector = optional(map(string), {})
+        tolerations = optional(list(object({
+          key                = optional(string, "")
+          operator           = optional(string, "")
+          value              = optional(string, "")
+          effect             = optional(string, "")
+          toleration_seconds = optional(number)
+        })), [])
+      }))
     }))
     remote_runners = optional(object({
       enabled = optional(bool)

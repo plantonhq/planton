@@ -181,8 +181,20 @@ helm install my-runner oci://ghcr.io/plantonhq/charts/planton-runner \
 |-----------|-------------|---------|
 | `build.enabled` | Run the pipeline-build worker, the run watcher, the log streamer, and the Tekton CloudEvents webhook | `false` |
 | `build.tektonNamespace` | Namespace where builds land and the log streamer watches; empty uses the runner's own namespace | `""` |
+| `build.scheduling.nodeSelector` | Labels a node must carry for build pods to land on it | `{}` |
+| `build.scheduling.tolerations` | Kubernetes tolerations that let build pods onto tainted nodes | `[]` |
 | `build.webhookPort` | Container port for the Tekton CloudEvents webhook | `8086` |
 | `build.rbac.create` | Create the Role/RoleBinding the build capability needs | `true` |
+
+**Keeping builds on their own nodes.** A build is the heaviest thing most clusters run, and a burst of them can starve everything else on the nodes they share. Give builds a node pool of their own, tainted so nothing else lands there, and point the runner at it. The runner puts the selector and tolerations on every PipelineRun's pod template, so every task pod, and the helper pod Tekton uses to keep a run's pods together, lands only on that pool:
+
+```bash
+helm upgrade my-runner oci://ghcr.io/plantonhq/charts/planton-runner --reuse-values \
+  --set-json 'build.scheduling.nodeSelector={"planton.ai/workload":"build"}' \
+  --set-json 'build.scheduling.tolerations=[{"key":"planton.ai/workload","operator":"Equal","value":"build","effect":"NoSchedule"}]'
+```
+
+Every build step that builds an image also declares what it uses, so a pool that scales from zero adds nodes as builds arrive and queues the builds beyond its ceiling.
 
 One step completes the build-cluster setup after install: **register the
 cluster as a build connection** (console: Connections → Build, or `planton

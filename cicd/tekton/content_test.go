@@ -99,6 +99,59 @@ func TestContent_theBuildKitStepWaitsForItsDaemonToStart(t *testing.T) {
 	t.Fatal("the BuildKit task has no build-and-push step")
 }
 
+// Exactly the image-building step of each image task declares a size, and no
+// other step in the catalog does. A build with no request is invisible to the
+// scheduler and the cluster autoscaler: builds pack onto one node until it
+// runs out of memory. A request on a light step inflates every pod, because
+// Tekton keeps all of a task's step containers alive and the pod asks for
+// their sum. And a memory limit would kill a large build for being large.
+func TestContent_onlyTheImageBuildStepsDeclareTheirSize(t *testing.T) {
+	tasks, err := TaskFiles()
+	if err != nil {
+		t.Fatal(err)
+	}
+	sized := map[string]string{"buildkit": "build-and-push", "buildpacks": "create"}
+	for stem, data := range tasks {
+		var task struct {
+			Spec struct {
+				Steps []struct {
+					Name             string `json:"name"`
+					ComputeResources *struct {
+						Requests map[string]string `json:"requests"`
+						Limits   map[string]string `json:"limits"`
+					} `json:"computeResources"`
+				} `json:"steps"`
+			} `json:"spec"`
+		}
+		if err := yaml.Unmarshal(data, &task); err != nil {
+			t.Fatalf("parsing task %s: %v", stem, err)
+		}
+		found := false
+		for _, step := range task.Spec.Steps {
+			if step.Name != sized[stem] {
+				if step.ComputeResources != nil {
+					t.Errorf("%s step %s declares computeResources; only the image build step may, or every build pod asks for more than it uses", stem, step.Name)
+				}
+				continue
+			}
+			found = true
+			if step.ComputeResources == nil {
+				t.Errorf("%s step %s declares no size, so the scheduler packs builds onto one node until it runs out of memory", stem, step.Name)
+				continue
+			}
+			if got := step.ComputeResources.Requests; got["memory"] != "4Gi" || got["cpu"] != "1" {
+				t.Errorf("%s step %s requests %v, want memory 4Gi and cpu 1 (what measured heavy builds use)", stem, step.Name, got)
+			}
+			if len(step.ComputeResources.Limits) != 0 {
+				t.Errorf("%s step %s sets limits %v; a large build must slow down, never be killed for its size", stem, step.Name, step.ComputeResources.Limits)
+			}
+		}
+		if want, ok := sized[stem]; ok && !found {
+			t.Errorf("task %s has no %s step to carry the build's size", stem, want)
+		}
+	}
+}
+
 func TestContent_tracksAndTasksArePresent(t *testing.T) {
 	wantTracks := []string{"buildpacks", "dockerfile"}
 	if got := Tracks(); !reflect.DeepEqual(got, wantTracks) {
@@ -291,6 +344,7 @@ var reviewedLedger = []string{
 	"v7 fd738ac9d4f81d74692cd7a5705ecea18db28c6915161dda372857eb0baccf56",
 	"v8 edbafddc965a05a343ba736924d633949932861b0ead3d4417d11f395392d646",
 	"v9 674e42c1d0dbf3b624459631467f09ee6efdb7f19e34147c4ab41a213affb7b4",
+	"v10 e20b7f0efcfbf30a810cda14631b9d943734b91e6767249d4b4414e253514be3",
 }
 
 func TestContent_theLedgerNeverRewritesARecordedState(t *testing.T) {

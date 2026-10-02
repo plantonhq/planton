@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	v1 "github.com/plantonhq/planton/operator/api/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
 //go:fix inline
@@ -95,6 +96,29 @@ func TestRunnerConfig_BuildEnabledFollowsSpec(t *testing.T) {
 	optedOut.Spec.Build = &v1.BuildSpec{Enabled: new(false)}
 	if cfg := runnerConfig(optedOut, nil); cfg.BuildEnabled {
 		t.Error("build opt-out must render the runner without the build capability")
+	}
+}
+
+// spec.build.scheduling reaches the runner's config as declared; a CR that
+// names none leaves both empty.
+func TestRunnerConfig_BuildSchedulingFollowsSpec(t *testing.T) {
+	if cfg := runnerConfig(ingressPlatform(false), nil); cfg.BuildNodeSelector != nil || cfg.BuildTolerations != nil {
+		t.Errorf("a CR without build scheduling must leave it empty, got %v / %v", cfg.BuildNodeSelector, cfg.BuildTolerations)
+	}
+
+	scheduled := ingressPlatform(false)
+	scheduled.Spec.Build = &v1.BuildSpec{Scheduling: &v1.BuildSchedulingSpec{
+		NodeSelector: map[string]string{"planton.ai/workload": "build"},
+		Tolerations: []corev1.Toleration{{
+			Key: "planton.ai/workload", Operator: corev1.TolerationOpEqual, Value: "build", Effect: corev1.TaintEffectNoSchedule,
+		}},
+	}}
+	cfg := runnerConfig(scheduled, nil)
+	if cfg.BuildNodeSelector["planton.ai/workload"] != "build" {
+		t.Errorf("BuildNodeSelector = %v, want the spec's selector", cfg.BuildNodeSelector)
+	}
+	if len(cfg.BuildTolerations) != 1 || cfg.BuildTolerations[0].Key != "planton.ai/workload" {
+		t.Errorf("BuildTolerations = %v, want the spec's toleration", cfg.BuildTolerations)
 	}
 }
 

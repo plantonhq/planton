@@ -148,6 +148,13 @@ type RunnerConfig struct {
 	// Follows the effective build toggle (spec.build AND spec.runner) -- the
 	// Tekton component installs the engine, this flag makes the runner use it.
 	BuildEnabled bool
+
+	// BuildNodeSelector and BuildTolerations name the nodes every build pod
+	// may use (spec.build.scheduling). The runner puts them on each
+	// PipelineRun's pod template; empty leaves builds wherever the scheduler
+	// puts them.
+	BuildNodeSelector map[string]string
+	BuildTolerations  []corev1.Toleration
 }
 
 // RunnerDeploymentName returns the Deployment name: "{crName}-runner".
@@ -547,6 +554,18 @@ func RunnerDeployment(cfg RunnerConfig) *appsv1.Deployment {
 			corev1.EnvVar{Name: "TEKTON_NAMESPACE", Value: cfg.Namespace},
 			corev1.EnvVar{Name: "WEBHOOK_PORT", Value: fmt.Sprintf("%d", runnerWebhookPort)},
 		)
+		// The nodes build pods may use, in Kubernetes' own JSON shapes: the
+		// runner decodes them strictly at start and refuses to run on a value
+		// it cannot use, rather than fail the first build. A string map and a
+		// toleration list marshal totally; no error path exists.
+		if len(cfg.BuildNodeSelector) > 0 {
+			selector, _ := json.Marshal(cfg.BuildNodeSelector)
+			env = append(env, corev1.EnvVar{Name: "BUILD_NODE_SELECTOR", Value: string(selector)})
+		}
+		if len(cfg.BuildTolerations) > 0 {
+			tolerations, _ := json.Marshal(cfg.BuildTolerations)
+			env = append(env, corev1.EnvVar{Name: "BUILD_TOLERATIONS", Value: string(tolerations)})
+		}
 	}
 
 	var envFrom []corev1.EnvFromSource

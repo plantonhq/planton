@@ -4,6 +4,7 @@ package dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "catalog/kubernetes/kubernetes.proto";
+import "catalog/kubernetes/workload_pod.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
 import "shared/options/options.proto";
 
@@ -187,6 +188,12 @@ message KubernetesPlantonRunnerSpec {
  * worker.
  */
 message KubernetesPlantonRunnerBuild {
+  option (buf.validate.message).cel = {
+    id: "build.scheduling_requires_enabled"
+    message: "build.scheduling places build pods, so it needs build.enabled: true; without builds it would do nothing"
+    expression: "!has(this.scheduling) || this.enabled"
+  };
+
   /**
    * When true, the runner registers as a build worker and executes
    * container-image build pipelines on this cluster.
@@ -205,4 +212,34 @@ message KubernetesPlantonRunnerBuild {
       expression: "this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')"
     }
   ];
+
+  /**
+   * Which nodes build pods may use. The runner puts this on every
+   * PipelineRun's pod template, so every task pod, and the helper pod Tekton
+   * uses to keep a run's pods together, lands only there. The usual shape is a
+   * dedicated, tainted build node pool, so a burst of builds can never starve
+   * the cluster's other workloads. Unset keeps builds wherever the scheduler
+   * puts them, which is right for a single-node cluster. This places BUILD
+   * pods; `helm_values` still places the runner itself.
+   */
+  KubernetesPlantonRunnerBuildScheduling scheduling = 3;
+}
+
+/**
+ * **KubernetesPlantonRunnerBuildScheduling** names the nodes build pods may
+ * use: a node selector to choose them and tolerations to be allowed onto
+ * them when they are tainted.
+ */
+message KubernetesPlantonRunnerBuildScheduling {
+  /**
+   * Every listed label must match the node (e.g.
+   * `planton.ai/workload: build`).
+   */
+  map<string, string> node_selector = 1;
+
+  /**
+   * Tolerations that let build pods onto tainted nodes. A toleration only
+   * permits; pair it with `node_selector` so builds go nowhere else.
+   */
+  repeated dev.planton.kubernetes.WorkloadToleration tolerations = 2;
 }

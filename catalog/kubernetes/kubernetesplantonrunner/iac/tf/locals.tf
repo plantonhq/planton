@@ -6,7 +6,9 @@ locals {
   # Pinned OCI registry path and chart name (spec.chart_repository wins over
   # the path, mirroring the proto default); chart_version resolves to the
   # pinned default when unset — the version this catalog release was
-  # validated against (0.8.0: the build Role grants watch on PipelineRuns
+  # validated against (0.9.0: build.scheduling reaches the runner as
+  # BUILD_NODE_SELECTOR and BUILD_TOLERATIONS, the nodes every build pod may
+  # use; 0.8.0: the build Role grants watch on PipelineRuns
   # and TaskRuns, patch on PipelineRuns, and create/update/patch on
   # ConfigMaps -- Kubernetes refuses the runner a grant to a build of any
   # verb it does not hold itself, so without them every in-cluster build
@@ -20,7 +22,7 @@ locals {
   default_chart_repository = "oci://ghcr.io/plantonhq/charts"
   chart_repository         = try(var.spec.chart_repository, "") != "" ? var.spec.chart_repository : local.default_chart_repository
   helm_chart_name          = "planton-runner"
-  default_chart_version    = "0.8.0"
+  default_chart_version    = "0.9.0"
   min_chart_version        = "0.4.0"
   chart_version            = try(var.spec.chart_version, "") != "" ? var.spec.chart_version : local.default_chart_version
 
@@ -94,9 +96,28 @@ locals {
   }
 
   # ---- build worker -----------------------------------------------------------------
+  # build.scheduling: the nodes build pods may use, in the chart's values
+  # shape; empty parts are left out (Pulumi twin: buildSchedulingBlock).
+  build_scheduling_block = {
+    for k, v in {
+      nodeSelector = length(try(var.spec.build.scheduling.node_selector, {})) > 0 ? var.spec.build.scheduling.node_selector : null
+      tolerations = length(try(var.spec.build.scheduling.tolerations, [])) > 0 ? [
+        for t in var.spec.build.scheduling.tolerations : {
+          for tk, tv in {
+            key               = t.key != "" ? t.key : null
+            operator          = t.operator != "" ? t.operator : null
+            value             = t.value != "" ? t.value : null
+            effect            = t.effect != "" ? t.effect : null
+            tolerationSeconds = try(t.toleration_seconds, null)
+          } : tk => tv if tv != null
+        }
+      ] : null
+    } : k => v if v != null
+  }
   build_block = try(var.spec.build, null) == null || !try(var.spec.build.enabled, false) ? null : merge(
     { enabled = true },
-    try(var.spec.build.tekton_namespace, "") != "" ? { tektonNamespace = var.spec.build.tekton_namespace } : {}
+    try(var.spec.build.tekton_namespace, "") != "" ? { tektonNamespace = var.spec.build.tekton_namespace } : {},
+    length(local.build_scheduling_block) > 0 ? { scheduling = local.build_scheduling_block } : {}
   )
 
   # ---- typed chart values (Pulumi twin: buildHelmValues) ------------------------------
