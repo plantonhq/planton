@@ -1,0 +1,34 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "manifestprojection",
+    srcs = [
+        "doc.go",
+        "envelope.go",
+        "labels.go",
+        "render.go",
+    ],
+    importpath = "github.com/plantonhq/planton/pkg/kubernetes/manifestprojection",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/iac/specprojection",
+        "//pkg/refannotations",
+        "//shared",
+        "//shared/cloudresourcekind",
+        "//shared/options",
+        "@com_github_pkg_errors//:errors",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "manifestprojection_test",
+    srcs = ["render_test.go"],
+    embed = [":manifestprojection"],
+    deps = [
+        "//catalog/kubernetes/kubernetesprometheusrule/v1alpha1",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
+    ],
+)

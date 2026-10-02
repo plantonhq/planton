@@ -1,0 +1,16 @@
+# Extra-instance fixture for the behavioral-fence scenario: the scenario's
+# twin without the `release` label. The prerequisite stack (all_monitors)
+# loads it; the fenced stack must not.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPrometheusRule
+metadata:
+  name: e2e-prule-fenced-out
+spec:
+  namespace:
+    value: default
+  groups:
+    - name: e2e-fenced-out
+      interval: 15s
+      rules:
+        - record: e2e:fence:unlabelled
+          expr: vector(1)

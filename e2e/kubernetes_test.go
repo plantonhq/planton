@@ -437,6 +437,11 @@ func TestKubernetesGrafana_Pulumi(t *testing.T) {
 func TestKubernetesKubePrometheusStack_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kuberneteskubeprometheusstack", "pulumi")
 }
+
+func TestKubernetesPrometheusRule_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesprometheusrule", "pulumi")
+}
+
 func TestKubernetesOpenBao_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesopenbao", "pulumi")
 }
@@ -554,6 +559,11 @@ func TestKubernetesGrafana_Terraform(t *testing.T) {
 func TestKubernetesKubePrometheusStack_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "kuberneteskubeprometheusstack", "terraform")
 }
+
+func TestKubernetesPrometheusRule_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesprometheusrule", "terraform")
+}
+
 func TestKubernetesArgoCD_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesargocd", "terraform")
 }

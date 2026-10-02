@@ -1,8 +1,9 @@
 locals {
-  # Planton identity labels — the planton.ai/* convention, identical to the
-  # Pulumi module's label set (twin discipline). Conditional entries use the
-  # null-prune idiom: heterogeneous conditional merges fail HCL type
-  # unification when sibling entries infer as different object types.
+  # Planton identity labels — the planton.ai/* family defined once in
+  # pkg/kubernetes/manifestprojection, which the Pulumi projection helper
+  # stamps too. Conditional entries use the null-prune idiom: heterogeneous
+  # conditional merges fail HCL type unification when sibling entries infer
+  # as different object types.
   labels = {
     for k, v in {
       "planton.ai/resource"      = "true"

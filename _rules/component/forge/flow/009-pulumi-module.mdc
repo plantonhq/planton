@@ -45,6 +45,27 @@ NOTES
 - Rule 010 handles the entrypoint `iac/pulumi/main.go` and `Pulumi.yaml`.
 - Use in-repo patterns (e.g., `awsalb`, `awsrdsinstance`) as guidance; always derive names/types/outputs from the proto files you read.
 
+KUBERNETES MANIFEST PROJECTION KINDS -- ONE PROJECTION, NO HAND MAPPING
+- A kind whose registry entry carries `kubernetes_manifest_projection` (its spec
+  mirrors one custom resource field for field) builds its object with
+  `manifestcr.Apply(ctx, stackInput.Target, pulumi.Provider(provider))`
+  (`pkg/iac/pulumi/pulumimodule/provider/kubernetes/manifestcr`). The helper
+  renders the manifest through `pkg/kubernetes/manifestprojection` -- the same
+  projection the generated Terraform module applies -- so the spec reaches the
+  custom resource under its upstream keys, the namespace reference becomes
+  metadata.namespace, fields marked `kubernetes_object_metadata` become the
+  object's own labels and annotations, and the planton.ai/* identity labels sit
+  on top. The module is a provider, one Apply, and the exports; it maps no field
+  by hand and needs no crd2pulumi SDK, so a field the spec gains reaches the
+  object on both engines with no module change. Reference:
+  `catalog/kubernetes/kubernetesprometheusrule/iac/pulumi/module/main.go`.
+- The permissions gate (`pkg/iac/permissions`) models each `manifestcr.Apply` as
+  the component's projected custom resource, so `iac/permissions.yaml` still
+  owes the list and watch verbs Pulumi's delete wait reads on that kind.
+- A kind whose spec ABSTRACTS over the custom resource (a oneof that becomes two
+  keys, defaults the module fills) is not a projection kind and keeps a
+  hand-written module.
+
 CLOUD RESOURCE NAMES -- NEVER RELY ON PULUMI AUTO-NAMING
 - Always set the resource's own name argument (`Name:`, `BucketName:`,
   `WorkgroupName:`, ...) explicitly from the module's naming basis

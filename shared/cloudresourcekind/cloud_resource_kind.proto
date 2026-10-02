@@ -6736,6 +6736,20 @@ enum CloudResourceKind {
     prerequisites: [KubernetesOtelOperator]
     service_group: kubernetes_operators_controllers
   }];
+  // KubernetesKubePrometheusStack is a prerequisite because it installs the
+  // monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the
+  // Prometheus that evaluates it.
+  KubernetesPrometheusRule = 4079 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8sprule"
+    prerequisites: [KubernetesKubePrometheusStack]
+    kubernetes_manifest_projection: {
+      api_version: "monitoring.coreos.com/v1"
+      kind: "PrometheusRule"
+    }
+    service_group: kubernetes_operators_controllers
+  }];
   // 4080–4099: Kubernetes security, policy, and identity
   KubernetesKyverno = 4080 [(kind_meta) = {
     provider: kubernetes

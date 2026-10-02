@@ -8,6 +8,7 @@ import (
 	"buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/pkg/iac/specprojection"
 	"github.com/plantonhq/planton/pkg/protodocs"
 	"github.com/plantonhq/planton/pkg/strings/caseconverter"
 	"google.golang.org/protobuf/proto"
@@ -59,7 +60,7 @@ var topLevelSkipFieldNames = map[string]bool{
 // lag the protos until the next regeneration.
 func ProtoToVariablesTF(msg proto.Message) (string, error) {
 	md := msg.ProtoReflect().Descriptor()
-	rules := DefaultRules()
+	rules := specprojection.DefaultRules()
 
 	var buf bytes.Buffer
 	fields := md.Fields()
@@ -125,11 +126,11 @@ func variableDescription(resourceMD protoreflect.MessageDescriptor, fieldName st
 // rules for skip/flatten decisions. Returns nil if the field should be skipped.
 // The visited set is the path-scoped cycle guard threaded through the whole
 // descriptor walk (see msgDescToTFObject).
-func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
+func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]specprojection.TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
 	// A manifest-only word gets no variable: the tfvars converter never sends
 	// it, so a declared attribute would be dead on every module. Callers read
 	// a nil type as "skipped", the same way a Skip type rule is read.
-	if isManifestOnlyField(fd) {
+	if specprojection.IsManifestOnlyField(fd) {
 		return nil, nil
 	}
 
@@ -172,7 +173,7 @@ func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.Messag
 // google.protobuf.Struct/Value/ListValue>) is the exception: its entries are
 // independently-shaped, so it cannot be a homogeneous map(any). It becomes a
 // TFFreeFormMap (rendered `any`) -- see that type for the rationale.
-func mapFieldToTFType(fd protoreflect.FieldDescriptor, rules map[string]TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
+func mapFieldToTFType(fd protoreflect.FieldDescriptor, rules map[string]specprojection.TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
 	valDesc := fd.MapValue()
 
 	if valDesc.Kind() == protoreflect.MessageKind &&
@@ -198,7 +199,7 @@ func mapFieldToTFType(fd protoreflect.FieldDescriptor, rules map[string]TypeRule
 }
 
 // mapValueToTFType resolves the TFType for a map value descriptor.
-func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
+func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]specprojection.TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
 	switch valDesc.Kind() {
 	case protoreflect.StringKind:
 		return TFPrimitive("string"), nil
@@ -238,7 +239,7 @@ func mapValueToTFType(valDesc protoreflect.FieldDescriptor, rules map[string]Typ
 
 // scalarOrMsgToTFType converts a single (non-map, non-list-wrapper) field to
 // a TFType. For message-kind fields, consults type rules.
-func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
+func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]specprojection.TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
 	switch fd.Kind() {
 	case protoreflect.StringKind:
 		return TFPrimitive("string"), nil
@@ -301,7 +302,7 @@ func scalarOrMsgToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.
 // already on the CURRENT path means the descriptor graph is recursive and the
 // walk would never terminate. The message-kind converters break such cycles by
 // collapsing the recursive subtree to `any`.
-func msgDescToTFObject(md protoreflect.MessageDescriptor, rules map[string]TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
+func msgDescToTFObject(md protoreflect.MessageDescriptor, rules map[string]specprojection.TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
 	visited[md.FullName()] = true
 	defer delete(visited, md.FullName())
 
@@ -358,7 +359,7 @@ func hasScalarPresence(fd protoreflect.FieldDescriptor) bool {
 // field's message type to a primitive, or "" when no flattening rule applies.
 // A repeated or map-valued wrapper is flattened element by element, so the
 // same note holds for the whole attribute.
-func flattenNote(fd protoreflect.FieldDescriptor, rules map[string]TypeRule) string {
+func flattenNote(fd protoreflect.FieldDescriptor, rules map[string]specprojection.TypeRule) string {
 	var md protoreflect.MessageDescriptor
 	switch {
 	case fd.IsMap():

@@ -656,6 +656,7 @@ KubernetesLoki=4073
 KubernetesTempo=4074
 KubernetesOtelOperator=4075
 KubernetesOtelCollector=4076
+KubernetesPrometheusRule=4079
 KubernetesKyverno=4080
 KubernetesGatekeeper=4081
 KubernetesKeycloak=4090

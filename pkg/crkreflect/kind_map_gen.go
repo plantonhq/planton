@@ -792,6 +792,7 @@ import (
 	kubernetespoddisruptionbudgetv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1"
 	kubernetespostgresv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1"
 	kubernetespriorityclassv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespriorityclass/v1alpha1"
+	kubernetesprometheusrulev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesprometheusrule/v1alpha1"
 	kubernetesqdrantv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesqdrant/v1alpha1"
 	kubernetesrabbitmqv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesrabbitmq/v1alpha1"
 	kubernetesrabbitmqoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesrabbitmqoperator/v1alpha1"
@@ -1663,6 +1664,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesPodDisruptionBudget:         &kubernetespoddisruptionbudgetv1alpha1.KubernetesPodDisruptionBudget{},
 	cloudresourcekind.CloudResourceKind_KubernetesPostgres:                    &kubernetespostgresv1alpha1.KubernetesPostgres{},
 	cloudresourcekind.CloudResourceKind_KubernetesPriorityClass:               &kubernetespriorityclassv1alpha1.KubernetesPriorityClass{},
+	cloudresourcekind.CloudResourceKind_KubernetesPrometheusRule:              &kubernetesprometheusrulev1alpha1.KubernetesPrometheusRule{},
 	cloudresourcekind.CloudResourceKind_KubernetesQdrant:                      &kubernetesqdrantv1alpha1.KubernetesQdrant{},
 	cloudresourcekind.CloudResourceKind_KubernetesRabbitMq:                    &kubernetesrabbitmqv1alpha1.KubernetesRabbitMq{},
 	cloudresourcekind.CloudResourceKind_KubernetesRabbitMqOperator:            &kubernetesrabbitmqoperatorv1alpha1.KubernetesRabbitMqOperator{},

@@ -1,0 +1,34 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "specprojection",
+    srcs = [
+        "doc.go",
+        "flatten.go",
+        "projection.go",
+        "typerules.go",
+    ],
+    importpath = "github.com/plantonhq/planton/pkg/iac/specprojection",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//shared/options",
+        "@com_github_pkg_errors//:errors",
+        "@org_golang_google_protobuf//encoding/protojson",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "specprojection_test",
+    srcs = [
+        "flatten_test.go",
+        "typerules_test.go",
+    ],
+    embed = [":specprojection"],
+    deps = [
+        "//catalog/_test/testcloudresourcekubernetes/v1alpha1",
+        "//shared/foreignkey/v1:foreignkey",
+        "@org_golang_google_protobuf//encoding/protojson",
+    ],
+)

@@ -718,14 +718,31 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	case "kuberneteskubeprometheusstack":
 		spec := manifestSpecMap(manifestPath)
 		return &KubePrometheusStackVerifier{
-			Namespace:            info.Namespace,
-			Name:                 info.Name,
-			PrometheusReplicas:   kpsReplicas(spec, "prometheus"),
-			AlertmanagerEnabled:  kpsHalfEnabled(spec, "alertmanager"),
-			AlertmanagerReplicas: kpsReplicas(spec, "alertmanager"),
-			GrafanaEnabled:       kpsHalfEnabled(spec, "grafana"),
-			Alerting:             strings.Contains(manifestPath, "behavioral-alerting"),
-			Notifications:        strings.Contains(manifestPath, "behavioral-notifications"),
+			Namespace:               info.Namespace,
+			Name:                    info.Name,
+			PrometheusReplicas:      kpsReplicas(spec, "prometheus"),
+			AlertmanagerEnabled:     kpsHalfEnabled(spec, "alertmanager"),
+			AlertmanagerReplicas:    kpsReplicas(spec, "alertmanager"),
+			GrafanaEnabled:          kpsHalfEnabled(spec, "grafana"),
+			Alerting:                strings.Contains(manifestPath, "behavioral-alerting"),
+			Notifications:           strings.Contains(manifestPath, "behavioral-notifications"),
+			OperatorEnabled:         kpsOperatorEnabled(spec),
+			KubeStateMetricsEnabled: kpsKubeStateMetricsEnabled(spec),
+		}, nil
+
+	// A PrometheusRule: the live object carries exactly the declared spec,
+	// labels and annotations (the same check for both engines, which build
+	// it from one projection). The behavioral-evaluation scenario proves the
+	// prerequisite stack's Prometheus loaded and evaluated it; the
+	// behavioral-fence scenario proves the object's own labels decide which
+	// Prometheus loads it.
+	case "kubernetesprometheusrule":
+		return &PrometheusRuleVerifier{
+			Namespace:    info.Namespace,
+			Name:         info.Name,
+			ManifestPath: manifestPath,
+			Evaluation:   strings.Contains(manifestPath, "behavioral-evaluation"),
+			Fence:        strings.Contains(manifestPath, "behavioral-fence"),
 		}, nil
 
 	// A standalone Grafana: Deployment available, /api/health reporting

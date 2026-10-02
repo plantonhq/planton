@@ -729,6 +729,7 @@ contained dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPl
 contained dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterSpec.namespace -> KubernetesNamespace

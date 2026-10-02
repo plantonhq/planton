@@ -254,6 +254,69 @@ spec:
       - kubeProxy
 ```
 
+### Alert rules of your own, as declared objects
+
+The stack's default rules watch Kubernetes; the rules that say a product
+is hurt are yours. Declare each set as a
+[KubernetesPrometheusRule](../kubernetes/kubernetesprometheusrule/GUIDE.md),
+never through the stack's spec or `helm_values`: it is a node of its own
+on the diagram, composes with its namespace, and deploys on either
+engine with every upstream setting.
+
+- **Rules live where the data is complete.** Put them beside each
+  cluster's agent stack, which loads every rule object under its default
+  `all_monitors` discovery. A receiver that only stores remote-written
+  series (a hub on `release_managed_only`) loads only objects labelled
+  `release: <its release_name>` -- and evaluating there pages twice and on
+  partial data, so give a rule that label only on purpose.
+- **The labels on a rule are the route; the annotations are the page.**
+  Every alerting rule carries `severity` (the pager route matches
+  `page`), and `component`; `environment` and `cluster` arrive through
+  `prometheus.external_labels`. Its annotations carry a `summary` and a
+  `runbook_url` whose first line is the first action.
+- **One object per owner.** Prometheus refuses a rule file with one bad
+  rule and the operator drops the whole object, so a mistake in one
+  team's rules must not silence another's. The kind refuses the two
+  shapes that cause it (record and alert together or neither; a recording
+  rule with alert-only fields) before the apply.
+- **Record, then alert.** Burn-rate alerts read recorded error ratios:
+  the recording rules sit earlier in the same group, the alert reads
+  cheap series, and the dashboards read the same series. The kind's
+  `01-error-budget-burn-alerts` and `02-recording-rules` presets carry
+  that pair.
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPrometheusRule
+metadata:
+  name: api-slo-alerts
+  relationships:
+    - kind: KubernetesKubePrometheusStack
+      name: cluster-metrics
+      type: depends_on
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: observability-ns
+      fieldPath: spec.name
+  groups:
+    - name: api-slo-alerts
+      interval: 30s
+      labels:
+        component: api
+      rules:
+        - alert: ApiErrorBudgetFastBurn
+          expr: job:slo_errors_per_request:ratio_rate1h{job="api"} > (14.4 * 0.001) and job:slo_errors_per_request:ratio_rate5m{job="api"} > (14.4 * 0.001)
+          for: 2m
+          keep_firing_for: 5m
+          labels:
+            severity: page
+          annotations:
+            summary: The API is burning its 30-day error budget 14x too fast
+            runbook_url: https://runbooks.example.com/api-error-budget-burn
+```
+
 ## Logs and traces outside the cluster
 
 A hub's logs and traces are the evidence an incident review reads weeks

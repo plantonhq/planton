@@ -578,7 +578,7 @@ e2e-test-kubernetes-tier2:  ## Run Kubernetes Tier 2 (Helm-based) E2E tests only
 
 .PHONY: e2e-test-kubernetes-tier3
 e2e-test-kubernetes-tier3:  ## Run Kubernetes Tier 3 (operator-dependent) E2E tests -- fixtures deployed automatically
-	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesKafka|KubernetesKafkaTopic|KubernetesKafkaUser|KubernetesKafkaConnect|KubernetesKafkaConnector|KubernetesKafkaMirrorMaker2|KubernetesKarapace|KubernetesKafkaUi|KubernetesOpenSearch|KubernetesMongodb|KubernetesMysql|KubernetesSolr|KubernetesClickHouse|KubernetesRabbitMq|KubernetesSignoz|KubernetesTekton|KubernetesGhaRunnerScaleSet|KubernetesPlantonRunner|KubernetesPlantonPlatform|KubernetesKeycloak|KubernetesOtelCollector|KubernetesAirflow|KubernetesRayCluster|KubernetesFlinkDeployment|KubernetesJupyterHub|KubernetesMlflow|KubernetesTrino|KubernetesSuperset)_" ./e2e/
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesKafka|KubernetesKafkaTopic|KubernetesKafkaUser|KubernetesKafkaConnect|KubernetesKafkaConnector|KubernetesKafkaMirrorMaker2|KubernetesKarapace|KubernetesKafkaUi|KubernetesOpenSearch|KubernetesMongodb|KubernetesMysql|KubernetesSolr|KubernetesClickHouse|KubernetesRabbitMq|KubernetesSignoz|KubernetesPrometheusRule|KubernetesTekton|KubernetesGhaRunnerScaleSet|KubernetesPlantonRunner|KubernetesPlantonPlatform|KubernetesKeycloak|KubernetesOtelCollector|KubernetesAirflow|KubernetesRayCluster|KubernetesFlinkDeployment|KubernetesJupyterHub|KubernetesMlflow|KubernetesTrino|KubernetesSuperset)_" ./e2e/
 
 .PHONY: e2e-test-kubernetes-tier4
 e2e-test-kubernetes-tier4:  ## Run Kubernetes Tier 4 (operators, addons, cluster infra) E2E tests
@@ -596,7 +596,7 @@ e2e-test-kubernetes-terraform-tier2:  ## Run Kubernetes Tier 2 Terraform (Helm-b
 
 .PHONY: e2e-test-kubernetes-terraform-tier3
 e2e-test-kubernetes-terraform-tier3:  ## Run Kubernetes Tier 3 Terraform (operator-dependent) E2E tests
-	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesKafka|KubernetesKafkaTopic|KubernetesKafkaUser|KubernetesKafkaConnect|KubernetesKafkaConnector|KubernetesKafkaMirrorMaker2|KubernetesKarapace|KubernetesKafkaUi|KubernetesOpenSearch|KubernetesMongodb|KubernetesMysql|KubernetesSolr|KubernetesClickHouse|KubernetesRabbitMq|KubernetesSignoz|KubernetesTekton|KubernetesGhaRunnerScaleSet|KubernetesPlantonRunner|KubernetesPlantonPlatform|KubernetesKeycloak|KubernetesOtelCollector|KubernetesAirflow|KubernetesRayCluster|KubernetesFlinkDeployment|KubernetesJupyterHub|KubernetesMlflow|KubernetesTrino|KubernetesSuperset)_Terraform" ./e2e/
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test(KubernetesKafka|KubernetesKafkaTopic|KubernetesKafkaUser|KubernetesKafkaConnect|KubernetesKafkaConnector|KubernetesKafkaMirrorMaker2|KubernetesKarapace|KubernetesKafkaUi|KubernetesOpenSearch|KubernetesMongodb|KubernetesMysql|KubernetesSolr|KubernetesClickHouse|KubernetesRabbitMq|KubernetesSignoz|KubernetesPrometheusRule|KubernetesTekton|KubernetesGhaRunnerScaleSet|KubernetesPlantonRunner|KubernetesPlantonPlatform|KubernetesKeycloak|KubernetesOtelCollector|KubernetesAirflow|KubernetesRayCluster|KubernetesFlinkDeployment|KubernetesJupyterHub|KubernetesMlflow|KubernetesTrino|KubernetesSuperset)_Terraform" ./e2e/
 
 .PHONY: e2e-test-kubernetes-terraform-tier4
 e2e-test-kubernetes-terraform-tier4:  ## Run Kubernetes Tier 4 Terraform (operators, addons) E2E tests

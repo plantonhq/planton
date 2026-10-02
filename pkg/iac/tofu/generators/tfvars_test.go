@@ -13,6 +13,8 @@ import (
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
+func stringPtr(s string) *string { return &s }
+
 func TestProtoToTFVars_NamespaceFlattened(t *testing.T) {
 	msg := &testkubernetesv1.TestCloudResourceKubernetes{
 		ApiVersion: "_test.planton.dev/v1alpha1",

@@ -40,6 +40,12 @@ const modulePrefix = "github.com/plantonhq/planton/"
 // applies is a cluster-scoped CustomResourceDefinition.
 const keptCRDsPackage = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/keptcrds"
 
+// manifestCRPackage applies a Kubernetes manifest projection kind's one
+// custom resource (manifestcr.go). Its group and kind are not in the call:
+// they are the component's kubernetes_manifest_projection in the kind
+// registry, which the gate reads to model each Apply as that custom resource.
+const manifestCRPackage = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/manifestcr"
+
 // helperPackages are the repository packages outside a module that a module
 // may import although they create Kubernetes-provider resources, each with
 // why the gate needs nothing more from them. Any other repository package
@@ -47,7 +53,8 @@ const keptCRDsPackage = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodul
 // are the module's, and the gate would otherwise not see them.
 var helperPackages = map[string]string{
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider": "it constructs only the Kubernetes provider itself, a Pulumi resource that is not a cluster object",
-	keptCRDsPackage: "its CRD ConfigGroups are modelled as the CustomResourceDefinitions they apply (keptCRDsPackage)",
+	keptCRDsPackage:   "its CRD ConfigGroups are modelled as the CustomResourceDefinitions they apply (keptCRDsPackage)",
+	manifestCRPackage: "its one custom resource is modelled as the component's kubernetes_manifest_projection from the kind registry (manifestCRPackage)",
 }
 
 const (
@@ -85,9 +92,12 @@ type yamlCall struct {
 type moduleScan struct {
 	objects   []createdObject
 	yamlCalls []yamlCall
-	keptCRDs  []string        // keptcrds.Apply calls
-	delegated map[string]bool // delegated constructors used (keys of PulumiKubernetesDelegated)
-	problems  []string        // what the gate cannot resolve -- each fails the gate
+	keptCRDs  []string // keptcrds.Apply calls
+	// projectionApplies are manifestcr.Apply calls; their group and kind are
+	// the component's projection, resolved where the component is known.
+	projectionApplies []createdObject
+	delegated         map[string]bool // delegated constructors used (keys of PulumiKubernetesDelegated)
+	problems          []string        // what the gate cannot resolve -- each fails the gate
 	// setsSkipAwait: the module sets pulumi.com/skipAwait to "true" somewhere.
 	setsSkipAwait bool
 }
@@ -193,7 +203,7 @@ func scanFile(root, moduleDir string, fset *token.FileSet, file *ast.File, pkg *
 				outside[path] = true
 			}
 		}
-		if !isKubernetesTypePackage(path) && path != keptCRDsPackage {
+		if !isKubernetesTypePackage(path) && path != keptCRDsPackage && path != manifestCRPackage {
 			continue
 		}
 		name := filepath.Base(path)
@@ -226,7 +236,7 @@ func scanFile(root, moduleDir string, fset *token.FileSet, file *ast.File, pkg *
 		if !ok || called[sel] {
 			return true
 		}
-		if id, ok := sel.X.(*ast.Ident); ok && imports[id.Name] != "" && imports[id.Name] != keptCRDsPackage && strings.HasPrefix(sel.Sel.Name, "New") {
+		if id, ok := sel.X.(*ast.Ident); ok && imports[id.Name] != "" && imports[id.Name] != keptCRDsPackage && imports[id.Name] != manifestCRPackage && strings.HasPrefix(sel.Sel.Name, "New") {
 			scan.problems = append(scan.problems, fmt.Sprintf("%s: %s.%s is used as a value, so the gate cannot see what it creates -- call the constructor directly", where(sel), imports[id.Name], sel.Sel.Name))
 		}
 		return true
@@ -298,6 +308,12 @@ func scanCall(root string, call *ast.CallExpr, where string, imports map[string]
 	case importPath == keptCRDsPackage:
 		if constructor == "Apply" {
 			scan.keptCRDs = append(scan.keptCRDs, where)
+		}
+		return
+	case importPath == manifestCRPackage:
+		if constructor == "Apply" {
+			object.via = "manifestcr.Apply"
+			scan.projectionApplies = append(scan.projectionApplies, object)
 		}
 		return
 	case strings.HasPrefix(key, PulumiKubernetesSDK+"/yaml") || key == PulumiKubernetesSDK+"/helm/v3.NewChart":

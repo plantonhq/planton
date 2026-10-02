@@ -206,7 +206,25 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
   translating a CRD field whose camelCase contains a multi-letter acronym,
   diff the intended key against the CRD's own `properties` map and pin it with
   `json_name = "<exact CRD key>"` on the proto field. A live full-surface apply
-  on the protojson-rendering engine is the only end-to-end guard.
+  on the protojson-rendering engine is the only end-to-end guard. The same pin
+  applies to two more cases: upstream keys that are snake_case (PrometheusRule's
+  `keep_firing_for`, `query_offset`, `partial_response_strategy` -- protojson
+  would write `keepFiringFor`), and upstream keys that are reserved words in the
+  validation language or a generated SDK's language (`for`): name the proto
+  field for its meaning (`for_duration`) and pin `json_name = "for"`, so the
+  manifest key stays the upstream one while CEL can name the field. Integer
+  fields follow the upstream format and are never `int64`, which protojson
+  writes as a string.
+- **CRD-projection kinds: the object's own labels and annotations are a marked
+  envelope, not spec.** When the custom resource's metadata is configuration
+  (prometheus-operator selects ServiceMonitors, PodMonitors and PrometheusRules
+  by their labels), add top-level `map<string, string> labels` and/or
+  `annotations` fields marked
+  `(dev.planton.shared.options.kubernetes_object_metadata) = object_labels` /
+  `object_annotations`, with Kubernetes label-grammar rules on the keys and
+  values. Both engines route marked fields to metadata, never into the custom
+  resource's spec, and stamp the identity labels on top. Reference:
+  `catalog/kubernetes/kubernetesprometheusrule/v1alpha1/spec.proto`.
 
 PROACTIVE SENSITIVE-FIELD IDENTIFICATION (MANDATORY STEP)
 - While authoring the schema, review EVERY string field and the literal of EVERY

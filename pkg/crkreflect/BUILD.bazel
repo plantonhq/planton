@@ -813,6 +813,7 @@ go_library(
         "//catalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1",
         "//catalog/kubernetes/kubernetespostgres/v1alpha1",
         "//catalog/kubernetes/kubernetespriorityclass/v1alpha1",
+        "//catalog/kubernetes/kubernetesprometheusrule/v1alpha1",
         "//catalog/kubernetes/kubernetesqdrant/v1alpha1",
         "//catalog/kubernetes/kubernetesrabbitmq/v1alpha1",
         "//catalog/kubernetes/kubernetesrabbitmqoperator/v1alpha1",

@@ -137,6 +137,38 @@ extend google.protobuf.FieldOptions {
   // home's proto field name (e.g. "secret_value", "secrets"); a catalog test
   // proves every home names a field that exists beside the marked one.
   string secret_home = 60010;
+
+  // Marks a top-level map<string, string> field of a Kubernetes manifest
+  // projection kind's spec (a kind whose registry entry carries
+  // kubernetes_manifest_projection) as the custom resource's OWN metadata: its
+  // labels or its annotations. Such a field describes the object, not its
+  // spec, so every engine routes it to metadata.labels or
+  // metadata.annotations and never into the custom resource's spec -- the
+  // same way the namespace reference is routed to metadata.namespace.
+  //
+  // It exists because for some custom resources the object's labels are
+  // configuration: prometheus-operator selects ServiceMonitors, PodMonitors
+  // and PrometheusRules by their labels, so a kind that could not set them
+  // could not be picked up by a Prometheus with a selector.
+  //
+  // Planton's identity labels (planton.ai/resource, resource-name,
+  // resource-kind, resource-id, organization, environment) are stamped on top
+  // and always win, so a manifest can never relabel an object as another
+  // resource. The routing is implemented once, in
+  // pkg/kubernetes/manifestprojection, which both the generated Terraform
+  // module and the Pulumi module read; a catalog test proves the marker sits
+  // only on top-level string maps of projection kinds.
+  KubernetesObjectMetadataField kubernetes_object_metadata = 60011;
+}
+
+// The part of a Kubernetes object's metadata a spec field holds. See
+// kubernetes_object_metadata.
+enum KubernetesObjectMetadataField {
+  kubernetes_object_metadata_field_unspecified = 0;
+  // metadata.labels
+  object_labels = 1;
+  // metadata.annotations
+  object_annotations = 2;
 }
 
 extend google.protobuf.EnumValueOptions {

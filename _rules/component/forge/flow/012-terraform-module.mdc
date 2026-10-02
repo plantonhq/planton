@@ -120,9 +120,20 @@ SEQUENTIAL STEPS
    deterministic -- do NOT hand-author it. Generate it in one shot:
    `echo '{"files":[]}' | python3 _rules/component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-module --validate | cat`.
    This emits variables.tf (spec/metadata typed `any`), a thin locals.tf, a
-   kubernetes_manifest main.tf (GVK from the annotation), provider.tf, and
+   kubectl_manifest main.tf (GVK from the annotation), provider.tf, and
    outputs.tf. The proto->tfvars converter emits the camelCase, null-pruned spec
    at runtime, so there is no snake->camel / null-prune / oneOf logic to write.
+   The locals route the envelope to metadata -- the namespace reference, and any
+   top-level map marked `kubernetes_object_metadata` as the object's own labels
+   or annotations (identity labels win) -- reading both the envelope and the
+   identity label keys from `pkg/kubernetes/manifestprojection`, the same source
+   the Pulumi module's `manifestcr.Apply` uses (rule 009). Commit no backend.tf:
+   the runtime writes one before every init. `TestManifestModuleDrift`
+   (`pkg/iac/tofu/generators`) holds every projection kind's committed module to
+   the generator's output, so regenerate with
+   `PLANTON_REGEN_MANIFEST_MODULES=1 go test ./pkg/iac/tofu/generators/ -run TestManifestModuleDrift`
+   rather than editing a `.tf` file; a module the generator cannot yet express
+   is named, with what it does, in that test's `manifestModuleGaps`.
    Then STOP -- skip steps 2-4 below.
 
    Do NOT use this path for kinds whose Planton spec ABSTRACTS over the CRD

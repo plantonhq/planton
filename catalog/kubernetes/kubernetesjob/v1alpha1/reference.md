@@ -1866,6 +1866,7 @@ Allowed values (use exactly as shown):
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
 - `KubernetesKeycloak` -- Keycloak declarations compose the official Keycloak Operator (which reconciles the Keycloak CR this kind renders) and, on the recommended postgres vendor, a KubernetesPostgres database — both must resolve before the CR can converge.
@@ -2867,6 +2868,7 @@ Allowed values (use exactly as shown):
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
 - `KubernetesKeycloak` -- Keycloak declarations compose the official Keycloak Operator (which reconciles the Keycloak CR this kind renders) and, on the recommended postgres vendor, a KubernetesPostgres database — both must resolve before the CR can converge.
@@ -5067,6 +5069,7 @@ Allowed values (use exactly as shown):
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
 - `KubernetesKeycloak` -- Keycloak declarations compose the official Keycloak Operator (which reconciles the Keycloak CR this kind renders) and, on the recommended postgres vendor, a KubernetesPostgres database — both must resolve before the CR can converge.
@@ -6068,6 +6071,7 @@ Allowed values (use exactly as shown):
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
 - `KubernetesKeycloak` -- Keycloak declarations compose the official Keycloak Operator (which reconciles the Keycloak CR this kind renders) and, on the recommended postgres vendor, a KubernetesPostgres database — both must resolve before the CR can converge.
@@ -8384,6 +8388,7 @@ Allowed values (use exactly as shown):
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
 - `KubernetesKeycloak` -- Keycloak declarations compose the official Keycloak Operator (which reconciles the Keycloak CR this kind renders) and, on the recommended postgres vendor, a KubernetesPostgres database — both must resolve before the CR can converge.
@@ -9385,6 +9390,7 @@ Allowed values (use exactly as shown):
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
 - `KubernetesKeycloak` -- Keycloak declarations compose the official Keycloak Operator (which reconciles the Keycloak CR this kind renders) and, on the recommended postgres vendor, a KubernetesPostgres database — both must resolve before the CR can converge.

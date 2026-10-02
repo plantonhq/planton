@@ -1,8 +1,9 @@
 locals {
-  # Planton identity labels — the planton.ai/* convention, identical to the
-  # Pulumi module's label set (twin discipline). Conditional entries use the
-  # null-prune idiom: heterogeneous conditional merges fail HCL type
-  # unification when sibling entries infer as different object types.
+  # Planton identity labels — the planton.ai/* family defined once in
+  # pkg/kubernetes/manifestprojection, which the Pulumi projection helper
+  # stamps too. Conditional entries use the null-prune idiom: heterogeneous
+  # conditional merges fail HCL type unification when sibling entries infer
+  # as different object types.
   labels = {
     for k, v in {
       "planton.ai/resource"      = "true"
@@ -17,10 +18,6 @@ locals {
   # The CR spec is var.spec minus the Planton "namespace" foreign key, which maps to
   # metadata.namespace rather than into the CR spec. The converter already emits
   # camelCase, null-pruned keys with StringValueOrRef foreign keys resolved to
-  # literal strings, so no other transformation is needed. Null-prune (not
-  # empty-prune) is what keeps the projection faithful here: the `group` keys on
-  # targetRefs and caCertificateRefs are presence-required in the spec and carry
-  # the empty string for core-group referents (Service, ConfigMap), so the
-  # resolved tfvars always includes `group: ""` and it passes through to the CR.
+  # literal strings, so no other transformation is needed.
   manifest_spec = { for k, v in var.spec : k => v if k != "namespace" }
 }

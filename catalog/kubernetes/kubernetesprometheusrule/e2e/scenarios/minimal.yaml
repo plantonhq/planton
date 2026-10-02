@@ -1,0 +1,15 @@
+# The smallest useful rule object: one recording rule. The verifier proves
+# the object exists with the spec and labels the projection renders, then
+# that it is gone after destroy.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPrometheusRule
+metadata:
+  name: e2e-prule-min
+spec:
+  namespace:
+    value: default
+  groups:
+    - name: e2e-recording
+      rules:
+        - record: e2e:up:count
+          expr: count(up)

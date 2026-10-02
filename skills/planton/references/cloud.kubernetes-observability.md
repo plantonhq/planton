@@ -79,6 +79,20 @@ Ask these before composing, in the person's words, not the chart's:
 - Pushover's emergency priority repeats every minute until someone
   acknowledges it in the app, even after the alert resolves. Say so before
   the person's phone starts ringing.
+- The person's own alert and recording rules are `KubernetesPrometheusRule`
+  objects beside each cluster's agent stack, one object per owner, never
+  rules pasted into the stack's `helm_values`. Each alerting rule carries
+  `severity` and `component` labels and a `runbook_url` annotation. A rule
+  object loads into every stack on the default `all_monitors` discovery;
+  a stack on `release_managed_only` (a hub receiver) loads it only when
+  the rule's own `labels` carry `release: <that stack's release_name>`.
+  `labels` on the rule object are the object's, not the alert's: a
+  `severity` there reaches no alert.
+- After applying a rule object, prove it evaluates: the Prometheus rules
+  API (`/api/v1/rules`) lists its group, and `/api/v1/alerts` or a query
+  for a recorded series answers. One malformed rule makes the operator drop
+  the whole object while the apply still succeeds, so a green deploy is not
+  the proof.
 - Typed Discord delivery needs the kind's default chart (88 or later); if
   the person pins an older `chart_version`, Discord refuses to load and
   Alertmanager never starts. When Alertmanager is missing, read the

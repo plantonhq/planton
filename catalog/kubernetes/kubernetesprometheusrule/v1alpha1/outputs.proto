@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1;
+
+// KubernetesPrometheusRuleStackOutputs captures observable outputs after the
+// PrometheusRule is created on the target cluster. Which Prometheus instances
+// load the rules is decided by their selectors, not by the object, so only the
+// resource identity is exported.
+message KubernetesPrometheusRuleStackOutputs {
+  // Name of the created PrometheusRule (equals metadata.name).
+  string prometheus_rule_name = 1;
+
+  // Namespace the PrometheusRule was created in (the resolved spec.namespace).
+  string namespace = 2;
+}

@@ -1,0 +1,4 @@
+name: kubernetes-prometheus-rule
+runtime:
+  name: go
+description: Pulumi module that provisions a prometheus-operator PrometheusRule from a KubernetesPrometheusRule manifest.

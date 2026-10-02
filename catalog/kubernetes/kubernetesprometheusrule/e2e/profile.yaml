@@ -1,0 +1,14 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: kubernetesprometheusrule
+spec:
+  tier: 3
+  # The registry prerequisite installs a whole KubernetesKubePrometheusStack
+  # (operator, Prometheus, Alertmanager) before the rule; the fenced scenario
+  # adds a second Prometheus. Sized for both stacks reconciling on kind.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 30

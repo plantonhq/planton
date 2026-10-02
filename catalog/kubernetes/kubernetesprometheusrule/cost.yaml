@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: kubernetesprometheusrule
+spec:
+  billing_model: free
+  free_tier: A PrometheusRule is a record in the Kubernetes API server -- rule groups the prometheus-operator renders into the rule files of every Prometheus that selects the object. No provider bills for the object, and it reserves no cluster capacity of its own.
+  notes: "The spend is in the Prometheus that evaluates the rules, not in this object. Each rule is a query run at its group's interval, so many rules, short intervals, or expressions over long ranges and high-cardinality series raise that Prometheus's CPU and memory; every recording rule also writes a new series the Prometheus stores and, with remote write, sends on. A group's limit caps how many series or alerts one rule may produce per evaluation, the cheap guard against a label explosion."

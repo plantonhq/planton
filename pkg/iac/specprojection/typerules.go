@@ -1,4 +1,4 @@
-package generators
+package specprojection
 
 import (
 	"fmt"
@@ -8,15 +8,14 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-// isManifestOnlyField reports whether a field is a word the manifest carries
+// IsManifestOnlyField reports whether a field is a word the manifest carries
 // and no engine forwards -- `(dev.planton.shared.options.manifest_only)`. Such a
 // field exists so an empty block can say what it means (a selector's
 // `match_all`, an access config's `ephemeral`); the wire spells the same fact
-// by the absence of the field's siblings. Both generators consult this per
-// field, so a Terraform module never receives the key in tfvars and never has
-// a variable declared for it -- the marker is honored once, here, never per
-// module.
-func isManifestOnlyField(fd protoreflect.FieldDescriptor) bool {
+// by the absence of the field's siblings. The projection drops it, and the
+// Terraform variables generator declares no variable for it, so no engine
+// ever receives the key -- the marker is honored here, never per module.
+func IsManifestOnlyField(fd protoreflect.FieldDescriptor) bool {
 	opts := fd.Options()
 	if opts == nil {
 		return false
@@ -25,9 +24,10 @@ func isManifestOnlyField(fd protoreflect.FieldDescriptor) bool {
 	return ok && v
 }
 
-// TypeRule defines how a specific proto message type should be treated when
-// generating Terraform artifacts. Rules are registered once and consulted by
-// both the tfvars and variables.tf generators.
+// TypeRule defines how a specific proto message type is treated when a
+// manifest is projected into an engine's input. Rules are registered once and
+// consulted by the projection (Terraform tfvars and the Pulumi custom-resource
+// helper alike) and by the Terraform variables.tf generator.
 type TypeRule struct {
 	// FlattenTo is the Terraform type this message should collapse to. When
 	// set, the generators emit that type instead of recursing into the

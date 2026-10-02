@@ -188,7 +188,7 @@ only mirrors the schema silently misses them. For every audited component:
 
 **Module Files (6.66%):**
 - [ ] `iac/pulumi/module/main.go` exists
-- [ ] `iac/pulumi/module/locals.go` exists
+- [ ] `iac/pulumi/module/locals.go` exists (not for a Kubernetes manifest projection kind, whose `main.go` applies the projection through `manifestcr.Apply` and maps no field -- `architecture/component.md` §4.1)
 - [ ] `iac/pulumi/module/outputs.go` exists
 
 **Module Comment Quality (scored as part of Module Files):**

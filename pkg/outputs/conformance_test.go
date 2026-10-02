@@ -1203,6 +1203,15 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"authorization_policy_name", "namespace"},
 		},
 		{
+			name: "KubernetesPrometheusRule",
+			kind: cloudresourcekind.CloudResourceKind_KubernetesPrometheusRule,
+			rawOutputs: map[string]interface{}{
+				"prometheus_rule_name": "api-slo",
+				"namespace":            "monitoring",
+			},
+			mustPopulate: []string{"prometheus_rule_name", "namespace"},
+		},
+		{
 			name: "KubernetesTelemetry",
 			kind: cloudresourcekind.CloudResourceKind_KubernetesTelemetry,
 			rawOutputs: map[string]interface{}{

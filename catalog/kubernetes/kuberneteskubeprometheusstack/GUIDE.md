@@ -16,6 +16,13 @@ component's release fails to install. When an architecture turns on any
 monitoring toggle anywhere, this stack (or its CRDs) must already be on
 the cluster — deploy it early, in the shared-cluster chart.
 
+Alert and recording rules of your own are declared as
+[KubernetesPrometheusRule](../kubernetesprometheusrule/GUIDE.md) objects,
+not through this stack's spec; it lists this stack as its prerequisite.
+Under the default `all_monitors` discovery every rule object loads; under
+`release_managed_only` only objects labelled `release: <release_name>` do,
+so a rule meant for a fenced stack carries that label in its own `labels`.
+
 ## One per cluster, by CRD physics
 
 The monitoring CRDs are cluster-scoped singletons; a second stack must

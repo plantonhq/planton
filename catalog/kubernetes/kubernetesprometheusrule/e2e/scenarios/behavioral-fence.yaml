@@ -1,0 +1,24 @@
+# The label-fence proof: a second, fenced Prometheus (the fixture stack,
+# set up like a receiver beside an agent: no CRDs, no operator of its own,
+# release_managed_only discovery) must load this object because its own
+# labels carry `release: e2e-prule-fenced`, while the prerequisite stack
+# (all_monitors) loads it too. The fixture's unlabelled twin proves the
+# fence holds: the fenced Prometheus never loads it. This is the object's
+# own metadata routed by the projection, proven live.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPrometheusRule
+metadata:
+  name: e2e-prule-fenced-in
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesprometheusrule/e2e/fixture-fenced-stack.yaml, catalog/kubernetes/kubernetesprometheusrule/e2e/fixture-unlabelled-rule.yaml"
+spec:
+  namespace:
+    value: default
+  labels:
+    release: e2e-prule-fenced
+  groups:
+    - name: e2e-fenced-in
+      interval: 15s
+      rules:
+        - record: e2e:fence:labelled
+          expr: vector(1)

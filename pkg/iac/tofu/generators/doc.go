@@ -1,25 +1,22 @@
 // Package generators provides proto-aware Terraform artifact generation for
 // Planton cloud components.
 //
-// It replaces the earlier pkg/iac/tofu/tfvars and pkg/iac/tofu/variablestf
-// packages with a unified implementation that shares a single TypeRule registry
-// across both generators. This ensures that Planton's domain types (such as
-// StringValueOrRef and ValueFromRef) are handled consistently
-// whether generating terraform.tfvars or variables.tf.
+// The value side of every artifact comes from pkg/iac/specprojection, which
+// owns the TypeRule registry and the projection of a manifest into a plain
+// value map. Both generators here consult that one registry, so Planton's
+// domain types (such as StringValueOrRef and ValueFromRef) are handled the
+// same way in terraform.tfvars, in variables.tf, and in the Pulumi modules
+// that build Kubernetes custom resources from the same projection.
 //
 // # Architecture
 //
 // The package is organized around three concerns:
 //
-//  1. Type Rules (typerules.go) -- a registry mapping proto message full names
-//     to Terraform translation behaviors: flatten to a primitive, skip entirely,
-//     or recurse normally. Adding a new wrapper type is one registry entry.
-//
-//  2. tfvars generation (flatten.go, hclwrite.go, tfvars.go) -- converts a
-//     proto message to HCL-formatted terraform.tfvars. The pipeline is:
-//     protojson -> JSON map -> Flatten (applies type rules using proto
-//     descriptors) -> WriteMapToHCL -> string. Two emission modes exist,
-//     selected per kind by RenderTFVars:
+//  1. tfvars generation (hclwrite.go, tfvars.go) -- converts a proto message
+//     to HCL-formatted terraform.tfvars. The pipeline is:
+//     specprojection.Project (protojson -> JSON map -> type rules) ->
+//     WriteMapToHCL -> string. Two emission modes exist, selected per kind by
+//     RenderTFVars:
 //     - snake_case (ProtoToTFVars): keys renamed to proto snake_case to match
 //     the generated snake_case variables.tf that provider-abstraction
 //     modules consume.
@@ -28,14 +25,18 @@
 //     kubernetes_manifest_projection -- their `spec` is fed verbatim to a
 //     kubernetes_manifest passthrough module (see manifestmodule.go).
 //
-//  3. variables.tf generation (tftype.go, variablestf.go) -- walks a proto
+//  2. variables.tf generation (tftype.go, variablestf.go) -- walks a proto
 //     message descriptor to produce Terraform variable blocks. Consults the
 //     same type rules to flatten wrapper types to primitives and skip
 //     orchestrator-only fields.
 //
-//  4. thin manifest-module generation (manifestmodule.go) -- for projection
+//  3. thin manifest-module generation (manifestmodule.go) -- for projection
 //     kinds, emits the entire iac/tf/ module (any-typed spec passthrough), so
-//     no hand-written snake->camel/prune/oneOf locals.tf is needed.
+//     no hand-written snake->camel/prune/oneOf locals.tf is needed. Which spec
+//     fields describe the object rather than its spec (the namespace, the
+//     object's own labels and annotations) and the identity labels it carries
+//     are read from pkg/kubernetes/manifestprojection, the same source the
+//     Pulumi modules use.
 //
 // Note: despite the generic-sounding name, this package is planton-domain-aware
 // (it hardcodes planton type rules and reads kind metadata via crkreflect); it
@@ -119,7 +120,7 @@
 //
 // # Extensibility
 //
-// To handle a new Planton wrapper type, add one entry to DefaultRules() in
-// typerules.go. Both generators will immediately respect the new rule. No
-// other code changes are required.
+// To handle a new Planton wrapper type, add one entry to
+// specprojection.DefaultRules(). Both generators and every engine projection
+// respect the new rule immediately. No other code changes are required.
 package generators

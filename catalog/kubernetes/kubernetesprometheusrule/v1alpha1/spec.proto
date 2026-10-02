@@ -1,0 +1,233 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// KubernetesPrometheusRuleSpec defines a prometheus-operator PrometheusRule: a
+// namespaced set of Prometheus alerting and recording rules that every
+// Prometheus (and Thanos Ruler) whose rule selector matches the object loads
+// and evaluates.
+//
+// 100% fidelity with the upstream PrometheusRule custom resource
+// (monitoring.coreos.com/v1), pinned to prometheus-operator v0.94.1 -- the
+// operator the kube-prometheus-stack chart 91.8.2 ships, which is what
+// KubernetesKubePrometheusStack installs. The upstream spec (`groups`) follows
+// the Planton envelope directly; there is no nested `prometheus_rule`
+// sub-message.
+//
+// The envelope: `namespace` places the object, and `labels` and `annotations`
+// are the object's own metadata. The labels are configuration here, not
+// decoration: a Prometheus picks rules up through its rule selector, so a rule
+// object that a fenced Prometheus should load carries the labels that selector
+// asks for. KubernetesKubePrometheusStack's default discovery (all_monitors)
+// loads every PrometheusRule in the cluster; its release_managed_only discovery
+// loads only objects labelled `release: <the stack's release name>` (its
+// release_name output).
+//
+// What makes an alert worth its page: give every alerting rule the labels its
+// alert routing reads (a `severity`, the environment and component the
+// receivers group by) and the annotations a responder needs (a summary, and a
+// `runbook_url` whose first line is the first action). Alertmanager routes on
+// the labels and renders the annotations; a rule with neither fires into a
+// default route nobody watches.
+message KubernetesPrometheusRuleSpec {
+  // Kubernetes namespace the PrometheusRule is created in. Typically a
+  // reference to a KubernetesNamespace resource's `spec.name`.
+  //
+  // A Prometheus loads rules from the namespaces its rule namespace selector
+  // matches (KubernetesKubePrometheusStack selects every namespace), so the
+  // namespace is where the rules live, not a limit on what they query: a rule's
+  // expression sees every series the Prometheus holds.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Labels on the PrometheusRule object itself (its metadata.labels), merged
+  // under Planton's identity labels (a key in both keeps the identity value).
+  //
+  // These are how a Prometheus with a rule selector decides the rules are its
+  // own: a KubernetesKubePrometheusStack on release_managed_only discovery loads
+  // only objects labelled `release: <its release_name output>`, and a
+  // Prometheus installed any other way selects by whatever its ruleSelector
+  // names. Under the stack's default all_monitors discovery no label is needed.
+  //
+  // These are NOT the labels the rules attach to their series or alerts; those
+  // are each group's and each rule's `labels`.
+  map<string, string> labels = 2 [
+    (dev.planton.shared.options.kubernetes_object_metadata) = object_labels,
+    (buf.validate.field).map = {
+      keys: {
+        string: {
+          min_len: 1
+          max_len: 317
+          pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$"
+        }
+      }
+      values: {
+        string: {
+          max_len: 63
+          pattern: "^([A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?)?$"
+        }
+      }
+    }
+  ];
+
+  // Annotations on the PrometheusRule object itself (its
+  // metadata.annotations): notes for people and tools reading the object, such
+  // as an owning team or a link to the alert's design. They do not reach the
+  // alerts; each alerting rule's `annotations` do.
+  map<string, string> annotations = 3 [(dev.planton.shared.options.kubernetes_object_metadata) = object_annotations];
+
+  // The rule groups: the content of one Prometheus rule file. Each group is
+  // evaluated as a unit, sequentially, at its own interval; groups run in
+  // parallel with each other.
+  //
+  // Group names are the list's key upstream, so two groups may not share a
+  // name. Recording rules that later rules read belong earlier in the same
+  // group, because a group evaluates its rules in order within one evaluation.
+  repeated KubernetesPrometheusRuleGroup groups = 4 [(buf.validate.field).cel = {
+    id: "groups.unique_names"
+    message: "Each rule group needs a unique name: groups are keyed by name, and the API server refuses two with the same one"
+    expression: "this.map(g, g.name).unique()"
+  }];
+}
+
+// KubernetesPrometheusRuleGroup is one rule group (upstream RuleGroup): a list
+// of recording and alerting rules evaluated in order, together, at one
+// interval. Faithful to upstream monitoring.coreos.com/v1 RuleGroup.
+message KubernetesPrometheusRuleGroup {
+  // Name of the rule group, unique within the PrometheusRule. It appears in
+  // Prometheus's rules API and UI, and in the `rule_group` label of the
+  // evaluation metrics, so name it for what the rules watch
+  // ("api-availability", "postgres-backups").
+  string name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // How often the group's rules are evaluated, as a Prometheus duration
+  // ("30s", "1m", "1h30m"). Unset, the evaluating Prometheus's own evaluation
+  // interval applies (KubernetesKubePrometheusStack's default is 30s).
+  //
+  // A fast-burn alert wants a short interval; a slow recording rule over long
+  // windows can afford a longer one. An interval shorter than the scrape
+  // interval of the series it reads evaluates the same data twice.
+  optional string interval = 2 [(buf.validate.field).string.pattern = "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"];
+
+  // Delays the evaluation timestamp of this group into the past by this
+  // duration ("1m"), so each evaluation sees samples that arrived late -- the
+  // setting for rules over remote-written or federated series. Requires
+  // Prometheus >= 2.53; Thanos Ruler does not support it. Unset, the
+  // Prometheus's global rule query offset applies (zero by default).
+  optional string query_offset = 3 [
+    json_name = "query_offset",
+    (buf.validate.field).string.pattern = "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
+  ];
+
+  // The most alerts an alerting rule, or series a recording rule, in this
+  // group may produce per evaluation. A rule that exceeds it fails that
+  // evaluation instead of flooding Alertmanager or the database, which makes a
+  // limit the cheap guard against a label explosion. Zero (the default) means
+  // no limit. Requires Prometheus >= 2.31 or Thanos Ruler >= 0.24.
+  optional int32 limit = 4 [(buf.validate.field).int32.gte = 0];
+
+  // Only Thanos Ruler reads this; Prometheus ignores it. What Thanos Ruler does
+  // when a store returns a partial response during evaluation: "abort" fails
+  // the evaluation, "warn" evaluates with the partial data and logs a warning.
+  // Case-insensitive. Unset, Thanos Ruler's own default applies.
+  optional string partial_response_strategy = 5 [
+    json_name = "partial_response_strategy",
+    (buf.validate.field).string.pattern = "^(?i)(abort|warn)?$"
+  ];
+
+  // Labels added to, or overwriting, every series or alert the group's rules
+  // produce, before they are stored. A rule's own `labels` take precedence
+  // over these. Use them for what every rule in the group shares (the
+  // component the group watches). Requires Prometheus >= 3.0; Thanos Ruler
+  // ignores them.
+  map<string, string> labels = 6;
+
+  // The group's rules, evaluated in order. Each is either a recording rule
+  // (`record`) or an alerting rule (`alert`), never both.
+  repeated KubernetesPrometheusRuleRule rules = 7;
+}
+
+// KubernetesPrometheusRuleRule is one alerting or recording rule (upstream
+// Rule). Exactly one of `record` and `alert` is set. Faithful to upstream
+// monitoring.coreos.com/v1 Rule; the rules about which fields belong to which
+// kind of rule are the ones Prometheus enforces when it loads the rule file,
+// moved forward so a mistake fails here instead of silently dropping the whole
+// PrometheusRule from the Prometheus that loads it.
+message KubernetesPrometheusRuleRule {
+  option (buf.validate.message).cel = {
+    id: "rule.record_xor_alert"
+    message: "A rule is either a recording rule (record) or an alerting rule (alert): set exactly one of the two"
+    expression: "has(this.record) != has(this.alert)"
+  };
+  option (buf.validate.message).cel = {
+    id: "rule.recording_rule_has_no_alert_fields"
+    message: "A recording rule (record) cannot carry for, keep_firing_for or annotations; those belong to alerting rules, and Prometheus refuses the whole rule file when a recording rule has them"
+    expression: "!has(this.record) || (!has(this.for_duration) && !has(this.keep_firing_for) && size(this.annotations) == 0)"
+  };
+
+  // Name of the time series a recording rule writes, set instead of `alert`.
+  // Must be a valid metric name; by convention it reads
+  // level:metric:operations ("job:http_requests:rate5m"), so a reader can tell
+  // a recorded series from a scraped one.
+  optional string record = 1 [(buf.validate.field).string.pattern = "^[a-zA-Z_:][a-zA-Z0-9_:]*$"];
+
+  // Name of the alert an alerting rule raises, set instead of `record`. It
+  // becomes the alert's `alertname` label, so it is what a receiver shows
+  // first: name the symptom a person would act on ("ApiErrorBudgetBurn"), not
+  // the query.
+  optional string alert = 2 [(buf.validate.field).string.min_len = 1];
+
+  // The PromQL expression to evaluate. For an alerting rule, every series the
+  // expression returns is an active alert, one per distinct label set; for a
+  // recording rule, its result is written as the `record` series.
+  //
+  // Upstream accepts an integer or a string here; a string carries both,
+  // since an integer is itself a valid PromQL expression ("1").
+  string expr = 3 [(buf.validate.field).string.min_len = 1];
+
+  // Upstream `for`: how long an alerting rule's expression must keep returning
+  // a series before the alert moves from pending to firing, as a Prometheus
+  // duration ("5m"). Unset or "0", the alert fires on the first evaluation
+  // that returns it. A duration shorter than a few evaluation intervals pages
+  // on a single noisy sample. Alerting rules only. The manifest key is `for`,
+  // as upstream spells it; the proto field is named for_duration because `for`
+  // is a reserved word in the validation language and in several of the
+  // generated SDKs' languages.
+  optional string for_duration = 4 [
+    json_name = "for",
+    (buf.validate.field).string.pattern = "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
+  ];
+
+  // How long an alert keeps firing after its expression stops returning it,
+  // as a Prometheus duration ("10m"). It stops an alert on a flapping
+  // condition from resolving and re-paging every few minutes. Alerting rules
+  // only.
+  optional string keep_firing_for = 5 [
+    json_name = "keep_firing_for",
+    (buf.validate.field).string = {
+      min_len: 1
+      pattern: "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
+    }
+  ];
+
+  // Labels added to, or overwriting, the alert's or the recorded series'
+  // labels. On an alerting rule these are what Alertmanager routes on: a
+  // `severity`, and the environment and component the receivers group by.
+  // They take precedence over the group's `labels`. Values may use Go
+  // templating over the alert's labels and value ("{{ $labels.namespace }}").
+  map<string, string> labels = 6;
+
+  // Annotations attached to each alert an alerting rule raises: the text a
+  // responder reads. Conventionally a `summary`, a `description` and a
+  // `runbook_url` whose first line is the first action. Values may use Go
+  // templating ("{{ $value | humanizePercentage }} of requests failed").
+  // Alerting rules only.
+  map<string, string> annotations = 7;
+}

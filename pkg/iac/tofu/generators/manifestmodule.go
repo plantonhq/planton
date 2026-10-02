@@ -12,7 +12,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/pkg/refannotations"
+	"github.com/plantonhq/planton/pkg/kubernetes/manifestprojection"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -57,18 +57,21 @@ func GenerateManifestModule(kind cloudresourcekind.CloudResourceKind, msg proto.
 		return nil, errors.New("manifest message has no message-typed spec field")
 	}
 
-	// A namespace foreign key means the CR is namespaced; its value maps to
-	// metadata.namespace, not into the CR spec. Cluster-scoped kinds (e.g.
-	// GatewayClass) have no such field.
-	nsJSONName, namespaced := namespaceForeignKeyJSONName(specMsg)
+	// The envelope: spec fields that describe the object rather than its spec.
+	// A namespace foreign key means the CR is namespaced and maps to
+	// metadata.namespace (cluster-scoped kinds such as GatewayClass have
+	// none); fields marked kubernetes_object_metadata map to the object's own
+	// labels and annotations. None of them reaches the CR spec.
+	envelope := manifestprojection.EnvelopeOf(specMsg)
+	nsJSONName, namespaced := envelope.NamespaceKey, envelope.Namespaced()
 	label := kebabFromPascal(crdKind)
 
 	files := map[string]string{
 		"provider.tf":  manifestProviderTF(kind.String()),
 		"backend.tf":   manifestBackendTF(),
 		"variables.tf": manifestVariablesTF(apiVersion, crdKind),
-		"locals.tf":    manifestLocalsTF(kind.String(), nsJSONName, namespaced),
-		"main.tf":      manifestMainTF(strings.ReplaceAll(label, "-", "_"), apiVersion, crdKind, nsJSONName, namespaced),
+		"locals.tf":    manifestLocalsTF(kind.String(), envelope),
+		"main.tf":      manifestMainTF(strings.ReplaceAll(label, "-", "_"), apiVersion, crdKind, envelope),
 	}
 
 	outputs, err := manifestOutputsTF(md, specMsg, crdKind, nsJSONName, namespaced)
@@ -95,21 +98,6 @@ func messageOfField(md protoreflect.MessageDescriptor, name string) protoreflect
 		return nil
 	}
 	return fd.Message()
-}
-
-// namespaceForeignKeyJSONName returns the JSON key of the spec field that is the
-// KubernetesNamespace foreign key, and whether one exists. It is detected via
-// the (foreignkey.default_kind) option rather than the field name, so the rule
-// stays correct even if a future kind names the field differently.
-func namespaceForeignKeyJSONName(specMsg protoreflect.MessageDescriptor) (string, bool) {
-	fields := specMsg.Fields()
-	for i := 0; i < fields.Len(); i++ {
-		fd := fields.Get(i)
-		if refannotations.Of(fd).DefaultKind == cloudresourcekind.CloudResourceKind_KubernetesNamespace {
-			return fd.JSONName(), true
-		}
-	}
-	return "", false
 }
 
 func manifestProviderTF(kindName string) string {
@@ -197,30 +185,54 @@ func manifestVariablesTF(apiVersion, crdKind string) string {
 	return b.String()
 }
 
-func manifestLocalsTF(kindName, nsJSONName string, namespaced bool) string {
+func manifestLocalsTF(kindName string, envelope manifestprojection.Envelope) string {
 	var b strings.Builder
 	b.WriteString("locals {\n")
-	b.WriteString("  # Planton identity labels — the planton.ai/* convention, identical to the\n")
-	b.WriteString("  # Pulumi module's label set (twin discipline). Conditional entries use the\n")
-	b.WriteString("  # null-prune idiom: heterogeneous conditional merges fail HCL type\n")
-	b.WriteString("  # unification when sibling entries infer as different object types.\n")
-	b.WriteString("  labels = {\n")
-	b.WriteString("    for k, v in {\n")
-	b.WriteString("      \"planton.ai/resource\"      = \"true\"\n")
-	b.WriteString("      \"planton.ai/resource-name\" = var.metadata.name\n")
-	fmt.Fprintf(&b, "      \"planton.ai/resource-kind\" = %q\n", kindName)
-	b.WriteString("      \"planton.ai/resource-id\"   = (var.metadata.id != null && var.metadata.id != \"\") ? var.metadata.id : null\n")
-	b.WriteString("      \"planton.ai/organization\"  = (var.metadata.org != null && var.metadata.org != \"\") ? var.metadata.org : null\n")
-	b.WriteString("      \"planton.ai/environment\"   = (var.metadata.env != null && var.metadata.env != \"\") ? var.metadata.env : null\n")
-	b.WriteString("    } : k => v if v != null\n")
-	b.WriteString("  }\n\n")
-	if namespaced {
-		fmt.Fprintf(&b, "  # The CR spec is var.spec minus the Planton %q foreign key, which maps to\n", nsJSONName)
+	b.WriteString("  # Planton identity labels — the planton.ai/* family defined once in\n")
+	b.WriteString("  # pkg/kubernetes/manifestprojection, which the Pulumi projection helper\n")
+	b.WriteString("  # stamps too. Conditional entries use the null-prune idiom: heterogeneous\n")
+	b.WriteString("  # conditional merges fail HCL type unification when sibling entries infer\n")
+	b.WriteString("  # as different object types.\n")
+	if envelope.LabelsKey == "" {
+		b.WriteString("  labels = {\n")
+		writeIdentityLabelEntries(&b, kindName, "    ")
+		b.WriteString("  }\n")
+	} else {
+		fmt.Fprintf(&b, "  #\n  # The object's own labels (var.spec.%s) sit under them: a key in both keeps\n", envelope.LabelsKey)
+		b.WriteString("  # the identity value, so an object can never be relabelled as another resource.\n")
+		b.WriteString("  labels = merge(\n")
+		fmt.Fprintf(&b, "    try(var.spec.%s, {}),\n", envelope.LabelsKey)
+		b.WriteString("    {\n")
+		writeIdentityLabelEntries(&b, kindName, "      ")
+		b.WriteString("    },\n")
+		b.WriteString("  )\n")
+	}
+	b.WriteString("\n")
+	if envelope.AnnotationsKey != "" {
+		b.WriteString("  # The object's own annotations, routed to metadata.annotations.\n")
+		fmt.Fprintf(&b, "  annotations = try(var.spec.%s, {})\n\n", envelope.AnnotationsKey)
+	}
+
+	excluded := envelopeKeys(envelope)
+	switch {
+	case len(excluded) == 1 && envelope.Namespaced():
+		fmt.Fprintf(&b, "  # The CR spec is var.spec minus the Planton %q foreign key, which maps to\n", envelope.NamespaceKey)
 		b.WriteString("  # metadata.namespace rather than into the CR spec. The converter already emits\n")
 		b.WriteString("  # camelCase, null-pruned keys with StringValueOrRef foreign keys resolved to\n")
 		b.WriteString("  # literal strings, so no other transformation is needed.\n")
-		fmt.Fprintf(&b, "  manifest_spec = { for k, v in var.spec : k => v if k != %q }\n", nsJSONName)
-	} else {
+		fmt.Fprintf(&b, "  manifest_spec = { for k, v in var.spec : k => v if k != %q }\n", envelope.NamespaceKey)
+	case len(excluded) > 0:
+		b.WriteString("  # The CR spec is var.spec minus the envelope: the fields that describe the\n")
+		b.WriteString("  # object (its namespace, its own labels and annotations) and map to its\n")
+		b.WriteString("  # metadata instead. The converter already emits camelCase, null-pruned keys\n")
+		b.WriteString("  # with StringValueOrRef foreign keys resolved to literal strings, so no other\n")
+		b.WriteString("  # transformation is needed.\n")
+		quoted := make([]string, len(excluded))
+		for i, k := range excluded {
+			quoted[i] = fmt.Sprintf("%q", k)
+		}
+		fmt.Fprintf(&b, "  manifest_spec = { for k, v in var.spec : k => v if !contains([%s], k) }\n", strings.Join(quoted, ", "))
+	default:
 		b.WriteString("  # Cluster-scoped CR: the converter already emits camelCase, null-pruned keys,\n")
 		b.WriteString("  # so the spec is passed through unchanged.\n")
 		b.WriteString("  manifest_spec = var.spec\n")
@@ -229,15 +241,68 @@ func manifestLocalsTF(kindName, nsJSONName string, namespaced bool) string {
 	return b.String()
 }
 
-func manifestMainTF(resourceName, apiVersion, crdKind, nsJSONName string, namespaced bool) string {
+// writeIdentityLabelEntries writes the identity labels as the null-pruned
+// `for` expression the locals use, keys aligned the way `tofu fmt` aligns
+// them. The keys come from pkg/kubernetes/manifestprojection, which the
+// Pulumi helper stamps from too.
+func writeIdentityLabelEntries(b *strings.Builder, kindName, indent string) {
+	entries := [][2]string{
+		{manifestprojection.LabelResource, `"true"`},
+		{manifestprojection.LabelResourceName, "var.metadata.name"},
+		{manifestprojection.LabelResourceKind, fmt.Sprintf("%q", kindName)},
+		{manifestprojection.LabelResourceID, `(var.metadata.id != null && var.metadata.id != "") ? var.metadata.id : null`},
+		{manifestprojection.LabelOrganization, `(var.metadata.org != null && var.metadata.org != "") ? var.metadata.org : null`},
+		{manifestprojection.LabelEnvironment, `(var.metadata.env != null && var.metadata.env != "") ? var.metadata.env : null`},
+	}
+	width := 0
+	for _, e := range entries {
+		if n := len(e[0]) + 2; n > width {
+			width = n
+		}
+	}
+	fmt.Fprintf(b, "%sfor k, v in {\n", indent)
+	for _, e := range entries {
+		key := fmt.Sprintf("%q", e[0])
+		fmt.Fprintf(b, "%s  %s%s = %s\n", indent, key, strings.Repeat(" ", width-len(key)), e[1])
+	}
+	fmt.Fprintf(b, "%s} : k => v if v != null\n", indent)
+}
+
+// envelopeKeys lists the envelope's keys in spec order of meaning: namespace,
+// labels, annotations.
+func envelopeKeys(e manifestprojection.Envelope) []string {
+	var keys []string
+	for _, k := range []string{e.NamespaceKey, e.LabelsKey, e.AnnotationsKey} {
+		if k != "" {
+			keys = append(keys, k)
+		}
+	}
+	return keys
+}
+
+func manifestMainTF(resourceName, apiVersion, crdKind string, envelope manifestprojection.Envelope) string {
 	var metadata string
-	if namespaced {
+	switch {
+	case envelope.Namespaced() && envelope.AnnotationsKey != "":
+		metadata = fmt.Sprintf(`    metadata = {
+      name        = var.metadata.name
+      namespace   = var.spec.%s
+      labels      = local.labels
+      annotations = local.annotations
+    }`, envelope.NamespaceKey)
+	case envelope.Namespaced():
 		metadata = fmt.Sprintf(`    metadata = {
       name      = var.metadata.name
       namespace = var.spec.%s
       labels    = local.labels
-    }`, nsJSONName)
-	} else {
+    }`, envelope.NamespaceKey)
+	case envelope.AnnotationsKey != "":
+		metadata = `    metadata = {
+      name        = var.metadata.name
+      labels      = local.labels
+      annotations = local.annotations
+    }`
+	default:
 		metadata = `    metadata = {
       name   = var.metadata.name
       labels = local.labels

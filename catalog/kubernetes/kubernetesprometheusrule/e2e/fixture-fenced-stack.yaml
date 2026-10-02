@@ -1,0 +1,38 @@
+# Extra-instance fixture for the behavioral-fence scenario: a second
+# Prometheus beside the prerequisite stack, set up the way a receiver beside
+# an agent is. It brings no CRDs and no operator (the prerequisite stack's
+# operator, which watches every namespace, runs it), no exporters, scrapers,
+# Alertmanager, Grafana or default rules, and it loads only objects labelled
+# `release: e2e-prule-fenced`.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesKubePrometheusStack
+metadata:
+  name: e2e-prule-fenced
+spec:
+  namespace:
+    value: e2e-prule-fenced
+  create_namespace: true
+  skip_crds: true
+  prometheus:
+    disk_size: 2Gi
+    discovery: release_managed_only
+  alertmanager:
+    enabled: false
+  grafana:
+    enabled: false
+  exporters:
+    kube_state_metrics_enabled: false
+    node_exporter_enabled: false
+  control_plane_scrapers:
+    kube_api_server: false
+    kubelet: false
+    kube_controller_manager: false
+    core_dns: false
+    kube_etcd: false
+    kube_scheduler: false
+    kube_proxy: false
+  default_rules:
+    enabled: false
+  helm_values: |
+    prometheusOperator:
+      enabled: false

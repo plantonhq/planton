@@ -1,0 +1,32 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPrometheusRule
+metadata:
+  name: api-slo
+spec:
+  namespace:
+    value: monitoring
+  labels:
+    release: kube-prometheus-stack
+  groups:
+    - name: api-slo-recording
+      interval: 30s
+      rules:
+        - record: job:slo_errors_per_request:ratio_rate5m
+          expr: sum by (job) (rate(http_requests_total{code=~"5.."}[5m])) / sum by (job) (rate(http_requests_total[5m]))
+        - record: job:slo_errors_per_request:ratio_rate1h
+          expr: sum by (job) (rate(http_requests_total{code=~"5.."}[1h])) / sum by (job) (rate(http_requests_total[1h]))
+    - name: api-slo-alerts
+      interval: 30s
+      limit: 50
+      labels:
+        component: api
+      rules:
+        - alert: ApiErrorBudgetFastBurn
+          expr: job:slo_errors_per_request:ratio_rate1h > (14.4 * 0.001) and job:slo_errors_per_request:ratio_rate5m > (14.4 * 0.001)
+          for: 2m
+          keep_firing_for: 5m
+          labels:
+            severity: page
+          annotations:
+            summary: "{{ $labels.job }} is burning its 30-day error budget 14x too fast"
+            runbook_url: https://runbooks.example.com/api-error-budget-burn

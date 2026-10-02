@@ -2330,6 +2330,10 @@ const (
 	// cert-manager must be running before the operator installs.
 	CloudResourceKind_KubernetesOtelOperator  CloudResourceKind = 4075
 	CloudResourceKind_KubernetesOtelCollector CloudResourceKind = 4076
+	// KubernetesKubePrometheusStack is a prerequisite because it installs the
+	// monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the
+	// Prometheus that evaluates it.
+	CloudResourceKind_KubernetesPrometheusRule CloudResourceKind = 4079
 	// 4080–4099: Kubernetes security, policy, and identity
 	CloudResourceKind_KubernetesKyverno    CloudResourceKind = 4080
 	CloudResourceKind_KubernetesGatekeeper CloudResourceKind = 4081
@@ -3463,6 +3467,7 @@ var (
 		4074:  "KubernetesTempo",
 		4075:  "KubernetesOtelOperator",
 		4076:  "KubernetesOtelCollector",
+		4079:  "KubernetesPrometheusRule",
 		4080:  "KubernetesKyverno",
 		4081:  "KubernetesGatekeeper",
 		4090:  "KubernetesKeycloak",
@@ -4301,6 +4306,7 @@ var (
 		"KubernetesTempo":                                4074,
 		"KubernetesOtelOperator":                         4075,
 		"KubernetesOtelCollector":                        4076,
+		"KubernetesPrometheusRule":                       4079,
 		"KubernetesKyverno":                              4080,
 		"KubernetesGatekeeper":                           4081,
 		"KubernetesKeycloak":                             4090,
@@ -4939,7 +4945,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xac\x91\x03\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x9a\x92\x03\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5659,7 +5665,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x0fKubernetesTempo\x10\xea\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8stempoP\x92\x03\x12?\n" +
 	"\x16KubernetesOtelOperator\x10\xeb\x1f\x1a\"\xa2\xf7\x04\x1e\b\x13\x12\bv1alpha1\"\tk8sotelop:\x02\xbe\x1fP\x91\x03\x12A\n" +
 	"\x17KubernetesOtelCollector\x10\xec\x1f\x1a#\xa2\xf7\x04\x1f\b\x13\x12\bv1alpha1\"\n" +
-	"k8sotelcol:\x02\xeb\x1fP\x91\x03\x125\n" +
+	"k8sotelcol:\x02\xeb\x1fP\x91\x03\x12l\n" +
+	"\x18KubernetesPrometheusRule\x10\xef\x1f\x1aM\xa2\xf7\x04I\b\x13\x12\bv1alpha1\"\bk8sprule:\x02\xe6\x1fB*\n" +
+	"\x18monitoring.coreos.com/v1\x12\x0ePrometheusRuleP\x91\x03\x125\n" +
 	"\x11KubernetesKyverno\x10\xf0\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8skyvrnP\x91\x03\x128\n" +
 	"\x14KubernetesGatekeeper\x10\xf1\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\bk8sgtkprP\x91\x03\x129\n" +
 	"\x12KubernetesKeycloak\x10\xfa\x1f\x1a \xa2\xf7\x04\x1c\b\x13\x12\bv1alpha1\"\x05k8skc:\x04\xfd\x1f\x85 P\x92\x03\x123\n" +

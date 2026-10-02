@@ -1,0 +1,34 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPrometheusRule
+metadata:
+  name: <service>-slo-alerts
+spec:
+  namespace:
+    value: <namespace>
+  groups:
+    - name: <service>-slo-alerts
+      interval: 30s
+      limit: 20
+      labels:
+        component: <service>
+      rules:
+        - alert: <Service>ErrorBudgetFastBurn
+          expr: job:slo_errors_per_request:ratio_rate1h{job="<job>"} > (14.4 * <error_budget>) and job:slo_errors_per_request:ratio_rate5m{job="<job>"} > (14.4 * <error_budget>)
+          for: 2m
+          keep_firing_for: 5m
+          labels:
+            severity: page
+          annotations:
+            summary: "<service> is burning its 30-day error budget 14x too fast"
+            description: "{{ $value | humanizePercentage }} of requests failed over the last hour."
+            runbook_url: <runbook_url>
+        - alert: <Service>ErrorBudgetSlowBurn
+          expr: job:slo_errors_per_request:ratio_rate6h{job="<job>"} > (6 * <error_budget>) and job:slo_errors_per_request:ratio_rate30m{job="<job>"} > (6 * <error_budget>)
+          for: 15m
+          keep_firing_for: 15m
+          labels:
+            severity: ticket
+          annotations:
+            summary: "<service> is burning its 30-day error budget 6x too fast"
+            description: "{{ $value | humanizePercentage }} of requests failed over the last six hours."
+            runbook_url: <runbook_url>

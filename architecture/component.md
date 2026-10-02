@@ -189,6 +189,7 @@ The following sections define the complete, ideal state of any component. This s
   - `prerequisites` - Other `CloudResourceKind`s that must exist first (e.g. an operator or CRD-installer like `KubernetesGatewayApiCrds`); drives resource-graph and infra-chart ordering
   - `is_service_kind` - Whether this kind is a Service Hub deployment target
   - `container_kind` - Whether this kind contains child resources in the org graph
+  - `kubernetes_manifest_projection` - Set only on a Kubernetes kind whose spec mirrors one custom resource field for field (its `api_version` and `kind`). It makes the kind a projection kind: the Terraform module is generated (and held to the generator by a drift test), the Pulumi module applies the same projection through `manifestcr.Apply`, and the namespace reference and any fields marked `kubernetes_object_metadata` are routed to the object's metadata. A kind whose spec abstracts over the custom resource does not carry it
   - `publishes_kubernetes_connection` - Set only on cluster kinds whose deploy publishes a Kubernetes provider connection (EKS, GKE, AKS). Drives ordering: a Kubernetes workload whose `planton.dev/connection` names the connection the cluster will publish orders after the cluster, in `pkg/manifestgraph` and the platform alike. Flagging a new cluster kind is a two-repo act — the platform ships its connection materializer in the same release train (its conformance test binds the two)
   - `deprecations` - Schema versions announced as deprecated (each with an optional plain-language `note`). A deprecated version keeps serving and converting; every surface that speaks versions announces it as on the way out. Each entry must name a non-served version this release ships a schema for, with an authored conversion path to the served version — the registry tests and the bundle conformance gate refuse anything else
   - Note: there is no `kubernetes_meta`/`category`/`namespace_prefix` field on `CloudResourceKindMeta`; the Kubernetes layout is flat (`catalog/kubernetes/<component>/`).
@@ -529,6 +530,8 @@ func TestGcpCertManagerCertSpec_Validation(t *testing.T) {
   - Example: `dns_authorization.go` for DNS validation resources
   - **MUST** contain actual resource creation logic using provider SDK
   - **MUST NOT** be empty or return nil without creating resources
+
+**Kubernetes manifest projection kinds** (registry `kubernetes_manifest_projection`) are the one exception to the file list above: `main.go` creates the provider and calls `manifestcr.Apply`, and `outputs.go` names the exports. There is no `locals.go` or resource file to write, because the object is the manifest's projection (`pkg/kubernetes/manifestprojection`) -- the same one the generated Terraform module applies -- so the two engines build identical objects by construction and no field is mapped by hand.
 
 **Code Quality:**
 - [ ] **Uses Generated Stubs** - Imports and uses the generated protobuf Go stubs

@@ -14,6 +14,7 @@ import (
 
 	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
 	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/kubernetes/manifestprojection"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 )
 
@@ -334,6 +335,15 @@ func pulumiWaitRequirements(component string, scan *moduleScan, rules []*permiss
 	for _, where := range scan.keptCRDs {
 		row := crdRow
 		objects = append(objects, createdObject{where: where, via: "keptcrds.Apply", kind: &row, retainDelete: !deletesCRDs})
+	}
+	for _, object := range scan.projectionApplies {
+		group, kind, ok := componentProjection(component)
+		if !ok {
+			uncreatable = append(uncreatable, fmt.Sprintf("%s: the module applies a custom resource through manifestcr.Apply, but the kind has no kubernetes_manifest_projection to say which", object.where))
+			continue
+		}
+		object.crGroup, object.crKind = group, kind
+		objects = append(objects, object)
 	}
 	for _, object := range objects {
 		self, what := KubernetesResource{}, ""
@@ -957,4 +967,25 @@ func TestApiEnablingGroupsDeclareServiceList(t *testing.T) {
 			}
 		}
 	}
+}
+
+// componentProjection returns the custom resource group and kind a
+// component's registry entry projects onto (kubernetes_manifest_projection),
+// reading the component folder name as the lowercased kind name.
+func componentProjection(component string) (group, kind string, ok bool) {
+	for name, number := range cloudresourcekind.CloudResourceKind_value {
+		if strings.ToLower(name) != component {
+			continue
+		}
+		proj := manifestprojection.ProjectionOf(cloudresourcekind.CloudResourceKind(number))
+		if proj == nil {
+			return "", "", false
+		}
+		apiVersion := proj.GetApiVersion()
+		if i := strings.Index(apiVersion, "/"); i >= 0 {
+			group = apiVersion[:i]
+		}
+		return group, proj.GetKind(), true
+	}
+	return "", "", false
 }

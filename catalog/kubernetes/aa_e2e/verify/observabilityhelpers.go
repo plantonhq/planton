@@ -1,5 +1,7 @@
 package verify
 
+import "gopkg.in/yaml.v3"
+
 // Spec-map helpers for the observability kinds' verifier dispatch. Like
 // every manifest helper here, each reader tolerates both the proto
 // snake_case and the JSON camelCase key forms — scenario manifests are
@@ -31,6 +33,44 @@ func kpsHalfEnabled(spec map[string]interface{}, half string) bool {
 	}
 	if enabled, ok := block["enabled"].(bool); ok {
 		return enabled
+	}
+	return true
+}
+
+// kpsOperatorEnabled reports whether the stack runs its own
+// prometheus-operator. A receiver beside another stack turns it off through
+// helm_values (prometheusOperator.enabled: false), because the other stack's
+// operator already reconciles every Prometheus on the cluster.
+func kpsOperatorEnabled(spec map[string]interface{}) bool {
+	raw, _ := spec["helm_values"].(string)
+	if raw == "" {
+		raw, _ = spec["helmValues"].(string)
+	}
+	if raw == "" {
+		return true
+	}
+	var values struct {
+		PrometheusOperator struct {
+			Enabled *bool `yaml:"enabled"`
+		} `yaml:"prometheusOperator"`
+	}
+	if err := yaml.Unmarshal([]byte(raw), &values); err != nil || values.PrometheusOperator.Enabled == nil {
+		return true
+	}
+	return *values.PrometheusOperator.Enabled
+}
+
+// kpsKubeStateMetricsEnabled reports whether the stack deploys
+// kube-state-metrics: exporters.kube_state_metrics_enabled defaults true.
+func kpsKubeStateMetricsEnabled(spec map[string]interface{}) bool {
+	block, _ := spec["exporters"].(map[string]interface{})
+	if block == nil {
+		return true
+	}
+	for _, key := range []string{"kube_state_metrics_enabled", "kubeStateMetricsEnabled"} {
+		if enabled, ok := block[key].(bool); ok {
+			return enabled
+		}
 	}
 	return true
 }

@@ -8,12 +8,14 @@ import (
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 
+	"github.com/plantonhq/planton/pkg/iac/specprojection"
+
 	testgenericv1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha1"
 	testkubernetesv1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1"
+	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	awsecrrepov1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecrrepo/v1alpha1"
 	awsiamrolev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsiamrole/v1alpha1"
 	awsroute53zonev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsroute53zone/v1alpha1"
-	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	awssubnetv1alpha1 "github.com/plantonhq/planton/catalog/aws/awssubnet/v1alpha1"
 	gcpcloudsqluserv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqluser/v1alpha1"
 	gcpgkenodepoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkenodepool/v1alpha1"
@@ -483,7 +485,7 @@ func TestProtoToVariablesTF_FieldDocumentationIsEmitted(t *testing.T) {
 	if doc == "" {
 		t.Fatal("annotated_ref has no documentation in the protodocs index; regenerate it with make generate-proto-docs")
 	}
-	note := DefaultRules()["dev.planton.shared.foreignkey.v1.StringValueOrRef"].FlattenNote
+	note := specprojection.DefaultRules()["dev.planton.shared.foreignkey.v1.StringValueOrRef"].FlattenNote
 	if note == "" {
 		t.Fatal("the StringValueOrRef type rule must carry a FlattenNote")
 	}

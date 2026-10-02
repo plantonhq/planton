@@ -1,4 +1,4 @@
-package generators
+package specprojection
 
 import (
 	"fmt"
@@ -60,7 +60,7 @@ func flattenWithOpts(data map[string]interface{}, md protoreflect.MessageDescrip
 		// it serves are scalars (the type rules below apply to messages only),
 		// and ahead of the key rename so the drop is by the JSON key protojson
 		// wrote. Both the snake_case path and the manifest projection take it.
-		if isManifestOnlyField(fd) {
+		if IsManifestOnlyField(fd) {
 			delete(data, jsonKey)
 			continue
 		}
@@ -272,7 +272,7 @@ func resolveMessageRule(fullName string, rules map[string]TypeRule) (TypeRule, b
 func init() {
 	for name, rule := range DefaultRules() {
 		if rule.FlattenTo != "" && rule.ExtractValue == nil {
-			panic(fmt.Sprintf("generators: rule %q has FlattenTo=%q but nil ExtractValue", name, rule.FlattenTo))
+			panic(fmt.Sprintf("specprojection: rule %q has FlattenTo=%q but nil ExtractValue", name, rule.FlattenTo))
 		}
 	}
 }

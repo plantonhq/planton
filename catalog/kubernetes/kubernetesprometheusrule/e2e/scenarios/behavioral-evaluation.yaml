@@ -1,0 +1,39 @@
+# The evaluation proof: the prerequisite stack's Prometheus (all_monitors
+# discovery) must LOAD this object and EVALUATE it -- the always-true alert
+# reads firing in Prometheus' alerts API with the rule's labels, and the
+# recording rule's series answers a query. Every upstream group and rule
+# setting is set, so a key the projection spelled wrong (the snake_case
+# keep_firing_for, query_offset and partial_response_strategy, or `for`)
+# would be refused by the API server or dropped by the operator and fail
+# here.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPrometheusRule
+metadata:
+  name: e2e-prule-eval
+spec:
+  namespace:
+    value: default
+  annotations:
+    planton.dev/e2e-note: evaluation proof
+  groups:
+    - name: e2e-evaluation
+      interval: 15s
+      query_offset: 0s
+      limit: 10
+      partial_response_strategy: warn
+      labels:
+        e2e_group: evaluation
+      rules:
+        - record: e2e:prometheus_rule:one
+          expr: vector(1)
+          labels:
+            e2e_rule: recording
+        - alert: E2EPrometheusRuleAlwaysFiring
+          expr: vector(1) > 0
+          for: 0s
+          keep_firing_for: 1m
+          labels:
+            severity: none
+            e2e_rule: alerting
+          annotations:
+            summary: The e2e rule fires on every evaluation

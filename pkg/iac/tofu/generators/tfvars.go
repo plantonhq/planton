@@ -2,14 +2,13 @@ package generators
 
 import (
 	"bytes"
-	"encoding/json"
 	"os"
 	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/crkreflect"
 	"github.com/plantonhq/planton/pkg/fileutil"
-	"google.golang.org/protobuf/encoding/protojson"
+	"github.com/plantonhq/planton/pkg/iac/specprojection"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -56,9 +55,9 @@ func isManifestProjectionMessage(msg proto.Message) bool {
 // (like ValueFromRef), and renames keys to snake_case to match the
 // generated snake_case variables.tf.
 //
-// Pipeline: protojson.Marshal -> JSON map -> Flatten (type rules) -> HCL string.
+// Pipeline: specprojection.Project (protojson -> JSON map -> type rules) -> HCL string.
 func ProtoToTFVars(msg proto.Message) (string, error) {
-	return protoToTFVars(msg, flattenOpts{})
+	return protoToTFVars(msg, specprojection.SnakeCaseKeys)
 }
 
 // ProtoToManifestTFVars is the manifest-projection variant of ProtoToTFVars: it
@@ -69,23 +68,14 @@ func ProtoToTFVars(msg proto.Message) (string, error) {
 // needs no oneOf/required-subfield pruning in HCL. Wrapper flattening and
 // orchestrator-field skipping still apply (they key on message type, not case).
 func ProtoToManifestTFVars(msg proto.Message) (string, error) {
-	return protoToTFVars(msg, flattenOpts{preserveJSONNames: true})
+	return protoToTFVars(msg, specprojection.JSONKeys)
 }
 
-func protoToTFVars(msg proto.Message, opts flattenOpts) (string, error) {
-	jsonBytes, err := protojson.MarshalOptions{
-		EmitUnpopulated: false,
-	}.Marshal(msg)
+func protoToTFVars(msg proto.Message, style specprojection.KeyStyle) (string, error) {
+	data, err := specprojection.Project(msg, style)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to marshal proto to json")
+		return "", err
 	}
-
-	var data map[string]interface{}
-	if err := json.Unmarshal(jsonBytes, &data); err != nil {
-		return "", errors.Wrap(err, "failed to unmarshal json")
-	}
-
-	flattenWithOpts(data, msg.ProtoReflect().Descriptor(), DefaultRules(), opts)
 
 	var buf bytes.Buffer
 	if err := WriteMapToHCL(&buf, data, 0); err != nil {

@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetesprometheusrule/v1alpha1/outputs.proto";
+import "catalog/kubernetes/kubernetesprometheusrule/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// KubernetesPrometheusRule is a prometheus-operator PrometheusRule: a
+// namespaced set of Prometheus alerting and recording rules that every
+// Prometheus selecting the object loads and evaluates.
+message KubernetesPrometheusRule {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1alpha1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesPrometheusRule'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesPrometheusRuleSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesPrometheusRuleStatus status = 5;
+}
+
+// KubernetesPrometheusRuleStatus holds the deployment status and outputs.
+message KubernetesPrometheusRuleStatus {
+  // stack-outputs
+  KubernetesPrometheusRuleStackOutputs outputs = 1;
+}

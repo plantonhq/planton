@@ -15,7 +15,8 @@ import (
 
 // KubePrometheusStackVerifier checks a kube-prometheus-stack installation
 // to the point a customer could rely on it as their cluster's monitoring:
-// the operator Deployment available, the operator-reconciled Prometheus
+// the operator Deployment available (unless the stack is a receiver whose
+// helm_values turn its operator off), the operator-reconciled Prometheus
 // StatefulSet at its declared replica count, the Alertmanager StatefulSet
 // and bundled-Grafana Deployment when enabled — and a LIVE metric-flow
 // proof through Prometheus' own API (a scrape target up and a PromQL
@@ -56,6 +57,15 @@ type KubePrometheusStackVerifier struct {
 	// Notifications switches on the alert-delivery proof
 	// (kubeprometheusstack_notifications.go).
 	Notifications bool
+	// OperatorEnabled is false for a receiver beside another stack: its
+	// helm_values turn the operator off and the other stack's operator
+	// reconciles its Prometheus, so there is no operator Deployment to wait
+	// for.
+	OperatorEnabled bool
+	// KubeStateMetricsEnabled is false when the exporters are off; the
+	// metric-flow proof then accepts any healthy target (a receiver scrapes
+	// only its own release's self-monitor).
+	KubeStateMetricsEnabled bool
 }
 
 // stackCrds are the monitoring.coreos.com CRDs whose keep-on-uninstall
@@ -74,8 +84,10 @@ func (v *KubePrometheusStackVerifier) VerifyExists(ctx context.Context, kubeconf
 
 	// The operator itself: `<name>-operator` per the chart's naming
 	// contract off the pinned fullname.
-	if err := v.waitDeploymentAvailable(ctx, kubeconfig, v.Name+"-operator", 5*time.Minute); err != nil {
-		return errors.Wrap(err, "the prometheus-operator deployment never became available")
+	if v.OperatorEnabled {
+		if err := v.waitDeploymentAvailable(ctx, kubeconfig, v.Name+"-operator", 5*time.Minute); err != nil {
+			return errors.Wrap(err, "the prometheus-operator deployment never became available")
+		}
 	}
 
 	// The operator-reconciled Prometheus StatefulSet: the operator names
@@ -187,7 +199,7 @@ func (v *KubePrometheusStackVerifier) proveMetricFlow(ctx context.Context, kubec
 	// scrape end to end (the exporter ships with the stack and its job
 	// name is stable). First scrapes land within the default interval;
 	// the budget covers Prometheus' own startup and WAL replay.
-	if err := v.awaitCondition(ctx, base+"/api/v1/targets?state=active", 6*time.Minute, func(body string) error {
+	if err := awaitHTTPCondition(ctx, base+"/api/v1/targets?state=active", 6*time.Minute, func(body string) error {
 		var targets struct {
 			Data struct {
 				ActiveTargets []struct {
@@ -200,19 +212,29 @@ func (v *KubePrometheusStackVerifier) proveMetricFlow(ctx context.Context, kubec
 			return errors.Wrap(err, "parsing the targets response")
 		}
 		for _, t := range targets.Data.ActiveTargets {
-			if strings.Contains(t.Labels["job"], "kube-state-metrics") && t.Health == "up" {
+			if t.Health != "up" {
+				continue
+			}
+			if !v.KubeStateMetricsEnabled || strings.Contains(t.Labels["job"], "kube-state-metrics") {
 				return nil
 			}
 		}
+		if !v.KubeStateMetricsEnabled {
+			return errors.New("no healthy scrape target yet")
+		}
 		return errors.New("no healthy kube-state-metrics target yet")
 	}); err != nil {
-		return errors.Wrap(err, "METRIC-FLOW: the kube-state-metrics scrape target never became healthy")
+		return errors.Wrap(err, "METRIC-FLOW: no expected scrape target became healthy")
 	}
-	fmt.Printf("  [verify] METRIC-FLOW: kube-state-metrics target scraped and healthy\n")
+	if v.KubeStateMetricsEnabled {
+		fmt.Printf("  [verify] METRIC-FLOW: kube-state-metrics target scraped and healthy\n")
+	} else {
+		fmt.Printf("  [verify] METRIC-FLOW: a scrape target is healthy (exporters off)\n")
+	}
 
 	// A PromQL query returning samples proves the query path over the
 	// stored data.
-	if err := v.awaitCondition(ctx, base+"/api/v1/query?query=count(up==1)", 2*time.Minute, func(body string) error {
+	if err := awaitHTTPCondition(ctx, base+"/api/v1/query?query=count(up==1)", 2*time.Minute, func(body string) error {
 		var query struct {
 			Data struct {
 				Result []struct {
@@ -239,7 +261,7 @@ func (v *KubePrometheusStackVerifier) proveMetricFlow(ctx context.Context, kubec
 	// The Watchdog alert is the stack's own dead-man's-switch: always
 	// firing by design, so rule evaluation is proven the moment it shows
 	// up as firing.
-	if err := v.awaitCondition(ctx, base+"/api/v1/alerts", 5*time.Minute, func(body string) error {
+	if err := awaitHTTPCondition(ctx, base+"/api/v1/alerts", 5*time.Minute, func(body string) error {
 		if watchdogFiring(body) {
 			return nil
 		}
@@ -266,7 +288,7 @@ func (v *KubePrometheusStackVerifier) proveMetricFlow(ctx context.Context, kubec
 		_ = amPf.Wait()
 	}()
 
-	if err := v.awaitCondition(ctx, "http://127.0.0.1:"+amLocalPort+"/api/v2/alerts?filter=alertname%3D%22Watchdog%22", 5*time.Minute, func(body string) error {
+	if err := awaitHTTPCondition(ctx, "http://127.0.0.1:"+amLocalPort+"/api/v2/alerts?filter=alertname%3D%22Watchdog%22", 5*time.Minute, func(body string) error {
 		var alerts []struct {
 			Labels map[string]string `json:"labels"`
 		}
@@ -308,10 +330,10 @@ func watchdogFiring(body string) bool {
 	return false
 }
 
-// awaitCondition polls one GET endpoint until check passes or the budget
+// awaitHTTPCondition polls one GET endpoint until check passes or the budget
 // runs out (body-read inside the loop — a response dying mid-stream
 // retries rather than escaping).
-func (v *KubePrometheusStackVerifier) awaitCondition(ctx context.Context, url string, budget time.Duration, check func(body string) error) error {
+func awaitHTTPCondition(ctx context.Context, url string, budget time.Duration, check func(body string) error) error {
 	deadline := time.Now().Add(budget)
 	var lastErr error
 	for time.Now().Before(deadline) {

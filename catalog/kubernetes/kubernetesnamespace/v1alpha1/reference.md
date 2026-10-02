@@ -512,6 +512,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesPlantonRunner | `spec.namespace` | `spec.name` |
 | KubernetesPodDisruptionBudget | `spec.namespace` | `spec.name` |
 | KubernetesPostgres | `spec.namespace` | `spec.name` |
+| KubernetesPrometheusRule | `spec.namespace` | `spec.name` |
 | KubernetesQdrant | `spec.namespace` | `spec.name` |
 | KubernetesRabbitMq | `spec.namespace` | `spec.name` |
 | KubernetesRayCluster | `spec.namespace` | `spec.name` |
