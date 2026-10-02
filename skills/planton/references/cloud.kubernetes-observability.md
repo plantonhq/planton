@@ -173,7 +173,9 @@ Ask these before composing, in the person's words, not the chart's:
   and error lines in the last hour from Loki joined into the same row.
   Match each component's real log format for errors (a JSON level,
   Postgres's `error_severity`, plain `panic:`), never the bare word
-  "error", which Postgres prints in every record.
+  "error", which Postgres prints in every record. A cell nothing
+  measured reads a dash, never a zero nobody counted; an environment no
+  agent reports on yet gets one row that says so.
 - **Read "how full is the node" from the node exporter,** not the
   containers' working set: the kubelet stops reporting container memory
   first when a node starves. Put it beside what pods reserve, because

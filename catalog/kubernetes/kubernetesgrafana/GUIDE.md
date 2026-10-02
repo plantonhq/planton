@@ -108,6 +108,40 @@ install teaches:
   sampling. A table of totals over `$__range` per channel (sent, and
   `alertmanager_notifications_failed_total` as failed) answers "did it
   go out" directly, and lists a silent pager at zero.
+- **Logs and metrics in one row.** A table panel on Grafana's mixed
+  datasource (`{"type": "datasource", "uid": "-- Mixed --"}`), each
+  target naming its own datasource, joins a Loki count to Prometheus
+  columns when both carry the same labels after relabelling (LogQL has
+  `label_replace` too). A Loki target stores `queryType` (`instant` or
+  `range`), never Prometheus's `format`, `instant` and `range`.
+  Aggregate a log count to the labels you relabel from before
+  relabelling (`sum by (k8s_namespace_name, k8s_container_name)`), or a
+  query over many pods hits Loki's 500-series limit. Count logs over a
+  fixed recent window (`[1h]`) rather than `$__range`: counting a week of
+  lines times out, and the hour is what an incident needs.
+- **A row comes from what survives zero.** Scaling a Deployment to zero
+  zeroes its wanted count too, so "ready of wanted" reads "0 of 0" in
+  calm text during the outage. Draw a component's row from what
+  persists (the Deployment, the StatefulSet, a CloudNativePG cluster's
+  volume, which stays when it has no pod) and call a workload down when
+  nothing of it is ready, whatever it wants.
+- **Up and down over time is a state timeline**, not lines: four 0/1
+  series overlap into one bar. A `state-timeline` panel with value
+  mappings (`0` Down in red, `1` Up in a calm grey, never the theme's
+  text colour, which paints a solid bar) answers "when did it break" at
+  a glance. Give it a fixed base colour and show its legend: in
+  threshold colour mode the legend reads "-∞+" instead of naming the
+  states.
+- **A cell nothing measured reads a dash, never a zero.** In a joined
+  table a missing value is null; map it to "—" for the columns where
+  that means "not counted" (an environment no agent reports on, a
+  component that wrote no log line), and keep 0 for a count that ran
+  and found nothing. Name an alert's subject from its labels
+  (`statefulset`, `deployment`, `pod`, `node`) with its kind, so a row
+  says "StatefulSet openbao", not only the rule's name.
+- **A dashboard that belongs to no cluster has no cluster variable.**
+  The outside view of every environment's front door is estate-wide; a
+  `$cluster` filter there would only blank its panels.
 - **Removing a dashboard is a purge.** An infra chart re-install never
   deletes a ConfigMap the chart stopped declaring; purge it by name, or
   the drift comparison above names it as shipped by a chart.
