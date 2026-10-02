@@ -55,6 +55,10 @@ The boundary matters for more than tidiness. The platform reads a service's URL 
 
 `spec.deploy.disable_deployments: true` pauses deployment execution for the whole service: builds keep running and publishing artifacts, the configuration sync of git-maintained services continues, but nothing deploys and the delivery verbs refuse with a sentence pointing at the service's deploy settings. That switch lives on the console's Configuration tab, and it is caller-authored on every posture — flipping it through get-then-apply works on git-maintained services too. Resuming makes the next push deploy again; nothing deploys at the moment of resuming.
 
+## Where a push stops is the environment's setting, not the service's
+
+Which environments a push reaches is decided on the Environment records, for every service at once: `promotionRank` sets the deployment order and `promotionOnly: true` makes an environment take builds only by promotion, so a push deploys up to it and stops. The console's Deployment Order & Protection screen edits both and draws where pushes stop. No service setting overrides it: a service cannot push past a Promotion Only environment, and a branch mapping to one is refused at save. When someone wants pushes to reach staging but not production, mark production Promotion Only; when they want every environment after dev to wait for a person, mark the one after dev. See `service.delivery-verbs.md` for what the run and the console show afterwards.
+
 ## What a configuration edit can never do
 
 - It cannot change what is currently RUNNING (only the next deployment reads the declaration).

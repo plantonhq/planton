@@ -47,6 +47,12 @@ Every run captures the resolved manifests for each environment it planned, and e
 
 If someone wants the same version with *current* configuration, that is a different intent. Say so plainly: the honest path today is a new build (for services whose configuration lives in git, a configuration change IS a commit, so pushing is the natural route).
 
+## Environments that take builds only by promotion
+
+An environment marked Promotion Only (`promotionOnly: true` on its Environment record) never receives a push. A push walks the deployment order and stops at the first Promotion Only environment: that environment and every one after it change only when someone promotes a build into them, one hop at a time from the environment just before. The run records each of them as skipped with `skip_cause: reached_by_promotion` and `promote_from_env` naming the environment the push deployed last; the console shows Awaiting Promotion with a Promote button on that environment's panel, `planton follow` ends with the exact command (`planton service promote --deployment <svcdepl_...> --to <env>`), and the GitHub check's title says which environments take the build by promotion. This is the design, not a failure: when someone asks why demo or prod did not change after a push, the answer is a promotion, never a re-run. A run skipped at an environment because a newer run got there first carries `skip_cause: superseded_by_newer_run` and names that run in `superseded_by_service_pipeline_id`; promote the newer run's build instead.
+
+A branch mapped straight to a Promotion Only environment (`deploy.branchDeployments`) is refused when the service is saved: the environment's own declaration wins, and the refusal names both.
+
 ## Protection is never bypassed
 
 Promoting into a protected environment still stops at that environment's approval gate, and the person who promoted cannot be the person who approves. Report the gate and who can resolve it. Never attempt an approval on someone's behalf — approval is a human decision, and the assistant holds no approval rights anywhere.
