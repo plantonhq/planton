@@ -1,21 +1,30 @@
 # =============================================================================
-# Website Deploy (planton.ai -> GitHub Pages)
+# Website Deploy (planton.ai)
 # =============================================================================
 # Builds the public website from the site/ tree (Next.js static export) and
-# deploys it to this repository's GitHub Pages. The Pages custom domain
-# decides where the deployment is served; DNS never changes with a deploy.
+# deploys it twice while the move to Cloudflare settles:
+#
+#   - to the Worker `planton-website` (site/wrangler.jsonc), which the router
+#     in front of planton.ai hands the website's paths to;
+#   - to this repository's GitHub Pages, the previous home, kept serving until
+#     the router carries all of planton.ai and then retired with its job.
+#
+# The build job holds no key: it runs the website's own dependencies. The
+# Cloudflare job installs only the pinned wrangler in site/deploy and deploys
+# the build artifact with a key scoped to `planton-website` alone, from the
+# GitHub environment `website`, which only main may use.
 #
 # The build step delegates to `make -C site build` so CI and a local build
 # are the same command - install, lint, static export (including the pagefind
 # search index), and the assetPrefix copy all live in site/Makefile, not here.
-# The displayed-vs-enforced guard inside the site build (entitlement keys
-# and displayed limits against the platform) needs a sibling planton-platform
-# checkout to fully run; in this repository's CI it skips that half with a
-# loud notice by design - the authoritative run is the local `make build`
-# where both checkouts exist.
+# The displayed-vs-enforced and apex-routing guards inside the site build
+# need a sibling planton-platform checkout to fully run; in this repository's
+# CI they skip that half with a loud notice by design - the authoritative run
+# is the local `make build` where both checkouts exist.
 #
 # Path-filtered: only site/ changes (or this workflow) trigger a deploy, so
-# the catalog/CLI lanes never redeploy the website.
+# the catalog/CLI lanes never redeploy the website. Pull requests get their
+# own previews (preview.site.yaml).
 # =============================================================================
 
 name: release.site
@@ -68,6 +77,14 @@ jobs:
         with:
           path: site/out
 
+      - name: Upload the export for Cloudflare
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-out
+          path: site/out
+          include-hidden-files: true
+          retention-days: 7
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -78,3 +95,46 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  deploy-cloudflare:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: website
+      url: https://planton.ai
+    env:
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      # Only the Worker's config and the deploy tool's lockfile: nothing of the website runs here.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            site/wrangler.jsonc
+            site/deploy
+            site/.nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: site/.nvmrc
+
+      - name: Download the export
+        uses: actions/download-artifact@v4
+        with:
+          name: site-out
+          path: site/out
+
+      - name: Install wrangler
+        working-directory: site/deploy
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Deploy planton-website
+        working-directory: site/deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: yarn wrangler deploy --config ../wrangler.jsonc --env="" --message "main ${GITHUB_SHA::12}"

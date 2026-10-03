@@ -1,0 +1,35 @@
+// The website's two Cloudflare Workers, both the static export in ./out and nothing else: no code runs
+// in either. planton.ai is served by the router in front of it (planton-platform's apex-router), which
+// hands the website's paths to `planton-website` through a service binding and puts each pull request's
+// preview, a version of `planton-website-preview`, at its own hostname.
+//
+//   production:  .github/workflows/release.site.yaml  -> wrangler deploy
+//   previews:    .github/workflows/preview.site.yaml  -> wrangler versions upload --env preview --preview-alias review-<n>
+//
+// Both run the pinned wrangler in ./deploy, with a key scoped to its one Worker.
+{
+  "$schema": "./deploy/node_modules/wrangler/config-schema.json",
+  "name": "planton-website",
+  // The planton Cloudflare account, where the router and both zones live.
+  "account_id": "074755a78d8e8f77c119a90a125e8a06",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    // A path the export has no file for gets the site's own 404 page, as GitHub Pages served it.
+    "not_found_handling": "404-page",
+    // /pricing serves pricing.html, the export's file for it.
+    "html_handling": "auto-trailing-slash"
+  },
+  // No address of its own: only the router reaches production, so the website is never served twice.
+  "workers_dev": false,
+  "preview_urls": false,
+  "env": {
+    "preview": {
+      // Only ever previews: each is a version aliased review-<n>, at
+      // review-<n>-planton-website-preview.planton.workers.dev, behind review-<n>.<preview zone>.
+      "name": "planton-website-preview",
+      "workers_dev": false,
+      "preview_urls": true
+    }
+  }
+}

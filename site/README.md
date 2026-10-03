@@ -22,9 +22,13 @@ This is the source for the planton.ai website, living in the `site/` folder of t
 
 ## What this is
 
-The public website at planton.ai: a Next.js static export deployed to GitHub Pages on every push to `main` that touches `site/`. The push is the deploy, so all work happens on a branch and merges only when the founder approves.
+The public website at planton.ai: a Next.js static export, deployed on every push to `main` that touches `site/` to the Cloudflare Worker `planton-website` (`wrangler.jsonc`; static assets only, no code), and to GitHub Pages until the router below carries all of planton.ai. The push is the deploy, so all work happens on a branch and merges only when the founder approves.
 
-The site shares its domain with the console. At the edge, a fixed list of path prefixes passes through to this static site; every other path goes to the console. A page can build and deploy and still be unreachable at planton.ai if its top-level path is not on that list. The build has a guard for it (below).
+**Every pull request that changes `site/` gets a preview** at `https://review-<pull request number>.planton.dev`, the exact build production would serve. Every push updates it, the pull request's one "Website preview" comment links it, and it closes when the pull request is merged or closed (`.github/workflows/preview.site.yaml`). Previews carry `noindex`, and a link into the console (`/login`, `/signup`) shows the site's 404 there: the console is tested on planton.ai. Pull requests from forks get no preview.
+
+The site shares its domain with the console. A router at the edge (planton-platform's `apex-router`) hands a declared list of top-level path segments to this site; every other path goes to the console, which reads it as an organization's name. A page can build and deploy and still be unreachable at planton.ai if its top-level path is not on that list. The build has a guard for it (below).
+
+The jobs that deploy hold a Cloudflare key, so they never install the website's dependencies: `site/deploy` holds only the pinned wrangler they run, and each key reaches its one Worker alone.
 
 ## Quick start
 
@@ -77,7 +81,7 @@ Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touc
 3. **Numbers come from `platform-stats.ts` and prices from `pricing.ts`.** A literal in prose is a defect.
 4. **Colors come from the palette.** Role classes only; no hex in a component; semantic hues only where they carry meaning.
 5. **Every page is registered.** A new route goes into `site-pages.ts` (or `retired-routes.ts`) or the build fails.
-6. **Every new top-level path is three declarations**: the registry, the edge passthrough list, and the platform's reserved handles. The apex guard names what is missing.
+6. **Every new top-level path is three declarations**: the registry, the router's website list (`site_roots` in planton-platform's `infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml`, applied before the page merges), and the platform's reserved handles. The apex guard names what is missing.
 7. **A retired route is whole.** Every retired path has an eight-line stub, forwards to a live registered page (never to another retired path), and nothing in the export links to it: the forward exists for the outside world, our own links point at the live page. The link gate enforces all three.
 8. **Nothing merges without the founder.** Build, lint, typecheck, the guards, the screenshot compare for a zero-visual-change commit, and a design review that reads the page as the visitor and as a copywriter.
 
@@ -113,7 +117,7 @@ packages/website-shell/  the header, footer, navigation, palette, and theme the 
 | Script | Proves |
 |--------|--------|
 | `scripts/check-displayed-vs-enforced.mjs` | every displayed plan limit and entitlement matches what the platform enforces |
-| `scripts/check-apex-routing.mjs` | every top-level path is passed through at the edge and reserved as a platform handle (reads the sibling `planton-platform` checkout; skips loudly without it) |
+| `scripts/check-apex-routing.mjs` | every top-level path is in the router's website list and reserved as a platform handle (reads the sibling `planton-platform` checkout; skips loudly without it) |
 | `next build` with `tsc --noEmit` and `eslint --max-warnings 0` before it | types hold, and the accessibility, image, and no-`any` rules hold everywhere with zero warnings |
 | `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page or a static file, and every retired route is whole (stub present, target live, nothing links to it) |
 | `scripts/generate-llms.mjs` | `llms.txt`, `llms-full.txt`, and one Markdown per marketing page from the same data; fails when an exported route is unregistered |

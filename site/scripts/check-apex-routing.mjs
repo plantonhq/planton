@@ -2,25 +2,22 @@
  * Apex-routing guard: every top-level path this site serves must be one the
  * apex domain will actually deliver.
  *
- * planton.ai is shared with the console. At the edge, a fixed list of path
- * prefixes passes through to this static site; every other path goes to the
- * console, which reads an unknown first segment as an organization slug. So
- * a page can build, deploy, and still never be reachable at planton.ai/<path>
- * -- which is exactly what happened to /privacy, /terms, and /refund-policy.
- * And a tenant could register an organization named after a page and shadow
- * it, unless the platform reserves that handle.
+ * planton.ai is shared with the console. A router at the edge hands a declared
+ * list of first path segments (and a few exact root files) to this site; every
+ * other path goes to the console, which reads an unknown first segment as an
+ * organization slug. So a page can build, deploy, and still never be reachable
+ * at planton.ai/<path> -- which is exactly what happened to /privacy, /terms,
+ * and /refund-policy. And a tenant could register an organization named after
+ * a page and shadow it, unless the platform reserves that handle.
  *
  * This guard reads the site's route registry (src/data/site-pages.ts) and
  * the root files the export ships, derives the set of top-level path
  * segments, and checks each against two lists that live in the sibling
  * planton-platform checkout:
  *
- *   1. the edge passthrough list -- the `starts_with(...)` and `eq` clauses
- *      of the origin-routing rule, read from the knowledge article that
- *      records the rule until the estate re-declares it as a manifest
- *      (team/agents/_knowledge/planton.infrastructure.one-domain-for-website-and-console-app.md),
- *      and from any CloudflareRuleset manifest under infrastructure/ that
- *      names the same rule;
+ *   1. the router's website list -- `site_roots` and `site_files` in its params
+ *      file (infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml),
+ *      the one place the website's paths are declared;
  *   2. the reserved handles -- PlatformReservedHandles.java's RESERVED_HANDLES.
  *
  * A missing entry fails the build and names exactly what to add and where.
@@ -36,22 +33,23 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pathToFileURL } from 'node:url';
+import { parse as parseYaml } from 'yaml';
 
 const GUARD = 'apex-routing guard';
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = path.resolve(siteRoot, '..');
 const platformDir = process.env.PLANTON_PLATFORM_DIR ?? path.resolve(repoRoot, '..', 'planton-platform');
 
-const ARTICLE = 'team/agents/_knowledge/planton.infrastructure.one-domain-for-website-and-console-app.md';
+const ROUTER_PARAMS = 'infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml';
 const HANDLES = 'product/libs/java/domain/reserved-handles/src/main/java/ai/planton/reservedhandles/PlatformReservedHandles.java';
 
-/** Root files the export ships that the edge must pass through exactly. */
+/** Root files the export ships that the router must hand to the site exactly. */
 const ROOT_FILES = ['/sitemap.xml', '/robots.txt', '/llms.txt', '/llms-full.txt', '/favicon.ico'];
 
 /**
  * Segments that are console routes by design and never website pages; a
  * registry path under one of these is a mistake this guard would otherwise
- * misreport as "add to the edge list".
+ * misreport as "add to the router's list".
  */
 const CONSOLE_ROOTS = new Set(['dashboard', 'login', 'logout', 'signup', 'auth', 'oauth', 'api', 'orgs', 'organization']);
 
@@ -74,38 +72,13 @@ function firstSegment(route) {
   return seg ?? null;
 }
 
-/** Every `starts_with(http.request.uri.path, "/x")` prefix and `eq "/x"` exact path in a wirefilter expression. */
-function parsePassthrough(text) {
-  const prefixes = new Set();
-  const exact = new Set();
-  for (const m of text.matchAll(/starts_with\(http\.request\.uri\.path,\s*"([^"]+)"\)/g)) prefixes.add(m[1]);
-  for (const m of text.matchAll(/http\.request\.uri\.path eq "([^"]+)"/g)) exact.add(m[1]);
-  return { prefixes, exact };
-}
-
-function readPassthrough() {
-  const sources = [];
-  const article = path.join(platformDir, ARTICLE);
-  if (fs.existsSync(article)) sources.push(article);
-  const infra = path.join(platformDir, 'infrastructure');
-  if (fs.existsSync(infra)) {
-    const walk = (dir) => {
-      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) walk(full);
-        else if (entry.name.endsWith('.yaml') && fs.readFileSync(full, 'utf8').includes('planton-ai-origin-routing')) sources.push(full);
-      }
-    };
-    walk(infra);
-  }
-  const prefixes = new Set();
-  const exact = new Set();
-  for (const file of sources) {
-    const parsed = parsePassthrough(fs.readFileSync(file, 'utf8'));
-    parsed.prefixes.forEach((p) => prefixes.add(p));
-    parsed.exact.forEach((p) => exact.add(p));
-  }
-  return { prefixes, exact, sources };
+/** The router's website list: the first segments (`site_roots`) and exact root files (`site_files`) it hands to the site. */
+function readRouterList() {
+  const file = path.join(platformDir, ROUTER_PARAMS);
+  if (!fs.existsSync(file)) return null;
+  const params = Object.fromEntries(parseYaml(fs.readFileSync(file, 'utf8')).params.map((p) => [p.name, String(p.value ?? '')]));
+  const entries = (name) => (params[name] ?? '').split(',').map((entry) => entry.trim()).filter(Boolean);
+  return { roots: new Set(entries('site_roots')), files: new Set(entries('site_files')), file };
 }
 
 function readReservedHandles() {
@@ -122,19 +95,19 @@ async function main() {
   if (!fs.existsSync(platformDir)) {
     console.warn(
       `\u26a0 ${GUARD}: sibling planton-platform checkout not found at ${platformDir} -- ` +
-        `the edge passthrough and reserved-handle checks are skipped here. The authoritative run is the local build where both checkouts exist.`,
+        `the router-list and reserved-handle checks are skipped here. The authoritative run is the local build where both checkouts exist.`,
     );
     return;
   }
 
   const { pages, retired, unregistered } = await loadRegistry();
-  const passthrough = readPassthrough();
+  const router = readRouterList();
   const reserved = readReservedHandles();
-  if (passthrough.sources.length === 0) fail(`no record of the origin-routing rule found under ${platformDir} (looked for ${ARTICLE} and any manifest naming planton-ai-origin-routing)`);
+  if (!router) fail(`the router's website list not found at ${path.join(platformDir, ROUTER_PARAMS)}`);
   if (!reserved) fail(`reserved handles not found at ${path.join(platformDir, HANDLES)}`);
   if (process.exitCode) return;
 
-  // The site's top-level segments: registered pages, retired paths (the edge must still deliver them
+  // The site's top-level segments: registered pages, retired paths (the router must still deliver them
   // to the site so the redirect can happen), and the noindex prefixes served by their own layouts.
   const segments = new Set();
   for (const p of pages) {
@@ -154,17 +127,17 @@ async function main() {
       fail(`"/${seg}" is a console route; the site must not register a page under it`);
       continue;
     }
-    if (!passthrough.prefixes.has(`/${seg}`)) missingAtEdge.push(`starts_with(http.request.uri.path, "/${seg}")`);
+    if (!router.roots.has(seg)) missingAtEdge.push(seg);
     if (!reserved.handles.has(seg)) missingHandles.push(`"${seg}"`);
   }
   for (const file of ROOT_FILES) {
-    if (!passthrough.exact.has(file)) missingAtEdge.push(`http.request.uri.path eq "${file}"`);
+    if (!router.files.has(file)) missingAtEdge.push(file);
   }
 
   if (missingAtEdge.length) {
     fail(
-      `these paths are served by the site but not passed through at the edge, so planton.ai hands them to the console. ` +
-        `Add each clause to the origin-routing rule (recorded in ${ARTICLE}; declared as the CloudflareRuleset or the Worker that replaces it) and apply it before the pages merge:\n  ` +
+      `these paths are served by the site but not in the router's website list, so planton.ai hands them to the console. ` +
+        `Add each to site_roots (a segment) or site_files (a root file) in ${ROUTER_PARAMS} and apply it before the pages merge:\n  ` +
         missingAtEdge.join('\n  '),
     );
   }
@@ -175,7 +148,7 @@ async function main() {
     );
   }
   if (!process.exitCode) {
-    console.log(`\u2713 ${GUARD}: ${segments.size} top-level paths and ${ROOT_FILES.length} root files are passed through at the edge and reserved as handles (${passthrough.sources.length} rule source(s))`);
+    console.log(`\u2713 ${GUARD}: ${segments.size} top-level paths and ${ROOT_FILES.length} root files are in the router's website list and reserved as handles`);
   }
 }
 

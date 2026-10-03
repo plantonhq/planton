@@ -24,6 +24,9 @@ site/.yarn/*
 !site/.yarn/releases
 !site/.yarn/versions
 site/.pnp.*
+# The deploy jobs' own package (site/deploy: wrangler, pinned and locked): its install, never committed.
+site/deploy/node_modules/
+site/deploy/.yarn/
 site/next-env.d.ts
 site/*.tsbuildinfo
 site/.env*
