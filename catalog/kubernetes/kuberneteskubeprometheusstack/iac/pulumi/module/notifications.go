@@ -231,15 +231,19 @@ func notificationLabels(n *kuberneteskubeprometheusstackv1alpha1.KubernetesKubeP
 }
 
 // notificationTemplate is the one message shape every Discord and Pushover
-// notification carries. The title leads with environment and component;
-// the body is the first alert's customer_impact (else summary, else name),
-// a count when the group holds more, and the runbook. It renders ONLY
-// those labels and annotations: never description, namespace or pod,
-// because on a shared cluster a namespace can name a customer and upstream
-// rule descriptions interpolate it. The label names are validated to
-// [a-zA-Z_][a-zA-Z0-9_]*, so interpolating them is safe.
+// notification carries. The title leads with environment and component (an
+// alert with no component is titled by its scrape job, and one with neither,
+// such as an overcommit sum, by "cluster": it is about the whole cluster);
+// the body is the first alert's customer_impact (else summary, else name), a
+// count when the group holds more, and the runbook. It renders ONLY those
+// labels and annotations: never description, namespace or pod, because on a
+// shared cluster a namespace can name a customer and upstream rule
+// descriptions interpolate it. The label names are validated to
+// [a-zA-Z_][a-zA-Z0-9_]*, so interpolating them is safe. The OpenTofu
+// module's notification_template is its byte-for-byte twin
+// (template_twin_test.go).
 func notificationTemplate(envLabel, componentLabel string) string {
-	return `{{ define "planton.title" }}{{ if eq .Status "resolved" }}[RESOLVED] {{ end }}[{{ or (index .CommonLabels "` + envLabel + `") "unknown" }}] {{ or (index .CommonLabels "` + componentLabel + `") .CommonLabels.job "unlabelled" }}: {{ .CommonLabels.alertname }}{{ end }}
+	return `{{ define "planton.title" }}{{ if eq .Status "resolved" }}[RESOLVED] {{ end }}[{{ or (index .CommonLabels "` + envLabel + `") "unknown" }}] {{ or (index .CommonLabels "` + componentLabel + `") .CommonLabels.job "cluster" }}: {{ .CommonLabels.alertname }}{{ end }}
 {{ define "planton.text" }}{{ with index .Alerts 0 }}{{ or .Annotations.customer_impact .Annotations.summary .Labels.alertname }}{{ end }}{{ if gt (len .Alerts) 1 }} ({{ len .Alerts }} alerts){{ end }}{{ with (index .Alerts 0).Annotations.runbook_url }}
 Runbook: {{ . }}{{ end }}{{ end }}
 `

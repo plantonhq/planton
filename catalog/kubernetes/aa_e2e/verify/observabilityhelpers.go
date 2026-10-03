@@ -179,3 +179,49 @@ func lokiFirstTenantUser(spec map[string]interface{}) string {
 	name, _ := first["name"].(string)
 	return name
 }
+
+// kpsAlertOverride is one curated alert's declared hold (`for`, as a
+// Prometheus duration) and severity; empty means the chart's own.
+type kpsAlertOverride struct {
+	For      string
+	Severity string
+}
+
+// kpsRuleTuning reads the manifest's per-alert tuning of the curated rules
+// (spec.default_rules.disabled_alerts and alert_overrides, snake_case or
+// protojson camelCase keys).
+func kpsRuleTuning(spec map[string]interface{}) ([]string, map[string]kpsAlertOverride) {
+	block, _ := spec["default_rules"].(map[string]interface{})
+	if block == nil {
+		block, _ = spec["defaultRules"].(map[string]interface{})
+	}
+	if block == nil {
+		return nil, nil
+	}
+	var disabled []string
+	list, _ := block["disabled_alerts"].([]interface{})
+	if list == nil {
+		list, _ = block["disabledAlerts"].([]interface{})
+	}
+	for _, name := range list {
+		if s, ok := name.(string); ok {
+			disabled = append(disabled, s)
+		}
+	}
+	overrides := map[string]kpsAlertOverride{}
+	entries, _ := block["alert_overrides"].([]interface{})
+	if entries == nil {
+		entries, _ = block["alertOverrides"].([]interface{})
+	}
+	for _, entry := range entries {
+		o, _ := entry.(map[string]interface{})
+		alert, _ := o["alert"].(string)
+		if alert == "" {
+			continue
+		}
+		hold, _ := o["for"].(string)
+		severity, _ := o["severity"].(string)
+		overrides[alert] = kpsAlertOverride{For: hold, Severity: severity}
+	}
+	return disabled, overrides
+}

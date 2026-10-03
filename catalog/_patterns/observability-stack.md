@@ -170,6 +170,20 @@ dashboard exists.
   is kube-dns, not CoreDNS, so `core_dns` goes off there too. After
   install, every active target reading `up` is the check that the
   posture is right.
+- **A curated alert that misreads the cluster is replaced, not muted.**
+  Every alert that fires on normal work teaches people to stop reading
+  the channel before the real page arrives. On autoscaled node pools
+  turn `KubeCPUOvercommit` and `KubeMemoryOvercommit` off
+  (`default_rules.disabled_alerts`): they count today's nodes. For an
+  alert that misreads work done on purpose (CI build pods, a build
+  machine at full CPU), disable it and declare the same alert name in a
+  KubernetesPrometheusRule whose expression leaves that work out
+  (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`, or `unless` the
+  machine's build taint from `kube_node_spec_taint`), keeping the
+  upstream `for`, severity and the `namespace` label Alertmanager's
+  inhibitions read. Then read the loaded rules back
+  (`/api/v1/rules?type=alert`): a name that matched nothing changed
+  nothing.
 - **No alert names a customer.** Messages render environment,
   kind, summary and runbook only; a namespace on a shared cluster
   can be a customer's name.
@@ -273,7 +287,11 @@ engine with every upstream setting.
   Every alerting rule carries `severity` (the pager route matches
   `page`), and `kind`; `environment` and `cluster` arrive through
   `prometheus.external_labels`. Its annotations carry a `summary` and a
-  `runbook_url` whose first line is the first action.
+  `runbook_url` whose first line is the first action. Keep their text
+  static: a `{{ $labels.namespace }}` in an annotation can carry a
+  customer's name into a message, and a templating chart engine that
+  renders the manifest mangles it. The subject belongs in labels
+  (`node`, `pod`), which dashboards read and messages never render.
 - **One object per owner.** Prometheus refuses a rule file with one bad
   rule and the operator drops the whole object, so a mistake in one
   team's rules must not silence another's. The kind refuses the two

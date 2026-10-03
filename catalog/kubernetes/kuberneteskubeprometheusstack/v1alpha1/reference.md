@@ -459,6 +459,11 @@ spec:
 | `spec.defaultRules` | `KubernetesKubePrometheusStackDefaultRules` |  |  |  |
 | `spec.defaultRules.enabled` | `bool` |  | `true` |  |
 | `spec.defaultRules.disabledGroups` | `[]string` |  |  |  |
+| `spec.defaultRules.disabledAlerts` | `[]string` |  |  |  |
+| `spec.defaultRules.alertOverrides` | `[]KubernetesKubePrometheusStackAlertOverride` |  |  |  |
+| `spec.defaultRules.alertOverrides[].alert` | `string` | yes |  |  |
+| `spec.defaultRules.alertOverrides[].for` | `string` |  |  |  |
+| `spec.defaultRules.alertOverrides[].severity` | `string` |  |  |  |
 | `spec.imageRegistry` | `string` |  |  |  |
 | `spec.imagePullSecrets` | `[]string` |  |  |  |
 | `spec.helmValues` | `string` |  |  |  |
@@ -1448,7 +1453,8 @@ The label that names the environment. Default `environment`.
 `string` · optional (explicit presence)
 
 The label that names the component. Default `component`; an alert
-without it is titled by its scrape `job` instead.
+without it is titled by its scrape `job` instead, and one with
+neither (an overcommit sum, a cluster-wide aggregate) by `cluster`.
 
 - default: `component`
 - rule: {"string":{"pattern":"^[a-zA-Z_][a-zA-Z0-9_]*$"}}
@@ -1894,6 +1900,9 @@ entirely (Cilium kube-proxy-replacement) there is nothing to scrape
 The chart's curated Kubernetes alerting/recording rules (rendered as
 PrometheusRule objects).
 
+- rule: each alert has one entry in alert_overrides
+- rule: an alert in disabled_alerts is not rendered, so it cannot also be overridden: drop one of the two
+
 ### spec.defaultRules.enabled
 
 `bool` · optional (explicit presence)
@@ -1912,6 +1921,72 @@ map (e.g. "etcd", "kubeProxy", "kubeControllerManager",
 "kubeSchedulerAlerting", "windows"). Pair with the
 control_plane_scrapers you disable — a scraper without its rule
 group silences the alerts that could never fire truthfully.
+
+### spec.defaultRules.disabledAlerts
+
+`[]string`
+
+Single alerts to leave out of the curated set, by alert name (e.g.
+"KubeCPUOvercommit"), while the rest of their group stays. Names
+are the `alert:` names in the chart's rule files for its version; a
+name that matches no rule changes nothing and is not reported, so
+read the loaded rules back (Prometheus's /api/v1/rules) after a
+change. Two postures make an alert misread a cluster: an autoscaled
+node pool (KubeCPUOvercommit and KubeMemoryOvercommit assume a fixed
+node count, so they fire on every burst the autoscaler is about to
+absorb), and work that is busy or briefly not ready on purpose (CI
+build pods, dedicated batch machines). For the second, prefer to
+replace rather than only silence: leave the alert out here and
+declare the same alert name in a KubernetesPrometheusRule whose
+expression leaves out what the cluster does on purpose, so the
+signal stays for everything else.
+
+- rule: {"repeated":{"unique":true,"items":{"string":{"pattern":"^[A-Za-z][A-Za-z0-9_]*$"}}}}
+
+### spec.defaultRules.alertOverrides
+
+`[]KubernetesKubePrometheusStackAlertOverride`
+
+Per-alert changes to a curated alert that stays on: how long it must
+hold before it fires, and the severity it carries (which decides its
+route). One entry per alert name.
+
+- rule: an override sets for, severity, or both
+
+### spec.defaultRules.alertOverrides[].alert
+
+`string` · required
+
+The alert's name in the chart's rule files (e.g. "KubePodNotReady").
+
+- rule: an alert name is letters, digits and underscores, starting with a letter
+- rule: {"required":true}
+
+### spec.defaultRules.alertOverrides[].for
+
+`string`
+
+How long the alert's expression must keep returning a series before
+it fires, as a Prometheus duration ("30m", "1h30m"). Empty = the
+chart's own. About ten curated alerts fire on their first evaluation
+and have no hold to change; for those it changes nothing. The
+manifest key is `for`, as upstream spells it; the proto field is
+named for_duration because `for` is a reserved word in the
+validation language and in several of the generated SDKs' languages.
+
+- rule: for must be a Prometheus duration like '30m' or '1h30m'
+
+### spec.defaultRules.alertOverrides[].severity
+
+`string`
+
+The severity label the alert carries ("critical", "warning", "info",
+or a severity your routes match, such as "page"). Empty = the
+chart's own. Routes match on severity, so this moves the alert to
+another route; Alertmanager's standard inhibitions also read it
+(critical holds back warning, and the info inhibitor holds back info).
+
+- rule: a severity is lowercase letters, digits, hyphens and underscores, starting with a letter
 
 ### spec.imageRegistry
 

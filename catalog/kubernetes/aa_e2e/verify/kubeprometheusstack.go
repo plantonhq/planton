@@ -66,6 +66,11 @@ type KubePrometheusStackVerifier struct {
 	// metric-flow proof then accepts any healthy target (a receiver scrapes
 	// only its own release's self-monitor).
 	KubeStateMetricsEnabled bool
+	// DisabledAlerts and AlertOverrides mirror the manifest's per-alert
+	// tuning of the curated rules; when either is set, the loaded rules are
+	// checked against them (kubeprometheusstack_rules.go).
+	DisabledAlerts []string
+	AlertOverrides map[string]kpsAlertOverride
 }
 
 // stackCrds are the monitoring.coreos.com CRDs whose keep-on-uninstall
@@ -252,6 +257,10 @@ func (v *KubePrometheusStackVerifier) proveMetricFlow(ctx context.Context, kubec
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "METRIC-FLOW: the PromQL query never answered with data")
+	}
+
+	if err := v.proveRuleTuning(ctx, base); err != nil {
+		return err
 	}
 
 	if !v.Alerting {

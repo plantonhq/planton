@@ -71,6 +71,11 @@ pre-loaded with the matching dashboards.
   can never resolve. `control_plane_scrapers` toggles them off, and
   `default_rules.disabled_groups` silences the matching rule groups
   (the presets carry the exact set).
+- **One alert at a time.** `default_rules.disabled_alerts` leaves single
+  curated alerts out (the overcommit pair on autoscaled node pools), and
+  `default_rules.alert_overrides` changes a kept alert's hold (`for`) or
+  `severity`. Replace an alert that misreads your cluster with your own
+  `KubernetesPrometheusRule` of the same name rather than only muting it.
 - **Remote write covers the cloud backends.** Basic auth
   (Grafana Cloud/Mimir), bearer tokens, AWS SigV4 (Amazon Managed
   Prometheus — keyless via IRSA or static keys), and Azure AD managed
@@ -119,7 +124,8 @@ pre-loaded with the matching dashboards.
   and resources
 - **`spec.control_plane_scrapers` / `spec.default_rules`**: the
   managed-cloud pair — disable unreachable scrapers AND their rule
-  groups together
+  groups together; `default_rules.disabled_alerts` and
+  `alert_overrides` tune single curated alerts
 - **`spec.image_registry` / `spec.image_pull_secrets` /
   `spec.helm_values`**: the air-gap path and the escape hatch
 
@@ -195,6 +201,12 @@ spec:
       - kubeSchedulerAlerting
       - kubeSchedulerRecording
       - kubeProxy
+    disabled_alerts:
+      - KubeCPUOvercommit
+      - KubeMemoryOvercommit
+    alert_overrides:
+      - alert: KubePodNotReady
+        for: 30m
 ```
 
 ---

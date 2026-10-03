@@ -144,8 +144,20 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 			}
 			defaultRules["rules"] = rules
 		}
+		// The chart gates every curated alert on defaultRules.disabled.<alert>
+		// and reads its hold and severity from the top-level customRules map.
+		if len(dr.GetDisabledAlerts()) > 0 {
+			disabled := map[string]interface{}{}
+			for _, alert := range dr.GetDisabledAlerts() {
+				disabled[alert] = true
+			}
+			defaultRules["disabled"] = disabled
+		}
 		if len(defaultRules) > 0 {
 			values["defaultRules"] = defaultRules
+		}
+		if customRules := alertOverrides(dr.GetAlertOverrides()); len(customRules) > 0 {
+			values["customRules"] = customRules
 		}
 	}
 
@@ -530,6 +542,24 @@ func renderScraperToggle(values map[string]interface{}, chartKey string, toggle 
 		return
 	}
 	values[chartKey] = map[string]interface{}{"enabled": *toggle}
+}
+
+// alertOverrides renders the chart's customRules map: per curated alert,
+// only the keys the manifest sets (`for`, `severity`), so an override of
+// one keeps the chart's own value for the other.
+func alertOverrides(overrides []*kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackAlertOverride) map[string]interface{} {
+	customRules := map[string]interface{}{}
+	for _, o := range overrides {
+		rule := map[string]interface{}{}
+		if o.GetForDuration() != "" {
+			rule["for"] = o.GetForDuration()
+		}
+		if o.GetSeverity() != "" {
+			rule["severity"] = o.GetSeverity()
+		}
+		customRules[o.GetAlert()] = rule
+	}
+	return customRules
 }
 
 // remoteWriteUsernameKey is the deterministic key of one remote-write

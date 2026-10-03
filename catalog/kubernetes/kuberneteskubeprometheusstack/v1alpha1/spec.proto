@@ -1002,7 +1002,8 @@ message KubernetesKubePrometheusStackAlertMessage {
 
   /**
    * The label that names the component. Default `component`; an alert
-   * without it is titled by its scrape `job` instead.
+   * without it is titled by its scrape `job` instead, and one with
+   * neither (an overcommit sum, a cluster-wide aggregate) by `cluster`.
    */
   optional string component_label = 2 [
     (dev.planton.shared.options.default) = "component",
@@ -1246,6 +1247,102 @@ message KubernetesKubePrometheusStackDefaultRules {
    * group silences the alerts that could never fire truthfully.
    */
   repeated string disabled_groups = 2;
+
+  /**
+   * Single alerts to leave out of the curated set, by alert name (e.g.
+   * "KubeCPUOvercommit"), while the rest of their group stays. Names
+   * are the `alert:` names in the chart's rule files for its version; a
+   * name that matches no rule changes nothing and is not reported, so
+   * read the loaded rules back (Prometheus's /api/v1/rules) after a
+   * change. Two postures make an alert misread a cluster: an autoscaled
+   * node pool (KubeCPUOvercommit and KubeMemoryOvercommit assume a fixed
+   * node count, so they fire on every burst the autoscaler is about to
+   * absorb), and work that is busy or briefly not ready on purpose (CI
+   * build pods, dedicated batch machines). For the second, prefer to
+   * replace rather than only silence: leave the alert out here and
+   * declare the same alert name in a KubernetesPrometheusRule whose
+   * expression leaves out what the cluster does on purpose, so the
+   * signal stays for everything else.
+   */
+  repeated string disabled_alerts = 3 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {pattern: "^[A-Za-z][A-Za-z0-9_]*$"}
+    }
+  }];
+
+  /**
+   * Per-alert changes to a curated alert that stays on: how long it must
+   * hold before it fires, and the severity it carries (which decides its
+   * route). One entry per alert name.
+   */
+  repeated KubernetesKubePrometheusStackAlertOverride alert_overrides = 4;
+
+  option (buf.validate.message).cel = {
+    id: "spec.default_rules.alert_overrides.unique"
+    message: "each alert has one entry in alert_overrides"
+    expression: "this.alert_overrides.all(o, this.alert_overrides.filter(p, p.alert == o.alert).size() == 1)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "spec.default_rules.alert_overrides.not_disabled"
+    message: "an alert in disabled_alerts is not rendered, so it cannot also be overridden: drop one of the two"
+    expression: "this.alert_overrides.all(o, !(o.alert in this.disabled_alerts))"
+  };
+}
+
+/**
+ * A change to one curated alert, applied where the chart renders it.
+ */
+message KubernetesKubePrometheusStackAlertOverride {
+  /**
+   * The alert's name in the chart's rule files (e.g. "KubePodNotReady").
+   */
+  string alert = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.default_rules.alert_overrides.alert"
+      message: "an alert name is letters, digits and underscores, starting with a letter"
+      expression: "this.matches('^[A-Za-z][A-Za-z0-9_]*$')"
+    }
+  ];
+
+  /**
+   * How long the alert's expression must keep returning a series before
+   * it fires, as a Prometheus duration ("30m", "1h30m"). Empty = the
+   * chart's own. About ten curated alerts fire on their first evaluation
+   * and have no hold to change; for those it changes nothing. The
+   * manifest key is `for`, as upstream spells it; the proto field is
+   * named for_duration because `for` is a reserved word in the
+   * validation language and in several of the generated SDKs' languages.
+   */
+  string for_duration = 2 [
+    json_name = "for",
+    (buf.validate.field).cel = {
+      id: "spec.default_rules.alert_overrides.for"
+      message: "for must be a Prometheus duration like '30m' or '1h30m'"
+      expression: "this == '' || this.matches('^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$')"
+    }
+  ];
+
+  /**
+   * The severity label the alert carries ("critical", "warning", "info",
+   * or a severity your routes match, such as "page"). Empty = the
+   * chart's own. Routes match on severity, so this moves the alert to
+   * another route; Alertmanager's standard inhibitions also read it
+   * (critical holds back warning, and the info inhibitor holds back info).
+   */
+  string severity = 3 [(buf.validate.field).cel = {
+    id: "spec.default_rules.alert_overrides.severity"
+    message: "a severity is lowercase letters, digits, hyphens and underscores, starting with a letter"
+    expression: "this == '' || this.matches('^[a-z][a-z0-9_-]*$')"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.default_rules.alert_overrides.changes_something"
+    message: "an override sets for, severity, or both"
+    expression: "this.for_duration != '' || this.severity != ''"
+  };
 }
 
 /**

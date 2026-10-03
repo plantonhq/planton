@@ -247,6 +247,12 @@ variable "spec" {
     default_rules = optional(object({
       enabled         = optional(bool)
       disabled_groups = optional(list(string), [])
+      disabled_alerts = optional(list(string), [])
+      alert_overrides = optional(list(object({
+        alert        = string
+        for_duration = optional(string, "")
+        severity     = optional(string, "")
+      })), [])
     }))
     image_registry     = optional(string, "")
     image_pull_secrets = optional(list(string), [])

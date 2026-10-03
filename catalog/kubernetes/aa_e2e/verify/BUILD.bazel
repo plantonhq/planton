@@ -45,6 +45,7 @@ go_library(
         "kubectl.go",
         "kubeprometheusstack.go",
         "kubeprometheusstack_notifications.go",
+        "kubeprometheusstack_rules.go",
         "kuberayoperator.go",
         "kyverno.go",
         "lbaddress.go",
@@ -136,6 +137,7 @@ go_library(
 go_test(
     name = "verify_test",
     srcs = [
+        "kubeprometheusstack_rules_test.go",
         "openbao_test.go",
         "plantonplatform_test.go",
     ],
