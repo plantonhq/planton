@@ -1,0 +1,16 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "vocabulary",
+    srcs = ["vocabulary.go"],
+    embedsrcs = ["vocabulary.yaml"],
+    importpath = "github.com/plantonhq/planton/pkg/vocabulary",
+    visibility = ["//visibility:public"],
+    deps = ["@in_gopkg_yaml_v3//:yaml_v3"],
+)
+
+go_test(
+    name = "vocabulary_test",
+    srcs = ["vocabulary_test.go"],
+    embed = [":vocabulary"],
+)

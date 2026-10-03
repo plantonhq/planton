@@ -1,0 +1,158 @@
+# Planton's vocabulary: the words this repository uses for Planton's own
+# concepts, and the spellings it does not use.
+#
+# One idea has one word, the same in the console, the CLI, the API, the docs
+# and the code, so a platform engineer, a developer and an agent never meet
+# two names for one thing. The words follow the industry's own picture: an
+# InfraChart installs into an environment as an InfraStack of InfraComponents,
+# an InfraPipeline runs one InfraJob per InfraComponent, and the catalog holds
+# catalog kinds whose instances are catalog objects.
+#
+# pkg/vocabulary reads this file. Its whole-tree test (go test
+# ./pkg/vocabulary/..., the lint.vocabulary lane) fails on any spelling under
+# `retired` or `phrases` that is not inside an `allow` span.
+#
+#   words    the current words, with what each one means.
+#   retired  spellings matched case-insensitively in every case form: the
+#            entry CloudResource also matches cloudResource, cloud_resource,
+#            CLOUD_RESOURCE, cloud-resource, cloudresource and "cloud
+#            resource", anywhere in a line, including inside longer
+#            identifiers. `use` says what to write instead, by meaning.
+#   phrases  retired names and shapes matched as RE2 regular expressions.
+#            `anchors` lists lowercase literals of which every match holds
+#            one; the scan tries the pattern only on lines that hold one.
+#   allow    spans that contain a retired spelling but are someone else's
+#            word (a vendor's API, a vendor's type, a vendor's CLI) or an
+#            address the outside world already holds. `paths` (optional)
+#            scopes an allowance to repository paths (globs; ** crosses
+#            directories). Never add an allowance for a Planton word.
+#   exclude  repository paths never scanned: third-party trees vendored
+#            verbatim, and this package's own files.
+
+words:
+  - name: CatalogKind
+    means: A type of thing the catalog offers (AwsS3Bucket, GcpGkeCluster). Its schema is a proto message; its enum value names are permanent.
+  - name: CatalogObject
+    means: One instance document of a catalog kind (apiVersion, kind, metadata, spec), as written in a manifest.
+  - name: CatalogObjectMetadata
+    means: The metadata block every catalog object carries.
+  - name: CatalogProvider
+    means: The provider a catalog kind belongs to (AWS, GCP, Kubernetes, Cloudflare).
+  - name: CatalogProviderServiceGroup
+    means: A provider's own grouping of its services (AWS Networking, GCP Compute).
+  - name: CatalogKindPreset
+    means: A ready starting configuration for one catalog kind.
+  - name: CatalogObjectManifest
+    means: One rendered catalog object, as an InfraChart or a deployment produces it.
+  - name: InfraCatalog
+    means: The catalog of catalog kinds and InfraCharts an organization can deploy.
+  - name: InfraChart
+    means: A parameterized template of catalog objects, installable into an environment.
+  - name: InfraStack
+    means: One InfraChart installed into one environment.
+  - name: InfraComponent
+    means: One deployed instance of a catalog kind, in one environment.
+  - name: InfraPipeline
+    means: One run of one operation (deploy or undeploy) over an InfraStack.
+  - name: InfraJob
+    means: The IaC work for exactly one InfraComponent (init, refresh, preview, then apply or destroy, or a state operation).
+  - name: IacInput
+    means: What an IaC module receives for one InfraComponent (<Kind>IacInput, read under planton:iac-input).
+  - name: Outputs
+    means: What an IaC module returns for one InfraComponent (<Kind>Outputs, held in status.outputs).
+
+retired:
+  - spelling: CloudResource
+    use: CatalogKind for the type, InfraComponent for one deployed instance, CatalogObjectMetadata for the metadata block, CatalogProvider for the provider
+  - spelling: CloudObject
+    use: CatalogObject (CatalogObjectManifest for one rendered object, CatalogKindPreset for a preset)
+  - spelling: CloudCatalog
+    use: InfraCatalog
+  - spelling: CloudProviderServiceGroup
+    use: CatalogProviderServiceGroup
+  - spelling: StackInput
+    use: IacInput (<Kind>IacInput; the module reads it under planton:iac-input)
+  - spelling: StackOutput
+    use: Outputs (<Kind>Outputs)
+  - spelling: StackJob
+    use: InfraJob
+  - spelling: StackExecute
+    use: IacExecute
+  - spelling: InfraProject
+    use: InfraStack
+  - spelling: crkreflect
+    use: catalogkindreflect
+
+phrases:
+  # "Component" names one deployed InfraComponent and nothing else. These are
+  # the names that once used it for a catalog kind.
+  - pattern: '(?i)component[ _-]?(cost[ _-]?profile|control[ _-]?profile|e2e[ _-]?profile|permissions|import[ _-]?map|cost[ _-]?estimate|cost[ _-]?derivation|capacity[ _-]?derivation)'
+    anchors: ['component']
+    use: CatalogKind (CatalogKindCostProfile, CatalogKindControlProfile, CatalogKindE2EProfile, CatalogKindPermissions, CatalogKindImportMap, ...)
+  - pattern: '(?i)e2e-component'
+    anchors: ['e2e-component']
+    use: e2e-catalog-kind
+  - pattern: '(?i)(catalog|deployment|cloud)[ _-]components?'
+    anchors: ['component']
+    use: catalog kind
+  - pattern: '(?i)(forge|audit|update|complete|fix|delete|rename|localize)-planton-component'
+    anchors: ['-planton-component']
+    use: <verb>-catalog-kind
+  - pattern: '_rules/component\b'
+    anchors: ['_rules/component']
+    use: _rules/catalog-kind
+  - pattern: 'architecture/component\.md'
+    anchors: ['architecture/component']
+    use: architecture/catalog-kind.md
+  - pattern: 'runAllScenariosForComponent'
+    anchors: ['runallscenariosforcomponent']
+    use: runAllScenariosForKind
+  - pattern: '(?i)\b[0-9,]+\+ components\b'
+    anchors: ['+ components']
+    use: <N>+ catalog kinds
+  - pattern: '(?i)lego[ _-]?blocks?'
+    anchors: ['lego']
+    use: catalog kinds
+  # Retired ID shapes. An InfraComponent ID is ic_<kind id prefix>_<ulid>, an
+  # InfraJob ID ij_<ulid>, an InfraStack ID infstk_<ulid>.
+  - pattern: '(?i)\b(cr|sj|infpj|infproj)_([a-z0-9]+_)?[0-9a-hjkmnp-tv-z]{26}\b'
+    anchors: ['cr_', 'sj_', 'infpj_', 'infproj_']
+    use: ic_<kind id prefix>_<ulid> for an InfraComponent, ij_<ulid> for an InfraJob, infstk_<ulid> for an InfraStack
+  - pattern: '\b(cr|sj|infpj|infproj)_(<|\{|\.\.\.)'
+    anchors: ['cr_', 'sj_', 'infpj_', 'infproj_']
+    use: ic_, ij_ or infstk_
+  - pattern: '`(cr|sj|infpj|infproj)_`'
+    anchors: ['cr_', 'sj_', 'infpj_', 'infproj_']
+    use: '`ic_`, `ij_` or `infstk_`'
+
+allow:
+  - pattern: '(?i)cloud[ _-]?resource[ _-]?manager'
+    reason: Google Cloud's Resource Manager API (cloudresourcemanager.googleapis.com)
+  - pattern: '(?i)google[ _-]?cloud[ _-]?resource'
+    reason: Google's own resource-name type in workload identity and BigQuery
+  - pattern: '(?i)cloud[ _-]?resource[ _-]?service[ _-]?account'
+    reason: the service account BigQuery creates for a Cloud Resource connection
+  - pattern: '(?i)cloud[ _-]?resource'
+    paths: ['**/gcpbigqueryconnection/**']
+    reason: BigQuery's own Cloud Resource connection type
+  - pattern: '(?i)(hetzner|ali)cloud-resource'
+    reason: the provider names Hetzner Cloud and Alibaba Cloud followed by the word resource
+  - pattern: '(?i)barman[ _-]?cloud[ _-]?object'
+    reason: CloudNativePG's Barman Cloud object store
+  - pattern: '(?i)cloud[ _-]?object[ _-]?stor'
+    reason: the industry's own phrase for object storage in the cloud
+  - pattern: '(?i)multi[ _-]?cloud[ _-]?catalog'
+    reason: the multi-cloud-catalog skill's name
+  - pattern: '(?i)pulumi stack output'
+    reason: the Pulumi CLI's own command
+  - pattern: '(?i)kube[ _-]?prometheus[ _-]?stack[ _-]?outputs?'
+    reason: the kube-prometheus-stack chart's name, as in the kind KubernetesKubePrometheusStack and its KubernetesKubePrometheusStackOutputs
+  - pattern: "from: '[^']*'"
+    paths: ['site/src/data/retired-routes.ts']
+    reason: retired site addresses the outside world holds; each forwards to its live page
+
+exclude:
+  - 'pkg/vocabulary/**'
+  - 'pkg/kubernetes/kubernetestypes/**'
+  - 'pkg/iac/actioninventory/**'
+  - 'pkg/providerparity/schemas/**'

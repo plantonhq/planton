@@ -1,0 +1,183 @@
+package vocabulary
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+	"runtime"
+	"sort"
+	"strings"
+	"testing"
+)
+
+func scanner(t *testing.T) *Scanner {
+	t.Helper()
+	v, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := v.NewScanner()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return s
+}
+
+func matches(t *testing.T, s *Scanner, path, line string) []string {
+	t.Helper()
+	var got []string
+	for _, f := range s.ScanText(path, []byte(line)) {
+		got = append(got, f.Match)
+	}
+	return got
+}
+
+func TestSpellingPatternMatchesEveryCaseForm(t *testing.T) {
+	re := regexp.MustCompile(SpellingPattern("CloudResource"))
+	for _, form := range []string{
+		"CloudResource", "cloudResource", "cloud_resource", "CLOUD_RESOURCE",
+		"cloud-resource", "cloudresource", "Cloud Resource", "cloud resource",
+		"AwsCloudResourceKind", "dev.planton.shared.cloudresourcekind",
+	} {
+		if !re.MatchString(form) {
+			t.Errorf("%q not matched by %s", form, re)
+		}
+	}
+	if got := SpellingPattern("crkreflect"); got != "(?i)crkreflect" {
+		t.Errorf("one-word spelling: got %s", got)
+	}
+}
+
+func TestRetiredSpellingsAreFound(t *testing.T) {
+	s := scanner(t)
+	for _, line := range []string{
+		"kind: CloudResourceKind",
+		"message AwsS3BucketStackInput {",
+		"stackInput := &AwsS3BucketStackInput{}",
+		"value: stack-job",
+		"TEMPORAL_TASK_QUEUE_STACK_JOB",
+		"an infra project in the environment",
+		"last_applied_cloud_object",
+		"import github.com/plantonhq/planton/pkg/crkreflect",
+		"kind: ComponentCostProfile",
+		"labels: {e2e-component: awsvpc}",
+		"see _rules/component/forge",
+		"a catalog of 700+ components",
+		"id: cr_awsvpc_01jabcdefghjkmnpqrstvwxyz0",
+		"id: sj_01jabcdefghjkmnpqrstvwxyz0",
+		"IDs look like `cr_`",
+		"run planton cloud-resource:apply",
+		"Stack Outputs",
+	} {
+		if len(matches(t, s, "README.md", line)) == 0 {
+			t.Errorf("no finding in %q", line)
+		}
+	}
+}
+
+func TestOtherPeoplesWordsAreAllowed(t *testing.T) {
+	s := scanner(t)
+	for _, c := range []struct{ path, line string }{
+		{"catalog/gcp/gcpproject/iac/tf/main.tf", `service = "cloudresourcemanager.googleapis.com"`},
+		{"docs/gcp.md", "Google Cloud Resource Manager"},
+		{"catalog/gcp/gcpbigqueryconnection/v1alpha1/spec.proto", "GcpBigQueryConnectionCloudResource cloud_resource = 5;"},
+		{"pkg/x.go", "service account of a google_cloud_resource"},
+		{"catalog/kubernetes/kubernetespostgres/iac/x.go", "BarmanCloudObjectStore"},
+		{"docs/x.md", "the multi-cloud-catalog skill"},
+		{"docs/x.md", "run `pulumi stack output --json`"},
+		{"catalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/outputs.proto", "message KubernetesKubePrometheusStackOutputs {"},
+		{"site/src/data/retired-routes.ts", "{ from: '/features/cloud-catalog', to: '/product/catalog' },"},
+		{"docs/x.md", "a Kubernetes Deployment of three replicas"},
+		{"site/src/components/Hero.tsx", "import { Hero } from '@/components/Hero'"},
+		{"catalog/aws/awsvpc/cost.yaml", "# what drives this component's bill"},
+		{"pkg/x.go", "cr_terms := local.terms"},
+	} {
+		if got := matches(t, s, c.path, c.line); len(got) != 0 {
+			t.Errorf("%s: %q flagged %v", c.path, c.line, got)
+		}
+	}
+}
+
+func TestPathAllowancesStayInTheirPaths(t *testing.T) {
+	s := scanner(t)
+	if got := matches(t, s, "pkg/x.go", "cloud_resource := spec.CloudResource"); len(got) == 0 {
+		t.Error("BigQuery's allowance leaked outside gcpbigqueryconnection")
+	}
+	if got := matches(t, s, "site/src/data/nav.ts", "{ from: '/docs/infrastructure/cloud-resources' }"); len(got) == 0 {
+		t.Error("the retired-routes allowance leaked outside retired-routes.ts")
+	}
+}
+
+func TestExcludedPaths(t *testing.T) {
+	s := scanner(t)
+	for _, p := range []string{"pkg/vocabulary/vocabulary.yaml", "pkg/kubernetes/kubernetestypes/x/y.go"} {
+		if !s.Excluded(p) {
+			t.Errorf("%s should be excluded", p)
+		}
+	}
+	if s.Excluded("pkg/vocabularyx/a.go") || s.Excluded("catalog/aws/awsvpc/README.md") {
+		t.Error("exclusion matched a path it should not")
+	}
+}
+
+// TestCurrentWordsContainNoRetiredSpelling keeps re-translation safe: a
+// current word that contained a retired spelling would be flagged forever.
+func TestCurrentWordsContainNoRetiredSpelling(t *testing.T) {
+	s := scanner(t)
+	v, _ := Load()
+	for _, w := range v.Words {
+		if got := matches(t, s, "README.md", w.Name); len(got) != 0 {
+			t.Errorf("current word %s contains retired spelling %v", w.Name, got)
+		}
+	}
+}
+
+// repoRoot resolves the repository root from this file's location so the
+// gate works from any test working directory (including the Bazel sandbox,
+// where the source tree is absent -- the gate skips there).
+func repoRoot(t *testing.T) string {
+	t.Helper()
+	_, thisFile, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("cannot resolve caller location")
+	}
+	return filepath.Join(filepath.Dir(thisFile), "..", "..")
+}
+
+// TestRetiredVocabularyGate is the CI guardrail: no tracked file carries a
+// spelling vocabulary.yaml retires, outside its allowances. On failure, write
+// the word the finding names; never add an allowance for a Planton word.
+func TestRetiredVocabularyGate(t *testing.T) {
+	root := repoRoot(t)
+	if _, err := os.Stat(filepath.Join(root, ".git")); err != nil {
+		t.Skip("repository tree not present (bazel sandbox); runs under go test and the lint.vocabulary lane")
+	}
+	findings, err := scanner(t).ScanTree(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(findings) == 0 {
+		return
+	}
+	counts := CountByUse(findings)
+	uses := make([]string, 0, len(counts))
+	for u := range counts {
+		uses = append(uses, u)
+	}
+	sort.Slice(uses, func(i, j int) bool { return counts[uses[i]] > counts[uses[j]] })
+	var b strings.Builder
+	fmt.Fprintf(&b, "%d retired spellings in tracked files:\n", len(findings))
+	for _, u := range uses {
+		fmt.Fprintf(&b, "  %7d  use %s\n", counts[u], u)
+	}
+	const shown = 50
+	for i, f := range findings {
+		if i == shown {
+			fmt.Fprintf(&b, "  ... and %d more\n", len(findings)-shown)
+			break
+		}
+		fmt.Fprintf(&b, "  %s\n", f)
+	}
+	t.Fatal(b.String())
+}
