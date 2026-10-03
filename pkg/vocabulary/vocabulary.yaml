@@ -133,7 +133,7 @@ allow:
   # Current words followed by an ordinary word, which would otherwise read as
   # a retired spelling: the InfraStack Input tab, an InfraStack job, and an
   # InfraComponent's cost estimate.
-  - pattern: '(?i)infra[ _-]?stack[ _-]?(inputs?|outputs?|jobs?|execute)'
+  - pattern: '(?i)infra[ _-]?stack (inputs?|outputs?|jobs?|execute)'
     reason: InfraStack followed by an ordinary word
   - pattern: '(?i)infra[ _-]?component[ _-]?cost[ _-]?estimate'
     reason: an InfraComponent's cost estimate
