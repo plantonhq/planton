@@ -61,7 +61,8 @@ type Retired struct {
 // Phrase is a retired name or shape, as an RE2 pattern. Anchors are
 // lowercase literals of which every match contains at least one; the scan
 // reads a line with the pattern only when the lowercased line contains an
-// anchor.
+// anchor. A space in an anchor stands for an optional separator (none, a
+// space, _ or -).
 type Phrase struct {
 	Pattern string   `yaml:"pattern"`
 	Anchors []string `yaml:"anchors"`
@@ -145,11 +146,12 @@ type allowance struct {
 // Scanner finds retired spellings. Build one with NewScanner.
 type Scanner struct {
 	rules []rule
-	// squeezed holds each retired spelling lowercased with no separators
-	// (cloudresource); a line can match a spelling only if its own squeezed
-	// form contains it. anchors holds the phrases' literals, looked for in
-	// the lowercased line. Checking literals first keeps the scan at memory
-	// speed: the patterns run only on the few lines that could match.
+	// squeezed holds each retired spelling, and each phrase anchor written
+	// with spaces, lowercased with no separators (cloudresource); a line can
+	// match one only if its own squeezed form contains it. anchors holds the
+	// other phrase anchors, looked for in the lowercased line as written.
+	// Checking literals first keeps the scan at memory speed: the patterns
+	// run only on the few lines that could match.
 	squeezed [][]byte
 	anchors  [][]byte
 	allow    []allowance
@@ -175,7 +177,11 @@ func (v *Vocabulary) NewScanner() (*Scanner, error) {
 			if a != strings.ToLower(a) || a == "" {
 				return nil, fmt.Errorf("phrase %q: anchor %q must be a non-empty lowercase literal", p.Pattern, a)
 			}
-			s.anchors = append(s.anchors, []byte(a))
+			if strings.Contains(a, " ") {
+				s.squeezed = append(s.squeezed, squeeze([]byte(a)))
+			} else {
+				s.anchors = append(s.anchors, []byte(a))
+			}
 		}
 		re, err := regexp.Compile(p.Pattern)
 		if err != nil {
@@ -230,15 +236,19 @@ func (s *Scanner) mayMatch(lower []byte) bool {
 	return false
 }
 
-// globRegexp compiles a path glob: ** crosses directories, * and ? stay
-// within one path segment.
+// globRegexp compiles a path glob: ** crosses directories (**/ also matches
+// none, so **/go.mod matches the root go.mod), * and ? stay within one path
+// segment.
 func globRegexp(glob string) *regexp.Regexp {
 	var b strings.Builder
 	b.WriteString("^")
 	for i := 0; i < len(glob); i++ {
 		switch c := glob[i]; c {
 		case '*':
-			if i+1 < len(glob) && glob[i+1] == '*' {
+			if strings.HasPrefix(glob[i:], "**/") {
+				b.WriteString("(?:.*/)?")
+				i += 2
+			} else if i+1 < len(glob) && glob[i+1] == '*' {
 				b.WriteString(".*")
 				i++
 			} else {

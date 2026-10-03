@@ -67,6 +67,7 @@ func TestRetiredSpellingsAreFound(t *testing.T) {
 		"id: cr_awsvpc_01jabcdefghjkmnpqrstvwxyz0",
 		"id: sj_01jabcdefghjkmnpqrstvwxyz0",
 		"IDs look like `cr_`",
+		`strings.HasPrefix(id, "cr_")`,
 		"run planton cloud-resource:apply",
 		"Stack Outputs",
 	} {
@@ -85,6 +86,8 @@ func TestOtherPeoplesWordsAreAllowed(t *testing.T) {
 		{"pkg/x.go", "service account of a google_cloud_resource"},
 		{"catalog/kubernetes/kubernetespostgres/iac/x.go", "BarmanCloudObjectStore"},
 		{"docs/x.md", "the multi-cloud-catalog skill"},
+		{"docs/x.md", "every Google Cloud resource in the project"},
+		{"_changelog/x.md", "added to the Hetzner Cloud catalog"},
 		{"docs/x.md", "run `pulumi stack output --json`"},
 		{"catalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/outputs.proto", "message KubernetesKubePrometheusStackOutputs {"},
 		{"site/src/data/retired-routes.ts", "{ from: '/features/cloud-catalog', to: '/product/catalog' },"},
@@ -106,6 +109,18 @@ func TestPathAllowancesStayInTheirPaths(t *testing.T) {
 	}
 	if got := matches(t, s, "site/src/data/nav.ts", "{ from: '/docs/infrastructure/cloud-resources' }"); len(got) == 0 {
 		t.Error("the retired-routes allowance leaked outside retired-routes.ts")
+	}
+}
+
+func TestGlobDoubleStarSlashMatchesNoDirectory(t *testing.T) {
+	re := globRegexp("**/go.mod")
+	for _, p := range []string{"go.mod", "a/go.mod", "a/b/go.mod"} {
+		if !re.MatchString(p) {
+			t.Errorf("**/go.mod should match %s", p)
+		}
+	}
+	if re.MatchString("go.mod.bak") || globRegexp("site/*.ts").MatchString("site/a/x.ts") {
+		t.Error("glob matched too much")
 	}
 }
 

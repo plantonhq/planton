@@ -20,7 +20,9 @@
 #            identifiers. `use` says what to write instead, by meaning.
 #   phrases  retired names and shapes matched as RE2 regular expressions.
 #            `anchors` lists lowercase literals of which every match holds
-#            one; the scan tries the pattern only on lines that hold one.
+#            one; the scan tries the pattern only on lines that hold one. A
+#            space in an anchor stands for an optional separator (none, a
+#            space, _ or -).
 #   allow    spans that contain a retired spelling but are someone else's
 #            word (a vendor's API, a vendor's type, a vendor's CLI) or an
 #            address the outside world already holds. `paths` (optional)
@@ -87,15 +89,15 @@ phrases:
   # "Component" names one deployed InfraComponent and nothing else. These are
   # the names that once used it for a catalog kind.
   - pattern: '(?i)component[ _-]?(cost[ _-]?profile|control[ _-]?profile|e2e[ _-]?profile|permissions|import[ _-]?map|cost[ _-]?estimate|cost[ _-]?derivation|capacity[ _-]?derivation)'
-    anchors: ['component']
+    anchors: ['component cost', 'component control', 'component e2e', 'component permissions', 'component import', 'component capacity']
     use: CatalogKind (CatalogKindCostProfile, CatalogKindControlProfile, CatalogKindE2EProfile, CatalogKindPermissions, CatalogKindImportMap, ...)
   - pattern: '(?i)e2e-component'
     anchors: ['e2e-component']
     use: e2e-catalog-kind
-  - pattern: '(?i)(catalog|deployment|cloud)[ _-]components?'
-    anchors: ['component']
+  - pattern: '(?i)\b(catalog|deployment|cloud)[ _-]components?'
+    anchors: ['catalog component', 'deployment component', 'cloud component']
     use: catalog kind
-  - pattern: '(?i)(forge|audit|update|complete|fix|delete|rename|localize)-planton-component'
+  - pattern: '(?i)(forge|audit|update|complete|fix|delete|rename|localize|write|create)-planton-component'
     anchors: ['-planton-component']
     use: <verb>-catalog-kind
   - pattern: '_rules/component\b'
@@ -111,7 +113,7 @@ phrases:
     anchors: ['+ components']
     use: <N>+ catalog kinds
   - pattern: '(?i)lego[ _-]?blocks?'
-    anchors: ['lego']
+    anchors: ['lego block']
     use: catalog kinds
   # Retired ID shapes. An InfraComponent ID is ic_<kind id prefix>_<ulid>, an
   # InfraJob ID ij_<ulid>, an InfraStack ID infstk_<ulid>.
@@ -124,6 +126,9 @@ phrases:
   - pattern: '`(cr|sj|infpj|infproj)_`'
     anchors: ['cr_', 'sj_', 'infpj_', 'infproj_']
     use: '`ic_`, `ij_` or `infstk_`'
+  - pattern: '["''](cr|sj|infpj|infproj)_["'']'
+    anchors: ['cr_', 'sj_', 'infpj_', 'infproj_']
+    use: the ID prefix ic_, ij_ or infstk_
 
 allow:
   - pattern: '(?i)cloud[ _-]?resource[ _-]?manager'
@@ -135,8 +140,10 @@ allow:
   - pattern: '(?i)cloud[ _-]?resource'
     paths: ['**/gcpbigqueryconnection/**']
     reason: BigQuery's own Cloud Resource connection type
-  - pattern: '(?i)(hetzner|ali)cloud-resource'
-    reason: the provider names Hetzner Cloud and Alibaba Cloud followed by the word resource
+  - pattern: '(?i)\b(google|hetzner|alibaba|ali|oracle|ibm|tencent|huawei|sap|civo|scaleway|ovh|vultr|linode|akamai)[ _-]?cloud[ _-]?(resources?|objects?|catalogs?)'
+    reason: a provider whose name ends in Cloud (Google Cloud, Hetzner Cloud, Alibaba Cloud), followed by the provider's own word
+  - pattern: '(?i)solr[ _-]?cloud[ _-]?resources?'
+    reason: Apache Solr's SolrCloud custom resource
   - pattern: '(?i)barman[ _-]?cloud[ _-]?object'
     reason: CloudNativePG's Barman Cloud object store
   - pattern: '(?i)cloud[ _-]?object[ _-]?stor'
@@ -150,6 +157,9 @@ allow:
   - pattern: "from: '[^']*'"
     paths: ['site/src/data/retired-routes.ts']
     reason: retired site addresses the outside world holds; each forwards to its live page
+  - pattern: '(?i)cloud[ _-]?catalog'
+    paths: ['site/src/app/(site)/features/cloud-catalog/**']
+    reason: the forwarding page that answers the retired /features/cloud-catalog address
 
 exclude:
   - 'pkg/vocabulary/**'
