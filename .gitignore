@@ -70,6 +70,8 @@ web-app/src/gen/
 # the Makefile -- an ignored script exists only on the machine that wrote it
 # and breaks every fresh checkout).
 !tools/ci/**/*.sh
+# The website's deploy scripts, run by its workflows (release.site.yaml, preview.site.yaml).
+!site/deploy/*.sh
 # CI guard scripts must be tracked (run by .github/workflows/lint.*.yaml)
 !hack/guards/*.sh
 # Scenario SETUP-phase scripts (see e2e/README.md). The blanket *.sh
