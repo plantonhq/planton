@@ -1,0 +1,18 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPodMonitor
+metadata:
+  name: orders-db
+spec:
+  namespace:
+    value: orders
+  labels:
+    release: kube-prometheus-stack
+  job_label: cnpg.io/cluster
+  pod_target_labels:
+    - cnpg.io/instanceRole
+  selector:
+    match_labels:
+      cnpg.io/cluster: orders-db
+  pod_metrics_endpoints:
+    - port: metrics
+      interval: 30s

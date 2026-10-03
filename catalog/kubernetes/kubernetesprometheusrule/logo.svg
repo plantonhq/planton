@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
   <desc>Planton-drawn glyph: a Prometheus rule -- a rule sheet whose lines end in an alert bell</desc>
-  <rect x="4" y="3" width="13" height="18" rx="2" fill="#e6522c"/>
+  <rect x="4" y="3" width="13" height="18" rx="2" fill="#326ce5"/>
   <path d="M7,8 H14 M7,11.5 H14 M7,15 H10.5" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
-  <path d="M17.5,12.5 Q14.5,12.5 14.5,16 V18 L13.5,19.5 H21.5 L20.5,18 V16 Q20.5,12.5 17.5,12.5 Z" fill="#ffffff" stroke="#e6522c" stroke-width="1.2" stroke-linejoin="round"/>
-  <circle cx="17.5" cy="20.6" r="0.9" fill="#ffffff" stroke="#e6522c" stroke-width="0.8"/>
+  <path d="M17.5,12.5 Q14.5,12.5 14.5,16 V18 L13.5,19.5 H21.5 L20.5,18 V16 Q20.5,12.5 17.5,12.5 Z" fill="#ffffff" stroke="#326ce5" stroke-width="1.2" stroke-linejoin="round"/>
+  <circle cx="17.5" cy="20.6" r="0.9" fill="#ffffff" stroke="#326ce5" stroke-width="0.8"/>
 </svg>

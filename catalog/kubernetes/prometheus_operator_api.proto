@@ -1,0 +1,584 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// Shared prometheus-operator API types (monitoring.coreos.com/v1) used across
+// the Planton kinds that mirror its custom resources: KubernetesServiceMonitor
+// and KubernetesPodMonitor. Translated from prometheus-operator v0.94.1 (the
+// operator kube-prometheus-stack chart 91.8.2 ships):
+//   - pkg/apis/monitoring/v1/types.go (SecretOrConfigMap, OAuth2, BasicAuth,
+//     SafeAuthorization, ProxyConfig, RelabelConfig, NamespaceSelector,
+//     AttachMetadata)
+//   - pkg/apis/monitoring/v1/tls_types.go (SafeTLSConfig, TLSConfig)
+//   - k8s.io/api core/v1 SecretKeySelector and ConfigMapKeySelector, and
+//     apimachinery's LabelSelector, as the custom resources embed them
+// Mirrors the sibling `gateway_api.proto` and `istio_api.proto` convention:
+// package dev.planton.kubernetes, messages prefixed
+// `KubernetesPrometheusOperatorApi*`, kept out of the kinds' own message
+// namespaces.
+//
+// Status types are intentionally excluded -- Planton captures deployment
+// outputs via each component's outputs.proto, not CRD status subresources.
+//
+// Modeling conventions:
+//   - Field JSON names are the upstream keys, so the custom resource's spec is
+//     the projected manifest verbatim (pkg/kubernetes/manifestprojection).
+//     protojson's default lowerCamelCase already equals every upstream key in
+//     this file.
+//   - Closed-set "enum-like" values are `string` with a closed rule, not proto
+//     enums. Where upstream accepts several spellings of one value (a relabel
+//     action's `replace` and `Replace`), every spelling it accepts is
+//     accepted.
+//   - Upstream pointer fields, where an explicit `false` or `""` differs from
+//     unset, are proto `optional`, so the explicit value reaches the object.
+//   - Integers follow the upstream range in a 32-bit type, never `int64`:
+//     protojson writes 64-bit integers as JSON strings, which the API server
+//     refuses for an integer field.
+//   - A Secret or ConfigMap a monitor reads is a reference: the selector's
+//     `name` is a StringValueOrRef whose default kind is KubernetesSecret or
+//     KubernetesConfigMap, so the resource graph shows the dependency and
+//     deploys the Secret first. The projection writes the resolved name, so
+//     the object is upstream's exactly. Upstream selectors carry no namespace:
+//     the Secret or ConfigMap always lives in the monitor's own namespace.
+//   - Checks the operator runs when it selects a monitor (and that make it
+//     silently skip the whole monitor when they fail) are validation rules
+//     here, so a mistake fails at authoring time instead of producing a
+//     monitor that scrapes nothing.
+//
+// This file is seeded with what the two monitor kinds consume and grown
+// just-in-time as further prometheus-operator kinds consume a shared type.
+
+// KubernetesPrometheusOperatorApiSecretKeySelector selects one key of a
+// Kubernetes Secret in the monitor's own namespace. Faithful to upstream
+// core/v1 SecretKeySelector.
+//
+// The operator reads the Secret when it builds the Prometheus configuration.
+// When the Secret or the key is missing and `optional` is false, the operator
+// skips the whole monitor (it scrapes nothing and only the operator's log says
+// why), so reference the KubernetesSecret that holds the value rather than
+// typing its name.
+message KubernetesPrometheusOperatorApiSecretKeySelector {
+  // Name of the Secret, in the monitor's namespace. Defaults to a
+  // KubernetesSecret foreign key (its secret_name output); pass the literal
+  // name with `value:` for a Secret Planton does not manage. Upstream allows an
+  // empty name for backwards compatibility only and calls it "almost
+  // certainly wrong", so a name is required here.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_name"
+  ];
+
+  // The key within the Secret's data whose value is used ("token",
+  // "password", "ca.crt").
+  string key = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 253
+    pattern: "^[-._a-zA-Z0-9]+$"
+  }];
+
+  // When true, a missing Secret or key is tolerated instead of making the
+  // operator skip the monitor. Leave it false for credentials: a scrape
+  // without its credentials fails anyway, and false makes the operator say so.
+  bool optional = 3;
+}
+
+// KubernetesPrometheusOperatorApiConfigMapKeySelector selects one key of a
+// Kubernetes ConfigMap in the monitor's own namespace. Faithful to upstream
+// core/v1 ConfigMapKeySelector. Used for non-secret material: a CA bundle, a
+// client certificate (never its key), an OAuth2 client id.
+message KubernetesPrometheusOperatorApiConfigMapKeySelector {
+  // Name of the ConfigMap, in the monitor's namespace. Defaults to a
+  // KubernetesConfigMap foreign key (its configmap_name output); pass the
+  // literal name with `value:` for a ConfigMap Planton does not manage.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesConfigMap,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.configmap_name"
+  ];
+
+  // The key within the ConfigMap's `data` whose value is used. Keys under
+  // `binaryData` are not read.
+  string key = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 253
+    pattern: "^[-._a-zA-Z0-9]+$"
+  }];
+
+  // When true, a missing ConfigMap or key is tolerated instead of making the
+  // operator skip the monitor.
+  bool optional = 3;
+}
+
+// KubernetesPrometheusOperatorApiSecretOrConfigMap takes a value from either a
+// Secret or a ConfigMap, never both. Faithful to upstream SecretOrConfigMap.
+// Use the Secret form for anything private and the ConfigMap form for public
+// material such as a CA bundle.
+message KubernetesPrometheusOperatorApiSecretOrConfigMap {
+  option (buf.validate.message).cel = {
+    id: "secret_or_config_map.one_source"
+    message: "Take the value from a Secret or from a ConfigMap, not both"
+    expression: "!(has(this.secret) && has(this.config_map))"
+  };
+
+  // The Secret key holding the value.
+  KubernetesPrometheusOperatorApiSecretKeySelector secret = 1;
+
+  // The ConfigMap key holding the value.
+  KubernetesPrometheusOperatorApiConfigMapKeySelector config_map = 2;
+}
+
+// KubernetesPrometheusOperatorApiSecretKeySelectorList is a list of Secret keys:
+// the value of one proxy CONNECT header (a header may repeat). It exists
+// because a proto map value cannot itself be a list; the map field carries
+// (dev.planton.shared.options.kubernetes_list_valued_map), so the object
+// receives the bare list under the header's name.
+message KubernetesPrometheusOperatorApiSecretKeySelectorList {
+  // The Secret keys whose values are sent, one header line each. Upstream
+  // refuses an empty list.
+  repeated KubernetesPrometheusOperatorApiSecretKeySelector values = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// KubernetesPrometheusOperatorApiStringList is a list of strings: the values of
+// one URL query parameter. It exists because a proto map value cannot itself
+// be a list; the map field carries
+// (dev.planton.shared.options.kubernetes_list_valued_map), so the object
+// receives the bare list under the parameter's name.
+message KubernetesPrometheusOperatorApiStringList {
+  // The parameter's values, each sent as its own `name=value` pair.
+  repeated string values = 1;
+}
+
+// KubernetesPrometheusOperatorApiSafeTlsConfig is the TLS client
+// configuration whose material comes only from Secrets and ConfigMaps.
+// Faithful to upstream SafeTLSConfig (a PodMonitor endpoint's tlsConfig, and
+// every OAuth2 token request's).
+//
+// A client certificate and its key come together: the operator skips a
+// monitor that sets one without the other.
+message KubernetesPrometheusOperatorApiSafeTlsConfig {
+  option (buf.validate.message).cel = {
+    id: "safe_tls_config.cert_with_key"
+    message: "A client certificate (cert) and its private key (key_secret) are set together or not at all"
+    expression: "has(this.cert) == has(this.key_secret)"
+  };
+  option (buf.validate.message).cel = {
+    id: "safe_tls_config.version_order"
+    message: "max_version must be at least min_version"
+    expression: "!has(this.min_version) || !has(this.max_version) || this.max_version >= this.min_version"
+  };
+
+  // The certificate authority used to verify the target's certificate. Unset,
+  // Prometheus trusts its container's system roots, which a cluster-internal
+  // CA is not among.
+  KubernetesPrometheusOperatorApiSecretOrConfigMap ca = 1;
+
+  // The client certificate presented for mutual TLS. Requires key_secret.
+  KubernetesPrometheusOperatorApiSecretOrConfigMap cert = 2;
+
+  // The Secret key holding the client certificate's private key. Requires
+  // cert.
+  KubernetesPrometheusOperatorApiSecretKeySelector key_secret = 3;
+
+  // The hostname the target's certificate must carry, when it differs from
+  // the address Prometheus dials (a pod IP never matches a certificate's
+  // names).
+  optional string server_name = 4;
+
+  // Skips verification of the target's certificate. The connection is still
+  // encrypted, but anyone on the path can impersonate the target; prefer `ca`
+  // with the issuing CA.
+  optional bool insecure_skip_verify = 5;
+
+  // The minimum TLS version accepted: "TLS10", "TLS11", "TLS12" or "TLS13".
+  // Requires Prometheus >= 2.35.
+  optional string min_version = 6 [(buf.validate.field).string = {
+    in: [
+      "TLS10",
+      "TLS11",
+      "TLS12",
+      "TLS13"
+    ]
+  }];
+
+  // The maximum TLS version accepted, at least min_version: "TLS10",
+  // "TLS11", "TLS12" or "TLS13". Requires Prometheus >= 2.41.
+  optional string max_version = 7 [(buf.validate.field).string = {
+    in: [
+      "TLS10",
+      "TLS11",
+      "TLS12",
+      "TLS13"
+    ]
+  }];
+}
+
+// KubernetesPrometheusOperatorApiTlsConfig is the TLS client configuration of
+// a ServiceMonitor endpoint: everything SafeTLSConfig carries, plus files read
+// from the Prometheus container's own filesystem. Faithful to upstream
+// TLSConfig (SafeTLSConfig inlined, plus TLSFilesConfig).
+//
+// Each part comes from one source: a CA from `ca` or `ca_file`, a client
+// certificate from `cert` or `cert_file`, its key from `key_secret` or
+// `key_file`. A client certificate always comes with its key.
+//
+// The file fields name paths inside the Prometheus pod, which only work when
+// that pod mounts them (the service-account token at
+// /var/run/secrets/kubernetes.io/serviceaccount/ca.crt is the common case).
+// A Prometheus whose `arbitraryFSAccessThroughSMs.deny` is set refuses every
+// ServiceMonitor that names a file, so prefer the Secret and ConfigMap forms.
+message KubernetesPrometheusOperatorApiTlsConfig {
+  option (buf.validate.message).cel = {
+    id: "tls_config.one_ca_source"
+    message: "Take the CA from ca or from ca_file, not both"
+    expression: "!(has(this.ca) && this.ca_file != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "tls_config.one_cert_source"
+    message: "Take the client certificate from cert or from cert_file, not both"
+    expression: "!(has(this.cert) && this.cert_file != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "tls_config.one_key_source"
+    message: "Take the client key from key_secret or from key_file, not both"
+    expression: "!(has(this.key_secret) && this.key_file != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "tls_config.cert_with_key"
+    message: "A client certificate (cert or cert_file) and its private key (key_secret or key_file) are set together or not at all"
+    expression: "(has(this.cert) || this.cert_file != '') == (has(this.key_secret) || this.key_file != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "tls_config.version_order"
+    message: "max_version must be at least min_version"
+    expression: "!has(this.min_version) || !has(this.max_version) || this.max_version >= this.min_version"
+  };
+
+  // The certificate authority used to verify the target's certificate, from a
+  // Secret or ConfigMap. Excludes ca_file.
+  KubernetesPrometheusOperatorApiSecretOrConfigMap ca = 1;
+
+  // The client certificate presented for mutual TLS, from a Secret or
+  // ConfigMap. Requires a key (key_secret or key_file); excludes cert_file.
+  KubernetesPrometheusOperatorApiSecretOrConfigMap cert = 2;
+
+  // The Secret key holding the client certificate's private key. Requires a
+  // certificate (cert or cert_file); excludes key_file.
+  KubernetesPrometheusOperatorApiSecretKeySelector key_secret = 3;
+
+  // The hostname the target's certificate must carry, when it differs from
+  // the address Prometheus dials.
+  optional string server_name = 4;
+
+  // Skips verification of the target's certificate. Prefer a CA.
+  optional bool insecure_skip_verify = 5;
+
+  // The minimum TLS version accepted: "TLS10", "TLS11", "TLS12" or "TLS13".
+  // Requires Prometheus >= 2.35.
+  optional string min_version = 6 [(buf.validate.field).string = {
+    in: [
+      "TLS10",
+      "TLS11",
+      "TLS12",
+      "TLS13"
+    ]
+  }];
+
+  // The maximum TLS version accepted, at least min_version. Requires
+  // Prometheus >= 2.41.
+  optional string max_version = 7 [(buf.validate.field).string = {
+    in: [
+      "TLS10",
+      "TLS11",
+      "TLS12",
+      "TLS13"
+    ]
+  }];
+
+  // Path of a CA certificate file inside the Prometheus container. Excludes
+  // ca. The in-cluster API server's CA is
+  // /var/run/secrets/kubernetes.io/serviceaccount/ca.crt.
+  string ca_file = 8;
+
+  // Path of a client certificate file inside the Prometheus container.
+  // Requires a key; excludes cert.
+  string cert_file = 9;
+
+  // Path of the client certificate's private key file inside the Prometheus
+  // container. Requires a certificate; excludes key_secret.
+  string key_file = 10;
+}
+
+// KubernetesPrometheusOperatorApiSafeAuthorization sets the Authorization
+// header Prometheus sends with every scrape: `<type> <credentials>`. Faithful
+// to upstream SafeAuthorization. The recommended way to send a bearer token
+// (it replaces the deprecated bearer_token_secret).
+message KubernetesPrometheusOperatorApiSafeAuthorization {
+  // The authentication scheme written before the credentials,
+  // case-insensitive. Unset, Prometheus sends "Bearer". "Basic" is refused
+  // upstream: use basic_auth instead.
+  optional string type = 1 [(buf.validate.field).cel = {
+    id: "safe_authorization.type_not_basic"
+    message: "Basic authentication is basic_auth, not an authorization type"
+    expression: "!this.matches('^(?i)basic$')"
+  }];
+
+  // The Secret key holding the credentials (the token itself). Required: the
+  // operator skips a monitor whose authorization has none.
+  KubernetesPrometheusOperatorApiSecretKeySelector credentials = 2 [(buf.validate.field).required = true];
+}
+
+// KubernetesPrometheusOperatorApiBasicAuth sends HTTP Basic authentication,
+// each half read from a Secret key. Faithful to upstream BasicAuth.
+message KubernetesPrometheusOperatorApiBasicAuth {
+  // The Secret key holding the username.
+  KubernetesPrometheusOperatorApiSecretKeySelector username = 1;
+
+  // The Secret key holding the password.
+  KubernetesPrometheusOperatorApiSecretKeySelector password = 2;
+}
+
+// KubernetesPrometheusOperatorApiOAuth2 makes Prometheus fetch an access token
+// with the OAuth2 client-credentials grant and send it as a bearer token on
+// every scrape. Faithful to upstream OAuth2 (ProxyConfig inlined). Requires
+// Prometheus >= 2.27.
+message KubernetesPrometheusOperatorApiOAuth2 {
+  option (buf.validate.message).cel = {
+    id: "oauth2.client_id_source"
+    message: "client_id takes its value from a Secret or a ConfigMap"
+    expression: "has(this.client_id.secret) || has(this.client_id.config_map)"
+  };
+  option (buf.validate.message).cel = {
+    id: "oauth2.proxy_connect_header_needs_proxy"
+    message: "proxy_connect_header needs proxy_url or proxy_from_environment"
+    expression: "size(this.proxy_connect_header) == 0 || (has(this.proxy_url) && this.proxy_url != '') || (has(this.proxy_from_environment) && this.proxy_from_environment)"
+  };
+  option (buf.validate.message).cel = {
+    id: "oauth2.proxy_from_environment_alone"
+    message: "proxy_from_environment takes the proxy from the environment, so proxy_url and no_proxy must be unset"
+    expression: "!(has(this.proxy_from_environment) && this.proxy_from_environment) || ((!has(this.proxy_url) || this.proxy_url == '') && (!has(this.no_proxy) || this.no_proxy == ''))"
+  };
+  option (buf.validate.message).cel = {
+    id: "oauth2.no_proxy_needs_proxy_url"
+    message: "no_proxy needs proxy_url"
+    expression: "!has(this.no_proxy) || this.no_proxy == '' || (has(this.proxy_url) && this.proxy_url != '')"
+  };
+
+  // The OAuth2 client's id, from a Secret or (as it is not secret) a
+  // ConfigMap.
+  KubernetesPrometheusOperatorApiSecretOrConfigMap client_id = 1 [(buf.validate.field).required = true];
+
+  // The Secret key holding the OAuth2 client's secret.
+  KubernetesPrometheusOperatorApiSecretKeySelector client_secret = 2 [(buf.validate.field).required = true];
+
+  // The token endpoint, "https://<issuer>/oauth2/token".
+  string token_url = 3 [(buf.validate.field).string = {
+    min_len: 1
+    pattern: "^(http|https)://.+$"
+  }];
+
+  // The scopes requested with the token.
+  repeated string scopes = 4;
+
+  // Extra form parameters sent to the token endpoint (an `audience`, a
+  // `resource`).
+  map<string, string> endpoint_params = 5;
+
+  // TLS for the connection to the token endpoint (not to the target).
+  // Requires Prometheus >= 2.43.
+  KubernetesPrometheusOperatorApiSafeTlsConfig tls_config = 6;
+
+  // The proxy that token requests go through, "http://", "https://" or
+  // "socks5://". Excludes proxy_from_environment. Requires Prometheus >= 2.43.
+  optional string proxy_url = 7 [(buf.validate.field).string.pattern = "^(http|https|socks5)://.+$"];
+
+  // Comma-separated hosts, domains, IPs or CIDRs (ports allowed) that bypass
+  // proxy_url. Requires proxy_url. Requires Prometheus >= 2.43.
+  optional string no_proxy = 8;
+
+  // Take the proxy from the Prometheus container's HTTP_PROXY, HTTPS_PROXY and
+  // NO_PROXY environment variables. Excludes proxy_url and no_proxy. Requires
+  // Prometheus >= 2.43.
+  optional bool proxy_from_environment = 9;
+
+  // Headers sent to the proxy on CONNECT, each value read from Secret keys
+  // (a header may repeat): `{Proxy-Authorization: {values: [{name: ...,
+  // key: ...}]}}` in the manifest, `{Proxy-Authorization: [...]}` on the
+  // object. Requires proxy_url or proxy_from_environment. Requires Prometheus
+  // >= 2.43.
+  map<string, KubernetesPrometheusOperatorApiSecretKeySelectorList> proxy_connect_header = 10 [(dev.planton.shared.options.kubernetes_list_valued_map) = true];
+}
+
+// KubernetesPrometheusOperatorApiRelabelConfig is one Prometheus relabeling
+// step. Faithful to upstream RelabelConfig; see
+// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config.
+//
+// A step reads `source_labels`, joins their values with `separator`, matches
+// the result against `regex`, and then does `action`. The rules below are the
+// ones the operator enforces when it selects the monitor -- a step that breaks
+// one makes the operator skip the whole monitor.
+message KubernetesPrometheusOperatorApiRelabelConfig {
+  option (buf.validate.message).cel = {
+    id: "relabel_config.target_label_required"
+    message: "replace (the default action), hashmod, lowercase, uppercase, keepequal and dropequal write a label, so they need target_label"
+    expression: "!(this.action == '' || this.action.matches('^(?i)(replace|hashmod|lowercase|uppercase|keepequal|dropequal)$')) || this.target_label != ''"
+  };
+  option (buf.validate.message).cel = {
+    id: "relabel_config.hashmod_modulus"
+    message: "hashmod needs a non-zero modulus"
+    expression: "!this.action.matches('^(?i)hashmod$') || (has(this.modulus) && this.modulus > 0u)"
+  };
+  option (buf.validate.message).cel = {
+    id: "relabel_config.no_replacement"
+    message: "lowercase, uppercase, keepequal and dropequal take no replacement"
+    expression: "!this.action.matches('^(?i)(lowercase|uppercase|keepequal|dropequal)$') || !has(this.replacement) || this.replacement == '$1'"
+  };
+  option (buf.validate.message).cel = {
+    id: "relabel_config.equal_actions_fields"
+    message: "keepequal and dropequal take only source_labels and target_label"
+    expression: "!this.action.matches('^(?i)(keepequal|dropequal)$') || ((this.regex == '' || this.regex == '(.*)') && (!has(this.modulus) || this.modulus == 0u) && (!has(this.separator) || this.separator == ';'))"
+  };
+  option (buf.validate.message).cel = {
+    id: "relabel_config.label_drop_keep_fields"
+    message: "labeldrop and labelkeep take only regex"
+    expression: "!this.action.matches('^(?i)(labeldrop|labelkeep)$') || (size(this.source_labels) == 0 && this.target_label == '' && (!has(this.modulus) || this.modulus == 0u) && (!has(this.separator) || this.separator == ';') && (!has(this.replacement) || this.replacement == '$1'))"
+  };
+
+  // The labels whose values are joined (with `separator`) and matched against
+  // `regex`. Target-side relabelings read discovery labels such as
+  // `__meta_kubernetes_pod_label_app`; metric relabelings read the scraped
+  // series' labels, including `__name__`.
+  repeated string source_labels = 1;
+
+  // The string joining the source labels' values. Unset, ";".
+  optional string separator = 2;
+
+  // The label a replace, hashmod, lowercase, uppercase, keepequal or dropequal
+  // step writes or compares. Regex capture groups are available ("${1}").
+  string target_label = 3;
+
+  // The RE2 expression the joined source value must match (anchored at both
+  // ends). Empty, "(.*)".
+  string regex = 4;
+
+  // The modulus a hashmod step takes of the hash of the source value; with a
+  // `keep` step on the result it shards targets across Prometheus replicas.
+  // hashmod only, and required there.
+  optional uint32 modulus = 5;
+
+  // The value a replace step writes, with regex capture groups ("$1",
+  // "${1}-suffix"); a labelmap step's label-name template. Unset, "$1".
+  optional string replacement = 6;
+
+  // What the step does, case-insensitive: "replace" (the default), "keep",
+  // "drop", "hashmod", "labelmap", "labeldrop", "labelkeep", "lowercase",
+  // "uppercase" (Prometheus >= 2.36), "keepequal" or "dropequal" (Prometheus
+  // >= 2.41). keep and drop filter targets or series; labeldrop and labelkeep
+  // filter label names by regex.
+  string action = 7 [(buf.validate.field).string = {
+    in: [
+      "",
+      "replace",
+      "Replace",
+      "keep",
+      "Keep",
+      "drop",
+      "Drop",
+      "hashmod",
+      "HashMod",
+      "labelmap",
+      "LabelMap",
+      "labeldrop",
+      "LabelDrop",
+      "labelkeep",
+      "LabelKeep",
+      "lowercase",
+      "Lowercase",
+      "uppercase",
+      "Uppercase",
+      "keepequal",
+      "KeepEqual",
+      "dropequal",
+      "DropEqual"
+    ]
+  }];
+}
+
+// KubernetesPrometheusOperatorApiNamespaceSelector chooses the namespaces a
+// monitor discovers its targets in. Faithful to upstream NamespaceSelector.
+// Unset (or empty), only the monitor's own namespace is searched.
+message KubernetesPrometheusOperatorApiNamespaceSelector {
+  // Search every namespace. Takes precedence over match_names.
+  bool any = 1;
+
+  // Search exactly these namespaces. Each is typically a reference to a
+  // KubernetesNamespace resource's `spec.name`; pass a literal with `value:`
+  // for a namespace Planton does not manage.
+  //
+  // containment_exempt: these are the namespaces the monitor WATCHES, not the
+  // namespace it lives in (that is the kind's own `namespace`), so a diagram
+  // never nests the monitor inside them.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef match_names = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name",
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
+}
+
+// KubernetesPrometheusOperatorApiLabelSelector selects Kubernetes objects by
+// their labels. Faithful to upstream apimachinery LabelSelector. An empty
+// selector (`{}`) selects every object of the type in the searched
+// namespaces; all requirements are ANDed.
+//
+// Infra-chart composability: the selected Services or pods are not a typed
+// cross-resource reference; Prometheus matches them by label at discovery
+// time, so no dependency edge is created. Match a workload's labels as the
+// workload kind sets them.
+message KubernetesPrometheusOperatorApiLabelSelector {
+  // Labels an object must carry with exactly these values.
+  map<string, string> match_labels = 1;
+
+  // Set-based requirements on an object's labels.
+  repeated KubernetesPrometheusOperatorApiLabelSelectorRequirement match_expressions = 2;
+}
+
+// KubernetesPrometheusOperatorApiLabelSelectorRequirement is one set-based
+// label requirement. Faithful to upstream LabelSelectorRequirement.
+message KubernetesPrometheusOperatorApiLabelSelectorRequirement {
+  option (buf.validate.message).cel = {
+    id: "label_selector_requirement.values_by_operator"
+    message: "In and NotIn need at least one value; Exists and DoesNotExist take none"
+    expression: "this.operator in ['In', 'NotIn'] ? size(this.values) > 0 : size(this.values) == 0"
+  };
+
+  // The label key the requirement applies to.
+  string key = 1 [(buf.validate.field).string.min_len = 1];
+
+  // How the key relates to the values: "In", "NotIn", "Exists" or
+  // "DoesNotExist".
+  string operator = 2 [(buf.validate.field).string = {
+    in: [
+      "In",
+      "NotIn",
+      "Exists",
+      "DoesNotExist"
+    ]
+  }];
+
+  // The values for In and NotIn; empty for Exists and DoesNotExist.
+  repeated string values = 3;
+}
+
+// KubernetesPrometheusOperatorApiAttachMetadata attaches metadata of related
+// objects to discovered targets. Faithful to upstream AttachMetadata. Requires
+// Prometheus >= 2.37.
+message KubernetesPrometheusOperatorApiAttachMetadata {
+  // Attach the node's metadata, as `__meta_kubernetes_node_*` labels that
+  // relabelings can copy onto the series (the node's zone or instance type).
+  // Prometheus's service account needs list and watch on Nodes.
+  optional bool node = 1;
+}

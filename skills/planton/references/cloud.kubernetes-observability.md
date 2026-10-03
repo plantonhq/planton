@@ -93,6 +93,24 @@ Ask these before composing, in the person's words, not the chart's:
   for a recorded series answers. One malformed rule makes the operator drop
   the whole object while the apply still succeeds, so a green deploy is not
   the proof.
+- What the agent scrapes beyond the cluster itself is a
+  `KubernetesServiceMonitor` (the workload's Service names its metrics
+  port) or a `KubernetesPodMonitor` (pods no Service exposes: a database
+  operator's instances, a DaemonSet's exporters, or replicas that must be
+  seen while unready). Put it beside the workload. Its `selector` matches
+  the Service's or the pods' labels, so read them off the cluster before
+  writing it. Point every credential (a token, basic auth, a CA) at a
+  `KubernetesSecret` or `KubernetesConfigMap` by reference, in the
+  monitor's namespace. Set `job_label` to a label whose value is the same
+  in every environment, and a `sample_limit`.
+- After applying a monitor, prove it scrapes: the Prometheus targets API
+  (`/api/v1/targets`) lists a target of the job
+  `serviceMonitor/<namespace>/<name>/<n>` (or `podMonitor/...`) with health
+  `up`. The operator skips a whole monitor whose Secret is missing or whose
+  endpoint breaks one of its rules, and nothing but its own log says so,
+  so here too a green deploy is not the proof. A `target_port` written as
+  a number reaches the object as a number; a port name must be declared on
+  the Service or the pod, or no target appears.
 - Typed Discord delivery needs the kind's default chart (88 or later); if
   the person pins an older `chart_version`, Discord refuses to load and
   Alertmanager never starts. When Alertmanager is missing, read the
@@ -145,7 +163,12 @@ Ask these before composing, in the person's words, not the chart's:
   (batching there and never in a `batch` processor, capped in bytes
   below Loki's burst, blocking when full) is the difference between a
   restart or a long Loki outage losing lines and losing none. Turn on
-  the collector's `service_monitor_enabled` so its queue is watched.
+  the collector's `service_monitor_enabled` so its queue is watched. Keep
+  its toleration of every `NoSchedule` taint: a cluster with a tainted
+  pool (builds, GPUs) otherwise never ships those nodes' logs, and the
+  daemonset still reads complete. To see coverage, compare the cluster's
+  nodes (`kube_node_info`) with the collector's ready pods; the
+  daemonset's own desired count never includes a node it can't tolerate.
 - **A `$var/` reference works in a plain-string field** (a Grafana
   `client_id`, for one): it resolves at deploy like any other.
 - **Dashboards are files, not clicks.** Ship each as a
@@ -232,6 +255,19 @@ to decide with the person, and what to watch for:
   `ingestion_burst_size_mb` above the collectors' batch cap (24 against
   4 MiB): Loki refuses a push larger than its burst every time, and a
   collector retrying forever then stalls that node's logs for good.
+- **Add a cluster to a running hub in order:**
+  1. Mint its token.
+  2. Add its key and principal to the door and re-apply the hub.
+  3. Write the token where its agent reads it.
+  4. Install the agent.
+  5. Only after the agent's first heartbeat, add the cluster to whatever
+     watches heartbeats.
+
+  Take a cluster away (or rebuild it) in reverse: out of the heartbeat
+  list, then its agent, then the cluster. Write that order into the
+  cluster's own rebuild runbook, so a rebuild brings monitoring back
+  instead of dropping it. A rebuilt cluster with the same name keeps
+  its token.
 - **Expect real alerts in the first hour** of a cluster that never had
   in-cluster alerting. Read them with the person and list their causes;
   never silence one by hand.

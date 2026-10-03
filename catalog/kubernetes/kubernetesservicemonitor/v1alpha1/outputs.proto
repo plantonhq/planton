@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1;
+
+// KubernetesServiceMonitorStackOutputs captures observable outputs after the
+// ServiceMonitor is created on the target cluster. Which Prometheus instances
+// scrape through it is decided by their selectors, and which targets it yields
+// by the Services alive at discovery time, so only the resource identity is
+// exported.
+message KubernetesServiceMonitorStackOutputs {
+  // Name of the created ServiceMonitor (equals metadata.name).
+  string service_monitor_name = 1;
+
+  // Namespace the ServiceMonitor was created in (the resolved spec.namespace).
+  string namespace = 2;
+}

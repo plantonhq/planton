@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1;
+
+import "catalog/kubernetes/kubernetesservicemonitor/v1alpha1/api.proto";
+import "catalog/kubernetes/provider.proto";
+
+// KubernetesServiceMonitorStackInput provides the inputs for creating the
+// ServiceMonitor on a Kubernetes cluster.
+message KubernetesServiceMonitorStackInput {
+  // target cloud-resource
+  KubernetesServiceMonitor target = 1;
+  // provider-config
+  dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;
+}

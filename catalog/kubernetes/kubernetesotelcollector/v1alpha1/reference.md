@@ -710,8 +710,12 @@ Node selector for the collector pods.
 
 `[]WorkloadToleration`
 
-Tolerations for the collector pods. Daemonset log collectors
-typically tolerate control-plane taints to cover every node.
+Tolerations for the collector pods. A daemonset that reads every
+node's logs tolerates every NoSchedule taint (`operator: Exists`,
+`effect: NoSchedule`, no key): control-plane nodes and tainted pools
+alike (build or GPU pools keep other pods off with a taint), so no
+node's logs are skipped. A control-plane-only toleration silently
+misses every other tainted node.
 
 ### spec.scheduling.tolerations[].key
 

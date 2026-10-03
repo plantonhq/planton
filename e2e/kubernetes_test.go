@@ -442,6 +442,14 @@ func TestKubernetesPrometheusRule_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesprometheusrule", "pulumi")
 }
 
+func TestKubernetesServiceMonitor_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesservicemonitor", "pulumi")
+}
+
+func TestKubernetesPodMonitor_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetespodmonitor", "pulumi")
+}
+
 func TestKubernetesOpenBao_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesopenbao", "pulumi")
 }
@@ -562,6 +570,14 @@ func TestKubernetesKubePrometheusStack_Terraform(t *testing.T) {
 
 func TestKubernetesPrometheusRule_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "kubernetesprometheusrule", "terraform")
+}
+
+func TestKubernetesServiceMonitor_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetesservicemonitor", "terraform")
+}
+
+func TestKubernetesPodMonitor_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "kubernetespodmonitor", "terraform")
 }
 
 func TestKubernetesArgoCD_Terraform(t *testing.T) {

@@ -1,0 +1,32 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: kubernetesservicemonitor
+spec:
+  # One kubectl_manifest applying the ServiceMonitor. The composed import ID
+  # is apiVersion//kind//name//namespace — apiVersion and kind are constants
+  # of this module (it renders exactly one GVK), declared as literals.
+  values:
+    - name: api_version
+      derivations:
+        - literal: monitoring.coreos.com/v1
+      where_to_find: >-
+        Always "monitoring.coreos.com/v1" — the module pins the served version.
+    - name: kind
+      derivations:
+        - literal: ServiceMonitor
+      where_to_find: Always "ServiceMonitor" — the CR kind this module applies.
+    - name: name
+      derivations:
+        - from_metadata_name: true
+        - from_stack_output: service_monitor_name
+      where_to_find: >-
+        The ServiceMonitor's metadata.name (equals the Planton resource name) —
+        `kubectl get servicemonitors -A` (NAME column).
+    - name: namespace
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        The namespace the resource lives in — `kubectl get servicemonitors -A`
+        (NAMESPACE column).

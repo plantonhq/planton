@@ -511,6 +511,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesPlantonPlatform | `spec.namespace` | `spec.name` |
 | KubernetesPlantonRunner | `spec.namespace` | `spec.name` |
 | KubernetesPodDisruptionBudget | `spec.namespace` | `spec.name` |
+| KubernetesPodMonitor | `spec.namespace` | `spec.name` |
+| KubernetesPodMonitor | `spec.namespaceSelector.matchNames` | `spec.name` |
 | KubernetesPostgres | `spec.namespace` | `spec.name` |
 | KubernetesPrometheusRule | `spec.namespace` | `spec.name` |
 | KubernetesQdrant | `spec.namespace` | `spec.name` |
@@ -527,6 +529,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesService | `spec.namespace` | `spec.name` |
 | KubernetesServiceAccount | `spec.namespace` | `spec.name` |
 | KubernetesServiceEntry | `spec.namespace` | `spec.name` |
+| KubernetesServiceMonitor | `spec.namespace` | `spec.name` |
+| KubernetesServiceMonitor | `spec.namespaceSelector.matchNames` | `spec.name` |
 | KubernetesSignoz | `spec.namespace` | `spec.name` |
 | KubernetesSolr | `spec.namespace` | `spec.name` |
 | KubernetesSolrOperator | `spec.namespace` | `spec.name` |

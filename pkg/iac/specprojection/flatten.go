@@ -2,6 +2,7 @@ package specprojection
 
 import (
 	"fmt"
+	"strconv"
 
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -35,6 +36,12 @@ type flattenOpts struct {
 //   - Singular message field: {"namespace": {"value": "ns"}} -> {"namespace": "ns"}
 //   - Map with message values: {"variables": {"K": {"value": "v"}}} -> {"variables": {"K": "v"}}
 //   - Repeated message field: [{"value": "a"}, {"value": "b"}] -> ["a", "b"]
+//
+// Two field markers reshape a value for a Kubernetes custom resource whose
+// upstream key has no direct proto form: a `kubernetes_int_or_string` string
+// writes an all-digit value as a number ("8080" -> 8080), and a
+// `kubernetes_list_valued_map` map writes each wrapper value as its bare list
+// ({"k": {"values": ["a"]}} -> {"k": ["a"]}).
 //
 // After processing each field, if the value remains a nested map (not flattened
 // and not skipped), the function recurses into it with the corresponding nested
@@ -76,6 +83,11 @@ func flattenWithOpts(data map[string]interface{}, md protoreflect.MessageDescrip
 				data[snakeKey] = val
 			}
 			activeKey = snakeKey
+		}
+
+		if IsKubernetesIntOrStringField(fd) {
+			data[activeKey] = intOrString(val)
+			continue
 		}
 
 		if fd.Kind() != protoreflect.MessageKind {
@@ -136,6 +148,11 @@ func flattenMapField(data map[string]interface{}, jsonKey string, fd protoreflec
 
 	valueDesc := fd.MapValue()
 	if valueDesc.Kind() != protoreflect.MessageKind {
+		return
+	}
+
+	if IsKubernetesListValuedMapField(fd) {
+		unwrapListValues(mapObj, valueDesc.Message(), rules, opts)
 		return
 	}
 
@@ -200,6 +217,54 @@ func flattenListField(data map[string]interface{}, jsonKey string, fd protorefle
 		if nested, ok := elem.(map[string]interface{}); ok {
 			flattenWithOpts(nested, fd.Message(), rules, opts)
 		}
+	}
+}
+
+// intOrString writes a Kubernetes IntOrString the way the API server reads
+// one: an all-digit string becomes a number (a JSON number, as protojson
+// writes every other integer the projection carries), anything else stays a
+// string. A Kubernetes port name always contains a letter, so the split never
+// turns a name into a number.
+func intOrString(val interface{}) interface{} {
+	s, ok := val.(string)
+	if !ok || s == "" {
+		return val
+	}
+	for _, r := range s {
+		if r < '0' || r > '9' {
+			return val
+		}
+	}
+	// 53 bits: every integer up to this bound is exact as a JSON number.
+	n, err := strconv.ParseUint(s, 10, 53)
+	if err != nil {
+		return val
+	}
+	return float64(n)
+}
+
+// unwrapListValues replaces each value of a list-valued map -- a wrapper
+// message around one repeated field -- with that field's bare list, the
+// custom resource's own shape, and projects the list's elements by their own
+// type's rules. An entry whose wrapper holds no elements becomes an empty
+// list, because protojson omits the empty repeated field inside it.
+func unwrapListValues(mapObj map[string]interface{}, wrapper protoreflect.MessageDescriptor, rules map[string]TypeRule, opts flattenOpts) {
+	listField := wrapper.Fields().Get(0)
+	listKey := jsonFieldName(listField)
+	for k, v := range mapObj {
+		items := []interface{}{}
+		if w, ok := v.(map[string]interface{}); ok {
+			if arr, ok := w[listKey].([]interface{}); ok {
+				items = arr
+			}
+		}
+		if listField.Kind() == protoreflect.MessageKind {
+			holder := map[string]interface{}{listKey: items}
+			flattenListField(holder, listKey, listField, items, rules, opts)
+			mapObj[k] = holder[listKey]
+			continue
+		}
+		mapObj[k] = items
 	}
 }
 

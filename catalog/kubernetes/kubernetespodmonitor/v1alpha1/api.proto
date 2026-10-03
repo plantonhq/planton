@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetespodmonitor.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/kubernetespodmonitor/v1alpha1/outputs.proto";
+import "catalog/kubernetes/kubernetespodmonitor/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// KubernetesPodMonitor is a prometheus-operator PodMonitor: a namespaced
+// object telling every Prometheus that selects it which pods to scrape for
+// metrics directly, and how.
+message KubernetesPodMonitor {
+  // api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1alpha1'];
+
+  // resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'KubernetesPodMonitor'];
+
+  // metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec
+  KubernetesPodMonitorSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status
+  KubernetesPodMonitorStatus status = 5;
+}
+
+// KubernetesPodMonitorStatus holds the deployment status and outputs.
+message KubernetesPodMonitorStatus {
+  // stack-outputs
+  KubernetesPodMonitorStackOutputs outputs = 1;
+}

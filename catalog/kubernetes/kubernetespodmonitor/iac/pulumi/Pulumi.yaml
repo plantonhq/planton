@@ -1,0 +1,4 @@
+name: kubernetes-pod-monitor
+runtime:
+  name: go
+description: Pulumi module that provisions a prometheus-operator PodMonitor from a KubernetesPodMonitor manifest.

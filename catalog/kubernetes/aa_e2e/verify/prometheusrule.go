@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"time"
 
@@ -89,7 +90,7 @@ func (v *PrometheusRuleVerifier) proveDeclaredObject(ctx context.Context, kubeco
 		return errors.Errorf("PROJECTION: the live spec differs from the declared one\nlive:     %s\ndeclared: %s", liveSpec, want)
 	}
 
-	liveLabels, err := liveStringMap(ctx, kubeconfig, v.Name, v.Namespace, "{.metadata.labels}")
+	liveLabels, err := liveStringMap(ctx, kubeconfig, prometheusRuleResource, v.Name, v.Namespace, "{.metadata.labels}")
 	if err != nil {
 		return err
 	}
@@ -110,7 +111,7 @@ func (v *PrometheusRuleVerifier) proveDeclaredObject(ctx context.Context, kubeco
 	}
 
 	if wantAnnotations := stringMapOf(declared["annotations"]); len(wantAnnotations) > 0 {
-		liveAnnotations, err := liveStringMap(ctx, kubeconfig, v.Name, v.Namespace, "{.metadata.annotations}")
+		liveAnnotations, err := liveStringMap(ctx, kubeconfig, prometheusRuleResource, v.Name, v.Namespace, "{.metadata.annotations}")
 		if err != nil {
 			return err
 		}
@@ -128,7 +129,7 @@ func (v *PrometheusRuleVerifier) proveDeclaredObject(ctx context.Context, kubeco
 // always-true alert firing with its group and rule labels, and the recording
 // rule's series answering.
 func (v *PrometheusRuleVerifier) proveEvaluation(ctx context.Context, kubeconfig string) error {
-	stack, err := v.prerequisiteStack()
+	stack, err := prometheusStackPrerequisite()
 	if err != nil {
 		return err
 	}
@@ -192,7 +193,7 @@ func (v *PrometheusRuleVerifier) proveFence(ctx context.Context, kubeconfig stri
 	}
 	fmt.Printf("  [verify] FENCE: the fenced prometheus loads the labelled rule and not its unlabelled twin\n")
 
-	stack, err := v.prerequisiteStack()
+	stack, err := prometheusStackPrerequisite()
 	if err != nil {
 		return err
 	}
@@ -214,12 +215,15 @@ func (v *PrometheusRuleVerifier) proveFence(ctx context.Context, kubeconfig stri
 	return nil
 }
 
-// prerequisiteStack reads the KubernetesKubePrometheusStack the harness
-// installs as this kind's registry prerequisite, from the same install
+// prometheusStackPrerequisite reads the KubernetesKubePrometheusStack the
+// harness installs as a kind's registry prerequisite, from the same install
 // manifest the harness uses (its prerequisite.yaml, else its minimal
-// scenario).
-func (v *PrometheusRuleVerifier) prerequisiteStack() (*ManifestInfo, error) {
-	stackE2E := filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir(filepath.Dir(v.ManifestPath)))), "kuberneteskubeprometheusstack", "e2e")
+// scenario). The stack's e2e folder is found beside this verifier in the
+// source tree: a scenario whose references the harness resolved reaches the
+// verifier as a copy outside the tree, so the scenario's path is no guide.
+func prometheusStackPrerequisite() (*ManifestInfo, error) {
+	_, self, _, _ := runtime.Caller(0)
+	stackE2E := filepath.Join(filepath.Dir(self), "..", "..", "kuberneteskubeprometheusstack", "e2e")
 	for _, candidate := range []string{"prerequisite.yaml", filepath.Join("scenarios", "minimal.yaml")} {
 		if info, err := ParseManifestInfo(filepath.Join(stackE2E, candidate)); err == nil {
 			return info, nil
@@ -295,8 +299,8 @@ func ruleGroupNames(body string) map[string]bool {
 	return names
 }
 
-func liveStringMap(ctx context.Context, kubeconfig, name, namespace, jsonPath string) (map[string]string, error) {
-	raw, err := kubectlGetJSONPath(ctx, kubeconfig, prometheusRuleResource, name, namespace, jsonPath)
+func liveStringMap(ctx context.Context, kubeconfig, resource, name, namespace, jsonPath string) (map[string]string, error) {
+	raw, err := kubectlGetJSONPath(ctx, kubeconfig, resource, name, namespace, jsonPath)
 	if err != nil {
 		return nil, errors.Wrapf(err, "reading %s", jsonPath)
 	}

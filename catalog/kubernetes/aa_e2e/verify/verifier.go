@@ -745,6 +745,31 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			Fence:        strings.Contains(manifestPath, "behavioral-fence"),
 		}, nil
 
+	// A ServiceMonitor or PodMonitor: the live object is exactly the
+	// manifest's projection, references resolved (the same check for both
+	// engines, which build it from one projection). The behavioral-scrape
+	// scenario proves the prerequisite stack's Prometheus discovered and
+	// scraped the monitor's targets, with the declared params on the scrape
+	// URL and the relabeled marker on the series.
+	case "kubernetesservicemonitor":
+		return &MonitorVerifier{
+			Resource:     "servicemonitors.monitoring.coreos.com",
+			JobPrefix:    "serviceMonitor",
+			Namespace:    info.Namespace,
+			Name:         info.Name,
+			ManifestPath: manifestPath,
+			Scrape:       strings.Contains(manifestPath, "behavioral-scrape"),
+		}, nil
+	case "kubernetespodmonitor":
+		return &MonitorVerifier{
+			Resource:     "podmonitors.monitoring.coreos.com",
+			JobPrefix:    "podMonitor",
+			Namespace:    info.Namespace,
+			Name:         info.Name,
+			ManifestPath: manifestPath,
+			Scrape:       strings.Contains(manifestPath, "behavioral-scrape"),
+		}, nil
+
 	// A standalone Grafana: Deployment available, /api/health reporting
 	// a working database, an AUTHENTICATED API round-trip as the admin
 	// credentials (read from the Secret — the credential-wiring proof),

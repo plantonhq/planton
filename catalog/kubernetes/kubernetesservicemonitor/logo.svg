@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <desc>Planton-drawn glyph: a service monitor -- a Service's endpoints with the metrics pulse read from them</desc>
+  <rect x="3" y="3" width="18" height="18" rx="3" fill="#326ce5"/>
+  <path d="M5.5,11 H8.5 L10,7.5 L12.5,14 L14,10 L15,11 H18.5" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="7.5" cy="17" r="1.4" fill="#74a5f4"/>
+  <circle cx="12" cy="17" r="1.4" fill="#74a5f4"/>
+  <circle cx="16.5" cy="17" r="1.4" fill="#74a5f4"/>
+</svg>

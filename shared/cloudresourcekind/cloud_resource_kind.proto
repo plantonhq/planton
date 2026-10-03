@@ -6684,7 +6684,7 @@ enum CloudResourceKind {
     id_prefix: "k8svel"
     service_group: kubernetes_operators_controllers
   }];
-  // 4070–4089: Kubernetes observability
+  // 4070–4079: Kubernetes observability
   KubernetesKubePrometheusStack = 4070 [(kind_meta) = {
     provider: kubernetes
     version: "v1alpha1"
@@ -6734,6 +6734,34 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "k8sotelcol"
     prerequisites: [KubernetesOtelOperator]
+    service_group: kubernetes_operators_controllers
+  }];
+  // KubernetesKubePrometheusStack is a prerequisite because it installs the
+  // monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the
+  // Prometheus that scrapes through it.
+  KubernetesServiceMonitor = 4077 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8ssmon"
+    prerequisites: [KubernetesKubePrometheusStack]
+    kubernetes_manifest_projection: {
+      api_version: "monitoring.coreos.com/v1"
+      kind: "ServiceMonitor"
+    }
+    service_group: kubernetes_operators_controllers
+  }];
+  // KubernetesKubePrometheusStack is a prerequisite because it installs the
+  // monitoring.coreos.com CRDs the PodMonitor is an instance of, and the
+  // Prometheus that scrapes through it.
+  KubernetesPodMonitor = 4078 [(kind_meta) = {
+    provider: kubernetes
+    version: "v1alpha1"
+    id_prefix: "k8spmon"
+    prerequisites: [KubernetesKubePrometheusStack]
+    kubernetes_manifest_projection: {
+      api_version: "monitoring.coreos.com/v1"
+      kind: "PodMonitor"
+    }
     service_group: kubernetes_operators_controllers
   }];
   // KubernetesKubePrometheusStack is a prerequisite because it installs the

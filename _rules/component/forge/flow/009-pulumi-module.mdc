@@ -57,7 +57,10 @@ KUBERNETES MANIFEST PROJECTION KINDS -- ONE PROJECTION, NO HAND MAPPING
   object's own labels and annotations, and the planton.ai/* identity labels sit
   on top. The module is a provider, one Apply, and the exports; it maps no field
   by hand and needs no crd2pulumi SDK, so a field the spec gains reaches the
-  object on both engines with no module change. Reference:
+  object on both engines with no module change. The projection also writes
+  the shapes the spec marks (`kubernetes_int_or_string`,
+  `kubernetes_list_valued_map`) as upstream's, so the module still maps
+  nothing. Reference:
   `catalog/kubernetes/kubernetesprometheusrule/iac/pulumi/module/main.go`.
 - The permissions gate (`pkg/iac/permissions`) models each `manifestcr.Apply` as
   the component's projected custom resource, so `iac/permissions.yaml` still

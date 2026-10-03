@@ -144,6 +144,15 @@ SEQUENTIAL STEPS
      (`go test ./pkg/crkreflect/` runs the coherence and coverage gates)
    - Verify formatting matches existing entries
    - Verify the new kind appears in `pkg/crkreflect/kind_map_gen.go`
+   - Verify every reference the spec makes into a container kind (a
+     namespace, a VPC, a subnet, a project) has a containment verdict:
+     `go test ./shared/cloudresourcekind/` lists each new one. `contained`
+     means the resource lives inside the target, so diagrams nest it there;
+     a reference to something the resource only reads or watches (the
+     namespaces a monitor scrapes, a project a store reads secrets from) is
+     access-style and carries `(dev.planton.shared.foreignkey.v1.containment_exempt) = true`
+     on its field. Review the listed verdicts, fix any wrong one on the field,
+     then regenerate the golden file with `-update`.
 
 SUCCESS
 - New enum entry added to cloud_resource_kind.proto

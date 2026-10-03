@@ -790,6 +790,7 @@ import (
 	kubernetesplantonplatformv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonplatform/v1alpha1"
 	kubernetesplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonrunner/v1alpha1"
 	kubernetespoddisruptionbudgetv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1"
+	kubernetespodmonitorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespodmonitor/v1alpha1"
 	kubernetespostgresv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1"
 	kubernetespriorityclassv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespriorityclass/v1alpha1"
 	kubernetesprometheusrulev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesprometheusrule/v1alpha1"
@@ -807,6 +808,7 @@ import (
 	kubernetesservicev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesservice/v1alpha1"
 	kubernetesserviceaccountv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesserviceaccount/v1alpha1"
 	kubernetesserviceentryv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesserviceentry/v1alpha1"
+	kubernetesservicemonitorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesservicemonitor/v1alpha1"
 	kubernetessignozv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetessignoz/v1alpha1"
 	kubernetessolrv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetessolr/v1alpha1"
 	kubernetessolroperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetessolroperator/v1alpha1"
@@ -1662,6 +1664,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesPlantonPlatform:             &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatform{},
 	cloudresourcekind.CloudResourceKind_KubernetesPlantonRunner:               &kubernetesplantonrunnerv1alpha1.KubernetesPlantonRunner{},
 	cloudresourcekind.CloudResourceKind_KubernetesPodDisruptionBudget:         &kubernetespoddisruptionbudgetv1alpha1.KubernetesPodDisruptionBudget{},
+	cloudresourcekind.CloudResourceKind_KubernetesPodMonitor:                  &kubernetespodmonitorv1alpha1.KubernetesPodMonitor{},
 	cloudresourcekind.CloudResourceKind_KubernetesPostgres:                    &kubernetespostgresv1alpha1.KubernetesPostgres{},
 	cloudresourcekind.CloudResourceKind_KubernetesPriorityClass:               &kubernetespriorityclassv1alpha1.KubernetesPriorityClass{},
 	cloudresourcekind.CloudResourceKind_KubernetesPrometheusRule:              &kubernetesprometheusrulev1alpha1.KubernetesPrometheusRule{},
@@ -1679,6 +1682,7 @@ var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Messag
 	cloudresourcekind.CloudResourceKind_KubernetesService:                     &kubernetesservicev1alpha1.KubernetesService{},
 	cloudresourcekind.CloudResourceKind_KubernetesServiceAccount:              &kubernetesserviceaccountv1alpha1.KubernetesServiceAccount{},
 	cloudresourcekind.CloudResourceKind_KubernetesServiceEntry:                &kubernetesserviceentryv1alpha1.KubernetesServiceEntry{},
+	cloudresourcekind.CloudResourceKind_KubernetesServiceMonitor:              &kubernetesservicemonitorv1alpha1.KubernetesServiceMonitor{},
 	cloudresourcekind.CloudResourceKind_KubernetesSignoz:                      &kubernetessignozv1alpha1.KubernetesSignoz{},
 	cloudresourcekind.CloudResourceKind_KubernetesSolr:                        &kubernetessolrv1alpha1.KubernetesSolr{},
 	cloudresourcekind.CloudResourceKind_KubernetesSolrOperator:                &kubernetessolroperatorv1alpha1.KubernetesSolrOperator{},

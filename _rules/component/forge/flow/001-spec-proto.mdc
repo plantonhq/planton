@@ -225,6 +225,47 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
   values. Both engines route marked fields to metadata, never into the custom
   resource's spec, and stamp the identity labels on top. Reference:
   `catalog/kubernetes/kubernetesprometheusrule/v1alpha1/spec.proto`.
+- **CRD-projection kinds: two upstream shapes have no direct proto form, and a
+  field marker tells the projection how to write them.** Both markers are honored
+  once, in `pkg/iac/specprojection`, so both engines write the upstream shape;
+  a placement test (`pkg/kubernetes/manifestprojection`) holds every projection
+  marker to the field shape it is defined for, on projection kinds only.
+  - An IntOrString key (a port given by number or by name, such as a
+    ServiceMonitor endpoint's `targetPort`) is ONE `string` field marked
+    `(dev.planton.shared.options.kubernetes_int_or_string) = true`. The
+    projection writes an all-digit value as a number and anything else as a
+    name; a plain string would send `"8080"` as a port NAMED "8080", which
+    matches nothing and fails silently. Bound both forms with a CEL rule (a
+    number in range, or a port name: lowercase alphanumerics and hyphens, at
+    most 15, with a letter). Never model it as a proto `oneof`: protojson
+    writes the arm's key, not the upstream one.
+  - A map whose upstream values are lists (`params`, `proxyConnectHeader`) is
+    `map<string, Wrapper>` where Wrapper holds one repeated field named
+    `values` (the catalog's wrapper convention), marked
+    `(dev.planton.shared.options.kubernetes_list_valued_map) = true`. The
+    manifest writes `{key: {values: [...]}}`; the object receives the bare list,
+    with each element projected by its own type's rules. Show both forms in the
+    field comment.
+- **CRD-projection kinds: a `{name, key}` selector of a Secret or ConfigMap is a
+  reference.** Its `name` is a `StringValueOrRef` with `default_kind`
+  KubernetesSecret (`status.outputs.secret_name`) or KubernetesConfigMap
+  (`status.outputs.configmap_name`), beside a plain `key` and `optional`, so the
+  graph shows the dependency and creates the Secret first; the projection writes
+  the resolved name, so the object is upstream's exactly. A list of namespaces
+  the object WATCHES (a monitor's `namespaceSelector.matchNames`) is a repeated
+  reference to KubernetesNamespace marked `containment_exempt`, because the
+  object does not live in them. Shared upstream types of one API family live in
+  one `catalog/kubernetes/<family>_api.proto` (`gateway_api.proto`,
+  `istio_api.proto`, `prometheus_operator_api.proto`), each message named for
+  its upstream type.
+- **CRD-projection kinds: protojson omits what is empty.** An explicitly set but
+  empty message (a label selector `{}`, which upstream reads as "select
+  everything") is kept, so a required selector survives. An empty repeated field
+  and an empty string are not written at all: when the API server requires a
+  list key (a ServiceMonitor's `endpoints`), require at least one entry with
+  `repeated.min_items`, and when an empty string differs from unset, make the
+  field proto `optional`. Upstream pointer fields (`*bool`, `*string`) are proto
+  `optional` for the same reason.
 
 PROACTIVE SENSITIVE-FIELD IDENTIFICATION (MANDATORY STEP)
 - While authoring the schema, review EVERY string field and the literal of EVERY

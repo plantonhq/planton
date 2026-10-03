@@ -1,0 +1,25 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesServiceMonitor
+metadata:
+  name: api
+spec:
+  namespace:
+    value: api
+  labels:
+    release: kube-prometheus-stack
+  job_label: app.kubernetes.io/name
+  target_labels:
+    - team
+  sample_limit: 50000
+  selector:
+    match_labels:
+      app.kubernetes.io/name: api
+  endpoints:
+    - port: http-metrics
+      interval: 30s
+      scrape_timeout: 10s
+      metric_relabelings:
+        - source_labels:
+            - __name__
+          regex: go_gc_duration_seconds.*
+          action: drop

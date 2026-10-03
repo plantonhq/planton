@@ -1,0 +1,21 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPodMonitor
+metadata:
+  name: <exporter>
+spec:
+  namespace:
+    value: <namespace>
+  job_label: app.kubernetes.io/name
+  selector:
+    match_labels:
+      app.kubernetes.io/name: <exporter>
+  pod_metrics_endpoints:
+    - port: <metrics_port_name>
+      interval: 30s
+      relabelings:
+        - source_labels:
+            - __meta_kubernetes_pod_node_name
+          target_label: node
+        - regex: __meta_kubernetes_pod_label_(app_kubernetes_io_component)
+          action: labelmap
+          replacement: $1

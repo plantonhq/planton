@@ -23,6 +23,13 @@ Under the default `all_monitors` discovery every rule object loads; under
 `release_managed_only` only objects labelled `release: <release_name>` do,
 so a rule meant for a fenced stack carries that label in its own `labels`.
 
+Scraping beyond a component's own toggle is declared the same way:
+[KubernetesServiceMonitor](../kubernetesservicemonitor/GUIDE.md) for a
+workload whose Service names its metrics port, and
+[KubernetesPodMonitor](../kubernetespodmonitor/GUIDE.md) for pods no
+Service exposes. Both list this stack as their prerequisite and load under
+the same discovery rules as a rule object.
+
 ## One per cluster, by CRD physics
 
 The monitoring CRDs are cluster-scoped singletons; a second stack must

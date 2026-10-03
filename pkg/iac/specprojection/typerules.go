@@ -24,6 +24,32 @@ func IsManifestOnlyField(fd protoreflect.FieldDescriptor) bool {
 	return ok && v
 }
 
+// IsKubernetesIntOrStringField reports whether a string field carries
+// `(dev.planton.shared.options.kubernetes_int_or_string)`: its upstream key is
+// a Kubernetes IntOrString, so the projection writes an all-digit value as a
+// number and anything else as a name.
+func IsKubernetesIntOrStringField(fd protoreflect.FieldDescriptor) bool {
+	opts := fd.Options()
+	if opts == nil {
+		return false
+	}
+	v, ok := proto.GetExtension(opts, options.E_KubernetesIntOrString).(bool)
+	return ok && v
+}
+
+// IsKubernetesListValuedMapField reports whether a map field carries
+// `(dev.planton.shared.options.kubernetes_list_valued_map)`: each value is a
+// wrapper message around one repeated field, and the projection writes the
+// bare list in the wrapper's place.
+func IsKubernetesListValuedMapField(fd protoreflect.FieldDescriptor) bool {
+	opts := fd.Options()
+	if opts == nil {
+		return false
+	}
+	v, ok := proto.GetExtension(opts, options.E_KubernetesListValuedMap).(bool)
+	return ok && v
+}
+
 // TypeRule defines how a specific proto message type is treated when a
 // manifest is projected into an engine's input. Rules are registered once and
 // consulted by the projection (Terraform tfvars and the Pulumi custom-resource

@@ -1212,6 +1212,24 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"prometheus_rule_name", "namespace"},
 		},
 		{
+			name: "KubernetesServiceMonitor",
+			kind: cloudresourcekind.CloudResourceKind_KubernetesServiceMonitor,
+			rawOutputs: map[string]interface{}{
+				"service_monitor_name": "api",
+				"namespace":            "api",
+			},
+			mustPopulate: []string{"service_monitor_name", "namespace"},
+		},
+		{
+			name: "KubernetesPodMonitor",
+			kind: cloudresourcekind.CloudResourceKind_KubernetesPodMonitor,
+			rawOutputs: map[string]interface{}{
+				"pod_monitor_name": "orders-db",
+				"namespace":        "orders",
+			},
+			mustPopulate: []string{"pod_monitor_name", "namespace"},
+		},
+		{
 			name: "KubernetesTelemetry",
 			kind: cloudresourcekind.CloudResourceKind_KubernetesTelemetry,
 			rawOutputs: map[string]interface{}{
