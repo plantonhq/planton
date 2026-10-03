@@ -15,9 +15,9 @@ import (
 // default_rules_values and custom_rules_values render the same shapes.
 
 func defaultRulesLocals(rules *kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackDefaultRules) *Locals {
-	return initializeLocals(nil, &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackStackInput{
+	return initializeLocals(nil, &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackIacInput{
 		Target: &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStack{
-			Metadata: &shared.CloudResourceMetadata{Name: "management-metrics"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "management-metrics"},
 			Spec: &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackSpec{
 				Namespace:    literal("observability"),
 				DefaultRules: rules,
