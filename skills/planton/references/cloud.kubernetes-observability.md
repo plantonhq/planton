@@ -93,6 +93,24 @@ Ask these before composing, in the person's words, not the chart's:
   for a recorded series answers. One malformed rule makes the operator drop
   the whole object while the apply still succeeds, so a green deploy is not
   the proof.
+- What the agent scrapes beyond the cluster itself is a
+  `KubernetesServiceMonitor` (the workload's Service names its metrics
+  port) or a `KubernetesPodMonitor` (pods no Service exposes: a database
+  operator's instances, a DaemonSet's exporters, or replicas that must be
+  seen while unready). Put it beside the workload. Its `selector` matches
+  the Service's or the pods' labels, so read them off the cluster before
+  writing it. Point every credential (a token, basic auth, a CA) at a
+  `KubernetesSecret` or `KubernetesConfigMap` by reference, in the
+  monitor's namespace. Set `job_label` to a label whose value is the same
+  in every environment, and a `sample_limit`.
+- After applying a monitor, prove it scrapes: the Prometheus targets API
+  (`/api/v1/targets`) lists a target of the job
+  `serviceMonitor/<namespace>/<name>/<n>` (or `podMonitor/...`) with health
+  `up`. The operator skips a whole monitor whose Secret is missing or whose
+  endpoint breaks one of its rules, and nothing but its own log says so,
+  so here too a green deploy is not the proof. A `target_port` written as
+  a number reaches the object as a number; a port name must be declared on
+  the Service or the pod, or no target appears.
 - Typed Discord delivery needs the kind's default chart (88 or later); if
   the person pins an older `chart_version`, Discord refuses to load and
   Alertmanager never starts. When Alertmanager is missing, read the

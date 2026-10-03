@@ -14,6 +14,7 @@ go_library(
         "kubernetes_secret.pb.go",
         "options.pb.go",
         "probe.pb.go",
+        "prometheus_operator_api.pb.go",
         "provider.pb.go",
         "strimzi_kafka_client.pb.go",
         "volume_mount.pb.go",

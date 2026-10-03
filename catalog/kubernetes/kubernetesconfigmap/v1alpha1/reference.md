@@ -155,6 +155,16 @@ Fields on other kinds that can point at this resource:
 | KubernetesGhaRunnerScaleSet | `spec.githubServerTls.configMapName` | `status.outputs.configmap_name` |
 | KubernetesKafkaConnector | `spec.listOffsets.toConfigMap` | `status.outputs.configmap_name` |
 | KubernetesKafkaConnector | `spec.alterOffsets.fromConfigMap` | `status.outputs.configmap_name` |
+| KubernetesPodMonitor | `spec.podMetricsEndpoints[].tlsConfig.ca.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesPodMonitor | `spec.podMetricsEndpoints[].tlsConfig.cert.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesPodMonitor | `spec.podMetricsEndpoints[].oauth2.clientId.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesPodMonitor | `spec.podMetricsEndpoints[].oauth2.tlsConfig.ca.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesPodMonitor | `spec.podMetricsEndpoints[].oauth2.tlsConfig.cert.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesServiceMonitor | `spec.endpoints[].tlsConfig.ca.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesServiceMonitor | `spec.endpoints[].tlsConfig.cert.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesServiceMonitor | `spec.endpoints[].oauth2.clientId.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesServiceMonitor | `spec.endpoints[].oauth2.tlsConfig.ca.configMap.name` | `status.outputs.configmap_name` |
+| KubernetesServiceMonitor | `spec.endpoints[].oauth2.tlsConfig.cert.configMap.name` | `status.outputs.configmap_name` |
 
 ## See Also
 

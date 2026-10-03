@@ -1,0 +1,392 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetespodmonitor.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/kubernetes/prometheus_operator_api.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// KubernetesPodMonitorSpec defines a prometheus-operator PodMonitor: a
+// namespaced object that tells every Prometheus selecting it which pods to
+// scrape directly, and how. The operator turns it into scrape configuration:
+// each running pod matching `selector` in the namespaces `namespace_selector`
+// names contributes one target per declared container port each of
+// `pod_metrics_endpoints` selects.
+//
+// 100% fidelity with the upstream PodMonitor custom resource
+// (monitoring.coreos.com/v1), pinned to prometheus-operator v0.94.1 -- the
+// operator the kube-prometheus-stack chart 91.8.2 ships, which is what
+// KubernetesKubePrometheusStack installs. The upstream spec follows the
+// Planton envelope directly; there is no nested `pod_monitor` sub-message.
+// Types shared with KubernetesServiceMonitor live in
+// catalog/kubernetes/prometheus_operator_api.proto.
+//
+// The envelope: `namespace` places the object, and `labels` and `annotations`
+// are the object's own metadata. The labels are configuration here, not
+// decoration: a Prometheus picks monitors up through its PodMonitor selector.
+// KubernetesKubePrometheusStack's default discovery (all_monitors) loads every
+// PodMonitor in the cluster; its release_managed_only discovery loads only
+// objects labelled `release: <the stack's release name>` (its release_name
+// output).
+//
+// PodMonitor or ServiceMonitor: scrape pods directly (this kind) when no
+// Service names the metrics port -- a database operator's instance pods, a
+// DaemonSet's exporters, a sidecar's metrics port -- or when every replica
+// must be scraped even while it is not ready (a Service drops unready pods
+// from its endpoints). Scrape through a Service (KubernetesServiceMonitor)
+// when one already exists and its labels are what the series should carry.
+//
+// What the operator refuses silently: it skips a whole PodMonitor -- every
+// endpoint of it scrapes nothing, and only its own log says why -- when a
+// referenced Secret or key is missing, when an endpoint sets two
+// authentication methods, when a client certificate lacks its key, or when a
+// relabeling step breaks its action's rules. Each of those is a validation
+// rule here instead.
+message KubernetesPodMonitorSpec {
+  // Kubernetes namespace the PodMonitor is created in. Typically a reference
+  // to a KubernetesNamespace resource's `spec.name`.
+  //
+  // It is also where the pods are searched unless `namespace_selector` says
+  // otherwise, and where every Secret and ConfigMap the endpoints
+  // reference must live. Put the monitor beside the workload it watches.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef namespace = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesNamespace,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.name"
+  ];
+
+  // Labels on the PodMonitor object itself (its metadata.labels), merged
+  // under Planton's identity labels (a key in both keeps the identity value).
+  //
+  // These are how a Prometheus with a PodMonitor selector decides the
+  // monitor is its own: a KubernetesKubePrometheusStack on
+  // release_managed_only discovery loads only objects labelled
+  // `release: <its release_name output>`, and a Prometheus installed any
+  // other way selects by whatever its podMonitorSelector names. Under the
+  // stack's default all_monitors discovery no label is needed.
+  //
+  // These are NOT labels added to the scraped series; for that, use
+  // `pod_target_labels` or a relabeling.
+  map<string, string> labels = 2 [
+    (dev.planton.shared.options.kubernetes_object_metadata) = object_labels,
+    (buf.validate.field).map = {
+      keys: {
+        string: {
+          min_len: 1
+          max_len: 317
+          pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$"
+        }
+      }
+      values: {
+        string: {
+          max_len: 63
+          pattern: "^([A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?)?$"
+        }
+      }
+    }
+  ];
+
+  // Annotations on the PodMonitor object itself (its
+  // metadata.annotations): notes for people and tools reading the object,
+  // such as an owning team. They do not reach Prometheus or the series.
+  map<string, string> annotations = 3 [(dev.planton.shared.options.kubernetes_object_metadata) = object_annotations];
+
+  // The pod label whose value becomes every series' `job` label. With
+  // `job_label: app.kubernetes.io/name` and pods labelled
+  // `app.kubernetes.io/name: postgres`, the series carry `job="postgres"`.
+  // Empty, `job` is "<monitor namespace>/<monitor name>".
+  //
+  // `job` is what dashboards and alerts group by, so pick a label whose value
+  // stays the same across environments and releases.
+  string job_label = 4;
+
+  // Pod labels copied onto every scraped series, each under its own name
+  // (`app.kubernetes.io/version` to tell a canary's series from the rest).
+  repeated string pod_target_labels = 6;
+
+  // How each matching pod is scraped: one entry per container port, each its
+  // own set of targets. Upstream does not require the list, so an empty one
+  // is accepted -- and scrapes nothing.
+  repeated KubernetesPodMonitorPodMetricsEndpoint pod_metrics_endpoints = 7;
+
+  // Which pods are scraped, by label, among those in the namespaces searched.
+  // Required. `{}` (match_labels and match_expressions both empty) selects
+  // every pod there -- usually too broad; match the labels the workload sets
+  // on its pods (a CloudNativePG cluster's instances carry
+  // `cnpg.io/cluster: <cluster name>`).
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiLabelSelector selector = 8 [(buf.validate.field).required = true];
+
+  // How Prometheus narrows discovery to the selected pods: "RelabelConfig"
+  // (the default: discover the namespace's pods and drop the unselected by
+  // relabeling) or "RoleSelector" (pass the selector to the
+  // Kubernetes API, which is cheaper in large clusters). Requires Prometheus
+  // >= 2.17.
+  optional string selector_mechanism = 9 [(buf.validate.field).string = {
+    in: [
+      "RelabelConfig",
+      "RoleSelector"
+    ]
+  }];
+
+  // The namespaces searched for pods. Unset, only the monitor's own
+  // namespace.
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiNamespaceSelector namespace_selector = 10;
+
+  // The most samples one scrape may return; a scrape over it is discarded
+  // whole and the target reads as failed (`up` 0). The guard against a target
+  // that suddenly exports millions of series. Unset, the Prometheus's own
+  // enforced limit applies; 0 means no limit.
+  optional uint32 sample_limit = 11;
+
+  // The most targets this monitor may produce after relabeling; over it,
+  // every target of the monitor fails. Unset or 0, no limit.
+  optional uint32 target_limit = 12;
+
+  // The exposition formats offered to targets, most preferred first:
+  // "PrometheusProto", "OpenMetricsText0.0.1", "OpenMetricsText1.0.0",
+  // "PrometheusText0.0.4", "PrometheusText1.0.0". Native histograms need
+  // "PrometheusProto" first. Unset, Prometheus's default order. Requires
+  // Prometheus >= 2.49.
+  repeated string scrape_protocols = 13 [(buf.validate.field).repeated = {
+    unique: true
+    items: {
+      string: {
+        in: [
+          "PrometheusProto",
+          "OpenMetricsText0.0.1",
+          "OpenMetricsText1.0.0",
+          "PrometheusText0.0.4",
+          "PrometheusText1.0.0"
+        ]
+      }
+    }
+  }];
+
+  // The format assumed when a target answers with a missing or unparseable
+  // Content-Type, one of the scrape_protocols values. Requires Prometheus >=
+  // 3.0, which otherwise fails such a scrape.
+  optional string fallback_scrape_protocol = 14 [(buf.validate.field).string = {
+    in: [
+      "PrometheusProto",
+      "OpenMetricsText0.0.1",
+      "OpenMetricsText1.0.0",
+      "PrometheusText0.0.4",
+      "PrometheusText1.0.0"
+    ]
+  }];
+
+  // The most labels a sample may carry; a scrape with one over it fails.
+  // Requires Prometheus >= 2.27.
+  optional uint32 label_limit = 15;
+
+  // The longest label name a sample may carry. Requires Prometheus >= 2.27.
+  optional uint32 label_name_length_limit = 16;
+
+  // The longest label value a sample may carry. Requires Prometheus >= 2.27.
+  optional uint32 label_value_length_limit = 17;
+
+  // Scrape native histograms. Requires Prometheus >= 3.8 and
+  // "PrometheusProto" (or OpenMetrics 1.0 with native histograms) among
+  // scrape_protocols.
+  optional bool scrape_native_histograms = 18;
+
+  // Keep scraping the classic (bucketed) form of a histogram that is also
+  // exposed as a native histogram (Prometheus's
+  // `always_scrape_classic_histograms`). Requires Prometheus >= 2.45.
+  optional bool scrape_classic_histograms = 19;
+
+  // The most buckets a native histogram may keep; above it, neighbouring
+  // buckets merge. Requires Prometheus >= 2.45.
+  optional uint32 native_histogram_bucket_limit = 20;
+
+  // The smallest growth factor between neighbouring native-histogram buckets;
+  // buckets closer than this merge. A decimal or Kubernetes quantity ("1.1",
+  // "2"). Requires Prometheus >= 2.50.
+  optional string native_histogram_min_bucket_factor = 21 [(buf.validate.field).string.pattern = "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"];
+
+  // Convert scraped classic histograms into native histograms with custom
+  // buckets. Requires Prometheus >= 3.0.
+  optional bool convert_classic_histograms_to_nhcb = 22 [json_name = "convertClassicHistogramsToNHCB"];
+
+  // How many targets dropped by relabeling the Prometheus keeps in memory for
+  // its targets page. 0 means no limit. Requires Prometheus >= 2.47.
+  optional uint32 keep_dropped_targets = 23;
+
+  // Metadata of related objects attached to the targets as discovery labels.
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiAttachMetadata attach_metadata = 24;
+
+  // The Prometheus scrape class whose defaults (TLS, authorization,
+  // relabelings) this monitor inherits, by name. The class is declared on the
+  // Prometheus; the operator skips a monitor that names a class its
+  // Prometheus lacks. Unset, the Prometheus's default class (if any).
+  optional string scrape_class = 25 [(buf.validate.field).string.min_len = 1];
+
+  // The largest uncompressed response body a scrape accepts ("10MiB",
+  // "512KB"; "0" for no limit); a larger body fails the scrape. Requires
+  // Prometheus >= 2.28.
+  optional string body_size_limit = 26 [(buf.validate.field).string.pattern = "(^0|([0-9]*[.])?[0-9]+((K|M|G|T|E|P)i?)?B)$"];
+}
+
+// KubernetesPodMonitorPodMetricsEndpoint is one scraped container port of
+// the selected pods (upstream PodMetricsEndpoint). Faithful to upstream
+// monitoring.coreos.com/v1 PodMetricsEndpoint, with its HTTP client
+// configuration (authentication, TLS from Secrets and ConfigMaps, proxy)
+// inlined as upstream does. Unlike a ServiceMonitor endpoint it reads no files
+// from the Prometheus container.
+message KubernetesPodMonitorPodMetricsEndpoint {
+  option (buf.validate.message).cel = {
+    id: "pod_metrics_endpoint.one_auth_method"
+    message: "Set at most one of authorization, basic_auth, oauth2 and bearer_token_secret: the operator skips a monitor whose endpoint has two"
+    expression: "(has(this.authorization) ? 1 : 0) + (has(this.basic_auth) ? 1 : 0) + (has(this.oauth2) ? 1 : 0) + (has(this.bearer_token_secret) ? 1 : 0) <= 1"
+  };
+  option (buf.validate.message).cel = {
+    id: "pod_metrics_endpoint.proxy_connect_header_needs_proxy"
+    message: "proxy_connect_header needs proxy_url or proxy_from_environment"
+    expression: "size(this.proxy_connect_header) == 0 || (has(this.proxy_url) && this.proxy_url != '') || (has(this.proxy_from_environment) && this.proxy_from_environment)"
+  };
+  option (buf.validate.message).cel = {
+    id: "pod_metrics_endpoint.proxy_from_environment_alone"
+    message: "proxy_from_environment takes the proxy from the environment, so proxy_url and no_proxy must be unset"
+    expression: "!(has(this.proxy_from_environment) && this.proxy_from_environment) || ((!has(this.proxy_url) || this.proxy_url == '') && (!has(this.no_proxy) || this.no_proxy == ''))"
+  };
+  option (buf.validate.message).cel = {
+    id: "pod_metrics_endpoint.no_proxy_needs_proxy_url"
+    message: "no_proxy needs proxy_url"
+    expression: "!has(this.no_proxy) || this.no_proxy == '' || (has(this.proxy_url) && this.proxy_url != '')"
+  };
+
+  // The container port to scrape, by its name (`ports[].name` on the pod's
+  // container). Takes precedence over port_number and target_port. A pod
+  // without a port of that name yields no target; a pod with several ports of
+  // that name yields one target per distinct number.
+  optional string port = 1;
+
+  // Deprecated upstream: use `port` or `port_number` instead. The container
+  // port to scrape, by number ("9187") or by name ("metrics"); an all-digit
+  // value is written to the object as a number, anything else as a name.
+  optional string target_port = 2 [
+    (dev.planton.shared.options.kubernetes_int_or_string) = true,
+    (buf.validate.field).cel = {
+      id: "pod_metrics_endpoint.target_port"
+      message: "target_port is a port number from 1 to 65535, or a container port name (up to 15 lowercase letters, digits and hyphens, with at least one letter)"
+      expression: "this.matches('^[0-9]+$') ? (size(this) <= 5 && int(this) >= 1 && int(this) <= 65535) : (size(this) <= 15 && this.matches('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$') && this.matches('[a-z]'))"
+    }
+  ];
+
+  // The HTTP path scraped. Empty, "/metrics".
+  string path = 3;
+
+  // The scheme scraped: "http" or "https" (either case). Unset, "http"; set
+  // "https" together with tls_config for a TLS-only metrics port.
+  optional string scheme = 4 [(buf.validate.field).string = {
+    in: [
+      "http",
+      "https",
+      "HTTP",
+      "HTTPS"
+    ]
+  }];
+
+  // URL query parameters sent with every scrape, each with one or more
+  // values: `{format: {values: [prometheus]}}` in the manifest,
+  // `{format: [prometheus]}` on the object. An exporter that serves several
+  // modules from one port (a blackbox or SNMP exporter's `module`) is told
+  // which through these.
+  map<string, dev.planton.kubernetes.KubernetesPrometheusOperatorApiStringList> params = 5 [(dev.planton.shared.options.kubernetes_list_valued_map) = true];
+
+  // How often the targets are scraped, as a Prometheus duration ("30s",
+  // "1m"). Empty, the Prometheus's scrape interval. A shorter interval costs
+  // samples in proportion; most services need nothing finer than 30s.
+  string interval = 6 [(buf.validate.field).string.pattern = "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"];
+
+  // How long a scrape may take before it counts as failed, as a Prometheus
+  // duration. Empty, the Prometheus's scrape timeout, capped at `interval`.
+  // It may not exceed `interval`: the operator skips the monitor otherwise.
+  string scrape_timeout = 7 [(buf.validate.field).string.pattern = "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"];
+
+  // TLS for the scrape connection (with `scheme: https`), its material from
+  // Secrets and ConfigMaps.
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiSafeTlsConfig tls_config = 8;
+
+  // Deprecated upstream: use `authorization` instead, which reads the same
+  // Secret key. The Secret key holding a bearer token sent with every scrape.
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiSecretKeySelector bearer_token_secret = 10;
+
+  // The Authorization header sent with every scrape (`Bearer <token>` by
+  // default), the token read from a Secret key. Excludes the other
+  // authentication methods.
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiSafeAuthorization authorization = 11;
+
+  // HTTP Basic authentication, both halves read from Secret keys. Excludes
+  // the other authentication methods.
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiBasicAuth basic_auth = 12;
+
+  // OAuth2 client-credentials authentication. Excludes the other
+  // authentication methods. Requires Prometheus >= 2.27.
+  dev.planton.kubernetes.KubernetesPrometheusOperatorApiOAuth2 oauth2 = 13;
+
+  // When a scraped series carries a label the target also sets (`job`,
+  // `instance`, a target label), keep the series' value instead of renaming
+  // it to `exported_<label>`. For federation and pushgateway-style targets
+  // that report on behalf of others.
+  bool honor_labels = 14;
+
+  // Keep the timestamps a target exposes instead of the scrape time. Unset,
+  // Prometheus keeps them.
+  optional bool honor_timestamps = 15;
+
+  // Mark a series stale when it disappears from a target even though its
+  // samples carried explicit timestamps. No effect when honor_timestamps is
+  // false. Requires Prometheus >= 2.48.
+  optional bool track_timestamps_staleness = 16;
+
+  // Relabeling applied to each scraped sample before it is stored: drop
+  // expensive series (`action: drop` on `__name__`) or rename labels.
+  repeated dev.planton.kubernetes.KubernetesPrometheusOperatorApiRelabelConfig metric_relabelings = 17;
+
+  // Relabeling applied to each discovered target before it is scraped:
+  // filter targets, or copy discovery labels (`__meta_kubernetes_*`) onto the
+  // series. The operator adds its own steps first; the original job name is
+  // in `__tmp_prometheus_job_name`.
+  repeated dev.planton.kubernetes.KubernetesPrometheusOperatorApiRelabelConfig relabelings = 18;
+
+  // The proxy scrapes go through, "http://", "https://" or "socks5://".
+  // Excludes proxy_from_environment.
+  optional string proxy_url = 19 [(buf.validate.field).string.pattern = "^(http|https|socks5)://.+$"];
+
+  // Comma-separated hosts, domains, IPs or CIDRs (ports allowed) that bypass
+  // proxy_url. Requires proxy_url. Requires Prometheus >= 2.43.
+  optional string no_proxy = 20;
+
+  // Take the proxy from the Prometheus container's HTTP_PROXY, HTTPS_PROXY and
+  // NO_PROXY environment variables. Excludes proxy_url and no_proxy. Requires
+  // Prometheus >= 2.43.
+  optional bool proxy_from_environment = 21;
+
+  // Headers sent to the proxy on CONNECT, each value read from Secret keys:
+  // `{Proxy-Authorization: {values: [{name: ..., key: ...}]}}` in the
+  // manifest, `{Proxy-Authorization: [...]}` on the object. Requires
+  // proxy_url or proxy_from_environment. Requires Prometheus >= 2.43.
+  map<string, dev.planton.kubernetes.KubernetesPrometheusOperatorApiSecretKeySelectorList> proxy_connect_header = 22 [(dev.planton.shared.options.kubernetes_list_valued_map) = true];
+
+  // Follow HTTP 3xx redirects. Unset, Prometheus follows them.
+  optional bool follow_redirects = 23;
+
+  // Allow HTTP/2. Set false for a target whose HTTP/2 support is broken.
+  optional bool enable_http2 = 24;
+
+  // Drop targets whose pod is not running (Failed or Succeeded), so a
+  // finished Job's pod does not read as a down target. Unset, they are
+  // dropped.
+  optional bool filter_running = 25;
+
+  // The container port to scrape, by number. The pod must declare the port
+  // in its spec, or no target is produced (a port the pod does not declare
+  // can only be reached by relabeling `__address__`). Used when `port` is
+  // unset.
+  optional int32 port_number = 26 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}

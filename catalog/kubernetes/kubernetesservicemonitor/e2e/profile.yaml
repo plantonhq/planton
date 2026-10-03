@@ -1,0 +1,14 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: kubernetesservicemonitor
+spec:
+  tier: 3
+  # The registry prerequisite installs a whole KubernetesKubePrometheusStack
+  # (operator, Prometheus, Alertmanager) before the monitor, and the scrape
+  # proof waits for that Prometheus to discover and scrape the target.
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 30

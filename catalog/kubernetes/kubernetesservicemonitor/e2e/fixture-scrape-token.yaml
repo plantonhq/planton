@@ -1,0 +1,16 @@
+# Extra-instance fixture for the behavioral-scrape scenario: the Secret the
+# monitor's bearer token is read from, referenced (valueFrom) so the harness
+# creates it first. Prometheus's own /metrics ignores the token; the
+# operator, however, skips a monitor whose Secret it cannot read, so a target
+# that comes up proves the reference reached the object.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesSecret
+metadata:
+  name: e2e-smon-token
+spec:
+  name: e2e-smon-token
+  namespace:
+    value: default
+  opaque:
+    data:
+      token: "e2e-scrape-token"

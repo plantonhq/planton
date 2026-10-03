@@ -1,0 +1,29 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesServiceMonitor
+metadata:
+  name: <service>
+spec:
+  namespace:
+    value: <namespace>
+  job_label: app.kubernetes.io/name
+  selector:
+    match_labels:
+      app.kubernetes.io/name: <service>
+  endpoints:
+    - port: <metrics_port_name>
+      scheme: https
+      interval: 30s
+      authorization:
+        credentials:
+          name:
+            valueFrom:
+              kind: KubernetesSecret
+              name: <token_secret>
+          key: token
+      tls_config:
+        ca:
+          config_map:
+            name:
+              value: <ca_configmap>
+            key: ca.crt
+        server_name: <service>.<namespace>.svc

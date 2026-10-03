@@ -317,6 +317,64 @@ spec:
             runbook_url: https://runbooks.example.com/api-error-budget-burn
 ```
 
+### Scraping as declared objects
+
+What a cluster's agent scrapes beyond Kubernetes itself is declared the
+same way: a [KubernetesServiceMonitor](../kubernetes/kubernetesservicemonitor/GUIDE.md)
+for a workload whose Service names its metrics port, a
+[KubernetesPodMonitor](../kubernetes/kubernetespodmonitor/GUIDE.md) for
+pods no Service exposes (a database operator's instances, a DaemonSet's
+exporters). Never a raw scrape config in the stack's `helm_values`, and
+never a component's own monitor toggle where the monitor needs settings the
+toggle doesn't carry.
+
+- **Put the monitor beside the workload, on the agent.** Under the agent
+  stack's default `all_monitors` discovery every monitor in the cluster
+  loads with no label. A hub that only receives remote-written series
+  never scrapes, so a monitor never carries its `release` label.
+- **Selectors match labels, not references.** A ServiceMonitor's
+  `selector` matches the Service's labels and a PodMonitor's matches the
+  pods'. The diagram draws no edge to either, so a reviewer checks the
+  match. `job_label` names the label whose value becomes `job`; pick one
+  that reads the same in every environment, or every dashboard's `job`
+  filter breaks between them.
+- **Credentials are references.** A bearer token, basic-auth halves,
+  OAuth2 client credentials and TLS material are Secret and ConfigMap
+  references in the monitor's namespace, so the graph creates them first.
+  The operator skips a monitor whose Secret it can't read, in silence.
+- **The operator skips a broken monitor whole.** Two authentication methods
+  on one endpoint, a client certificate without its key, or a relabeling
+  step that breaks its action's rules make the operator drop the whole
+  object. The kinds refuse those shapes before the apply; the Prometheus's
+  `/targets` page (job `serviceMonitor/<ns>/<name>/<n>`) is where a missing
+  Secret shows.
+- **Bound every target.** `sample_limit` turns a cardinality explosion
+  into one failed scrape, and `metric_relabelings` with `action: drop`
+  keep unread series out of storage and off the remote-write bill.
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPodMonitor
+metadata:
+  name: orders-db
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesNamespace
+      name: orders-ns
+      fieldPath: spec.name
+  job_label: cnpg.io/cluster
+  pod_target_labels:
+    - cnpg.io/instanceRole
+  sample_limit: 100000
+  selector:
+    match_labels:
+      cnpg.io/cluster: orders-db
+  pod_metrics_endpoints:
+    - port: metrics
+      interval: 30s
+```
+
 ## Logs and traces outside the cluster
 
 A hub's logs and traces are the evidence an incident review reads weeks

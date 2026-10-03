@@ -1,0 +1,4 @@
+name: kubernetes-service-monitor
+runtime:
+  name: go
+description: Pulumi module that provisions a prometheus-operator ServiceMonitor from a KubernetesServiceMonitor manifest.

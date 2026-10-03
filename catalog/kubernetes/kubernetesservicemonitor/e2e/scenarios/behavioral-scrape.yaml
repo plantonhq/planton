@@ -1,0 +1,48 @@
+# The scrape proof: the prerequisite stack's Prometheus (all_monitors
+# discovery) must LOAD this object, DISCOVER its target through the Service
+# selector in another namespace, and SCRAPE it. The target is that
+# Prometheus's own Service (e2e-kps-min-prometheus), so no outside image is
+# needed. Every reshaped value is on the live path:
+#   - target_port "9090" reaches the object as the number 9090 (the
+#     IntOrString arm a port number needs);
+#   - params is a list-valued map, and the target's scrape URL carries it;
+#   - the bearer token is a reference to a KubernetesSecret fixture;
+#   - a relabeling stamps e2e_monitor on every series the target yields.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesServiceMonitor
+metadata:
+  name: e2e-smon-scrape
+  annotations:
+    planton.dev/e2e-prerequisites: "catalog/kubernetes/kubernetesservicemonitor/e2e/fixture-scrape-token.yaml"
+spec:
+  namespace:
+    value: default
+  annotations:
+    planton.dev/e2e-note: scrape proof
+  sample_limit: 1000000
+  namespace_selector:
+    match_names:
+      - value: e2e-kps-min
+  selector:
+    match_labels:
+      app: kube-prometheus-stack-prometheus
+      release: e2e-kps-min
+  endpoints:
+    - target_port: "9090"
+      path: /metrics
+      interval: 15s
+      scrape_timeout: 10s
+      params:
+        e2e:
+          values:
+            - proof
+      authorization:
+        credentials:
+          name:
+            valueFrom:
+              kind: KubernetesSecret
+              name: e2e-smon-token
+          key: token
+      relabelings:
+        - target_label: e2e_monitor
+          replacement: e2e-smon-scrape

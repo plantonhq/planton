@@ -1859,13 +1859,15 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
-- `KubernetesKubePrometheusStack` -- 4070–4089: Kubernetes observability
+- `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
 - `KubernetesLoki`
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesServiceMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the Prometheus that scrapes through it.
+- `KubernetesPodMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PodMonitor is an instance of, and the Prometheus that scrapes through it.
 - `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
@@ -2861,13 +2863,15 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
-- `KubernetesKubePrometheusStack` -- 4070–4089: Kubernetes observability
+- `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
 - `KubernetesLoki`
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesServiceMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the Prometheus that scrapes through it.
+- `KubernetesPodMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PodMonitor is an instance of, and the Prometheus that scrapes through it.
 - `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
@@ -5062,13 +5066,15 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
-- `KubernetesKubePrometheusStack` -- 4070–4089: Kubernetes observability
+- `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
 - `KubernetesLoki`
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesServiceMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the Prometheus that scrapes through it.
+- `KubernetesPodMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PodMonitor is an instance of, and the Prometheus that scrapes through it.
 - `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
@@ -6064,13 +6070,15 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
-- `KubernetesKubePrometheusStack` -- 4070–4089: Kubernetes observability
+- `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
 - `KubernetesLoki`
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesServiceMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the Prometheus that scrapes through it.
+- `KubernetesPodMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PodMonitor is an instance of, and the Prometheus that scrapes through it.
 - `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
@@ -8381,13 +8389,15 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
-- `KubernetesKubePrometheusStack` -- 4070–4089: Kubernetes observability
+- `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
 - `KubernetesLoki`
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesServiceMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the Prometheus that scrapes through it.
+- `KubernetesPodMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PodMonitor is an instance of, and the Prometheus that scrapes through it.
 - `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`
@@ -9383,13 +9393,15 @@ Allowed values (use exactly as shown):
 - `KubernetesKarpenterEc2NodeClass`
 - `KubernetesClusterAutoscaler`
 - `KubernetesVelero`
-- `KubernetesKubePrometheusStack` -- 4070–4089: Kubernetes observability
+- `KubernetesKubePrometheusStack` -- 4070–4079: Kubernetes observability
 - `KubernetesGrafana`
 - `KubernetesSignoz` -- KubernetesClickHouse is a prerequisite because SigNoz stores every trace, metric and log in ClickHouse and deploys none of its own — the telemetry store is composed, never bundled.
 - `KubernetesLoki`
 - `KubernetesTempo`
 - `KubernetesOtelOperator` -- The operator's admission webhooks (failurePolicy Fail) are served with a cert-manager Certificate in the default posture — cert-manager must be running before the operator installs.
 - `KubernetesOtelCollector`
+- `KubernetesServiceMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the ServiceMonitor is an instance of, and the Prometheus that scrapes through it.
+- `KubernetesPodMonitor` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PodMonitor is an instance of, and the Prometheus that scrapes through it.
 - `KubernetesPrometheusRule` -- KubernetesKubePrometheusStack is a prerequisite because it installs the monitoring.coreos.com CRDs the PrometheusRule is an instance of, and the Prometheus that evaluates it.
 - `KubernetesKyverno` -- 4080–4099: Kubernetes security, policy, and identity
 - `KubernetesGatekeeper`

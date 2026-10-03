@@ -1,0 +1,18 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesservicemonitor/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/kubernetes/kubernetesservicemonitor/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/manifestcr",
+        "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

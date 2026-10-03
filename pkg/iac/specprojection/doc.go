@@ -6,8 +6,9 @@
 // descriptor and applies the type rules (typerules.go): Planton's wrapper types
 // collapse to the primitive an engine expects (a StringValueOrRef becomes its
 // resolved string), orchestrator-only messages are dropped, free-form JSON
-// well-known types pass through verbatim, and manifest-only fields never leave
-// the manifest.
+// well-known types pass through verbatim, manifest-only fields never leave
+// the manifest, and the two Kubernetes shape markers write an IntOrString as a
+// number or a name and a list-valued map's wrapper values as bare lists.
 //
 // Two key styles exist (KeyStyle). Provider-abstraction Terraform modules read
 // snake_case variables. Kubernetes-manifest-projection kinds read the custom

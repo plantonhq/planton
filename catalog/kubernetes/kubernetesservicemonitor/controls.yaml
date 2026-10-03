@@ -1,0 +1,74 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: kubernetesservicemonitor
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The object stores no data of its own -- it is a Kubernetes API object persisted in the cluster's etcd, whose encryption at rest is a property of the target cluster's control plane. The scraped series live in the scraping Prometheus's storage, configured on that component.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest to key (see enc-at-rest); customer-managed keys for etcd belong to the cluster component, and for metric storage to the Prometheus component.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: endpoints
+      evidence:
+        type: spec_default
+        reference: Each endpoint scrapes over plain HTTP unless it sets `scheme` to https; with `tls_config` Prometheus verifies the target's certificate against the referenced CA (a Secret or ConfigMap key) and can present a client certificate for mutual TLS. Validation refuses a client certificate without its key, and a maximum TLS version below the minimum.
+      notes: Most in-cluster exporters serve plain HTTP on a port reachable only inside the cluster, so scraping in clear text is the common and often the only option; where a service-mesh sidecar or the exporter itself terminates TLS, set scheme https and a ca. `insecure_skip_verify` keeps encryption but drops the identity check. A ServiceMonitor may also read a CA, certificate or key file from the Prometheus container itself (tls_config's *_file fields), which a Prometheus denying arbitrary filesystem access refuses.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: A ServiceMonitor is configuration a Prometheus loads, not a network endpoint. It points Prometheus at the selected Services' endpoints; whether those are publicly reachable is decided by their own components.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: There is no endpoint to restrict ingress to (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: There is no endpoint to protect at the edge (see no-public-access).
+    - control_id: rbac
+      status: not_applicable
+      notes: Who may create, change or delete the object is governed by the target cluster's Kubernetes RBAC. Which Prometheus scrapes through it is governed by that Prometheus's ServiceMonitor selector and namespace selector, outside this spec; the Secrets and ConfigMaps it references are read by the prometheus-operator's own service account.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The object runs nothing. The scrape runs as the Prometheus pod; credentials it presents to targets are referenced from Secrets, and keyless federation is a property of the target, not of the monitor.
+    - control_id: no-legacy-auth
+      status: configurable
+      field_path: endpoints
+      evidence:
+        type: spec_validation
+        reference: Each endpoint carries at most one authentication method -- authorization (a bearer token from a Secret), basic_auth, oauth2 (client credentials), or the deprecated bearer_token_secret -- and validation refuses a second one and an authorization of type Basic. Every credential is a reference to a Secret key, never a value in the manifest.
+      notes: Prefer authorization or oauth2; basic_auth sends a static password with every scrape, and bearer_token_secret and bearer_token_file are deprecated upstream in favour of authorization.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The object has no users.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: Changes to the object are recorded by the cluster's API server audit log, a property of the cluster component. Scrape outcomes are visible in the scraping Prometheus's own series (up, scrape_duration_seconds, scrape_samples_scraped).
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: endpoints
+      evidence:
+        type: spec_default
+        reference: The component IS monitoring configuration -- each endpoint turns the selected Services' endpoints into scrape targets whose series the selecting Prometheus stores, labelled by job, namespace and the target labels the spec copies.
+      notes: The presets scrape a named metrics port and a token-protected endpoint; sample_limit and the label limits keep one misbehaving target from flooding the Prometheus.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The object is declared from a manifest, so its recovery is re-applying the manifest; it holds no state that a backup could preserve and a manifest could not.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: There is nothing to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no replicas. Availability of scraping is a property of the Prometheus replicas that select it.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: The object carries no deletion protection of its own; Kubernetes objects are protected through RBAC and admission policy on the cluster.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: The object runs no software to patch; the prometheus-operator and Prometheus that read it are patched through their own component.

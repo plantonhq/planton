@@ -5,7 +5,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/hcl/v2/hclparse"
+	"github.com/plantonhq/planton/catalog/kubernetes"
+	kubernetespodmonitorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespodmonitor/v1alpha1"
 	kubernetesprometheusrulev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesprometheusrule/v1alpha1"
+	kubernetesservicemonitorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesservicemonitor/v1alpha1"
 	"github.com/plantonhq/planton/pkg/kubernetes/manifestprojection"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
@@ -18,6 +21,11 @@ import (
 // the module's locals exclude) equals the spec the Pulumi helper applies
 // (manifestprojection.Render). Both read one projection, so this fails only
 // when the HCL writer or the envelope split diverges between engines.
+//
+// The monitor cases carry every shape the projection reshapes or must keep:
+// an IntOrString written as a number, list-valued maps written as bare lists
+// (one of them holding Secret references), an explicitly empty selector, and
+// an integer large enough that the HCL writer prints it in exponent form.
 func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 	limit := int32(5)
 	forDuration, keepFiring, offset := "5m", "10m", "1m"
@@ -47,6 +55,68 @@ func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 		},
 	}
 
+	assertBothEnginesSeeOneSpec(t, manifest)
+
+	sampleLimit, targetPort, proxyURL := uint32(1000000), "9090", "http://proxy:3128"
+	assertBothEnginesSeeOneSpec(t, &kubernetesservicemonitorv1alpha1.KubernetesServiceMonitor{
+		ApiVersion: "kubernetes.planton.dev/v1alpha1",
+		Kind:       "KubernetesServiceMonitor",
+		Metadata:   &shared.CloudResourceMetadata{Name: "api"},
+		Spec: &kubernetesservicemonitorv1alpha1.KubernetesServiceMonitorSpec{
+			Namespace:   literalRef("monitoring"),
+			Labels:      map[string]string{"release": "hub"},
+			Selector:    &kubernetes.KubernetesPrometheusOperatorApiLabelSelector{},
+			SampleLimit: &sampleLimit,
+			NamespaceSelector: &kubernetes.KubernetesPrometheusOperatorApiNamespaceSelector{
+				MatchNames: []*foreignkeyv1.StringValueOrRef{literalRef("api"), literalRef("workers")},
+			},
+			Endpoints: []*kubernetesservicemonitorv1alpha1.KubernetesServiceMonitorEndpoint{{
+				TargetPort: &targetPort,
+				Params: map[string]*kubernetes.KubernetesPrometheusOperatorApiStringList{
+					"module": {Values: []string{"http_2xx"}},
+				},
+				Authorization: &kubernetes.KubernetesPrometheusOperatorApiSafeAuthorization{
+					Credentials: &kubernetes.KubernetesPrometheusOperatorApiSecretKeySelector{Name: literalRef("api-token"), Key: "token"},
+				},
+				ProxyUrl: &proxyURL,
+				ProxyConnectHeader: map[string]*kubernetes.KubernetesPrometheusOperatorApiSecretKeySelectorList{
+					"Proxy-Authorization": {Values: []*kubernetes.KubernetesPrometheusOperatorApiSecretKeySelector{
+						{Name: literalRef("proxy"), Key: "header"},
+					}},
+				},
+				Relabelings: []*kubernetes.KubernetesPrometheusOperatorApiRelabelConfig{
+					{SourceLabels: []string{"__address__"}, TargetLabel: "shard", Modulus: &limitU, Action: "hashmod"},
+				},
+			}},
+		},
+	})
+
+	portNumber, portName := int32(9187), "metrics"
+	assertBothEnginesSeeOneSpec(t, &kubernetespodmonitorv1alpha1.KubernetesPodMonitor{
+		ApiVersion: "kubernetes.planton.dev/v1alpha1",
+		Kind:       "KubernetesPodMonitor",
+		Metadata:   &shared.CloudResourceMetadata{Name: "orders-db"},
+		Spec: &kubernetespodmonitorv1alpha1.KubernetesPodMonitorSpec{
+			Namespace: literalRef("orders"),
+			Selector: &kubernetes.KubernetesPrometheusOperatorApiLabelSelector{
+				MatchLabels: map[string]string{"cnpg.io/cluster": "orders-db"},
+			},
+			PodMetricsEndpoints: []*kubernetespodmonitorv1alpha1.KubernetesPodMonitorPodMetricsEndpoint{
+				{PortNumber: &portNumber},
+				{Port: &portName, TargetPort: &portName},
+			},
+		},
+	})
+}
+
+var limitU = uint32(4)
+
+func literalRef(v string) *foreignkeyv1.StringValueOrRef {
+	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
+}
+
+func assertBothEnginesSeeOneSpec(t *testing.T, manifest manifestprojection.Manifest) {
+	t.Helper()
 	tfvars, err := ProtoToManifestTFVars(manifest)
 	if err != nil {
 		t.Fatalf("ProtoToManifestTFVars: %v", err)
@@ -71,7 +141,8 @@ func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 	if err := json.Unmarshal(specJSON, &terraformSpec); err != nil {
 		t.Fatal(err)
 	}
-	envelope := manifestprojection.EnvelopeOf(manifest.Spec.ProtoReflect().Descriptor())
+	specField := manifest.ProtoReflect().Descriptor().Fields().ByName("spec")
+	envelope := manifestprojection.EnvelopeOf(specField.Message())
 	for key := range terraformSpec {
 		if envelope.Holds(key) {
 			delete(terraformSpec, key)
@@ -86,7 +157,7 @@ func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 	gotTF, _ := json.Marshal(terraformSpec)
 	gotPulumi, _ := json.Marshal(obj.Spec)
 	if string(gotTF) != string(gotPulumi) {
-		t.Errorf("the engines see different specs\nterraform: %s\npulumi:    %s", gotTF, gotPulumi)
+		t.Errorf("%s: the engines see different specs\nterraform: %s\npulumi:    %s", manifest.GetKind(), gotTF, gotPulumi)
 	}
 }
 

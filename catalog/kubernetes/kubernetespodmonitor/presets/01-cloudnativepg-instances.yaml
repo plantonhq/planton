@@ -1,0 +1,23 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPodMonitor
+metadata:
+  name: <cluster>
+spec:
+  namespace:
+    value: <namespace>
+  job_label: cnpg.io/cluster
+  pod_target_labels:
+    - cnpg.io/instanceRole
+    - cnpg.io/instanceName
+  sample_limit: 100000
+  selector:
+    match_labels:
+      cnpg.io/cluster: <cluster>
+  pod_metrics_endpoints:
+    - port: metrics
+      interval: 30s
+      metric_relabelings:
+        - source_labels:
+            - __name__
+          regex: cnpg_pg_settings_setting
+          action: drop

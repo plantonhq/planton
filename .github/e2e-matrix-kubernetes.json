@@ -36,17 +36,17 @@
       "name": "Tier 3 Pulumi",
       "tier": 3,
       "engine": "pulumi",
-      "timeout": 815,
-      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Pulumi",
-      "component_count": 20
+      "timeout": 895,
+      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPodMonitor|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesServiceMonitor|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Pulumi",
+      "component_count": 22
     },
     {
       "name": "Tier 3 Terraform",
       "tier": 3,
       "engine": "terraform",
-      "timeout": 815,
-      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Terraform",
-      "component_count": 20
+      "timeout": 895,
+      "run_regex": "Test(KubernetesAirflow|KubernetesClickHouse|KubernetesFlinkDeployment|KubernetesGhaRunnerScaleSet|KubernetesJupyterHub|KubernetesKeycloak|KubernetesMlflow|KubernetesOpenSearch|KubernetesOpenSearchOperator|KubernetesOtelCollector|KubernetesPlantonPlatform|KubernetesPodMonitor|KubernetesPrometheusRule|KubernetesRabbitMq|KubernetesRayCluster|KubernetesServiceMonitor|KubernetesSignoz|KubernetesSolr|KubernetesSolrOperator|KubernetesSuperset|KubernetesTekton|KubernetesTrino)_Terraform",
+      "component_count": 22
     },
     {
       "name": "Tier 4 Pulumi",

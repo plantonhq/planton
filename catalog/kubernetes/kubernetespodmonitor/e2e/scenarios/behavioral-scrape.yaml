@@ -1,0 +1,31 @@
+# The scrape proof: the prerequisite stack's Prometheus (all_monitors
+# discovery) must LOAD this object, DISCOVER its targets by pod label in
+# another namespace, and SCRAPE them. The targets are that Prometheus's own
+# pods, which declare container port 9090, so no outside image is needed.
+# The port is chosen by number (port_number), a relabeling stamps
+# e2e_monitor on every series, and params (a list-valued map) rides on the
+# scrape URL.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPodMonitor
+metadata:
+  name: e2e-pmon-scrape
+spec:
+  namespace:
+    value: default
+  namespace_selector:
+    match_names:
+      - value: e2e-kps-min
+  selector:
+    match_labels:
+      app.kubernetes.io/name: prometheus
+  pod_metrics_endpoints:
+    - port_number: 9090
+      path: /metrics
+      interval: 15s
+      params:
+        e2e:
+          values:
+            - proof
+      relabelings:
+        - target_label: e2e_monitor
+          replacement: e2e-pmon-scrape

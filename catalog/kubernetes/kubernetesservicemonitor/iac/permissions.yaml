@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's Kubernetes principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: kubernetesservicemonitor
+spec:
+  kubernetes:
+    rules:
+      - api_groups:
+          - monitoring.coreos.com
+        resources:
+          - servicemonitors
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers the kubectl_manifest.service_monitor resource (Terraform) and the apiextensions.CustomResource the manifestcr helper creates (Pulumi) -- each module's only resource, applying one namespaced ServiceMonitor (monitoring.coreos.com/v1).
+      - api_groups:
+          - monitoring.coreos.com
+        resources:
+          - servicemonitors
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes reads while it waits for a deleted object to be gone (an informer of the object's kind); OpenTofu, polling the one object with get, never needs them. An informer whose list is forbidden never syncs, so the destroy hangs with no error instead of failing.

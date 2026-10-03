@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.kubernetes.kubernetespodmonitor.v1alpha1;
+
+// KubernetesPodMonitorStackOutputs captures observable outputs after the
+// PodMonitor is created on the target cluster. Which Prometheus instances
+// scrape through it is decided by their selectors, and which targets it yields
+// by the pods alive at discovery time, so only the resource identity is
+// exported.
+message KubernetesPodMonitorStackOutputs {
+  // Name of the created PodMonitor (equals metadata.name).
+  string pod_monitor_name = 1;
+
+  // Namespace the PodMonitor was created in (the resolved spec.namespace).
+  string namespace = 2;
+}

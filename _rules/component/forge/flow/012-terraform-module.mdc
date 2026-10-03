@@ -122,7 +122,9 @@ SEQUENTIAL STEPS
    This emits variables.tf (spec/metadata typed `any`), a thin locals.tf, a
    kubectl_manifest main.tf (GVK from the annotation), provider.tf, and
    outputs.tf. The proto->tfvars converter emits the camelCase, null-pruned spec
-   at runtime, so there is no snake->camel / null-prune / oneOf logic to write.
+   at runtime, so there is no snake->camel / null-prune / oneOf logic to write;
+   it also writes the shapes the spec marks (an IntOrString as a number or a
+   name, a list-valued map's wrappers as bare lists) as upstream's.
    The locals route the envelope to metadata -- the namespace reference, and any
    top-level map marked `kubernetes_object_metadata` as the object's own labels
    or annotations (identity labels win) -- reading both the envelope and the

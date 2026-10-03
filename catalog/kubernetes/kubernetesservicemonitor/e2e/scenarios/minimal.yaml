@@ -1,0 +1,14 @@
+# The smallest object, with the one shape protojson could lose: an explicitly
+# empty selector, which upstream reads as "every Service" and the API server
+# requires. The verifier proves the live object is exactly the projection of
+# this manifest (the empty selector kept), then that it is gone after destroy.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesServiceMonitor
+metadata:
+  name: e2e-smon-min
+spec:
+  namespace:
+    value: default
+  selector: {}
+  endpoints:
+    - port: e2e-metrics

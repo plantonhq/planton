@@ -728,6 +728,7 @@ contained dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPl
 contained dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetSpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantSpec.namespace -> KubernetesNamespace
@@ -743,6 +744,7 @@ contained dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecret
 contained dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1.KubernetesServiceAccountSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetesserviceentry.v1alpha1.KubernetesServiceEntrySpec.namespace -> KubernetesNamespace
+contained dev.planton.kubernetes.kubernetesservicemonitor.v1alpha1.KubernetesServiceMonitorSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrSpec.namespace -> KubernetesNamespace
 contained dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorSpec.namespace -> KubernetesNamespace
@@ -1036,6 +1038,7 @@ exempt    dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringSpec.peer_network 
 exempt    dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolCertificateIssuance.ca_pools -> GcpPrivateCaPool
 exempt    dev.planton.kubernetes.ExternalSecretsStoreAzure.vault_url -> AzureKeyVault
 exempt    dev.planton.kubernetes.ExternalSecretsStoreGcp.project_id -> GcpProject
+exempt    dev.planton.kubernetes.KubernetesPrometheusOperatorApiNamespaceSelector.match_names -> KubernetesNamespace
 exempt    dev.planton.kubernetes.StrimziKafkaClientTrustedCertificate.secret_name -> KubernetesKafka
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsAwsRoute53.zone_id_filters -> AwsRoute53Zone
 exempt    dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsAzureDns.zone_id_filters -> AzureDnsZone

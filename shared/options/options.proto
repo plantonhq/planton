@@ -157,8 +157,42 @@ extend google.protobuf.FieldOptions {
   // resource. The routing is implemented once, in
   // pkg/kubernetes/manifestprojection, which both the generated Terraform
   // module and the Pulumi module read; a catalog test proves the marker sits
-  // only on top-level string maps of projection kinds.
+  // only on top-level string maps of projection kinds' specs.
   KubernetesObjectMetadataField kubernetes_object_metadata = 60011;
+
+  // Marks a `string` field of a Kubernetes manifest projection kind whose
+  // upstream key is a Kubernetes IntOrString (a container port given by number
+  // or by name, such as a ServiceMonitor endpoint's targetPort). The projection
+  // writes an all-digit value as an integer and anything else as a string, so
+  // "8080" reaches the object as the port number 8080 and "metrics" as the
+  // port name -- a string field alone would send "8080" as a port NAMED
+  // "8080", which matches no port and silently selects nothing. The split is
+  // unambiguous because a Kubernetes port name must contain a letter.
+  //
+  // The manifest keeps one field under upstream's own key, typed as a string
+  // (a YAML author quotes a number: "8080"); the field's validation rules bound
+  // both forms. Honored once, in pkg/iac/specprojection, which both engines'
+  // modules read.
+  bool kubernetes_int_or_string = 60012;
+
+  // Marks a map<string, Wrapper> field of a Kubernetes manifest projection
+  // kind whose upstream values are lists (an endpoint's URL `params`, a
+  // proxy's CONNECT headers). A proto map value cannot be a list, so each
+  // value is a wrapper message whose single field is the repeated value list
+  // (named `values`, the catalog's wrapper convention); the projection writes
+  // each entry as that bare list, the custom resource's own shape, and
+  // projects the list's elements by their own type's rules (a reference
+  // inside an element collapses like any other).
+  //
+  // The manifest author writes `{key: {values: [...]}}`; the object carries
+  // `{key: [...]}`. Honored once, in pkg/iac/specprojection, which both
+  // engines' modules read.
+  //
+  // A catalog test proves each of the three projection markers
+  // (kubernetes_object_metadata, kubernetes_int_or_string and this one) sits
+  // only on the field shape it is defined for, and only where a projection
+  // kind's spec reaches it.
+  bool kubernetes_list_valued_map = 60013;
 }
 
 // The part of a Kubernetes object's metadata a spec field holds. See

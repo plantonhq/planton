@@ -24,11 +24,18 @@ go_library(
 
 go_test(
     name = "manifestprojection_test",
-    srcs = ["render_test.go"],
+    srcs = [
+        "markers_test.go",
+        "render_test.go",
+    ],
     embed = [":manifestprojection"],
     deps = [
         "//catalog/kubernetes/kubernetesprometheusrule/v1alpha1",
+        "//pkg/crkreflect",
+        "//pkg/iac/specprojection",
         "//shared",
         "//shared/foreignkey/v1:foreignkey",
+        "//shared/options",
+        "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )

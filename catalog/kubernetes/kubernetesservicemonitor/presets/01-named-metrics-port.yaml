@@ -1,0 +1,16 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesServiceMonitor
+metadata:
+  name: <service>
+spec:
+  namespace:
+    value: <namespace>
+  job_label: app.kubernetes.io/name
+  sample_limit: 50000
+  selector:
+    match_labels:
+      app.kubernetes.io/name: <service>
+  endpoints:
+    - port: <metrics_port_name>
+      interval: 30s
+      scrape_timeout: 10s
