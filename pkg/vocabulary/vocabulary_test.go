@@ -90,7 +90,6 @@ func TestOtherPeoplesWordsAreAllowed(t *testing.T) {
 		{"_changelog/x.md", "added to the Hetzner Cloud catalog"},
 		{"docs/x.md", "run `pulumi stack output --json`"},
 		{"catalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/outputs.proto", "message KubernetesKubePrometheusStackOutputs {"},
-		{"site/src/data/retired-routes.ts", "{ from: '/features/cloud-catalog', to: '/product/catalog' },"},
 		{"docs/x.md", "a Kubernetes Deployment of three replicas"},
 		{"site/src/components/Hero.tsx", "import { Hero } from '@/components/Hero'"},
 		{"catalog/aws/awsvpc/cost.yaml", "# what drives this component's bill"},
@@ -106,9 +105,6 @@ func TestPathAllowancesStayInTheirPaths(t *testing.T) {
 	s := scanner(t)
 	if got := matches(t, s, "pkg/x.go", "cloud_resource := spec.CloudResource"); len(got) == 0 {
 		t.Error("BigQuery's allowance leaked outside gcpbigqueryconnection")
-	}
-	if got := matches(t, s, "site/src/data/nav.ts", "{ from: '/docs/infrastructure/cloud-resources' }"); len(got) == 0 {
-		t.Error("the retired-routes allowance leaked outside retired-routes.ts")
 	}
 }
 

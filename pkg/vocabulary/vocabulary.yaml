@@ -24,8 +24,7 @@
 #            space in an anchor stands for an optional separator (none, a
 #            space, _ or -).
 #   allow    spans that contain a retired spelling but are someone else's
-#            word (a vendor's API, a vendor's type, a vendor's CLI) or an
-#            address the outside world already holds. `paths` (optional)
+#            word (a vendor's API, a vendor's type, a vendor's CLI). `paths` (optional)
 #            scopes an allowance to repository paths (globs; ** crosses
 #            directories). Never add an allowance for a Planton word.
 #   exclude  repository paths never scanned: third-party trees vendored
@@ -154,12 +153,6 @@ allow:
     reason: the Pulumi CLI's own command
   - pattern: '(?i)kube[ _-]?prometheus[ _-]?stack[ _-]?outputs?'
     reason: the kube-prometheus-stack chart's name, as in the kind KubernetesKubePrometheusStack and its KubernetesKubePrometheusStackOutputs
-  - pattern: "from: '[^']*'"
-    paths: ['site/src/data/retired-routes.ts']
-    reason: retired site addresses the outside world holds; each forwards to its live page
-  - pattern: '(?i)cloud[ _-]?catalog'
-    paths: ['site/src/app/(site)/features/cloud-catalog/**']
-    reason: the forwarding page that answers the retired /features/cloud-catalog address
 
 exclude:
   - 'pkg/vocabulary/**'

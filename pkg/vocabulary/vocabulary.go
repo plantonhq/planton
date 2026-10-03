@@ -4,9 +4,8 @@
 // One idea has one word, the same in the console, the CLI, the API, the docs
 // and the code. vocabulary.yaml is the single statement of those words: the
 // current ones with their meanings, the spellings Planton does not use with
-// what to write instead, and the narrow allowances for words that belong to someone else
-// (a vendor's API or type, a vendor's CLI) or to addresses the outside world
-// already holds.
+// what to write instead, and the narrow allowances for words that belong to
+// someone else (a vendor's API or type, a vendor's CLI).
 //
 // A retired spelling is matched case-insensitively in every case form and
 // anywhere in a line, so the entry CloudResource catches CloudResourceKind,

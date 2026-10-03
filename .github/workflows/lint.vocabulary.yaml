@@ -5,8 +5,7 @@
 # its own concepts -- one idea, one word, the same in the console, the CLI,
 # the API, the docs and the code. pkg/vocabulary/vocabulary.yaml states the
 # words, the spellings they replace, and the narrow allowances for other
-# people's words (a vendor's API or type, a vendor's CLI) and for addresses
-# the outside world already holds.
+# people's words (a vendor's API or type, a vendor's CLI).
 #
 # To fix a failure: write the word the finding names. Never add an allowance
 # for a Planton word. See pkg/vocabulary.
